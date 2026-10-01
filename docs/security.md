@@ -42,3 +42,13 @@
 - The MCP stdio bridge inherits only explicitly configured credentials. Remote
   deployment requires a production authorization gateway, TLS, tenant identity
   and model/search quotas; no public tunnel is enabled by this implementation.
+
+- Studio overview and non-mutating quote require merchant authority. The preview
+  has no cart/order/stock side effects. Public language context contains only
+  locale identifiers and bounded demo configuration.
+- The chat can expose its stored verified observations separately from model
+  prose. Grounding instructions and tested examples improve answers, but do not
+  make arbitrary model prose infallible; field-level review still controls writes.
+- Call counters record adapter, tenant, aggregate count and timestamps, never
+  external account identity. MCP configuration is served only to merchants and
+  contains the local executable path plus public tenant/URL settings, not keys.

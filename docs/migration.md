@@ -8,10 +8,10 @@ reference gate; a passing old gate must not silently prove a newer version.
 |---|---|---|
 | Quantity price | Partial behavioral port; independent PHP gate | Resolve original sales-channel tax state and currency context |
 | Product | Durable synthetic catalog | Import UUIDs, variants, translations and inherited prices with exact response contracts |
-| Customer context | Demo guest/company carts with token rotation | Real account lifecycle, sales-channel context and customer group matching |
+| Customer context | Guest/company token rotation; bounded language-chain port | Real account lifecycle, sales-channel context and customer group matching |
 | Cart | Native item cart and optimistic revisions | Original collector/processor order, promotions, errors and iterative rule matching |
 | Checkout/order | Native atomic simulated checkout | Original conversion snapshots, delivery, payment state machine and reservation semantics |
-| Rule Builder | Two explicit group/quantity conditions | Typed port of original rule AST and original fixture comparison |
+| Rule Builder | Original rule-priority/tier selection, demo membership rules | Typed port of original rule AST and original fixture comparison |
 | API | Selected paths with native envelopes | Route-by-route exact schemas, criteria semantics, headers, aliases and errors |
 | Extensions | Pure Wasm company approval hook | Capability-bound migration of one actual extension and its dependencies |
 | Commercial B2B | Synthetic group pricing demonstration | Licensed source, entitlement and a separately agreed parity contract |
@@ -68,3 +68,32 @@ paths. Synthetic lamp/list and notebook/reference metadata is initialized once.
 This does not port the complete cart collector/processor or resolve a sales
 channel's tax state. Rules, variants/inheritance, shipping and payment-provider
 flows still need their own original-reference ports.
+
+## v0.3 context and product-cart slice
+
+`reference/context.php` invokes original private methods through Reflection.
+The context factory uses a real DBAL connection with synthetic language rows;
+tier selection uses original entities, collections, rule filtering, collection
+sorting and ProductCartProcessor price-definition selection. Fixture discount
+values act as distinct calculated-price markers; this gate tests selection, not
+currency price hydration. 1,446 cases cover unavailable/invalid/missing language
+IDs, one-parent fallback, duplicate system-language entries, missing rules,
+priority order, unsorted tiers, gaps, open ends, beyond-last quantities and
+floor rounding below a minimum.
+
+`src/context.rs` supplies the shared ports. Native locale hydration falls back
+field-by-field and is used by the catalog, persisted carts, merchant overview
+and actual model input. It is not a port of the complete DAL translation loader.
+The demo makes all seeded languages available to both tenants; production
+sales-channel language membership still needs its own source fixtures.
+
+The cart combines the ported floor rule with native clamping to minimum/maximum.
+It returns the effective quantity so the client can explain adjustments. The
+original full processor's errors, closeout availability, inherited fields and
+collector lifecycle are not covered by this clamp. Advanced tier fixtures are
+initialized once for both demo tenants and retain the prior 10%/15% B2B behavior.
+
+Use `python3 scripts/port.py verify context-tier-quantity` against a running app.
+The manifest records the remaining behaviors without marking this whole unit
+complete. `scripts/studio.py` also proves that the real preview and persisted
+cart consume these ports, rather than merely testing an unused utility.

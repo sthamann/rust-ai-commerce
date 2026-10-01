@@ -106,3 +106,33 @@ Claude account registration, HTTPS deployment and OAuth remain deployment work;
 the prototype does not imply local endpoints are reachable from hosted clients.
 Cold restart checks include graph relations, exact stored vector digests,
 conversations and approval state, alongside the earlier ledger/policy checks.
+
+## v0.3: merchant visibility and language context
+
+Commerce Studio reads one tenant-scoped overview containing actual order
+aggregates, seven-day counts, inventory, AGE relations, vector-index metadata,
+recorded policy counters, activity and provider/connector boundaries. Every
+product selection shares the same preview state. Preview quote construction
+is in-memory and executes the real deterministic pricing operation without
+writing a cart, order or inventory. Mobile users open the same preview in a
+native dialog. Locale/theme preferences persist; the merchant token does not.
+
+The planner now receives recorded policy views/rewards and diagnostic channel
+counts as verified facts. Its stored evidence preserves those input facts with
+the chosen response locale. Graph facts are explicitly curated and the policy
+learns an observed reward association, not causal uplift or new model weights.
+The history groups exposures by initial session time and displays their current
+reward state; it does not invent historical estimates. New approvals record
+an actual applied timestamp; old proposals retain only their creation history.
+
+HTTP call counters are best-effort asynchronous diagnostics for Store API,
+MCP and UCP. They count requests, including tests; no external platform or
+customer attribution is inferred. A cart's initial adapter is stored with its
+order; this identifies the entry path, not the identity of a hosted agent.
+
+The original Shopware language-chain slice feeds native translated field
+hydration. English, German, French and Spanish products are seeded once;
+Swiss German demonstrates parent fallback. Currency stays EUR. Original rule
+priority and calculated-tier selection replace the earlier hardcoded quantity
+branch, and normalized quantities are persisted in real carts. This remains a
+bounded context/product-cart port with its own original-PHP differential gate.

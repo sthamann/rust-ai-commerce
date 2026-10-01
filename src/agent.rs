@@ -193,7 +193,15 @@ pub(super) async fn merchant_chat(
     .bind(instruction)
     .execute(&a.db)
     .await?;
-    let output = plan_with(&a, &t, instruction, selection.as_ref(), &history).await;
+    let output = plan_with(
+        &a,
+        &t,
+        instruction,
+        selection.as_ref(),
+        &history,
+        &language_context(&a, &h).await?.0,
+    )
+    .await;
     let (content, data) = match output {
         Ok(task) => (
             task["preview"]["proposal"]["summary"]

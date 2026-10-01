@@ -1,7 +1,7 @@
 {
   "date": "2026-10-01",
-  "version": "0.2.0",
-  "baselineCommit": "2e424a71ce47515b716d97e41d2d2bdcb03c76d8",
+  "version": "0.3.0",
+  "baselineCommit": "df7eaf2b0df4af1be3963bf5b75ee0bacc75d602",
   "reference": {
     "shopware": "6.7.14.2",
     "phpLocal": "8.5.6",
@@ -14,7 +14,7 @@
     "frontendFormatting": true
   },
   "unitTests": {
-    "passed": 8,
+    "passed": 10,
     "areas": [
       "decimal ties",
       "unit-before-total",
@@ -23,7 +23,9 @@
       "fuel exhaustion",
       "memory limit",
       "native provider response parsing and truncation rejection",
-      "strict optional structured-output schema"
+      "strict optional structured-output schema",
+      "context language-chain duplicates and lowercase UUID validation",
+      "rule priority and tier boundary; quantity floor normalization"
     ]
   },
   "database": {
@@ -129,7 +131,8 @@
     "merchantChatPreviewApprovalAndCatalogMutation": true,
     "customerCatalogRecommendation": true,
     "embeddings": "qwen3-embedding:0.6b",
-    "liveCloudInference": false
+    "liveCloudInference": false,
+    "groundedFrenchAndGermanObservationAnswers": true
   },
   "externalClients": {
     "actualMCPStdioBridge": true,
@@ -140,8 +143,8 @@
   "restart": {
     "serverAndDatabaseRestart": "passed",
     "catalogProducts": 6,
-    "orders": 13,
-    "storedTasks": 7,
+    "orders": 16,
+    "storedTasks": 14,
     "policyCountersIdentical": true,
     "eventProjectionIdentical": true,
     "extensionVersionIdentical": true,
@@ -149,15 +152,34 @@
     "semanticVectorsIdentical": true,
     "indexedProducts": 6,
     "conversationHistoriesIdentical": true,
-    "conversations": 3,
-    "stateDigest": "70e5c1966817f9e76b2a061fd5339be43ddba820a3c31ae3a674909ed07ae284"
+    "conversations": 9,
+    "stateDigest": "fcfea63d4c1b824ee13d17951eb024500f380f7ca530cff32cbf8db0e901f6a5"
   },
   "browser": {
+    "defaultTheme": "light with Shopware-inspired blue accents",
+    "optionalTheme": "slate-blue",
+    "languages": [
+      "de-DE",
+      "en-GB",
+      "fr-FR",
+      "es-ES"
+    ],
     "merchantChat": true,
-    "persistedConversationSelection": true,
-    "merchantPlanPreviewApprovalAndCatalog": true,
-    "responsiveConversationSelector": true,
-    "screenshot": "assets/merchant-chat.jpg"
+    "actualOrderAndInventoryOverview": true,
+    "selectableActualAGEGraph": true,
+    "learningCountersAndExposureHistory": true,
+    "mobilePreviewDialogAndBusinessTier": true,
+    "nativeDialogEscape": true,
+    "responsiveWidths": [
+      375,
+      812,
+      1440
+    ],
+    "horizontalDocumentOverflowObserved": false,
+    "screenshot": "assets/commerce-studio.jpg",
+    "groundedGermanLearningAnswer": true,
+    "storedFactsInspectableSeparately": true,
+    "graphKeyboardSelection": true
   },
   "historicalV01": {
     "contention": {
@@ -189,10 +211,33 @@
   },
   "limits": [
     "Simulated payment, no real charge",
-    "Partial Shopware pricing port and prototype API envelopes, not complete kernel/API compatibility",
+    "Partial Shopware pricing/context/tier/quantity ports and native prototype API envelopes; not the complete kernel or APIs",
     "Partial MCP/UCP bindings, no full conformance or production OAuth",
     "Cloud native HTTP contracts tested locally; actual cloud inference needs API keys",
     "Curated graph and fixed LLM weights; no online weight learning or economic uplift proof",
     "Small exact vector search; no ANN recall, distributed tenant scale or million-product capacity measurement"
-  ]
+  ],
+  "studio": {
+    "passed": 8,
+    "checks": [
+      "Studio overview and quote require merchant authorization",
+      "Four localized overview responses use actual orders, graph and explicit connection boundaries",
+      "Swiss German falls back through original parent chain; header selection and unavailable locale",
+      "Side-effect-free preview uses minimum, steps, maximum and real rule-selected B2B net pricing",
+      "Original quantity normalization and localized cart persist through actual customer path",
+      "Studio facts retain the tenant boundary",
+      "Live Qwen answers in French using persisted order and learning facts without changing products",
+      "Live German answer distinguishes recorded layout outcomes from a smoothed policy estimate"
+    ],
+    "liveLocalModel": true,
+    "payment": "simulated",
+    "afterDatabaseRestartPassed": 6
+  },
+  "contextDifferential": {
+    "reference": "original shopware/core 6.7.14.2 (Reflection, real DBAL/collections/entities)",
+    "cases": 1446,
+    "failures": 0,
+    "examples": [],
+    "scope": "ContextFactory language chain; rule priority and tier quantity selection; floor quantity normalization. Excludes whole ContextFactory SQL hydration, DAL translation hydration and entire ProductCartProcessor lifecycle."
+  }
 }

@@ -14,7 +14,7 @@ ANTHROPIC_MODEL=claude-sonnet-5-5
 ```
 
 In `/#merchant`, connect using the local merchant credential and open
-**Modell & Verbindungen**. Choose Local, OpenAI, or Claude. You can override
+**Einstellungen / Settings**. Choose Local, OpenAI, or Claude. You can override
 the model ID per turn. The server uses OpenAI **Responses** with structured
 outputs, or Anthropic **Messages** with `output_config.format`. No subscription
 cookies, ChatGPT browser automation, or Claude subscription tokens are used.

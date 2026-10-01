@@ -1,6 +1,7 @@
 # Upstream attribution
 
-The quantity calculation behavior in `src/pricing.rs` is a partial behavioral
+The quantity calculation behavior in `src/pricing.rs` and context/tier/quantity
+selection behavior in `src/context.rs` is a partial behavioral
 port of Shopware Core 6.7.14.2, reference commit
 `de074a584d77d8abb09ddb21d8799f083a61a3da`.
 

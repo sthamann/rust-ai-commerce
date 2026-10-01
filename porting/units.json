@@ -47,6 +47,47 @@
       ]
     },
     {
+      "id": "context-tier-quantity",
+      "status": "partial-port",
+      "source": [
+        "System/SalesChannel/Context/ContextFactory.php",
+        "Content/Product/SalesChannel/Price/ProductPriceCalculator.php",
+        "Content/Product/Aggregate/ProductPrice/ProductPriceCollection.php",
+        "Content/Product/Cart/ProductCartProcessor.php"
+      ],
+      "implemented": [
+        "language-chain-one-parent-system-fallback",
+        "first-matching-context-rule-priority",
+        "quantity-start-sort-and-calculated-tier-selection",
+        "floor-quantity-step-normalization"
+      ],
+      "gates": [
+        [
+          "cargo",
+          "build",
+          "--locked",
+          "--bin",
+          "context"
+        ],
+        [
+          "python3",
+          "scripts/context_differential.py"
+        ],
+        [
+          "python3",
+          "scripts/studio.py"
+        ]
+      ],
+      "remaining": [
+        "whole-context-factory-hydration",
+        "sales-channel-language-availability",
+        "full-dal-translation-hydration",
+        "price-currency-conversion",
+        "full-rule-evaluation",
+        "cart-error-and-closeout-lifecycle"
+      ]
+    },
+    {
       "id": "purchase-path",
       "status": "native-prototype",
       "source": [

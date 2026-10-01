@@ -1,3 +1,4 @@
+pub mod context;
 pub mod inference;
 pub mod knowledge;
 pub mod pricing;

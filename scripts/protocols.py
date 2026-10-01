@@ -27,13 +27,15 @@ if token:
     call('/api/extensions/activate',{'wat':'(module (import "env" "fs" (func)) (func (export "approve") (param i64 i64) (result i32) i32.const 1))'},ah,expected=400);ok('extension host imports rejected')
     time.sleep(.3);r=call('/api/runtime',h=ah);assert r['eventsConsumed']>0 and r['outboxPending']==0;ok('durable outbox has a working consumer')
     if os.environ.get('TEST_MODEL')=='1':
-        task=call('/api/agent/plan',{'instruction':'Setze den Bruttopreis der Arc Desk Light auf 74,90 EUR. Ändere sonst nichts.'},ah)
-        p=task['preview']['proposal'];assert len(p['changes'])==1 and p['changes'][0]['product_id']=='lamp' and abs(p['changes'][0]['price']-74.9)<1e-9
+        before=next(p for p in call('/store-api/product',{})['elements'] if p['id']=='lamp')['price']
+        target=74.9 if before!=74.9 else 79.9
+        task=call('/api/agent/plan',{'instruction':f'Setze ausschließlich den Bruttopreis von lamp / Arc Desk Light auf {target} EUR. Ändere sonst nichts.'},ah)
+        p=task['preview']['proposal'];assert len(p['changes'])==1 and p['changes'][0]['product_id']=='lamp' and abs(p['changes'][0]['price']-target)<1e-9
         assert task['preview']['evalCount']>0;ok('real LLM produces correct typed merchant plan')
         call('/api/agent/tasks/'+task['taskId']+'/apply',{'approve':False},ah,expected=400)
         call('/api/agent/tasks/'+task['taskId']+'/apply',{'approve':True},ah)
         replay=call('/api/agent/tasks/'+task['taskId']+'/apply',{'approve':True},ah);assert replay['replayed'];ok('explicit approval applies plan once')
-        ps=call('/store-api/product',{})['elements'];assert next(p for p in ps if p['id']=='lamp')['price']==74.9;ok('agent change affects customer catalog')
+        ps=call('/store-api/product',{})['elements'];assert next(p for p in ps if p['id']=='lamp')['price']==target;ok('agent change affects customer catalog')
         advice=call('/api/concierge',{'request':'Ich brauche eine warme Leselampe für weniger als 100 Euro.'});assert 'lamp' in advice['answer']['recommended_ids'] and advice['evalCount']>0;ok('real customer inference selects existing product')
 report={'passed':len(checks),'checks':checks,'modelTested':os.environ.get('TEST_MODEL')=='1'}
 print(json.dumps(report,indent=2))

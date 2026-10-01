@@ -7,7 +7,7 @@ and incremental ports of original Shopware behavior. MIT licensed.
 The core places durable orders and changes real demo inventory. **Payment is
 simulated.** This is a migration laboratory, not a complete Shopware replacement.
 
-![Merchant conversation and reviewable change](docs/assets/merchant-chat.jpg)
+![Commerce Studio: shop facts, intelligence and an interactive preview](docs/assets/commerce-studio.jpg)
 
 [Verification](docs/verification.json) · [Migration scope](docs/migration.md) ·
 [Model and ChatGPT/Claude connections](docs/connectors.md) ·
@@ -43,8 +43,8 @@ The B2B demo account is `buyer@example.test` / `demo-business`. It receives net
 pricing, group/quantity discounts, and a €1,000 pure-Wasm purchase limit.
 All products, relationships and accounts are synthetic.
 
-For semantic search, connect the merchant chat, open **Modell & Verbindungen**,
-and click **Suchwissen aktualisieren**. This computes real 1,024-dimensional
+For semantic search, connect Commerce Studio, open **Einstellungen / Settings**,
+and click **Shopwissen aktualisieren / Refresh shop knowledge**. This computes real 1,024-dimensional
 Qwen embeddings, persists them, and reuses unchanged documents.
 
 ## A fully open database stack
@@ -74,6 +74,38 @@ capacity, ANN recall, distributed graph sharding and failover are **unmeasured**
 The prototype admits two demo tenants; a production tenant directory is future
 work. Every graph/vector access includes the tenant boundary.
 
+## Commerce Studio · v0.3
+
+A standalone light workspace with Shopware-inspired blue accents, a large assistant and an
+interactive product/price preview. Four connected views provide:
+
+- **Assistant:** persistent conversations and reviewable price, inventory or
+  storefront proposals, followed by explicit approval.
+- **Shop today:** API-backed orders, seven-day order counts, inventory, stored
+  proposals and actual activity. Demo orders are labeled as simulated.
+- **Shop intelligence:** a selectable AGE product/need graph, complementary
+  products, real semantic retrieval, observed variant counts and a seven-day
+  session/reward history. Selecting a product also selects its price preview.
+- **Agent commerce:** an understandable customer journey, actual HTTP call
+  counters, local MCP configuration and separate ChatGPT/Claude setup status.
+  Calls include synthetic tests and are not customers or attributed sales.
+
+The complete Studio interface is available in **German, English, French and
+Spanish**, with locale-aware numbers/dates, localized products and model replies
+in the selected language. The API additionally demonstrates Swiss German →
+German → system-language fallback. Switching languages retains conversation
+history; previously stored messages keep their original language. An optional slate-blue dark theme,
+keyboard-operable graph/dialogs and a mobile preview drawer are included.
+
+The preview calls the real Rust calculator for quantities and consumer/business
+pricing. It creates no cart/order and changes no stock. Product minimum, purchase
+steps, maximum, rule priority and quantity tiers are also used by actual carts.
+
+Studio reads `/api/merchant/overview`; its non-mutating quote is
+`POST /api/merchant/quote`. Both require merchant authority. Product locale comes
+from `x-commerce-locale` or `sw-language-id`; `/store-api/context` exposes the
+language chain. These are native prototype contracts, not full Shopware schemas.
+
 ## Chat-first operations and optional cloud models
 
 The merchant workspace puts conversations first: persistent history, provider
@@ -81,7 +113,8 @@ selection, natural-language requests, before/after change cards and approval.
 You can ask about product combinations, change prices/stock, or reshape the
 storefront's constrained experience definition. The model receives current
 catalog state, AGE relationships, prior conversation and verified demo-order
-aggregates. The server binds concurrency revisions and validates every action.
+aggregates, recorded learning counts and observed channel calls. The same verified
+facts are stored with the proposal so its answer can be inspected. The server binds concurrency revisions and validates every action.
 
 Three provider adapters are implemented:
 
@@ -129,11 +162,13 @@ With the app running, in another terminal:
 ```sh
 set -a; source .env; set +a
 cargo test --locked
+python3 scripts/studio.py
 python3 scripts/integration.py
 python3 scripts/protocols.py
 python3 scripts/intelligence.py
 python3 scripts/providers.py
 TEST_EMBEDDING=1 TEST_MODEL=1 python3 scripts/intelligence.py
+TEST_MODEL=1 python3 scripts/studio.py
 ```
 
 These checks write synthetic demo carts, orders, conversations and approved
@@ -147,18 +182,23 @@ Independent original Shopware reference:
 
 ```sh
 composer install --working-dir=reference --no-interaction
-cargo build --locked --bin price
+cargo build --locked --bins
 python3 scripts/differential.py
+python3 scripts/context_differential.py
 ```
 
 The reference directly instantiates Shopware 6.7.14.2 original PHP classes.
 2,144 deterministic edge/random cases compare all returned price/tax/metadata
-fields, with 1e-8 representation tolerance. No PHP rewrite is used as an oracle.
+fields, with 1e-8 representation tolerance. Another 1,446 cases exercise original
+ContextFactory language chains, context-rule priority, tier selection and quantity
+normalization through Reflection, real DBAL and upstream collections/entities.
+No PHP rewrite of these selectors is used as an oracle. These are bounded unit
+ports, not the complete context factory, DAL or cart processor.
 
 `python3 scripts/restart.py snapshot` / `verify` checks persistence across
 server/database restart. See [verification](docs/verification.json) for the
 actual tested scope. Existing small-catalog load measurements are historical
-v0.1 diagnostics, not v0.2 or production capacity claims.
+v0.1 diagnostics, not v0.3 or production capacity claims.
 
 ## Architecture
 
@@ -197,7 +237,7 @@ incremental ports. Existing differential, HTTP, protocol and contention checks
 remain reusable as more of the kernel is migrated.
 
 This is **partial Shopware behavior/API coverage**. It does not yet port the
-complete collector/processor/rule engine, variants/context inheritance,
+complete collector/processor/rule engine, variants/full context inheritance,
 shipping, currency conversion, DAL/extensions or commercial B2B modules.
 Native prototype envelopes are not a drop-in replacement for Shopware Admin
 or its SDK. Payments are simulated; MCP/UCP conformance and production

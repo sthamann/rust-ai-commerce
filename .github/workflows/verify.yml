@@ -20,17 +20,18 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: curl, dom, fileinfo, gd, intl, mbstring, pdo_mysql, sodium, zip
+          extensions: curl, dom, fileinfo, gd, intl, mbstring, pdo_mysql, pdo_sqlite, sodium, zip
           tools: composer:v2
       - run: cargo fmt --check && cargo test --locked && cargo build --locked
       - run: npm ci && npm run build
         working-directory: frontend
       - run: composer install --working-dir=reference --no-interaction --prefer-dist
-      - run: python3 scripts/differential.py
+      - run: python3 scripts/differential.py && python3 scripts/context_differential.py
       - name: Real database integration
         run: |
           target/debug/rust-ai-commerce > /tmp/commerce.log 2>&1 &
           for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8787/health && break || sleep 1; done
+          python3 scripts/studio.py
           python3 scripts/integration.py
           python3 scripts/protocols.py
           python3 scripts/intelligence.py
