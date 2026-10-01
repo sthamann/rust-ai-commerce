@@ -1,0 +1,4 @@
+{"name":"rust-ai-commerce/shopware-reference","description":"Independent original Shopware quantity calculator reference","license":"MIT","require":{"php":"^8.2","shopware/core":"6.7.14.2"},"config":{"allow-plugins":false,
+        "platform": {
+            "php": "8.4.0"
+        }}}
