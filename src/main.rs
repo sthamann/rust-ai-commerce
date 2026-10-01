@@ -934,6 +934,20 @@ async fn activate_extension(
     ))
 }
 
+async fn extension_state(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+    let t = merchant(&a, &h)?;
+    let r = sqlx::query("SELECT digest,revision FROM extensions WHERE tenant=$1")
+        .bind(t)
+        .fetch_optional(&a.db)
+        .await?;
+    Ok(Json(match r {
+        Some(r) => {
+            json!({"digest":r.get::<String,_>("digest"),"revision":r.get::<i64,_>("revision"),"source":"persisted"})
+        }
+        None => json!({"source":"built-in"}),
+    }))
+}
+
 const CAPABILITIES: &[(&str, &str)] = &[
     ("catalog.search", "Read catalog"),
     ("cart.create", "Create customer cart"),
@@ -1119,6 +1133,15 @@ fn ucp_document(c: &StoredCart, q: &Value) -> Value {
         "completed"
     } else if c.status == "cancelled" {
         "canceled"
+    } else if c
+        .data
+        .buyer
+        .as_ref()
+        .and_then(|b| b["email"].as_str())
+        .is_some_and(|s| s.contains('@'))
+        && !c.data.items.is_empty()
+    {
+        "ready_for_complete"
     } else {
         "incomplete"
     };
@@ -1183,7 +1206,17 @@ async fn ucp_complete(
     h: HeaderMap,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
-    ucp_load(&a, &h, &id).await?;
+    let current = ucp_load(&a, &h, &id).await?;
+    if current.status == "open"
+        && current
+            .data
+            .buyer
+            .as_ref()
+            .and_then(|b| b["email"].as_str())
+            .is_none_or(|s| !s.contains('@'))
+    {
+        return Err(conflict("Buyer email is required before demo completion"));
+    }
     checkout(
         &a,
         &h,
@@ -1372,6 +1405,7 @@ async fn main() {
         .route("/api/concierge", post(concierge))
         .route("/api/runtime", get(runtime))
         .route("/api/extensions/activate", post(activate_extension))
+        .route("/api/extensions", get(extension_state))
         .route("/mcp", post(mcp))
         .route("/.well-known/ucp", get(ucp_profile))
         .route("/ucp/v1/checkout-sessions", post(ucp_create))

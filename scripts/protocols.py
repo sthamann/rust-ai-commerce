@@ -13,6 +13,8 @@ u=call('/ucp/v1/checkout-sessions',{'line_items':[{'item':{'id':'notebook'},'qua
 h={'sw-context-token':u['context_token']};path='/ucp/v1/checkout-sessions/'+u['id'];assert u['line_items'][0]['item']['price']==1250
 assert call(path,h=h)['buyer']['email']=='demo@example.test';ok('UCP create/get, currency minor units and context authorization')
 u=call(path,{'line_items':[{'item':{'id':'mug'},'quantity':1}]},h,'PUT');assert len(u['line_items'])==1 and u['line_items'][0]['item']['id']=='mug' and 'buyer' not in u;ok('UCP PUT replaces items and buyer atomically')
+call(path+'/complete',{}, {**h,'Idempotency-Key':'missing-'+uuid.uuid4().hex},expected=409);ok('UCP incomplete checkout cannot complete')
+u=call(path,{'line_items':[{'item':{'id':'mug'},'quantity':1}],'buyer':{'email':'demo@example.test'}},h,'PUT');assert u['status']=='ready_for_complete'
 u=call(path+'/complete',{}, {**h,'Idempotency-Key':'ucp-'+uuid.uuid4().hex});assert u['status']=='completed' and u['order']['id'];ok('UCP completes same durable checkout')
 call(path+'/cancel',{},h,expected=409);ok('UCP cannot cancel completed order')
 v=call('/mcp',{'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-11-25'}});assert v['result']['protocolVersion']=='2025-11-25';ok('MCP compatibility handshake')

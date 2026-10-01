@@ -1,0 +1,128 @@
+{
+  "date": "2026-10-01",
+  "baselineCommit": "015f64d",
+  "reference": {
+    "shopware": "6.7.14.2",
+    "phpLocal": "8.5.6",
+    "phpCI": "8.4"
+  },
+  "unitTests": {
+    "passed": 6,
+    "areas": [
+      "decimal ties",
+      "unit-before-total",
+      "negative tax string-cast regression",
+      "Wasm execution",
+      "fuel exhaustion",
+      "memory limit"
+    ]
+  },
+  "differential": {
+    "reference": "original shopware/core 6.7.14.2",
+    "cases": 1264,
+    "failures": 0,
+    "examples": [],
+    "scope": "Single tax rule, gross/net quantity, calculated flag, cash/math rounding. Excludes lists/reference/regulation prices, tax-free and multi-rule allocation."
+  },
+  "http": {
+    "passed": 17,
+    "checks": [
+      "Rust server connected to PostgreSQL",
+      "catalog reads seeded products",
+      "B2C cart uses server price and tax",
+      "stale cart revision rejected",
+      "customer context cannot cross tenants",
+      "eight concurrent retries create exactly one order",
+      "completed cart cannot mutate",
+      "same idempotency key cannot purchase another cart",
+      "merchant operations require credential",
+      "B2B auth rotates context; quantity tier and net tax calculation",
+      "real Wasm purchase limit blocks company checkout",
+      "stock overflow rejected by checkout",
+      "MCP exposes authorized typed capabilities",
+      "MCP consumes same persisted cart",
+      "UCP checkout uses integer minor units",
+      "checkout produces persistent policy reward",
+      "merchant reads real persisted order"
+    ]
+  },
+  "protocols": {
+    "passed": 11,
+    "checks": [
+      "UCP create/get, currency minor units and context authorization",
+      "UCP PUT replaces items and buyer atomically",
+      "UCP incomplete checkout cannot complete",
+      "UCP completes same durable checkout",
+      "UCP cannot cancel completed order",
+      "MCP compatibility handshake",
+      "MCP rejects foreign browser origins",
+      "Admin catalog endpoint requires merchant authority",
+      "Wasm source compiled at activation and persisted",
+      "extension host imports rejected",
+      "durable outbox has a working consumer"
+    ],
+    "modelTested": false
+  },
+  "model": {
+    "provider": "local Ollama",
+    "model": "qwen2.5-coder:32b",
+    "actualInference": true,
+    "merchantPlanApprovalAndCatalogMutation": true,
+    "customerCatalogRecommendation": true,
+    "checks": [
+      "real LLM produces correct typed merchant plan",
+      "explicit approval applies plan once",
+      "agent change affects customer catalog",
+      "real customer inference selects existing product"
+    ]
+  },
+  "contention": {
+    "tenant": "workshop",
+    "initialStock": 10,
+    "concurrentPurchases": 15,
+    "ordersPlaced": 10,
+    "rejectedForStock": 5,
+    "finalStock": 0,
+    "oversold": false,
+    "payment": "simulated"
+  },
+  "restart": {
+    "serverAndDatabaseRestart": "passed",
+    "catalogProducts": 6,
+    "orders": 7,
+    "storedTasks": 3,
+    "policyCountersIdentical": true,
+    "eventProjectionIdentical": true,
+    "extensionVersionIdentical": true,
+    "stateDigest": "793d64fd063c7d0c9b780ff2bc16855176712795982877c4b299b5a53692dda9"
+  },
+  "load": {
+    "route": "POST /store-api/product",
+    "requests": 500,
+    "concurrency": 16,
+    "seconds": 0.19,
+    "requestsPerSecond": 2630.8,
+    "p50Ms": 3.43,
+    "p95Ms": 6.5,
+    "p99Ms": 77.32,
+    "environment": "localhost, six products, debug binary, PostgreSQL Docker; no external network, no LLM",
+    "comparison": "No Shopware baseline; not a production capacity claim"
+  },
+  "browser": {
+    "B2CPurchase": true,
+    "merchantPlanPreviewApprovalAndCatalog": true,
+    "storefrontScreenshot": "assets/atelier.jpg"
+  },
+  "ciBaseline": {
+    "status": "success",
+    "url": "https://github.com/sthamann/rust-ai-commerce/actions/runs/36862710103"
+  },
+  "limits": [
+    "Simulated payment, no real charge",
+    "Single tax-rule port, not complete Shopware parity",
+    "Prototype API envelopes, not drop-in SDK compatibility",
+    "Partial MCP/UCP bindings, no full conformance",
+    "Persisted policy, no online LLM weight training or economic uplift proof",
+    "Local small-catalog load, no PHP or production baseline"
+  ]
+}

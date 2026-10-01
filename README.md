@@ -9,6 +9,10 @@ storefront, a merchant agent using real local LLM inference, MCP tools, a UCP
 checkout adapter, and Wasmtime extension execution. Orders and stock changes
 are real database transactions. **Payment is explicitly simulated.**
 
+![Atelier storefront](docs/assets/atelier.jpg)
+
+[Verified scenarios and measured scope](docs/verification.json) · [CI](https://github.com/sthamann/rust-ai-commerce/actions)
+
 ## Run locally
 
 Requirements: Rust stable (tested with 1.98.1), Node 22+, Docker Compose,
@@ -72,6 +76,8 @@ python3 scripts/integration.py
 python3 scripts/protocols.py
 TEST_MODEL=1 python3 scripts/protocols.py
 python3 scripts/load.py
+# Optional: consumes the separate workshop tenant's remaining desk stock
+python3 scripts/contention.py
 ```
 
 HTTP verification writes synthetic carts/orders into the demo database. The
@@ -84,6 +90,11 @@ composer install --working-dir=reference --no-interaction
 cargo build --locked --bin price
 python3 scripts/differential.py
 ```
+
+To check persistence, run `python3 scripts/restart.py snapshot`, stop the
+application, restart the dedicated PostgreSQL container, start the application
+again, then run `python3 scripts/restart.py verify`. It compares catalog, orders,
+stored plans, learning counters, event projections and extension versions.
 
 Alternatively point `SHOPWARE_AUTOLOAD` at an existing installation's
 `vendor/autoload.php`. Only pure calculator objects are instantiated; its
@@ -135,8 +146,8 @@ inside protocol/UI adapters.
 - UCP uses the `2026-08-25` checkout routes, discovery, minor units, replacement
   updates and cancellation. It adds a demo `context_token` bound to the same
   customer cart. It does **not** yet implement profile negotiation, signatures,
-  external payment handlers, fulfillment, AP2 or complete conformance. Complete
-  currently exercises simulated payment regardless of buyer completeness.
+  external payment handlers, fulfillment, AP2 or complete conformance. Demo completion requires a buyer email and exercises simulated payment;
+  external payment negotiation is still missing.
 - Wasm supports one typed company approval hook. Arbitrary Shopware PHP
   plugins cannot be translated automatically into equivalent Rust/Wasm; their
   service/container/DAL dependencies must be extracted and tested first.
