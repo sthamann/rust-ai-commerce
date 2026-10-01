@@ -26,3 +26,19 @@
 - Learning counters are demo telemetry; no personal customer data is published.
   A real deployment needs consent, deletion/export, attribution and abuse
   protection before enabling behavior tracking.
+
+- AGE Cypher uses static templates and bound parameters; the model cannot issue
+  arbitrary graph queries. Graph nodes, edges and semantic SQL reads filter the
+  tenant on all relevant endpoints. Application boundaries are tested; database
+  row-level security and separate production identities are still future work.
+- OpenAI/Anthropic credentials are server environment settings. Only configured
+  booleans and model IDs reach the browser. Provider URLs are server settings,
+  never arbitrary URLs supplied by a merchant request. Cloud selection sends
+  shop context and conversation to that provider; the UI discloses this.
+- Conversation reads, provider settings, vector-digest status and reindexing
+  require the merchant credential. Read-only catalog graph/search use the
+  prototype's public storefront tenant scope. Error responses omit provider
+  bodies and keys, and failed inference cannot bypass approval.
+- The MCP stdio bridge inherits only explicitly configured credentials. Remote
+  deployment requires a production authorization gateway, TLS, tenant identity
+  and model/search quotas; no public tunnel is enabled by this implementation.

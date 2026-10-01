@@ -3,22 +3,13 @@ on: [push, pull_request]
 jobs:
   verify:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:17-alpine
-        env:
-          POSTGRES_USER: commerce
-          POSTGRES_PASSWORD: ci-only-password
-          POSTGRES_DB: commerce
-        ports: ["15487:5432"]
-        options: >-
-          --health-cmd "pg_isready -U commerce" --health-interval 2s
-          --health-timeout 3s --health-retries 30
     env:
       DATABASE_URL: postgres://commerce:ci-only-password@127.0.0.1:15487/commerce
       MERCHANT_TOKEN: ci-only-merchant-credential-not-for-deployment
     steps:
       - uses: actions/checkout@v4
+      - name: Build open-source graph/vector database
+        run: DB_PASSWORD=ci-only-password docker compose -p rust-ai-commerce up -d --build --wait postgres
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - uses: actions/setup-node@v4
@@ -42,4 +33,6 @@ jobs:
           for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8787/health && break || sleep 1; done
           python3 scripts/integration.py
           python3 scripts/protocols.py
+          python3 scripts/intelligence.py
+          python3 scripts/providers.py
       # Real model checks are opt-in locally: CI does not replace them with a fake.

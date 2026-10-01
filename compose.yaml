@@ -1,6 +1,7 @@
 services:
   postgres:
-    image: postgres:17-alpine
+    build: ./database
+    image: rust-ai-commerce-db:local
     environment:
       POSTGRES_USER: commerce
       POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
@@ -16,4 +17,3 @@ services:
       retries: 30
 volumes:
   commerce-data:
-

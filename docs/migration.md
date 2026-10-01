@@ -6,7 +6,7 @@ reference gate; a passing old gate must not silently prove a newer version.
 
 | Unit | Current state | Next acceptance question |
 |---|---|---|
-| Quantity price | Partial behavioral port; independent PHP gate | Add reference/list/regulation price and multi-tax allocation |
+| Quantity price | Partial behavioral port; independent PHP gate | Resolve original sales-channel tax state and currency context |
 | Product | Durable synthetic catalog | Import UUIDs, variants, translations and inherited prices with exact response contracts |
 | Customer context | Demo guest/company carts with token rotation | Real account lifecycle, sales-channel context and customer group matching |
 | Cart | Native item cart and optimistic revisions | Original collector/processor order, promotions, errors and iterative rule matching |
@@ -16,7 +16,7 @@ reference gate; a passing old gate must not silently prove a newer version.
 | Extensions | Pure Wasm company approval hook | Capability-bound migration of one actual extension and its dependencies |
 | Commercial B2B | Synthetic group pricing demonstration | Licensed source, entitlement and a separately agreed parity contract |
 
-## First verified port
+## Initial v0.1 pricing slice (expanded below)
 
 `reference/price.php` loads the original Shopware classes through Composer:
 
@@ -28,7 +28,7 @@ reference gate; a passing old gate must not silently prove a newer version.
 - `Checkout/Cart/Price/Struct/QuantityPriceDefinition.php`
 - `Framework/Util/FloatComparator.php`
 
-Rust reproduces one tax rule at 100% allocation, unit rounding before total,
+The initial v0.1 port reproduced one tax rule at 100% allocation, unit rounding before total,
 gross/net and calculated flags, cash interval, net rounding option and the
 default `precision=14` tax cast. Differential cases include decimal ties,
 both sides of ties, negative amounts, quantity multiplication, 0/7/19/20% tax,
@@ -57,3 +57,14 @@ API conformance will need sanitized requests against a seeded original shop
 and Rust: compare status/headers/body **and state changes**. Unknown routes
 must remain explicitly unsupported. No current test certifies full Store API,
 Admin API, Shopware Administration or plugin compatibility.
+
+## v0.2 pricing port
+
+The same original PHP reference now covers 2,144 cases and every returned
+field: tax allocation (including duplicate-rate collection replacement and
+empty rules), list-price discounts, regulation price and reference units.
+The expanded Rust calculator is used by the real cart, checkout, MCP and UCP
+paths. Synthetic lamp/list and notebook/reference metadata is initialized once.
+This does not port the complete cart collector/processor or resolve a sales
+channel's tax state. Rules, variants/inheritance, shipping and payment-provider
+flows still need their own original-reference ports.

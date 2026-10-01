@@ -1,8 +1,90 @@
 {
-  "reference": {"package":"shopware/core","version":"6.7.14.2","commit":"de074a584d77d8abb09ddb21d8799f083a61a3da"},
+  "reference": {
+    "package": "shopware/core",
+    "version": "6.7.14.2",
+    "commit": "de074a584d77d8abb09ddb21d8799f083a61a3da"
+  },
   "units": [
-    {"id":"quantity-price","status":"partial-port","source":["Checkout/Cart/Price/GrossPriceCalculator.php","Checkout/Cart/Price/NetPriceCalculator.php","Checkout/Cart/Tax/TaxCalculator.php","Checkout/Cart/Price/CashRounding.php","Framework/Util/FloatComparator.php"],"gates":[["cargo","test","--locked"],["python3","scripts/differential.py"]],"remaining":["multiple-tax-rules","reference-price","list-price","regulation-price","tax-free"]},
-    {"id":"purchase-path","status":"native-prototype","source":["Checkout/Cart/Processor.php","Checkout/Cart/CartRuleLoader.php","Checkout/Cart/SalesChannel/CartOrderRoute.php","Checkout/Cart/Order/OrderPersister.php"],"gates":[["python3","scripts/integration.py"],["python3","scripts/protocols.py"]],"remaining":["original-cart-pipeline","exact-api-contracts","payment-provider","delivery-reservations"]},
-    {"id":"variants-and-context","status":"next","source":["Content/Product/SalesChannel/Detail/ProductDetailRoute.php","System/SalesChannel/Context/SalesChannelContextFactory.php"],"gates":[],"remaining":["original-reference-fixtures","rust-port","response-and-state-contract"]}
+    {
+      "id": "quantity-price",
+      "status": "partial-port",
+      "source": [
+        "Checkout/Cart/Price/GrossPriceCalculator.php",
+        "Checkout/Cart/Price/NetPriceCalculator.php",
+        "Checkout/Cart/Tax/TaxCalculator.php",
+        "Checkout/Cart/Price/CashRounding.php",
+        "Framework/Util/FloatComparator.php",
+        "Checkout/Cart/Price/Struct/ListPrice.php",
+        "Checkout/Cart/Price/Struct/ReferencePrice.php",
+        "Checkout/Cart/Price/Struct/ReferencePriceDefinition.php",
+        "Checkout/Cart/Price/Struct/RegulationPrice.php",
+        "Checkout/Cart/Tax/Struct/CalculatedTaxCollection.php",
+        "Checkout/Cart/Tax/Struct/TaxRuleCollection.php"
+      ],
+      "gates": [
+        [
+          "cargo",
+          "test",
+          "--locked"
+        ],
+        [
+          "python3",
+          "scripts/differential.py"
+        ]
+      ],
+      "remaining": [
+        "sales-channel-tax-state-resolution",
+        "currency-conversion",
+        "full-cart-processor"
+      ],
+      "implemented": [
+        "multiple-tax-rules",
+        "duplicate-rate-replacement",
+        "empty-tax-rules",
+        "reference-price",
+        "list-price",
+        "regulation-price"
+      ]
+    },
+    {
+      "id": "purchase-path",
+      "status": "native-prototype",
+      "source": [
+        "Checkout/Cart/Processor.php",
+        "Checkout/Cart/CartRuleLoader.php",
+        "Checkout/Cart/SalesChannel/CartOrderRoute.php",
+        "Checkout/Cart/Order/OrderPersister.php"
+      ],
+      "gates": [
+        [
+          "python3",
+          "scripts/integration.py"
+        ],
+        [
+          "python3",
+          "scripts/protocols.py"
+        ]
+      ],
+      "remaining": [
+        "original-cart-pipeline",
+        "exact-api-contracts",
+        "payment-provider",
+        "delivery-reservations"
+      ]
+    },
+    {
+      "id": "variants-and-context",
+      "status": "next",
+      "source": [
+        "Content/Product/SalesChannel/Detail/ProductDetailRoute.php",
+        "System/SalesChannel/Context/SalesChannelContextFactory.php"
+      ],
+      "gates": [],
+      "remaining": [
+        "original-reference-fixtures",
+        "rust-port",
+        "response-and-state-contract"
+      ]
+    }
   ]
 }

@@ -36,3 +36,13 @@ All catalog products, accounts and vector illustrations are synthetic demo
 content authored for this prototype. No merchant/customer data is included.
 Rust/npm dependencies retain their respective licenses. Model weights and
 their licenses must be obtained separately through the chosen model provider.
+
+## Open database stack
+
+- PostgreSQL: PostgreSQL License, https://www.postgresql.org/about/licence/
+- Apache AGE: Apache License 2.0, https://github.com/apache/age/blob/PG17/LICENSE
+- pgvector: PostgreSQL License, https://github.com/pgvector/pgvector/blob/v0.8.6/LICENSE
+
+The Dockerfile builds AGE at commit `502f2c1fa32a04497dc286237186e58ac4956a53`
+and pgvector at tag `v0.8.6`. No BSL/SSPL database or proprietary edition is
+required. Model-provider APIs remain optional external services.

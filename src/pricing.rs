@@ -17,6 +17,69 @@ pub struct PriceInput {
     pub interval: f64,
     #[serde(default)]
     pub round_for_net: bool,
+    #[serde(default)]
+    pub tax_rules: Option<Vec<TaxRule>>,
+    #[serde(default)]
+    pub list_price: Option<f64>,
+    #[serde(default)]
+    pub regulation_price: Option<f64>,
+    #[serde(default)]
+    pub reference: Option<ReferenceDefinition>,
+}
+impl Default for PriceInput {
+    fn default() -> Self {
+        Self {
+            price: 0.,
+            quantity: 1,
+            tax_rate: 19.,
+            gross: true,
+            calculated: true,
+            decimals: 2,
+            interval: 0.01,
+            round_for_net: false,
+            tax_rules: None,
+            list_price: None,
+            regulation_price: None,
+            reference: None,
+        }
+    }
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct TaxRule {
+    pub tax_rate: f64,
+    pub percentage: f64,
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct ReferenceDefinition {
+    pub purchase_unit: f64,
+    pub reference_unit: f64,
+    pub unit_name: String,
+}
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
+pub struct CalculatedTax {
+    pub tax: f64,
+    pub tax_rate: f64,
+    pub price: f64,
+}
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
+pub struct ListPrice {
+    pub price: f64,
+    pub discount: f64,
+    pub percentage: f64,
+}
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
+pub struct ReferencePrice {
+    pub price: f64,
+    pub purchase_unit: f64,
+    pub reference_unit: f64,
+    pub unit_name: String,
+}
+fn cast(x: f64) -> f64 {
+    format!("{x:.13e}").parse().unwrap()
+}
+fn sum(values: impl Iterator<Item = f64>) -> f64 {
+    let total = cast(values.sum());
+    if total.abs() < 1e-8 { 0. } else { total }
 }
 fn yes() -> bool {
     true
@@ -34,6 +97,10 @@ pub struct Price {
     pub total_price: f64,
     pub tax: f64,
     pub quantity: u32,
+    pub calculated_taxes: Vec<CalculatedTax>,
+    pub list_price: Option<ListPrice>,
+    pub regulation_price: Option<f64>,
+    pub reference_price: Option<ReferencePrice>,
 }
 
 // Compare the original value to a decimal midpoint, rather than rounding a
@@ -59,10 +126,25 @@ pub fn cash_round(value: f64, decimals: i32, interval: f64) -> f64 {
     math_round(rounded * multiplier, 0) / multiplier
 }
 pub fn calculate(i: &PriceInput) -> Price {
-    // Shopware FloatComparator::cast uses PHP's default precision=14.
-    let cast = |x: f64| format!("{x:.13e}").parse::<f64>().unwrap();
-    let input = cast(i.price);
-    let rate = cast(i.tax_rate);
+    // The original collections replace duplicate rates in their original slot.
+    let mut rules: Vec<TaxRule> = vec![];
+    let input_rules = i.tax_rules.clone().unwrap_or_else(|| {
+        vec![TaxRule {
+            tax_rate: i.tax_rate,
+            percentage: 100.,
+        }]
+    });
+    for r in input_rules {
+        let r = TaxRule {
+            tax_rate: cast(r.tax_rate),
+            percentage: cast(r.percentage),
+        };
+        if let Some(old) = rules.iter_mut().find(|old| old.tax_rate == r.tax_rate) {
+            *old = r;
+        } else {
+            rules.push(r);
+        }
+    }
     let round = |x| {
         if i.gross || i.round_for_net {
             cash_round(x, i.decimals, i.interval)
@@ -70,23 +152,77 @@ pub fn calculate(i: &PriceInput) -> Price {
             math_round(x, i.decimals)
         }
     };
-    let raw = if i.gross && !i.calculated {
-        input + cast((input / 100.0 * 100.0) * (rate / 100.0))
+    let net_tax =
+        |price: f64, r: &TaxRule| cast((price / 100. * r.percentage) * (r.tax_rate / 100.));
+    let gross = |price: f64| price + sum(rules.iter().map(|r| net_tax(price, r)));
+    let input = cast(i.price);
+    let unit = round(if i.gross && !i.calculated {
+        gross(input)
     } else {
         input
-    };
-    let unit = round(raw);
-    let allocated = unit / 100.0 * 100.0;
-    let unit_tax = cast(if i.gross {
-        allocated / ((100.0 + rate) / 100.0) * (rate / 100.0)
-    } else {
-        allocated * (rate / 100.0)
     });
+    let calculated_taxes = rules
+        .iter()
+        .map(|r| {
+            let allocated = unit / 100. * r.percentage;
+            let tax = cast(if i.gross {
+                allocated / ((100. + r.tax_rate) / 100.) * (r.tax_rate / 100.)
+            } else {
+                allocated * (r.tax_rate / 100.)
+            });
+            CalculatedTax {
+                tax: cast(math_round(tax * i.quantity as f64, i.decimals)),
+                tax_rate: r.tax_rate,
+                price: cast(math_round(cast(allocated) * i.quantity as f64, i.decimals)),
+            }
+        })
+        .collect::<Vec<_>>();
+    let list_price = i
+        .list_price
+        .filter(|p| *p != 0.)
+        .map(cast)
+        .map(|p| {
+            round(if i.gross && !i.calculated {
+                gross(p)
+            } else {
+                p
+            })
+        })
+        .filter(|p| *p > 0.)
+        .map(|p| ListPrice {
+            price: cast(p),
+            discount: cast(-(p - unit)),
+            percentage: cast(math_round(100. - unit / p * 100., 2)),
+        });
+    let regulation_price = i.regulation_price.filter(|p| *p != 0.).map(cast).map(|p| {
+        cast(round(if i.gross && !i.calculated {
+            gross(p)
+        } else {
+            p
+        }))
+    });
+    let reference_price = i
+        .reference
+        .as_ref()
+        .filter(|r| r.purchase_unit > 0. && r.reference_unit > 0.)
+        .map(|r| ReferencePrice {
+            price: cast(math_round(
+                unit / cast(r.purchase_unit) * cast(r.reference_unit),
+                i.decimals,
+            )),
+            purchase_unit: cast(r.purchase_unit),
+            reference_unit: cast(r.reference_unit),
+            unit_name: r.unit_name.clone(),
+        });
     Price {
-        unit_price: unit,
-        total_price: round(unit * i.quantity as f64),
-        tax: math_round(unit_tax * i.quantity as f64, i.decimals),
+        unit_price: cast(unit),
+        total_price: cast(round(unit * i.quantity as f64)),
+        tax: sum(calculated_taxes.iter().map(|t| t.tax)),
         quantity: i.quantity,
+        calculated_taxes,
+        list_price,
+        regulation_price,
+        reference_price,
     }
 }
 #[cfg(test)]
@@ -110,6 +246,7 @@ mod tests {
                 decimals: 3,
                 interval: 0.01,
                 round_for_net: false,
+                ..PriceInput::default()
             });
             assert_eq!(p.tax, tax);
         }
@@ -125,6 +262,7 @@ mod tests {
             decimals: 2,
             interval: 0.01,
             round_for_net: false,
+            ..PriceInput::default()
         });
         assert_eq!(p.total_price, 60.);
         assert_eq!(p.tax, 9.58);

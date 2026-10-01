@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
+import Merchant from "./Merchant";
 type Product = {
   id: string;
   name: string;
@@ -9,6 +10,8 @@ type Product = {
   price: number;
   stock: number;
   revision: number;
+  tax_rate: number;
+  list_price?: number;
 };
 type Cart = {
   token: string;
@@ -43,24 +46,6 @@ type Experience = {
   revision: number;
   blocks: { type: string }[];
   propensity: number;
-};
-type Task = {
-  taskId: string;
-  preview: {
-    summary?: string;
-    model: string;
-    proposal: {
-      summary: string;
-      changes: {
-        product_id: string;
-        price?: number;
-        stock?: number;
-        expected_revision: number;
-      }[];
-      experience?: { mode: string; headline: string };
-    };
-  };
-  approvalRequired: boolean;
 };
 const session = localStorage.getItem("rac-session") || crypto.randomUUID();
 localStorage.setItem("rac-session", session);
@@ -147,14 +132,7 @@ function App() {
     [viewed, setViewed] = useState<Record<string, number>>({}),
     [showCart, setShowCart] = useState(false),
     [business, setBusiness] = useState(false),
-    [admin, setAdmin] = useState(location.hash === "#merchant"),
-    [merchantToken, setMerchantToken] = useState(""),
-    [instruction, setInstruction] = useState(
-      "Setze den Bruttopreis der Arc Desk Light auf 74,90 EUR. Ändere sonst nichts.",
-    ),
-    [task, setTask] = useState<Task>(),
-    [log, setLog] = useState<unknown[]>([]),
-    [policy, setPolicy] = useState<unknown>();
+    [admin, setAdmin] = useState(location.hash === "#merchant");
   const [wish, setWish] = useState(""),
     [advice, setAdvice] = useState<{
       explanation: string;
@@ -163,7 +141,6 @@ function App() {
     }>();
   const headers = (): Record<string, string> =>
     cart ? { "sw-context-token": cart.token } : {};
-  const auth = () => ({ Authorization: `Bearer ${merchantToken}` });
   const refreshProducts = async () =>
     setProducts((await api("/store-api/product", {})).elements);
   useEffect(() => {
@@ -327,135 +304,12 @@ function App() {
         </div>
       )}
       {admin ? (
-        <main className="merchant">
-          <div className="eyebrow">OPERATE BY INTENT</div>
-          <h1>
-            A conversation.
-            <br />A reviewable change.
-          </h1>
-          <p>
-            Der Agent plant mit dem lokalen Sprachmodell. Der Commerce-Kern
-            prüft Rechte, Werte und Revisionen. Du gibst die konkrete Änderung
-            frei.
-          </p>
-          <label>
-            Merchant credential
-            <input
-              type="password"
-              value={merchantToken}
-              onChange={(e) => setMerchantToken(e.target.value)}
-              autoComplete="off"
-              placeholder="Token aus deiner lokalen .env"
-            />
-          </label>
-          <label>
-            Dein Auftrag
-            <textarea
-              value={instruction}
-              onChange={(e) => setInstruction(e.target.value)}
-              rows={4}
-            />
-          </label>
-          <div className="row">
-            <button
-              disabled={busy || !merchantToken}
-              className="primary"
-              onClick={() =>
-                run(async () =>
-                  setTask(
-                    await api("/api/agent/plan", { instruction }, auth()),
-                  ),
-                )
-              }
-            >
-              {busy ? "Modell arbeitet …" : "Änderung planen ↗"}
-            </button>
-            <button
-              disabled={busy || !merchantToken}
-              onClick={() =>
-                run(async () => {
-                  setLog(
-                    (await api("/api/agent/tasks", undefined, auth())).tasks,
-                  );
-                  setPolicy(await api("/api/policy", undefined, auth()));
-                })
-              }
-            >
-              Gespeicherte Vorgänge laden
-            </button>
-          </div>
-          {task && (
-            <section className="proposal">
-              <div className="eyebrow">
-                ECHTE MODELLINFERENZ · {task.preview.model}
-              </div>
-              <h2>{task.preview.proposal.summary}</h2>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Produkt</th>
-                    <th>Neuer Bruttopreis</th>
-                    <th>Bestand</th>
-                    <th>Revision</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {task.preview.proposal.changes.map((c) => (
-                    <tr key={c.product_id}>
-                      <td>{c.product_id}</td>
-                      <td>{c.price === undefined ? "—" : money(c.price)}</td>
-                      <td>{c.stock ?? "—"}</td>
-                      <td>{c.expected_revision}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {task.preview.proposal.experience && (
-                <p>
-                  Experience: {task.preview.proposal.experience.mode} ·{" "}
-                  {task.preview.proposal.experience.headline}
-                </p>
-              )}
-              <button
-                disabled={busy}
-                className="primary"
-                onClick={() =>
-                  run(async () => {
-                    const result = await api(
-                      `/api/agent/tasks/${task.taskId}/apply`,
-                      { approve: true },
-                      auth(),
-                    );
-                    setLog((old) => [result, ...old]);
-                    setTask(undefined);
-                    await refreshProducts();
-                    setExp(await api("/api/experience", { session }));
-                  })
-                }
-              >
-                Diese Änderung freigeben
-              </button>
-            </section>
-          )}
-          {log.length > 0 && (
-            <details open>
-              <summary>Gespeicherte Ausführung</summary>
-              <pre>{JSON.stringify(log, null, 2)}</pre>
-            </details>
-          )}
-          {policy !== undefined && (
-            <details>
-              <summary>Persistierte Lernstatistik</summary>
-              <pre>{JSON.stringify(policy, null, 2)}</pre>
-            </details>
-          )}
-          <div className="protocols">
-            <a href="/.well-known/ucp">UCP discovery</a>
-            <a href="/api/capabilities">Capabilities</a>
-            <a href="/health">Runtime</a>
-            <span>MCP: POST /mcp</span>
-          </div>
-        </main>
+        <Merchant
+          onChanged={async () => {
+            await refreshProducts();
+            setExp(await api("/api/experience", { session }));
+          }}
+        />
       ) : (
         <main>
           <section className="hero">
@@ -485,7 +339,9 @@ function App() {
           </section>
           <section className="concierge">
             <div>
-              <div className="eyebrow">ASK ATELIER · REAL LOCAL MODEL</div>
+              <div className="eyebrow">
+                ASK ATELIER · CONNECTED SHOP KNOWLEDGE
+              </div>
               <p>Describe your space. We’ll find the objects that fit.</p>
             </div>
             <div className="wish">
@@ -587,9 +443,7 @@ function App() {
                     <strong>
                       {money(
                         business
-                          ? (p.price /
-                              (1 + (p.id === "notebook" ? 7 : 19) / 100)) *
-                              0.9
+                          ? (p.price / (1 + p.tax_rate / 100)) * 0.9
                           : p.price,
                       )}
                     </strong>
@@ -616,7 +470,7 @@ function App() {
             {list.length === 0 && <p>No matching objects.</p>}
           </section>
           <section className="footnote">
-            <span>RUST CORE / POSTGRESQL / AGENTIC OPERATIONS</span>
+            <span>RUST CORE / APACHE AGE / OPEN COMMERCE</span>
             <p>
               This is a real working prototype. Checkout uses simulated payment.
               <br />

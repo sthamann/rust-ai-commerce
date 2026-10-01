@@ -2,7 +2,7 @@
 
 ## One deployable core first
 
-Start with one Rust/Axum process and PostgreSQL. This is the smallest unit that
+Start with one Rust/Axum process and PostgreSQL 17 with Apache AGE and pgvector. This is the smallest unit that
 can prove checkout behavior, protocol reuse and tenant isolation together.
 Extract independently scalable processes only when measured contention or
 different operational requirements justify it: inference, search projections,
@@ -65,3 +65,44 @@ Primary protocol sources checked during implementation:
 - https://ucp.dev/2026-08-25/schemas/shopping/checkout.json
 - https://modelcontextprotocol.io/specification/2026-07-28/server/tools
 - https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
+
+## v0.2: one open data engine, three representations
+
+PostgreSQL owns orders, stock, revision checks, outbox, conversations and
+proposals. Apache AGE owns explicit Product/Need nodes and SERVES/PAIRS_WITH
+relationships. pgvector stores real 1,024-dimensional Qwen embeddings with
+model and document hashes. All three are in the same open database, backed by
+the existing volume. Startup migrations and initial graph construction are
+serialized with a database advisory lock.
+
+Graph queries are fixed code templates with bound agtype parameters. Product
+metadata updates join merchant approval's transaction. The seeded relations
+have curated-demo provenance; neither their presence nor embeddings imply
+learned causal knowledge. Search filters by tenant and model before exact
+ranking, then joins current price/stock/revision from the ledger. Unchanged
+documents reuse embeddings. No ANN index, graph sharding or million-product
+performance is claimed. A production system needs bounded graph neighborhoods,
+tenant partitioning and retrieval before model context construction; the
+six-product demo still passes the full bounded catalog to the planner.
+
+## v0.2: persisted conversations and provider boundaries
+
+The merchant chat reads current catalog, graph, experience state, recent
+conversation and verified simulated-order aggregates. Ollama (explicitly disabling optional thinking for bounded structured operations), OpenAI Responses
+and Anthropic Messages produce the same typed proposal. Optional cloud keys
+remain on the server; provider errors create explicit chat messages without
+executable proposals. There is no silent fallback.
+
+Conversation turns use a per-conversation advisory try-lock and retain the
+last 16 messages as model context. Inference holds a conversation transaction,
+not stock/product locks. It is an asynchronous HTTP request inside one process,
+not a durable worker; long-running jobs should move to a worker with bounded
+queues and cancellation before scaling. Approvals remain a separate short
+transaction. History reads join the actual task's applied flag so reloading
+cannot offer an already-applied change as pending.
+
+The MCP stdio bridge forwards to Rust's shared capabilities. Remote ChatGPT or
+Claude account registration, HTTPS deployment and OAuth remain deployment work;
+the prototype does not imply local endpoints are reachable from hosted clients.
+Cold restart checks include graph relations, exact stored vector digests,
+conversations and approval state, alongside the earlier ledger/policy checks.

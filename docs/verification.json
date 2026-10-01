@@ -1,31 +1,51 @@
 {
   "date": "2026-10-01",
-  "baselineCommit": "015f64d",
+  "version": "0.2.0",
+  "baselineCommit": "2e424a71ce47515b716d97e41d2d2bdcb03c76d8",
   "reference": {
     "shopware": "6.7.14.2",
     "phpLocal": "8.5.6",
     "phpCI": "8.4"
   },
+  "build": {
+    "rustFmt": true,
+    "clippyWarningsDenied": true,
+    "frontendTypecheckAndProductionBuild": true,
+    "frontendFormatting": true
+  },
   "unitTests": {
-    "passed": 6,
+    "passed": 8,
     "areas": [
       "decimal ties",
       "unit-before-total",
       "negative tax string-cast regression",
       "Wasm execution",
       "fuel exhaustion",
-      "memory limit"
+      "memory limit",
+      "native provider response parsing and truncation rejection",
+      "strict optional structured-output schema"
     ]
+  },
+  "database": {
+    "engine": "PostgreSQL 17 + Apache AGE + pgvector",
+    "licenseRequired": "none beyond open source licenses",
+    "ageCommit": "502f2c1fa32a04497dc286237186e58ac4956a53",
+    "pgvector": "0.8.6",
+    "actualCypher": true,
+    "actualStoredVectors": true,
+    "dimensions": 1024,
+    "demoTenants": 2,
+    "semanticProductsTested": 6,
+    "millionProductCapacityMeasured": false
   },
   "differential": {
     "reference": "original shopware/core 6.7.14.2",
-    "cases": 1264,
+    "cases": 2144,
     "failures": 0,
     "examples": [],
-    "scope": "Single tax rule, gross/net quantity, calculated flag, cash/math rounding. Excludes lists/reference/regulation prices, tax-free and multi-rule allocation."
+    "scope": "Gross/net quantity, empty/multiple/duplicate tax rules, calculated flag, cash/math rounding, list/regulation/reference prices. Excludes full cart processor, currency conversion and sales-channel tax-state resolution."
   },
   "http": {
-    "passed": 17,
     "checks": [
       "Rust server connected to PostgreSQL",
       "catalog reads seeded products",
@@ -44,10 +64,12 @@
       "UCP checkout uses integer minor units",
       "checkout produces persistent policy reward",
       "merchant reads real persisted order"
-    ]
+    ],
+    "passed": 17,
+    "payment": "simulated"
   },
   "protocols": {
-    "passed": 11,
+    "passed": 15,
     "checks": [
       "UCP create/get, currency minor units and context authorization",
       "UCP PUT replaces items and buyer atomically",
@@ -59,70 +81,118 @@
       "Admin catalog endpoint requires merchant authority",
       "Wasm source compiled at activation and persisted",
       "extension host imports rejected",
-      "durable outbox has a working consumer"
-    ],
-    "modelTested": false
-  },
-  "model": {
-    "provider": "local Ollama",
-    "model": "qwen2.5-coder:32b",
-    "actualInference": true,
-    "merchantPlanApprovalAndCatalogMutation": true,
-    "customerCatalogRecommendation": true,
-    "checks": [
+      "durable outbox has a working consumer",
       "real LLM produces correct typed merchant plan",
       "explicit approval applies plan once",
       "agent change affects customer catalog",
       "real customer inference selects existing product"
+    ],
+    "modelTested": true
+  },
+  "intelligence": {
+    "passed": 11,
+    "checks": [
+      "Actual Cypher graph supplies needs and complementary products",
+      "Graph parameters and tenant boundary reject query injection",
+      "Semantic index mutation requires merchant authority",
+      "Ported list/reference pricing is exercised by actual cart quote",
+      "Claude Desktop stdio bridge executes real Rust MCP graph tool",
+      "Real embedding inference stored in pgvector and reused for semantic retrieval",
+      "Unchanged semantic documents reuse persisted embeddings",
+      "Live local model produces grounded merchant-chat preview",
+      "Chat proposal does not change prices before approval",
+      "Chat approval affects live catalog and survives history reload",
+      "Semantic results hydrate current authoritative price after merchant change"
+    ],
+    "liveLocalModel": true,
+    "liveEmbedding": true
+  },
+  "providerContracts": {
+    "passed": 8,
+    "liveCloudInference": false,
+    "checks": [
+      "Provider configuration requires merchant authentication",
+      "Credentials never returned to frontend",
+      "OpenAI Responses adapter sends native strict schema and parses structured result",
+      "Cloud-derived preview uses real approval transaction and persists applied state",
+      "Claude Messages adapter preserves conversation context and ignores thinking blocks",
+      "Conversation history cannot cross tenant boundary",
+      "Incomplete OpenAI output creates explicit error without executable proposal",
+      "Cloud HTTP rejection has no silent local-model fallback"
     ]
   },
-  "contention": {
-    "tenant": "workshop",
-    "initialStock": 10,
-    "concurrentPurchases": 15,
-    "ordersPlaced": 10,
-    "rejectedForStock": 5,
-    "finalStock": 0,
-    "oversold": false,
-    "payment": "simulated"
+  "model": {
+    "provider": "local Ollama",
+    "model": "qwen3.6:35b",
+    "actualInference": true,
+    "optionalThinking": false,
+    "merchantChatPreviewApprovalAndCatalogMutation": true,
+    "customerCatalogRecommendation": true,
+    "embeddings": "qwen3-embedding:0.6b",
+    "liveCloudInference": false
+  },
+  "externalClients": {
+    "actualMCPStdioBridge": true,
+    "ClaudeDesktopAccountConfigured": false,
+    "ChatGPTAccountConnectorConfigured": false,
+    "productionOAuthImplemented": false
   },
   "restart": {
     "serverAndDatabaseRestart": "passed",
     "catalogProducts": 6,
-    "orders": 7,
-    "storedTasks": 3,
+    "orders": 13,
+    "storedTasks": 7,
     "policyCountersIdentical": true,
     "eventProjectionIdentical": true,
     "extensionVersionIdentical": true,
-    "stateDigest": "793d64fd063c7d0c9b780ff2bc16855176712795982877c4b299b5a53692dda9"
-  },
-  "load": {
-    "route": "POST /store-api/product",
-    "requests": 500,
-    "concurrency": 16,
-    "seconds": 0.19,
-    "requestsPerSecond": 2630.8,
-    "p50Ms": 3.43,
-    "p95Ms": 6.5,
-    "p99Ms": 77.32,
-    "environment": "localhost, six products, debug binary, PostgreSQL Docker; no external network, no LLM",
-    "comparison": "No Shopware baseline; not a production capacity claim"
+    "graphRelationsIdentical": true,
+    "semanticVectorsIdentical": true,
+    "indexedProducts": 6,
+    "conversationHistoriesIdentical": true,
+    "conversations": 3,
+    "stateDigest": "70e5c1966817f9e76b2a061fd5339be43ddba820a3c31ae3a674909ed07ae284"
   },
   "browser": {
-    "B2CPurchase": true,
+    "merchantChat": true,
+    "persistedConversationSelection": true,
     "merchantPlanPreviewApprovalAndCatalog": true,
-    "storefrontScreenshot": "assets/atelier.jpg"
+    "responsiveConversationSelector": true,
+    "screenshot": "assets/merchant-chat.jpg"
   },
-  "ciBaseline": {
-    "status": "success",
-    "url": "https://github.com/sthamann/rust-ai-commerce/actions/runs/36862710103"
+  "historicalV01": {
+    "contention": {
+      "tenant": "workshop",
+      "initialStock": 10,
+      "concurrentPurchases": 15,
+      "ordersPlaced": 10,
+      "rejectedForStock": 5,
+      "finalStock": 0,
+      "oversold": false,
+      "payment": "simulated"
+    },
+    "load": {
+      "route": "POST /store-api/product",
+      "requests": 500,
+      "concurrency": 16,
+      "seconds": 0.19,
+      "requestsPerSecond": 2630.8,
+      "p50Ms": 3.43,
+      "p95Ms": 6.5,
+      "p99Ms": 77.32,
+      "environment": "localhost, six products, debug binary, PostgreSQL Docker; no external network, no LLM",
+      "comparison": "No Shopware baseline; not a production capacity claim"
+    },
+    "ciBaseline": {
+      "status": "success",
+      "url": "https://github.com/sthamann/rust-ai-commerce/actions/runs/36862710103"
+    }
   },
   "limits": [
     "Simulated payment, no real charge",
-    "Single tax-rule port, not complete Shopware parity",
-    "Prototype API envelopes, not drop-in SDK compatibility",
-    "Partial MCP/UCP bindings, no full conformance",
-    "Persisted policy, no online LLM weight training or economic uplift proof",
-    "Local small-catalog load, no PHP or production baseline"
+    "Partial Shopware pricing port and prototype API envelopes, not complete kernel/API compatibility",
+    "Partial MCP/UCP bindings, no full conformance or production OAuth",
+    "Cloud native HTTP contracts tested locally; actual cloud inference needs API keys",
+    "Curated graph and fixed LLM weights; no online weight learning or economic uplift proof",
+    "Small exact vector search; no ANN recall, distributed tenant scale or million-product capacity measurement"
   ]
 }
