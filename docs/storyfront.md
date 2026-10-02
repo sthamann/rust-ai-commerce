@@ -147,7 +147,7 @@ variant and explicitly records `realMoneyCharged: false`.
 ![Storyfront order saved by the Rust checkout](storyfront-order.png)
 
 Seven live HTTP checks covered authoritative pricing, unavailable variants, injected
-tenants/prices, foreign origins, unknown hosts and oversized requests. Nine companion
+tenants/prices, foreign origins, unknown hosts and oversized requests. Eleven companion
 connector tests cover catalog compilation, identity mapping, bounded transfers,
 service authentication, job coalescing and status persistence across restart.
 
@@ -159,3 +159,13 @@ a sold-out variant. The stock filter is now applied during refresh, without an
 additional paid question. This verifies provider wiring and catalog access; it
 does not establish satisfactory answer quality or a verified AI story release.
 No image generation, warm-up or external indexing was triggered.
+
+## Four-language and complete-page refresh
+
+The connector now follows root and variant cursor pages and fails at its explicit
+250-SKU prototype cap instead of silently truncating catalogs. A local refresh
+published ten available SKUs and 33 images with authoritative English, German,
+French and Spanish title/description maps. Native product translations are
+imported, not generated. Existing AI scenes are not automatically translated.
+The companion workspace check passed 135 steps with zero failures/skips; no
+additional paid inference was used for this refresh.
