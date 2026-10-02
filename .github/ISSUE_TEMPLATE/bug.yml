@@ -1,0 +1,24 @@
+name: Bug report
+description: Report a reproducible issue in the prototype
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Commit or version
+      description: Include your OS and setup path if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Use a synthetic shop. Remove credentials and private data.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and observed behavior
+    validations:
+      required: true

@@ -1,356 +1,120 @@
-# Rust AI Commerce
+# Rust AI Commerce — Agentic commerce with merchant control
 
-An open **B2C + B2B commerce prototype** with a modular Rust core, a chat-first
-merchant workspace, product detail storefront, tenant-scoped personal users,
-semantic shop knowledge and incremental ports of original Shopware behavior.
-MIT licensed. The complete interface supports **English, German, French and
-Spanish**; this README and its screenshots use English.
+An **open-source ecommerce prototype in Rust** for developers exploring AI-assisted
+B2C and B2B commerce. Run a storefront and merchant workspace on your own machine,
+connect local LLMs or optional cloud models, and expose selected commerce operations
+through **Model Context Protocol (MCP)** and **Universal Commerce Protocol (UCP)** adapters.
 
-Orders, inventory, reviews, settings and conversations are durable. Payments
-are **simulated, manually recorded or PayPal Sandbox**; no real money is charged. This is a
-working migration laboratory, not a complete drop-in Shopware replacement.
+**The AI proposes. The merchant reviews and approves. The Rust core applies the change.**
+Browser and agent clients share the same pricing, inventory and checkout operations.
+This is also a laboratory for porting selected original Shopware behavior to Rust.
 
-![English product detail: SKU options, gallery and quantity prices](docs/assets/product-detail-en.jpg)
+[Website & guides](https://sthamann.github.io/rust-ai-commerce/) ·
+[Quickstart](docs/quickstart.md) · [MCP setup](docs/connectors.md) ·
+[Feature matrix](docs/shopware-parity.md) · [Contributing](CONTRIBUTING.md)
 
-[Feature parity and missing Core parts](docs/shopware-parity.md) ·
-[Every source file and its tests](docs/source-map.md) ·
-[Verification](docs/verification.json) · [CI](https://github.com/sthamann/rust-ai-commerce/actions)
+[![Verify prototype](https://github.com/sthamann/rust-ai-commerce/actions/workflows/verify.yml/badge.svg)](https://github.com/sthamann/rust-ai-commerce/actions/workflows/verify.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## Start
+[![Merchant reviews a local AI proposal before approving the price change](docs/assets/merchant-proposal-en.png)](https://sthamann.github.io/rust-ai-commerce/#demo)
 
-Requirements: Rust stable, Node 22+, Docker Compose, Python 3, and Ollama for
-local inference. The application binds to `127.0.0.1:8787`; the dedicated
-PostgreSQL database binds to `127.0.0.1:15487`.
+## Why try it?
+
+| You want to explore… | What this prototype provides |
+|---|---|
+| AI-assisted merchant operations | Stored proposals, visible changes, role checks and explicit approval |
+| Local AI commerce | Ollama for local inference; optional OpenAI and Anthropic API adapters |
+| Agent commerce protocols | A local MCP bridge and partial UCP checkout adapters using shared operations |
+| Rust ecommerce and B2B checkout | SKU variants, quantity prices, tax/shipping configuration and durable demo orders |
+| Shopware behavior in Rust | Bounded ports checked against original Shopware PHP classes |
+| Self-hosted storage | PostgreSQL + Apache AGE + pgvector; no paid database service required |
+
+The interface supports **English, German, French and Spanish**. MIT licensed.
+
+## Try the commerce app first — no model download
+
+Requirements: **Rust stable (1.96+), Node 22+, Docker Compose and Python 3**.
 
 ```sh
 git clone https://github.com/sthamann/rust-ai-commerce.git
 cd rust-ai-commerce
-ollama pull qwen3.6:35b
-ollama pull qwen3-embedding:0.6b
 ./scripts/dev.sh
 ```
 
-The default local open-weight model is Qwen3.6-35B-A3B. Its Ollama artifact is
-about 24 GB; context/runtime require additional memory. Override `OLLAMA_MODEL`
-with a compatible installed model. Models are not downloaded silently by Rust.
-An existing `.env` retains its previous model selection.
+Open [Storefront](http://127.0.0.1:8787/),
+[Commerce Studio](http://127.0.0.1:8787/#merchant), or the
+[example product](http://127.0.0.1:8787/#product/mug).
+In Studio, select **Team & access → Create shop** to create a personal owner
+account and a separate synthetic shop. Then explore products, quantity prices,
+cart and simulated checkout. AI chat and semantic indexing require their model
+services; ordinary commerce operations do not.
 
-The dev script generates private credentials in ignored `.env`, builds the
-fully open database image and frontend, then starts the app. Open:
+The first start builds the database image, frontend and Rust application. It can
+take several minutes. No model is downloaded by this command. Private instance
+credentials are generated in ignored `.env`; the app binds to `127.0.0.1:8787`
+and PostgreSQL to `127.0.0.1:15487`.
 
-- [Storefront](http://127.0.0.1:8787/)
-- [Commerce Studio](http://127.0.0.1:8787/#merchant)
-- [Example product](http://127.0.0.1:8787/#product/mug)
+## Choose your next step
 
-In Studio, use **Team & access → Create workspace** to create a personal owner
-account and a separate synthetic shop. Invite additional members there. The
-shop URL is `/?shop=<workspace-id>`; the merchant URL adds `#merchant`.
-The static `atelier` and `workshop` tenants remain demonstration workspaces.
-`MERCHANT_TOKEN` from `.env` is an **instance administrator bootstrap credential**
-under advanced settings. Do not give it to ordinary merchants.
+- **Add local AI:** follow the [Ollama setup](docs/quickstart.md#add-local-ai-optional).
+  The documented default model download is about 24 GB, with additional runtime
+  memory required. Install it only when you want local inference.
+- **Connect an MCP client:** use the [Claude Desktop / local MCP configuration](docs/connectors.md#claude-desktop--local-mcp-clients).
+- **Use a cloud model:** configure your own API credentials using the
+  [provider guide](docs/connectors.md#models-inside-the-merchant-chat).
+- **Study the implementation:** read the [feature tour](docs/features.md),
+  [architecture](docs/architecture.md) and [Shopware migration workflow](docs/migration.md).
 
-Personal sessions last 12 hours and use browser sessionStorage. Database rows
-contain token digests and Argon2 password hashes. New shops start from fixed,
-public demo fixtures, never another merchant's live data. Orders, conversations,
-vectors and observed policy counters start empty. See [security scope](docs/security.md).
+## See the merchant-control flow
 
-The synthetic B2B customer account in template shops is
-`buyer@example.test` / `demo-business`. It receives net pricing, group quantity
-discounts and a EUR 1,000 per-purchase Wasm policy. It is independent of merchant
-accounts. No real customer registration/recovery lifecycle is claimed.
+[Watch the recorded demo](https://sthamann.github.io/rust-ai-commerce/#demo):
+a local model proposes EUR 69.90 instead of EUR 74.90 for the lamp; the price
+changes only after merchant approval and is then visible in the storefront.
+The recording uses a synthetic shop; waiting time is shortened.
 
-For semantic retrieval, sign in, open **Settings** and select **Refresh shop
-knowledge**. This computes real 1,024-dimensional embeddings and reuses unchanged
-documents. Commerce continues to work when model services are unavailable.
+1. Ask the assistant to propose a catalog change.
+2. Inspect the stored proposal and the exact fields that would change.
+3. Approve with an authorized merchant account.
+4. Inspect the updated product in the storefront.
 
-## Product details and connected checkout
+Model text does not grant permissions. The server checks roles and current
+revisions before applying an approved proposal. See the [security scope](docs/security.md).
 
-The storefront is a complete native flow through this bounded commerce slice:
+## Current status and limits
 
-- **SKU variants:** six product families and 11 actual purchasable SKUs. Option
-  combinations select their own stock, prices and gallery; nonexistent
-  combinations are disabled and sold-out variants cannot be purchased.
-- **Multiple images and properties:** three authored SVG illustrations per SKU,
-  image switching, material/care/capacity details and localized product text.
-- **Reviews:** customer submission starts pending; an authorized merchant can
-  publish/hide it. The public aggregate uses only published reviews. Verified
-  purchase comes from an actual completed customer cart/account, not a client claim.
-- **Quantity prices:** public and authenticated B2B tiers, minimum quantities,
-  purchase steps and maximums. Product detail and cart consume the same Rust calculator.
-- **Country tax and shipping:** editable standard/reduced country rates,
-  eligible delivery methods, shipping fees, free-shipping thresholds,
-  highest/proportional tax allocation, address and calendar date ranges.
-- **Payments and deliveries:** simulated card authorization, manual bank
-  transfer, B2B invoice eligibility, persisted method snapshots and internal
-  paid/shipped/delivered transitions with tracking and optimistic revisions.
+**Working prototype; payments are simulated, manually recorded or PayPal Sandbox.
+No real money is charged.** This is not a complete drop-in Shopware replacement or a validated
+production SaaS deployment.
 
-Changing tax/shipping configuration affects new quotes; completed order prices
-remain immutable. Disabling a selected method retains cart items and requires
-an explicit valid replacement. Checkout locks the selected SKU inventory and
-persists one order for concurrent idempotent retries.
+MCP/UCP cover selected capabilities, not full protocol conformance. Hosted
+ChatGPT/Claude connectors require separate endpoint/account setup; no production
+OAuth server is included. Live cloud model quality, production scale and causal
+sales uplift are unverified. The Sandbox adapter is tested with local contract
+fixtures; no live Sandbox transaction is claimed. See the [precise feature matrix](docs/shopware-parity.md)
+and [connection boundaries](docs/connectors.md).
 
-![English checkout with country, delivery, payment and authoritative totals](docs/assets/checkout-en.jpg)
+## Apps, payments and shop intelligence
 
-Tax rates, fulfillment statuses and dates are prototype configuration. There
-is no live-money PSP, carrier label, legal invoice, complete tax jurisdiction engine,
-returns pipeline or original Shopware delivery processor.
+The v0.5 prototype also includes versioned app installation, independent worker
+roles, an evidence-based shop-intelligence view and a PayPal Sandbox adapter.
+See [implementation and limits](docs/intelligence-apps-payments.md),
+[worker roles](docs/intelligence-apps-payments.md) and [extension examples](extensions/README.md).
 
-## Multi-user merchant workspaces
+## Evidence and documentation
 
-One personal identity can belong to several independent shops with different
-roles. Membership and session validity are checked from PostgreSQL on every
-request; a revoked access or changed role applies to subsequent requests,
-including requests on another app instance. Client-provided tenant headers
-select a workspace; they cannot grant membership.
+- [Features, extension examples and verification commands](docs/features.md)
+- [Source files and their tests](docs/source-map.md)
+- [Recorded verification results](docs/verification.json) and [current CI runs](https://github.com/sthamann/rust-ai-commerce/actions)
+- [Original Shopware migration units](porting/units.json) and [migration workflow](docs/migration.md)
+- [Architecture decisions](docs/architecture.md), [security](docs/security.md), [third-party licenses](THIRD_PARTY.md)
 
-| Role | Available actions |
-|---|---|
-| Owner | Read/plan/catalog changes, settings, fulfillment, extensions and team; appoint owners |
-| Administrator | Shop operations and team; cannot grant/change ownership |
-| Editor | Read, plan and explicitly approve catalog/experience changes |
-| Reader | Read and plan; no execution or operational/settings/team changes |
+The recorded suite includes **4,592 bounded comparisons** against original
+Shopware 6.7.14.2 PHP classes. These cover selected pricing/context/tax operations;
+they do not establish full Shopware compatibility.
 
-Invitations expire after 24 hours and can be redeemed once. Existing users
-must authenticate their own account when joining another shop. The final
-active owner cannot be removed. Invitation codes are returned for manual
-sharing; email dispatch is not implemented. Roles also protect MCP direct
-invocation, not just interface controls.
+## Contribute
 
-![English merchant workspace with personal users and roles](docs/assets/team-en.jpg)
-
-This is a working application boundary with real isolation tests, not proof
-of a production SaaS deployment. SSO/MFA/recovery, quotas, verified email,
-billing, tenant lifecycle, core-wide RLS, physical separation and failover remain open.
-
-## Commerce Studio · v0.5
-
-The light workspace uses Shopware-inspired blue accents and a large assistant.
-An optional slate-blue theme remains available. Seven integrated views provide:
-
-| View | Actual shop operation |
-|---|---|
-| Assistant | Persistent conversations, grounded proposals and explicit approval |
-| Shop today | API-backed orders, inventory, proposals and real recorded activity |
-| Shop intelligence | AGE product/need graph, complementary products, semantic retrieval and observed learning counts |
-| Agent commerce | Customer journey, actual adapter call counters and separate ChatGPT/Claude connection status |
-| Sales & delivery | Tax/shipping/payment settings, review moderation and order fulfillment records |
-| Team & access | Personal sign-in, workspace creation, invitations, roles and shop switching |
-| Apps & payments | Versioned app installation, own data/forms, external UI panels and payment ledger |
-
-![English Commerce Studio with shop activity and preview](docs/assets/commerce-studio-en.jpg)
-
-The interactive preview uses the real server calculator; it creates no order
-or stock change. Numbers/dates, product text and model replies follow the
-selected language. Existing messages retain their original language. The API
-also demonstrates Swiss German → German → system-language fallback.
-
-## Intelligence and optional OpenAI/Claude
-
-The model receives current catalog state, bounded conversation history, AGE
-relationships, real retrieval results and verified order/policy/channel facts.
-It returns an allowlisted typed proposal. The server attaches authoritative
-revisions, stores its evidence and requires an authorized merchant's explicit
-approval before execution. Model text cannot grant authority or run SQL/code.
-
-| Provider | Native transport | Server configuration |
-|---|---|---|
-| Local open weights | Ollama structured JSON | `OLLAMA_MODEL` / `OLLAMA_URL` |
-| OpenAI | Responses API + strict JSON schema | `OPENAI_API_KEY` / `OPENAI_MODEL` |
-| Claude | Anthropic Messages + structured output | `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` |
-
-Cloud selection sends bounded shop/conversation context to that provider.
-Keys stay on the server. Missing credentials, incomplete responses and provider
-failures return explicit errors; no silent provider substitution occurs.
-
-The local MCP stdio bridge works with Claude Desktop and other compatible
-clients. Knowledge tools and merchant actions require scoped merchant authority;
-public product/cart tools stay available to shopping clients. Selected MCP and
-UCP checkout adapters share the actual commerce operations. Hosted ChatGPT/
-Claude connections need a secure remote endpoint and account-side setup; no
-external account or production OAuth connection has been created. See
-[connection instructions and boundaries](docs/connectors.md).
-
-The adaptive storefront uses stable components, session affinity and a persisted
-small epsilon-greedy discovery/comparison policy with observed views and
-**simulated-order** rewards. These are contextual/policy memories. They are not
-online LLM weight training or evidence of causal sales uplift.
-
-## Fully open graph/vector/transactional storage
-
-PostgreSQL 17 + Apache AGE + pgvector are built from source in
-[database/Dockerfile](database/Dockerfile):
-
-- Real Cypher product/need/complement relationships with tenant and provenance.
-- Persisted vectors joined to live authoritative prices/inventory.
-- Atomic stock/order/idempotency/outbox transactions.
-- Durable users, memberships, conversations, proposals and experience counters.
-
-Licenses are PostgreSQL License / Apache 2.0 / PostgreSQL License. No commercial
-database edition, BSL/SSPL service or paid database account is required.
-[Attribution](THIRD_PARTY.md) records source versions and licenses. The graph
-adds semantic structure to a transactional ledger; relational storage remains
-part of the architecture.
-
-AGE is source-commit pinned and pgvector is pinned to v0.8.6. Migrations are
-additive and retain the existing prototype volume; do not delete that volume
-when updating. Existing orders/prices/stock are preserved. The graph's template
-relationships are curated demo facts. Vector ranking is exact on the small
-catalog; million-product capacity, ANN recall, distributed graph sharding and
-production multi-tenant performance are **unmeasured**.
-
-## Evidence-driven shop intelligence and full app examples
-
-Orders now project into **durable, evidence-linked co-purchase relationships** in
-AGE. Shop intelligence shows what was observed, simulation provenance and ideas
-for review. A merchant-approved association is consumed on the product page and
-in customer advice. This changes operational memory; model weights remain fixed
-and observed correlation does not prove sales uplift.
-
-Apps now define **versioned typed entities, relationships, HTTP/MCP actions,
-product slots and admin panels**. The engraving app connects a customer product
-configuration to the real taxed cart, order and merchant view. The assistant can
-propose a registered app-data change and execute it after explicit approval.
-An external workshop app runs its own service, iframe UI and SQLite event inbox.
-Managed app tables have forced tenant RLS; core tables retain application filters.
-
-The first payment adapter is **native PayPal Sandbox Orders v2** with persistent
-attempts, reserved stock, idempotent capture/refund, verified webhooks and leased
-workers. It is not Shopware Payments. That example reports a missing official
-standalone connector contract and is deliberately unavailable at checkout.
-Configure server-only accounts before trying a real Sandbox handoff.
-
-Long model calls no longer hold database transactions/connections. Bounded
-context, conversation leases and independent payment/app workers address concrete
-contention. Whole-catalog operations remain elsewhere; no Shopware speedup or
-million-product capacity is claimed.
-
-[Implementation and limits](docs/intelligence-apps-payments.md) ·
-[App manifests, SDK and runnable examples](extensions/README.md)
-
-![English app workspace with its own data and payment readiness](docs/assets/apps-en.png)
-
-## Executable extensions
-
-Four real pure-Wasm policies use the current B2B purchase approval ABI:
-
-| Example | Actual policy |
-|---|---|
-| `company-limit.wat` | Respect the supplied company purchase limit |
-| `budget-reserve.wat` | Preserve EUR 100 of the supplied budget |
-| `minimum-order.wat` | Require EUR 50 minimum, respecting the budget |
-| `single-order-cap.wat` | Limit an individual order to EUR 250, within the budget |
-
-An owner/administrator activates WAT through `/api/extensions/activate`.
-Wasmtime compiles and probes it before activation. Checkout uses a fresh Store,
-10,000 fuel units, 1 MiB memory and a 256 KiB stack, with no host imports/WASI,
-network or filesystem. Persisted policy changes refresh stale compiled modules
-on another app instance before execution. Traps roll back the purchase.
-
-These are alternative policies on one typed **B2B** hook; they do not run for
-B2C or grant new host capabilities. There is no automatic PHP-to-Rust compiler
-or arbitrary Shopware plugin support. See
-[examples, ABI, activation and tests](extensions/README.md).
-
-## Verify
-
-With the local app running:
-
-```sh
-set -a; source .env; set +a
-cargo fmt --check
-cargo clippy --locked --all-targets -- -D warnings
-cargo test --locked
-python3 scripts/structure.py
-python3 scripts/studio.py
-python3 scripts/integration.py
-python3 scripts/protocols.py
-python3 scripts/intelligence.py
-python3 scripts/commerce.py
-python3 scripts/users.py
-TEST_PERSONAL=1 python3 scripts/providers.py
-python3 scripts/extensions.py
-python3 scripts/apps.py
-python3 scripts/payments.py
-python3 scripts/services.py
-# After apps.py has created its isolated test workspace:
-TEST_MODEL=1 python3 scripts/app_inference.py
-TEST_EMBEDDING=1 TEST_MODEL=1 python3 scripts/intelligence.py
-TEST_MODEL=1 python3 scripts/studio.py
-```
-
-These checks create synthetic accounts, carts, orders, reviews, conversations
-and approved price changes. Extension tests submit simulated B2B orders on a
-second app instance and restore the previous policy. Configuration tests restore
-the prior settings. Default verification uses local payment contract fixtures; no live PayPal Sandbox traffic is claimed. Cloud adapters are tested
-with local wire-contract servers; live OpenAI/Claude quality is **unverified**.
-Real local model/embedding checks are separate and opt-in.
-
-Independent original Shopware reference:
-
-```sh
-composer install --working-dir=reference --no-interaction
-cargo build --locked --bins
-python3 scripts/differential.py
-python3 scripts/context_differential.py
-python3 scripts/delivery_differential.py
-```
-
-The runners instantiate original Shopware 6.7.14.2 PHP classes: **2,144 pricing**,
-**1,446 context/rule/quantity** and **1,002 proportional-tax** cases. These are
-4,592 bounded comparisons, not full-Core proof. No rewritten PHP calculator or
-selector is used as the oracle. `scripts/restart.py snapshot` / `verify` checks
-persisted commerce, personal sessions/workspaces, graph/vector and chat state
-across an external application/database restart.
-
-CI runs build/type/format/lint checks, Rust tests, original-PHP comparisons and
-real database suites. No 100% line/branch coverage claim is made.
-[Source/test map](docs/source-map.md) documents coverage and remaining checks.
-Historical small-catalog v0.1 load measurements are not v0.5 capacity claims.
-
-## Architecture and migration
-
-```mermaid
-flowchart TD
-  UI[Storefront / merchant chat] --> API[Rust HTTP adapters]
-  MCP[MCP shopping and merchant tools] --> API
-  UCP[UCP checkout adapter] --> API
-  API --> AUTH[Personal sessions / workspace roles]
-  AUTH --> CORE[Shared commerce operations]
-  AUTH --> PLAN[Local / OpenAI / Claude planning]
-  GRAPH[AGE graph / pgvector retrieval] --> PLAN
-  PLAN --> PREVIEW[Stored proposal + verified facts]
-  PREVIEW --> APPROVAL[Authorized explicit approval]
-  APPROVAL --> CORE
-  CORE --> WASM[Persisted bounded Wasm policy]
-  CORE --> DB[(Open PostgreSQL + AGE + pgvector)]
-  GRAPH --> DB
-  CORE --> APPS[Registered app actions / own typed entities]
-  APPS --> SERVICE[Independent app service and iframe SDK]
-  DB --> PAY[Leased payment worker / Sandbox provider]
-  DB --> MEMORY[Shop conversations / observations / outbox]
-  MEMORY --> EVIDENCE[AGE co-purchase evidence / hypotheses]
-  EVIDENCE --> APPROVED[Merchant-approved customer recommendations]
-  MEMORY --> UI
-  REF[Original Shopware PHP] --> DIFF[Differential migration gates]
-  CORE --> DIFF
-```
-
-`main.rs` contains process startup and the module registry. Auth, pricing,
-products, carts, checkout, reviews, delivery, proposals, protocol adapters and
-storage operations live in small documented modules. Frontend product/cart
-views, Studio views, dialogs and locale dictionaries are also separated.
-The Rust size guard prevents reintroducing a giant entry point.
-
-[porting/units.json](porting/units.json) identifies original units, verified scope,
-implementation files, executable gates and remaining behavior. `scripts/port.py`
-selects these gates for subsequent incremental ports. It automates verification;
-it does not automatically produce a correct full-core translation.
-
-The precise [Shopware feature matrix](docs/shopware-parity.md) distinguishes
-original behavioral ports, working native feature equivalents for the prototype
-and missing functionality. Full collectors/processors/rule engine, DAL/CMS,
-promotions, original variant inheritance, exact Admin/Store API schemas, live-money
-payments/fulfillment, commercial B2B modules and PHP plugins remain missing.
-
-[Migration workflow](docs/migration.md) · [Architecture decisions](docs/architecture.md) ·
-[Security and SaaS limits](docs/security.md) · [Model connections](docs/connectors.md)
+Start with [CONTRIBUTING.md](CONTRIBUTING.md). Useful contributions include
+reproducible bugs, clearer setup instructions, locale improvements and bounded
+behavior ports with original-source comparisons. Please include the current
+version, steps to reproduce and expected versus observed behavior.

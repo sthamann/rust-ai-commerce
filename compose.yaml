@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
       POSTGRES_DB: commerce
     ports:
-      - "127.0.0.1:15487:5432"
+      - "127.0.0.1:${DB_PORT:-15487}:5432"
     volumes:
       - commerce-data:/var/lib/postgresql/data
     healthcheck:

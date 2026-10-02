@@ -1,0 +1,10 @@
+WEBVTT
+
+00:00.000 --> 00:25.000
+Ask the local model for a proposal. Review EUR 74.90 → EUR 69.90.
+
+00:25.000 --> 00:49.000
+The merchant explicitly approves. The Rust core applies the change.
+
+00:49.000 --> 01:06.000
+The storefront now displays EUR 69.90. Stock is unchanged.
