@@ -11,7 +11,39 @@ BASE = 'https://sthamann.github.io/rust-ai-commerce/'
 REPO = 'https://github.com/sthamann/rust-ai-commerce'
 
 
+def evidence_fields():
+    before = json.loads((ROOT / 'docs/assets/benchmark-before.json').read_text())
+    after = json.loads((ROOT / 'docs/assets/benchmark-after.json').read_text())
+    demos = json.loads((ROOT / 'docs/assets/demos.json').read_text())
+    old = {row['key']: row for row in before['summaries']}
+    new = {row['key']: row for row in after['summaries']}
+    assert old.keys() == new.keys(), 'Benchmark workloads must match'
+    assert all(old[k]['requests'] == new[k]['requests'] for k in new), 'Request counts must match'
+    assert not any(row['errors'] for row in after['summaries']), 'Do not promote failed benchmark runs'
+    fields = {key + '_duration': str(round(value['durationSeconds'])) + ' sec'
+              for key, value in demos['clips'].items()}
+    catalog = new['catalog-1000/c16']
+    fields.update(catalog_rps=f"{catalog['medianRequestsPerSecond']:,.0f}",
+                  catalog_p95=f"{catalog['medianP95Ms']:.1f}",
+                  cart_p95=f"{new['cart-20-lines-in-1000-catalog/c16']['medianP95Ms']:.1f}",
+                  checkout_p95=f"{new['durable-checkout-in-1000-catalog/c16']['medianP95Ms']:.1f}",
+                  measured_requests=str(sum(row['requests'] for row in new.values())),
+                  persisted_orders=str(after['persistedUniqueOrdersIncludingWarmup']),
+                  benchmark_date=html.escape(after['recordedAt'][:10]))
+    labels = {'catalog-6': '6-product catalog', 'catalog-1000': '1,000-product catalog',
+              'cart-20-lines-in-1000-catalog': '20-line cart / 1,000 products',
+              'durable-checkout-in-1000-catalog': 'Durable checkout / 1,000 products'}
+    fields['benchmark_rows'] = ''.join(
+        '<tr><th scope="row">' + labels[row['scenario']] + '</th><td>' + str(row['concurrency']) +
+        f"</td><td>{old[key]['medianP95Ms']:.1f} → <strong>{row['medianP95Ms']:.1f}</strong></td>" +
+        f"<td>{old[key]['medianRequestsPerSecond']:.1f} → <strong>{row['medianRequestsPerSecond']:.1f}</strong></td>" +
+        f"<td>{row['errors']} / {row['requests']}</td></tr>"
+        for key, row in new.items())
+    return fields
+
+
 def build():
+    evidence = evidence_fields()
     pages = json.loads((ROOT / 'site/pages.json').read_text())
     template = (ROOT / 'site/template.html').read_text()
     if DEST.exists():
@@ -39,9 +71,10 @@ def build():
             'title': html.escape(page['title']),
             'description': html.escape(page['description'], quote=True),
             'canonical': url,
-            'image': BASE + 'assets/merchant-proposal-en.png',
+            'image': BASE + 'assets/hero-workspace.webp',
             'schema': json.dumps(schema, ensure_ascii=False).replace('<', '\\u003c'),
             'content': (ROOT / 'site/pages' / page['file']).read_text(),
+            **evidence,
         }
         document = template
         for key, value in fields.items():

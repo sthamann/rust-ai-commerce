@@ -1,26 +1,295 @@
 <section class="hero">
-<p class="eyebrow">Rust · Open source · Experimental commerce</p>
-<h1>AI proposes.<br><span>You stay in control.</span></h1>
-<p class="lead">An agentic commerce prototype with a Rust core, a storefront and a merchant workspace. Explore local AI and MCP/UCP adapters without giving a model its own authority to change your shop.</p>
-<div class="actions"><a class="button primary" href="quickstart.html">Run the local prototype →</a><a class="button" href="https://github.com/sthamann/rust-ai-commerce">Explore the source ↗</a></div>
-<p class="fine">MIT licensed · English, German, French & Spanish · Simulated payments</p>
+  <div>
+    <p class="eyebrow">
+      <span class="status-dot"></span> Open source. Agent ready. Yours.
+    </p>
+    <h1>Built for agents.<br /><span>Run by you.</span></h1>
+    <p class="lead">
+      A Rust commerce core with AI in the workflow and you at the controls. Real
+      carts. Real prices. Every change on your terms.
+    </p>
+    <div class="actions">
+      <a class="button primary" href="quickstart.html"
+        >Build your first shop ↗</a
+      ><a class="button quiet" href="#demo">See it move ↓</a>
+    </div>
+    <p class="hero-meta">MIT licensed / Self-hosted / Prototype v0.5</p>
+  </div>
+  <div class="hero-stage">
+    <div class="stage-top">
+      <span class="mono">01 / THE MERCHANT WORKSPACE</span
+      ><span>Real product capture</span>
+    </div>
+    <div class="product-window">
+      <img
+        src="assets/hero-workspace.webp"
+        width="1440"
+        height="900"
+        alt="The actual workspace showing product relationships and the price calculator"
+        fetchpriority="high"
+      />
+    </div>
+    <div class="stage-bottom">
+      <span>AI proposes.<br /><strong>You decide.</strong></span
+      ><a
+        href="#demo"
+        class="stage-play"
+        aria-label="Explore short product demos"
+        >↗</a
+      >
+    </div>
+  </div>
 </section>
-<figure class="screenshot"><img src="assets/merchant-proposal-en.png" width="1440" height="900" alt="A local AI price proposal showing the current EUR 74.90 price, proposed EUR 69.90 price and explicit merchant approval"><figcaption>A real local-model proposal: the shop price stays at EUR 74.90 until a merchant approves the change.</figcaption></figure>
-<section class="section"><h2>One commerce core. Several ways to use it.</h2><div class="grid">
-<article class="card"><h3>Merchant-approved AI</h3><p>Local Ollama models or optional cloud adapters produce typed proposals. The merchant inspects the actual fields; the server checks authority and revisions before applying a change.</p><a href="#merchant-flow">See the flow →</a></article>
-<article class="card"><h3>Commerce for agents</h3><p>Selected MCP and UCP capabilities reuse the same product, cart and checkout operations as the browser. Start with a local MCP client and a synthetic shop.</p><a href="mcp.html">Connect an MCP client →</a></article>
-<article class="card"><h3>Shopware behavior in Rust</h3><p>Selected pricing, context and tax behavior is ported and compared with original PHP classes. The project records what matches and what remains missing.</p><a href="shopware.html">Read the porting guide →</a></article>
-</div></section>
-<section class="section" id="demo"><p class="eyebrow">Recorded local prototype</p><h2>A suggestion becomes a change only after approval.</h2><video controls preload="metadata" poster="assets/merchant-proposal-en.png" aria-label="Recorded merchant approval and storefront price demonstration"><source src="assets/merchant-control-demo.mp4" type="video/mp4"><track kind="captions" src="assets/merchant-control-demo.vtt" srclang="en" label="English" default><p><a href="assets/merchant-control-demo.mp4">Download the demo recording</a></p></video><p class="fine">Recorded with the real local model and a synthetic shop. Waiting time is shortened; this is not a speed benchmark. No real payment occurs.</p><p>The local model proposes a lamp price of EUR 69.90 instead of EUR 74.90. Before approval, the current shop price remains EUR 74.90. After the merchant approves, the storefront displays EUR 69.90 and stock remains unchanged.</p></section>
-<section class="section" id="merchant-flow"><p class="eyebrow">The authority boundary</p><h2>From a suggestion to an approved change.</h2><ol class="flow"><li><strong>Ask</strong><p>A merchant asks the assistant for a catalog change.</p></li><li><strong>Inspect</strong><p>The stored proposal shows the exact changes and current evidence.</p></li><li><strong>Approve</strong><p>An authorized merchant explicitly approves that proposal.</p></li><li><strong>Apply</strong><p>The Rust core checks revisions and updates the owning shop.</p></li></ol><p class="fine">Model text cannot grant access. A readable summary does not replace inspecting the actual proposal.</p></section>
-<section class="section"><h2>Start with commerce. Add AI when you need it.</h2><pre><code>git clone https://github.com/sthamann/rust-ai-commerce.git
+<div class="stack-strip">
+  <span>COMMERCE, FROM THE CORE UP</span><strong>Rust</strong><span>/</span
+  ><strong>PostgreSQL</strong><span>/</span><strong>Wasm apps</strong
+  ><span>/</span><strong>MCP + UCP</strong><span>/</span
+  ><strong>Local LLMs</strong>
+</div>
+<section class="section" id="demo">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Less talking. More product.</p>
+      <h2>Small clips.<br />Big capabilities.</h2>
+    </div>
+    <p>
+      One feature per clip. Recorded in the running prototype, with synthetic
+      shop data.
+    </p>
+  </div>
+  <div class="demo-grid">
+    <article class="demo-card">
+      <div class="demo-label">
+        <span class="mono">01 / SMART COMMERCE</span
+        ><span class="duration">{{variants_duration}}</span>
+      </div>
+      <video
+        controls
+        playsinline
+        preload="none"
+        poster="assets/demo-variants.webp"
+        aria-label="Switch the actual variant, choose six units and see the quantity tier carried into the cart."
+      >
+        <source src="assets/demo-variants.mp4" type="video/mp4" />
+        <track
+          kind="captions"
+          src="assets/demo-variants.vtt"
+          srclang="en"
+          label="English"
+          default
+        />
+      </video>
+      <div class="demo-copy">
+        <h3>New SKU. New price.<br />One shared truth.</h3>
+        <p>
+          Switch the actual variant, choose six units and see the quantity tier
+          carried into the cart.
+        </p>
+        <a href="assets/demo-variants.mp4">Download clip ↗</a>
+      </div>
+    </article>
+    <article class="demo-card">
+      <div class="demo-label">
+        <span class="mono">02 / EXTEND YOUR SHOP</span
+        ><span class="duration">{{apps_duration}}</span>
+      </div>
+      <video
+        controls
+        playsinline
+        preload="none"
+        poster="assets/demo-apps.webp"
+        aria-label="An installed Wasm app contributes personalization and a server-calculated fee to the same product and cart."
+      >
+        <source src="assets/demo-apps.mp4" type="video/mp4" />
+        <track
+          kind="captions"
+          src="assets/demo-apps.vtt"
+          srclang="en"
+          label="English"
+          default
+        />
+      </video>
+      <div class="demo-copy">
+        <h3>Your app.<br />Inside the real checkout.</h3>
+        <p>
+          An installed Wasm app contributes personalization and a
+          server-calculated fee to the same product and cart.
+        </p>
+        <a href="assets/demo-apps.mp4">Download clip ↗</a>
+      </div>
+    </article>
+    <article class="demo-card">
+      <div class="demo-label">
+        <span class="mono">03 / MERCHANT CONTROL</span
+        ><span class="duration">{{approval_duration}}</span>
+      </div>
+      <video
+        controls
+        playsinline
+        preload="none"
+        poster="assets/demo-approval.webp"
+        aria-label="Inspect the exact proposal, approve it and see the new price in the storefront. The model has no write authority."
+      >
+        <source src="assets/demo-approval.mp4" type="video/mp4" />
+        <track
+          kind="captions"
+          src="assets/demo-approval.vtt"
+          srclang="en"
+          label="English"
+          default
+        />
+      </video>
+      <div class="demo-copy">
+        <h3>Suggested by AI.<br />Released by you.</h3>
+        <p>
+          Inspect the exact proposal, approve it and see the new price in the
+          storefront. The model has no write authority.
+        </p>
+        <a href="assets/demo-approval.mp4">Download clip ↗</a>
+      </div>
+    </article>
+  </div>
+  <p class="fine">
+    Feature clips are edited for focus; waiting time may be removed. They are
+    not latency measurements. Payments are simulated, manual or Sandbox.
+  </p>
+</section>
+<section class="section performance" id="performance">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Measured. Not imagined.</p>
+      <h2>The numbers.<br /><span class="accent">And the receipts.</span></h2>
+    </div>
+    <p>
+      Real HTTP requests through Rust into PostgreSQL. Release build. Three
+      rounds. Every response checked.
+    </p>
+  </div>
+  <div class="metric-grid">
+    <article class="metric">
+      <span class="mono">1,000-PRODUCT CATALOG</span
+      ><strong>{{catalog_rps}}<small>req/s</small></strong>
+      <p>{{catalog_p95}} ms p95 · 16 concurrent clients</p>
+    </article>
+    <article class="metric">
+      <span class="mono">20-LINE CART / 1,000 PRODUCTS</span
+      ><strong>{{cart_p95}}<small>ms p95</small></strong>
+      <p>16 concurrent clients · full validated quote</p>
+    </article>
+    <article class="metric">
+      <span class="mono">DURABLE CHECKOUT</span
+      ><strong>{{checkout_p95}}<small>ms p95</small></strong>
+      <p>16 concurrent clients · unique simulated orders</p>
+    </article>
+  </div>
+  <div class="perf-footer">
+    <p>
+      Local Apple M3 Ultra · 512 GiB RAM · warm caches · Python client on the
+      same host.<br />Closed-loop test; these results do not establish
+      production capacity or LLM speed.
+    </p>
+    <a class="button" href="benchmarks.html">Inspect the benchmark ↗</a>
+  </div>
+</section>
+<section class="section" id="merchant-flow">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">One core. Every interface.</p>
+      <h2>Give agents tools.<br />Keep the keys.</h2>
+    </div>
+    <p>
+      The browser, an MCP client and UCP checkout reach the same commerce
+      operations. Permissions stay in the server.
+    </p>
+  </div>
+  <div class="architecture-layout">
+    <div
+      class="core-visual"
+      aria-label="Browser, MCP and UCP connect to Rust, PostgreSQL and Wasm"
+    >
+      <div class="inputs">
+        <span>Browser</span><span>MCP</span><span>UCP</span>
+      </div>
+      <div class="core-node">
+        <span class="mono">RUST COMMERCE CORE</span
+        ><strong>Prices. Carts.<br />Orders. Authority.</strong>
+      </div>
+      <div class="outputs">
+        <span>PostgreSQL</span><span>Bounded Wasm apps</span>
+      </div>
+    </div>
+    <div class="feature-list">
+      <article>
+        <h3>Commerce that agrees with itself.</h3>
+        <p>
+          SKU variants, quantity tiers, B2B prices and destination tax share the
+          same calculations.
+        </p>
+      </article>
+      <article>
+        <h3>Apps with their own capabilities.</h3>
+        <p>
+          Versioned packages own typed data and actions. Configuration
+          contributes to the actual cart and order.
+        </p>
+      </article>
+      <article>
+        <h3>AI with an approval boundary.</h3>
+        <p>
+          Local Ollama or optional cloud adapters produce inspectable proposals.
+          You approve; the core validates and applies.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+<section class="section start-section">
+  <div>
+    <p class="eyebrow">From source to your shop</p>
+    <h2>Own the stack.<br />Start building.</h2>
+    <p>Explore commerce first. Add your model when you need it.</p>
+    <a class="button primary" href="quickstart.html">Open the quickstart ↗</a>
+  </div>
+  <div class="terminal">
+    <div class="terminal-bar">
+      <span aria-hidden="true">● ● ●</span><span>your-machine / commerce</span>
+    </div>
+    <pre><code><span class="code-comment"># Your code. Your infrastructure.</span>
+git clone https://github.com/sthamann/rust-ai-commerce.git
 cd rust-ai-commerce
-./scripts/dev.sh</code></pre><p>Requires Rust stable 1.96+, Node 22+, Docker Compose and Python 3. The first start compiles the app and database image. No model is downloaded.</p><p>Explore SKU variants, quantity prices, cart and simulated checkout first. Local chat and semantic indexing need their model services; the documented large model is an optional download.</p><a href="quickstart.html">Follow the full quickstart →</a></section>
-<section class="section"><h2>Useful for exploration. Honest about the scope.</h2><div class="table-wrap"><table><thead><tr><th>Included in the prototype</th><th>Still outside the demonstrated scope</th></tr></thead><tbody><tr><td>Durable orders, inventory and conversations; personal workspaces and roles</td><td>Production SaaS identity, billing, failover and scale validation</td></tr><tr><td>PostgreSQL, Apache AGE and pgvector</td><td>Million-product capacity and production multi-tenant performance</td></tr><tr><td>B2C/B2B demo checkout, SKU variants and bounded Wasm policies</td><td>Live-money payment processing, carrier integrations and full Shopware replacement</td></tr><tr><td>Partial MCP/UCP bindings and optional model adapters</td><td>Full protocol conformance, hosted-account setup and production OAuth</td></tr></tbody></table></div><p><a href="https://github.com/sthamann/rust-ai-commerce/blob/main/docs/shopware-parity.md">Exact feature matrix</a> · <a href="https://github.com/sthamann/rust-ai-commerce/blob/main/docs/verification.json">Recorded verification</a> · <a href="https://github.com/sthamann/rust-ai-commerce/actions">Current CI</a></p></section>
-<section class="section"><h2>Common questions</h2>
-<details><summary>What is Rust AI Commerce?</summary><p>Rust AI Commerce is an MIT-licensed ecommerce prototype for exploring merchant-approved AI operations, local models and agent commerce protocols. Its Rust core shares deterministic commerce operations across browser, MCP and UCP adapters. It is also a laboratory for selected Shopware behavior ports.</p></details>
-<details><summary>Do I need an LLM to try it?</summary><p>No. You can start the storefront, merchant workspace, cart and simulated checkout without downloading a model. AI planning needs a configured local or cloud model; semantic indexing needs an embedding service.</p></details>
-<details><summary>Is it a Shopware replacement?</summary><p>No complete drop-in replacement is claimed. The project ports selected original behavior and implements native prototype equivalents. The feature matrix identifies missing Shopware functionality and differences in schemas and lifecycle behavior.</p></details>
-<details><summary>Does it process real payments?</summary><p>No real money is charged. Payments are simulated, manually recorded or PayPal Sandbox. The Sandbox adapter is checked with local contract fixtures; no live Sandbox transaction or live-money payment processing is claimed. Carrier integration remains missing.</p></details>
-<details><summary>Can I use it with Claude Desktop or ChatGPT?</summary><p>The documented local stdio bridge supports compatible MCP clients such as Claude Desktop. Hosted clients need a reachable secure endpoint and their own account setup. The project does not configure external accounts or provide a production OAuth authorization server.</p></details>
+./scripts/dev.sh</code></pre>
+    <p>
+      Rust stable 1.96+ · Node 22+ · Docker · Python 3<br />No model download
+      for the initial commerce tour.
+    </p>
+  </div>
+</section>
+<section class="section">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Know what you're building on</p>
+      <h2>Open code. Clear boundaries.</h2>
+    </div>
+  </div>
+  <div class="scope-grid">
+    <article>
+      <h3>What you can explore today</h3>
+      <p>
+        Merchant-approved AI, durable orders and inventory, B2C/B2B checkout,
+        product variants, versioned apps and selected MCP/UCP bindings.
+      </p>
+      <a
+        href="https://github.com/sthamann/rust-ai-commerce/blob/main/docs/shopware-parity.md"
+        >See the feature matrix ↗</a
+      >
+    </article>
+    <article>
+      <h3>What still needs proving</h3>
+      <p>
+        Production operations, large-scale capacity, full protocol conformance,
+        live-money payments and a complete Shopware replacement.
+      </p>
+      <a href="shopware.html">Inspect the Shopware behavior ports ↗</a>
+    </article>
+  </div>
 </section>

@@ -22,7 +22,7 @@ pub(crate) fn router(a: App) -> Router {
         .route("/api/merchant/overview", get(merchant_overview))
         .route("/api/merchant/quote", post(preview_quote))
         .route("/api/capabilities", get(capabilities))
-        .route("/store-api/product", post(catalog))
+        .route("/store-api/product", post(catalog_request))
         .route(
             "/store-api/product/{id}",
             get(commerce::product_detail).post(commerce::product_detail),

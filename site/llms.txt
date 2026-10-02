@@ -5,6 +5,7 @@
 
 ## Start
 - [Overview](https://sthamann.github.io/rust-ai-commerce/)
+- [Measured local performance](https://sthamann.github.io/rust-ai-commerce/benchmarks.html)
 - [Local quickstart](https://sthamann.github.io/rust-ai-commerce/quickstart.html)
 - [Local MCP bridge](https://sthamann.github.io/rust-ai-commerce/mcp.html)
 - [Shopware behavior ports](https://sthamann.github.io/rust-ai-commerce/shopware.html)

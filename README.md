@@ -65,9 +65,15 @@ and PostgreSQL to `127.0.0.1:15487`.
 - **Study the implementation:** read the [feature tour](docs/features.md),
   [architecture](docs/architecture.md) and [Shopware migration workflow](docs/migration.md).
 
-## See the merchant-control flow
+## See three short feature demos
 
-[Watch the recorded demo](https://sthamann.github.io/rust-ai-commerce/#demo):
+[Watch the feature clips](https://sthamann.github.io/rust-ai-commerce/#demo):
+
+- Switch an actual SKU, select six units and carry the quantity tier into the cart.
+- Personalize a product through an installed Wasm app; its fee enters the real cart.
+- Review and approve a local AI price proposal, then inspect the changed storefront.
+
+In the approval clip,
 a local model proposes EUR 69.90 instead of EUR 74.90 for the lamp; the price
 changes only after merchant approval and is then visible in the storefront.
 The recording uses a synthetic shop; waiting time is shortened.
@@ -79,6 +85,14 @@ The recording uses a synthetic shop; waiting time is shortened.
 
 Model text does not grant permissions. The server checks roles and current
 revisions before applying an approved proposal. See the [security scope](docs/security.md).
+
+## Inspect measured performance
+
+The [local benchmark comparison](https://sthamann.github.io/rust-ai-commerce/benchmarks.html)
+reports translated 6-/1,000-product catalogs, a 20-line cart and fresh durable
+checkouts. It includes baseline/optimized results, raw latencies, response checks,
+hardware and source/binary metadata. [Reproduce the setup](docs/benchmarks.md).
+These bounded synthetic measurements do not establish production capacity or LLM speed.
 
 ## Current status and limits
 

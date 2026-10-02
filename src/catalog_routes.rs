@@ -7,6 +7,16 @@ pub(crate) async fn health(State(a): State<App>) -> Result<Json<Value>> {
         json!({"status":"ok","database":"postgresql","knowledge":"Apache AGE + pgvector","model":*a.model,"payment":"simulated","version":env!("CARGO_PKG_VERSION")}),
     ))
 }
+pub(crate) async fn catalog_request(
+    State(a): State<App>,
+    h: HeaderMap,
+    _body: axum::body::Bytes,
+) -> Result<Json<Value>> {
+    // Drain the POST body before returning a large response. Otherwise clients
+    // sending headers and body separately can observe a reset/truncated response.
+    catalog(State(a), h).await
+}
+
 pub(crate) async fn catalog(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let (locale, chain) = language_context(&a, &h).await?;
     let t = tenant(&h)?;
@@ -59,7 +69,9 @@ pub(crate) async fn catalog(State(a): State<App>, h: HeaderMap) -> Result<Json<V
             id: p.id.clone(),
             quantity: p.min_purchase,
         }];
-        let q = quote(&preview, &priced)?;
+        // This preview contains one item. Searching the entire catalog for each
+        // preview would turn catalog hydration into quadratic work.
+        let q = quote(&preview, std::slice::from_ref(p))?;
         let mut v = json!(p);
         v["calculated_price"] = q["lineItems"][0]["price"].clone();
         data.push(v);

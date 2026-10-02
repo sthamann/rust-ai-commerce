@@ -1,6 +1,27 @@
 [
-  {"file":"index.html","title":"Rust AI Commerce — Open-source agentic commerce with merchant control","description":"Explore an open-source Rust ecommerce prototype with merchant-approved AI actions, local LLMs, MCP/UCP adapters and selected Shopware behavior ports."},
-  {"file":"quickstart.html","title":"Run a Rust ecommerce prototype locally | Rust AI Commerce","description":"Start the storefront and merchant workspace with Rust, PostgreSQL and Docker. No model download required for the initial commerce tour."},
-  {"file":"mcp.html","title":"Connect Claude Desktop to a commerce MCP server | Rust AI Commerce","description":"Configure a local Model Context Protocol bridge to Rust AI Commerce. Learn which tools are public and how merchant approval and workspace authority work."},
-  {"file":"shopware.html","title":"Port Shopware pricing behavior to Rust with differential tests","description":"How Rust AI Commerce checks bounded pricing, context and shipping-tax ports against original Shopware PHP classes, with explicit compatibility limits."}
+  {
+    "file": "index.html",
+    "title": "Rust AI Commerce — Open-source agentic commerce with merchant control",
+    "description": "Explore an open-source Rust ecommerce prototype with merchant-approved AI actions, local LLMs, MCP/UCP adapters and selected Shopware behavior ports."
+  },
+  {
+    "file": "benchmarks.html",
+    "title": "Real Rust commerce benchmarks: catalog, cart and durable checkout",
+    "description": "Inspect reproducible local HTTP and PostgreSQL benchmarks, before-and-after results, raw latencies, hardware, validation and explicit measurement limits."
+  },
+  {
+    "file": "quickstart.html",
+    "title": "Run a Rust ecommerce prototype locally | Rust AI Commerce",
+    "description": "Start the storefront and merchant workspace with Rust, PostgreSQL and Docker. No model download required for the initial commerce tour."
+  },
+  {
+    "file": "mcp.html",
+    "title": "Connect Claude Desktop to a commerce MCP server | Rust AI Commerce",
+    "description": "Configure a local Model Context Protocol bridge to Rust AI Commerce. Learn which tools are public and how merchant approval and workspace authority work."
+  },
+  {
+    "file": "shopware.html",
+    "title": "Port Shopware pricing behavior to Rust with differential tests",
+    "description": "How Rust AI Commerce checks bounded pricing, context and shipping-tax ports against original Shopware PHP classes, with explicit compatibility limits."
+  }
 ]

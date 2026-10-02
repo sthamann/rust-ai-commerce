@@ -1,0 +1,142 @@
+<article class="article benchmark-doc">
+  <p class="eyebrow">Performance / reproducible local evidence</p>
+  <h1>Show the speed.<br /><span class="accent">Show the work.</span></h1>
+  <p class="lead">
+    A measured Rust → PostgreSQL path. Real HTTP, validated prices and durable
+    orders. Baseline and optimized release builds on the same local database.
+  </p>
+  <div class="benchmark-summary">
+    <span>{{measured_requests}} measured requests per build</span
+    ><span>3 rounds per workload</span
+    ><span>{{persisted_orders}} unique persisted orders, including warm-up</span
+    ><span>Recorded {{benchmark_date}}</span>
+  </div>
+  <h2>The complete comparison</h2>
+  <p>
+    Each cell is the median of three rounds. p95 is the 95th-percentile duration
+    inside a round, including the complete HTTP response and JSON validation.
+    Throughput counts successful requests per elapsed second. “Clients” means
+    concurrent closed-loop clients.
+  </p>
+  <div
+    class="table-scroll"
+    role="region"
+    aria-label="Benchmark results"
+    tabindex="0"
+  >
+    <table class="benchmark-table">
+      <thead>
+        <tr>
+          <th scope="col">Workload</th>
+          <th scope="col">Clients</th>
+          <th scope="col">p95 ms<br />Before → after</th>
+          <th scope="col">Requests / sec<br />Before → after</th>
+          <th scope="col">After errors / requests</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{benchmark_rows}}
+      </tbody>
+    </table>
+  </div>
+  <div class="actions">
+    <a class="button primary" href="assets/benchmark-after.json"
+      >Download optimized raw data ↗</a
+    ><a class="button" href="assets/benchmark-before.json"
+      >Download baseline raw data ↗</a
+    >
+  </div>
+  <h2>What changed in the core</h2>
+  <ul>
+    <li>
+      <strong>Indexed translations:</strong> one lookup map replaces repeated
+      scans of every translation. Language fallback remains field-specific; NULL
+      and an explicitly empty string keep their different meanings.
+    </li>
+    <li>
+      <strong>One product per preview:</strong> a catalog price preview searches
+      its actual product, rather than searching the entire catalog once for
+      every product.
+    </li>
+    <li>
+      <strong>Cart-sized loading:</strong> a cart loads its own SKUs and their
+      parents. A 20-line cart no longer hydrates 1,000 unrelated products and
+      translations.
+    </li>
+    <li>
+      <strong>Complete request intake:</strong> the catalog HTTP handler reads
+      the POST body before returning a large response. Separate diagnostic runs
+      exposed truncated responses when the body was left unread.
+    </li>
+  </ul>
+  <h2>The measurement conditions</h2>
+  <dl class="conditions">
+    <dt>Hardware</dt>
+    <dd>
+      Apple M3 Ultra · 512 GiB host RAM. This is a powerful development
+      workstation.
+    </dd>
+    <dt>Software</dt>
+    <dd>
+      macOS · cargo release build with thin LTO · PostgreSQL 16 in Docker, using
+      the project's AGE + pgvector image.
+    </dd>
+    <dt>Fixtures</dt>
+    <dd>
+      Two isolated synthetic shops: 6 and 1,000 root products. All products have
+      German translations, identical €24.90 gross prices and ample stock. The
+      cart contains 20 distinct items.
+    </dd>
+    <dt>Transport & client</dt>
+    <dd>
+      Local HTTP/1.1, a fresh connection per request, Python threads on the same
+      host. Catalog measurement uses POST with no body, identically before and
+      after. The client reads and validates every response; its overhead and
+      shared-host contention are included.
+    </dd>
+    <dt>Warm-up</dt>
+    <dd>
+      One validated request per client before each round. Database and
+      operating-system caches are warm; this is not a cold-start measurement.
+    </dd>
+    <dt>Checkout</dt>
+    <dd>
+      Every measured checkout has a fresh cart and unique idempotency key. Stock
+      is updated and the order is committed in PostgreSQL. Payment is simulated;
+      no payment-provider network request is timed. All measured order IDs are
+      checked directly in the database.
+    </dd>
+  </dl>
+  <h2>Failed attempts are part of the record</h2>
+  <p>
+    Initial catalog runs sending a JSON POST body timed out or received
+    connection resets. They were aborted, not counted as clean benchmark runs.
+    Body-free control requests completed; the HTTP body-consumption fix was then
+    tested with the original JSON-body case.
+    <a href="assets/benchmark-diagnostics.json"
+      >Read the diagnostic record and follow-up result.</a
+    >
+  </p>
+  <h2>Run it yourself</h2>
+  <p>
+    <a
+      href="https://github.com/sthamann/rust-ai-commerce/blob/main/docs/benchmarks.md"
+      >The reproducible setup</a
+    >
+    documents the isolated database, build commands and
+    <a
+      href="https://github.com/sthamann/rust-ai-commerce/blob/main/scripts/benchmark.py"
+      >benchmark script</a
+    >. Raw files include every successful latency, failures, source
+    revision/diff and binary hashes.
+  </p>
+  <h2>What these numbers do not establish</h2>
+  <p>
+    Production capacity, internet latency, cold-cache performance,
+    million-product catalogs, distributed deployment, real payment-provider
+    performance and local LLM generation speed remain unmeasured here. There is
+    no Shopware speed comparison. These are bounded local measurements, not a
+    production SLA or maximum server capacity.
+  </p>
+  <p><a href="index.html#demo">Watch the short feature clips →</a></p>
+</article>
