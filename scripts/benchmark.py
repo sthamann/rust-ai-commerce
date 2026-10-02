@@ -201,7 +201,7 @@ def benchmark(args):
               'benchmarkScriptSha256': hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
               'environment': {'os': platform.platform(), 'cpu': subprocess.check_output(['sysctl', '-n', 'machdep.cpu.brand_string'], text=True).strip() if platform.system() == 'Darwin' else platform.processor(),
                               'memoryBytes': int(subprocess.check_output(['sysctl', '-n', 'hw.memsize'], text=True)) if platform.system() == 'Darwin' else None,
-                              'build': 'cargo build --release --locked', 'database': 'PostgreSQL 16 / Docker / AGE + pgvector',
+                              'build': 'cargo build --release --locked', 'database': 'PostgreSQL 17 / Docker / AGE + pgvector',
                               'rust': subprocess.check_output(['rustc', '--version'], text=True).strip(),
                               'transport': 'localhost HTTP/1.1; fresh connection per request; catalog POST has no body', 'client': 'Python ' + platform.python_version() + ' stdlib threads; same host as server',
                               'warmup': 'one validated request per client before each round; OS/database caches warm',

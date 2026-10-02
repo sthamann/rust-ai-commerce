@@ -3,6 +3,9 @@ for the current implementation and performance limits.
 
 # Architecture decisions and next boundaries
 
+See the [SaaS scalability roadmap](scalability.md) for code-specific bottlenecks,
+cell architecture, delivery order and proposed capacity/economics tests.
+
 ## One transactional core, independently deployable workers
 
 Start with one Rust/Axum process and PostgreSQL 17 with Apache AGE and pgvector. This is the smallest unit that
