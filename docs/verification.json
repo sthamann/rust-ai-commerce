@@ -640,7 +640,7 @@
   "formalVerification": {
     "status": "passed",
     "scope": "Extracted production policies; NOT full Rust/server correctness",
-    "sourceCommit": "eaebddbdda94d4f780ac0904568f5df97d7fcba5",
+    "sourceCommit": "061f13408f3df52e500237111265e6d8c1ebcc0d",
     "workingTreeChanged": true,
     "leanToolchain": "leanprover/lean4:v4.29.1",
     "policies": 17,
@@ -788,7 +788,7 @@
   },
   "platformControlPlane": {
     "date": "2026-10-02T19:11:53.819117+00:00",
-    "operatorApiGroups": 10,
+    "operatorApiGroups": 11,
     "freshProductionBootstrapGroups": 4,
     "rustUnitTests": 48,
     "rustModules": 159,
@@ -797,6 +797,8 @@
     "containerSmoke": "passed: built non-root image, actual AGE PostgreSQL, frontend, personal operator signin/shop creation, closed signup/bootstrap",
     "browser": "Actual personal login and sample shop creation; English/German UI; mobile 420px no horizontal overflow. Screenshot uses isolated synthetic database.",
     "publicHosting": "not deployed: backend SSH target and public DNS domain pending",
-    "documentation": "README, platform, deployment, source map, feature/security/proof guides updated"
+    "documentation": "README, platform, deployment, source map, feature/security/proof guides updated",
+    "grossCaptureRefundRegression": "passed with synthetic persisted capture/refund facts, no live PSP",
+    "connectorShutdownRegression": "cooperative stop/join: red case reproduced; five private-state tests pass; complete protocol fixture rerun required"
   }
 }

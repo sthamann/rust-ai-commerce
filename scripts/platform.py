@@ -222,6 +222,30 @@ assert (
     and a["booked"] == a["simulated"]
     and float(a["captured"]) == 0
 )
+# Synthetic persisted capture facts exercise aggregate semantics only: no live provider is contacted.
+original_payment = order["payment"]
+order_id = order["id"]
+assert all(c in "0123456789abcdef" for c in order_id)
+for state in ["captured", "partially_refunded", "refunded", "captured_late"]:
+    payment = {
+        **original_payment,
+        "provider": "paypal",
+        "realMoneyCharged": True,
+        "state": state,
+    }
+    encoded = json.dumps(payment).replace("'", "''")
+    sql(
+        f"UPDATE orders SET data=jsonb_set(data,'{{payment}}','{encoded}'::jsonb) WHERE tenant='{seed}' AND id='{order_id}'"
+    )
+    confirmed = req("/api/platform/shops/" + seed + "?days=7", headers=oh)["amounts"][0]
+    assert confirmed["captured"] == a["booked"] and float(confirmed["simulated"]) == 0
+encoded = json.dumps(original_payment).replace("'", "''")
+sql(
+    f"UPDATE orders SET data=jsonb_set(data,'{{payment}}','{encoded}'::jsonb) WHERE tenant='{seed}' AND id='{order_id}'"
+)
+check(
+    "gross confirmed captures remain recorded after partial/full refunds and late captures; synthetic facts never contact a live provider"
+)
 # Mark an isolated empty shop as staging using the real relation; aggregates must exclude it.
 sql(
     f"INSERT INTO shop_environments(tenant,live_tenant,name,baseline) VALUES('{empty}','{seed}','Synthetic exclusion','{{}}'::jsonb)"

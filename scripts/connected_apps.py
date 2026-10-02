@@ -268,9 +268,16 @@ with tempfile.TemporaryDirectory(prefix="commerce-connectors-") as folder:
     connector = Connector()
     service = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
     service.connector = connector
+    service.daemon_threads = False
     threading.Thread(target=service.serve_forever, daemon=True).start()
+    stop_workers = threading.Event()
+    workers = []
     for app in sorted(["gmail", "google_analytics", "slack"]):
-        threading.Thread(target=connector.loop, args=(app,), daemon=True).start()
+        worker = threading.Thread(
+            target=connector.loop, args=(app, stop_workers), daemon=True
+        )
+        worker.start()
+        workers.append(worker)
     app_url = "http://127.0.0.1:" + str(service.server_port)
     with socket.socket() as s:
         s.bind(("127.0.0.1", 0))
@@ -314,7 +321,10 @@ with tempfile.TemporaryDirectory(prefix="commerce-connectors-") as folder:
         with urllib.request.urlopen(base + "/store-api/apps/analytics.js") as response:
             assert response.headers.get_content_type() == "text/javascript"
             assert response.headers.get("X-Content-Type-Options") == "nosniff"
-            assert response.read().decode() == (ROOT / "extensions/sdk/analytics.js").read_text()
+            assert (
+                response.read().decode()
+                == (ROOT / "extensions/sdk/analytics.js").read_text()
+            )
 
         def user():
             return api(
@@ -740,5 +750,13 @@ with tempfile.TemporaryDirectory(prefix="commerce-connectors-") as folder:
         backend.terminate()
         backend.wait(20)
         log.close()
+        stop_workers.set()
         service.shutdown()
+        service.server_close()
+        for worker in workers:
+            worker.join(30)
+            assert not worker.is_alive(), (
+                "Connector writer still active during state cleanup"
+            )
         provider.shutdown()
+        provider.server_close()

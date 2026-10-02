@@ -856,8 +856,8 @@
     },
     "src/platform/metrics.rs": {
       "status": "unproved",
-      "sha256": "4c23021258f114bd402b39906730b9d3e23f68be3b3780eed2686d9066f468d3",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "1401e3d3877134836bf6ff2203892d28275504a288b9b1701da0732d76f9b946",
+      "review": "Reviewed gross capture aggregation for captured, late captured and refunded order cohorts: platform.py 11 real HTTP/PG groups passed including synthetic persisted money states, without PSP calls. Reviewed post-commit optional graph indexing failures cannot turn committed ownership into provisioning failure. Rust fmt/clippy and binaries pass; same extracted operator policy and SQL/provisioning adapters remain outside full proof."
     },
     "src/platform/mod.rs": {
       "status": "unproved",
@@ -866,8 +866,8 @@
     },
     "src/platform/provision.rs": {
       "status": "unproved",
-      "sha256": "d3a7bf5f25ba7663cb1f962acf17627355f4a8dd0e61eb0b1a0da43f21aac70e",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "fcb72b4e3050d6bad9b0e92129164b3de7552c197ee5f026605a39255d7239e9",
+      "review": "Reviewed gross capture aggregation for captured, late captured and refunded order cohorts: platform.py 11 real HTTP/PG groups passed including synthetic persisted money states, without PSP calls. Reviewed post-commit optional graph indexing failures cannot turn committed ownership into provisioning failure. Rust fmt/clippy and binaries pass; same extracted operator policy and SQL/provisioning adapters remain outside full proof."
     },
     "src/pricing.rs": {
       "status": "unproved",

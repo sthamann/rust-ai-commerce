@@ -42,21 +42,20 @@ pub(super) async fn create(
         .write()
         .unwrap()
         .insert(id.into(), Arc::new(sandbox));
-    // Product indexing uses the regular consumer and may retry independently; committed shop ownership stays valid.
-    let mut indexed = true;
-    if seed {
-        for p in prototype_products(&a, id).await? {
-            if knowledge::sync_product(&mut *a.db.acquire().await?, id, &json!(p))
-                .await
-                .is_err()
-            {
-                indexed = false;
+    // Product indexing uses the regular consumer and reports failure independently; committed shop ownership stays valid.
+    let indexed = if seed {
+        let result: Result<()> = async {
+            for p in prototype_products(&a, id).await? {
+                knowledge::sync_product(&mut *a.db.acquire().await?, id, &json!(p)).await?;
             }
+            knowledge::seed_relations(&a.db, id).await?;
+            Ok(())
         }
-        if knowledge::seed_relations(&a.db, id).await.is_err() {
-            indexed = false;
-        }
-    }
+        .await;
+        result.is_ok()
+    } else {
+        true
+    };
     Ok(Json(
         json!({"id":id,"name":name.trim(),"ownerId":owner,"seedCatalog":seed,"knowledgeIndexed":indexed,"paymentMode":"simulated","storefrontPath":format!("/?shop={id}"),"studioPath":format!("/?shop={id}#merchant")}),
     ))

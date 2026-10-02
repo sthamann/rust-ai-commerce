@@ -16,11 +16,12 @@ session is independent of the merchant studio's browser session.
   populations. Shop teams count active memberships.
 - Orders cover the selected 7/30/90-day calendar window, including today in the
   database's UTC timezone. Per-shop details show actual daily counts, including
-  zero days. Current inventory/customer counts are not historical snapshots.
+  zero days. Monetary totals use that order cohort, not the provider settlement
+  timestamp. Current inventory/customer counts are not historical snapshots.
 - Amounts remain decimal strings grouped by currency. Recorded order value
   excludes cancelled orders. Simulated payments are separate. Confirmed captures
-  require the persisted provider-confirmed `realMoneyCharged=true` and captured
-  state. These are gross captures, not net revenue, fees, refunds or settlements.
+  require the persisted provider-confirmed `realMoneyCharged=true` and a confirmed capture/late-capture/refund
+  state. Refunding a payment does not erase its original gross capture. These are gross captures, not net revenue, fees, refunds or settlements.
 - API activity is persisted lifetime HTTP request counts, including development
   tests and merchant calls. It is not GA visitors or the selected order window.
   In-flight counter updates may appear after the normal metrics flush.

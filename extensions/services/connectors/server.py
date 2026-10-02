@@ -211,13 +211,15 @@ class Connector:
                 },
             )
 
-    def loop(self, app=None):
-        while True:
+    def loop(self, app=None, stop_event=None):
+        # Cooperative stop lets an owner join active writers before removing private state.
+        stop_event = stop_event or threading.Event()
+        while not stop_event.is_set():
             try:
                 self.once(app)
             except Exception:
                 pass
-            time.sleep(0.25)
+            stop_event.wait(0.25)
 
 
 class Handler(BaseHTTPRequestHandler):
