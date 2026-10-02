@@ -27,7 +27,11 @@ This is also a laboratory for porting selected original Shopware behavior to Rus
 | Agent commerce protocols | A local MCP bridge and partial UCP checkout adapters using shared operations |
 | Rust ecommerce and B2B checkout | SKU variants, quantity prices, tax/shipping configuration and durable demo orders |
 | Shopware behavior in Rust | Bounded ports checked against original Shopware PHP classes |
+| Storyfront shops | Catalog/variant/media import and checkout transfer through a separate [Storyfront app](docs/storyfront.md) |
+
 | Self-hosted storage | PostgreSQL + Apache AGE + pgvector; no paid database service required |
+
+![Connected Storyfront product](docs/storyfront-product.png)
 
 The interface supports **English, German, French and Spanish**. MIT licensed.
 

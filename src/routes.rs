@@ -4,6 +4,7 @@ use crate::*;
 pub(crate) fn router(a: App) -> Router {
     Router::new()
         .merge(apps::app_router())
+        .merge(checkout_handoff::router())
         .merge(payments::payment_router())
         .merge(cognition::cognition_router())
         .route("/health", get(health))

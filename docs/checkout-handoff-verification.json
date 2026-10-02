@@ -1,0 +1,14 @@
+{
+  "passed": 5,
+  "checks": [
+    "Empty and stale carts cannot issue a transfer",
+    "Tickets are tenant scoped and reissue revokes the previous transfer",
+    "Expired transfers fail against database time",
+    "Exactly one concurrent consumer wins and the original cart token is revoked",
+    "Transferred cart places one durable merchant order and terminal carts cannot transfer"
+  ],
+  "orderId": "3a6f3ba431ab43649eaaa4b8ea4c8587",
+  "workspace": "handoff-3d2bbfd700e2",
+  "paymentState": "authorized",
+  "paymentMode": "simulated, no external charge"
+}

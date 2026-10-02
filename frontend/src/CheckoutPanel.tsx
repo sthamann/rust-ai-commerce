@@ -98,6 +98,7 @@ export default function CheckoutPanel({
                   />
                   <div>
                     <strong>{i.label}</strong>
+                    <small>{i.id}</small>
                     <small>
                       {money(i.price.unitPrice)}{" "}
                       {s(cart.price.taxStatus === "net" ? "net" : "gross")}

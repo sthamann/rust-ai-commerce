@@ -56,6 +56,7 @@ pub(crate) use order_checkout::*;
 mod catalog_routes;
 pub(crate) use catalog_routes::*;
 mod cart_routes;
+mod checkout_handoff;
 pub(crate) use cart_routes::*;
 mod customer;
 pub(crate) use customer::*;

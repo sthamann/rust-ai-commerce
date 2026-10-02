@@ -187,3 +187,12 @@ remains; open carts must be reconfigured against the new version. Completed orde
 retain their original snapshot and idempotent checkout replay. The small core
 `compatibility.rs` adapter reads the older cart format; it contains no current
 engraving acceptance or price rules.
+
+
+## Storyfront connector app
+
+`apps/storyfront` declares an independent service app with a multilingual merchant
+iframe. `generate` imports this tenant's catalog into Storyfront; `status` reports
+the durable job and configured shop URL. The companion Ambient-C connector owns
+manifest mapping and publication. The core exposes only generic app actions and a
+single-use checkout transfer. See [the complete setup and limits](../docs/storyfront.md).

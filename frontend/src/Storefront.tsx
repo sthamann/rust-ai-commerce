@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { locales, type Locale } from "./i18n";
 import { useShopText } from "./shop-i18n";
 import {
@@ -31,6 +31,9 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
   const shopTenant =
     new URLSearchParams(location.search).get("shop") ?? "atelier";
   const cartKey = `rac-cart:${shopTenant}`;
+  const transfer = useRef<{ ticket: string; promise: Promise<Cart> } | null>(
+    null,
+  );
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<Cart>();
   const [id, setId] = useState(productId);
@@ -73,17 +76,37 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
       try {
         const token = localStorage.getItem(cartKey);
         let c: Cart;
-        try {
-          c = await shopApi<Cart>(
-            "/store-api/checkout/cart",
-            token ? undefined : { session },
-            token ?? undefined,
+        const ticket = location.hash.startsWith("#checkout/")
+          ? location.hash.slice(10)
+          : undefined;
+        if (ticket) {
+          if (transfer.current?.ticket !== ticket)
+            transfer.current = {
+              ticket,
+              promise: shopApi<Cart>("/store-api/checkout/handoff/consume", {
+                ticket,
+              }),
+            };
+          c = await transfer.current.promise;
+          localStorage.setItem(cartKey, c.token);
+          history.replaceState(
+            null,
+            "",
+            `${location.pathname}${location.search}#`,
           );
-          if (c.status !== "open" && !location.hash.startsWith("#payment/"))
+          setBag(true);
+        } else
+          try {
+            c = await shopApi<Cart>(
+              "/store-api/checkout/cart",
+              token ? undefined : { session },
+              token ?? undefined,
+            );
+            if (c.status !== "open" && !location.hash.startsWith("#payment/"))
+              c = await shopApi<Cart>("/store-api/checkout/cart", { session });
+          } catch {
             c = await shopApi<Cart>("/store-api/checkout/cart", { session });
-        } catch {
-          c = await shopApi<Cart>("/store-api/checkout/cart", { session });
-        }
+          }
         if (!active) return;
         save(c);
         await catalog(c.token);

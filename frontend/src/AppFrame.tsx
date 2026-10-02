@@ -59,7 +59,7 @@ export default function AppFrame({
       key={`${app}:${locale}`}
       ref={ref}
       src={url}
-      sandbox="allow-scripts allow-forms"
+      sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
       referrerPolicy="no-referrer"
       title={app}
       className="app-frame"

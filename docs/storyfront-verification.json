@@ -1,0 +1,40 @@
+{
+  "publishedAvailableSkus": 10,
+  "copiedImages": 33,
+  "order": {
+    "reference": "RAC-a36105f8",
+    "variant": "mug-terracotta-500",
+    "quantity": 1,
+    "total": 29.9,
+    "currency": "EUR",
+    "payment": "simulated",
+    "realMoneyCharged": false
+  },
+  "liveHttpChecks": [
+    "exact variant and authoritative price 29.90 EUR",
+    "unavailable SKU",
+    "injected tenant",
+    "injected price",
+    "foreign origin",
+    "unknown merchant host",
+    "oversized body"
+  ],
+  "connectorTests": {
+    "passed": 9,
+    "assertions": 43
+  },
+  "rustUnitTests": 28,
+  "postgresAppChecks": 16,
+  "postgresHandoffChecks": 5,
+  "aiTest": {
+    "approvedQuestions": 1,
+    "composerCalls": 2,
+    "answerAgentCalls": 1,
+    "observedCostUsd": 0.005206,
+    "models": [
+      "openai/gpt-oss-120b",
+      "minimax/minimax-m2.7"
+    ],
+    "result": "Generated product chapters; leading answer incomplete and not localized. Sold-out recommendation now prevented by refresh filter; no additional paid question tested that repair."
+  }
+}

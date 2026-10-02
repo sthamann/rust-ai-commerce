@@ -1,0 +1,56 @@
+{
+  "id": "storyfront",
+  "version": "1.0.0",
+  "coreApi": "1",
+  "runtime": "service",
+  "name": {
+    "en": "Storyfront",
+    "de": "Storyfront",
+    "fr": "Storyfront",
+    "es": "Storyfront"
+  },
+  "permissions": [
+    "admin.slot",
+    "service.call"
+  ],
+  "entities": [],
+  "slots": [
+    {
+      "location": "admin.apps",
+      "component": "iframe",
+      "label": {
+        "en": "Storyfront studio",
+        "de": "Storyfront Studio",
+        "fr": "Studio Storyfront",
+        "es": "Estudio Storyfront"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "name": "generate",
+      "description": "Generate or refresh the connected Storyfront from this shop catalog; explicit merchant action",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "public": false
+    },
+    {
+      "name": "status",
+      "description": "Read the current Storyfront generation status and connected storefront URL",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "public": false
+    }
+  ],
+  "events": []
+}

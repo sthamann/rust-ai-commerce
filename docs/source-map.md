@@ -171,3 +171,6 @@ Shopware compatibility claim is made.
 | [`src/apps/compatibility.rs`](../src/apps/compatibility.rs) | Explicit adapter for pre-1.1 engraving cart records; completed snapshots stay immutable. | Rust compatibility regression |
 | [`extensions/apps/engraving/configuration.wat`](../extensions/apps/engraving/configuration.wat) | App-owned text-length and fee acceptance rules. | Rust guest tests + `apps.py` |
 | [`extensions/apps/gift-message/configuration.wat`](../extensions/apps/gift-message/configuration.wat) | Independent app with its own length/fee limits and input field. | `apps.py` real taxed checkout |
+
+| [`src/checkout_handoff.rs`](../src/checkout_handoff.rs) | Generic expiring, single-use transfer of an authoritative cart; rotates tokens. | `checkout_handoff.py` real PostgreSQL concurrency/order checks |
+| [`extensions/apps/storyfront/manifest.json`](../extensions/apps/storyfront/manifest.json) | Storyfront app capabilities, separate service and merchant UI contract. | Installed package + actual connector/browser flow; see `storyfront.md` |

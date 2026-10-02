@@ -86,7 +86,7 @@ export default function AppsManager({
         <p>{a("intro")}</p>
       </div>
       <div className="app-install">
-        {["engraving", "paypal", "shopware_payments"]
+        {["engraving", "paypal", "shopware_payments", "storyfront"]
           .filter(
             (id) =>
               !packages.some((p) => p.id === id) ||
@@ -109,7 +109,9 @@ export default function AppsManager({
                 ? a("engraving")
                 : id === "paypal"
                   ? "PayPal Sandbox"
-                  : "Shopware Payments"}
+                  : id === "storyfront"
+                    ? "Storyfront"
+                    : "Shopware Payments"}
             </button>
           ))}
       </div>

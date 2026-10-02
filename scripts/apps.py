@@ -98,6 +98,17 @@ broken=copy.deepcopy(gift);broken['id']='broken_config';broken['configuration'][
 call('/api/apps',{'manifest':broken},h,expected=400)
 assert not any(p['id']=='broken_config' for p in call('/api/apps',h=h)['packages'])
 check('Missing app ABI rejects installation before publishing a package or creating schema')
+call('/api/apps',{'builtIn':'storyfront'},h)
+call('/api/apps/storyfront/actions/generate',{},rh,expected=403)
+call('/api/apps/storyfront/actions/generate',{'tenant':other['workspace']},h,expected=400)
+call('/store-api/apps/storyfront/actions/generate',{}, {'x-tenant':u['workspace']},expected=401)
+owner_tools=call('/mcp',{'jsonrpc':'2.0','id':8,'method':'tools/list'},h)['result']['tools']
+reader_tools=call('/mcp',{'jsonrpc':'2.0','id':8,'method':'tools/list'},rh)['result']['tools']
+assert any(t['name']=='app.storyfront.generate' for t in owner_tools)
+assert not any(t['name'].startswith('app.storyfront.') for t in reader_tools)
+tampered=json.loads((ROOT/'extensions/apps/storyfront/manifest.json').read_text())
+call('/api/apps',{'manifest':tampered},h,expected=400)
+check('Storyfront installation exposes owner MCP capabilities; viewers, shoppers and injected scope cannot generate shops')
 state={'owner':u,'orderId':o['id'],'memory':memory,'checks':checks,'passed':len(checks)}
 if os.getenv('REPORT_PATH'):pathlib.Path(os.environ['REPORT_PATH']).write_text(json.dumps(state,indent=2)+'\n')
 print(json.dumps({'passed':len(checks)}))

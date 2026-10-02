@@ -40,6 +40,10 @@ pub(crate) async fn bootstrap() -> App {
     .execute(&bootstrap)
     .await
     .expect("app/payment/memory schema");
+    sqlx::raw_sql(include_str!("../migrations/012-checkout-handoff.sql"))
+        .execute(&bootstrap)
+        .await
+        .expect("checkout handoff schema");
     let db = PgPoolOptions::new()
         .max_connections(20)
         .after_connect(|conn, _| {
