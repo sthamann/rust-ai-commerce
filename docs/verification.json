@@ -1,7 +1,7 @@
 {
   "date": "2026-10-02T15:46:11.674928+00:00",
   "version": "0.5.0",
-  "sourceCommit": "192aec5a628c903dae540987282df03ae79a3da6",
+  "sourceCommit": "4f096a5dce75ef128ffb8aa3766433748e76255e",
   "scope": "Customer address lifecycle, native merchant operations, workflow/events, rights, assets, payment reconciliation and all 18 HTTP regression suites against separate PostgreSQL database",
   "reference": {
     "shopware": "6.7.14.2",
@@ -635,5 +635,5 @@
     "Storyfront title/description import is multilingual; earlier generated stories and its broader scene/chrome localization are not automatically translated",
     "PayPal wallet Orders v2 wire/reconciliation/refund/BN verified with local Sandbox fixtures; Live mode prepared but no live settlement tested. Shopware Payments standalone connector remains unconnected."
   ],
-  "sourceStatus": "Verified working-tree changes after sourceCommit; see Git history for the merchant-operations commit"
+  "sourceStatus": "All 18 suites passed before the final contact-projection hardening; affected customer/merchant/payment/service suites plus 44 units rechecked after hardening"
 }
