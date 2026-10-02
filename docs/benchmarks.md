@@ -80,7 +80,7 @@ external payment provider is invoked by the timed requests.
 
 ## Limits and cleanup
 
-The current report covers one powerful Apple M3 Ultra workstation, PostgreSQL 16
+The current report covers one powerful Apple M3 Ultra workstation, PostgreSQL 17
 in Docker, warm caches and these bounded fixtures. It does not measure production
 operations, WAN latency, cold starts, million-product catalogs, real-money payments,
 LLM generation or comparative Shopware performance. Repeat it on your deployment

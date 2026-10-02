@@ -9,7 +9,7 @@
     "cpu": "Apple M3 Ultra",
     "memoryBytes": 549755813888,
     "build": "cargo build --release --locked",
-    "database": "PostgreSQL 16 / Docker / AGE + pgvector",
+    "database": "PostgreSQL 17 / Docker / AGE + pgvector",
     "rust": "rustc 1.98.1 (48a229cea 2026-09-01)",
     "transport": "localhost HTTP/1.1; fresh connection per request; catalog POST has no body",
     "client": "Python 3.14.3 stdlib threads; same host as server",
