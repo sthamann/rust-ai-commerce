@@ -39,6 +39,33 @@ def evidence_fields():
         f"<td>{old[key]['medianRequestsPerSecond']:.1f} → <strong>{row['medianRequestsPerSecond']:.1f}</strong></td>" +
         f"<td>{row['errors']} / {row['requests']}</td></tr>"
         for key, row in new.items())
+    lower = json.loads((ROOT / 'docs/assets/benchmark-million.json').read_text())
+    million = json.loads((ROOT / 'docs/assets/benchmark-million-500.json').read_text())
+    assert million['catalogSizes']['large'] == 1000000
+    assert million['arrivalRatePerSecond'] == 500
+    assert not any(row['errors'] for row in million['summaries']), 'Do not promote failed million-product runs'
+    rows = {row['scenario']: row for row in million['summaries']}
+    fields.update(million_catalog_p95=f"{rows['catalog-page-50-in-1000000']['medianP95Ms']:.1f}",
+                  million_cart_p95=f"{rows['cart-20-lines-in-1000000-catalog']['medianP95Ms']:.1f}",
+                  million_checkout_p95=f"{rows['durable-checkout-in-1000000-catalog']['medianP95Ms']:.1f}",
+                  million_requests=str(sum(row['requests'] for row in rows.values())),
+                  million_orders=str(million['persistedUniqueOrdersIncludingWarmup']))
+    labels = {'catalog-page-50-in-6':'6-product shop / catalog page',
+              'catalog-page-50-in-1000000':'1M products / 50-product page',
+              'product-detail-in-1000000':'1M products / product detail',
+              'localized-search-in-1000000':'1M products / localized SKU search',
+              'common-term-search-in-1000000':'1M products / common-term search',
+              'cart-20-lines-in-1000000-catalog':'1M products / 20-line cart',
+              'durable-checkout-in-1000000-catalog':'1M products / durable checkout'}
+    def render_rows(rows):
+        return ''.join(
+        '<tr><th scope="row">' + labels[row['scenario']] + '</th>' +
+        f"<td>{row['medianP50Ms']:.1f}</td><td><strong>{row['medianP95Ms']:.1f}</strong></td>" +
+        f"<td>{row['medianP99Ms']:.1f}</td><td>{row['medianRequestsPerSecond']:.1f}</td>" +
+        f"<td>{row['errors']} / {row['requests']}</td></tr>" for row in rows)
+    fields['million_rows'] = render_rows(rows.values())
+    assert not any(row['errors'] for row in lower['summaries'])
+    fields['million_100_rows'] = render_rows(lower['summaries'])
     return fields
 
 
