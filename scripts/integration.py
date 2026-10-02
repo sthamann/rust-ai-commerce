@@ -17,6 +17,11 @@ def check(name):checks.append(name);print('PASS',name)
 def cart(tenant='atelier'):
     session=str(uuid.uuid4());c=request('/store-api/checkout/cart',{'session':session},{'x-tenant':tenant});return c,{'sw-context-token':c['token'],'x-tenant':tenant},session
 request('/health');check('Rust server connected to PostgreSQL')
+if TOKEN:
+    for tenant in ('atelier','workshop'):
+        policy=request('/api/extensions',headers={'Authorization':'Bearer '+TOKEN,'x-tenant':tenant})
+        assert policy['source']=='persisted' and len(policy['digest'])==64, 'First-start policy must be lockable by checkout'
+
 ps=request('/store-api/product',{})['elements'];assert len(ps)==6;check('catalog reads seeded products')
 c,h,s=cart();e=request('/api/experience',{'session':s});assert e['blocks'] and 0<e['propensity']<=1
 c=request('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'mug','quantity':2}]},h)
@@ -38,7 +43,7 @@ request('/store-api/checkout/cart',None,bh,expected=404);bh['sw-context-token']=
 b=request('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'mug','quantity':5}]},bh)
 assert b['lineItems'][0]['discountPercent']==15 and b['price']['taxStatus']=='net';check('B2B auth rotates context; quantity tier and net tax calculation')
 request('/store-api/checkout/cart',{'items':[{'id':'desk','quantity':5}],'revision':b['revision']},bh,'PUT')
-request('/store-api/checkout/order',{}, {**bh,'Idempotency-Key':'wasm-'+str(uuid.uuid4())},expected=409);check('real Wasm purchase limit blocks company checkout')
+request('/store-api/checkout/order',{}, {**bh,'Idempotency-Key':'wasm-'+str(uuid.uuid4())},expected=409);check('persisted default Wasm policy blocks company checkout, including first start')
 request('/store-api/checkout/cart',{'items':[{'id':'mug','quantity':10000}],'revision':b['revision']+1},bh,'PUT')
 request('/store-api/checkout/order',{}, {**bh,'Idempotency-Key':'stock-'+str(uuid.uuid4())},expected=409);check('stock overflow rejected by checkout')
 m=request('/mcp',{'jsonrpc':'2.0','id':1,'method':'tools/list'});assert any(t['name']=='catalog.search' for t in m['result']['tools']);assert not any(t['name'].startswith('merchant.') for t in m['result']['tools']);check('MCP exposes authorized typed capabilities')

@@ -94,7 +94,7 @@
           "same idempotency key cannot purchase another cart",
           "merchant operations require credential",
           "B2B auth rotates context; quantity tier and net tax calculation",
-          "real Wasm purchase limit blocks company checkout",
+          "persisted default Wasm policy blocks company checkout, including first start",
           "stock overflow rejected by checkout",
           "MCP exposes authorized typed capabilities",
           "MCP consumes same persisted cart",
@@ -217,7 +217,8 @@
         "syntheticOrdersOnly": true
       }
     },
-    "additionalTargetedCheck": "Membership audit records actor, target subject and previous membership"
+    "additionalTargetedCheck": "Membership audit records actor, target subject and previous membership",
+    "firstStartWithFreshDatabasePassed": true
   },
   "liveLocalModelChecks": {
     "intelligence": {

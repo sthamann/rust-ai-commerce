@@ -71,14 +71,23 @@ pub(crate) async fn bootstrap() -> App {
         .unwrap();
     for tenant in &tenants {
         let t = tenant.get::<String, _>("id");
-        let saved = sqlx::query("SELECT wat FROM extensions WHERE tenant=$1")
+        // Built-in tenants need the same persisted, lockable policy as newly registered shops.
+        // ON CONFLICT preserves an existing merchant policy and its revision.
+        let default = include_str!("../extensions/company-limit.wat");
+        sqlx::query(
+            "INSERT INTO extensions(tenant,wat,digest) VALUES($1,$2,$3) ON CONFLICT DO NOTHING",
+        )
+        .bind(&t)
+        .bind(default)
+        .bind(hash(default))
+        .execute(&a.db)
+        .await
+        .expect("default extension");
+        let wat: String = sqlx::query_scalar("SELECT wat FROM extensions WHERE tenant=$1")
             .bind(&t)
-            .fetch_optional(&a.db)
+            .fetch_one(&a.db)
             .await
-            .unwrap();
-        let wat = saved
-            .map(|r| r.get::<String, _>("wat"))
-            .unwrap_or(include_str!("../extensions/company-limit.wat").into());
+            .expect("persisted extension");
         a.sandboxes
             .write()
             .unwrap()

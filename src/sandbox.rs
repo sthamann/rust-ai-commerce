@@ -4,7 +4,8 @@ struct Limits {
     memory: StoreLimits,
 }
 /// Only a typed integer approval hook is exposed. No WASI, network, filesystem,
-/// clocks or host imports. Modules are compiled at activation, never in checkout.
+/// clocks or host imports. Compiled modules are reused; another replica's changed
+/// source is compiled on a blocking worker before checkout invokes its hook.
 pub struct Sandbox {
     engine: Engine,
     module: Module,

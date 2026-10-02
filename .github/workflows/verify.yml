@@ -29,6 +29,7 @@ jobs:
       - run: python3 scripts/differential.py && python3 scripts/context_differential.py && python3 scripts/delivery_differential.py
       - name: Real database integration
         run: |
+          trap 'cat /tmp/commerce.log' ERR
           target/debug/rust-ai-commerce > /tmp/commerce.log 2>&1 &
           for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8787/health && break || sleep 1; done
           python3 scripts/studio.py
