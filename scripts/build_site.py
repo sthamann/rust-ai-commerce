@@ -18,6 +18,7 @@ def build():
         shutil.rmtree(DEST)
     (DEST / 'assets').mkdir(parents=True)
     shutil.copyfile(ROOT / 'site/style.css', DEST / 'style.css')
+    shutil.copyfile(ROOT / 'site/favicon.svg', DEST / 'favicon.svg')
     for asset in (ROOT / 'docs/assets').iterdir():
         if asset.is_file():
             shutil.copyfile(asset, DEST / 'assets' / asset.name)
