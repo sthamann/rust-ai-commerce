@@ -93,7 +93,7 @@ and [connection boundaries](docs/connectors.md).
 The v0.5 prototype also includes versioned app installation, independent worker
 roles, an evidence-based shop-intelligence view and a PayPal Sandbox adapter.
 See [implementation and limits](docs/intelligence-apps-payments.md),
-[process roles](docs/services.md) and [extension examples](extensions/README.md).
+[worker roles](docs/intelligence-apps-payments.md) and [extension examples](extensions/README.md).
 
 ## Evidence and documentation
 
