@@ -11,11 +11,30 @@ pub(crate) async fn cart_products(
         return Ok(vec![]);
     }
     let ids = items.iter().map(|i| i.id.clone()).collect::<Vec<_>>();
-    // Load only the actual SKUs and their parents. A 20-line cart must not
-    // hydrate every product and translation in a 1,000-product shop.
-    let rows = sqlx::query("SELECT * FROM products WHERE tenant=$1 AND (id=ANY($2) OR id IN (SELECT parent_id FROM products WHERE tenant=$1 AND id=ANY($2))) ORDER BY id")
-        .bind(t).bind(&ids).fetch_all(&a.db).await?;
+    // Two explicit indexed lookups avoid the OR/subquery plan that scanned a
+    // million-row tenant even for a small cart. Root-only carts need one lookup.
+    let rows = sqlx::query("SELECT * FROM products WHERE tenant=$1 AND id=ANY($2) ORDER BY id")
+        .bind(t)
+        .bind(&ids)
+        .fetch_all(&a.db)
+        .await?;
     let mut selected = rows.iter().map(product).collect::<Vec<_>>();
+    let parent_ids = selected
+        .iter()
+        .filter_map(|p| p.parent_id.as_ref())
+        .filter(|id| !ids.contains(id))
+        .cloned()
+        .collect::<Vec<_>>();
+    if !parent_ids.is_empty() {
+        let parents =
+            sqlx::query("SELECT * FROM products WHERE tenant=$1 AND id=ANY($2) ORDER BY id")
+                .bind(t)
+                .bind(parent_ids)
+                .fetch_all(&a.db)
+                .await?;
+        selected.extend(parents.iter().map(product));
+        selected.sort_by(|a, b| a.id.cmp(&b.id));
+    }
     let roots = localize_products(
         a,
         t,
