@@ -182,7 +182,7 @@ This initial pure-Wasm contract passes price and character count, not full text 
 arbitrary product data into Wasm. Richer rules need a versioned typed ABI or an
 external service contract; the example does not claim a universal configurator.
 
-Upgrade engraving 1.0 to 1.1 explicitly from Apps & payments. Existing rule data
+Upgrade engraving 1.0 to 1.1 explicitly from Apps. Existing rule data
 remains; open carts must be reconfigured against the new version. Completed orders
 retain their original snapshot and idempotent checkout replay. The small core
 `compatibility.rs` adapter reads the older cart format; it contains no current
@@ -196,3 +196,26 @@ iframe. `generate` imports this tenant's catalog into Storyfront; `status` repor
 the durable job and configured shop URL. The companion Ambient-C connector owns
 manifest mapping and publication. The core exposes only generic app actions and a
 single-use checkout transfer. See [the complete setup and limits](../docs/storyfront.md).
+
+
+## Packing workflow app
+
+[packing-helper](apps/packing-helper/manifest.json) supplies translated packing
+checklists, an app-owned typed entity and an admin form. Its
+[workflow definition](apps/packing-helper/workflow.json) adds a `packed` order
+state and a single-click “Confirm packed” action. It belongs to **Apps → Operations**.
+
+Install the manifest through `POST /api/apps`, then save the reviewed definition
+through `PUT /api/merchant/order-state-machine` with
+`{"revision":0,"data":<workflow.json>}` (use the current revision returned by GET).
+The equivalent MCP tools are `merchant.workflow` and `merchant.workflow.save`.
+Saving app provenance requires the installed app, `apps.manage` and
+`settings.write`; orders retain their ordinary payment/delivery business guards.
+The workflow can be staged and selectively released as `order-workflow`.
+
+Committed actions emit `order.state_changed` for native flows and external app
+inboxes. A note flow can attach a visible activity to that event exactly once.
+The example does not run arbitrary code on the transition, automatically install
+its workflow, or implement the complete Shopware graphical Flow Builder.
+`python3 scripts/merchant_operations.py` exercises installation, validation,
+concurrent exact-once transition, the actual flow note and selective publication.

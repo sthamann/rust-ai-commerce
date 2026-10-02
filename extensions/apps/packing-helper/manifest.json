@@ -76,5 +76,6 @@
       "public": false
     }
   ],
-  "events": []
+  "events": [],
+  "category": "operations"
 }
