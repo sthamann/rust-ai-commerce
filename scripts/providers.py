@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Cloud wire-contract tests using local HTTP servers, NOT live cloud inference."""
-import json, os, pathlib, subprocess, threading, time, urllib.request, urllib.error
+import json, os, pathlib, subprocess, threading, time, urllib.request, urllib.error, uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 root = pathlib.Path(__file__).resolve().parents[1]
@@ -57,6 +57,21 @@ try:
     v=call('/api/agent/chat',{'message':'incomplete','inference':{'provider':'openai'}}); assert v['messages'][-1]['data']['error'] and 'taskId' not in v['messages'][-1]['data']; passed('Incomplete OpenAI output creates explicit error without executable proposal')
     behavior['mode']='reject'
     v=call('/api/agent/chat',{'message':'rejected','inference':{'provider':'anthropic'}}); assert v['messages'][-1]['data']['error']; passed('Cloud HTTP rejection has no silent local-model fallback')
+    if os.getenv('TEST_PERSONAL')=='1':
+        fixture=json.loads((root/'.run/users-state.json').read_text()); owner=fixture['owner'];editor=fixture['editor'];other=fixture['other']
+        def personal(s):return {'Authorization':'Bearer '+s['token'],'x-tenant':s['workspace']}
+        invitation=call('/api/workspace/invitations',{'email':'plan-reader-'+uuid.uuid4().hex[:10]+'@example.test','role':'viewer'},personal(owner))
+        reader=call('/api/auth/accept',{'invitationToken':invitation['token'],'name':'Plan Reader','password':'Synthetic-account-2026!'},headers={})
+        before=next(p for p in call('/api/search/product',{},personal(other))['elements'] if p['id']=='lamp')['price']
+        behavior['mode']='normal'
+        planned=call('/api/agent/chat',{'message':'Create a price proposal; do not apply.','inference':{'provider':'openai','model':'contract-openai-model'}},personal(reader))
+        task=planned['messages'][-1]['data']['taskId']
+        call('/api/agent/tasks/'+task+'/apply',{'approve':True},personal(reader),403)
+        call('/api/agent/tasks/'+task+'/apply',{'approve':True},personal(other),404)
+        assert call('/api/agent/tasks/'+task+'/apply',{'approve':True},personal(editor))['applied']
+        assert next(p for p in call('/api/search/product',{},personal(owner))['elements'] if p['id']=='lamp')['price']==71.23
+        assert next(p for p in call('/api/search/product',{},personal(other))['elements'] if p['id']=='lamp')['price']==before
+        passed('Personal reader can plan; only authorized editor executes in the owning shop')
     report={'passed':len(checks),'liveCloudInference':False,'checks':checks}
     print(json.dumps(report,indent=2))
     if os.environ.get('REPORT_PATH'): pathlib.Path(os.environ['REPORT_PATH']).write_text(json.dumps(report,indent=2)+'\n')

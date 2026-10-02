@@ -1,0 +1,110 @@
+//! Authoritative quantity pricing and localized checkout quote assembly.
+use crate::*;
+
+pub(crate) fn quote(c: &StoredCart, ps: &[Product]) -> Result<Value> {
+    let b2b = c.data.group == "business";
+    let mut lines = vec![];
+    let mut total = 0.;
+    let mut taxes = 0.;
+    for i in &c.data.items {
+        let p = ps
+            .iter()
+            .find(|p| p.id == i.id)
+            .ok_or(bad(format!("Unknown product {}", i.id)))?;
+        if normalized_quantity(p, i.quantity)? != i.quantity {
+            return Err(bad(
+                "Quantity does not match product minimum/steps; update cart",
+            ));
+        }
+        let rule_ids = if b2b {
+            vec!["business".into()]
+        } else {
+            vec!["consumer".into()]
+        };
+        let tier =
+            rust_ai_commerce::context::select_tier(&p.advanced_prices, &rule_ids, i.quantity);
+        let discount = 1. - tier.map(|t| t.discount).unwrap_or(0.);
+        let base = if b2b {
+            p.price / (1. + p.tax_rate / 100.)
+        } else {
+            p.price
+        };
+        let calc = calculate(&PriceInput {
+            price: base * discount,
+            quantity: i.quantity,
+            tax_rate: p.tax_rate,
+            gross: !b2b,
+            calculated: true,
+            decimals: 2,
+            interval: 0.01,
+            round_for_net: false,
+            list_price: p
+                .list_price
+                .map(|v| if b2b { v / (1. + p.tax_rate / 100.) } else { v }),
+            regulation_price: p
+                .regulation_price
+                .map(|v| if b2b { v / (1. + p.tax_rate / 100.) } else { v }),
+            reference: p.reference_price.clone(),
+            ..PriceInput::default()
+        });
+        total += calc.total_price;
+        taxes += calc.tax;
+        lines.push(json!({"id":p.id,"referencedId":p.id,"label":format!("{}{}",p.name,p.options.as_object().filter(|o|!o.is_empty()).map(|o|format!(" · {}",o.values().filter_map(|v|v.as_str()).collect::<Vec<_>>().join(" / "))).unwrap_or_default()),"quantity":i.quantity,"stock":p.stock,"price":{"unitPrice":calc.unit_price,"totalPrice":calc.total_price,"calculatedTaxes":calc.calculated_taxes.iter().map(|t|json!({"tax":t.tax,"taxRate":t.tax_rate,"price":t.price})).collect::<Vec<_>>(),"listPrice":calc.list_price,"regulationPrice":calc.regulation_price.map(|price|json!({"price":price})),"referencePrice":calc.reference_price},"discountPercent":math_round((1.-discount)*100.,0),"ruleId":tier.map(|t|&t.rule_id),"minPurchase":p.min_purchase,"purchaseSteps":p.purchase_steps,"maxPurchase":p.max_purchase}));
+    }
+    let total = math_round(total, 2);
+    let taxes = math_round(taxes, 2);
+    let payable = if b2b {
+        math_round(total + taxes, 2)
+    } else {
+        total
+    };
+    Ok(
+        json!({"token":c.token,"id":c.id,"revision":c.revision,"status":c.status,"lineItems":lines,"customerGroup":c.data.group,"company":c.data.company,"price":{"positionPrice":total,"totalPrice":payable,"netPrice":if b2b{total}else{math_round(total-taxes,2)},"tax":taxes,"taxStatus":if b2b{"net"}else{"gross"},"currency":"EUR"},"order":c.data.order}),
+    )
+}
+pub(crate) fn normalized_quantity(p: &Product, q: u32) -> Result<u32> {
+    let available = p.max_purchase.unwrap_or(10000).min(10000);
+    if available < p.min_purchase {
+        return Err(bad("Product cannot be purchased in an allowed quantity"));
+    }
+    Ok(rust_ai_commerce::context::fix_quantity(
+        p.min_purchase as i64,
+        q.max(p.min_purchase).min(available) as i64,
+        p.purchase_steps as i64,
+    ) as u32)
+}
+pub(crate) async fn cart_json(a: &App, c: &StoredCart) -> Result<Value> {
+    let mut h = HeaderMap::new();
+    if !c.data.locale.is_empty() {
+        h.insert(
+            "x-commerce-locale",
+            c.data
+                .locale
+                .parse()
+                .map_err(|_| bad("Invalid stored locale"))?,
+        );
+    }
+    let (locale, chain) = language_context(a, &h).await?;
+    if c.status == "completed"
+        && let Some(order) = &c.data.order
+    {
+        let mut result = order["cart"].clone();
+        result["status"] = json!(c.status);
+        result["order"] = order.clone();
+        return Ok(result);
+    }
+    let ps = commerce::sku_products(a, &c.tenant, &chain).await?;
+    let (config, revision) = commerce::config(a, &c.tenant).await?;
+    let original = commerce::selection(&c.data);
+    let selected = commerce::resolve_selection(original.clone(), &c.data.group, &config);
+    let changed = json!(original) != json!(selected);
+    let mut preview = c.clone();
+    preview.data.checkout = Some(selected.clone());
+    let ps = commerce::tax_products(&ps, &selected, &config)?;
+    let mut result = commerce::enrich(quote(&preview, &ps)?, &preview, &ps, &config, revision)?;
+    result["selectionNeedsConfirmation"] = json!(changed);
+    commerce::dates(a, &mut result).await?;
+    result["locale"] = json!(locale);
+    result["languageIdChain"] = json!(chain);
+    Ok(result)
+}

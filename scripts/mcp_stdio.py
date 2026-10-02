@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """Line-delimited MCP stdio bridge for Claude Desktop and other local clients.
-No stdout logging. MERCHANT_TOKEN is optional for read-only customer tools.
+No stdout logging. COMMERCE_SESSION_TOKEN selects a personal scoped account.
+No credential is needed for public product/cart tools. MERCHANT_TOKEN is legacy instance-admin setup.
 """
 import json, os, sys, urllib.request, urllib.error
 
 endpoint = os.environ.get('COMMERCE_URL', 'http://127.0.0.1:8787').rstrip('/') + '/mcp'
 headers = {'Content-Type': 'application/json', 'Accept': 'application/json',
            'x-tenant': os.environ.get('COMMERCE_TENANT', 'atelier')}
-if os.environ.get('MERCHANT_TOKEN'):
-    headers['Authorization'] = 'Bearer ' + os.environ['MERCHANT_TOKEN']
+credential=os.getenv('COMMERCE_SESSION_TOKEN') or os.getenv('MERCHANT_TOKEN')
+if credential:
+    headers['Authorization'] = 'Bearer ' + credential
 for line in sys.stdin:
     try:
         message = json.loads(line)

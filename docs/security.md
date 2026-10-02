@@ -1,54 +1,81 @@
 # Prototype trust boundaries
 
-- Localhost-only bind by default. Compose exposes PostgreSQL only on localhost.
-- Random local merchant/database secrets are ignored by Git, never compiled
-  into the frontend and never shown by verification scripts.
-- Merchant operations require a bearer credential. Product read-only storefront
-  data is public. Customer cart contexts are random bearer capabilities, bound
-  to tenant and rotated on demo business login.
-- Demo passwords use Argon2; accounts are synthetic and pre-seeded. This is not
-  a customer registration, recovery, OAuth or SaaS merchant membership system.
-- PostgreSQL parameterized queries, transaction locks, stock constraints and
-  optimistic revision checks protect core mutation paths.
-- Model output can only describe allowlisted typed changes. It cannot execute
-  code/SQL, grant authority or approve its own proposal. Merchant approval is
-  still necessary even when the model explanation sounds convincing.
-- MCP rejects unrecognized browser Origin headers. API tokens are sent through
-  explicit request headers. Full production CSRF/origin/CORS and OAuth policy
-  need to be implemented consistently across all adapters.
-- Public local inference endpoints currently have no per-user quotas; do not
-  expose this development deployment to the Internet. Input/body limits alone
-  do not protect against model resource exhaustion.
-- Wasm gets fuel/memory/stack limits and no imports; WAT source is limited.
-  Process-level compiler isolation remains a production requirement.
-- Payment is simulated; no credit card data, PSP secret or real charge exists.
-  There is no fulfillment, tax jurisdiction, real invoice or consent lifecycle.
-- Learning counters are demo telemetry; no personal customer data is published.
-  A real deployment needs consent, deletion/export, attribution and abuse
-  protection before enabling behavior tracking.
+Localhost-only application/database bindings are the defaults. This is a
+working SaaS workspace foundation for synthetic data, not a hardened public
+hosting service. Do not expose this development setup directly to the Internet.
 
-- AGE Cypher uses static templates and bound parameters; the model cannot issue
-  arbitrary graph queries. Graph nodes, edges and semantic SQL reads filter the
-  tenant on all relevant endpoints. Application boundaries are tested; database
-  row-level security and separate production identities are still future work.
-- OpenAI/Anthropic credentials are server environment settings. Only configured
-  booleans and model IDs reach the browser. Provider URLs are server settings,
-  never arbitrary URLs supplied by a merchant request. Cloud selection sends
-  shop context and conversation to that provider; the UI discloses this.
-- Conversation reads, provider settings, vector-digest status and reindexing
-  require the merchant credential. Read-only catalog graph/search use the
-  prototype's public storefront tenant scope. Error responses omit provider
-  bodies and keys, and failed inference cannot bypass approval.
-- The MCP stdio bridge inherits only explicitly configured credentials. Remote
-  deployment requires a production authorization gateway, TLS, tenant identity
-  and model/search quotas; no public tunnel is enabled by this implementation.
+## Personal users and merchant workspaces
 
-- Studio overview and non-mutating quote require merchant authority. The preview
-  has no cart/order/stock side effects. Public language context contains only
-  locale identifiers and bounded demo configuration.
-- The chat can expose its stored verified observations separately from model
-  prose. Grounding instructions and tested examples improve answers, but do not
-  make arbitrary model prose infallible; field-level review still controls writes.
-- Call counters record adapter, tenant, aggregate count and timestamps, never
-  external account identity. MCP configuration is served only to merchants and
-  contains the local executable path plus public tenant/URL settings, not keys.
+Merchant accounts use Argon2 salted password hashes. Opaque 12-hour session
+tokens and 24-hour one-use invitations persist only as SHA-256 digests.
+Acceptance of an invitation for an existing email requires that account's
+password and cannot overwrite or escalate an existing membership.
+
+Every authenticated request resolves its session and **active membership from
+PostgreSQL**. A client-supplied `x-tenant` only selects among authorized
+memberships; it grants no authority. Client `x-rac-*` principal headers are
+removed before middleware derives trusted user/tenant/role headers. Revocation
+and role changes apply to subsequent requests, including on other replicas;
+already executing requests are not retroactively cancelled.
+
+| Role | Authority |
+|---|---|
+| Owner | Own shop read/plan/catalog, settings/operations/extensions and members; can appoint owners |
+| Administrator | Same operational actions; cannot grant/change ownership |
+| Editor | Read, plan and explicitly approve catalog/experience changes |
+| Reader | Read and plan; cannot apply catalog changes, fulfill orders or alter settings/users/extensions |
+
+The last active owner cannot be removed/demoted. Its invariant is serialized
+using a tenant row lock. Memberships allow one identity in multiple shops with
+different roles. New shops use static public fixtures and start with empty
+orders, conversations, vector records and policy counters. Curated graph
+relationships are explicitly synthetic template data.
+
+`MERCHANT_TOKEN` remains an **instance administrator bootstrap credential**
+for local setup/verification. It has global authority and must never be
+shared with ordinary merchants. The UI places it under advanced settings;
+normal operation uses Team & access. Personal sessions are kept in browser
+sessionStorage, so same-origin XSS could steal them. Production needs an
+appropriate cookie/token gateway, strict CSP, TLS, origins/CSRF, OIDC/MFA,
+password recovery, verified email, abuse/rate controls and session management.
+
+All business relations are tenant-filtered in native HTTP, graph/vector and
+MCP paths. Database tables share one PostgreSQL application identity;
+**database RLS and physically isolated tenants are not implemented**. These
+application checks and small HTTP tests do not prove production containment
+against a compromised server/database identity. Production provisioning,
+billing, quotas, tenant deletion/export, backup isolation and domain routing
+remain required. Storefront selection is `?shop=<workspace-id>`; customer
+cart tokens remain independently scoped and rotate on B2B demo login.
+
+## Commerce, agents and extensions
+
+Core mutation paths bind SQL/Cypher parameters and use row locks, persisted
+idempotency and optimistic revisions. Completed quotes are immutable. Payment
+methods are simulated/manual; no PSP keys/card data/real charges exist.
+Fulfillment records are internal states, not a dispatched physical shipment.
+Tax rates and calendars are prototype configuration, not jurisdiction advice.
+
+Models receive bounded shop/conversation context and verified observations.
+They emit allowlisted typed proposals. A separate authorized, explicit
+approval executes changes; the model cannot grant authority, run SQL/code or
+approve its own proposal. MCP mutation uses the same role gate as HTTP.
+Public model endpoints need quotas/abuse controls before remote deployment.
+
+Cloud credentials stay on the server. Provider URLs are server configuration,
+not merchant input. Selecting OpenAI/Claude sends bounded shop context to that
+provider; this is disclosed in the UI. Local native MCP rejects unrecognized
+browser origins. The stdio bridge inherits explicitly configured credentials;
+remote ChatGPT/Claude setup still requires a real production authorization
+endpoint. No OAuth server or externally connected account is claimed.
+
+Wasm guests have no host imports/WASI and bounded fuel/memory/stack/source.
+Compilation occurs before activation; checkout refreshes a changed persisted
+policy before execution, including across app instances. Traps roll back
+purchase. A process-isolated compiler is still a production requirement.
+
+Learning counts use synthetic sessions/orders; they are not LLM weight
+training or demonstrated causal sales uplift. Production behavior tracking
+requires consent, minimization and deletion/export. Reports/screenshots contain
+only synthetic data; private `.env`, DB backups and session artifacts stay
+ignored by Git.

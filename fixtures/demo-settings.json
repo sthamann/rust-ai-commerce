@@ -1,0 +1,99 @@
+{
+  "countries": [
+    "DE",
+    "AT",
+    "FR",
+    "ES"
+  ],
+  "taxes": [
+    {
+      "id": "standard",
+      "rates": {
+        "DE": 19,
+        "AT": 20,
+        "FR": 20,
+        "ES": 21
+      }
+    },
+    {
+      "id": "reduced",
+      "rates": {
+        "DE": 7,
+        "AT": 10,
+        "FR": 5.5,
+        "ES": 4
+      }
+    }
+  ],
+  "shipping": [
+    {
+      "id": "pickup",
+      "name": "pickup",
+      "price": 0,
+      "freeAbove": null,
+      "minDays": 0,
+      "maxDays": 0,
+      "countries": [
+        "DE",
+        "AT",
+        "FR",
+        "ES"
+      ],
+      "active": true,
+      "taxType": "highest"
+    },
+    {
+      "id": "standard",
+      "name": "standard",
+      "price": 4.9,
+      "freeAbove": 150,
+      "minDays": 2,
+      "maxDays": 4,
+      "countries": [
+        "DE",
+        "AT",
+        "FR",
+        "ES"
+      ],
+      "active": true,
+      "taxType": "proportional"
+    },
+    {
+      "id": "express",
+      "name": "express",
+      "price": 12.9,
+      "freeAbove": null,
+      "minDays": 1,
+      "maxDays": 2,
+      "countries": [
+        "DE",
+        "AT"
+      ],
+      "active": true,
+      "taxType": "highest"
+    }
+  ],
+  "payments": [
+    {
+      "id": "demo-card",
+      "name": "card",
+      "active": true,
+      "businessOnly": false,
+      "mode": "simulated"
+    },
+    {
+      "id": "bank-transfer",
+      "name": "bank",
+      "active": true,
+      "businessOnly": false,
+      "mode": "manual"
+    },
+    {
+      "id": "invoice",
+      "name": "invoice",
+      "active": true,
+      "businessOnly": true,
+      "mode": "manual"
+    }
+  ]
+}

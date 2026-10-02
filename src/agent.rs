@@ -1,3 +1,4 @@
+//! Persistent grounded conversations and tenant-scoped semantic knowledge HTTP adapters.
 use super::*;
 
 pub(super) fn choice(v: &Value) -> Result<Option<Choice>> {
@@ -210,7 +211,10 @@ pub(super) async fn merchant_chat(
                 .to_string(),
             task,
         ),
-        Err(e) => (e.1, json!({"error":true,"providerUnavailable":true})),
+        Err(e) => (
+            e.1,
+            json!({"error":true,"providerUnavailable":e.0==StatusCode::BAD_GATEWAY}),
+        ),
     };
     sqlx::query("INSERT INTO chat_messages(tenant,conversation_id,role,content,data) VALUES($1,$2,'assistant',$3,$4)").bind(&t).bind(&id).bind(content).bind(data).execute(&a.db).await?;
     lock.commit().await?;

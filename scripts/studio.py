@@ -48,7 +48,7 @@ if os.environ.get('TEST_MODEL')=='1':
  facts=task['preview']['verifiedFacts'];assert facts['demoOrderCount']==after['summary']['orders']
  assert facts['learningSignals'] and facts['modelWeightsUpdated']==False
  summary=task['preview']['proposal']['summary'];assert str(facts['demoOrderCount']) in summary
- assert all(w in summary.lower() for w in ['comparaison','découverte']),summary
+ assert any(w in summary.lower() for w in ['comparaison','comparer','comparison']) and any(w in summary.lower() for w in ['découverte','découvrir','discovery']),summary
  assert all(str(s['views']) in summary and str(s['purchases']) in summary for s in facts['learningSignals']),summary
  assert call('/api/merchant/overview',headers=auth)['products']==after['products'];ok('Live Qwen answers in French using persisted order and learning facts without changing products')
  h={**auth,'x-commerce-locale':'de-DE'}

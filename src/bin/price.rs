@@ -1,3 +1,4 @@
+//! Batch price fixture transport for the original-PHP differential comparator.
 use rust_ai_commerce::pricing::{PriceInput, calculate};
 use std::io::{self, Read};
 fn main() {

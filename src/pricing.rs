@@ -225,6 +225,25 @@ pub fn calculate(i: &PriceInput) -> Price {
         reference_price,
     }
 }
+/// Port of PercentageTaxRuleBuilder::buildCollectionRules (6.7.14.2).
+/// The collection is already merged by tax rate, as in CalculatedTaxCollection.
+pub fn proportional_tax_rules(taxes: &[CalculatedTax], total: f64) -> Vec<TaxRule> {
+    if taxes.is_empty() {
+        return vec![];
+    }
+    taxes
+        .iter()
+        .map(|tax| TaxRule {
+            tax_rate: tax.tax_rate,
+            percentage: if total == 0. {
+                100. / taxes.len() as f64
+            } else {
+                tax.price / total * 100.
+            },
+        })
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

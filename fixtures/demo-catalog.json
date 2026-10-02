@@ -1,0 +1,821 @@
+{
+  "provenance": "authored-public-demo-template; never reads another merchant during signup",
+  "products": [
+    {
+      "advanced_prices": [
+        {
+          "discount": 0.1,
+          "quantity_end": 4,
+          "quantity_start": 1,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.15,
+          "quantity_end": null,
+          "quantity_start": 5,
+          "rule_id": "business"
+        }
+      ],
+      "category": "furniture",
+      "delivery_days": 2,
+      "description": "Oak frame, natural linen, compact design.",
+      "id": "chair",
+      "list_price": null,
+      "max_purchase": null,
+      "media": [
+        {
+          "id": "chair-front",
+          "url": "/media/chair-front.svg",
+          "view": "front"
+        },
+        {
+          "id": "chair-detail",
+          "url": "/media/chair-detail.svg",
+          "view": "detail"
+        },
+        {
+          "id": "chair-space",
+          "url": "/media/chair-space.svg",
+          "view": "space"
+        }
+      ],
+      "min_purchase": 1,
+      "name": "Form Chair",
+      "options": {
+        "color": "natural",
+        "material": "oak"
+      },
+      "parent_id": null,
+      "price": 189.0,
+      "properties": {
+        "height": "78 cm",
+        "material": "oak-linen",
+        "weight": "6.5 kg",
+        "width": "54 cm"
+      },
+      "purchase_steps": 1,
+      "reference_price": null,
+      "regulation_price": null,
+      "revision": 1,
+      "stock": 20,
+      "tax_rate": 19.0
+    },
+    {
+      "advanced_prices": [
+        {
+          "discount": 0.1,
+          "quantity_end": 4,
+          "quantity_start": 1,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.15,
+          "quantity_end": null,
+          "quantity_start": 5,
+          "rule_id": "business"
+        }
+      ],
+      "category": "furniture",
+      "delivery_days": 2,
+      "description": "Solid oak workspace with concealed cable tray.",
+      "id": "desk",
+      "list_price": null,
+      "max_purchase": null,
+      "media": [
+        {
+          "id": "desk-front",
+          "url": "/media/desk-front.svg",
+          "view": "front"
+        },
+        {
+          "id": "desk-detail",
+          "url": "/media/desk-detail.svg",
+          "view": "detail"
+        },
+        {
+          "id": "desk-space",
+          "url": "/media/desk-space.svg",
+          "view": "space"
+        }
+      ],
+      "min_purchase": 1,
+      "name": "Studio Desk",
+      "options": {},
+      "parent_id": null,
+      "price": 449.0,
+      "properties": {
+        "height": "74 cm",
+        "material": "oak",
+        "weight": "18 kg",
+        "width": "120 cm"
+      },
+      "purchase_steps": 1,
+      "reference_price": null,
+      "regulation_price": null,
+      "revision": 1,
+      "stock": 10,
+      "tax_rate": 19.0
+    },
+    {
+      "advanced_prices": [
+        {
+          "discount": 0.1,
+          "quantity_end": 4,
+          "quantity_start": 1,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.15,
+          "quantity_end": null,
+          "quantity_start": 5,
+          "rule_id": "business"
+        }
+      ],
+      "category": "lighting",
+      "delivery_days": 2,
+      "description": "Warm dimmable light, recycled aluminium.",
+      "id": "lamp",
+      "list_price": 89.9,
+      "max_purchase": null,
+      "media": [
+        {
+          "id": "lamp-front",
+          "url": "/media/lamp-front.svg",
+          "view": "front"
+        },
+        {
+          "id": "lamp-detail",
+          "url": "/media/lamp-detail.svg",
+          "view": "detail"
+        },
+        {
+          "id": "lamp-space",
+          "url": "/media/lamp-space.svg",
+          "view": "space"
+        }
+      ],
+      "min_purchase": 1,
+      "name": "Arc Desk Light",
+      "options": {},
+      "parent_id": null,
+      "price": 74.9,
+      "properties": {
+        "height": "48 cm",
+        "material": "steel",
+        "power": "8 W LED"
+      },
+      "purchase_steps": 1,
+      "reference_price": null,
+      "regulation_price": 79.9,
+      "revision": 1,
+      "stock": 40,
+      "tax_rate": 19.0
+    },
+    {
+      "advanced_prices": [
+        {
+          "discount": 0.1,
+          "quantity_end": 4,
+          "quantity_start": 1,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.15,
+          "quantity_end": null,
+          "quantity_start": 5,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.0,
+          "quantity_end": 5,
+          "quantity_start": 1,
+          "rule_id": "consumer"
+        },
+        {
+          "discount": 0.05,
+          "quantity_end": 11,
+          "quantity_start": 6,
+          "rule_id": "consumer"
+        },
+        {
+          "discount": 0.1,
+          "quantity_end": null,
+          "quantity_start": 12,
+          "rule_id": "consumer"
+        }
+      ],
+      "category": "objects",
+      "delivery_days": 2,
+      "description": "Hand-finished stoneware, dishwasher safe.",
+      "id": "mug",
+      "list_price": null,
+      "max_purchase": null,
+      "media": [
+        {
+          "id": "mug-front",
+          "url": "/media/mug-front.svg",
+          "view": "front"
+        },
+        {
+          "id": "mug-detail",
+          "url": "/media/mug-detail.svg",
+          "view": "detail"
+        },
+        {
+          "id": "mug-space",
+          "url": "/media/mug-space.svg",
+          "view": "space"
+        }
+      ],
+      "min_purchase": 1,
+      "name": "Everyday Cup",
+      "options": {
+        "color": "terracotta",
+        "size": "350"
+      },
+      "parent_id": null,
+      "price": 24.9,
+      "properties": {
+        "care": "dishwasher",
+        "material": "stoneware",
+        "volume": "350 ml"
+      },
+      "purchase_steps": 1,
+      "reference_price": null,
+      "regulation_price": null,
+      "revision": 1,
+      "stock": 80,
+      "tax_rate": 19.0
+    },
+    {
+      "advanced_prices": [
+        {
+          "discount": 0.1,
+          "quantity_end": 4,
+          "quantity_start": 1,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.15,
+          "quantity_end": null,
+          "quantity_start": 5,
+          "rule_id": "business"
+        }
+      ],
+      "category": "objects",
+      "delivery_days": 2,
+      "description": "Recycled paper and stitched binding.",
+      "id": "notebook",
+      "list_price": null,
+      "max_purchase": null,
+      "media": [
+        {
+          "id": "notebook-front",
+          "url": "/media/notebook-front.svg",
+          "view": "front"
+        },
+        {
+          "id": "notebook-detail",
+          "url": "/media/notebook-detail.svg",
+          "view": "detail"
+        },
+        {
+          "id": "notebook-space",
+          "url": "/media/notebook-space.svg",
+          "view": "space"
+        }
+      ],
+      "min_purchase": 1,
+      "name": "Field Notes",
+      "options": {},
+      "parent_id": null,
+      "price": 12.5,
+      "properties": {
+        "material": "recycled-paper",
+        "pages": "160",
+        "size": "A5"
+      },
+      "purchase_steps": 1,
+      "reference_price": {
+        "purchase_unit": 120.0,
+        "reference_unit": 100.0,
+        "unit_name": "pages"
+      },
+      "regulation_price": null,
+      "revision": 1,
+      "stock": 150,
+      "tax_rate": 7.0
+    },
+    {
+      "advanced_prices": [
+        {
+          "discount": 0.1,
+          "quantity_end": 4,
+          "quantity_start": 1,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.15,
+          "quantity_end": null,
+          "quantity_start": 5,
+          "rule_id": "business"
+        }
+      ],
+      "category": "furniture",
+      "delivery_days": 2,
+      "description": "Modular oak storage, wall or desk mounting.",
+      "id": "shelf",
+      "list_price": null,
+      "max_purchase": 20,
+      "media": [
+        {
+          "id": "shelf-front",
+          "url": "/media/shelf-front.svg",
+          "view": "front"
+        },
+        {
+          "id": "shelf-detail",
+          "url": "/media/shelf-detail.svg",
+          "view": "detail"
+        },
+        {
+          "id": "shelf-space",
+          "url": "/media/shelf-space.svg",
+          "view": "space"
+        }
+      ],
+      "min_purchase": 2,
+      "name": "Line Shelf",
+      "options": {},
+      "parent_id": null,
+      "price": 119.0,
+      "properties": {
+        "height": "110 cm",
+        "material": "oak",
+        "width": "80 cm"
+      },
+      "purchase_steps": 2,
+      "reference_price": null,
+      "regulation_price": null,
+      "revision": 1,
+      "stock": 25,
+      "tax_rate": 19.0
+    },
+    {
+      "advanced_prices": [
+        {
+          "discount": 0.1,
+          "quantity_end": 4,
+          "quantity_start": 1,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.15,
+          "quantity_end": null,
+          "quantity_start": 5,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.0,
+          "quantity_end": 5,
+          "quantity_start": 1,
+          "rule_id": "consumer"
+        },
+        {
+          "discount": 0.05,
+          "quantity_end": 11,
+          "quantity_start": 6,
+          "rule_id": "consumer"
+        },
+        {
+          "discount": 0.1,
+          "quantity_end": null,
+          "quantity_start": 12,
+          "rule_id": "consumer"
+        }
+      ],
+      "category": "objects",
+      "delivery_days": 2,
+      "description": "Hand-finished stoneware, dishwasher safe.",
+      "id": "mug-sage-350",
+      "list_price": null,
+      "max_purchase": null,
+      "media": [
+        {
+          "id": "mug-sage-350-front",
+          "url": "/media/mug-sage-350-front.svg",
+          "view": "front"
+        },
+        {
+          "id": "mug-sage-350-detail",
+          "url": "/media/mug-sage-350-detail.svg",
+          "view": "detail"
+        },
+        {
+          "id": "mug-sage-350-space",
+          "url": "/media/mug-sage-350-space.svg",
+          "view": "space"
+        }
+      ],
+      "min_purchase": 1,
+      "name": "Everyday Cup",
+      "options": {
+        "color": "sage",
+        "size": "350"
+      },
+      "parent_id": "mug",
+      "price": 24.9,
+      "properties": {
+        "care": "dishwasher",
+        "material": "stoneware",
+        "volume": "350 ml"
+      },
+      "purchase_steps": 1,
+      "reference_price": null,
+      "regulation_price": null,
+      "revision": 1,
+      "stock": 36,
+      "tax_rate": 19.0
+    },
+    {
+      "advanced_prices": [
+        {
+          "discount": 0.1,
+          "quantity_end": 4,
+          "quantity_start": 1,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.15,
+          "quantity_end": null,
+          "quantity_start": 5,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.0,
+          "quantity_end": 5,
+          "quantity_start": 1,
+          "rule_id": "consumer"
+        },
+        {
+          "discount": 0.05,
+          "quantity_end": 11,
+          "quantity_start": 6,
+          "rule_id": "consumer"
+        },
+        {
+          "discount": 0.1,
+          "quantity_end": null,
+          "quantity_start": 12,
+          "rule_id": "consumer"
+        }
+      ],
+      "category": "objects",
+      "delivery_days": 2,
+      "description": "Hand-finished stoneware, dishwasher safe.",
+      "id": "mug-terracotta-500",
+      "list_price": null,
+      "max_purchase": null,
+      "media": [
+        {
+          "id": "mug-terracotta-500-front",
+          "url": "/media/mug-terracotta-500-front.svg",
+          "view": "front"
+        },
+        {
+          "id": "mug-terracotta-500-detail",
+          "url": "/media/mug-terracotta-500-detail.svg",
+          "view": "detail"
+        },
+        {
+          "id": "mug-terracotta-500-space",
+          "url": "/media/mug-terracotta-500-space.svg",
+          "view": "space"
+        }
+      ],
+      "min_purchase": 1,
+      "name": "Everyday Cup",
+      "options": {
+        "color": "terracotta",
+        "size": "500"
+      },
+      "parent_id": "mug",
+      "price": 29.9,
+      "properties": {
+        "care": "dishwasher",
+        "material": "stoneware",
+        "volume": "500 ml"
+      },
+      "purchase_steps": 1,
+      "reference_price": null,
+      "regulation_price": null,
+      "revision": 1,
+      "stock": 24,
+      "tax_rate": 19.0
+    },
+    {
+      "advanced_prices": [
+        {
+          "discount": 0.1,
+          "quantity_end": 4,
+          "quantity_start": 1,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.15,
+          "quantity_end": null,
+          "quantity_start": 5,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.0,
+          "quantity_end": 5,
+          "quantity_start": 1,
+          "rule_id": "consumer"
+        },
+        {
+          "discount": 0.05,
+          "quantity_end": 11,
+          "quantity_start": 6,
+          "rule_id": "consumer"
+        },
+        {
+          "discount": 0.1,
+          "quantity_end": null,
+          "quantity_start": 12,
+          "rule_id": "consumer"
+        }
+      ],
+      "category": "objects",
+      "delivery_days": 2,
+      "description": "Hand-finished stoneware, dishwasher safe.",
+      "id": "mug-sage-500",
+      "list_price": null,
+      "max_purchase": null,
+      "media": [
+        {
+          "id": "mug-sage-500-front",
+          "url": "/media/mug-sage-500-front.svg",
+          "view": "front"
+        },
+        {
+          "id": "mug-sage-500-detail",
+          "url": "/media/mug-sage-500-detail.svg",
+          "view": "detail"
+        },
+        {
+          "id": "mug-sage-500-space",
+          "url": "/media/mug-sage-500-space.svg",
+          "view": "space"
+        }
+      ],
+      "min_purchase": 1,
+      "name": "Everyday Cup",
+      "options": {
+        "color": "sage",
+        "size": "500"
+      },
+      "parent_id": "mug",
+      "price": 29.9,
+      "properties": {
+        "care": "dishwasher",
+        "material": "stoneware",
+        "volume": "500 ml"
+      },
+      "purchase_steps": 1,
+      "reference_price": null,
+      "regulation_price": null,
+      "revision": 1,
+      "stock": 0,
+      "tax_rate": 19.0
+    },
+    {
+      "advanced_prices": [
+        {
+          "discount": 0.1,
+          "quantity_end": 4,
+          "quantity_start": 1,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.15,
+          "quantity_end": null,
+          "quantity_start": 5,
+          "rule_id": "business"
+        }
+      ],
+      "category": "furniture",
+      "delivery_days": 2,
+      "description": "Oak frame, natural linen, compact design.",
+      "id": "chair-dark-oak",
+      "list_price": null,
+      "max_purchase": null,
+      "media": [
+        {
+          "id": "chair-dark-oak-front",
+          "url": "/media/chair-dark-oak-front.svg",
+          "view": "front"
+        },
+        {
+          "id": "chair-dark-oak-detail",
+          "url": "/media/chair-dark-oak-detail.svg",
+          "view": "detail"
+        },
+        {
+          "id": "chair-dark-oak-space",
+          "url": "/media/chair-dark-oak-space.svg",
+          "view": "space"
+        }
+      ],
+      "min_purchase": 1,
+      "name": "Form Chair",
+      "options": {
+        "color": "dark",
+        "material": "oak"
+      },
+      "parent_id": "chair",
+      "price": 209.0,
+      "properties": {
+        "height": "78 cm",
+        "material": "oak-linen",
+        "weight": "6.5 kg",
+        "width": "54 cm"
+      },
+      "purchase_steps": 1,
+      "reference_price": null,
+      "regulation_price": null,
+      "revision": 1,
+      "stock": 12,
+      "tax_rate": 19.0
+    },
+    {
+      "advanced_prices": [
+        {
+          "discount": 0.1,
+          "quantity_end": 4,
+          "quantity_start": 1,
+          "rule_id": "business"
+        },
+        {
+          "discount": 0.15,
+          "quantity_end": null,
+          "quantity_start": 5,
+          "rule_id": "business"
+        }
+      ],
+      "category": "furniture",
+      "delivery_days": 2,
+      "description": "Oak frame, natural linen, compact design.",
+      "id": "chair-natural-walnut",
+      "list_price": null,
+      "max_purchase": null,
+      "media": [
+        {
+          "id": "chair-natural-walnut-front",
+          "url": "/media/chair-natural-walnut-front.svg",
+          "view": "front"
+        },
+        {
+          "id": "chair-natural-walnut-detail",
+          "url": "/media/chair-natural-walnut-detail.svg",
+          "view": "detail"
+        },
+        {
+          "id": "chair-natural-walnut-space",
+          "url": "/media/chair-natural-walnut-space.svg",
+          "view": "space"
+        }
+      ],
+      "min_purchase": 1,
+      "name": "Form Chair",
+      "options": {
+        "color": "natural",
+        "material": "walnut"
+      },
+      "parent_id": "chair",
+      "price": 229.0,
+      "properties": {
+        "height": "78 cm",
+        "material": "walnut",
+        "weight": "6.5 kg",
+        "width": "54 cm"
+      },
+      "purchase_steps": 1,
+      "reference_price": null,
+      "regulation_price": null,
+      "revision": 1,
+      "stock": 8,
+      "tax_rate": 19.0
+    }
+  ],
+  "translations": [
+    {
+      "product_id": "chair",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Form Stuhl",
+      "description": "Eichenholz und nat\u00fcrliches Leinen. F\u00fcr ruhige Momente."
+    },
+    {
+      "product_id": "desk",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Plane Schreibtisch",
+      "description": "Ein kompakter Schreibtisch aus Eiche mit integrierter Schublade."
+    },
+    {
+      "product_id": "lamp",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Arc Schreibtischleuchte",
+      "description": "Warmes Leselicht mit verstellbarem Arm."
+    },
+    {
+      "product_id": "mug",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Terra Becher",
+      "description": "Handgefertigte Keramik f\u00fcr den t\u00e4glichen Kaffee."
+    },
+    {
+      "product_id": "notebook",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Field Notizbuch",
+      "description": "Recyclingpapier und gen\u00e4hter Einband."
+    },
+    {
+      "product_id": "shelf",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Line Regal",
+      "description": "Modulares Eichenregal f\u00fcr Wand oder Schreibtisch."
+    },
+    {
+      "product_id": "chair",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Chaise Form",
+      "description": "Ch\u00eane et lin naturel pour les moments calmes."
+    },
+    {
+      "product_id": "desk",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Bureau Plane",
+      "description": "Un bureau compact en ch\u00eane avec tiroir int\u00e9gr\u00e9."
+    },
+    {
+      "product_id": "lamp",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Lampe de bureau Arc",
+      "description": "Une lumi\u00e8re de lecture chaleureuse avec bras r\u00e9glable."
+    },
+    {
+      "product_id": "mug",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Tasse Terra",
+      "description": "C\u00e9ramique artisanale pour le caf\u00e9 quotidien."
+    },
+    {
+      "product_id": "notebook",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Carnet Field",
+      "description": "Papier recycl\u00e9 et reliure cousue."
+    },
+    {
+      "product_id": "shelf",
+      "language_id": "22222222222222222222222222222222",
+      "name": "\u00c9tag\u00e8re Line",
+      "description": "Rangement modulaire en ch\u00eane pour mur ou bureau."
+    },
+    {
+      "product_id": "chair",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Silla Form",
+      "description": "Roble y lino natural para momentos tranquilos."
+    },
+    {
+      "product_id": "desk",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Escritorio Plane",
+      "description": "Un escritorio compacto de roble con caj\u00f3n integrado."
+    },
+    {
+      "product_id": "lamp",
+      "language_id": "33333333333333333333333333333333",
+      "name": "L\u00e1mpara de escritorio Arc",
+      "description": "Luz c\u00e1lida de lectura con brazo ajustable."
+    },
+    {
+      "product_id": "mug",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Taza Terra",
+      "description": "Cer\u00e1mica artesanal para el caf\u00e9 de cada d\u00eda."
+    },
+    {
+      "product_id": "notebook",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Cuaderno Field",
+      "description": "Papel reciclado y encuadernaci\u00f3n cosida."
+    },
+    {
+      "product_id": "shelf",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Estante Line",
+      "description": "Almacenamiento modular de roble para pared o escritorio."
+    }
+  ]
+}

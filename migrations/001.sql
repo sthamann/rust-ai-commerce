@@ -1,3 +1,5 @@
+-- Commerce tables always live in public; AGE graph schema is separate.
+SET search_path = public;
 CREATE TABLE IF NOT EXISTS products (
  tenant text NOT NULL, id text NOT NULL, name text NOT NULL, category text NOT NULL,
  description text NOT NULL, price double precision NOT NULL CHECK(price >= 0), tax_rate double precision NOT NULL,

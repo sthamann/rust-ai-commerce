@@ -22,11 +22,11 @@ jobs:
           php-version: '8.4'
           extensions: curl, dom, fileinfo, gd, intl, mbstring, pdo_mysql, pdo_sqlite, sodium, zip
           tools: composer:v2
-      - run: cargo fmt --check && cargo test --locked && cargo build --locked
-      - run: npm ci && npm run build
+      - run: cargo fmt --check && cargo clippy --locked --all-targets -- -D warnings && cargo test --locked && cargo build --locked --bins
+      - run: npm ci && npm run format:check && npm run build
         working-directory: frontend
       - run: composer install --working-dir=reference --no-interaction --prefer-dist
-      - run: python3 scripts/differential.py && python3 scripts/context_differential.py
+      - run: python3 scripts/differential.py && python3 scripts/context_differential.py && python3 scripts/delivery_differential.py
       - name: Real database integration
         run: |
           target/debug/rust-ai-commerce > /tmp/commerce.log 2>&1 &
@@ -35,5 +35,9 @@ jobs:
           python3 scripts/integration.py
           python3 scripts/protocols.py
           python3 scripts/intelligence.py
-          python3 scripts/providers.py
+          python3 scripts/commerce.py
+          python3 scripts/users.py
+          TEST_PERSONAL=1 python3 scripts/providers.py
+          python3 scripts/extensions.py
+          python3 scripts/structure.py
       # Real model checks are opt-in locally: CI does not replace them with a fake.

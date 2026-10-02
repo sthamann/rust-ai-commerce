@@ -95,3 +95,14 @@ servers** and verifies the real merchant conversation and approval routes.
 Those tests do not prove live OpenAI/Anthropic inference. Real local Ollama
 inference is tested separately. Live cloud checks require your own API keys;
 no borrowed credentials or fabricated cloud results are included.
+
+## Personal workspace credentials (v0.4)
+
+For normal merchant MCP access, set `COMMERCE_SESSION_TOKEN` to that user's
+opaque login session and `COMMERCE_TENANT` to one of their memberships. The bridge
+uses this token preferentially. Knowledge and merchant tools check scoped
+authority on the server; readers cannot apply proposals. Sessions expire after
+12 hours and must be renewed through personal login. Never distribute the
+legacy global `MERCHANT_TOKEN` to SaaS merchants. Public product/cart tools work
+without merchant credentials; complete graph/vector tools do not. The generated
+local configuration intentionally contains no embedded credentials.

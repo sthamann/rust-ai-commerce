@@ -1,13 +1,13 @@
+import SettingsDialog from "./SettingsDialog";
+import ProposalCard from "./ProposalCard";
+import PreviewDialog from "./PreviewDialog";
+import MessageText from "./MessageText";
+import UsersManager, { type Session } from "./UsersManager";
+import CommerceManager from "./CommerceManager";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Icon, { type IconName } from "./Icon";
 import { locales, useLocale } from "./i18n";
-import type {
-  Message,
-  Overview,
-  Preview,
-  Provider,
-  RequestFn,
-} from "./studio-types";
+import type { Message, Overview, Provider, RequestFn } from "./studio-types";
 import {
   AgentsView,
   KnowledgeView,
@@ -15,214 +15,8 @@ import {
   PreviewPanel,
 } from "./StudioViews";
 import "./studio.css";
-type Tab = "assistant" | "overview" | "knowledge" | "agents";
-function SettingsDialog({
-  token,
-  onToken,
-  connected,
-  onConnect,
-  providers,
-  provider,
-  model,
-  onProvider,
-  onModel,
-  onClose,
-  onIndex,
-  busy,
-}: {
-  token: string;
-  onToken: (s: string) => void;
-  connected: boolean;
-  onConnect: () => void;
-  providers: Provider[];
-  provider: string;
-  model: string;
-  onProvider: (s: string) => void;
-  onModel: (s: string) => void;
-  onClose: () => void;
-  onIndex: () => void;
-  busy: boolean;
-}) {
-  const { t } = useLocale();
-  const dialog = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    dialog.current?.showModal();
-    return () => dialog.current?.close();
-  }, []);
-  return (
-    <dialog ref={dialog} className="studio-dialog" onClose={onClose}>
-      <div className="dialog-heading">
-        <div>
-          <span className="kicker">{t("studio")}</span>
-          <h2>{t("settings")}</h2>
-        </div>
-        <button
-          className="icon-button"
-          aria-label={t("close")}
-          onClick={() => dialog.current?.close()}
-        >
-          <Icon name="close" />
-        </button>
-      </div>
-      <section>
-        <h3>
-          <Icon name="lock" size={18} />
-          {t("access")}
-        </h3>
-        <label>
-          {t("token")}
-          <input
-            autoComplete="off"
-            type="password"
-            value={token}
-            onChange={(e) => onToken(e.target.value)}
-            placeholder="MERCHANT_TOKEN"
-          />
-        </label>
-        <p>{t("tokenHint")}</p>
-        <button
-          className="studio-primary"
-          disabled={!token || busy}
-          onClick={onConnect}
-        >
-          <Icon name={connected ? "check" : "link"} size={18} />
-          {connected ? t("connected") : t("connect")}
-        </button>
-      </section>
-      <section>
-        <h3>
-          <Icon name="spark" size={18} />
-          {t("assistant")}
-        </h3>
-        <label>
-          {t("provider")}
-          <select value={provider} onChange={(e) => onProvider(e.target.value)}>
-            {(providers.length
-              ? providers
-              : [
-                  {
-                    id: "ollama",
-                    name: t("local"),
-                    model: "",
-                    configured: true,
-                  },
-                ]
-            ).map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.id === "ollama" ? t("local") : p.name}
-                {p.configured ? "" : ` · ${t("missingKey")}`}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          {t("model")}
-          <input
-            value={model}
-            onChange={(e) => onModel(e.target.value)}
-            placeholder={t("serverDefault")}
-          />
-        </label>
-        <p>{t("cloudDisclosure")}</p>
-        <button
-          className="studio-secondary"
-          disabled={!connected || busy}
-          onClick={onIndex}
-        >
-          <Icon name="refresh" size={16} />
-          {t("index")}
-        </button>
-      </section>
-    </dialog>
-  );
-}
-function ProposalCard({
-  message,
-  onApply,
-  busy,
-}: {
-  message: Message;
-  onApply: () => void;
-  busy: boolean;
-}) {
-  const { t, money } = useLocale();
-  const preview = message.data.preview;
-  if (!preview) return null;
-  const changes = preview.proposal.changes;
-  if (!changes.length && !preview.proposal.experience) return null;
-  return (
-    <section
-      className={`proposal-review ${message.applied ? "is-applied" : ""}`}
-    >
-      <header>
-        <div className="review-status">
-          <Icon name={message.applied ? "check" : "pulse"} size={18} />
-          <span>{message.applied ? t("applied") : t("pending")}</span>
-        </div>
-        <span>{changes.length || 1}</span>
-      </header>
-      {changes.map((c) => {
-        const before = preview.catalogBefore.find((p) => p.id === c.product_id);
-        return (
-          <div className="review-product" key={c.product_id}>
-            <b>{before?.name || c.product_id}</b>
-            {c.price != null && (
-              <div>
-                <span>{t("grossPrice")}</span>
-                <div className="before-after">
-                  <span>
-                    <small>{t("before")}</small>
-                    {money(before?.price || 0)}
-                  </span>
-                  <Icon name="arrow" size={16} />
-                  <strong>
-                    <small>{t("after")}</small>
-                    {money(c.price)}
-                  </strong>
-                </div>
-              </div>
-            )}
-            {c.stock != null && (
-              <div>
-                <span>{t("stock")}</span>
-                <div className="before-after">
-                  <span>{before?.stock}</span>
-                  <Icon name="arrow" size={16} />
-                  <strong>{c.stock}</strong>
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
-      {preview.proposal.experience && (
-        <div className="review-product">
-          <b>{t("storefront")}</b>
-          <p>
-            {preview.proposal.experience.mode === "comparison"
-              ? t("comparison")
-              : preview.proposal.experience.mode === "discovery"
-                ? t("discovery")
-                : t("summary")}
-          </p>
-          <blockquote>{preview.proposal.experience.headline}</blockquote>
-        </div>
-      )}
-      {!message.applied && (
-        <footer>
-          <span>
-            <Icon name="lock" size={14} />
-            {t("trust")}
-          </span>
-          <button className="studio-primary" disabled={busy} onClick={onApply}>
-            {t("approve")}
-            <Icon name="check" size={18} />
-          </button>
-        </footer>
-      )}
-    </section>
-  );
-}
+type Tab =
+  "assistant" | "overview" | "knowledge" | "agents" | "commerce" | "users";
 export default function Merchant({
   onChanged,
   onExit,
@@ -230,9 +24,23 @@ export default function Merchant({
   onChanged: () => Promise<void>;
   onExit: () => void;
 }) {
-  const { locale, setLocale, t, money, date } = useLocale();
-  const [token, setToken] = useState("");
+  const { locale, setLocale, t, date } = useLocale();
+  const [token, setToken] = useState(
+    () => sessionStorage.getItem("rac-user-token") ?? "",
+  );
+  const [workspace, setWorkspace] = useState(
+    () =>
+      new URLSearchParams(location.search).get("shop") ??
+      sessionStorage.getItem("rac-user-workspace") ??
+      "atelier",
+  );
+  useEffect(() => {
+    if (token && !new URLSearchParams(location.search).has("shop"))
+      history.replaceState(null, "", `?shop=${workspace}#merchant`);
+  }, [token, workspace]);
+  const [workspaceName, setWorkspaceName] = useState(workspace);
   const [connected, setConnected] = useState(false);
+  const [role, setRole] = useState("viewer");
   const [providers, setProviders] = useState<Provider[]>([]);
   const [provider, setProvider] = useState("ollama");
   const [model, setModel] = useState("");
@@ -268,6 +76,7 @@ export default function Merchant({
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "x-tenant": workspace,
           "x-commerce-locale": locale,
         },
         body: body === undefined ? undefined : JSON.stringify(body),
@@ -276,7 +85,7 @@ export default function Merchant({
       if (!r.ok) throw new Error(value.errors?.[0]?.detail || r.statusText);
       return value;
     },
-    [token, locale],
+    [token, locale, workspace],
   );
   const refresh = useCallback(async () => {
     setData(await request("/api/merchant/overview"));
@@ -296,8 +105,49 @@ export default function Merchant({
     }
   };
   useEffect(() => {
-    if (connected) void refresh().catch((e) => setError(String(e)));
-  }, [connected, locale, refresh]);
+    let active = true;
+    if (!token) {
+      setConnected(false);
+      return;
+    }
+    setConnected(false);
+    Promise.all([
+      request("/api/agent/providers"),
+      request("/api/merchant/overview"),
+      request("/api/agent/conversations"),
+      request("/api/auth/session"),
+    ])
+      .then(([providerData, overview, history, session]) => {
+        if (!active) return;
+        const ps: Provider[] = providerData.providers;
+        setProviders(ps);
+        setModel(ps.find((p) => p.id === provider)?.model ?? ps[0].model);
+        setData(overview);
+        setConversations(history.conversations);
+        setWorkspaceName(
+          session.workspaces.find(
+            (w: { id: string; name: string }) => w.id === workspace,
+          )?.name ?? workspace,
+        );
+        setRole(
+          session.workspaces.find(
+            (w: { id: string; role: string }) => w.id === workspace,
+          )?.role ?? "viewer",
+        );
+        setUpdated(new Date().toISOString());
+        setConnected(true);
+        setError("");
+      })
+      .catch((e) => {
+        if (active) {
+          setError(String(e));
+          setData(undefined);
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, [request, token, workspace]);
   useEffect(() => {
     if (tab === "assistant")
       bottom.current?.scrollIntoView({ block: "nearest" });
@@ -371,6 +221,8 @@ export default function Merchant({
     { id: "overview", icon: "pulse" },
     { id: "knowledge", icon: "graph" },
     { id: "agents", icon: "agents" },
+    { id: "commerce", icon: "box" },
+    { id: "users", icon: "lock" },
   ];
   return (
     <div className="studio" data-theme={theme}>
@@ -386,10 +238,11 @@ export default function Merchant({
             commerce<span className="brand-subtitle">{t("studio")}</span>
           </span>
         </a>
-        <button className="workspace-switch" onClick={() => setSettings(true)}>
+        <button className="workspace-switch" onClick={() => setTab("users")}>
           <span className="shop-monogram">A</span>
           <span>
-            Atelier<small>{t("demo")}</small>
+            {workspaceName}
+            <small>{t("demo")}</small>
           </span>
           <Icon name="settings" size={16} />
         </button>
@@ -414,8 +267,8 @@ export default function Merchant({
             >
               <Icon name={n.icon} />
               <span>{t(n.id)}</span>
-              {n.id === "overview" && data?.summary.pendingPlans ? (
-                <b>{data.summary.pendingPlans}</b>
+              {n.id === "overview" && data?.summary.ordersToday ? (
+                <b>{data.summary.ordersToday}</b>
               ) : null}
             </button>
           ))}
@@ -454,7 +307,7 @@ export default function Merchant({
             rel="noreferrer"
           >
             {t("source")}
-            <span>v0.3</span>
+            <span>v0.4</span>
           </a>
         </div>
       </aside>
@@ -476,7 +329,7 @@ export default function Merchant({
               <Icon name="menu" />
             </button>
             <span className="breadcrumb">
-              Atelier <span>/</span> <strong>{t(tab)}</strong>
+              {workspaceName} <span>/</span> <strong>{t(tab)}</strong>
             </span>
           </div>
           <div className="topbar-actions">
@@ -513,7 +366,7 @@ export default function Merchant({
               className={connected ? "icon-button" : "studio-primary"}
               aria-label={connected ? t("refresh") : t("connect")}
               disabled={busy}
-              onClick={() => (connected ? run(refresh) : setSettings(true))}
+              onClick={() => (connected ? run(refresh) : setTab("users"))}
             >
               {connected ? (
                 <Icon name="refresh" size={18} />
@@ -561,7 +414,50 @@ export default function Merchant({
                 </button>
               </div>
             )}
-            {tab === "assistant" ? (
+            {tab === "users" ? (
+              <UsersManager
+                token={token}
+                workspace={workspace}
+                onSession={(session: Session) => {
+                  if (session.token) {
+                    sessionStorage.setItem("rac-user-token", session.token);
+                    setToken(session.token);
+                  }
+                  sessionStorage.setItem(
+                    "rac-user-workspace",
+                    session.workspace,
+                  );
+                  setWorkspace(session.workspace);
+                  setWorkspaceName(
+                    session.workspaces.find((w) => w.id === session.workspace)
+                      ?.name ?? session.workspace,
+                  );
+                  history.replaceState(
+                    null,
+                    "",
+                    `?shop=${session.workspace}#merchant`,
+                  );
+                }}
+                onWorkspace={(id, name) => {
+                  sessionStorage.setItem("rac-user-workspace", id);
+                  setWorkspace(id);
+                  setWorkspaceName(name);
+                  history.replaceState(null, "", `?shop=${id}#merchant`);
+                  setMessages([]);
+                  setId(undefined);
+                  setData(undefined);
+                }}
+                onLogout={() => {
+                  sessionStorage.removeItem("rac-user-token");
+                  sessionStorage.removeItem("rac-user-workspace");
+                  setToken("");
+                  setConnected(false);
+                  setData(undefined);
+                  setMessages([]);
+                  setConversations([]);
+                }}
+              />
+            ) : tab === "assistant" ? (
               <section className="studio-conversation">
                 <div className="conversation-topline">
                   <span>
@@ -620,7 +516,7 @@ export default function Merchant({
                       {!connected && (
                         <button
                           className="access-cta"
-                          onClick={() => setSettings(true)}
+                          onClick={() => setTab("users")}
                         >
                           <Icon name="lock" size={16} />
                           {t("connectFirst")}
@@ -659,6 +555,7 @@ export default function Merchant({
                             <>
                               <ProposalCard
                                 message={m}
+                                canApply={role !== "viewer"}
                                 busy={busy}
                                 onApply={() => run(() => apply(m))}
                               />
@@ -781,7 +678,9 @@ export default function Merchant({
                 </div>
               </section>
             ) : data ? (
-              tab === "overview" ? (
+              tab === "commerce" ? (
+                <CommerceManager token={token} />
+              ) : tab === "overview" ? (
                 <OverviewView
                   data={data}
                   onIntent={intent}
@@ -881,50 +780,5 @@ export default function Merchant({
         />
       )}
     </div>
-  );
-}
-
-function PreviewDialog({
-  onClose,
-  children,
-}: {
-  onClose: () => void;
-  children: React.ReactNode;
-}) {
-  const ref = useRef<HTMLDialogElement>(null);
-  const { t } = useLocale();
-  useEffect(() => {
-    ref.current?.showModal();
-  }, []);
-  return (
-    <dialog ref={ref} className="studio-preview-dialog" onClose={onClose}>
-      <button
-        className="icon-button preview-close"
-        aria-label={t("close")}
-        onClick={() => ref.current?.close()}
-      >
-        <Icon name="close" />
-      </button>
-      {children}
-    </dialog>
-  );
-}
-
-function MessageText({ text }: { text: string }) {
-  const pieces = text
-    .replace(/^([ \t]*)[-*] +/gm, "$1• ")
-    .split(/(\*\*[^*]+\*\*|`[^`]+`)/g);
-  return (
-    <p>
-      {pieces.map((part, i) =>
-        part.startsWith("**") && part.endsWith("**") ? (
-          <strong key={i}>{part.slice(2, -2)}</strong>
-        ) : part.startsWith("`") && part.endsWith("`") ? (
-          <code key={i}>{part.slice(1, -1)}</code>
-        ) : (
-          part
-        ),
-      )}
-    </p>
   );
 }

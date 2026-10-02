@@ -1,7 +1,8 @@
 # Upstream attribution
 
-The quantity calculation behavior in `src/pricing.rs` and context/tier/quantity
-selection behavior in `src/context.rs` is a partial behavioral
+The quantity calculation and proportional delivery-tax allocation behavior in
+`src/pricing.rs`, and context/tier/quantity selection behavior in `src/context.rs`,
+are partial behavioral
 port of Shopware Core 6.7.14.2, reference commit
 `de074a584d77d8abb09ddb21d8799f083a61a3da`.
 
@@ -26,7 +27,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-`reference/price.php` instantiates the original installed upstream classes;
+`reference/price.php`, `reference/context.php`, and `reference/delivery.php`
+instantiate the original installed upstream classes;
 the repository does not vendor Shopware, a commercial B2B package, or a model.
 PHP rounding behavior was checked against the official PHP 8.5 runtime and
 https://github.com/php/php-src/blob/PHP-8.5/ext/standard/math.c . No PHP C

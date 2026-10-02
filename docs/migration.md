@@ -66,8 +66,9 @@ empty rules), list-price discounts, regulation price and reference units.
 The expanded Rust calculator is used by the real cart, checkout, MCP and UCP
 paths. Synthetic lamp/list and notebook/reference metadata is initialized once.
 This does not port the complete cart collector/processor or resolve a sales
-channel's tax state. Rules, variants/inheritance, shipping and payment-provider
-flows still need their own original-reference ports.
+channel's tax state. Full rules, variant inheritance, delivery builders and payment-provider flows
+still need their own original-reference ports. Native v0.4 commerce functionality
+is tracked separately below.
 
 ## v0.3 context and product-cart slice
 
@@ -97,3 +98,23 @@ Use `python3 scripts/port.py verify context-tier-quantity` against a running app
 The manifest records the remaining behaviors without marking this whole unit
 complete. `scripts/studio.py` also proves that the real preview and persisted
 cart consume these ports, rather than merely testing an unused utility.
+
+## v0.4 native commerce and SaaS slice
+
+See [the precise parity matrix](shopware-parity.md) for every implemented feature,
+original unit, implementation file, executable evidence and remaining behavior.
+Product details now connect real SKU combinations, three images, properties,
+moderated reviews and contextual quantity prices to carts. Shipping methods,
+destination country tax rates, manual/simulated payments and internal delivery
+state transitions persist in real order snapshots. The original proportional
+tax builder contributes another 1,002 independently compared cases.
+
+Personal merchant users and multi-workspace memberships are a native addition,
+not an original Shopware identity port. Roles also protect MCP mutation, and
+revocation is checked from the DB on subsequent requests. Four Wasm examples
+exercise a bounded actual B2B checkout hook. The source is split into documented
+Rust domains, with a size guard and a [source/test map](source-map.md).
+
+No full product/DAL/fulfillment/payment API parity is inferred from these native
+features. A next original port should target one product inheritance resolver
+or delivery rule operation with sanitized original state fixtures.

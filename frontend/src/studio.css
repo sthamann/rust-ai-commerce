@@ -48,7 +48,14 @@
 .studio-dialog select {
   font: inherit;
 }
+.studio a {
+  color: inherit;
+  text-decoration: none;
+}
 .studio button {
+  border: 0;
+  background: transparent;
+  color: inherit;
   border-radius: 8px;
   touch-action: manipulation;
   transition:

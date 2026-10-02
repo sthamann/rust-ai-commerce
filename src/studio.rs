@@ -1,3 +1,4 @@
+//! Verified merchant overview facts consumed by the chat and activity views.
 use super::*;
 use axum::{extract::Request, middleware::Next};
 

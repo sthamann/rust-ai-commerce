@@ -1,3 +1,4 @@
+//! Shop locale resolution, translated catalog hydration and non-mutating merchant quote.
 use super::*;
 use rust_ai_commerce::context::{Language, language_chain};
 
@@ -98,6 +99,7 @@ pub(super) async fn preview_quote(
             order: None,
             locale: locale.clone(),
             channel: "preview".into(),
+            checkout: None,
         },
     };
     Ok(Json(

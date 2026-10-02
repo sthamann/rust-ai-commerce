@@ -1,3 +1,4 @@
+//! Pure Wasmtime guest execution with bounded resources and no host imports.
 use wasmtime::{Config, Engine, Instance, Module, Store, StoreLimits, StoreLimitsBuilder};
 struct Limits {
     memory: StoreLimits,
@@ -7,6 +8,7 @@ struct Limits {
 pub struct Sandbox {
     engine: Engine,
     module: Module,
+    source: String,
 }
 impl Sandbox {
     pub fn new(wat: &str) -> Result<Self, String> {
@@ -21,7 +23,14 @@ impl Sandbox {
         if module.imports().len() != 0 {
             return Err("Host imports are not permitted".into());
         }
-        Ok(Self { engine, module })
+        Ok(Self {
+            engine,
+            module,
+            source: wat.into(),
+        })
+    }
+    pub fn source_matches(&self, source: &str) -> bool {
+        self.source == source
     }
     pub fn approve(&self, total_minor: i64, limit_minor: i64) -> Result<bool, String> {
         let mut store = Store::new(
@@ -54,6 +63,36 @@ mod tests {
         let s = Sandbox::new(include_str!("../extensions/company-limit.wat")).unwrap();
         assert!(s.approve(100, 200).unwrap());
         assert!(!s.approve(201, 200).unwrap());
+    }
+    #[test]
+    fn example_policies_and_boundaries() {
+        let cases = [
+            (
+                include_str!("../extensions/budget-reserve.wat"),
+                90000,
+                90001,
+            ),
+            (
+                include_str!("../extensions/single-order-cap.wat"),
+                25000,
+                25001,
+            ),
+            (include_str!("../extensions/minimum-order.wat"), 5000, 4999),
+        ];
+        for (source, allowed, blocked) in cases {
+            let guest = Sandbox::new(source).unwrap();
+            assert!(guest.approve(allowed, 100000).unwrap());
+            assert!(!guest.approve(blocked, 100000).unwrap());
+            assert!(!guest.approve(-1, 100000).unwrap());
+            assert!(!guest.approve(100001, 100000).unwrap());
+        }
+    }
+    #[test]
+    fn host_imports_and_invalid_abi_rejected() {
+        assert!(Sandbox::new("(module (import \"env\" \"network\" (func)))").is_err());
+        let guest =
+            Sandbox::new("(module (func (export \"approve\") (result i32) i32.const 1))").unwrap();
+        assert!(guest.approve(1, 2).is_err());
     }
     #[test]
     fn infinite_loop_exhausts_fuel() {

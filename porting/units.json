@@ -109,22 +109,123 @@
       "remaining": [
         "original-cart-pipeline",
         "exact-api-contracts",
-        "payment-provider",
+        "real-payment-provider",
         "delivery-reservations"
+      ],
+      "implemented": [
+        "shipping-and-tax-snapshot",
+        "manual-or-simulated-payment",
+        "single-delivery-state-transitions"
       ]
     },
     {
       "id": "variants-and-context",
-      "status": "next",
+      "status": "native-prototype",
       "source": [
         "Content/Product/SalesChannel/Detail/ProductDetailRoute.php",
         "System/SalesChannel/Context/SalesChannelContextFactory.php"
       ],
-      "gates": [],
+      "gates": [
+        [
+          "python3",
+          "scripts/commerce.py"
+        ]
+      ],
       "remaining": [
-        "original-reference-fixtures",
-        "rust-port",
-        "response-and-state-contract"
+        "original-detail-response-contract",
+        "full-dal-inheritance",
+        "generic-configurator-generator",
+        "original-visibility-and-closeout"
+      ],
+      "implemented": [
+        "sku-family-detail",
+        "sku-stock-and-price",
+        "multiple-media",
+        "localized-parent-text",
+        "contextual-tiers",
+        "properties",
+        "moderated-reviews"
+      ]
+    },
+    {
+      "id": "proportional-delivery-tax",
+      "status": "partial-port",
+      "source": [
+        "Checkout/Cart/Tax/PercentageTaxRuleBuilder.php"
+      ],
+      "implementation": [
+        "src/pricing.rs",
+        "src/commerce/delivery.rs"
+      ],
+      "gates": [
+        [
+          "cargo",
+          "build",
+          "--locked",
+          "--bin",
+          "delivery"
+        ],
+        [
+          "python3",
+          "scripts/delivery_differential.py"
+        ],
+        [
+          "python3",
+          "scripts/commerce.py"
+        ]
+      ],
+      "remaining": [
+        "full-delivery-builder",
+        "original-tax-detection"
+      ]
+    },
+    {
+      "id": "merchant-workspaces",
+      "status": "native-prototype",
+      "source": [],
+      "implementation": [
+        "src/auth",
+        "migrations/008-workspaces.sql",
+        "frontend/src/UsersManager.tsx"
+      ],
+      "gates": [
+        [
+          "python3",
+          "scripts/users.py"
+        ]
+      ],
+      "remaining": [
+        "production-identity",
+        "row-level-security",
+        "tenant-lifecycle-billing",
+        "email-recovery-mfa"
+      ]
+    },
+    {
+      "id": "sandbox-examples",
+      "status": "native-prototype",
+      "source": [],
+      "implementation": [
+        "src/sandbox.rs",
+        "src/extensions.rs",
+        "extensions"
+      ],
+      "gates": [
+        [
+          "cargo",
+          "test",
+          "--locked",
+          "sandbox"
+        ],
+        [
+          "python3",
+          "scripts/extensions.py"
+        ]
+      ],
+      "remaining": [
+        "php-plugin-transpilation",
+        "additional-typed-hooks",
+        "compiler-process-isolation"
       ]
     }
   ]
