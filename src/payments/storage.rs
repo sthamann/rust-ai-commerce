@@ -22,10 +22,12 @@ pub(crate) async fn persist(
                 "Provider refund pending".into(),
             ));
         }
-        if v["status"] != "COMPLETED"
-            || v["amount"]["currency_code"] != p.currency
-            || parse_minor(v["amount"]["value"].as_str().unwrap_or(""))? != amount
-            || v["id"].as_str().is_none()
+        if !receipt_matches(
+            amount,
+            &v["amount"],
+            &p.currency,
+            v["status"] == "COMPLETED",
+        )? || v["id"].as_str().is_none()
         {
             return Err(bad("Refund receipt does not confirm the requested amount"));
         }
@@ -53,10 +55,12 @@ pub(crate) async fn persist(
                 .filter(|c| c.len() == 1)
                 .ok_or(bad("Expected one capture receipt"))?;
             let c = &captures[0];
-            if c["status"] != "COMPLETED"
-                || c["amount"]["currency_code"] != p.currency
-                || parse_minor(c["amount"]["value"].as_str().unwrap_or(""))? != p.amount
-            {
+            if !receipt_matches(
+                p.amount,
+                &c["amount"],
+                &p.currency,
+                c["status"] == "COMPLETED",
+            )? {
                 return Err(bad("Capture receipt does not match payment"));
             }
             capture = Some(

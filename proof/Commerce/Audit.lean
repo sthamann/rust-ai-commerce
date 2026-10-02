@@ -1,0 +1,21 @@
+import Commerce.Claims
+#print axioms CommerceKernel.cancellation_safe
+#print axioms CommerceKernel.completion_safe
+#print axioms CommerceKernel.discount_bounded
+#print axioms CommerceKernel.discount_conservation
+#print axioms CommerceKernel.discount_requested
+#print axioms CommerceKernel.download_blocked_denied
+#print axioms CommerceKernel.download_payment_required
+#print axioms CommerceKernel.financial_contact_required
+#print axioms CommerceKernel.manual_payment_safe
+#print axioms CommerceKernel.receipt_exact
+#print axioms CommerceKernel.refund_bounded
+#print axioms CommerceKernel.refund_zero_denied
+#print axioms CommerceKernel.replay_open_fingerprint
+#print axioms CommerceKernel.replay_same_cart
+#print axioms CommerceKernel.revision_exact
+#print axioms CommerceKernel.scope_authenticated_known
+#print axioms CommerceKernel.scope_explicit_no_escalation
+#print axioms CommerceKernel.stock_conservation
+#print axioms CommerceKernel.stock_positive_bounded
+#print axioms CommerceKernel.terminal_edit_denied

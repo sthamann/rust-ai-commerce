@@ -6,3 +6,4 @@ pub mod knowledge;
 pub mod pricing;
 pub mod rule_comparison;
 pub mod sandbox;
+pub mod verified_kernel;

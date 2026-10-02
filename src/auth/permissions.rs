@@ -29,24 +29,30 @@ pub(crate) fn scope(kind: &str) -> &str {
 }
 pub(crate) fn allowed(h: &HeaderMap, kind: &str) -> bool {
     let role = header(h, "x-rac-role").unwrap_or("");
-    if role == "owner" {
-        return SCOPES.contains(&scope(kind)) || kind == "read";
-    }
     if kind == "read" {
         return !role.is_empty();
     }
-    if let Some(raw) = header(h, "x-rac-permissions") {
-        return serde_json::from_str::<Vec<String>>(raw)
-            .is_ok_and(|v| v.iter().any(|x| x == scope(kind)));
-    }
-    match scope(kind) {
+    let requested = scope(kind);
+    let raw = header(h, "x-rac-permissions");
+    let explicit_grant = raw.is_some_and(|raw| {
+        serde_json::from_str::<Vec<String>>(raw).is_ok_and(|v| v.iter().any(|x| x == requested))
+    });
+    let default_grant = match requested {
         "catalog.read" | "orders.read" | "payments.read" | "settings.read" | "knowledge.read" => {
             !role.is_empty()
         }
         "catalog.write" => ["admin", "editor"].contains(&role),
         x if SCOPES.contains(&x) => role == "admin",
         _ => false,
-    }
+    };
+    verified_kernel::scope_admissible(
+        !role.is_empty(),
+        SCOPES.contains(&requested),
+        role == "owner",
+        raw.is_some(),
+        explicit_grant,
+        default_grant,
+    )
 }
 pub(crate) fn validate_permissions(h: &HeaderMap, v: &Value) -> Result<Value> {
     if v.is_null() {

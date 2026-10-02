@@ -1,0 +1,115 @@
+//! Generated conformance driver; invokes the same production policy functions as the commerce server.
+use rust_ai_commerce::verified_kernel::*;
+use serde_json::{Value, json};
+use std::io::{self, BufRead};
+fn eval(j: &Value) -> Result<Value, String> {
+    let args = &j["args"];
+    match j["function"].as_str() {
+        Some("discount_cap") => Ok(json!(discount_cap(
+            args["total"].as_u64().ok_or("Invalid total")?,
+            args["requested"].as_u64().ok_or("Invalid requested")?
+        ))),
+        Some("stock_admissible") => Ok(json!(stock_admissible(
+            args["stock"].as_u64().ok_or("Invalid stock")?,
+            args["quantity"].as_u64().ok_or("Invalid quantity")?
+        ))),
+        Some("refund_admissible") => Ok(json!(refund_admissible(
+            args["captured"].as_u64().ok_or("Invalid captured")?,
+            args["refunded"].as_u64().ok_or("Invalid refunded")?,
+            args["requested"].as_u64().ok_or("Invalid requested")?
+        ))),
+        Some("revision_admissible") => Ok(json!(revision_admissible(
+            args["current"].as_u64().ok_or("Invalid current")?,
+            args["expected"].as_u64().ok_or("Invalid expected")?
+        ))),
+        Some("replay_admissible") => Ok(json!(replay_admissible(
+            args["same_cart"].as_bool().ok_or("Invalid same_cart")?,
+            args["cart_open"].as_bool().ok_or("Invalid cart_open")?,
+            args["same_fingerprint"]
+                .as_bool()
+                .ok_or("Invalid same_fingerprint")?
+        ))),
+        Some("scope_admissible") => Ok(json!(scope_admissible(
+            args["authenticated"]
+                .as_bool()
+                .ok_or("Invalid authenticated")?,
+            args["known_scope"].as_bool().ok_or("Invalid known_scope")?,
+            args["owner"].as_bool().ok_or("Invalid owner")?,
+            args["explicit"].as_bool().ok_or("Invalid explicit")?,
+            args["explicit_grant"]
+                .as_bool()
+                .ok_or("Invalid explicit_grant")?,
+            args["default_grant"]
+                .as_bool()
+                .ok_or("Invalid default_grant")?
+        ))),
+        Some("order_edit_admissible") => Ok(json!(order_edit_admissible(
+            args["terminal"].as_bool().ok_or("Invalid terminal")?
+        ))),
+        Some("completion_admissible") => Ok(json!(completion_admissible(
+            args["terminal"].as_bool().ok_or("Invalid terminal")?,
+            args["payment_ready"]
+                .as_bool()
+                .ok_or("Invalid payment_ready")?,
+            args["deliveries_ready"]
+                .as_bool()
+                .ok_or("Invalid deliveries_ready")?
+        ))),
+        Some("cancellation_admissible") => Ok(json!(cancellation_admissible(
+            args["terminal"].as_bool().ok_or("Invalid terminal")?,
+            args["external_payment"]
+                .as_bool()
+                .ok_or("Invalid external_payment")?,
+            args["refund_required"]
+                .as_bool()
+                .ok_or("Invalid refund_required")?,
+            args["deliveries_open"]
+                .as_bool()
+                .ok_or("Invalid deliveries_open")?
+        ))),
+        Some("manual_payment_admissible") => Ok(json!(manual_payment_admissible(
+            args["terminal"].as_bool().ok_or("Invalid terminal")?,
+            args["external_payment"]
+                .as_bool()
+                .ok_or("Invalid external_payment")?,
+            args["current_pending"]
+                .as_bool()
+                .ok_or("Invalid current_pending")?,
+            args["target_paid"].as_bool().ok_or("Invalid target_paid")?
+        ))),
+        Some("download_admissible") => Ok(json!(download_admissible(
+            args["order_blocked"]
+                .as_bool()
+                .ok_or("Invalid order_blocked")?,
+            args["paid"].as_bool().ok_or("Invalid paid")?,
+            args["simulated_authorized"]
+                .as_bool()
+                .ok_or("Invalid simulated_authorized")?
+        ))),
+        Some("checkout_contact_admissible") => Ok(json!(checkout_contact_admissible(
+            args["simulated"].as_bool().ok_or("Invalid simulated")?,
+            args["email_present"]
+                .as_bool()
+                .ok_or("Invalid email_present")?,
+            args["billing_present"]
+                .as_bool()
+                .ok_or("Invalid billing_present")?
+        ))),
+        Some("receipt_admissible") => Ok(json!(receipt_admissible(
+            args["expected"].as_u64().ok_or("Invalid expected")?,
+            args["received"].as_u64().ok_or("Invalid received")?,
+            args["same_currency"]
+                .as_bool()
+                .ok_or("Invalid same_currency")?,
+            args["confirmed"].as_bool().ok_or("Invalid confirmed")?
+        ))),
+        _ => Err("Unknown policy".into()),
+    }
+}
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    for line in io::stdin().lock().lines() {
+        let input: Value = serde_json::from_str(&line?)?;
+        println!("{}", eval(&input).map_err(io::Error::other)?);
+    }
+    Ok(())
+}

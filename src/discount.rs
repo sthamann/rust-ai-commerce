@@ -5,7 +5,7 @@ pub fn allocate(totals: &[i64], discount: i64) -> Vec<i64> {
     if total == 0 {
         return totals.to_vec();
     }
-    let target = discount.clamp(0, total) as i128;
+    let target = crate::verified_kernel::discount_cap(total as u64, discount.max(0) as u64) as i128;
     let mut cumulative = 0i128;
     let mut allocated = 0i128;
     totals

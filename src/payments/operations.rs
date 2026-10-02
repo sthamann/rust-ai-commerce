@@ -60,7 +60,15 @@ pub(crate) async fn enqueue(
                 .ok_or(bad("Positive amountMinor required"))?;
             let reserved:i64=sqlx::query_scalar("SELECT coalesce(sum((request->>'amountMinor')::bigint),0)::bigint FROM payment_jobs WHERE tenant=$1 AND attempt_id=$2 AND operation='refund' AND state IN ('queued','running','uncertain')").bind(&t).bind(id).fetch_one(&mut *tx).await?;
             if !["captured", "partially_refunded"].contains(&p.state.as_str())
-                || amount > p.amount - p.refunded - reserved
+                || !p
+                    .refunded
+                    .checked_add(reserved)
+                    .and_then(|consumed| {
+                        Some((u64::try_from(p.amount).ok()?, u64::try_from(consumed).ok()?))
+                    })
+                    .is_some_and(|(captured, consumed)| {
+                        verified_kernel::refund_admissible(captured, consumed, amount as u64)
+                    })
             {
                 return Err(conflict("Refund exceeds the remaining captured amount"));
             }

@@ -42,10 +42,12 @@ pub(super) async fn attachment(
     Ok(response(&r))
 }
 fn paid(o: &Value) -> bool {
-    !["cancelled", "expired", "payment_review"].contains(&o["state"].as_str().unwrap_or(""))
-        && (["paid", "captured", "partially_refunded"]
-            .contains(&o["payment"]["state"].as_str().unwrap_or(""))
-            || o["payment"]["provider"] == "simulated" && o["payment"]["state"] == "authorized")
+    verified_kernel::download_admissible(
+        ["cancelled", "expired", "payment_review"].contains(&o["state"].as_str().unwrap_or("")),
+        ["paid", "captured", "partially_refunded"]
+            .contains(&o["payment"]["state"].as_str().unwrap_or("")),
+        o["payment"]["provider"] == "simulated" && o["payment"]["state"] == "authorized",
+    )
 }
 pub(super) async fn owned(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let (t, email) = accounts::identity(&a, &h).await?;

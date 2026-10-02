@@ -21,7 +21,7 @@
     "application": 29
   },
   "structure": {
-    "documentedRustModules": 143,
+    "documentedRustModules": 146,
     "maximumRustModuleLines": 320,
     "mainLines": 110,
     "sourceMap": "source-map.md"
@@ -79,7 +79,7 @@
     "totalFailures": 0
   },
   "http": {
-    "passedCheckGroups": 191,
+    "passedCheckGroups": 193,
     "suites": {
       "studio": {
         "passed": 7,
@@ -633,7 +633,116 @@
     "Fixed model weights, persisted evidence and category-affinity consumers; no demonstrated causal uplift or online weight training",
     "Vercel/self-hosted deployment prepared and Linux container exercised; no public HTTPS deployment or hardened SaaS certification",
     "Storyfront title/description import is multilingual; earlier generated stories and its broader scene/chrome localization are not automatically translated",
-    "PayPal wallet Orders v2 wire/reconciliation/refund/BN verified with local Sandbox fixtures; Live mode prepared but no live settlement tested. Shopware Payments standalone connector remains unconnected."
+    "PayPal wallet Orders v2 wire/reconciliation/refund/BN verified with local Sandbox fixtures; Live mode prepared but no live settlement tested. Shopware Payments standalone connector remains unconnected.",
+    "Partial formal verification: 13 production policies / 20 Lean properties; translator, surrounding Rust, SQL, providers, frontend and AI behavior remain unproved."
   ],
-  "sourceStatus": "All 18 suites passed before the final contact-projection hardening; affected customer/merchant/payment/service suites plus 44 units rechecked after hardening"
+  "sourceStatus": "Latest complete recheck: 18 HTTP suites / 193 groups, 44 Rust units, 5872 PHP comparisons and Lean formal gate. Older browser/model/deployment observations retain their original scope.",
+  "formalVerification": {
+    "report": "formal-verification.json",
+    "guide": "formal-verification.md",
+    "policies": 13,
+    "theorems": 20,
+    "compiledComparisons": 3558,
+    "entireCoreProved": false
+  },
+  "formalIntegrationRecheck": {
+    "sourceBaseCommit": "7cb0cbd5cd85f6031574afd198c4cc8afd64b2dc",
+    "workingTreeChanged": true,
+    "rustUnitTests": 44,
+    "httpCheckGroups": 193,
+    "allSuiteResults": [
+      {
+        "suite": "studio",
+        "exitCode": 0,
+        "elapsedSeconds": 0.65
+      },
+      {
+        "suite": "integration",
+        "exitCode": 0,
+        "elapsedSeconds": 0.65
+      },
+      {
+        "suite": "protocols",
+        "exitCode": 0,
+        "elapsedSeconds": 0.52
+      },
+      {
+        "suite": "intelligence",
+        "exitCode": 0,
+        "elapsedSeconds": 0.22
+      },
+      {
+        "suite": "commerce",
+        "exitCode": 0,
+        "elapsedSeconds": 1.86
+      },
+      {
+        "suite": "scalability",
+        "exitCode": 0,
+        "elapsedSeconds": 3.24
+      },
+      {
+        "suite": "users",
+        "exitCode": 0,
+        "elapsedSeconds": 4.73
+      },
+      {
+        "suite": "providers",
+        "exitCode": 0,
+        "elapsedSeconds": 3.07
+      },
+      {
+        "suite": "apps",
+        "exitCode": 0,
+        "elapsedSeconds": 2.67
+      },
+      {
+        "suite": "checkout_handoff",
+        "exitCode": 0,
+        "elapsedSeconds": 1.44
+      },
+      {
+        "suite": "payments",
+        "exitCode": 0,
+        "elapsedSeconds": 15.92
+      },
+      {
+        "suite": "services",
+        "exitCode": 0,
+        "elapsedSeconds": 3.64
+      },
+      {
+        "suite": "extensions",
+        "exitCode": 0,
+        "elapsedSeconds": 2.29
+      },
+      {
+        "suite": "staging",
+        "exitCode": 0,
+        "elapsedSeconds": 3.92
+      },
+      {
+        "suite": "marketing_accounts",
+        "exitCode": 0,
+        "elapsedSeconds": 4.49
+      },
+      {
+        "suite": "merchant_operations",
+        "exitCode": 0,
+        "elapsedSeconds": 4.14
+      },
+      {
+        "suite": "customer_accounts",
+        "exitCode": 0,
+        "elapsedSeconds": 2.63
+      },
+      {
+        "suite": "developer_documents",
+        "exitCode": 0,
+        "elapsedSeconds": 4.2
+      }
+    ],
+    "phpComparisonCases": 5872,
+    "paidProviderCalls": 0
+  }
 }

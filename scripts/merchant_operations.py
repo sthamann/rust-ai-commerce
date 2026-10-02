@@ -135,7 +135,23 @@ assert len(matches)==1 and matches[0]['state']=='completed'
 current=req('/api/merchant/orders/'+id,h=h);assert len([event for event in current['activity']if event['kind']=='transition'and event['data']['state']=='packed'])==1
 assert len([event for event in current['activity']if event['kind']=='flow'and event['data']['text']=='Packing flow confirmed en'])==1
 assert current['workflow']['actions']==[]
+# Terminal business states must reject direct HTTP commands, not only hide buttons.
+for kind,state in [('payment','paid'),('delivery','shipped')]:
+    denied=req('/api/merchant/orders/'+id+'/transition',{'revision':current['revision'],'kind':kind,'state':state},h,expected=409)
+    assert 'terminalOrder' in json.dumps(denied)
+assert req('/api/merchant/orders/'+id,h=h)['revision']==current['revision']
+check('completed orders reject direct payment/delivery commands without changing revision')
 check('custom translated workflow, concurrent exact-once transition and snapshot-bound flow produce one real order note')
+# An app-defined terminal state receives the same server-side protection.
+custom=copy.deepcopy(wf);custom['states'].append({'id':'sealed','label':{l:'Sealed' for l in ['en','de','fr','es']},'terminal':True});custom['transitions'].append({'id':'seal','from':'placed','to':'sealed','label':{l:'Seal order' for l in ['en','de','fr','es']}})
+req('/api/merchant/order-state-machine',{'revision':1,'data':custom},h,'PUT')
+sealed_cart=req('/store-api/checkout/cart',{'session':'sealed-'+suffix},pub);sealed_h={**pub,'sw-context-token':sealed_cart['token']};req('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'notebook','quantity':1}]},sealed_h)
+sealed=req('/store-api/checkout/order',{}, {**sealed_h,'Idempotency-Key':'sealed-'+suffix});sealed=req('/api/merchant/orders/'+sealed['id']+'/transition',{'revision':sealed['revision'],'kind':'order','state':'sealed'},h)
+assert sealed['workflow']['actions']==[]
+for kind,state in [('payment','paid'),('delivery','shipped')]:
+    denied=req('/api/merchant/orders/'+sealed['id']+'/transition',{'revision':sealed['revision'],'kind':kind,'state':state},h,expected=409)
+    assert 'terminalOrder' in json.dumps(denied)
+check('app-defined terminal states reject direct operational commands through the shared guard')
 # A delegated team manager cannot mint default admin rights through invitations.
 req('/api/workspace/members/'+support['user']['id'],{'role':'viewer','active':True,'permissions':['team.manage','orders.read']},h,'PUT')
 req('/api/workspace/invitations',{'email':'escalate'+suffix+'@example.test','role':'admin'},sh,expected=403)

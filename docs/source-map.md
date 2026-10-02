@@ -232,3 +232,16 @@ caches; this is not a machine/database cold-start or failover test.
 The file guard verifies every Rust module's responsibility header and maximum
 320 lines (`main.rs` maximum 120). Tests cover the listed actual behaviors;
 this does not claim every source line or every original Shopware operation is covered.
+
+## Formal policy extraction
+
+| File | Responsibility | Verification |
+|---|---|---|
+| [`src/verified_kernel.rs`](../src/verified_kernel.rs) | Thirteen pure production admission/cap policies | Twenty Lean theorems; compiled Rust/Lean conformance; broken-policy mutations |
+| [`src/bin/verified_kernel.rs`](../src/bin/verified_kernel.rs) | Generated JSON comparison driver calling the real policy module | 3,558 comparison cases; generated drift guard |
+| [`src/payments/receipt_guard.rs`](../src/payments/receipt_guard.rs) | Checked amount conversion and provider receipt policy binding | `payments.py`; reviewed binding, not a proof of the parser |
+
+All 146 Rust files have explicit status and reviewed hashes in
+[`proof/manifest.json`](../proof/manifest.json). The eight consumer modules are
+reviewed bindings, not whole-module proofs. See the
+[exact formal coverage and remaining gaps](formal-verification.md).

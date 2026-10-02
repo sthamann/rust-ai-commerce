@@ -1,0 +1,991 @@
+{
+  "format": 1,
+  "claim": "13 extracted production policies; surrounding modules remain unproved",
+  "policies": {
+    "discount_cap": {
+      "bindings": [
+        "src/discount.rs"
+      ],
+      "theorems": [
+        "discount_bounded",
+        "discount_requested",
+        "discount_conservation"
+      ]
+    },
+    "stock_admissible": {
+      "bindings": [
+        "src/order_checkout.rs"
+      ],
+      "theorems": [
+        "stock_positive_bounded",
+        "stock_conservation"
+      ]
+    },
+    "refund_admissible": {
+      "bindings": [
+        "src/payments/operations.rs"
+      ],
+      "theorems": [
+        "refund_bounded",
+        "refund_zero_denied"
+      ]
+    },
+    "revision_admissible": {
+      "bindings": [
+        "src/commerce/fulfillment.rs"
+      ],
+      "theorems": [
+        "revision_exact"
+      ]
+    },
+    "replay_admissible": {
+      "bindings": [
+        "src/order_checkout.rs"
+      ],
+      "theorems": [
+        "replay_same_cart",
+        "replay_open_fingerprint"
+      ]
+    },
+    "scope_admissible": {
+      "bindings": [
+        "src/auth/permissions.rs"
+      ],
+      "theorems": [
+        "scope_authenticated_known",
+        "scope_explicit_no_escalation"
+      ]
+    },
+    "order_edit_admissible": {
+      "bindings": [
+        "src/commerce/order_workflow.rs"
+      ],
+      "theorems": [
+        "terminal_edit_denied"
+      ]
+    },
+    "completion_admissible": {
+      "bindings": [
+        "src/commerce/order_workflow.rs"
+      ],
+      "theorems": [
+        "completion_safe"
+      ]
+    },
+    "cancellation_admissible": {
+      "bindings": [
+        "src/commerce/order_workflow.rs"
+      ],
+      "theorems": [
+        "cancellation_safe"
+      ]
+    },
+    "manual_payment_admissible": {
+      "bindings": [
+        "src/commerce/fulfillment.rs"
+      ],
+      "theorems": [
+        "manual_payment_safe"
+      ]
+    },
+    "download_admissible": {
+      "bindings": [
+        "src/assets/download.rs"
+      ],
+      "theorems": [
+        "download_blocked_denied",
+        "download_payment_required"
+      ]
+    },
+    "checkout_contact_admissible": {
+      "bindings": [
+        "src/order_checkout.rs"
+      ],
+      "theorems": [
+        "financial_contact_required"
+      ]
+    },
+    "receipt_admissible": {
+      "bindings": [
+        "src/payments/receipt_guard.rs"
+      ],
+      "theorems": [
+        "receipt_exact"
+      ]
+    }
+  },
+  "sources": {
+    "src/accounts/address_store.rs": {
+      "status": "unproved",
+      "sha256": "6a7af4f2b1d28b910536a6bdd6be4f8e6a93cf090e87e15d8dfd8aa3705f7610",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/accounts/addresses.rs": {
+      "status": "unproved",
+      "sha256": "60c8e7c5c48f3951977edbee95fffb405f3aa6d22c29c9181c1215fe69909cb0",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/accounts/contacts.rs": {
+      "status": "unproved",
+      "sha256": "08404f3dedaae028019441d6d090282ef9da3ba4fcc28a0db05b68101fd4fbdf",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/accounts/demo.rs": {
+      "status": "unproved",
+      "sha256": "6afac85cdfe1abf40d35346ccd695eff4ff8fdcb3ce245d230e2472da8c4c5f6",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/accounts/metadata.rs": {
+      "status": "unproved",
+      "sha256": "1ba551327d9172652e2d6430d094f8ec20ca3ad5959ae446489568f6189ed888",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/accounts/mod.rs": {
+      "status": "unproved",
+      "sha256": "a2a32f4611fceb56282fca9a4dea37a3fe5135d942e7c417ac0bbfa83b9f9e1c",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/accounts/order_snapshot.rs": {
+      "status": "unproved",
+      "sha256": "bdc413384130655713e0e2d6c92a422143975a81dfd0cdffefee30111d71adf7",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/accounts/profile.rs": {
+      "status": "unproved",
+      "sha256": "dd4021527870089e7baed29ad84f67084af98caf847a03131298e91ddea1eabb",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/agent.rs": {
+      "status": "unproved",
+      "sha256": "8c199b9f7aabed1e45b40c5d8c55e9f5cc43e1fd854e5351020346a4b68b10ae",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/apps/cart_contributions.rs": {
+      "status": "unproved",
+      "sha256": "bad0f8a759090423d3608d16a77a6bece9afa22c9dd7c3b56e0299cba6a6c565",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/apps/compatibility.rs": {
+      "status": "unproved",
+      "sha256": "21f273002ef16caba98df8afe42ef5acba4211542780c0c0b9c6acaa94b731c4",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/apps/data.rs": {
+      "status": "unproved",
+      "sha256": "aad1ab005e76cc8d67310587388f2b93643f7c1fed8c7490facc1937e79b6234",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/apps/events.rs": {
+      "status": "unproved",
+      "sha256": "8c33a80ca7dbe7a47b99af00ae4639ea792b9d8e296808745becdc253fde1c9c",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/apps/gateway.rs": {
+      "status": "unproved",
+      "sha256": "f56fd043310d6aa6c7c10d1d4093d1ccc7b50f85f39dde9c5a2b6a436de94936",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/apps/manifest.rs": {
+      "status": "unproved",
+      "sha256": "9bf0f9991fc66aadec3bec05288b95de986e46ee00c1cba082faa126d9e5af8e",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/apps/mod.rs": {
+      "status": "unproved",
+      "sha256": "9d2828772e17d73798138c17dbaf9cfe17b01fc69e4f7dd205eb7b9a25d538da",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/apps/planning.rs": {
+      "status": "unproved",
+      "sha256": "2a1fb70c24a150b2e9fe8f41e86d0648e3e7f14cdf265d5d30006009124470ce",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/apps/registry.rs": {
+      "status": "unproved",
+      "sha256": "b36ce3c42b00cb396fa175d722db6258c8b963592e4abfd4b37b4d067d8aa468",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/apps/routes.rs": {
+      "status": "unproved",
+      "sha256": "c58286b0dfaeee95e9285cebc3f3bca112ae4f8072cfb9bed39f5af99a1aea72",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/apps/runtime.rs": {
+      "status": "unproved",
+      "sha256": "5ac06c331ea566a7d3d0220a45bd2d747736b8fdf555f5114d358f617cfd768a",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/assets/download.rs": {
+      "status": "reviewed-binding",
+      "sha256": "d8eadd7151d54f7a490d7cde40bce9e98c1e0350265c80461309303adcbdbe04",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/assets/mod.rs": {
+      "status": "unproved",
+      "sha256": "913989d92c433445a74132ada790feb89257c4b1eac06526bd2e6c70f1fc3794",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/assets/rich.rs": {
+      "status": "unproved",
+      "sha256": "6d4457f42fb1bdb78ae3e4ec8fb7d2085e7f5ead0b6b69742c9127457ef21ce6",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/assets/upload.rs": {
+      "status": "unproved",
+      "sha256": "819766b17e68ec27e33696101ae0f1229888c0f0330740fe6b63821fcc0e8cfe",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/auth/credentials.rs": {
+      "status": "unproved",
+      "sha256": "1f6ca274555dac7694c22c5fb95592257eecdd6dfc525ed949cc2331f3f84471",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/auth/integrations.rs": {
+      "status": "unproved",
+      "sha256": "83f2be39fdca4ca9ce57748f537b5102d5a830db5a1b0200df2588d7592366fc",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/auth/invitations.rs": {
+      "status": "unproved",
+      "sha256": "29f093688c9e4db27bf56b9ad5347d8d26b799f279c938a4e040a2469af73cf8",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/auth/members.rs": {
+      "status": "unproved",
+      "sha256": "6895ecbc1736e388e3539a2408943307835085e27667aca4e83afc9a737fbf95",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/auth/middleware.rs": {
+      "status": "unproved",
+      "sha256": "e9bd1ecc5fcdb6fdad2f13b0016d0733b0e334d592155207b23d72d786f87e3b",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/auth/mod.rs": {
+      "status": "unproved",
+      "sha256": "46046ec1d4076b5d0554e6964a74a3276ab109c2d6afcbf24e11531947533611",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/auth/permissions.rs": {
+      "status": "reviewed-binding",
+      "sha256": "05baad65420ee144c7a1d74f893d10020421b93761f5bf5a58fac0538c5e0787",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/auth/provision.rs": {
+      "status": "unproved",
+      "sha256": "43d689cf083ae71ce2552b5a0a58dd37a1914389ac2e2c2083f1915de26d981d",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/auth/registration.rs": {
+      "status": "unproved",
+      "sha256": "16d97cfd4acbc10fd2330b0057ea3dd1c3c1a418dcd051966041d956404a7257",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/auth/sessions.rs": {
+      "status": "unproved",
+      "sha256": "16ea1362829b09724ea6e80aea32e4cb7a03911115fd40431dda2e86162d99c9",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/bin/context.rs": {
+      "status": "unproved",
+      "sha256": "3795595ed6b1c685f1fca0161f7106b6c7eee7c90ed536a0cabd51651d4b9902",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/bin/delivery.rs": {
+      "status": "unproved",
+      "sha256": "e68b537bef0e3fced1b6cc1959ab106f982c9a656b499f2041de1490d91d5c3e",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/bin/price.rs": {
+      "status": "unproved",
+      "sha256": "2aed9605260dcc1a66013d57820ec5774e36a6d68b4c9840d5a31e90545c53a6",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/bin/rules.rs": {
+      "status": "unproved",
+      "sha256": "4ece28317e4d10375c234d94cc4348568cc02e0bd2b1d1c4e81342ad1236a6ac",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/bin/verified_kernel.rs": {
+      "status": "conformance-driver",
+      "sha256": "91b915f7ef6d3bdef327a5c03a2bfa90621ff0e8fd6f629e9b0fb66e35cbd608",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/bootstrap.rs": {
+      "status": "unproved",
+      "sha256": "34a51c60374e079a9cc908983626c58e6ca2efc182640bdc3f28aa8bc6e282b8",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/capabilities.rs": {
+      "status": "unproved",
+      "sha256": "adc089535cbe53401f34f194adf7735c876d6ed0c4841adfe11f73e03beaf9a1",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/cart_model.rs": {
+      "status": "unproved",
+      "sha256": "844a0c471eac017abb019adf122c10f505b86c8189d98d489114b008120e098a",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/cart_mutation.rs": {
+      "status": "unproved",
+      "sha256": "028bdda4cc6321aaa149b8b7c3bc3fbcd7a7984e7b1cac8a6587001c0ff051e0",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/cart_price.rs": {
+      "status": "unproved",
+      "sha256": "fce0a05ca572bff20c9da7bfb9bdf74e20b0cb990ae14d269dfc96421341585f",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/cart_routes.rs": {
+      "status": "unproved",
+      "sha256": "e0c3579b24514ab93da15ede87d00397c24e013174bed03d156850cfb8f366bc",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/cart_storage.rs": {
+      "status": "unproved",
+      "sha256": "79a75d3e709986190cc6d020fef40f1555376961aafc65bb88369446ab8252c6",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/catalog_model.rs": {
+      "status": "unproved",
+      "sha256": "771815aa7b89dca178e47fddf9429bb307c954d4740391d7409a838b6009bf02",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/catalog_page.rs": {
+      "status": "unproved",
+      "sha256": "9f4cbf1a1786a29ac10b31d5e6378dca11650a9a8c448a3c0b3be8933463d2f4",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/catalog_routes.rs": {
+      "status": "unproved",
+      "sha256": "89f6a2241996b089cc6a11d2a938ac18a0dfae0ce3cd6bb54a4fb9774b3e43d8",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/channel_metrics.rs": {
+      "status": "unproved",
+      "sha256": "8cf3a57385ecea1e0808eead5cb3720822f74e8d894d514d03bafdbf9c5caf2c",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/chat_lease.rs": {
+      "status": "unproved",
+      "sha256": "0f53325d6a4229be31bece171f3d61df1e9e3d93de64063070e8b60c60b388d4",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/checkout_handoff.rs": {
+      "status": "unproved",
+      "sha256": "82f7fa8a6d35d0d74c46d7c4e46bc8858eeda8bef410d7976d909282c8e5ae84",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/cognition/context.rs": {
+      "status": "unproved",
+      "sha256": "23a67a8c60faf7bbdde6341c817dc28fefbaa7a641f9d3171008d2fc4d795708",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/cognition/mod.rs": {
+      "status": "unproved",
+      "sha256": "dafd22df738bedcb17fae2964de7e49294bb796698c48fc14c2296f29586ab5a",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/cognition/projection.rs": {
+      "status": "unproved",
+      "sha256": "feb6a428037fda517df869554dc97a56ffbee0eff9cf12e9abdb8587ad1c072b",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/cognition/recommendations.rs": {
+      "status": "unproved",
+      "sha256": "2b51758d64616a7aab5349580f20709d6edeb971dead7c64fd17443d34031551",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/cognition/routes.rs": {
+      "status": "unproved",
+      "sha256": "c68a5d65014140989e28290628b209f36d9e0d6da3138d5cdb3c903e5b67183d",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/catalog.rs": {
+      "status": "unproved",
+      "sha256": "968ce5c09e2065eddf0416955ff4188eac7a5f1be8c550a6d1fb8905a5532819",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/configuration.rs": {
+      "status": "unproved",
+      "sha256": "d242b5b924a3b66bf989c170f73e30f91db3b3290bf58356f4db7f7969d69f3f",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/context_routes.rs": {
+      "status": "unproved",
+      "sha256": "ddb18ac746fde7aa045ef063fad540dc96f9164fa66ce552ecda052efb5eae7b",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/delivery.rs": {
+      "status": "unproved",
+      "sha256": "bb0ac63bd189665e2034fb5e03955c5b21d1b2dbb59aeee125528aaf742ea032",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/detail.rs": {
+      "status": "unproved",
+      "sha256": "c9bb065912562fb1928b23d89f66f037e24e766bfd313e937694b10cfb532b2d",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/fulfillment.rs": {
+      "status": "reviewed-binding",
+      "sha256": "89188a401d48a5bd3a02cf3d74085165bd27c0d40820940138f93e455c86569c",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "src/commerce/mod.rs": {
+      "status": "unproved",
+      "sha256": "f0cf2b18afe2b4b1dcd012167f0af172e725e7b2c6d69e4affa83f442c50caac",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/order_fields.rs": {
+      "status": "unproved",
+      "sha256": "2edc88a4ede9e5b60120fc38f6e1a731046ba1f4e2d1547b29addb6761272886",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/order_machine.rs": {
+      "status": "unproved",
+      "sha256": "30fa6822c640177210057abfc13b1e82ee67e300123ba1d7c4dce5077f82ed0e",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/order_workflow.rs": {
+      "status": "reviewed-binding",
+      "sha256": "0347c893afd8de2d8230aa218a90411123d8d3d05ac5da9a3d3e8af256fdaeaa",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/product_edit.rs": {
+      "status": "unproved",
+      "sha256": "1f3bdbb7f4cfce8f3e3d0b5f10bfe0f9e75777a233cb217a227f80c06ed1aa00",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/product_fields.rs": {
+      "status": "unproved",
+      "sha256": "5491fb80752d738b151bd13b708b07f20d0f298c416bce31f0a5c0fdcf468f46",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/review_moderation.rs": {
+      "status": "unproved",
+      "sha256": "a2308e8452468fed2f0b2c6202a98d184f82e35e8c141a8c9f2c6550b2720a62",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/reviews.rs": {
+      "status": "unproved",
+      "sha256": "f34694aef81d8832e1f527203494fb293bb032bfb71c303e005548bc0a2669ac",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/selection.rs": {
+      "status": "unproved",
+      "sha256": "994db2c9881faf6ca27eac5110f555474530c958d69a30463a47d3600a9b8640",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/settings_mutation.rs": {
+      "status": "unproved",
+      "sha256": "f80a39a1b462a4ea6d63a3fadb06444e8ec5fda9b21d0a7ed3f2adaa7bbbbb42",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/settings_routes.rs": {
+      "status": "unproved",
+      "sha256": "f92d3100638aa1b6a045a0f8a8df624afe383d1decd33c16cecac5b0ce1a35ae",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/settings_validation.rs": {
+      "status": "unproved",
+      "sha256": "59e2cba20f458d569f6b588f93909538e6b9e57127563342a2065a749b3be6dc",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/tax.rs": {
+      "status": "unproved",
+      "sha256": "cea028bcc213b70b6a48305022df26e98c2a6e8c1ff64c3a9ad60513ead683f5",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/types.rs": {
+      "status": "unproved",
+      "sha256": "6f60840bb5203ee5c87db09219f39cf8a9367fb6cd05147b44083a82ad623aab",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/concierge.rs": {
+      "status": "unproved",
+      "sha256": "774ce077d5cb4b3bf3a2acca08eef8eb67e1bbd2df1335a538eb9f1b19112417",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/context.rs": {
+      "status": "unproved",
+      "sha256": "84eab6aca05be4f8760007d4457904765664b60ba8244575e4632633a36495c9",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/customer.rs": {
+      "status": "unproved",
+      "sha256": "758b744773b37cff7fe7a986fb14ed74167f767b07e11c4afbefdd28eddc2a6d",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/developer/builds.rs": {
+      "status": "unproved",
+      "sha256": "f16a09a5afc6dcaa16b121cfac2148acff1f9e91c584f67d2433064c8003eaa6",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/developer/generation.rs": {
+      "status": "unproved",
+      "sha256": "9e3d1f73f131300509b3de19b2c115a0d4dfed4aa36dd0dda6e8973bca8e96ac",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/developer/mod.rs": {
+      "status": "unproved",
+      "sha256": "c86f0b363c34204c0b6c9dcdb64572d52e4b08df024fd1f206c731d8d733f0ad",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/developer/routes.rs": {
+      "status": "unproved",
+      "sha256": "e67f73a933e1999dbc90cce22c973afd6e87525c338c161cf07e1b8b50da2cb0",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/discount.rs": {
+      "status": "reviewed-binding",
+      "sha256": "82f4e3a3e0255a333eccbe9eff470513cf06bd2fd0c88b12a0f092ea69a83a26",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/documents/ingestion.rs": {
+      "status": "unproved",
+      "sha256": "f3efaf4e8b8305e95c4aa923d2506d462deabe100556defe429fdc4d9a567c40",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/documents/mod.rs": {
+      "status": "unproved",
+      "sha256": "fe0a13c602d62a884e1b4f488a1c9fc6ccd302fea4076b08a298ec6806ef3bc9",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/documents/parser.rs": {
+      "status": "unproved",
+      "sha256": "468daf9fde14fd59a7782b07bf12d216dacb0ab16f6c9b5a386df21c804865ad",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/documents/questions.rs": {
+      "status": "unproved",
+      "sha256": "4c581b6c1b3c9c028eac2f2725c5b79872e972bce9ecb21bce4164ea379711d0",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/documents/retrieval.rs": {
+      "status": "unproved",
+      "sha256": "1f23dc3f833899dfe3dd55d7d5cb48b851d9fedcca188ff81dce81f684c12843",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/experience.rs": {
+      "status": "unproved",
+      "sha256": "8e805b1823a85ac764ee48336fa165b821687e7fb79012ae3b4db34d2f8e719b",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/extensions.rs": {
+      "status": "unproved",
+      "sha256": "227225530bd1b9b4c7287c041455c6447689f19ac7f131860793c92791c2e87a",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/foundation.rs": {
+      "status": "unproved",
+      "sha256": "4dfdbbec06709697a68fa31371be626854bcc061e8be0d2252be60189582d0b4",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/http_limits.rs": {
+      "status": "unproved",
+      "sha256": "6085e1f3f2e6cb7b8dadc039c99dc925dd061a2e74c1ce55e363fa9db3bc12d2",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/inference.rs": {
+      "status": "unproved",
+      "sha256": "0eecf3050bac722425608ea3649517119288b3367ce28c43befa1b10fd7d6b9a",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/knowledge.rs": {
+      "status": "unproved",
+      "sha256": "f913f278e012749e3f6d990703326c1c2d1b131a259636309de5313070853349",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/lib.rs": {
+      "status": "unproved",
+      "sha256": "3dd010426b56ec36ee30fe2e1531d22e60817310098a62021f2516f2bd8b653a",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/localization.rs": {
+      "status": "unproved",
+      "sha256": "483ce92fa4bff5e11a29d5525b675c636e69542402e51ffb924ac41d691ea4e6",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/main.rs": {
+      "status": "unproved",
+      "sha256": "f617ececb7acd25364c6b902cc77ef15fcb023a694c3aa14f8d6ac026b6c9e72",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/marketing/channels.rs": {
+      "status": "unproved",
+      "sha256": "839f0e817aba6bfa710c32572cddc0ec70a31d2cfdcf2c0cb6f4ef39b09a3a4d",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/marketing/flows.rs": {
+      "status": "unproved",
+      "sha256": "22b1f59c68df8af7d4090eb73502decce5f5a7f559c0875e5342e80dc4bf1a6e",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/marketing/mod.rs": {
+      "status": "unproved",
+      "sha256": "c14b636e686c2231e17c1ae255b473f513c0e06cd7e88c00ac3ec5efaeca5306",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/marketing/promotions.rs": {
+      "status": "unproved",
+      "sha256": "53e5fd9bc0c07ef4607c0178a3f5cd755a5c3b7f5c65b0195d2734a220101f1f",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/marketing/routes.rs": {
+      "status": "unproved",
+      "sha256": "f33a881347505f6eff4b06e68d68b599223c8a7968ccc423049302c389cda713",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/marketing/rules.rs": {
+      "status": "unproved",
+      "sha256": "1f93ebc8227ea819f24c0162998ae5bdcf11ad2f6d0bca83eb3c5de2b18f7754",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/mcp.rs": {
+      "status": "unproved",
+      "sha256": "8d647fd392f54fad45f4015b112a919cab39a71c027a54c7738b1ffc38252472",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/migrations.rs": {
+      "status": "unproved",
+      "sha256": "7d7662663b03a7e10f9107e4bad812968e7e2db4231db94378e6d53f880762d9",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/operations/addresses.rs": {
+      "status": "unproved",
+      "sha256": "e683658ad9fbf79799a08e766ee491809a53f4d75a8f3c099401ed5a6d3ce824",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/operations/customers.rs": {
+      "status": "unproved",
+      "sha256": "47783552b96b762aa5b2731e2ab460c53bbdc78f43a904f2568a8f8a865bdc09",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/operations/mod.rs": {
+      "status": "unproved",
+      "sha256": "d870b8d2b7d869e54d544bce60ded840383de00a250d3f34e3b6dfb78452015b",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/operations/orders.rs": {
+      "status": "unproved",
+      "sha256": "5637562f04af885a6fac0fcd3a4a1206af9e7010b41a7b5789ddf85e83d0833d",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/operations/receipt_pdf.rs": {
+      "status": "unproved",
+      "sha256": "008da6de419ad14c88c27ca582ab7f82aca692b09c706990aa6ea7191cc43ccc",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/operations/receipt_text.rs": {
+      "status": "unproved",
+      "sha256": "a751ddd51e2b8754e276476ed77afed74e7aa5e3bdbd0894ebd6be43b34417a8",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/operations/receipts.rs": {
+      "status": "unproved",
+      "sha256": "3b9d134ea66cb572008fe317adda8d119a5d0955e0b52c5caa6b4db6ab6ccab3",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/operations/workflow.rs": {
+      "status": "unproved",
+      "sha256": "94e465e0254423c8b1e53c6a07c9a587b8d14dd12a6ffa9f82cfebcb4d467191",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/order_checkout.rs": {
+      "status": "reviewed-binding",
+      "sha256": "68e73c66a7d50616138cdad84042f51deaf75926ede185fb129cc5a8ff9805c3",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/order_routes.rs": {
+      "status": "unproved",
+      "sha256": "6bbd40697ccd45ac1c3a8cede9f9a05b5f008e21bcb21054ce5b2ef64f1a77c1",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/outbox.rs": {
+      "status": "unproved",
+      "sha256": "5be76a18e1516229a8dc4365fdc95b3dad56fe1405edc845295695cc209ddfff",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/payments/mod.rs": {
+      "status": "unproved",
+      "sha256": "c4eb213d71f41abb85305be2249cdd6f904aa40cd2ec2a95c56714072387d840",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/payments/operations.rs": {
+      "status": "reviewed-binding",
+      "sha256": "b8ebd7da9a113a9dd2242bfd3cdc59cb4f1e9f062a2d0f11899e227a517b6ca0",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/payments/paypal.rs": {
+      "status": "unproved",
+      "sha256": "3e47df2732676829b7f90df026506d668208e1acc23ce2f4f1ac19f4c030f7a9",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/payments/provider.rs": {
+      "status": "unproved",
+      "sha256": "7dc2c532943c1d9bbba61a104581967d2d1513ad1358eaccf2aaed57717899db",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/payments/receipt_guard.rs": {
+      "status": "reviewed-binding",
+      "sha256": "27b3635cffff2fa49002be5cf912ecb4cfc83a9b98ffd81514320c79eb147f54",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/payments/routes.rs": {
+      "status": "unproved",
+      "sha256": "c7da5154bb9e248bf22c7136e112ec561cb3e414b94845b00beb4dff9b563b20",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/payments/storage.rs": {
+      "status": "unproved",
+      "sha256": "8cd392e65d7db5ca63bc3190e0f5bbd1582f28536b59cb63d69a0974157d256c",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/payments/webhooks.rs": {
+      "status": "unproved",
+      "sha256": "6ac48bb78dd5e6c375a331021ae056033232a4de303e60e7f2d65b0d0f80c6ec",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/payments/worker.rs": {
+      "status": "unproved",
+      "sha256": "257ac8ff0302b84526c653f580478f2372d7eb8cbc3d8413ba6fb246c6ce9fd6",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/planner.rs": {
+      "status": "unproved",
+      "sha256": "9541ba61c0f0ed9fc579ea0ef951945ca7420efaddc04a4e50d0c6afe60a2d01",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/pricing.rs": {
+      "status": "unproved",
+      "sha256": "421ebdf7a78c2b46da9c1ee567d2df7052077db7f7c7919cccb516b1e020baac",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/proposal_apply.rs": {
+      "status": "unproved",
+      "sha256": "f8da12a20fff0398ad206e52f93c54ea5ad060522f266c11562e935058776e0a",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/proposal_model.rs": {
+      "status": "unproved",
+      "sha256": "d83db0ec730ad14a2cc9ff324ec4c18d6ffae152e26c6eded0360820e0e936de",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/proposal_routes.rs": {
+      "status": "unproved",
+      "sha256": "e9192d297ea76bb952ca552ce6e93e04bef43df5b17d789a9355d1b56bec61e2",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/routes.rs": {
+      "status": "unproved",
+      "sha256": "1193f7715e70870ed5ce18194a87bce86be4357bbc2c35553d4d386ab89f4e21",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/rule_comparison.rs": {
+      "status": "unproved",
+      "sha256": "62e29d4aa5b80860dcb879db1873d02d2e8fdc75d48687819d00837fc1a424c7",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/sandbox.rs": {
+      "status": "unproved",
+      "sha256": "b26467f60212f6199cb04c91c76df6b4c46f8e952cbebe9a6d0765d1e75c6b5d",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/seed.rs": {
+      "status": "unproved",
+      "sha256": "dc9a936dee659568e48871fab187ff75e746dd65206e54d1d3b06371cb48d32d",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/staging/assets.rs": {
+      "status": "unproved",
+      "sha256": "239496fafab8086b3618e9caa369fa34931f46a299052b1ca600567785526254",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/staging/clone.rs": {
+      "status": "unproved",
+      "sha256": "7ce4918295c281b5763c2608daa7b5da916d1f7852b20efcd276168773d9efaf",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/staging/documents.rs": {
+      "status": "unproved",
+      "sha256": "3779958aea5942f3a6a4a853c4703465e317aecb294c49b664b13d3b4fbac165",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/staging/mod.rs": {
+      "status": "unproved",
+      "sha256": "9ec42975d11dcd1301def23e1b26bcd1bfca964ad749098438603ce5e53a2dd1",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/staging/release.rs": {
+      "status": "unproved",
+      "sha256": "43b68678fb63e2ea49609e17d340c93387aad58facd0f9dcee9152639c6dbad2",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/staging/snapshot.rs": {
+      "status": "unproved",
+      "sha256": "2b3b7d3ad35849fa8b4a00eed104c112743f68a5f070dd1566500f427c9aeb68",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/studio.rs": {
+      "status": "unproved",
+      "sha256": "68e82dfa7a2cf1564db97930a82bdcc977a5d6050cc6db7fba62ad99604b9d01",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/ucp.rs": {
+      "status": "unproved",
+      "sha256": "2d948ffa3a456cf18660ec1c209b57f96d6dc30b3f5fa7d01a8cbd8cb03533bc",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/verified_kernel.rs": {
+      "status": "extracted-policy",
+      "sha256": "535867f9e8d185b5d919980309ffac8d503b6b27a5f110e8e4b7b9d9511a8351",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/workers.rs": {
+      "status": "unproved",
+      "sha256": "710564663ff2bd1f2200e26f5eff5d6d268c5022edd6ad80d44070dd9af99d8d",
+      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    }
+  },
+  "inputs": {
+    ".github/workflows/verify.yml": {
+      "sha256": "0e185887afd9fc5557585c8dc6eab36cc2400b580db166945ce5647a32d48ab7",
+      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+    },
+    "Cargo.lock": {
+      "sha256": "5568d6215c3f896914be87977c1bfb8bdb1f4d746c3af6ad9cf945a4f7da5fe4",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "Cargo.toml": {
+      "sha256": "5b80564dd819d54d939d3d662816bf8ac2b274930e27e122752ee14dda491b34",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/001.sql": {
+      "sha256": "89fd780bf3d991bf3c056f4145e064e4aa030ef5e33a0fff1e5fc7330604a2a7",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/002.sql": {
+      "sha256": "08f316512f3358ab3276c1d46f5343b96eac31b9b118e4e0c1c83517dd99c589",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/003-seed.sql": {
+      "sha256": "2fd7b18ed17a65d996da77830badfe4becb2153cae59f7356b4c6d60bb07b88d",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/004-context.sql": {
+      "sha256": "7cc59b1c6016c97b9c443d8b0aef5dbaf5abcfb9e18071368b4d369439acef53",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/005-context-seed.sql": {
+      "sha256": "4959f0aaf410887f8c51a412782e92ac4b3bb1907643905d6a37804b3a5e5f41",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/006-commerce.sql": {
+      "sha256": "63c03b60f3e6e69c4c810551f5bca4d4b5a5f4a43a73a31c210db3c0bb5f2430",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/007-commerce-seed.sql": {
+      "sha256": "cf6dbcf7bc616ae9cf2ce1287af53900d10864dc3571c70fb8ca18e7616fb33d",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/008-workspaces.sql": {
+      "sha256": "7c235d41dd330a44853db428d7a2abd9f217c14ad0ea651837c99ac49902604a",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/009-variant-properties.sql": {
+      "sha256": "1a393252a261dcbb3ae059970d4f642ffebb683837e59f5ecce24a7b0de2969a",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/010-apps-intelligence-payments.sql": {
+      "sha256": "0fab6246dd1350d3e729e3d122624a1e4df44a40fba49d80bb1d833f8d5b38d1",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/011-documents.sql": {
+      "sha256": "44134b3643a70e6528d4d96fd7c7d34c5e6375644b06ddc603fce73f35dd84b4",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/012-checkout-handoff.sql": {
+      "sha256": "bf7bd6d6d573c188e06c51c9f8fae81d6f70cc602494dafcfcb15cd54aac5f7d",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/013-staging-developer.sql": {
+      "sha256": "532df7590084eb6fe76e6a8b359193ff2a77262d685b2fe2629153d7d0c12cf6",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/014-bounded-catalog.sql": {
+      "sha256": "828fed4977f899517f6a893f12e2884fbc6e00dcdd3c6d1e8c59f29cc49f6710",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/014-customer-accounts.sql": {
+      "sha256": "4039338c4215419e103598914109d95cc8517fb8d5a99986bca1196671f42060",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/015-rules-flows-channels.sql": {
+      "sha256": "5402a762014bb22ac6b8a5c8994b34d706202e36c378125fd94c72371dd96dec",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/016-merchant-operations.sql": {
+      "sha256": "f9265362c48df00c1c92d9feba18b31f8920ec4b534099012abe750790da30e0",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/017-integration-access.sql": {
+      "sha256": "989a1d5cb44af7223fcee08a11a6cd28ef3f00982b87d37953c05ec8e44854e0",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/018-order-state-machine.sql": {
+      "sha256": "b9cfb9e024ddd0ed01bbbb0df8a09e01860a1e45c5b4539c49ac280fd76a97fa",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/019-workflow-schema.sql": {
+      "sha256": "0a5f405eb2cd09ba9d6f0ce0f5eaf3fd88970bbe333fe3cfee237620163ea78e",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/020-customer-addresses.sql": {
+      "sha256": "04b8d4e0af9138ac55c1dfbdca736e290322fef6ba530182f302061e6b62c9dc",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/021-demo-addresses.sql": {
+      "sha256": "db5baadc23d8438aaa8c0563ca5b65f2fae8d248941c22be973bcb10e7a0408c",
+      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "proof/Commerce/Claims.lean": {
+      "sha256": "1654c7d3a7c75bffe2a8aa9581a1c469259a25a1ca28843f001909ca6586c78f",
+      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+    },
+    "proof/lakefile.toml": {
+      "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
+      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+    },
+    "proof/lean-toolchain": {
+      "sha256": "7dc000621e0046d1aada809e2b7177e64454645cf4c741e9daaf79c99ec2e7a2",
+      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+    },
+    "scripts/formal/axioms.py": {
+      "sha256": "127f41e9c2d1024e8784c915458e59a777460f71327f96d8c6b4bfc3b081aefe",
+      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+    },
+    "scripts/formal/conformance.py": {
+      "sha256": "f89166b73bfc2244d96978298938ebd5c0c5c6771feb32a99830a38643e4fba7",
+      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+    },
+    "scripts/formal/extract.py": {
+      "sha256": "0c699db4e15c044ca265d4f656466702994be891faddc1325ab9fb5a6073caab",
+      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+    },
+    "scripts/formal/mutations.py": {
+      "sha256": "43c58598bda4188ef3f96d439a2de6331a28f46a5d05e88006ed2794e1e30ad4",
+      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+    },
+    "scripts/formal/registry.py": {
+      "sha256": "a1836d65c2e2cebfce3d82fe31381508dbdcc71ff0a430922c3316c995261197",
+      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+    },
+    "scripts/formal/runners.py": {
+      "sha256": "a009732dcf573aa10b33f02eef9c4bf57a3a44d34d1d4e8bb0b09868d0543a23",
+      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+    },
+    "scripts/formal.py": {
+      "sha256": "6eb0fc99ffb22e79f67fb8c532cb3ac20945f931b71d8a8c1b8eac0429a590b0",
+      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+    }
+  }
+}

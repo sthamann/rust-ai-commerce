@@ -1,0 +1,10 @@
+name = "commerce_proofs"
+version = "0.1.0"
+defaultTargets = ["Commerce", "conformance"]
+
+[[lean_lib]]
+name = "Commerce"
+
+[[lean_exe]]
+name = "conformance"
+root = "Main"

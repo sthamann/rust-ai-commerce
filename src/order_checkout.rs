@@ -35,9 +35,11 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     .fetch_optional(&mut *tx)
     .await?
     {
-        if r.get::<String, _>("cart_id") != c.id
-            || (c.status == "open" && r.get::<String, _>("fingerprint") != fingerprint)
-        {
+        if !verified_kernel::replay_admissible(
+            r.get::<String, _>("cart_id") == c.id,
+            c.status == "open",
+            r.get::<String, _>("fingerprint") == fingerprint,
+        ) {
             return Err(conflict("Idempotency key was used for another purchase"));
         }
         return Ok(r.get("data"));
@@ -113,7 +115,9 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     commerce::dates_conn(&mut tx, &mut q).await?;
     for i in &c.data.items {
         let p = ps.iter().find(|p| p.id == i.id).unwrap();
-        if p.stock < i.quantity as i32 {
+        if !u64::try_from(p.stock)
+            .is_ok_and(|stock| verified_kernel::stock_admissible(stock, u64::from(i.quantity)))
+        {
             return Err(conflict("Insufficient stock"));
         }
     }
@@ -161,9 +165,11 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     }
     // Financial providers/manual invoices require usable contact and billing data.
     // The explicit simulated demo method keeps legacy headless fixture carts compatible.
-    if q["paymentMethod"]["mode"] != "simulated"
-        && (c.data.email.is_none() || selected.billing_address.is_none())
-    {
+    if !verified_kernel::checkout_contact_admissible(
+        q["paymentMethod"]["mode"] == "simulated",
+        c.data.email.is_some(),
+        selected.billing_address.is_some(),
+    ) {
         return Err(bad("Customer email and billing address required"));
     }
     let customer_snapshot = accounts::order_snapshot(&mut tx, &c, &selected).await?;

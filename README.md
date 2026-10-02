@@ -59,6 +59,21 @@ Shopware Payments connector are still missing.
 
 ![Actual isolated demo order completed through the storefront](docs/assets/storefront-order-complete-en.png)
 
+## Lean-checked production policies
+
+The real Rust checkout, order workflow, access, refund and download paths now
+call a small pure kernel with **13 policies and 20 Lean-proved properties**.
+The production functions are extracted through a closed typed grammar; compiled
+Rust/Lean outputs are compared on 3,558 cases. Deliberately broken policies must
+fail the proof checks. CI also audits transitive axioms and locks every Rust,
+schema, build and proof input to an explicitly reviewed source inventory.
+
+This is **partial formal verification**, not an entire-core or bug-free
+certificate. Database concurrency, surrounding adapters, tax/rounding, provider
+protocols, apps, browser and AI behavior remain outside the proofs. Read the
+[exact contracts, evidence and future-change procedure](docs/formal-verification.md).
+Lean is needed for verification; the running commerce server does not depend on it.
+
 ## Merchant workbench and private releases
 
 The workbench now has **Storyfronts**, **Developers**, **Environments**,

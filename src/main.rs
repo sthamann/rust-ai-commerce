@@ -12,6 +12,7 @@ use rust_ai_commerce::{
     knowledge,
     pricing::{PriceInput, calculate, math_round},
     sandbox::Sandbox,
+    verified_kernel,
 };
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};

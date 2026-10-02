@@ -103,3 +103,13 @@ checks are not antivirus. Rich descriptions accept bounded typed blocks and safe
 media URLs, not executable HTML. Global core RLS, production recovery/verification,
 legal document compliance and complete upstream PSP capabilities remain outside
 the verified prototype. See the exact [operations boundaries](merchant-operations.md).
+
+## Formal verification boundary
+
+Selected production admission/cap policies are extracted to Lean and checked in
+CI, with transitive axiom auditing, compiled conformance and negative mutations.
+The [formal guide](formal-verification.md) names all thirteen policies and their
+actual Rust consumers. This does not prove SQL tenant isolation, authentication,
+provider/extension safety or whole-system correctness. Existing security and
+behavioral regressions remain mandatory, as do explicit reviews of source,
+schema/build and proof-tool changes.

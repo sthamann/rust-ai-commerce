@@ -93,3 +93,13 @@ response envelopes and operation paths differ.
 None of these additional rows has a new original-PHP differential parity proof.
 They are native end-to-end behaviors. The existing 5,872 original-PHP comparisons
 remain the narrowly specified pricing/context/shipping-tax/rule-comparison ports.
+
+## Formal safeguards (additional to upstream behavior comparison)
+
+Thirteen selected Rust commerce policies are backed by twenty Lean theorems and
+compiled Rust/Lean conformance checks. They preserve native admission/cap rules
+in checkout, permissions, operational transitions, refunds, receipts and downloads.
+This is a bounded new safeguard, **not proof of full Shopware equivalence** or of
+all surrounding implementation. The original PHP differential suites and real
+HTTP/PostgreSQL checks remain separate. See [formal coverage](formal-verification.md)
+and the machine-readable inventory in `proof/manifest.json`.

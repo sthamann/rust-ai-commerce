@@ -38,6 +38,25 @@ Run the relevant application suites from [the feature tour](docs/features.md#ver
 against your own instance. Original Shopware ports require original-source
 comparisons described in [the migration workflow](docs/migration.md).
 
+## Formal contracts and source review
+
+All Rust modules, schema/build inputs and proof tooling are recorded in
+`proof/manifest.json`. A changed/new module requires a deliberate review record;
+CI does not silently refresh it. For policy changes also update the generated
+model, exact theorem, production binding and representative negative mutation.
+Do not weaken a contract merely to make an incorrect change pass.
+
+```sh
+python3 scripts/formal.py --generate --record-review 'Explain the reviewed change and relevant regression evidence'
+python3 scripts/formal/mutations.py
+python3 scripts/formal.py
+```
+
+Read the [Lean guide](docs/formal-verification.md) for installation and the
+precise boundary. Unproved modules remain unproved after hash review; only the
+specified extracted policies have Lean proofs. Pull requests must pass the
+required `verify` check, including the formal gate and real integration suites.
+
 ## Pull requests
 
 Describe the concrete before/after behavior, relevant checks and remaining

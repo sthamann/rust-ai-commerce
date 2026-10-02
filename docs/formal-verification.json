@@ -1,0 +1,149 @@
+{
+  "status": "passed",
+  "scope": "Extracted production policies; NOT full Rust/server correctness",
+  "sourceCommit": "7cb0cbd5cd85f6031574afd198c4cc8afd64b2dc",
+  "workingTreeChanged": true,
+  "leanToolchain": "leanprover/lean4:v4.29.1",
+  "policies": 13,
+  "axiomAudit": {
+    "theorems": 20,
+    "sorry": 0,
+    "customAxioms": 0,
+    "nativeDecisionAxioms": 0,
+    "allowedFoundations": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "compiledEnvironmentRechecked": true,
+  "conformance": {
+    "cases": 3558,
+    "mismatches": 0,
+    "allBooleanAssignments": true,
+    "numericBoundaryIncludesU64Max": true,
+    "seed": 20261002
+  },
+  "inventory": {
+    "rustModules": 146,
+    "extractedPolicyModules": 1,
+    "reviewedBindingModules": 8,
+    "unprovedModules": 136,
+    "reviewedSchemaBuildProofInputs": 35,
+    "entireCoreProved": false
+  },
+  "trustedBoundary": [
+    "Rust-to-Lean subset translator",
+    "Rust/Lean compilation and u64-to-Nat correspondence",
+    "Reviewed Rust adapters and input facts",
+    "PostgreSQL transactions/constraints",
+    "Operating system and provider protocols"
+  ],
+  "negativeControls": {
+    "brokenPoliciesRejectedByLean": 15,
+    "unsupportedSyntaxRejected": 14,
+    "staleUnclassifiedDisconnectedBindingsRejected": 3,
+    "proofShortcutsUnexpectedAxiomsMissingAuditsRejected": 9,
+    "baselineAccepted": true
+  },
+  "httpRegression": {
+    "suites": [
+      {
+        "suite": "studio",
+        "exitCode": 0,
+        "elapsedSeconds": 0.65
+      },
+      {
+        "suite": "integration",
+        "exitCode": 0,
+        "elapsedSeconds": 0.65
+      },
+      {
+        "suite": "protocols",
+        "exitCode": 0,
+        "elapsedSeconds": 0.52
+      },
+      {
+        "suite": "intelligence",
+        "exitCode": 0,
+        "elapsedSeconds": 0.22
+      },
+      {
+        "suite": "commerce",
+        "exitCode": 0,
+        "elapsedSeconds": 1.86
+      },
+      {
+        "suite": "scalability",
+        "exitCode": 0,
+        "elapsedSeconds": 3.24
+      },
+      {
+        "suite": "users",
+        "exitCode": 0,
+        "elapsedSeconds": 4.73
+      },
+      {
+        "suite": "providers",
+        "exitCode": 0,
+        "elapsedSeconds": 3.07
+      },
+      {
+        "suite": "apps",
+        "exitCode": 0,
+        "elapsedSeconds": 2.67
+      },
+      {
+        "suite": "checkout_handoff",
+        "exitCode": 0,
+        "elapsedSeconds": 1.44
+      },
+      {
+        "suite": "payments",
+        "exitCode": 0,
+        "elapsedSeconds": 15.92
+      },
+      {
+        "suite": "services",
+        "exitCode": 0,
+        "elapsedSeconds": 3.64
+      },
+      {
+        "suite": "extensions",
+        "exitCode": 0,
+        "elapsedSeconds": 2.29
+      },
+      {
+        "suite": "staging",
+        "exitCode": 0,
+        "elapsedSeconds": 3.92
+      },
+      {
+        "suite": "marketing_accounts",
+        "exitCode": 0,
+        "elapsedSeconds": 4.49
+      },
+      {
+        "suite": "merchant_operations",
+        "exitCode": 0,
+        "elapsedSeconds": 4.14
+      },
+      {
+        "suite": "customer_accounts",
+        "exitCode": 0,
+        "elapsedSeconds": 2.63
+      },
+      {
+        "suite": "developer_documents",
+        "exitCode": 0,
+        "elapsedSeconds": 4.2
+      }
+    ],
+    "checkGroups": 193,
+    "database": "isolated commerce_workbench",
+    "paidProviderCalls": 0
+  },
+  "rustUnitTests": 44,
+  "originalPhpComparisons": 5872,
+  "provenance": "Measured on the worktree extending sourceCommit; full source hashes are recorded in proof/manifest.json. CI emits fresh evidence for its actual commit."
+}

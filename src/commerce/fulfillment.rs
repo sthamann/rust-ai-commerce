@@ -31,7 +31,10 @@ pub(crate) async fn transition_order(
         .ok_or(Error(StatusCode::NOT_FOUND, "Order not found".into()))?;
     let mut o: Value = r.get("data");
     let revision = o["revision"].as_i64().unwrap_or(1);
-    if v["revision"].as_i64() != Some(revision) {
+    if !verified_kernel::revision_admissible(
+        u64::try_from(revision).unwrap_or(0),
+        v["revision"].as_u64().unwrap_or(0),
+    ) {
         return Err(conflict("Order revision changed"));
     }
     let target = v["state"].as_str().ok_or(bad("State required"))?;
@@ -46,7 +49,7 @@ pub(crate) async fn transition_order(
             }) {
                 return Err(conflict("Invalid order transition"));
             }
-            if let Some(reason) = guard(&o, kind, target) {
+            if let Some(reason) = guard(&o, &machine, kind, target) {
                 return Err(conflict(reason));
             }
             if target == "cancelled" {
@@ -73,7 +76,7 @@ pub(crate) async fn transition_order(
             o["state"] = json!(target);
         }
         "payment" => {
-            if let Some(reason) = guard(&o, kind, target) {
+            if let Some(reason) = guard(&o, &machine, kind, target) {
                 return Err(conflict(reason));
             }
             if o["payment"]["provider"] == "paypal" {
@@ -82,13 +85,21 @@ pub(crate) async fn transition_order(
                 ));
             }
             let current = o["payment"]["state"].as_str().unwrap_or("");
-            if target != "paid" || !["pending", "authorized"].contains(&current) {
+            if !verified_kernel::manual_payment_admissible(
+                machine
+                    .states
+                    .iter()
+                    .any(|s| s.id == o["state"].as_str().unwrap_or("") && s.terminal),
+                o["payment"]["provider"] == "paypal",
+                ["pending", "authorized"].contains(&current),
+                target == "paid",
+            ) {
                 return Err(conflict("Invalid payment transition"));
             }
             o["payment"]["state"] = json!(target);
         }
         "delivery" => {
-            if let Some(reason) = guard(&o, kind, target) {
+            if let Some(reason) = guard(&o, &machine, kind, target) {
                 return Err(conflict(reason));
             }
             let index = v["deliveryIndex"].as_u64().unwrap_or(0) as usize;

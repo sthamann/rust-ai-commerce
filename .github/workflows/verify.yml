@@ -1,5 +1,7 @@
 name: Verify prototype
 on: [push, pull_request]
+permissions:
+  contents: read
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -23,6 +25,26 @@ jobs:
           extensions: curl, dom, fileinfo, gd, intl, mbstring, pdo_mysql, pdo_sqlite, sodium, zip
           tools: composer:v2
       - run: cargo fmt --check && cargo clippy --locked --all-targets -- -D warnings && cargo test --locked && cargo build --locked --bins
+      - name: Install pinned Lean toolchain
+        uses: leanprover/lean-action@f061402b660e0c34644504b324e830f2991d4865 # v1
+        with:
+          lake-package-directory: proof
+          auto-config: 'false'
+          build: 'false'
+          test: 'false'
+          lint: 'false'
+          use-mathlib-cache: 'false'
+      - name: Lean production contracts, source review locks and compiled conformance
+        run: python3 scripts/formal.py
+      - name: Reject broken policies, proof shortcuts and disconnected bindings
+        run: python3 scripts/formal/mutations.py
+      - name: Preserve formal verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: formal-verification-${{ github.sha }}
+          path: artifacts/formal-*.json
+          if-no-files-found: ignore
       - run: npm ci && npm run format:check && npm run build
         working-directory: frontend
       - run: composer install --working-dir=reference --no-interaction --prefer-dist
