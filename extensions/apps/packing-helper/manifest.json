@@ -1,0 +1,80 @@
+{
+  "id": "packing_helper",
+  "version": "1.0.0",
+  "coreApi": "1",
+  "runtime": "declarative",
+  "name": {
+    "en": "Packing helper",
+    "de": "Packassistent",
+    "fr": "Assistant de préparation",
+    "es": "Asistente de preparación"
+  },
+  "permissions": [
+    "data.read",
+    "data.write",
+    "admin.slot"
+  ],
+  "entities": [
+    {
+      "name": "checklists",
+      "label": {
+        "en": "Packing checks",
+        "de": "Packprüfungen",
+        "fr": "Contrôles de préparation",
+        "es": "Controles de preparación"
+      },
+      "fields": [
+        {
+          "name": "order_id",
+          "kind": "string",
+          "required": true,
+          "indexed": true,
+          "label": {
+            "en": "Order ID",
+            "de": "Bestell-ID",
+            "fr": "ID commande",
+            "es": "ID pedido"
+          }
+        },
+        {
+          "name": "checked",
+          "kind": "boolean",
+          "required": true,
+          "label": {
+            "en": "Checked",
+            "de": "Geprüft",
+            "fr": "Vérifié",
+            "es": "Verificado"
+          }
+        }
+      ]
+    }
+  ],
+  "slots": [
+    {
+      "location": "admin.apps",
+      "component": "entity-form",
+      "label": {
+        "en": "Packing checks",
+        "de": "Packprüfungen",
+        "fr": "Contrôles de préparation",
+        "es": "Controles de preparación"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "name": "checks",
+      "description": "Read workspace packing checks",
+      "handler": "list",
+      "entity": "checklists",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "public": false
+    }
+  ],
+  "events": []
+}

@@ -81,7 +81,20 @@ pub(crate) async fn release(
     for key in &keys {
         let s = req.selections.iter().find(|s| s.key == *key).unwrap();
         let value = &current[&s.key];
-        if s.key.starts_with("document:") {
+        if s.key == "order-workflow" {
+            auth::permit(&h, "settings.write")?;
+            let m: commerce::OrderMachine =
+                serde_json::from_value(value.clone()).map_err(|_| bad("Invalid workflow"))?;
+            m.validate()?;
+            let ids = m.states.iter().map(|s| s.id.clone()).collect::<Vec<_>>();
+            let stranded:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM orders WHERE tenant=$1 AND NOT(data->>'state'=ANY($2)) AND data->>'state' NOT IN ('expired','payment_review'))").bind(&t).bind(ids).fetch_one(&mut *tx).await?;
+            if stranded {
+                return Err(conflict("Workflow removes an active order state"));
+            }
+            sqlx::query("INSERT INTO order_state_machines(tenant,data) VALUES($1,$2) ON CONFLICT(tenant) DO UPDATE SET data=EXCLUDED.data,revision=order_state_machines.revision+1").bind(&t).bind(value).execute(&mut *tx).await?;
+        } else if s.key.starts_with("asset:") {
+            assets::publish_asset(&mut tx, &t, &id, &s.key[6..]).await?;
+        } else if s.key.starts_with("document:") {
             documents::publish(&mut tx, &t, &id, &s.key[9..], value).await?;
         } else if s.key.starts_with("product:") {
             product_content(&mut tx, &t, value).await?;

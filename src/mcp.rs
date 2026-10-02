@@ -3,6 +3,38 @@ use crate::*;
 
 pub(crate) fn tool_schema(name: &str) -> Value {
     let props = match name {
+        "merchant.customer.addresses" => json!({"id":{"type":"string"}}),
+        "merchant.customer.address.save" => {
+            json!({"id":{"type":"string"},"addressId":{"type":"string"},"revision":{"type":"integer"},"address":{"type":"object"},"defaultBilling":{"type":"boolean"},"defaultShipping":{"type":"boolean"}})
+        }
+        "merchant.customer.address.delete" => {
+            json!({"id":{"type":"string"},"addressId":{"type":"string"},"revision":{"type":"integer"}})
+        }
+        "merchant.workflow.save" => json!({"revision":{"type":"integer"},"data":{"type":"object"}}),
+        "merchant.product.content" | "merchant.product.assets" => json!({"id":{"type":"string"}}),
+        "merchant.product.save" => json!({"id":{"type":"string"},"product":{"type":"object"}}),
+        "merchant.asset.publish" => {
+            json!({"id":{"type":"string"},"digest":{"type":"string"},"public":{"type":"boolean"}})
+        }
+        "merchant.customers" | "merchant.orders" => {
+            json!({"query":{"type":"string"},"after":{"type":"string"},"state":{"type":"string"},"limit":{"type":"integer","minimum":1,"maximum":100}})
+        }
+        "merchant.customer" | "merchant.order" | "merchant.receipts" => {
+            json!({"id":{"type":"string"}})
+        }
+        "merchant.customer.save" => json!({"id":{"type":"string"},"customer":{"type":"object"}}),
+        "merchant.order.transition" => {
+            json!({"id":{"type":"string"},"revision":{"type":"integer"},"kind":{"type":"string","enum":["order","payment","delivery"]},"state":{"type":"string"},"trackingCode":{"type":"string"},"requestKey":{"type":"string"},"action":{"type":"string"},"deliveryIndex":{"type":"integer","minimum":0}})
+        }
+        "merchant.order.note" => {
+            json!({"id":{"type":"string"},"revision":{"type":"integer"},"text":{"type":"string","maxLength":4000}})
+        }
+        "merchant.receipt.create" => {
+            json!({"id":{"type":"string"},"revision":{"type":"integer"},"kind":{"type":"string","enum":["invoice","delivery_note","cancellation"]},"locale":{"type":"string","enum":["en","de","fr","es"]},"requestKey":{"type":"string"},"referenceId":{"type":"string"}})
+        }
+        "merchant.payment" => {
+            json!({"id":{"type":"string"},"operation":{"type":"string","enum":["capture","refund","reconcile","cancel"]},"amountMinor":{"type":"integer","minimum":1},"requestKey":{"type":"string"},"approve":{"type":"boolean"}})
+        }
         "developer.import" => {
             json!({"environment":{"type":"string"},"prompt":{"type":"string"},"summary":{"type":"object"},"manifest":{"type":"object"}})
         }
@@ -21,7 +53,7 @@ pub(crate) fn tool_schema(name: &str) -> Value {
             json!({"productId":{"type":"string"},"after":{"type":"string","maxLength":200},"limit":{"type":"integer","minimum":1,"maximum":100}})
         }
         "checkout.select" => {
-            json!({"revision":{"type":"integer"},"checkout":{"type":"object","properties":{"country":{"type":"string"},"shippingMethodId":{"type":"string"},"paymentMethodId":{"type":"string"},"address":{"type":["object","null"],"properties":{"name":{"type":"string"},"street":{"type":"string"},"postalCode":{"type":"string"},"city":{"type":"string"}},"required":["name","street","postalCode","city"],"additionalProperties":false}},"required":["country","shippingMethodId","paymentMethodId"],"additionalProperties":false}})
+            json!({"revision":{"type":"integer"},"checkout":{"type":"object","properties":{"country":{"type":"string"},"shippingMethodId":{"type":"string"},"paymentMethodId":{"type":"string"},"customerEmail":{"type":["string","null"]},"address":{"type":["object","null"]},"billingAddress":{"type":["object","null"]},"billingAddressId":{"type":["string","null"]},"shippingAddressId":{"type":["string","null"]}},"additionalProperties":false}})
         }
         "cart.replace" => {
             json!({"revision":{"type":"integer"},"items":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string"},"quantity":{"type":"integer","minimum":1}},"required":["id","quantity"]}}})
@@ -32,6 +64,19 @@ pub(crate) fn tool_schema(name: &str) -> Value {
         _ => json!({}),
     };
     let required = match name {
+        "merchant.customer.addresses" => vec!["id"],
+        "merchant.customer.address.save" => vec!["id", "address"],
+        "merchant.customer.address.delete" => vec!["id", "addressId", "revision"],
+        "merchant.workflow.save" => vec!["revision", "data"],
+        "merchant.product.content" | "merchant.product.assets" => vec!["id"],
+        "merchant.product.save" => vec!["id", "product"],
+        "merchant.asset.publish" => vec!["id", "digest", "public"],
+        "merchant.customer" | "merchant.order" | "merchant.receipts" => vec!["id"],
+        "merchant.customer.save" => vec!["id", "customer"],
+        "merchant.order.transition" => vec!["id", "revision", "kind", "state"],
+        "merchant.order.note" => vec!["id", "revision", "text"],
+        "merchant.receipt.create" => vec!["id", "revision", "kind", "locale", "requestKey"],
+        "merchant.payment" => vec!["id", "operation", "requestKey", "approve"],
         "developer.import" => vec!["environment", "prompt", "summary", "manifest"],
         "developer.stage" => vec!["buildId", "digest", "approve"],
         "developer.task" => vec!["environment", "prompt", "agent"],
@@ -68,6 +113,13 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
             let mut tools = CAPABILITIES
                 .iter()
                 .filter(|(n, _)| {
+                    if n.starts_with("knowledge.") {
+                        return merchant(&a, &h).is_ok()
+                            && auth::permit(&h, "knowledge.read").is_ok();
+                    }
+                    if let Some(permission) = operations::permission(n) {
+                        return merchant(&a, &h).is_ok() && auth::permit(&h, permission).is_ok();
+                    }
                     if n.starts_with("developer.") {
                         return merchant(&a, &h).is_ok() && auth::permit(&h, "users").is_ok();
                     }

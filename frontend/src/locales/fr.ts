@@ -5,7 +5,7 @@ export const fr: Dictionary = {
     "Les {count} premiers produits sont affichés. Parcourez la collection pour en voir davantage.",
   lowStockShown: "{count} produits avec un stock faible sur cette page",
 
-  apps: "Apps et paiements",
+  apps: "Apps",
   readOnly:
     "Accès en lecture : un éditeur ou administrateur doit approuver cette modification.",
   users: "Équipe & accès",

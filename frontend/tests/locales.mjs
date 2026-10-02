@@ -1,26 +1,72 @@
 /** Dictionary and localized transport failures: evaluate actual TypeScript exports without installing a test runner. */
-import fs from 'node:fs';
-import vm from 'node:vm';
-import assert from 'node:assert/strict';
-import ts from 'typescript';
-let locale='en-GB';
+import fs from "node:fs";
+import vm from "node:vm";
+import assert from "node:assert/strict";
+import ts from "typescript";
+let locale = "en-GB";
 function module(path) {
- const source=ts.transpileModule(fs.readFileSync(new URL(path,import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText;
- const exports={};vm.runInNewContext(source,{exports,require:()=>({getLocale:()=>locale,useLocale:()=>({locale})})});return exports;
+  const source = ts.transpileModule(
+    fs.readFileSync(new URL(path, import.meta.url), "utf8"),
+    { compilerOptions: { module: ts.ModuleKind.CommonJS } },
+  ).outputText;
+  const exports = {};
+  vm.runInNewContext(source, {
+    exports,
+    require: () => ({ getLocale: () => locale, useLocale: () => ({ locale }) }),
+  });
+  return exports;
 }
-const base=module('../src/locales/en.ts').en;
-const shop=module('../src/locales/shop-de.ts').de;
-for(const language of ['en','de','fr','es']) {
- for(const [path,expected] of [[`../src/locales/${language}.ts`,base],[`../src/locales/shop-${language}.ts`,shop]]) {
-  const dict=module(path)[language];assert.deepEqual(Object.keys(dict).sort(),Object.keys(expected).sort());assert(Object.values(dict).every(v=>typeof v==='string'&&v.trim().length));
- }
+const base = module("../src/locales/en.ts").en;
+const shop = module("../src/locales/shop-de.ts").de;
+for (const language of ["en", "de", "fr", "es"]) {
+  for (const [path, expected] of [
+    [`../src/locales/${language}.ts`, base],
+    [`../src/locales/shop-${language}.ts`, shop],
+  ]) {
+    const dict = module(path)[language];
+    assert.deepEqual(Object.keys(dict).sort(), Object.keys(expected).sort());
+    assert(
+      Object.values(dict).every(
+        (v) => typeof v === "string" && v.trim().length,
+      ),
+    );
+  }
 }
-const words=module('../src/workbench-i18n.ts').workbenchWords;
-for(const [key,values] of Object.entries(words)){assert.equal(values.length,4,key);assert(values.every(v=>v.trim()),key)}
-const {responseError}=module('../src/errors-i18n.ts');
-const errors=[];for(locale of ['en-GB','de-DE','fr-FR','es-ES']) {
- for(const status of [400,401,403,404,409,429,500,502]){const e=responseError('untranslated diagnostic',status);assert(e.message.length>5);assert.equal(e.diagnostic,'untranslated diagnostic');}
- errors.push(responseError('Invalid credentials',401).message);
+const words = module("../src/workbench-i18n.ts").workbenchWords;
+for (const [key, values] of Object.entries(words)) {
+  assert.equal(values.length, 4, key);
+  assert(
+    values.every((v) => v.trim()),
+    key,
+  );
 }
-assert.equal(new Set(errors).size,4);
-console.log(`PASS ${Object.keys(base).length} studio + ${Object.keys(shop).length} shop + ${Object.keys(words).length} workbench keys in four languages; exact/fallback request errors localized`);
+const ops = module("../src/operations-i18n.ts").operationWords;
+for (const [key, values] of Object.entries(ops)) {
+  assert.equal(values.length, 4, key);
+  assert(
+    values.every((v) => v.trim()),
+    key,
+  );
+}
+const customers = module("../src/customer-i18n.ts").customerWords;
+for (const [key, values] of Object.entries(customers)) {
+  assert.equal(values.length, 4, key);
+  assert(
+    values.every((v) => v.trim()),
+    key,
+  );
+}
+const { responseError } = module("../src/errors-i18n.ts");
+const errors = [];
+for (locale of ["en-GB", "de-DE", "fr-FR", "es-ES"]) {
+  for (const status of [400, 401, 403, 404, 409, 429, 500, 502]) {
+    const e = responseError("untranslated diagnostic", status);
+    assert(e.message.length > 5);
+    assert.equal(e.diagnostic, "untranslated diagnostic");
+  }
+  errors.push(responseError("Invalid credentials", 401).message);
+}
+assert.equal(new Set(errors).size, 4);
+console.log(
+  `PASS ${Object.keys(base).length} studio + ${Object.keys(shop).length} shop + ${Object.keys(words).length} workbench keys in four languages; exact/fallback request errors localized`,
+);

@@ -51,7 +51,7 @@ pub(crate) async fn new_cart(
         country,
         shipping_method_id: shipping.id.clone(),
         payment_method_id: payment.id.clone(),
-        address: None,
+        ..commerce::CheckoutSelection::defaults()
     };
     let c = StoredCart {
         id: uid(),
@@ -64,6 +64,7 @@ pub(crate) async fn new_cart(
             items: vec![],
             group: "consumer".into(),
             email: None,
+            customer_id: None,
             company: None,
             session: session.chars().take(128).collect(),
             buyer: None,
@@ -117,19 +118,34 @@ pub(crate) async fn new_cart_context(
     let mut c = new_cart(a, &t, session, &locale, transport).await?;
     c.data.sales_channel = channel.into();
     if let Some(email) = identity {
-        let r = sqlx::query(
-            "SELECT group_name,company,profile FROM customers WHERE tenant=$1 AND email=$2",
-        )
-        .bind(&t)
-        .bind(&email)
-        .fetch_one(&a.db)
-        .await?;
-        c.data.email = Some(email);
+        let r = sqlx::query("SELECT * FROM customers WHERE tenant=$1 AND email=$2")
+            .bind(&t)
+            .bind(&email)
+            .fetch_one(&a.db)
+            .await?;
+        c.data.email = Some(email.clone());
+        c.data.customer_id = Some(r.get("id"));
         c.data.group = r.get("group_name");
         c.data.company = r.get("company");
         if let Some(checkout) = &mut c.data.checkout {
-            checkout.address =
-                serde_json::from_value(r.get::<Value, _>("profile")["address"].clone()).ok();
+            checkout.customer_email = Some(email.clone());
+            checkout.billing_address_id = r.get("default_billing_address_id");
+            checkout.shipping_address_id = r.get("default_shipping_address_id");
+            let mut conn = a.db.acquire().await?;
+            if let Some(id) = &checkout.billing_address_id {
+                checkout.billing_address =
+                    Some(accounts::address_get(&mut conn, &t, &email, id).await?);
+            }
+            if let Some(id) = &checkout.shipping_address_id {
+                checkout.address = Some(accounts::address_get(&mut conn, &t, &email, id).await?);
+                checkout.country = checkout.address.as_ref().unwrap().country.clone();
+            }
+            let p: Value = r.get("profile");
+            if let Some(id) = p["defaultPaymentMethodId"].as_str() {
+                checkout.payment_method_id = id.into();
+            }
+            let (settings, _) = commerce::config(a, &t).await?;
+            *checkout = commerce::resolve_selection(checkout.clone(), &c.data.group, &settings);
         }
     }
     sqlx::query("UPDATE carts SET data=$1 WHERE id=$2")

@@ -1,5 +1,6 @@
 /** Typed merchant rule/campaign/flow/channel forms with exact JSON available for advanced review. */
 import { useEffect, useState } from "react";
+import { useOperationsText } from "./operations-i18n";
 import { useWorkbenchText } from "./workbench-i18n";
 import type { RequestFn, Message } from "./studio-types";
 import ProposalCard from "./ProposalCard";
@@ -14,6 +15,7 @@ export default function AutomationView({
   role: string;
 }) {
   const { w, locale } = useWorkbenchText();
+  const { o } = useOperationsText();
   const [kind, setKind] = useState<Kind>("rules");
   const [rows, setRows] = useState<Record<Kind, Config[]>>({
     rules: [],
@@ -344,6 +346,16 @@ export default function AutomationView({
                     onChange={(e) => update("event", e.target.value)}
                   >
                     <option value="order.placed">{w("orderPlaced")}</option>
+                    {[
+                      "order.state_changed",
+                      "payment.state_changed",
+                      "delivery.state_changed",
+                      "payment.updated",
+                    ].map((event) => (
+                      <option key={event} value={event}>
+                        {o(event)}
+                      </option>
+                    ))}
                     <option value="payment.captured">
                       {w("paymentCaptured")}
                     </option>

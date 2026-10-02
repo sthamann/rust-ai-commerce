@@ -131,7 +131,8 @@ export const es: Record<Key, string> = {
   buy: "Realizar pedido de demostración",
   processing: "Procesando …",
   orderPlaced: "Pedido guardado",
-  simulation: "Prototipo: sin cobro real. Se guardan stock y pedidos.",
+  simulation:
+    "Prototipo. La tarjeta de demostración es simulada; los demás métodos usan su proveedor configurado. Se guardan existencias y pedidos.",
   placed: "Pedido realizado",
   captured: "Pago confirmado",
   partially_refunded: "Reembolso parcial",

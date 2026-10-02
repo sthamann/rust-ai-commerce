@@ -49,13 +49,32 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         return Err(bad("Cart is empty"));
     }
     let ids: Vec<String> = c.data.items.iter().map(|i| i.id.clone()).collect();
+    let parents:Vec<String>=sqlx::query_scalar("SELECT DISTINCT parent_id FROM products WHERE tenant=$1 AND id=ANY($2) AND parent_id IS NOT NULL").bind(&c.tenant).bind(&ids).fetch_all(&mut *tx).await?;
+    let mut locks = ids.clone();
+    locks.extend(parents);
+    locks.sort();
+    locks.dedup();
     let rows =
         sqlx::query("SELECT * FROM products WHERE tenant=$1 AND id=ANY($2) ORDER BY id FOR UPDATE")
             .bind(&c.tenant)
-            .bind(ids)
+            .bind(locks)
             .fetch_all(&mut *tx)
             .await?;
-    let ps: Vec<_> = rows.iter().map(product).collect();
+    let locked: Vec<_> = rows.iter().map(product).collect();
+    let ps = locked
+        .iter()
+        .filter(|p| ids.contains(&p.id))
+        .map(|p| {
+            let mut p = p.clone();
+            if let Some(parent) = locked
+                .iter()
+                .find(|root| Some(&root.id) == p.parent_id.as_ref())
+            {
+                p.extra = commerce::inherited_extra(&parent.extra, &p.extra);
+            }
+            p
+        })
+        .collect::<Vec<_>>();
     // Configuration cannot change between this price calculation and order commit.
     let settings =
         sqlx::query("SELECT data,revision FROM commerce_settings WHERE tenant=$1 FOR SHARE")
@@ -66,7 +85,10 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         .map_err(|_| bad("Invalid commerce configuration"))?;
     let selected = commerce::selection(&c.data);
     apps::validate_configurations(&mut tx, &c).await?;
-    if selected.shipping_method_id != "pickup" && selected.address.is_none() {
+    if selected.shipping_method_id != "pickup"
+        && selected.address.is_none()
+        && !ps.iter().all(|p| p.extra["digital"] == true)
+    {
         return Err(bad("Delivery address required"));
     }
     let priced = commerce::tax_products(&ps, &selected, &config)?;
@@ -126,20 +148,39 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     if external && staging::parent(a, &c.tenant).await?.is_some() {
         return Err(bad("External payments are disabled in private sandboxes"));
     }
-    if external && selected.payment_method_id != "paypal-sandbox" {
+    if external && !["paypal-sandbox", "paypal-live"].contains(&selected.payment_method_id.as_str())
+    {
         return Err(bad("Provider connector is not configured"));
     }
     if external {
         payments::account(&c.tenant)?;
         payments::base()?;
+        if (selected.payment_method_id == "paypal-live") != (payments::environment() == "live") {
+            return Err(bad("Payment method environment mismatch"));
+        }
     }
+    // Financial providers/manual invoices require usable contact and billing data.
+    // The explicit simulated demo method keeps legacy headless fixture carts compatible.
+    if q["paymentMethod"]["mode"] != "simulated"
+        && (c.data.email.is_none() || selected.billing_address.is_none())
+    {
+        return Err(bad("Customer email and billing address required"));
+    }
+    let customer_snapshot = accounts::order_snapshot(&mut tx, &c, &selected).await?;
     let id = uid();
     // Explicit simulated authorization: no external money is charged.
     let mut order = json!({"id":id,"orderNumber":format!("RAC-{}",&id[..8]),"cart":q,"state":"placed","channel":c.data.channel,"revision":1,"deliveries":q["deliveries"],"payment":{"method":q["paymentMethod"],"provider":if q["paymentMethod"]["mode"]=="simulated"{"simulated"}else{"manual"},"state":if q["paymentMethod"]["mode"]=="simulated"{"authorized"}else{"pending"},"realMoneyCharged":false},"customerGroup":c.data.group});
+    order
+        .as_object_mut()
+        .unwrap()
+        .extend(customer_snapshot.as_object().unwrap().clone());
+    commerce::order_fields(&mut order);
     sqlx::query("INSERT INTO orders(id,tenant,cart_id,idempotency_key,fingerprint,data) VALUES($1,$2,$3,$4,$5,$6)").bind(&id).bind(&c.tenant).bind(&c.id).bind(key).bind(&fingerprint).bind(&order).execute(&mut *tx).await?;
     marketing::record_uses(&mut tx, &c.tenant, &id, &q).await?;
+    assets::snapshot(&mut tx, &c, &id).await?;
     if external {
         payments::prepare(&mut tx, &c, &mut order, minor).await?;
+        commerce::order_fields(&mut order);
         sqlx::query("UPDATE orders SET data=$1 WHERE id=$2")
             .bind(&order)
             .bind(&id)
@@ -155,6 +196,14 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         .bind(&i.id)
         .execute(&mut *tx)
         .await?;
+    }
+    if let Some(customer_id) = &c.data.customer_id {
+        sqlx::query("UPDATE customers SET last_payment_method_id=$1 WHERE tenant=$2 AND id=$3")
+            .bind(&selected.payment_method_id)
+            .bind(&c.tenant)
+            .bind(customer_id)
+            .execute(&mut *tx)
+            .await?;
     }
     c.data.order = Some(order.clone());
     sqlx::query("UPDATE carts SET status='completed',data=$1,revision=revision+1 WHERE id=$2")

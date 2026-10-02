@@ -24,18 +24,19 @@ export type Product = {
     specifications?: Record<string, Record<string, string>>;
     crossSelling?: string[];
     shippingFree?: boolean;
+    digital?: boolean;
+    richDescription?: Record<string, import("./RichDescription").RichBlock[]>;
   };
 };
 export type Selection = {
   country: string;
   shippingMethodId: string;
   paymentMethodId: string;
-  address?: {
-    name: string;
-    street: string;
-    postalCode: string;
-    city: string;
-  } | null;
+  address?: import("./customer-types").Address | null;
+  billingAddress?: import("./customer-types").Address | null;
+  billingAddressId?: string | null;
+  shippingAddressId?: string | null;
+  customerEmail?: string | null;
 };
 export type Shipping = {
   id: string;
@@ -101,6 +102,8 @@ export type Cart = {
   revision: number;
   status: string;
   customerGroup: string;
+  customerId?: string | null;
+  customerEmail?: string | null;
   checkout: Selection;
   availableCountries: string[];
   selectionNeedsConfirmation?: boolean;
@@ -193,6 +196,21 @@ export async function shopApi<T = unknown>(
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const v = await r.json();
+  if (
+    r.status === 401 &&
+    path.startsWith("/store-api/") &&
+    v.errors?.[0]?.detail === "Customer session expired"
+  ) {
+    localStorage.removeItem(
+      `rac-customer:${new URLSearchParams(location.search).get("shop") ?? "atelier"}`,
+    );
+    if (
+      path === "/store-api/checkout/cart" &&
+      body !== undefined &&
+      method !== "PUT"
+    )
+      return shopApi<T>(path, body, token, method, merchant);
+  }
   if (!r.ok)
     throw responseError(v.errors?.[0]?.detail ?? r.statusText, r.status);
   return v;

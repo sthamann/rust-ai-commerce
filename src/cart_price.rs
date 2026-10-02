@@ -96,7 +96,7 @@ pub(crate) fn quote(c: &StoredCart, ps: &[Product]) -> Result<Value> {
         total
     };
     Ok(
-        json!({"token":c.token,"id":c.id,"revision":c.revision,"status":c.status,"lineItems":lines,"customerGroup":c.data.group,"company":c.data.company,"price":{"positionPrice":total,"totalPrice":payable,"netPrice":if b2b{total}else{math_round(total-taxes,2)},"tax":taxes,"taxStatus":if b2b{"net"}else{"gross"},"currency":"EUR"},"order":c.data.order}),
+        json!({"token":c.token,"id":c.id,"revision":c.revision,"status":c.status,"lineItems":lines,"customerGroup":c.data.group,"customerId":c.data.customer_id,"customerEmail":c.data.email,"company":c.data.company,"price":{"positionPrice":total,"totalPrice":payable,"netPrice":if b2b{total}else{math_round(total-taxes,2)},"tax":taxes,"taxStatus":if b2b{"net"}else{"gross"},"currency":"EUR"},"order":c.data.order}),
     )
 }
 pub(crate) fn normalized_quantity(p: &Product, q: u32) -> Result<u32> {

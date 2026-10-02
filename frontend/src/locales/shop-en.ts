@@ -132,7 +132,8 @@ export const en: Record<Key, string> = {
   buy: "Place demo order",
   processing: "Processing …",
   orderPlaced: "Order saved",
-  simulation: "Prototype: no real charge. Stock and orders are saved.",
+  simulation:
+    "Prototype. Demo card is simulated; other methods use their configured payment provider. Stock and orders are saved.",
   placed: "Order placed",
   captured: "Payment confirmed",
   partially_refunded: "Partially refunded",

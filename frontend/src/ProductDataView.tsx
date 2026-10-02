@@ -1,8 +1,12 @@
 /** All four product translations and extra fields are edited together under a product revision. */
+import RichEditor from "./RichEditor";
+import ProductAssets from "./ProductAssets";
+import { useOperationsText } from "./operations-i18n";
 import { useEffect, useState } from "react";
 import { useWorkbenchText } from "./workbench-i18n";
 import type { RequestFn } from "./studio-types";
 export default function ProductDataView({ request }: { request: RequestFn }) {
+  const { o } = useOperationsText();
   const { w } = useWorkbenchText();
   const [products, setProducts] = useState<{ id: string; name: string }[]>([]);
   const [id, setId] = useState("");
@@ -177,6 +181,22 @@ export default function ProductDataView({ request }: { request: RequestFn }) {
             />
             {w("shippingFree")}
           </label>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={extra.digital ?? false}
+              onChange={(e) =>
+                setExtra({ ...extra, digital: e.target.checked })
+              }
+            />
+            {o("digital")}
+          </label>
+          <RichEditor
+            value={extra.richDescription ?? {}}
+            onChange={(richDescription) =>
+              setExtra({ ...extra, richDescription })
+            }
+          />
           <details>
             <summary>{w("specifications")}</summary>
             <textarea
@@ -191,6 +211,7 @@ export default function ProductDataView({ request }: { request: RequestFn }) {
         </form>
         {error && <p role="alert">{error}</p>}
       </section>
+      {id && <ProductAssets id={id} request={request} />}
     </div>
   );
 }

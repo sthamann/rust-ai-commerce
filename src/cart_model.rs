@@ -17,6 +17,8 @@ pub(crate) struct Cart {
     pub(crate) items: Vec<Item>,
     pub(crate) group: String,
     pub(crate) email: Option<String>,
+    #[serde(default)]
+    pub(crate) customer_id: Option<String>,
     pub(crate) company: Option<String>,
     pub(crate) session: String,
     pub(crate) buyer: Option<Value>,

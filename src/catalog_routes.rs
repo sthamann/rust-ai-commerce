@@ -68,6 +68,7 @@ pub(crate) async fn catalog_page(
                     items: vec![],
                     group: "consumer".into(),
                     email: None,
+                    customer_id: None,
                     company: None,
                     session: String::new(),
                     buyer: None,

@@ -128,7 +128,7 @@ pub(crate) async fn family_products(
 }
 
 /// Absent SKU metadata inherits from the family; explicit values (including false) override.
-fn inherited_extra(parent: &Value, child: &Value) -> Value {
+pub(crate) fn inherited_extra(parent: &Value, child: &Value) -> Value {
     let mut merged = parent.as_object().cloned().unwrap_or_default();
     if let Some(fields) = child.as_object() {
         merged.extend(fields.clone());

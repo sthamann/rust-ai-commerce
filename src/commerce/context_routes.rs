@@ -18,16 +18,13 @@ pub(crate) async fn select_checkout(
     h: HeaderMap,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
-    let requested: CheckoutSelection = serde_json::from_value(v["checkout"].clone())
+    let mut requested: CheckoutSelection = serde_json::from_value(v["checkout"].clone())
         .map_err(|_| bad("Invalid checkout selection"))?;
-    if let Some(ad) = &requested.address {
-        for f in [&ad.name, &ad.street, &ad.postal_code, &ad.city] {
-            if f.trim().is_empty() || f.len() > 160 {
-                return Err(bad(
-                    "Complete address fields required (maximum 160 characters)",
-                ));
-            }
-        }
+    if v["checkout"]["address"].is_object()
+        && v["checkout"]["address"]["country"].is_null()
+        && let Some(ad) = &mut requested.address
+    {
+        ad.country = requested.country.clone();
     }
     let mut tx = a.db.begin().await?;
     let r = sqlx::query("SELECT * FROM carts WHERE tenant=$1 AND token=$2 FOR UPDATE")
@@ -42,6 +39,48 @@ pub(crate) async fn select_checkout(
     }
     if v["revision"].as_i64() != Some(c.revision) {
         return Err(conflict("Cart revision changed; reload before editing"));
+    }
+    if requested.billing_address_id.is_some() || requested.shipping_address_id.is_some() {
+        let (_, email) = accounts::identity(&a, &h).await?;
+        if c.data.customer_id.is_none() || c.data.email.as_deref() != Some(&email) {
+            return Err(Error(
+                StatusCode::FORBIDDEN,
+                "Address selection requires the owning authenticated cart".into(),
+            ));
+        }
+        if let Some(id) = &requested.billing_address_id {
+            requested.billing_address =
+                Some(accounts::address_get(&mut tx, &c.tenant, &email, id).await?);
+        }
+        if let Some(id) = &requested.shipping_address_id {
+            requested.address = Some(accounts::address_get(&mut tx, &c.tenant, &email, id).await?);
+            requested.country = requested.address.as_ref().unwrap().country.clone();
+        }
+    }
+    if let Some(email) = &requested.customer_email {
+        let email = auth::email(&json!({"email":email}))?;
+        if c.data.customer_id.is_some() && c.data.email.as_deref() != Some(&email) {
+            return Err(bad("Checkout email differs from authenticated customer"));
+        }
+        c.data.email = Some(email);
+    }
+    for ad in [&mut requested.address, &mut requested.billing_address]
+        .into_iter()
+        .flatten()
+    {
+        ad.validate()?;
+    }
+    if requested
+        .address
+        .as_ref()
+        .is_some_and(|a| a.country != requested.country)
+    {
+        return Err(bad(
+            "Shipping address country differs from checkout country",
+        ));
+    }
+    if requested.billing_address.is_none() {
+        requested.billing_address = requested.address.clone();
     }
     c.data.checkout = Some(requested);
     c.revision += 1;

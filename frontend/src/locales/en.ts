@@ -4,7 +4,7 @@ export const en = {
     "Showing the first {count} products. Browse the collection to see more.",
   lowStockShown: "{count} products with low stock on this page",
 
-  apps: "Apps & payments",
+  apps: "Apps",
   readOnly:
     "Read-only access: an editor or administrator must approve this change.",
   users: "Team & access",

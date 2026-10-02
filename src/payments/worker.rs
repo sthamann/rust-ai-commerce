@@ -1,9 +1,12 @@
 //! Leased payment jobs; network runs after claim commit, fenced receipts prevent duplicate local effects.
 use super::*;
 pub(crate) async fn payment_once(a: &App) -> Result<()> {
-    let configured: Value =
-        serde_json::from_str(&env::var("PAYPAL_SANDBOX_ACCOUNTS").unwrap_or("{}".into()))
-            .map_err(|_| bad("Invalid account configuration"))?;
+    let configured: Value = serde_json::from_str(
+        &env::var("PAYPAL_ACCOUNTS")
+            .or_else(|_| env::var("PAYPAL_SANDBOX_ACCOUNTS"))
+            .unwrap_or("{}".into()),
+    )
+    .map_err(|_| bad("Invalid account configuration"))?;
     let tenants = configured
         .as_object()
         .map(|v| {
@@ -62,6 +65,24 @@ pub(crate) async fn payment_once(a: &App) -> Result<()> {
     let current = attempt(&row);
     match outcome {
         Ok(v) => {
+            if op == "refund" && v["status"] == "PENDING" {
+                let remote = v["id"]
+                    .as_str()
+                    .filter(|s| s.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'-'))
+                    .ok_or(bad("Refund ID missing"))?;
+                let amount = input["amountMinor"]
+                    .as_i64()
+                    .ok_or(bad("Refund amount missing"))?;
+                if v["amount"]["currency_code"] != current.currency
+                    || parse_minor(v["amount"]["value"].as_str().unwrap_or(""))? != amount
+                {
+                    return Err(bad("Pending refund amount mismatch"));
+                }
+                sqlx::query("INSERT INTO payment_refunds(tenant,job_id,attempt_id,provider_id,status,amount_minor) VALUES($1,$2,$3,$4,'pending',$5) ON CONFLICT DO NOTHING").bind(&p.tenant).bind(&id).bind(&p.id).bind(remote).bind(amount).execute(&mut *tx).await?;
+                sqlx::query("UPDATE payment_jobs SET state='queued',available_at=now()+interval '10 seconds',lease_until=NULL WHERE id=$1").bind(&id).execute(&mut *tx).await?;
+                tx.commit().await?;
+                return Ok(());
+            }
             // SAVEPOINT keeps a rejected/malformed remote receipt from partially mutating local state.
             sqlx::query("SAVEPOINT receipt").execute(&mut *tx).await?;
             let result = if op == "cancel" && v["status"] != "COMPLETED" {

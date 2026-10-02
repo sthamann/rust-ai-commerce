@@ -42,6 +42,7 @@ pub(crate) async fn create(
     .await?;
     sqlx::query("INSERT INTO products SELECT (jsonb_populate_record(NULL::products,to_jsonb(p)||jsonb_build_object('tenant',$2::text))).* FROM products p WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     sqlx::query("INSERT INTO product_translations SELECT $2,product_id,language_id,name,description FROM product_translations WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
+    sqlx::query("INSERT INTO product_assets SELECT (jsonb_populate_record(NULL::product_assets,to_jsonb(a)||jsonb_build_object('tenant',$2::text))).* FROM product_assets a WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     for table in ["commerce_settings", "experiences"] {
         let sql =
             format!("INSERT INTO {table}(tenant,data) SELECT $2,data FROM {table} WHERE tenant=$1");
@@ -51,6 +52,7 @@ pub(crate) async fn create(
             .execute(&mut *tx)
             .await?;
     }
+    sqlx::query("INSERT INTO order_state_machines(tenant,data) SELECT $2,data FROM order_state_machines WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     // No external services or PSP configurations are registered for a sandbox tenant.
     sqlx::query("UPDATE commerce_settings SET data=jsonb_set(data,'{payments}',COALESCE((SELECT jsonb_agg(p) FROM jsonb_array_elements(data->'payments') p WHERE p->>'mode'<>'app'),'[]')) WHERE tenant=$1").bind(&id).execute(&mut *tx).await?;
     let rows =

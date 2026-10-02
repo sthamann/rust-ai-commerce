@@ -64,6 +64,7 @@ pub(crate) async fn product_detail(
                 }],
                 group: group.into(),
                 email: None,
+                customer_id: None,
                 company: None,
                 session: String::new(),
                 buyer: None,

@@ -3,6 +3,7 @@ use super::*;
 pub(crate) type Tx<'a> = sqlx::Transaction<'a, sqlx::Postgres>;
 pub(crate) async fn snapshot(tx: &mut Tx<'_>, t: &str) -> Result<Value> {
     let mut result = serde_json::Map::new();
+    assets::snapshot_assets(tx, t, &mut result).await?;
     let rows=sqlx::query("SELECT to_jsonb(p)-'tenant'-'stock'-'revision' AS data FROM products p WHERE tenant=$1 ORDER BY id FOR UPDATE").bind(t).fetch_all(&mut **tx).await?;
     for r in rows {
         let mut value: Value = r.get("data");
@@ -96,6 +97,15 @@ pub(crate) async fn snapshot(tx: &mut Tx<'_>, t: &str) -> Result<Value> {
             );
         }
     }
+    let data: Option<Value> =
+        sqlx::query_scalar("SELECT data FROM order_state_machines WHERE tenant=$1 FOR UPDATE")
+            .bind(t)
+            .fetch_optional(&mut **tx)
+            .await?;
+    result.insert(
+        "order-workflow".into(),
+        data.unwrap_or_else(|| json!(commerce::default_machine())),
+    );
     documents::snapshot(tx, t, &mut result).await?;
     Ok(Value::Object(result))
 }

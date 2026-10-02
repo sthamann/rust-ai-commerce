@@ -85,3 +85,21 @@ training or demonstrated causal sales uplift. Production behavior tracking
 requires consent, minimization and deletion/export. Reports/screenshots contain
 only synthetic data; private `.env`, DB backups and session artifacts stay
 ignored by Git.
+
+## Customer/operation scopes and immutable purchases
+
+Fine member permissions replace role defaults, and delegated role/invitation/key
+scopes cannot exceed the actor's current permissions. Integration keys are bound
+to one workspace and re-evaluated alongside active membership. Customer sessions
+are separate from merchant sessions. Address defaults and address ownership have
+composite `(tenant,email,id)` foreign keys; endpoint and address-ID checkout checks
+add an independent customer session. New guest orders never acquire an account
+identity through a typed email. Legacy pre-snapshot email ownership must be
+explicitly resolved during a production import. Order/document customer and
+address snapshots remain independent of later CRM edits.
+
+Immutable bytes/digests protect private uploads and paid purchase files; MIME
+checks are not antivirus. Rich descriptions accept bounded typed blocks and safe
+media URLs, not executable HTML. Global core RLS, production recovery/verification,
+legal document compliance and complete upstream PSP capabilities remain outside
+the verified prototype. See the exact [operations boundaries](merchant-operations.md).

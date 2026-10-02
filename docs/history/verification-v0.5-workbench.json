@@ -1,0 +1,523 @@
+{
+  "date": "2026-10-02T13:22:29.838959+00:00",
+  "version": "0.5.0",
+  "sourceCommit": "c39c96bfad94d521fb8177b2737309fe40d9fdd8",
+  "fullCoreRegressionCommit": "24bc8c3",
+  "scope": "Multilingual workbench plus integrated bounded reads; latest developer-task changes have targeted fixture regression",
+  "reference": {
+    "shopware": "6.7.14.2",
+    "commit": "de074a584d77d8abb09ddb21d8799f083a61a3da",
+    "phpLocal": "8.5.6",
+    "phpCI": "8.4"
+  },
+  "build": {
+    "rustFmt": true,
+    "clippyWarningsDenied": true,
+    "frontendStrictTypecheckAndProductionBuild": true,
+    "frontendFormatting": true
+  },
+  "unitTests": {
+    "passed": 36,
+    "library": 15,
+    "application": 21
+  },
+  "structure": {
+    "documentedRustModules": 118,
+    "maximumRustModuleLines": 320,
+    "mainLines": 108,
+    "sourceMap": "source-map.md"
+  },
+  "localization": {
+    "locales": [
+      "en-GB",
+      "de-DE",
+      "fr-FR",
+      "es-ES"
+    ],
+    "studioKeys": 175,
+    "shopKeys": 179,
+    "workbenchKeys": 133,
+    "dictionaryParityAndTransportErrors": true,
+    "sourceAndConversationTextRetainsOriginalLanguage": true
+  },
+  "database": {
+    "engine": "PostgreSQL 17 + Apache AGE + pgvector",
+    "commercialEditionRequired": false,
+    "versionedChecksummedMigrations": true,
+    "defaultCatalogReadsBounded": true,
+    "millionProductEvidenceFromIntegratedUpstream": "assets/benchmark-million-500.json",
+    "millionProductWorkloadRerunForWorkbench": false
+  },
+  "originalPHPComparisons": {
+    "pricing": {
+      "reference": "original shopware/core 6.7.14.2",
+      "cases": 2144,
+      "failures": 0,
+      "examples": [],
+      "scope": "Gross/net quantity, empty/multiple/duplicate tax rules, calculated flag, cash/math rounding, list/regulation/reference prices. Excludes full cart processor, currency conversion and sales-channel tax-state resolution."
+    },
+    "context": {
+      "reference": "original shopware/core 6.7.14.2 (Reflection, real DBAL/collections/entities)",
+      "cases": 1446,
+      "failures": 0,
+      "examples": [],
+      "scope": "ContextFactory language chain; rule priority and tier quantity selection; floor quantity normalization. Excludes whole ContextFactory SQL hydration, DAL translation hydration and entire ProductCartProcessor lifecycle."
+    },
+    "delivery": {
+      "reference": "shopware/core 6.7.14.2",
+      "unit": "PercentageTaxRuleBuilder::buildCollectionRules",
+      "cases": 1002,
+      "mismatches": 0,
+      "scope": "Pre-merged unique-rate collections including empty collections and zero-total equal shares; not whole delivery pipeline."
+    },
+    "rules": {
+      "reference": "original shopware/core 6.7.14.2 RuleComparison::numeric",
+      "cases": 1280,
+      "failures": 0,
+      "scope": "Numeric epsilon/null/operator behavior; not the whole Rule Builder"
+    },
+    "totalCases": 5872,
+    "totalFailures": 0
+  },
+  "http": {
+    "passedCheckGroups": 161,
+    "suites": {
+      "studio": {
+        "passed": 7,
+        "checks": [
+          "Studio overview and quote require merchant authorization",
+          "Four localized overview responses use actual orders, graph and explicit connection boundaries",
+          "Swiss German falls back through original parent chain; header selection and unavailable locale",
+          "Catalog consumes a separately transmitted POST body before returning the response",
+          "Side-effect-free preview uses minimum, steps, maximum and real rule-selected B2B net pricing",
+          "Original quantity normalization and localized cart persist through actual customer path",
+          "Studio facts retain the tenant boundary"
+        ],
+        "liveLocalModel": false,
+        "payment": "simulated"
+      },
+      "integration": {
+        "checks": [
+          "Rust server connected to PostgreSQL",
+          "catalog reads seeded products",
+          "B2C cart uses server price and tax",
+          "stale cart revision rejected",
+          "customer context cannot cross tenants",
+          "eight concurrent retries create exactly one order",
+          "completed cart cannot mutate",
+          "same idempotency key cannot purchase another cart",
+          "merchant operations require credential",
+          "B2B auth rotates context; quantity tier and net tax calculation",
+          "persisted default Wasm policy blocks company checkout, including first start",
+          "stock overflow rejected by checkout",
+          "MCP exposes authorized typed capabilities",
+          "MCP consumes same persisted cart",
+          "UCP checkout uses integer minor units",
+          "checkout produces persistent policy reward",
+          "merchant reads real persisted order"
+        ],
+        "passed": 17,
+        "payment": "simulated",
+        "orderId": "916f358e8661489eb8d4d348ba6f2852",
+        "session": "3b2ac25b-5385-4f21-b6fc-00d073d4f89a",
+        "policyBeforeRestart": {
+          "variants": [
+            {
+              "purchases": 0,
+              "variant": "comparison",
+              "views": 0
+            },
+            {
+              "purchases": 2,
+              "variant": "discovery",
+              "views": 2
+            }
+          ]
+        }
+      },
+      "protocols": {
+        "passed": 11,
+        "checks": [
+          "UCP create/get, currency minor units and context authorization",
+          "UCP PUT replaces items and buyer atomically",
+          "UCP incomplete checkout cannot complete",
+          "UCP completes same durable checkout",
+          "UCP cannot cancel completed order",
+          "MCP compatibility handshake",
+          "MCP rejects foreign browser origins",
+          "Admin catalog endpoint requires merchant authority",
+          "Wasm source compiled at activation and persisted",
+          "extension host imports rejected",
+          "durable outbox has a working consumer"
+        ],
+        "modelTested": false
+      },
+      "intelligence": {
+        "passed": 5,
+        "checks": [
+          "Actual Cypher graph supplies needs and complementary products",
+          "Graph parameters and tenant boundary reject query injection",
+          "Semantic index mutation requires merchant authority",
+          "Ported list/reference pricing is exercised by actual cart quote",
+          "Claude Desktop stdio bridge executes real Rust MCP graph tool"
+        ],
+        "liveLocalModel": false,
+        "liveEmbedding": false
+      },
+      "commerce": {
+        "suite": "commerce-v4",
+        "passed": 21,
+        "checks": [
+          "detail exposes real SKU family, three images and properties",
+          "all gallery images resolve to authored assets",
+          "nonexistent variant combinations are absent",
+          "consumer options never expose B2B invoice",
+          "review moderation changes public aggregate and is tenant protected",
+          "invalid ratings and duplicate context reviews rejected",
+          "SKU public quantity tier is identical on detail and cart",
+          "country eligibility, revision and tenant isolation enforced",
+          "destination VAT and proportional shipping included in payable total",
+          "detail price follows the actual customer tax country",
+          "concurrent manual-payment checkout snapshots address, method and delivery dates exactly once",
+          "only the selected SKU stock is decremented",
+          "verified review requires an actual order belonging to customer context",
+          "authorized payment and delivery state transitions persist with optimistic revision",
+          "tax/shipping administration affects new quotes while completed prices remain immutable",
+          "configuration cannot disable all consumer payment methods",
+          "disabled shipping recovers cart items and requires an explicit valid selection",
+          "authenticated B2B variants inherit group tiers and invoice eligibility",
+          "sold-out child SKU cannot complete an order",
+          "free shipping threshold applies to authoritative gross item total",
+          "MCP detail and checkout selection consume the same native domain path"
+        ],
+        "payment": "only simulated/manual; no PSP contacted",
+        "ordersCreated": 1,
+        "configurationRestored": true
+      },
+      "scalability": {
+        "suite": "bounded-catalog",
+        "passed": 7,
+        "checks": [
+          "Cursor pages cover the complete tenant catalog without duplicates or whole-catalog totals",
+          "Server search finds later-page translations, respects fallback visibility and treats SQL/wildcard text literally",
+          "Merchant catalog, overview and MCP consume the bounded server query",
+          "Large variant families paginate, retain deep links and aggregate reviews from every family page",
+          "Tenant boundaries and input limits apply to catalog and detail",
+          "32 concurrent independent cart edits avoid pool exhaustion; competing revisions commit exactly once",
+          "Batched diagnostic counters reach PostgreSQL without a database task per request"
+        ],
+        "rootProducts": 132,
+        "familyVariants": 120,
+        "independentEdits": 64,
+        "competingEdits": [
+          409,
+          200,
+          409,
+          409,
+          409,
+          409,
+          409,
+          409
+        ]
+      },
+      "users": {
+        "suite": "users-v4",
+        "passed": 19,
+        "checks": [
+          "personal owner registration and scoped workspace discovery",
+          "Argon2 personal login verifies actual credentials",
+          "existing shop ownership cannot be claimed by registration",
+          "forged internal identity headers and invalid bearer rejected",
+          "merchant facts, graph, vectors, conversations and configuration reject foreign membership",
+          "new workspace starts with isolated synthetic catalog and empty private activity",
+          "single-use invitations create personal reader, editor and administrator memberships",
+          "reader can inspect catalog and quotes but cannot mutate commerce, users or proposals",
+          "MCP capability listing and direct invocation enforce reader permissions",
+          "editor cannot alter shop settings, users or extension runtime",
+          "administrator cannot grant ownership; final owner cannot be removed",
+          "role changes and revocation affect already issued sessions on the next request",
+          "one personal account can access two independently authorized workspaces",
+          "cart tokens, orders and stock remain isolated across merchant workspaces",
+          "order operations require both role permission and owning workspace",
+          "administrator can update own commerce configuration",
+          "expired invitation cannot create a membership",
+          "concurrent owner demotions serialize and preserve an active owner",
+          "logout invalidates opaque personal sessions, including reader sessions"
+        ],
+        "workspace": "team-18810f7103",
+        "syntheticData": true
+      },
+      "providers": {
+        "passed": 12,
+        "liveCloudInference": false,
+        "checks": [
+          "Provider configuration requires merchant authentication",
+          "Credentials never returned to frontend",
+          "OpenAI Responses adapter sends native strict schema and parses structured result",
+          "Cloud-derived preview uses real approval transaction and persists applied state",
+          "Claude Messages adapter preserves conversation context and ignores thinking blocks",
+          "Conversation history cannot cross tenant boundary",
+          "Incomplete OpenAI output creates explicit error without executable proposal",
+          "Cloud HTTP rejection has no silent local-model fallback",
+          "Personal reader can plan; only authorized editor executes in the owning shop",
+          "Registered app action uses grounded preview, explicit atomic approval and idempotent replay",
+          "App record changed after preview rejects approval without partial writes",
+          "Conversation lease excludes concurrent turns while inference holds no advisory transaction or DB connection"
+        ]
+      },
+      "apps": {
+        "owner": {
+          "expiresIn": 43200,
+          "token": "fb8cdff48369420fb45e6a8970c69f9d9c6557c3f38d4f9eaf9bd38bac77b642",
+          "user": {
+            "email": "b2b49b2e066540b38dfc7aaa9506cb3d@example.test",
+            "id": "da45844f1ae146829d1cda1c7491661f",
+            "name": "App Contract Owner"
+          },
+          "workspace": "apps-f317a1b56d1c",
+          "workspaces": [
+            {
+              "id": "apps-f317a1b56d1c",
+              "name": "App contract shop",
+              "role": "owner"
+            }
+          ]
+        },
+        "orderId": "2b0409397e134e80854fff486c553303",
+        "memory": {
+          "causalUpliftProven": false,
+          "hypotheses": [
+            {
+              "evidence": {
+                "causalUpliftProven": false,
+                "lastEvent": 184,
+                "left": "mug",
+                "observedOrders": 1,
+                "right": "notebook",
+                "suggestion": "Test a bundle against a randomized comparison; review stock and margin first"
+              },
+              "id": "0eff220025696aff8bf8629b5ac1f26fec2d629bffe4ed119b6b111b3cd9d5e2",
+              "kind": "bundle-experiment",
+              "revision": 1,
+              "state": "proposed"
+            }
+          ],
+          "limit": 24,
+          "modelWeightsUpdated": false,
+          "pairs": [
+            {
+              "lastEvent": 184,
+              "left": "mug",
+              "orders": 1,
+              "right": "notebook",
+              "simulatedOrders": 1,
+              "source": "order-observation",
+              "updatedAt": "2026-10-02 13:04:00.521397+00"
+            }
+          ],
+          "processedEvents": 1
+        },
+        "checks": [
+          "Built-in installation creates actual typed app tables",
+          "Typed writes and independent workspace installations enforce data boundaries",
+          "App optimistic updates never alter another shop",
+          "Forced app RLS filters another tenant even when SQL omits an application tenant predicate",
+          "HTTP and authorized MCP consume the same app capability",
+          "Configuration adds server-derived taxed fee to the actual cart",
+          "Stale fees reject checkout; confirmed configuration persists in the merchant order",
+          "Order event creates durable graph association with exact evidence and no causal claim",
+          "Hypothesis review records a decision without inventing an experiment",
+          "Approved association reaches a real public storefront consumer without leaking order evidence",
+          "Custom app entities/relationships and additive upgrades preserve data; unsafe schema changes fail",
+          "Read-only members can query apps but cannot install or change their data",
+          "Deactivation removes capabilities while retaining app data",
+          "Independent app-owned Wasm rules and fields compose on one SKU with real taxed checkout",
+          "Missing app ABI rejects installation before publishing a package or creating schema",
+          "Storyfront installation exposes owner MCP capabilities; viewers, shoppers and injected scope cannot generate shops"
+        ],
+        "passed": 16
+      },
+      "checkout_handoff": {
+        "passed": 5,
+        "checks": [
+          "Empty and stale carts cannot issue a transfer",
+          "Tickets are tenant scoped and reissue revokes the previous transfer",
+          "Expired transfers fail against database time",
+          "Exactly one concurrent consumer wins and the original cart token is revoked",
+          "Transferred cart places one durable merchant order and terminal carts cannot transfer"
+        ],
+        "orderId": "b265b06076bd49b1b02d57bcafef1fce",
+        "workspace": "handoff-e2f16d58400d",
+        "paymentState": "authorized",
+        "paymentMode": "simulated, no external charge"
+      },
+      "payments": {
+        "passed": 8,
+        "checks": [
+          "Real pending order/reservation and payment handoff are scoped; manual paid override is rejected",
+          "Concurrent capture and lost provider reply reconcile to one capture and one local result",
+          "Provider verification precedes durable webhook inbox; duplicate delivery is harmless",
+          "Idempotent refund records exact cents and rejects over-refunding",
+          "Process restart preserves provider order, capture, refund and customer access",
+          "Cancelled payment releases reserved stock exactly once",
+          "Mismatched provider amount cannot mark an order paid; uncertainty retains reservation",
+          "Shopware Payments remains explicitly unconnected and provider secrets never reach UI"
+        ],
+        "livePayPalSandboxTraffic": false,
+        "shopwarePaymentsConnected": false
+      },
+      "services": {
+        "passed": 4,
+        "checks": [
+          "External service action is shared by HTTP/MCP and requires merchant permission",
+          "Operator UI URL is exposed without service secrets; opaque-origin SDK import has CORS",
+          "Separate app worker consumes queued order event into app-owned durable SQLite storage",
+          "App inbox survives worker restart and deduplicates repeated event delivery"
+        ],
+        "processIsolation": "separate process; no microVM claim"
+      },
+      "extensions": {
+        "suite": "extensions-v4",
+        "passed": 7,
+        "checks": [
+          "minimum-order.wat activates on one replica and blocks/allows native B2B checkout on another",
+          "single-order-cap.wat activates on one replica and blocks/allows native B2B checkout on another",
+          "budget-reserve.wat activates on one replica and blocks/allows native B2B checkout on another",
+          "host imports rejected before activation",
+          "infinite activation probe exhausts fuel without replacing active policy",
+          "oversized guest memory rejected without replacing active policy",
+          "exact prior policy source restored, including whitespace"
+        ],
+        "previousPolicyRestored": true,
+        "syntheticOrdersOnly": true
+      },
+      "staging": {
+        "passed": 6,
+        "checks": [
+          "Sandbox is private, inherits current membership, starts without artificial integration changes",
+          "Imported immutable build has working own data/API in staging and cannot mutate live before publication",
+          "Selected app release installs schema/slots/actions, excludes sandbox records, records history and rejects replay",
+          "A separately selected app record is published through the same typed tenant-scoped data contract",
+          "A newer live version rejects stale stage release and preserves the live package",
+          "Cross-shop access and viewer create/import/release attempts are rejected"
+        ],
+        "paidInference": false
+      },
+      "marketing_accounts": {
+        "passed": 8,
+        "checks": [
+          "An existing merchant provisions a second isolated shop under the same account",
+          "Customer sessions reject wrong passwords/cross-shop reads, prevent group escalation, isolate history and revoke on password/logout",
+          "Exact-cent fixed coupon recalculates tax and its single use survives concurrent checkouts on different products",
+          "Automatic free-shipping campaign changes the real shipping quote",
+          "Real committed order event executes one durable localized note flow; malformed translated instructions fail without panic",
+          "Sales channel filters catalog/PDP/SKUs and binds cart and independent-storefront handoff to its channel",
+          "Product translations/specifications/free shipping and source documents publish selectively while unselected campaigns stay private",
+          "Persistent behavior is consumed immediately for channel/stock-safe ranking, deduplicates events and can be cleared"
+        ],
+        "paidProviderCalls": 0
+      },
+      "developer-documents": {
+        "passed": 8,
+        "checks": [
+          "Structured prompt generates immutable app, typed translated fields persist in sandbox, unknown translation keys rejected",
+          "Codex/Claude MCP development tools are present only for authorized merchant roles",
+          "Private data sheet is excluded until approval; public questions return exact source hash/excerpt",
+          "Indexed semantic retrieval is actually consumed for cross-language questions with no lexical match",
+          "Invented source citations and stale publication revisions are rejected",
+          "Multipart source upload works and foreign product reference fails",
+          "Real PDF is extracted in isolated bounded child process; malformed PDF and implicit public ingestion are rejected",
+          "Actual order flow creates an AI proposal through the model adapter; price changes only after merchant approval"
+        ],
+        "realModelInference": false,
+        "paidProviderCalls": 0
+      }
+    },
+    "database": "separate commerce_workbench plus disposable isolated fixture DB",
+    "cloudProviderCalls": "local protocol fixtures only; no paid calls"
+  },
+  "browser": {
+    "localModel": "Ollama qwen3.6:35b",
+    "realGeneratedApp": {
+      "id": "product_care",
+      "version": "1.0.0",
+      "runtime": "declarative",
+      "entities": [
+        "guides"
+      ],
+      "apiActions": [
+        "list_guides",
+        "save_guides"
+      ],
+      "productDetailSlot": true,
+      "immutableDigest": true,
+      "fourLanguageRecordSaved": true,
+      "selectedRelease": [
+        "app:product_care",
+        "appdata:product_care:guides:mug-care"
+      ],
+      "liveParentAnd500mlVariantConsumerVerified": true
+    },
+    "realProductQuestion": {
+      "locale": "de-DE",
+      "selectedSku": "mug-terracotta-500",
+      "observedAnswer": "Dishwasher safe; selected capacity 500 ml",
+      "sideEffects": false
+    },
+    "nativeFourLocaleViewsObserved": true,
+    "responsiveDefaultWidth637NoHorizontalOverflowAndMenuNavigation": true,
+    "screenshots": [
+      "assets/merchant-developer-en.jpg",
+      "assets/merchant-release-en.jpg"
+    ]
+  },
+  "deployment": {
+    "nonRootUid": 10001,
+    "realPdfUpload": true,
+    "invalidPdfRejected": true,
+    "addressSpaceLimitMiB": 512,
+    "paidProviderCalls": 0,
+    "finalImageBuilt": true,
+    "composePrivateDatabaseAndPublicOriginValidated": true,
+    "vercelRewritesGeneratedWithoutCredentials": true,
+    "publicDeployment": false,
+    "serveOnlyRestartWithExistingSchemaAndProduct": true
+  },
+  "storyfrontCompanion": {
+    "commit": "f353252d",
+    "pullRequest": "https://github.com/agentic-commerce-lab/ambient-c/pull/277",
+    "state": "open; owner merges",
+    "connectorTests": 11,
+    "workspaceCheckStepsPassed": 135,
+    "failures": 0,
+    "skips": 0,
+    "actualRefreshedShopProducts": 10,
+    "images": 33,
+    "importedTitleDescriptionLocales": [
+      "en-GB",
+      "de-DE",
+      "fr-FR",
+      "es-ES"
+    ],
+    "additionalPaidProviderCalls": 0,
+    "previousPaidQuestionEvidence": "storyfront.md"
+  },
+  "externalClients": {
+    "CodexAndClaudeCodeTaskAndMcpConfigurationExport": true,
+    "actualMcpDeveloperTaskCall": true,
+    "consumerAccountLoginOrEmbeddedCliExecution": false,
+    "OpenAIAndAnthropicApiAdapters": "verified with local HTTP fixtures; no new paid cloud inference"
+  },
+  "previousRelease": "history/verification-v0.5-initial.json",
+  "limits": [
+    "No full Shopware Core/Admin/Store API equivalence or measured 100 percent code coverage",
+    "Rule/Flow engine supports documented native subset; full upstream catalog/interchange and promotion calculators remain open",
+    "Developer generation supports reviewed declarative apps; arbitrary source builds, custom React, Git IDE and external service rollout require external builders",
+    "Staging excludes customers/orders/payment secrets and preserves live inventory; no destructive changes, automatic merging/rollback or large-catalog branch strategy",
+    "No measured performance ratio versus Shopware; integrated million-product benchmarks belong to their documented workload/commit",
+    "Fixed model weights, persisted evidence and category-affinity consumers; no demonstrated causal uplift or online weight training",
+    "Vercel/self-hosted deployment prepared and Linux container exercised; no public HTTPS deployment or hardened SaaS certification",
+    "Storyfront title/description import is multilingual; earlier generated stories and its broader scene/chrome localization are not automatically translated",
+    "PayPal Sandbox contract adapter remains separate from live settlement; Shopware Payments standalone connector unverified"
+  ]
+}

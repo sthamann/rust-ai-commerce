@@ -2,18 +2,22 @@
 """PayPal wire-contract and real Rust/PostgreSQL state tests. Local fixture, never real provider traffic."""
 import copy,json,os,pathlib,subprocess,threading,time,urllib.request,urllib.error,uuid,concurrent.futures
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
-ROOT=pathlib.Path(__file__).resolve().parents[1];checks=[];orders={};keys={};captures=[];refunds=[];behavior={'lostCapture':False,'badAmount':False};gate=threading.Lock()
+ROOT=pathlib.Path(__file__).resolve().parents[1];checks=[];orders={};keys={};captures=[];refunds=[];pending_refunds={};bn_seen=[];behavior={'lostCapture':False,'badAmount':False,'pendingRefund':False};gate=threading.Lock()
 class Handler(BaseHTTPRequestHandler):
     def log_message(self,*args):pass
     def answer(self,code,v):self.send_response(code);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps(v).encode())
     def do_GET(self):
+        bn=self.headers.get('PayPal-Partner-Attribution-Id');assert bn=='shopwareAG_Cart_Shopware6_PPCP';bn_seen.append(bn)
         id=self.path.rsplit('/',1)[-1]
+        if self.path.startswith('/v2/payments/refunds/'):
+            value=pending_refunds[id];value['status']='COMPLETED';return self.answer(200,value)
         if id not in orders:return self.answer(404,{})
         self.answer(200,orders[id])
     def do_POST(self):
         body=self.rfile.read(int(self.headers.get('Content-Length',0)))
         if self.path=='/v1/oauth2/token':return self.answer(200,{'access_token':'fixture-access'})
         if self.headers.get('Authorization')!='Bearer fixture-access':return self.answer(401,{})
+        bn=self.headers.get('PayPal-Partner-Attribution-Id');assert bn=='shopwareAG_Cart_Shopware6_PPCP';bn_seen.append(bn)
         v=json.loads(body or b'{}');key=self.headers.get('PayPal-Request-Id');path=self.path
         if path=='/v1/notifications/verify-webhook-signature':return self.answer(200,{'verification_status':'SUCCESS' if v['transmission_sig']=='fixture-valid' else 'FAILURE'})
         with gate:
@@ -28,6 +32,7 @@ class Handler(BaseHTTPRequestHandler):
                 if behavior['lostCapture']:behavior['lostCapture']=False;return self.answer(503,{'error':'fixture lost response after capture'})
             elif path.endswith('/refund'):
                 value={'id':'REF-'+uuid.uuid4().hex[:12],'status':'COMPLETED','amount':v['amount']};refunds.append(value)
+                if behavior['pendingRefund']:behavior['pendingRefund']=False;value['status']='PENDING';pending_refunds[value['id']]=value
             else:return self.answer(404,{})
             keys[(path,key)]=value;self.answer(200,value)
 server=ThreadingHTTPServer(('127.0.0.1',0),Handler);threading.Thread(target=server.serve_forever,daemon=True).start()
@@ -57,7 +62,7 @@ def wait(id,h,state):
     raise AssertionError((state,v,call('/api/payments',h=ah)['jobs'][:4]))
 def purchase():
     h={'x-tenant':'workshop'};c=call('/store-api/checkout/cart',{'session':uuid.uuid4().hex},h);h['sw-context-token']=c['token'];c=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'notebook','quantity':1}]},h)
-    selection=c['checkout'];selection['paymentMethodId']='paypal-sandbox';call('/store-api/checkout/context',{'revision':c['revision'],'checkout':selection},h,'PUT')
+    selection=c['checkout'];selection['paymentMethodId']='paypal-sandbox';selection['customerEmail']='fixture-buyer@example.test';selection['billingAddress']={'name':'Fixture Buyer','firstName':'Fixture','lastName':'Buyer','street':'Test Street 1','postalCode':'12345','city':'Test','country':'DE'};call('/store-api/checkout/context',{'revision':c['revision'],'checkout':selection},h,'PUT')
     o=call('/store-api/checkout/order',{}, {**h,'Idempotency-Key':uuid.uuid4().hex});assert o['payment']['provider']=='paypal' and o['payment']['state']=='pending' and not o['payment']['realMoneyCharged'];return o,h
 ah={'Authorization':'Bearer '+os.environ['MERCHANT_TOKEN'],'x-tenant':'workshop'}
 try:
@@ -78,7 +83,15 @@ try:
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:rs=list(ex.map(lambda _:call('/api/payments/'+id+'/refund',body,rh),range(4)))
     assert len({r['jobId'] for r in rs})==1;v=wait(id,h,'partially_refunded');assert v['refundedMinor']==100 and len(refunds)==1
     call('/api/payments/'+id+'/refund',{'approve':True,'amountMinor':v['amountMinor']}, {**ah,'Idempotency-Key':uuid.uuid4().hex},expected=409);check('Idempotent refund records exact cents and rejects over-refunding')
-    process.terminate();process.wait(timeout=15);start();assert call('/store-api/payments/'+id,h=h)['refundedMinor']==100;check('Process restart preserves provider order, capture, refund and customer access')
+    behavior['pendingRefund']=True;pending_h={**ah,'Idempotency-Key':id+':pending-refund'}
+    call('/api/payments/'+id+'/refund',{'approve':True,'amountMinor':100},pending_h)
+    for _ in range(120):
+        current=call('/store-api/payments/'+id,h=h)
+        if current['refundedMinor']==200:break
+        time.sleep(.15)
+    assert current['refundedMinor']==200 and len(refunds)==2 and bn_seen
+    check('Pending refund resumes by provider refund ID with no second refund; every wire request carries official Shopware BN attribution')
+    process.terminate();process.wait(timeout=15);start();assert call('/store-api/payments/'+id,h=h)['refundedMinor']==200;check('Process restart preserves provider order, capture, refund and customer access')
     before=next(p for p in call('/store-api/product',{}, {'x-tenant':'workshop'})['elements'] if p['id']=='notebook')['stock'];cancelled,ch=purchase();cid=cancelled['payment']['attemptId'];wait(cid,ch,'ready')
     call('/store-api/payments/'+cid+'/cancel',{}, {**ch,'Idempotency-Key':cid+':cancel'});wait(cid,ch,'cancelled')
     after=next(p for p in call('/store-api/product',{}, {'x-tenant':'workshop'})['elements'] if p['id']=='notebook')['stock'];assert after==before

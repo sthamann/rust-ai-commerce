@@ -23,6 +23,12 @@ pub(crate) enum Condition {
     Channel { values: Vec<String> },
     #[serde(rename = "lineItemId")]
     Product { values: Vec<String> },
+    #[serde(rename = "orderState")]
+    OrderState { values: Vec<String> },
+    #[serde(rename = "paymentState")]
+    PaymentState { values: Vec<String> },
+    #[serde(rename = "deliveryState")]
+    DeliveryState { values: Vec<String> },
     #[serde(rename = "customerLoggedIn")]
     LoggedIn,
 }
@@ -53,7 +59,10 @@ impl Condition {
                     return Err(bad("Invalid numeric rule"));
                 }
             }
-            Self::Group { values }
+            Self::OrderState { values }
+            | Self::PaymentState { values }
+            | Self::DeliveryState { values }
+            | Self::Group { values }
             | Self::Country { values }
             | Self::Channel { values }
             | Self::Product { values }
@@ -81,6 +90,16 @@ impl Condition {
             Self::Country { values } => values.contains(&commerce::selection(&c.data).country),
             Self::Channel { values } => values.contains(&c.data.sales_channel),
             Self::Product { values } => c.data.items.iter().any(|i| values.contains(&i.id)),
+            Self::OrderState { values } => q["orderState"]
+                .as_str()
+                .is_some_and(|v| values.iter().any(|x| x == v)),
+            Self::PaymentState { values } => q["paymentState"]
+                .as_str()
+                .is_some_and(|v| values.iter().any(|x| x == v)),
+            Self::DeliveryState { values } => q["deliveryStates"].as_array().is_some_and(|ds| {
+                ds.iter()
+                    .any(|d| d.as_str().is_some_and(|v| values.iter().any(|x| x == v)))
+            }),
             Self::LoggedIn => c.data.email.is_some(),
         }
     }

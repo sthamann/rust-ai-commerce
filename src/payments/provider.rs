@@ -6,11 +6,15 @@ pub(crate) struct Account {
     pub secret: String,
     pub webhook: String,
     pub merchant: Option<String>,
+    pub bn_code: String,
 }
 pub(crate) fn account(t: &str) -> Result<Account> {
-    let all: Value =
-        serde_json::from_str(&env::var("PAYPAL_SANDBOX_ACCOUNTS").unwrap_or("{}".into()))
-            .map_err(|_| bad("Invalid payment account configuration"))?;
+    let all: Value = serde_json::from_str(
+        &env::var("PAYPAL_ACCOUNTS")
+            .or_else(|_| env::var("PAYPAL_SANDBOX_ACCOUNTS"))
+            .unwrap_or("{}".into()),
+    )
+    .map_err(|_| bad("Invalid payment account configuration"))?;
     let v = &all[t];
     Ok(Account {
         client: v["clientId"]
@@ -28,25 +32,42 @@ pub(crate) fn account(t: &str) -> Result<Account> {
             .into(),
         webhook: v["webhookId"].as_str().unwrap_or("").into(),
         merchant: v["merchantId"].as_str().map(str::to_string),
+        bn_code: v["bnCode"]
+            .as_str()
+            .unwrap_or("shopwareAG_Cart_Shopware6_PPCP")
+            .to_string(),
     })
 }
 pub(crate) fn base() -> Result<String> {
-    let base =
-        env::var("PAYPAL_SANDBOX_BASE_URL").unwrap_or("https://api-m.sandbox.paypal.com".into());
-    let url = reqwest::Url::parse(&base).map_err(|_| bad("Invalid sandbox URL"))?;
-    if base != "https://api-m.sandbox.paypal.com"
-        && !(url.scheme() == "http"
-            && ["127.0.0.1", "localhost"].contains(&url.host_str().unwrap_or("")))
+    let live = env::var("PAYPAL_ENVIRONMENT").unwrap_or("sandbox".into());
+    if !["live", "sandbox"].contains(&live.as_str()) {
+        return Err(bad("PAYPAL_ENVIRONMENT must be live or sandbox"));
+    }
+    let expected = if live == "live" {
+        "https://api-m.paypal.com"
+    } else {
+        "https://api-m.sandbox.paypal.com"
+    };
+    let base = env::var("PAYPAL_SANDBOX_BASE_URL").unwrap_or(expected.into());
+    let url = reqwest::Url::parse(&base).map_err(|_| bad("Invalid PayPal URL"))?;
+    if base != expected
+        && !(live == "sandbox"
+            && url.scheme() == "http"
+            && ["127.0.0.1", "localhost"].contains(&url.host_str().unwrap_or(""))
+            && url.username().is_empty()
+            && url.password().is_none()
+            && url.path() == "/"
+            && url.query().is_none())
     {
-        return Err(bad(
-            "Only PayPal Sandbox or an explicit loopback contract fixture is supported",
-        ));
+        return Err(bad("PayPal origin must match its configured environment"));
     }
     Ok(base.trim_end_matches('/').into())
 }
 pub(crate) fn environment() -> &'static str {
-    if env::var("PAYPAL_SANDBOX_BASE_URL").is_ok_and(|s| s != "https://api-m.sandbox.paypal.com") {
+    if env::var("PAYPAL_SANDBOX_BASE_URL").is_ok_and(|s| s.starts_with("http://")) {
         "contract-fixture"
+    } else if env::var("PAYPAL_ENVIRONMENT").is_ok_and(|s| s == "live") {
+        "live"
     } else {
         "sandbox"
     }
@@ -65,8 +86,9 @@ pub(crate) async fn prepare(
     .await?;
     let version = version.ok_or(conflict("Payment app is not active"))?;
     let id = uid();
-    order["payment"] = json!({"method":order["cart"]["paymentMethod"],"provider":"paypal","state":"pending","attemptId":id,"environment":environment(),"realMoneyCharged":false});
-    sqlx::query("INSERT INTO payment_attempts(id,tenant,order_id,provider,adapter_version,amount_minor,currency,environment) VALUES($1,$2,$3,'paypal',$4,$5,'EUR',$6)").bind(&id).bind(&c.tenant).bind(order["id"].as_str().unwrap()).bind(version).bind(minor).bind(environment()).execute(&mut **tx).await?;
+    let bn = account(&c.tenant)?.bn_code;
+    order["payment"] = json!({"method":order["cart"]["paymentMethod"],"provider":"paypal","state":"pending","attemptId":id,"environment":environment(),"realMoneyCharged":false,"bnCode":bn});
+    sqlx::query("INSERT INTO payment_attempts(id,tenant,order_id,provider,adapter_version,amount_minor,currency,environment,bn_code) VALUES($1,$2,$3,'paypal',$4,$5,'EUR',$6,$7)").bind(&id).bind(&c.tenant).bind(order["id"].as_str().unwrap()).bind(version).bind(minor).bind(environment()).bind(&bn).execute(&mut **tx).await?;
     for item in &c.data.items {
         sqlx::query("INSERT INTO inventory_reservations(tenant,attempt_id,product_id,quantity) VALUES($1,$2,$3,$4)").bind(&c.tenant).bind(&id).bind(&item.id).bind(item.quantity as i32).execute(&mut **tx).await?;
     }
@@ -94,6 +116,7 @@ pub(crate) struct Attempt {
     pub refunded: i64,
     pub adapter_version: String,
     pub environment: String,
+    pub bn_code: String,
 }
 pub(crate) fn attempt(r: &sqlx::postgres::PgRow) -> Attempt {
     Attempt {
@@ -108,6 +131,7 @@ pub(crate) fn attempt(r: &sqlx::postgres::PgRow) -> Attempt {
         refunded: r.get("refunded_minor"),
         adapter_version: r.get("adapter_version"),
         environment: r.get("environment"),
+        bn_code: r.get("bn_code"),
     }
 }
 pub(crate) fn amount_string(minor: i64) -> String {
@@ -152,7 +176,10 @@ impl PaymentProvider for PaypalSandbox {
         key: &str,
         input: &Value,
     ) -> Result<Value> {
-        if p.adapter_version != "1.0.0" || p.environment != environment() {
+        if p.adapter_version != "1.0.0"
+            || p.environment != environment()
+            || p.bn_code != account(&p.tenant)?.bn_code
+        {
             return Err(Error(StatusCode::SERVICE_UNAVAILABLE,"Payment adapter version/environment mismatch; use the original adapter to reconcile".into()));
         }
         paypal::execute(a, p, op, key, input).await

@@ -33,3 +33,14 @@ pub(crate) use selection::*;
 
 mod product_edit;
 pub(crate) use product_edit::*;
+
+mod order_machine;
+pub(crate) use order_machine::*;
+mod order_workflow;
+pub(crate) use order_workflow::*;
+
+mod product_fields;
+pub(crate) use product_fields::*;
+
+mod order_fields;
+pub(crate) use order_fields::*;

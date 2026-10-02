@@ -39,7 +39,7 @@ mod tests {
             country: "DE".into(),
             shipping_method_id: "missing".into(),
             payment_method_id: "invoice".into(),
-            address: None,
+            ..CheckoutSelection::defaults()
         };
         let recovered = resolve_selection(selected, "consumer", &s);
         assert!(s.countries.contains(&recovered.country));

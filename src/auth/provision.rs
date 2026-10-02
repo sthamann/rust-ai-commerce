@@ -51,6 +51,7 @@ pub(super) async fn provision(
             .await?;
     }
     sqlx::query("INSERT INTO customers(tenant,email,password_hash,company,group_name) VALUES($1,'buyer@example.test',$2,'Example Studio','business')").bind(slug).bind(demo_password).execute(&mut **tx).await?;
+    accounts::seed_demo_address(tx, slug).await?;
     let wat = include_str!("../../extensions/company-limit.wat");
     let sandbox = Sandbox::new(wat).map_err(bad)?;
     sqlx::query("INSERT INTO extensions(tenant,wat,digest) VALUES($1,$2,$3)")

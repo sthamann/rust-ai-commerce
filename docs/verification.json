@@ -1,9 +1,8 @@
 {
-  "date": "2026-10-02T13:22:29.838959+00:00",
+  "date": "2026-10-02T15:46:11.674928+00:00",
   "version": "0.5.0",
-  "sourceCommit": "c39c96bfad94d521fb8177b2737309fe40d9fdd8",
-  "fullCoreRegressionCommit": "24bc8c3",
-  "scope": "Multilingual workbench plus integrated bounded reads; latest developer-task changes have targeted fixture regression",
+  "sourceCommit": "192aec5a628c903dae540987282df03ae79a3da6",
+  "scope": "Customer address lifecycle, native merchant operations, workflow/events, rights, assets, payment reconciliation and all 18 HTTP regression suites against separate PostgreSQL database",
   "reference": {
     "shopware": "6.7.14.2",
     "commit": "de074a584d77d8abb09ddb21d8799f083a61a3da",
@@ -17,14 +16,14 @@
     "frontendFormatting": true
   },
   "unitTests": {
-    "passed": 36,
+    "passed": 44,
     "library": 15,
-    "application": 21
+    "application": 29
   },
   "structure": {
-    "documentedRustModules": 118,
+    "documentedRustModules": 143,
     "maximumRustModuleLines": 320,
-    "mainLines": 108,
+    "mainLines": 110,
     "sourceMap": "source-map.md"
   },
   "localization": {
@@ -80,7 +79,7 @@
     "totalFailures": 0
   },
   "http": {
-    "passedCheckGroups": 161,
+    "passedCheckGroups": 191,
     "suites": {
       "studio": {
         "passed": 7,
@@ -165,7 +164,6 @@
         "liveEmbedding": false
       },
       "commerce": {
-        "suite": "commerce-v4",
         "passed": 21,
         "checks": [
           "detail exposes real SKU family, three images and properties",
@@ -190,12 +188,9 @@
           "free shipping threshold applies to authoritative gross item total",
           "MCP detail and checkout selection consume the same native domain path"
         ],
-        "payment": "only simulated/manual; no PSP contacted",
-        "ordersCreated": 1,
-        "configurationRestored": true
+        "paidProviderCalls": 0
       },
       "scalability": {
-        "suite": "bounded-catalog",
         "passed": 7,
         "checks": [
           "Cursor pages cover the complete tenant catalog without duplicates or whole-catalog totals",
@@ -206,22 +201,9 @@
           "32 concurrent independent cart edits avoid pool exhaustion; competing revisions commit exactly once",
           "Batched diagnostic counters reach PostgreSQL without a database task per request"
         ],
-        "rootProducts": 132,
-        "familyVariants": 120,
-        "independentEdits": 64,
-        "competingEdits": [
-          409,
-          200,
-          409,
-          409,
-          409,
-          409,
-          409,
-          409
-        ]
+        "paidProviderCalls": 0
       },
       "users": {
-        "suite": "users-v4",
         "passed": 19,
         "checks": [
           "personal owner registration and scoped workspace discovery",
@@ -244,12 +226,10 @@
           "concurrent owner demotions serialize and preserve an active owner",
           "logout invalidates opaque personal sessions, including reader sessions"
         ],
-        "workspace": "team-18810f7103",
-        "syntheticData": true
+        "paidProviderCalls": 0
       },
       "providers": {
         "passed": 12,
-        "liveCloudInference": false,
         "checks": [
           "Provider configuration requires merchant authentication",
           "Credentials never returned to frontend",
@@ -263,60 +243,11 @@
           "Registered app action uses grounded preview, explicit atomic approval and idempotent replay",
           "App record changed after preview rejects approval without partial writes",
           "Conversation lease excludes concurrent turns while inference holds no advisory transaction or DB connection"
-        ]
+        ],
+        "paidProviderCalls": 0
       },
       "apps": {
-        "owner": {
-          "expiresIn": 43200,
-          "token": "fb8cdff48369420fb45e6a8970c69f9d9c6557c3f38d4f9eaf9bd38bac77b642",
-          "user": {
-            "email": "b2b49b2e066540b38dfc7aaa9506cb3d@example.test",
-            "id": "da45844f1ae146829d1cda1c7491661f",
-            "name": "App Contract Owner"
-          },
-          "workspace": "apps-f317a1b56d1c",
-          "workspaces": [
-            {
-              "id": "apps-f317a1b56d1c",
-              "name": "App contract shop",
-              "role": "owner"
-            }
-          ]
-        },
-        "orderId": "2b0409397e134e80854fff486c553303",
-        "memory": {
-          "causalUpliftProven": false,
-          "hypotheses": [
-            {
-              "evidence": {
-                "causalUpliftProven": false,
-                "lastEvent": 184,
-                "left": "mug",
-                "observedOrders": 1,
-                "right": "notebook",
-                "suggestion": "Test a bundle against a randomized comparison; review stock and margin first"
-              },
-              "id": "0eff220025696aff8bf8629b5ac1f26fec2d629bffe4ed119b6b111b3cd9d5e2",
-              "kind": "bundle-experiment",
-              "revision": 1,
-              "state": "proposed"
-            }
-          ],
-          "limit": 24,
-          "modelWeightsUpdated": false,
-          "pairs": [
-            {
-              "lastEvent": 184,
-              "left": "mug",
-              "orders": 1,
-              "right": "notebook",
-              "simulatedOrders": 1,
-              "source": "order-observation",
-              "updatedAt": "2026-10-02 13:04:00.521397+00"
-            }
-          ],
-          "processedEvents": 1
-        },
+        "passed": 16,
         "checks": [
           "Built-in installation creates actual typed app tables",
           "Typed writes and independent workspace installations enforce data boundaries",
@@ -335,7 +266,7 @@
           "Missing app ABI rejects installation before publishing a package or creating schema",
           "Storyfront installation exposes owner MCP capabilities; viewers, shoppers and injected scope cannot generate shops"
         ],
-        "passed": 16
+        "paidProviderCalls": 0
       },
       "checkout_handoff": {
         "passed": 5,
@@ -352,32 +283,32 @@
         "paymentMode": "simulated, no external charge"
       },
       "payments": {
-        "passed": 8,
+        "passed": 9,
         "checks": [
           "Real pending order/reservation and payment handoff are scoped; manual paid override is rejected",
           "Concurrent capture and lost provider reply reconcile to one capture and one local result",
           "Provider verification precedes durable webhook inbox; duplicate delivery is harmless",
           "Idempotent refund records exact cents and rejects over-refunding",
+          "Pending refund resumes by provider refund ID with no second refund; every wire request carries official Shopware BN attribution",
           "Process restart preserves provider order, capture, refund and customer access",
           "Cancelled payment releases reserved stock exactly once",
           "Mismatched provider amount cannot mark an order paid; uncertainty retains reservation",
           "Shopware Payments remains explicitly unconnected and provider secrets never reach UI"
         ],
-        "livePayPalSandboxTraffic": false,
-        "shopwarePaymentsConnected": false
+        "paidProviderCalls": 0
       },
       "services": {
-        "passed": 4,
+        "passed": 5,
         "checks": [
           "External service action is shared by HTTP/MCP and requires merchant permission",
           "Operator UI URL is exposed without service secrets; opaque-origin SDK import has CORS",
           "Separate app worker consumes queued order event into app-owned durable SQLite storage",
-          "App inbox survives worker restart and deduplicates repeated event delivery"
+          "App inbox survives worker restart and deduplicates repeated event delivery",
+          "Repeated status command produces one state event delivered into the external app inbox without shopper credentials"
         ],
-        "processIsolation": "separate process; no microVM claim"
+        "paidProviderCalls": 0
       },
       "extensions": {
-        "suite": "extensions-v4",
         "passed": 7,
         "checks": [
           "minimum-order.wat activates on one replica and blocks/allows native B2B checkout on another",
@@ -388,8 +319,7 @@
           "oversized guest memory rejected without replacing active policy",
           "exact prior policy source restored, including whitespace"
         ],
-        "previousPolicyRestored": true,
-        "syntheticOrdersOnly": true
+        "paidProviderCalls": 0
       },
       "staging": {
         "passed": 6,
@@ -401,7 +331,7 @@
           "A newer live version rejects stale stage release and preserves the live package",
           "Cross-shop access and viewer create/import/release attempts are rejected"
         ],
-        "paidInference": false
+        "paidProviderCalls": 0
       },
       "marketing_accounts": {
         "passed": 8,
@@ -429,12 +359,178 @@
           "Real PDF is extracted in isolated bounded child process; malformed PDF and implicit public ingestion are rejected",
           "Actual order flow creates an AI proposal through the model adapter; price changes only after merchant approval"
         ],
-        "realModelInference": false,
+        "paidProviderCalls": 0
+      },
+      "checkout-handoff": {
+        "passed": 5,
+        "checks": [
+          "Empty and stale carts cannot issue a transfer",
+          "Tickets are tenant scoped and reissue revokes the previous transfer",
+          "Expired transfers fail against database time",
+          "Exactly one concurrent consumer wins and the original cart token is revoked",
+          "Transferred cart places one durable merchant order and terminal carts cannot transfer"
+        ],
+        "paidProviderCalls": 0
+      },
+      "marketing-accounts": {
+        "passed": 8,
+        "checks": [
+          "An existing merchant provisions a second isolated shop under the same account",
+          "Customer sessions reject wrong passwords/cross-shop reads, prevent group escalation, isolate history and revoke on password/logout",
+          "Exact-cent fixed coupon recalculates tax and its single use survives concurrent checkouts on different products",
+          "Automatic free-shipping campaign changes the real shipping quote",
+          "Real committed order event executes one durable localized note flow; malformed translated instructions fail without panic",
+          "Sales channel filters catalog/PDP/SKUs and binds cart and independent-storefront handoff to its channel",
+          "Product translations/specifications/free shipping and source documents publish selectively while unselected campaigns stay private",
+          "Persistent behavior is consumed immediately for channel/stock-safe ranking, deduplicates events and can be cleared"
+        ],
+        "paidProviderCalls": 0
+      },
+      "merchant-operations": {
+        "passed": 16,
+        "checks": [
+          "bounded CRM and orders are personal-login and workspace scoped",
+          "granular rights affect HTTP and MCP listing/direct calls immediately",
+          "attachment upload/private publication/digest fence and cross-shop denial",
+          "four-language rich blocks reach PDP and executable media URLs are rejected",
+          "digital checkout snapshots entitlement, excludes shipping and associates real account history",
+          "paid download ownership, anonymous/foreign rejection and immutable purchase files",
+          "revision-bound notes/status mutations are audited and stale changes fail",
+          "numbered four-language PDFs, concurrent idempotency, cancellation references and immutable originals",
+          "customer deactivation/group changes revoke existing sessions and privileged cart contexts",
+          "invitations and individual sessions can be revoked without affecting current access",
+          "expiring one-shop API/MCP keys enforce explicit rights, hide secrets and revoke immediately",
+          "cancellation restores physical inventory exactly once and never discloses shopper context tokens",
+          "binary asset staging is private and only the selected digest-bound asset is released",
+          "custom translated workflow, concurrent exact-once transition and snapshot-bound flow produce one real order note",
+          "restricted team delegation cannot escalate via default roles or invitations",
+          "workflow definitions stage and release selectively while terminal orders remain protected"
+        ],
+        "paidProviderCalls": 0
+      },
+      "customer-accounts": {
+        "passed": 12,
+        "checks": [
+          "Registration atomically stores structured contacts and separate default billing/shipping addresses with server-owned customer identity",
+          "Customer sessions and composite database ownership prevent cross-customer and cross-shop reads/writes",
+          "Address CRUD checks revisions and clears deleted defaults without dangling or foreign address references",
+          "Contact fields validate dates and payment eligibility; customers cannot self-assign price groups",
+          "Login rotates the context and applies saved addresses/payment defaults; an existing session restores the same account context",
+          "Checkout resolves only owned address IDs and snapshots distinct customer/billing/shipping records into the committed order",
+          "Later address/contact changes cannot rewrite order snapshots; account history and derived order metrics stay customer-owned",
+          "Central master data and immutable billing snapshot feed the generated invoice",
+          "Guest checkout records contact and addresses without inheriting an existing customer identity or exposing orders to that email",
+          "Financial/manual checkout requires contact and billing data; complete guest checkout creates a pending native payment",
+          "Address book operations are MCP-ready through the same tenant ownership and scoped permission path",
+          "Logout revokes the independent customer session and invalidates its open authenticated cart"
+        ],
         "paidProviderCalls": 0
       }
     },
-    "database": "separate commerce_workbench plus disposable isolated fixture DB",
-    "cloudProviderCalls": "local protocol fixtures only; no paid calls"
+    "database": "Separate commerce_workbench; fresh tenant fixtures; scalability SQL uses matching TEST_DATABASE",
+    "cloudProviderCalls": "local protocol fixtures only; no paid calls",
+    "allSuiteResults": [
+      {
+        "suite": "studio",
+        "exitCode": 0,
+        "elapsedSeconds": 0.71
+      },
+      {
+        "suite": "integration",
+        "exitCode": 0,
+        "elapsedSeconds": 0.86
+      },
+      {
+        "suite": "protocols",
+        "exitCode": 0,
+        "elapsedSeconds": 0.55
+      },
+      {
+        "suite": "intelligence",
+        "exitCode": 0,
+        "elapsedSeconds": 0.24
+      },
+      {
+        "suite": "commerce",
+        "exitCode": 0,
+        "elapsedSeconds": 1.98
+      },
+      {
+        "suite": "scalability",
+        "exitCode": 0,
+        "elapsedSeconds": 3.39
+      },
+      {
+        "suite": "users",
+        "exitCode": 0,
+        "elapsedSeconds": 4.76
+      },
+      {
+        "suite": "providers",
+        "exitCode": 0,
+        "elapsedSeconds": 3.24
+      },
+      {
+        "suite": "apps",
+        "exitCode": 0,
+        "elapsedSeconds": 3.08
+      },
+      {
+        "suite": "checkout_handoff",
+        "exitCode": 0,
+        "elapsedSeconds": 1.6
+      },
+      {
+        "suite": "payments",
+        "exitCode": 0,
+        "elapsedSeconds": 15.84
+      },
+      {
+        "suite": "services",
+        "exitCode": 0,
+        "elapsedSeconds": 3.69
+      },
+      {
+        "suite": "extensions",
+        "exitCode": 0,
+        "elapsedSeconds": 2.5
+      },
+      {
+        "suite": "staging",
+        "exitCode": 0,
+        "elapsedSeconds": 2.34
+      },
+      {
+        "suite": "marketing_accounts",
+        "exitCode": 0,
+        "elapsedSeconds": 4.4
+      },
+      {
+        "suite": "merchant_operations",
+        "exitCode": 0,
+        "elapsedSeconds": 4.34
+      },
+      {
+        "suite": "customer_accounts",
+        "exitCode": 0,
+        "elapsedSeconds": 3.01
+      },
+      {
+        "suite": "developer_documents",
+        "exitCode": 0,
+        "elapsedSeconds": 3.35
+      }
+    ],
+    "postFullSuiteTargetedVerification": {
+      "reason": "Contact projection allowlist prevents legacy profile data replacing authoritative identity",
+      "suites": [
+        "merchant_operations",
+        "payments",
+        "services",
+        "customer_accounts"
+      ],
+      "passed": true
+    }
   },
   "browser": {
     "localModel": "Ollama qwen3.6:35b",
@@ -469,7 +565,26 @@
     "screenshots": [
       "assets/merchant-developer-en.jpg",
       "assets/merchant-release-en.jpg"
-    ]
+    ],
+    "customerAddressBook": {
+      "readOnlySyntheticProfileVerified": true,
+      "englishAndGermanObserved": true,
+      "screenshots": [
+        "assets/customer-addresses-en.png",
+        "assets/customer-address-book-en.png"
+      ]
+    },
+    "guestCheckout": {
+      "isolatedTestShop": true,
+      "contactAndBillingFormSaved": true,
+      "shipping": "standard",
+      "totalEUR": 17.4,
+      "orderNumber": "RAC-c51a3dd0",
+      "payment": "simulated authorization",
+      "stockDecrement": 1,
+      "consoleErrors": 0,
+      "screenshot": "assets/storefront-order-complete-en.png"
+    }
   },
   "deployment": {
     "nonRootUid": 10001,
@@ -508,7 +623,7 @@
     "consumerAccountLoginOrEmbeddedCliExecution": false,
     "OpenAIAndAnthropicApiAdapters": "verified with local HTTP fixtures; no new paid cloud inference"
   },
-  "previousRelease": "history/verification-v0.5-initial.json",
+  "previousRelease": "history/verification-v0.5-workbench.json",
   "limits": [
     "No full Shopware Core/Admin/Store API equivalence or measured 100 percent code coverage",
     "Rule/Flow engine supports documented native subset; full upstream catalog/interchange and promotion calculators remain open",
@@ -518,6 +633,7 @@
     "Fixed model weights, persisted evidence and category-affinity consumers; no demonstrated causal uplift or online weight training",
     "Vercel/self-hosted deployment prepared and Linux container exercised; no public HTTPS deployment or hardened SaaS certification",
     "Storyfront title/description import is multilingual; earlier generated stories and its broader scene/chrome localization are not automatically translated",
-    "PayPal Sandbox contract adapter remains separate from live settlement; Shopware Payments standalone connector unverified"
-  ]
+    "PayPal wallet Orders v2 wire/reconciliation/refund/BN verified with local Sandbox fixtures; Live mode prepared but no live settlement tested. Shopware Payments standalone connector remains unconnected."
+  ],
+  "sourceStatus": "Verified working-tree changes after sourceCommit; see Git history for the merchant-operations commit"
 }

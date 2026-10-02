@@ -133,7 +133,7 @@ export const fr: Record<Key, string> = {
   processing: "Traitement …",
   orderPlaced: "Commande enregistrée",
   simulation:
-    "Prototype : aucun prélèvement réel. Stock et commandes sont enregistrés.",
+    "Prototype. La carte de démonstration est simulée ; les autres moyens utilisent leur prestataire configuré. Stocks et commandes sont enregistrés.",
   placed: "Commande passée",
   captured: "Paiement confirmé",
   partially_refunded: "Partiellement remboursé",

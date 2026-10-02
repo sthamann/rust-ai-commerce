@@ -212,3 +212,23 @@ at most 120 lines, each module starts with its responsibility comment.
 64 cart edits with 32 clients and competing optimistic revisions. Independent
 processes were restarted against the million-product database, with warm database
 caches; this is not a machine/database cold-start or failover test.
+
+## Customer/merchant operations addition
+
+| Source | Responsibility and behavioral tests |
+|---|---|
+| `src/accounts/{contacts,metadata,addresses,address_store,order_snapshot,demo}.rs`, `profile.rs`, `customer.rs`, `cart_storage.rs` | Typed contacts, indexed order metrics, composite-owned address books/CAS/defaults, login context defaults and immutable order copies. `customer_accounts.py` tests the entire buyer path and negative ownership cases. |
+| `src/operations/{customers,orders,addresses,workflow,receipts,receipt_text,receipt_pdf}.rs` | Bounded CRM/order details, shared MCP address operations, workflow settings, central issuer settings, audited notes and immutable multilingual document issuance. `merchant_operations.py` + `customer_accounts.py`. |
+| `src/commerce/{order_machine,order_workflow,order_fields,fulfillment}.rs` | Extensible validated state graph, eligible next actions/business guards, authoritative standard order projection and idempotent committed state transitions/events. Unit tests and actual concurrent workflow/flow/app effects. |
+| `src/commerce/product_fields.rs` | Revision-bound native priced/media/property fields; quantity/tier/media validation in the central product write transaction. Product editor integration tests. |
+| `src/assets/*`, `src/staging/assets.rs` | Immutable MIME-checked upload bytes, publication digests, paid owning order download entitlement, typed rich blocks and selective asset release. `merchant_operations.py`. |
+| `src/auth/{permissions,integrations,members,invitations,middleware}.rs` | Fifteen scopes, per-shop hashed expiring keys, immediate revocation and non-escalating delegation. Permission units and HTTP/MCP negative tests. |
+| `src/payments/{paypal,provider,storage,worker,routes}.rs` | Per-shop Sandbox/Live wallet configuration, pinned official attribution, durable jobs and pending-refund GET recovery. Local wire fixture `payments.py`; no live PSP proof. |
+| `frontend/src/{CustomerFields,AddressFields,AddressCard,AddressBook,CheckoutIdentity,CheckoutDetails,CustomerAccount,CustomersManager}.tsx` | Same four-language contact/address interactions in buyer account, checkout and merchant CRM. Strict frontend build, locale tests and browser review. |
+| `frontend/src/{OrderDetail,OrderWorkflow,OrderPaymentDelivery,ReceiptPanel,OrdersManager}.tsx` | Direct eligible commands, same-job payment polling, immutable address/document views and event activity. |
+| `frontend/src/{SettingsWorkspace,MasterDataSettings,CommerceSettings,AppsManager}.tsx` | Central configuration and issuer, app categories and individual package workspaces; operational layouts use the full available width. |
+| Migrations `016`–`021` | Operations/documents/assets, fine-key storage, state-machine/idempotency storage, explicit schema repair, customer IDs/addresses/default foreign keys and explicitly synthetic demo-address backfill. Applied entries remain immutable/checksummed. |
+
+The file guard verifies every Rust module's responsibility header and maximum
+320 lines (`main.rs` maximum 120). Tests cover the listed actual behaviors;
+this does not claim every source line or every original Shopware operation is covered.

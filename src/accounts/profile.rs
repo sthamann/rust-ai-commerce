@@ -3,21 +3,16 @@ use super::*;
 pub(super) async fn get(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let (t, email) = identity(&a, &h).await?;
     let r = sqlx::query(
-        "SELECT profile,company,group_name FROM customers WHERE tenant=$1 AND email=$2",
+        "SELECT *,created_at::text AS created FROM customers WHERE tenant=$1 AND email=$2",
     )
-    .bind(t)
+    .bind(&t)
     .bind(&email)
     .fetch_one(&a.db)
     .await?;
-    Ok(Json(
-        json!({"email":email,"profile":r.get::<Value,_>("profile"),"company":r.get::<Option<String>,_>("company"),"customerGroup":r.get::<String,_>("group_name")}),
-    ))
-}
-#[derive(Deserialize, Serialize)]
-#[serde(deny_unknown_fields)]
-struct Profile {
-    name: String,
-    address: Option<commerce::Address>,
+    let mut v = customer_value(&r);
+    v["addresses"] = address_list(&a, &t, &email).await?;
+    decorate(&a, &t, &email, &mut v).await?;
+    Ok(Json(v))
 }
 pub(super) async fn save(
     State(a): State<App>,
@@ -25,24 +20,45 @@ pub(super) async fn save(
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let (t, email) = identity(&a, &h).await?;
-    let p: Profile =
-        serde_json::from_value(v).map_err(|_| bad("Only name and address can be updated"))?;
-    if p.name.trim().is_empty()
-        || p.name.len() > 100
-        || p.address.as_ref().is_some_and(|a| {
-            [&a.name, &a.street, &a.postal_code, &a.city]
-                .iter()
-                .any(|s| s.is_empty() || s.len() > 200)
-        })
-    {
-        return Err(bad("Invalid customer profile"));
+    let mut p: Contact = serde_json::from_value(v)
+        .map_err(|_| bad("Only customer contact fields can be updated"))?;
+    p.validate()?;
+    if let Some(id) = &p.default_payment_method_id {
+        let (s, _) = commerce::config(&a, &t).await?;
+        let group: String =
+            sqlx::query_scalar("SELECT group_name FROM customers WHERE tenant=$1 AND email=$2")
+                .bind(&t)
+                .bind(&email)
+                .fetch_one(&a.db)
+                .await?;
+        if !s
+            .payments
+            .iter()
+            .any(|m| m.id == *id && m.active && (!m.business_only || group == "business"))
+        {
+            return Err(bad("Payment method unavailable for customer"));
+        }
     }
-    sqlx::query("UPDATE customers SET profile=$1 WHERE tenant=$2 AND email=$3")
-        .bind(json!(p))
-        .bind(t)
-        .bind(email)
-        .execute(&a.db)
+    if let Some(ad) = &p.address {
+        let (settings, _) = commerce::config(&a, &t).await?;
+        if !settings.countries.contains(&ad.country) {
+            return Err(bad("Address country unavailable"));
+        }
+    }
+    let mut tx = a.db.begin().await?;
+    sqlx::query("UPDATE customers SET profile=$1,company=NULLIF($2,''),revision=revision+1 WHERE tenant=$3 AND email=$4").bind(json!(p)).bind(&p.company).bind(&t).bind(&email).execute(&mut *tx).await?;
+    if let Some(ad) = &p.address {
+        address_save_conn(
+            &mut tx,
+            &t,
+            &email,
+            None,
+            &json!({"defaultBilling":true,"defaultShipping":true}),
+            ad,
+        )
         .await?;
+    }
+    tx.commit().await?;
     Ok(Json(json!({"saved":true})))
 }
 pub(super) async fn password(

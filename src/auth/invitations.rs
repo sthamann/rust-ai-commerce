@@ -8,11 +8,26 @@ pub(crate) async fn invite_user(
     let t = merchant(&a, &h)?;
     permit(&h, "users")?;
     let role = v["role"].as_str().unwrap_or("viewer");
-    let actor_role = header(&h, "x-rac-role").unwrap();
+    let actor_role = if header(&h, "x-rac-role") == Some("owner") {
+        "owner"
+    } else {
+        "admin"
+    };
     if !role_allowed(actor_role, role) {
         return Err(Error(
             StatusCode::FORBIDDEN,
             "Cannot assign this role".into(),
+        ));
+    }
+    let mut defaults = HeaderMap::new();
+    defaults.insert("x-rac-role", role.parse().unwrap());
+    if SCOPES
+        .iter()
+        .any(|s| allowed(&defaults, s) && !allowed(&h, s))
+    {
+        return Err(Error(
+            StatusCode::FORBIDDEN,
+            "Cannot delegate broader role defaults".into(),
         ));
     }
     let email = email(&v)?;
@@ -37,6 +52,44 @@ pub(crate) async fn accept_invite(
     let invite=sqlx::query("SELECT * FROM user_invites WHERE digest=$1 AND redeemed_at IS NULL AND expires_at>now() FOR UPDATE").bind(hash(token)).fetch_optional(&mut *tx).await?.ok_or(Error(StatusCode::NOT_FOUND,"Invitation expired or redeemed".into()))?;
     let email = invite.get::<String, _>("email");
     let tenant = invite.get::<String, _>("tenant");
+    let creator: String = invite.get("created_by");
+    if creator != "bootstrap" {
+        let member = sqlx::query(
+            "SELECT role,permissions FROM memberships WHERE tenant=$1 AND user_id=$2 AND active",
+        )
+        .bind(&tenant)
+        .bind(creator)
+        .fetch_optional(&mut *tx)
+        .await?
+        .ok_or(Error(
+            StatusCode::FORBIDDEN,
+            "Invitation creator lost access".into(),
+        ))?;
+        let mut actor = HeaderMap::new();
+        actor.insert(
+            "x-rac-role",
+            member.get::<String, _>("role").parse().unwrap(),
+        );
+        let scopes: Value = member.get("permissions");
+        if !scopes.is_null() {
+            actor.insert("x-rac-permissions", scopes.to_string().parse().unwrap());
+        }
+        permit(&actor, "users")?;
+        let mut defaults = HeaderMap::new();
+        defaults.insert(
+            "x-rac-role",
+            invite.get::<String, _>("role").parse().unwrap(),
+        );
+        if SCOPES
+            .iter()
+            .any(|s| allowed(&defaults, s) && !allowed(&actor, s))
+        {
+            return Err(Error(
+                StatusCode::FORBIDDEN,
+                "Invitation creator cannot grant this role".into(),
+            ));
+        }
+    }
     let existing = sqlx::query("SELECT id,password_hash FROM merchant_users WHERE email=$1")
         .bind(&email)
         .fetch_optional(&mut *tx)

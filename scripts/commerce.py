@@ -4,9 +4,9 @@ Demo orders only. Configuration changes are restored; no PSP is contacted.
 """
 import os,json,uuid,urllib.request,urllib.error,concurrent.futures,pathlib,copy
 BASE=os.environ.get('BASE_URL','http://127.0.0.1:8787');checks=[]
-merchant={'Authorization':'Bearer '+os.environ['MERCHANT_TOKEN'],'x-commerce-locale':'de-DE'}
+public={};merchant={}
 def req(path,body=None,h=None,method=None,expected=200):
- r=urllib.request.Request(BASE+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(h or {})},method=method or ('POST' if body is not None else 'GET'))
+ r=urllib.request.Request(BASE+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**public,**(h or {})},method=method or ('POST' if body is not None else 'GET'))
  try:
   with urllib.request.urlopen(r,timeout=30) as response:status=response.status;data=json.load(response)
  except urllib.error.HTTPError as e:status=e.code;data=json.load(e)
@@ -18,6 +18,9 @@ def cart():
 def items(c,h,ids):return req('/store-api/checkout/cart',{'revision':c['revision'],'items':[{'id':pid,'quantity':q} for pid,q in ids]},h,'PUT')
 def select(c,h,**patch):return req('/store-api/checkout/context',{'revision':c['revision'],'checkout':{**c['checkout'],**patch}},h,'PUT')
 def detail(id,h=None):return req('/store-api/product/'+id,{},h)
+suffix=uuid.uuid4().hex[:12]
+workspace=req('/api/auth/register',{'workspaceId':'commerce-'+suffix,'workspaceName':'Commerce regression','name':'Synthetic Owner','email':'commerce-'+suffix+'@example.test','password':'Synthetic-commerce-2026!'})
+public={'x-tenant':workspace['workspace']};merchant={**public,'Authorization':'Bearer '+workspace['token'],'x-commerce-locale':'de-DE'}
 c,h=cart();d=detail('mug',h);assert len(d['variants'])==4 and len(d['product']['media'])==3 and d['product']['properties']['material']=='stoneware';check('detail exposes real SKU family, three images and properties')
 for m in d['product']['media']:
  with urllib.request.urlopen(BASE+m['url']) as r:assert r.status==200 and b'<svg' in r.read()
@@ -28,19 +31,20 @@ assert not req('/store-api/checkout/options',h=h)['payments'][-1]['businessOnly'
 rev=d['reviews']['count'];r=req('/store-api/product/mug/reviews',{'author':'HTTP Demo','rating':4,'title':'Commerce test review','content':'Synthetic review exercised through the real route.'},h)
 assert r['state']=='pending-moderation' and not r['verifiedPurchase'];assert detail('mug',h)['reviews']['count']==rev
 req('/api/merchant/reviews/'+r['id'],{'approved':True},method='PUT',expected=401)
-req('/api/merchant/reviews/'+r['id'],{'approved':True},{**merchant,'x-tenant':'workshop'},'PUT',404)
+req('/api/merchant/reviews/'+r['id'],{'approved':True},{**merchant,'x-tenant':'workshop'},'PUT',403)
 req('/api/merchant/reviews/'+r['id'],{'approved':True},merchant,'PUT');assert detail('mug',h)['reviews']['count']==rev+1
 req('/api/merchant/reviews/'+r['id'],{'approved':False},merchant,'PUT');check('review moderation changes public aggregate and is tenant protected')
 req('/store-api/product/mug/reviews',{'author':'A','rating':6,'title':'x','content':'x'},h,expected=400)
 req('/store-api/product/mug/reviews',{'author':'A','rating':4,'title':'x','content':'x'},h,expected=409);check('invalid ratings and duplicate context reviews rejected')
 c=items(c,h,[('mug-sage-350',6)]);assert c['lineItems'][0]['discountPercent']==5 and c['lineItems'][0]['price']['unitPrice']==detail('mug-sage-350',h)['calculatedPrices'][1]['price']['unitPrice'];check('SKU public quantity tier is identical on detail and cart')
+guest_email='commerce-'+uuid.uuid4().hex+'@example.test'
 address={'name':'Commerce Demo','street':'Teststraße 1','postalCode':'10115','city':'Berlin'}
 selection={**c['checkout'],'country':'FR','shippingMethodId':'express','address':address}
 req('/store-api/checkout/context',{'revision':c['revision'],'checkout':selection},h,'PUT',400)
 req('/store-api/checkout/context',{'revision':c['revision']-1,'checkout':c['checkout']},h,'PUT',409)
 req('/store-api/checkout/context',{'revision':c['revision'],'checkout':c['checkout']},{**h,'x-tenant':'workshop'},'PUT',404)
 check('country eligibility, revision and tenant isolation enforced')
-c=select(c,h,country='FR',shippingMethodId='standard',paymentMethodId='bank-transfer',address=address)
+c=select(c,h,country='FR',shippingMethodId='standard',paymentMethodId='bank-transfer',address=address,customerEmail=guest_email,billingAddress={**address,'country':'FR'})
 assert c['lineItems'][0]['price']['calculatedTaxes'][0]['taxRate']==20 and c['price']['totalPrice']!=141.96 and c['shippingCosts']['totalPrice']==4.9
 assert round(c['price']['netPrice']+c['price']['tax'],2)==c['price']['totalPrice'];check('destination VAT and proportional shipping included in payable total')
 assert detail('mug-sage-350',h)['country']=='FR';assert d['product']['price']!=detail('mug-sage-350',h)['product']['price'];check('detail price follows the actual customer tax country')
@@ -48,7 +52,7 @@ snapshot=req('/api/merchant/commerce',h=merchant);sku_stock=detail('mug-sage-350
 key='commerce-order-'+str(uuid.uuid4());oh={**h,'Idempotency-Key':key}
 with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:orders=list(pool.map(lambda _:req('/store-api/checkout/order',{},oh),range(6)))
 o=orders[0];assert len({v['id'] for v in orders})==1 and o['payment']['state']=='pending' and o['payment']['provider']=='manual' and not o['payment']['realMoneyCharged']
-assert o['deliveries'][0]['shippingLocation']['address']==address and o['deliveries'][0]['deliveryDate']['basis']=='calendar-days';check('concurrent manual-payment checkout snapshots address, method and delivery dates exactly once')
+assert all(o['deliveries'][0]['shippingLocation']['address'][k]==v for k,v in address.items()) and o['deliveries'][0]['shippingLocation']['address']['country']=='FR' and o['orderCustomer']['email']==guest_email and o['deliveries'][0]['deliveryDate']['basis']=='calendar-days';check('concurrent manual-payment checkout snapshots address, method and delivery dates exactly once')
 assert detail('mug-sage-350',h)['product']['stock']==sku_stock-6 and detail('mug',h)['product']['stock']==base_stock;check('only the selected SKU stock is decremented')
 r2=req('/store-api/product/mug-sage-350/reviews',{'author':'HTTP Demo','rating':5,'title':'Verified demo order','content':'Synthetic purchase already completed.'},h);assert r2['verifiedPurchase'];check('verified review requires an actual order belonging to customer context')
 req('/api/merchant/orders/'+o['id']+'/transition',{'revision':1,'kind':'delivery','state':'delivered'},merchant,expected=409)
@@ -85,7 +89,7 @@ try:
  check('disabled shipping recovers cart items and requires an explicit valid selection')
 finally:
  current=req('/api/merchant/commerce',h=merchant);req('/api/merchant/commerce',{'revision':current['revision'],'data':original['data']},merchant,'PUT')
-b,bh=cart();b=req('/store-api/account/login',{'email':'buyer@example.test','password':'demo-business'},bh);bh['sw-context-token']=b['token'];b=items(b,bh,[('mug-terracotta-500',5)]);b=select(b,bh,paymentMethodId='invoice')
+b,bh=cart();b=req('/store-api/account/login',{'email':'buyer@example.test','password':'demo-business'},bh);bh['sw-context-token']=b['token'];bh['x-customer-token']=b['customerToken'];b=items(b,bh,[('mug-terracotta-500',5)]);b=select(b,bh,paymentMethodId='invoice')
 assert b['price']['taxStatus']=='net' and b['lineItems'][0]['discountPercent']==15 and any(v['id']=='invoice' for v in b['availablePaymentMethods']);check('authenticated B2B variants inherit group tiers and invoice eligibility')
 z,zh=cart();z=items(z,zh,[('mug-sage-500',1)]);req('/store-api/checkout/order',{}, {**zh,'Idempotency-Key':'sold-'+str(uuid.uuid4())},expected=409);check('sold-out child SKU cannot complete an order')
 f,fh=cart();f=items(f,fh,[('chair',1)]);f=select(f,fh,shippingMethodId='standard',address=address);assert f['shippingCosts']['totalPrice']==0;check('free shipping threshold applies to authoritative gross item total')

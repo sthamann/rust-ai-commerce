@@ -9,6 +9,8 @@ pub(crate) fn router(a: App) -> Router {
         .merge(staging::router())
         .merge(developer::router())
         .merge(accounts::router())
+        .merge(operations::router())
+        .merge(assets::router())
         .merge(marketing::router())
         .merge(payments::payment_router())
         .merge(cognition::cognition_router())
@@ -17,9 +19,27 @@ pub(crate) fn router(a: App) -> Router {
         .route("/api/auth/login", post(auth::user_login))
         .route("/api/auth/session", get(auth::user_session))
         .route("/api/auth/logout", post(auth::user_logout))
+        .route("/api/auth/access", get(auth::access))
+        .route("/api/auth/sessions", get(auth::sessions))
+        .route(
+            "/api/auth/sessions/{id}",
+            axum::routing::delete(auth::revoke_session),
+        )
+        .route(
+            "/api/workspace/invitations/{id}",
+            axum::routing::delete(auth::revoke_invite),
+        )
         .route("/api/auth/accept", post(auth::accept_invite))
         .route("/api/workspaces", post(auth::create_workspace))
         .route("/api/workspace/members", get(auth::members))
+        .route(
+            "/api/workspace/integrations",
+            get(auth::integration_list).post(auth::integration_create),
+        )
+        .route(
+            "/api/workspace/integrations/{id}",
+            axum::routing::delete(auth::integration_revoke),
+        )
         .route(
             "/api/workspace/members/{id}",
             axum::routing::put(auth::update_member),

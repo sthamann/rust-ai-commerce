@@ -41,7 +41,7 @@ pub(crate) fn enrich(
         && c.data.items.iter().all(|i| {
             ps.iter()
                 .find(|p| p.id == i.id)
-                .is_some_and(|p| p.extra["shippingFree"] == true)
+                .is_some_and(|p| p.extra["shippingFree"] == true || p.extra["digital"] == true)
         });
     let gross = if c.data.items.is_empty() || free || all_free || q["promotionFreeShipping"] == true
     {
@@ -123,10 +123,14 @@ pub(crate) fn enrich(
     } else {
         (lead.max(shipping.min_days), lead.max(shipping.max_days))
     };
-    q["deliveries"] = if c.data.items.is_empty() {
+    q["deliveries"] = if c.data.items.is_empty()
+        || c.data.items.iter().all(|i| {
+            ps.iter()
+                .any(|p| p.id == i.id && p.extra["digital"] == true)
+        }) {
         json!([])
     } else {
-        json!([{"shippingMethod":shipping,"shippingCosts":cost,"shippingLocation":{"country":selected.country,"address":selected.address},"positions":c.data.items,"state":"open","deliveryTime":{"minDays":min,"maxDays":max}}])
+        json!([{"shippingMethod":shipping,"shippingCosts":cost,"shippingLocation":{"country":selected.country,"address":selected.address},"positions":c.data.items.iter().filter(|i|!ps.iter().any(|p|p.id==i.id&&p.extra["digital"]==true)).collect::<Vec<_>>(),"state":"open","deliveryTime":{"minDays":min,"maxDays":max}}])
     };
     q["paymentMethod"] = json!(payment);
     Ok(q)

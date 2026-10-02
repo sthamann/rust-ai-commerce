@@ -6,16 +6,11 @@ fn forbidden(s: &str) -> Error {
     Error(StatusCode::FORBIDDEN, s.into())
 }
 pub(crate) fn permit(h: &HeaderMap, kind: &str) -> Result<()> {
-    let role = header(h, "x-rac-role").ok_or(Error(
+    header(h, "x-rac-role").ok_or(Error(
         StatusCode::UNAUTHORIZED,
         "Personal login or instance administrator credential required".into(),
     ))?;
-    let allowed = match kind {
-        "read" => true,
-        "catalog" => ["owner", "admin", "editor"].contains(&role),
-        "users" | "settings" | "operations" | "extension" => ["owner", "admin"].contains(&role),
-        _ => false,
-    };
+    let allowed = super::permissions::allowed(h, kind);
     if allowed {
         Ok(())
     } else {
@@ -23,6 +18,72 @@ pub(crate) fn permit(h: &HeaderMap, kind: &str) -> Result<()> {
     }
 }
 fn action(path: &str, method: &str) -> &'static str {
+    if path == "/api/search/product"
+        || path.starts_with("/api/merchant/products/") && method == "GET"
+    {
+        return "catalog.read";
+    }
+    if path.starts_with("/api/knowledge") || path == "/api/policy" {
+        return if path.ends_with("/reindex") {
+            "catalog"
+        } else {
+            "knowledge.read"
+        };
+    }
+    if path.starts_with("/api/auth/") {
+        return "read";
+    }
+    if path.starts_with("/api/settings/") {
+        return if method == "GET" {
+            "settings.read"
+        } else {
+            "settings.write"
+        };
+    }
+    if path == "/api/merchant/order-state-machine" {
+        return if method == "GET" {
+            "orders.read"
+        } else {
+            "settings.write"
+        };
+    }
+    if path.starts_with("/api/merchant/customers") {
+        return if method == "GET" {
+            "customers.read"
+        } else {
+            "customers.write"
+        };
+    }
+    if path.starts_with("/api/merchant/receipts") {
+        return if method == "GET" {
+            "documents.read"
+        } else {
+            "documents.create"
+        };
+    }
+    if path.starts_with("/api/merchant/orders") {
+        return if path.contains("/receipts") {
+            if method == "GET" {
+                "documents.read"
+            } else {
+                "documents.create"
+            }
+        } else if method == "GET" {
+            "orders.read"
+        } else {
+            "operations"
+        };
+    }
+    if path.starts_with("/api/payments/jobs/") {
+        return "payments.manage";
+    }
+    if path.starts_with("/api/payments") {
+        return if method == "GET" {
+            "payments.read"
+        } else {
+            "payments.manage"
+        };
+    }
     if path.starts_with("/api/apps/") && path.contains("/actions/") {
         return "read";
     }
@@ -59,7 +120,12 @@ pub(crate) async fn authenticate(
     mut request: Request,
     next: Next,
 ) -> Response {
-    for key in ["x-rac-user", "x-rac-role", "x-rac-tenant"] {
+    for key in [
+        "x-rac-user",
+        "x-rac-role",
+        "x-rac-tenant",
+        "x-rac-permissions",
+    ] {
         request.headers_mut().remove(key);
     }
     let path = request.uri().path().to_string();
@@ -87,14 +153,17 @@ pub(crate) async fn authenticate(
     let t=tenant(request.headers())?;
     request.headers_mut().insert("x-rac-user","bootstrap".parse().unwrap());request.headers_mut().insert("x-rac-role","owner".parse().unwrap());request.headers_mut().insert("x-rac-tenant",t.parse().unwrap());
    }else{
-    let session=sqlx::query("SELECT user_id,default_tenant FROM user_sessions WHERE digest=$1 AND expires_at>now()").bind(hash(&token)).fetch_optional(&a.db).await?.ok_or(Error(StatusCode::UNAUTHORIZED,"Session expired or invalid".into()))?;
-    let user=session.get::<String,_>("user_id");
-    let rows=sqlx::query("SELECT m.tenant,m.role FROM memberships m WHERE m.user_id=$1 AND m.active ORDER BY m.tenant").bind(&user).fetch_all(&a.db).await?;
-    let chosen=header(request.headers(),"x-tenant").map(str::to_string).unwrap_or_else(||{let default=session.get::<String,_>("default_tenant");if rows.iter().any(|r|r.get::<String,_>("tenant")==default){default}else{rows.first().map(|r|r.get::<String,_>("tenant")).unwrap_or_default()}});
+    let (user,default_tenant,key_permissions)=resolve_credential(&a,&token).await?;
+    let rows=sqlx::query("SELECT m.tenant,m.role,m.permissions FROM memberships m WHERE m.user_id=$1 AND m.active ORDER BY m.tenant").bind(&user).fetch_all(&a.db).await?;
+    let chosen=header(request.headers(),"x-tenant").map(str::to_string).unwrap_or_else(||{let default=default_tenant.clone();if rows.iter().any(|r|r.get::<String,_>("tenant")==default){default}else{rows.first().map(|r|r.get::<String,_>("tenant")).unwrap_or_default()}});
     let scope=crate::staging::parent(&a,&chosen).await?.unwrap_or_else(||chosen.clone());
+    if key_permissions.is_some() && scope!=default_tenant {return Err(forbidden("Integration key is bound to one workspace"));}
     let member=rows.iter().find(|r|r.get::<String,_>("tenant")==scope).ok_or(forbidden("No active membership in this workspace"))?;
     request.headers_mut().insert("x-tenant",chosen.parse().map_err(|_|bad("Invalid tenant"))?);
-    request.headers_mut().insert("x-rac-tenant",chosen.parse().unwrap());request.headers_mut().insert("x-rac-user",user.parse().unwrap());request.headers_mut().insert("x-rac-role",member.get::<String,_>("role").parse().unwrap());
+    request.headers_mut().insert("x-rac-tenant",chosen.parse().unwrap());
+    let permissions:Value=member.get("permissions");if !permissions.is_null(){request.headers_mut().insert("x-rac-permissions",permissions.to_string().parse().map_err(|_|bad("Invalid permissions"))?);}request.headers_mut().insert("x-rac-user",user.parse().unwrap());request.headers_mut().insert("x-rac-role",member.get::<String,_>("role").parse().unwrap());
+    if let Some(scopes)=key_permissions{let mut actor=HeaderMap::new();actor.insert("x-rac-role",member.get::<String,_>("role").parse().unwrap());if !permissions.is_null(){actor.insert("x-rac-permissions",permissions.to_string().parse().unwrap());}let allowed=scopes.into_iter().filter(|s|super::permissions::allowed(&actor,s)).collect::<Vec<_>>();request.headers_mut().insert("x-rac-permissions",json!(allowed).to_string().parse().unwrap());request.headers_mut().insert("x-rac-role","admin".parse().unwrap());}
+
    }
   }else if protected{return Err(Error(StatusCode::UNAUTHORIZED,"Merchant login required".into()));}
   if protected{permit(request.headers(),action(&path,&method))?;}

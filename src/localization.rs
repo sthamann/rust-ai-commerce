@@ -130,6 +130,7 @@ pub(super) async fn preview_quote(
             }],
             group: group.into(),
             email: None,
+            customer_id: None,
             company: None,
             session: String::new(),
             buyer: None,

@@ -69,3 +69,27 @@ conformance. Executable migration units live in `porting/units.json`.
 
 See [workbench.md](workbench.md) for the precise supported contract and
 [deployment.md](deployment.md) for the prepared self-hosted/Vercel split.
+
+## Customer and operational delta (2026-10-02)
+
+Original entity references: `Checkout/Customer/CustomerDefinition.php`,
+`Aggregate/CustomerAddress/CustomerAddressDefinition.php`,
+`Checkout/Order/OrderDefinition.php` and its address/customer/transaction aggregates.
+The reference package remains pinned above; the public upstream definitions were
+also consulted for field responsibilities. The native identifiers, country model,
+response envelopes and operation paths differ.
+
+| Feature | Native implementation | Evidence | Still missing |
+|---|---|---|---|
+| Customer fields and address book | `accounts/contacts.rs`, `metadata.rs`, `address_store.rs`, `profile.rs`, `operations/customers.rs` | Structured names/contact/company/VAT/birthday; stable identity/number; defaults; first/last login; order metrics; real tenant-owned CRUD and revision conflicts | Full original DAL response/criteria, verification/recovery/MFA, email identity changes, original salutation/country UUID catalogs, guest account records, marketing double opt-in, custom fields/tags and imported historical metrics |
+| Connected buyer checkout | `customer.rs`, `cart_storage.rs`, `commerce/context_routes.rs`, `accounts/order_snapshot.rs`, `order_checkout.rs`, frontend account/address/checkout components | Registration → login → defaults → own selection → order → own history, with independent sessions and immutable billing/shipping copies; guest-email negative test | Complete original Store API route/schema/error parity, production consent/legal flows, saved payment instruments, multi-currency and general channel domains |
+| Order read fields and operational state | `commerce/order_fields.rs`, `order_machine.rs`, `order_workflow.rs`, `fulfillment.rs`, `operations/orders.rs` | Native totals/line items/address/transaction projection, one-click eligible actions, indexed delivery tracking, six repeated concurrent requests produce one state effect and flow note | Original full state machine, multiple partial transactions, split delivery/returns/carrier operations and full DAL conversion |
+| Central issuer and immutable documents | `operations/receipts.rs`, `receipt_pdf.rs`, `receipt_text.rs`, `SettingsWorkspace.tsx` | Four language PDFs, transactional numbers, concurrent receipt idempotency, billing vs delivery address, original bytes retained after account/issuer edits | Full original document generators/templates/number-range semantics, legal/e-invoice certification and general Unicode fonts |
+| Fine team and integration access | `auth/permissions.rs`, `integrations.rs`, `members.rs`, `invitations.rs` | Fifteen HTTP/MCP scopes, explicit overrides, per-shop keys, expiry/revocation and non-escalating role/invite delegation | Original ACL privilege graph and production IdP/account recovery |
+| Files, digital products and rich content | `assets/*`, `staging/assets.rs`, rich/attachment/download frontend components | Typed localized blocks, MIME/magic checks, private paid downloads, immutable entitlement, mixed physical delivery and selected digest release | AV/object storage/media transforms, partial-line refund entitlements, full CMS/product-data model |
+| App workflow extension | `commerce/order_machine.rs`, `operations/workflow.rs`, `marketing/flows.rs`, app event deliveries | Native app provenance, translated custom states/edges, immutable event conditions, durable app inbox and actual flow notes | Complete upstream app state/FlowSequence signing/registration protocol and graphical multi-action branch pipeline |
+| PayPal attribution and durable refunds | `payments/*` | Local Orders v2 wire contract, official PPCP BN header, single capture on lost response, pending refund lookup and restart | Actual Sandbox/Live PSP validation, advanced PayPal features and supported Shopware Payments standalone contract |
+
+None of these additional rows has a new original-PHP differential parity proof.
+They are native end-to-end behaviors. The existing 5,872 original-PHP comparisons
+remain the narrowly specified pricing/context/shipping-tax/rule-comparison ports.

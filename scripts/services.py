@@ -26,7 +26,7 @@ with tempfile.TemporaryDirectory() as directory:
             try:call('/health');break
             except OSError:time.sleep(.25)
         u=call('/api/auth/register',{'email':uuid.uuid4().hex+'@example.test','name':'Service Test','password':'Synthetic-service-account-2026!','workspaceId':'svc-'+uuid.uuid4().hex[:12],'workspaceName':'Synthetic service shop'})
-        h={'Authorization':'Bearer '+u['token'],'x-tenant':u['workspace']};manifest=json.loads((ROOT/'extensions/apps/service-example/manifest.json').read_text());manifest['id']=app_id
+        h={'Authorization':'Bearer '+u['token'],'x-tenant':u['workspace']};manifest=json.loads((ROOT/'extensions/apps/service-example/manifest.json').read_text());manifest['id']=app_id;manifest['events'].append('order.state_changed')
         call('/api/apps',{'manifest':manifest},h)
         call(f'/api/apps/{app_id}/entities/notes',{'id':'one','fields':{'title':'Tenant-scoped app note'}},h)
         result=call(f'/api/apps/{app_id}/actions/availability',{'sku':'mug'},h);assert result['available'] and 'synthetic' in result['source']
@@ -56,6 +56,15 @@ with tempfile.TemporaryDirectory() as directory:
         time.sleep(.8)
         with sqlite3.connect(db) as conn:assert conn.execute('SELECT count(*) FROM events').fetchone()[0]==1
         passed('App inbox survives worker restart and deduplicates repeated event delivery')
+        body={'kind':'order','state':'in_progress','revision':order['revision'],'requestKey':'app-state-'+uuid.uuid4().hex}
+        first=call('/api/merchant/orders/'+order['id']+'/transition',body,h);assert call('/api/merchant/orders/'+order['id']+'/transition',body,h)['revision']==first['revision']
+        for _ in range(80):
+            with sqlite3.connect(db)as conn:updated=conn.execute('SELECT data FROM events').fetchall()
+            if len(updated)==2:break
+            time.sleep(.25)
+        transitions=[json.loads(row[0])for row in updated if json.loads(row[0])['kind']=='order.state_changed']
+        assert len(transitions)==1 and transitions[0]['data']['state']=='in_progress' and 'token'not in transitions[0]['data']['order']['cart']
+        passed('Repeated status command produces one state event delivered into the external app inbox without shopper credentials')
         report={'passed':len(checks),'checks':checks,'processIsolation':'separate process; no microVM claim'}
         if os.getenv('REPORT_PATH'):pathlib.Path(os.environ['REPORT_PATH']).write_text(json.dumps(report,indent=2)+'\n')
         print(json.dumps(report))

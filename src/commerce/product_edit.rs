@@ -6,6 +6,8 @@ struct Edit {
     revision: i64,
     translations: HashMap<String, Translation>,
     extra: Extra,
+    #[serde(default)]
+    commerce: Option<ProductFields>,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -20,6 +22,10 @@ struct Extra {
     specifications: HashMap<String, HashMap<String, String>>,
     cross_selling: Vec<String>,
     shipping_free: bool,
+    #[serde(default)]
+    digital: bool,
+    #[serde(default)]
+    rich_description: Value,
 }
 #[derive(Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -75,6 +81,12 @@ pub(crate) async fn edit_product(
             return Err(bad("Invalid specification metadata"));
         }
     }
+    if !edit.extra.rich_description.is_null() {
+        assets::validate_rich(&edit.extra.rich_description)?;
+    }
+    if let Some(fields) = &edit.commerce {
+        fields.validate()?;
+    }
     let mut tx = a.db.begin().await?;
     for product in &edit.extra.cross_selling {
         let exists: bool =
@@ -90,6 +102,9 @@ pub(crate) async fn edit_product(
     let n=sqlx::query("UPDATE products SET extra=$1,name=$2,description=$3,revision=revision+1 WHERE tenant=$4 AND id=$5 AND revision=$6").bind(json!(edit.extra)).bind(&edit.translations["en"].name).bind(&edit.translations["en"].description).bind(&t).bind(&id).bind(edit.revision).execute(&mut *tx).await?.rows_affected();
     if n != 1 {
         return Err(conflict("Product changed"));
+    }
+    if let Some(fields) = &edit.commerce {
+        fields.save(&mut tx, &t, &id).await?;
     }
     for (lang, tr) in edit.translations {
         let locale = match lang.as_str() {
@@ -116,21 +131,19 @@ pub(crate) async fn product_editor(
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
-    let r = sqlx::query(
-        "SELECT revision,name,description,extra FROM products WHERE tenant=$1 AND id=$2",
-    )
-    .bind(&t)
-    .bind(&id)
-    .fetch_optional(&a.db)
-    .await?
-    .ok_or(Error(StatusCode::NOT_FOUND, "Product unavailable".into()))?;
-    let rows=sqlx::query("SELECT l.locale,p.name,p.description FROM languages l LEFT JOIN product_translations p ON p.language_id=l.id AND p.tenant=$1 AND p.product_id=$2 WHERE l.locale IN ('en-GB','de-DE','fr-FR','es-ES')").bind(t).bind(id).fetch_all(&a.db).await?;
+    let r = sqlx::query("SELECT * FROM products WHERE tenant=$1 AND id=$2")
+        .bind(&t)
+        .bind(&id)
+        .fetch_optional(&a.db)
+        .await?
+        .ok_or(Error(StatusCode::NOT_FOUND, "Product unavailable".into()))?;
+    let rows=sqlx::query("SELECT l.locale,p.name,p.description FROM languages l LEFT JOIN product_translations p ON p.language_id=l.id AND p.tenant=$1 AND p.product_id=$2 WHERE l.locale IN ('en-GB','de-DE','fr-FR','es-ES')").bind(&t).bind(&id).fetch_all(&a.db).await?;
     let mut translations = json!({});
     for tr in rows {
         let locale: String = tr.get("locale");
         translations[&locale[..2]] = json!({"name":tr.get::<Option<String>,_>("name").unwrap_or_else(||r.get("name")),"description":tr.get::<Option<String>,_>("description").unwrap_or_else(||r.get("description"))});
     }
     Ok(Json(
-        json!({"revision":r.get::<i64,_>("revision"),"translations":translations,"extra":r.get::<Value,_>("extra")}),
+        json!({"revision":r.get::<i64,_>("revision"),"translations":translations,"extra":r.get::<Value,_>("extra"),"commerce":editable_fields(&r)}),
     ))
 }

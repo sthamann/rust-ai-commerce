@@ -132,7 +132,7 @@ export const de = {
   processing: "Wird verarbeitet …",
   orderPlaced: "Bestellung gespeichert",
   simulation:
-    "Prototyp: keine echte Abbuchung. Bestand und Bestellung werden gespeichert.",
+    "Prototyp. Die Demo-Karte ist simuliert; andere Zahlungsarten nutzen ihren konfigurierten Anbieter. Bestand und Bestellungen werden gespeichert.",
   placed: "Bestellung aufgegeben",
   captured: "Zahlung bestätigt",
   partially_refunded: "Teilweise erstattet",

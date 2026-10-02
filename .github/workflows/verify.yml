@@ -47,6 +47,8 @@ jobs:
           python3 scripts/extensions.py
           python3 scripts/staging.py
           python3 scripts/marketing_accounts.py
+          python3 scripts/merchant_operations.py
+          python3 scripts/customer_accounts.py
           python3 scripts/developer_documents.py
           node frontend/tests/locales.mjs
           python3 scripts/structure.py

@@ -4,7 +4,7 @@ import { useAppText } from "./app-i18n";
 import type { RequestFn } from "./studio-types";
 import AppFrame from "./AppFrame";
 import AppEntity, { type Entity } from "./AppEntity";
-import PaymentManager from "./PaymentManager";
+import { useCustomerText } from "./customer-i18n";
 import "./apps.css";
 type Package = {
   uiUrl?: string;
@@ -14,13 +14,14 @@ type Package = {
   revision: number;
   manifest: {
     name: Record<string, string>;
+    category?: string;
+    permissions: string[];
     entities: Entity[];
     actions: { name: string; description: string; handler: string }[];
   };
 };
 export default function AppsManager({
   request,
-  token,
   role,
 }: {
   request: RequestFn;
@@ -28,6 +29,17 @@ export default function AppsManager({
   role: string;
 }) {
   const { a, locale, money } = useAppText();
+  const { c } = useCustomerText();
+  const [selected, setSelected] = useState("");
+  const [category, setCategory] = useState("all");
+  const [detailTab, setDetailTab] = useState("appDetails");
+  const appCategory = (p: Package) =>
+    p.manifest.category ??
+    (p.id.includes("paypal") || p.id.includes("payments")
+      ? "payment"
+      : p.id === "storyfront"
+        ? "design"
+        : "commerce");
   const [packages, setPackages] = useState<Package[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -116,77 +128,178 @@ export default function AppsManager({
           ))}
       </div>
       {error && <p role="alert">{error}</p>}
-      {packages.map((p) => (
-        <section className="studio-card app-card" key={p.id}>
-          <header>
-            <div>
-              <h2>
-                {p.manifest.name[locale.slice(0, 2)] ??
-                  p.manifest.name.en ??
-                  p.id}
-              </h2>
-              <span>
-                {p.version} · {a(p.active ? "active" : "inactive")}
-              </span>
-            </div>
-            <button
-              className="studio-secondary"
-              disabled={!manage || busy}
-              onClick={() =>
-                void run(async () => {
-                  await request(
-                    `/api/apps/${p.id}`,
-                    { active: !p.active, revision: p.revision },
-                    "PUT",
-                  );
-                })
-              }
-            >
-              {a(p.active ? "disable" : "enable")}
-            </button>
-          </header>
-          {p.active && p.uiUrl && (
-            <AppFrame app={p.id} url={p.uiUrl} request={request} />
-          )}
-          {p.active &&
-            p.manifest.entities.map((e) => (
-              <AppEntity
-                key={e.name}
-                app={p.id}
-                entity={e}
-                request={request}
-                canWrite={role !== "viewer"}
-              />
+      {!selected ? (
+        <>
+          <div className="app-categories">
+            {[
+              "all",
+              "commerce",
+              "payment",
+              "api",
+              "ai",
+              "design",
+              "operations",
+            ].map((k) => (
+              <button
+                className={
+                  category === k ? "studio-primary" : "studio-secondary"
+                }
+                key={k}
+                onClick={() => setCategory(k)}
+              >
+                {c(k === "all" ? "allApps" : `${k}Category`)}
+              </button>
             ))}
-          {p.active && (
-            <div className="app-actions">
-              {p.manifest.actions
-                .filter((act) => act.handler === "configurations")
-                .map((act) => (
-                  <button
-                    className="studio-secondary"
-                    key={act.name}
-                    onClick={() =>
-                      void run(async () => {
-                        setResultApp(p.id);
-                        setResult(
-                          await request(
-                            `/api/apps/${p.id}/actions/${act.name}`,
-                            {},
-                          ),
-                        );
-                      })
-                    }
-                  >
-                    {act.handler === "configurations"
-                      ? a("personalizedOrders")
-                      : act.description}
-                  </button>
-                ))}
-            </div>
-          )}
-        </section>
-      ))}
+          </div>
+          <div className="app-catalog">
+            {packages
+              .filter((p) => category === "all" || appCategory(p) === category)
+              .map((p) => (
+                <button
+                  className="studio-card app-catalog-card"
+                  key={p.id}
+                  onClick={() => {
+                    setSelected(p.id);
+                    setDetailTab("appDetails");
+                    setResult(undefined);
+                  }}
+                >
+                  <span>{c(`${appCategory(p)}Category`)}</span>
+                  <h2>
+                    {p.manifest.name[locale.slice(0, 2)] ?? p.manifest.name.en}
+                  </h2>
+                  <p>
+                    {p.version} · {a(p.active ? "active" : "inactive")}
+                  </p>
+                  <strong>{c("openApp")} →</strong>
+                </button>
+              ))}
+          </div>
+        </>
+      ) : (
+        <>
+          <button
+            className="studio-secondary"
+            onClick={() => {
+              setSelected("");
+              setResult(undefined);
+            }}
+          >
+            ← {c("backApps")}
+          </button>
+          <div className="app-categories">
+            {["appDetails", "appInterface", "appData", "appVersion"].map(
+              (k) => (
+                <button
+                  key={k}
+                  className={
+                    detailTab === k ? "studio-primary" : "studio-secondary"
+                  }
+                  onClick={() => setDetailTab(k)}
+                >
+                  {c(k)}
+                </button>
+              ),
+            )}
+          </div>
+        </>
+      )}
+      {packages
+        .filter((p) => p.id === selected)
+        .map((p) => (
+          <section className="studio-card app-card" key={p.id}>
+            <header>
+              <div>
+                <h2>
+                  {p.manifest.name[locale.slice(0, 2)] ??
+                    p.manifest.name.en ??
+                    p.id}
+                </h2>
+                <span>
+                  {p.version} · {a(p.active ? "active" : "inactive")}
+                </span>
+              </div>
+              <button
+                className="studio-secondary"
+                disabled={!manage || busy}
+                onClick={() =>
+                  void run(async () => {
+                    await request(
+                      `/api/apps/${p.id}`,
+                      { active: !p.active, revision: p.revision },
+                      "PUT",
+                    );
+                  })
+                }
+              >
+                {a(p.active ? "disable" : "enable")}
+              </button>
+            </header>
+            {detailTab === "appVersion" && (
+              <dl>
+                <dt>{c("appVersion")}</dt>
+                <dd>
+                  {p.version} · {p.revision}
+                </dd>
+                <dt>{c("appData")}</dt>
+                <dd>
+                  {p.manifest.entities.map((e) => e.name).join(", ") || "—"}
+                </dd>
+                <dt>{c("apiCategory")}</dt>
+                <dd>
+                  {p.manifest.actions.map((e) => e.name).join(", ") || "—"}
+                </dd>
+              </dl>
+            )}
+            {detailTab === "appDetails" && (
+              <p>
+                {c(`${appCategory(p)}Category`)} · {p.id} ·{" "}
+                {p.manifest.actions.length} API/MCP
+              </p>
+            )}
+            {detailTab === "appInterface" && p.active && p.uiUrl && (
+              <AppFrame app={p.id} url={p.uiUrl} request={request} />
+            )}
+            {detailTab === "appData" &&
+              p.active &&
+              p.manifest.entities.map((e) => (
+                <AppEntity
+                  key={e.name}
+                  app={p.id}
+                  entity={e}
+                  request={request}
+                  canWrite={role !== "viewer"}
+                />
+              ))}
+            {detailTab === "appData" && p.active && (
+              <div className="app-actions">
+                {p.manifest.actions
+                  .filter((act) => act.handler === "configurations")
+                  .map((act) => (
+                    <button
+                      className="studio-secondary"
+                      key={act.name}
+                      onClick={() =>
+                        void run(async () => {
+                          setResultApp(p.id);
+                          setResult(
+                            await request(
+                              `/api/apps/${p.id}/actions/${act.name}`,
+                              {},
+                            ),
+                          );
+                        })
+                      }
+                    >
+                      {act.handler === "configurations"
+                        ? a("personalizedOrders")
+                        : act.description}
+                    </button>
+                  ))}
+              </div>
+            )}
+          </section>
+        ))}
       {result != null && (
         <section className="studio-card app-card">
           <h2>{a("actions")}</h2>
@@ -216,7 +329,6 @@ export default function AppsManager({
           )}
         </section>
       )}
-      <PaymentManager request={request} token={token} canWrite={manage} />
     </div>
   );
 }

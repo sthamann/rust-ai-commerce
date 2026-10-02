@@ -34,6 +34,13 @@ pub(crate) async fn wire(
     key: &str,
     body: Option<&Value>,
 ) -> Result<Value> {
+    let bn = account(t)?.bn_code;
+    if bn.is_empty()
+        || bn.len() > 100
+        || !bn.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'_')
+    {
+        return Err(bad("Invalid PayPal BN code"));
+    }
     let auth = access(a, t).await?;
     let mut req = a
         .http
@@ -41,7 +48,8 @@ pub(crate) async fn wire(
         .timeout(std::time::Duration::from_secs(10))
         .bearer_auth(auth)
         .header("PayPal-Request-Id", &hash(key)[..38])
-        .header("Prefer", "return=representation");
+        .header("Prefer", "return=representation")
+        .header("PayPal-Partner-Attribution-Id", bn);
     if let Some(body) = body {
         req = req.json(body);
     }
@@ -69,7 +77,14 @@ pub(crate) async fn execute(
 ) -> Result<Value> {
     match op {
         "create" => {
-            let origin = env::var("PUBLIC_BASE_URL").unwrap_or("http://127.0.0.1:8787".into());
+            let origin = env::var("COMMERCE_PUBLIC_ORIGIN")
+                .or_else(|_| env::var("PUBLIC_BASE_URL"))
+                .unwrap_or("http://127.0.0.1:8787".into());
+            let origin_url =
+                reqwest::Url::parse(&origin).map_err(|_| bad("Invalid commerce public origin"))?;
+            if environment() == "live" && origin_url.scheme() != "https" {
+                return Err(bad("Live payment return URL requires HTTPS"));
+            }
             let url = format!(
                 "{}/?shop={}#payment/{}",
                 origin.trim_end_matches('/'),
@@ -114,6 +129,24 @@ pub(crate) async fn execute(
             .await
         }
         "refund" => {
+            if let Some(id) = sqlx::query_scalar::<_, String>(
+                "SELECT provider_id FROM payment_refunds WHERE tenant=$1 AND job_id=$2",
+            )
+            .bind(&p.tenant)
+            .bind(key)
+            .fetch_optional(&a.db)
+            .await?
+            {
+                return wire(
+                    a,
+                    &p.tenant,
+                    reqwest::Method::GET,
+                    &format!("/v2/payments/refunds/{id}"),
+                    key,
+                    None,
+                )
+                .await;
+            }
             let id = p
                 .capture
                 .as_deref()

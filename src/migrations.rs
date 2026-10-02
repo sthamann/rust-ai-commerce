@@ -2,6 +2,7 @@
 use crate::*;
 
 const SCHEMA: &[(&str, &str)] = &[
+    // Append-only entries are applied in dependency order below.
     ("001", include_str!("../migrations/001.sql")),
     ("002", include_str!("../migrations/002.sql")),
     ("004-context", include_str!("../migrations/004-context.sql")),
@@ -41,6 +42,30 @@ const SCHEMA: &[(&str, &str)] = &[
         "015-rules-flows-channels",
         include_str!("../migrations/015-rules-flows-channels.sql"),
     ),
+    (
+        "016-merchant-operations",
+        include_str!("../migrations/016-merchant-operations.sql"),
+    ),
+    (
+        "017-integration-access",
+        include_str!("../migrations/017-integration-access.sql"),
+    ),
+    (
+        "018-order-state-machine",
+        include_str!("../migrations/018-order-state-machine.sql"),
+    ),
+    (
+        "019-workflow-schema",
+        include_str!("../migrations/019-workflow-schema.sql"),
+    ),
+    (
+        "020-customer-addresses",
+        include_str!("../migrations/020-customer-addresses.sql"),
+    ),
+    (
+        "021-demo-addresses",
+        include_str!("../migrations/021-demo-addresses.sql"),
+    ),
 ];
 
 pub(crate) async fn apply(pool: &PgPool) {
@@ -64,6 +89,10 @@ pub(crate) async fn apply(pool: &PgPool) {
             continue;
         }
         let mut tx = pool.begin().await.expect("migration transaction");
+        sqlx::query("SET LOCAL search_path=public")
+            .execute(&mut *tx)
+            .await
+            .expect("explicit migration schema");
         sqlx::raw_sql(*source)
             .execute(&mut *tx)
             .await

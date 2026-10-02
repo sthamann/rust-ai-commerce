@@ -1,4 +1,12 @@
+import { useCallback } from "react";
+import AddressBook from "./AddressBook";
+import CustomerFields from "./CustomerFields";
+import { useCustomerText } from "./customer-i18n";
+import type { Contact } from "./customer-types";
+import "./customers.css";
 /** Shopper account overlay uses its own scoped session; merchant credentials never authenticate a customer. */
+import { downloadFile } from "./operation-download";
+import { useOperationsText } from "./operations-i18n";
 import { useEffect, useState, useRef } from "react";
 import { shopApi, type Cart, type Order } from "./shop-api";
 import { useShopText } from "./shop-i18n";
@@ -18,25 +26,50 @@ export default function CustomerAccount({
   }, []);
   const { s, money } = useShopText();
   const { w } = useWorkbenchText();
+  const { o, locale } = useOperationsText();
+  const [downloads, setDownloads] = useState<any[]>([]);
   const key = `rac-customer:${new URLSearchParams(location.search).get("shop") ?? "atelier"}`;
   const [signed, setSigned] = useState(!!localStorage.getItem(key));
   const [register, setRegister] = useState(false);
+  const { c } = useCustomerText();
+  const [options, setOptions] = useState<{
+    countries: string[];
+    payments: any[];
+  }>();
+  const request = useCallback(
+    async (path: string, body?: unknown, method?: string) =>
+      shopApi<any>(path, body, undefined, method),
+    [],
+  );
   const [profile, setProfile] = useState<{
     email: string;
-    profile: { name?: string; address?: Cart["checkout"]["address"] };
+    profile: Contact;
+    customerNumber: string;
+    revision: number;
   }>();
   const [orders, setOrders] = useState<Order[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const load = async () => {
     setProfile(await shopApi("/store-api/account/profile"));
+    setOptions(
+      await shopApi("/store-api/checkout/options", undefined, cart?.token),
+    );
+    setDownloads((await shopApi<any>("/store-api/account/downloads")).elements);
     setOrders(
       (await shopApi<{ elements: Order[] }>("/store-api/account/orders"))
         .elements,
     );
   };
   useEffect(() => {
-    if (signed) void load().catch((e) => setError(e.message));
+    if (signed)
+      void load().catch((e) => {
+        setError(e.message);
+        if (e.status === 401) {
+          localStorage.removeItem(key);
+          setSigned(false);
+        }
+      });
   }, [signed]);
   const run = async (fn: () => Promise<void>) => {
     setBusy(true);
@@ -80,7 +113,9 @@ export default function CustomerAccount({
                   password = String(f.get("password"));
                 if (register)
                   await shopApi("/store-api/account/register", {
-                    name: f.get("name"),
+                    name: `${f.get("firstName")} ${f.get("lastName")}`,
+                    firstName: f.get("firstName"),
+                    lastName: f.get("lastName"),
                     email,
                     password,
                   });
@@ -97,10 +132,21 @@ export default function CustomerAccount({
           >
             <h3>{w(register ? "customerRegister" : "customerLogin")}</h3>
             {register && (
-              <label>
-                {s("accountName")}
-                <input name="name" required maxLength={100} />
-              </label>
+              <div className="customer-field-grid">
+                {["firstName", "lastName"].map((k) => (
+                  <label key={k}>
+                    {c(k)}
+                    <input
+                      name={k}
+                      required
+                      maxLength={100}
+                      autoComplete={
+                        k === "firstName" ? "given-name" : "family-name"
+                      }
+                    />
+                  </label>
+                ))}
+              </div>
             )}
             <label>
               {s("email")}
@@ -130,7 +176,10 @@ export default function CustomerAccount({
           </form>
         ) : (
           <>
-            <p>{profile?.email}</p>
+            <p>
+              {profile?.email} · {c("customerNumber")}:{" "}
+              {profile?.customerNumber}
+            </p>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -138,8 +187,8 @@ export default function CustomerAccount({
                   await shopApi(
                     "/store-api/account/profile",
                     {
-                      name: profile?.profile.name,
-                      address: profile?.profile.address ?? null,
+                      ...profile?.profile,
+                      address: null,
                     },
                     undefined,
                     "PUT",
@@ -149,57 +198,49 @@ export default function CustomerAccount({
               }}
             >
               <h3>{w("customerData")}</h3>
+              {profile && (
+                <CustomerFields
+                  value={profile.profile}
+                  onChange={(p) => setProfile({ ...profile, profile: p })}
+                  disabled={busy}
+                />
+              )}
               <label>
-                {s("accountName")}
-                <input
-                  value={profile?.profile.name ?? ""}
-                  required
+                {c("preferredPayment")}
+                <select
+                  value={profile?.profile.defaultPaymentMethodId ?? ""}
                   onChange={(e) =>
                     setProfile((p) =>
                       p
                         ? {
                             ...p,
-                            profile: { ...p.profile, name: e.target.value },
+                            profile: {
+                              ...p.profile,
+                              defaultPaymentMethodId: e.target.value || null,
+                            },
                           }
                         : p,
                     )
                   }
-                />
+                >
+                  <option value="">{c("noPreference")}</option>
+                  {options?.payments.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {s(v.name)}
+                    </option>
+                  ))}
+                </select>
               </label>
-              {(["name", "street", "postalCode", "city"] as const).map(
-                (field) => (
-                  <label key={field}>
-                    {w(field === "name" ? "addressName" : field)}
-                    <input
-                      value={profile?.profile.address?.[field] ?? ""}
-                      onChange={(e) =>
-                        setProfile((p) =>
-                          p
-                            ? {
-                                ...p,
-                                profile: {
-                                  ...p.profile,
-                                  address: {
-                                    name: "",
-                                    street: "",
-                                    postalCode: "",
-                                    city: "",
-                                    ...p.profile.address,
-                                    [field]: e.target.value,
-                                  },
-                                },
-                              }
-                            : p,
-                        )
-                      }
-                    />
-                  </label>
-                ),
-              )}
               <button className="shop-primary" disabled={busy}>
                 {w("saveProfile")}
               </button>
             </form>
+            <AddressBook
+              request={request}
+              path="/store-api/account/addresses"
+              countries={options?.countries ?? ["DE", "FR", "ES"]}
+              onChange={() => void load()}
+            />
             <details>
               <summary>{w("changePassword")}</summary>
               <form
@@ -243,6 +284,29 @@ export default function CustomerAccount({
                 </button>
               </form>
             </details>
+            <h3>{o("assets")}</h3>
+            <p>{o("downloadHint")}</p>
+            {downloads.map((d) => (
+              <button
+                className="shop-secondary"
+                key={d.orderId + d.id}
+                onClick={() =>
+                  void run(() =>
+                    downloadFile(
+                      `/store-api/orders/${d.orderId}/downloads/${d.id}`,
+                      {
+                        "x-tenant":
+                          new URLSearchParams(location.search).get("shop") ??
+                          "atelier",
+                        "x-customer-token": localStorage.getItem(key) ?? "",
+                      },
+                    ),
+                  )
+                }
+              >
+                {d.title[locale.slice(0, 2)] ?? d.title.en} · {d.filename}
+              </button>
+            ))}
             <h3>{w("customerOrders")}</h3>
             {!orders.length && <p>{w("noOrders")}</p>}
             {orders.map((o) => (

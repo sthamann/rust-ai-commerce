@@ -615,6 +615,7 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
           onClose={() => setBag(false)}
           onQuantity={quantity}
           onSelection={selection}
+          onCart={save}
           onBuy={buy}
           onCoupons={async (codes) => {
             const result = await shopApi<Cart>(

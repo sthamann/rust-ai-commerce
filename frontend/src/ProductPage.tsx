@@ -1,3 +1,5 @@
+import RichDescription from "./RichDescription";
+import ProductAttachments from "./ProductAttachments";
 /** Product family, gallery, context pricing and moderated customer reviews. */
 import { useEffect, useRef, useState } from "react";
 import { useShopText } from "./shop-i18n";
@@ -342,7 +344,14 @@ export default function ProductPage({
         <section>
           <p className="shop-kicker">01 / {s("description")}</p>
           <h2>{s("description")}</h2>
-          <p>{p.description}</p>
+          {p.extra?.richDescription?.[locale.slice(0, 2)]?.length ? (
+            <RichDescription
+              blocks={p.extra.richDescription[locale.slice(0, 2)]}
+            />
+          ) : (
+            <p>{p.description}</p>
+          )}
+          <ProductAttachments id={p.id} />
           <p className="product-material">
             {s(p.properties.material ?? "")} · atelier /
           </p>

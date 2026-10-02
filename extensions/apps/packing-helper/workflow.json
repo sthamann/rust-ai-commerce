@@ -1,0 +1,112 @@
+{
+  "sourceApp": "packing_helper",
+  "states": [
+    {
+      "id": "placed",
+      "label": {
+        "en": "Received",
+        "de": "Eingegangen",
+        "fr": "Reçue",
+        "es": "Recibido"
+      },
+      "terminal": false
+    },
+    {
+      "id": "in_progress",
+      "label": {
+        "en": "In progress",
+        "de": "In Bearbeitung",
+        "fr": "En cours",
+        "es": "En proceso"
+      },
+      "terminal": false
+    },
+    {
+      "id": "packed",
+      "label": {
+        "en": "Packed",
+        "de": "Verpackt",
+        "fr": "Préparée",
+        "es": "Preparado"
+      },
+      "terminal": false
+    },
+    {
+      "id": "completed",
+      "label": {
+        "en": "Completed",
+        "de": "Abgeschlossen",
+        "fr": "Terminée",
+        "es": "Completado"
+      },
+      "terminal": true
+    },
+    {
+      "id": "cancelled",
+      "label": {
+        "en": "Cancelled",
+        "de": "Storniert",
+        "fr": "Annulée",
+        "es": "Cancelado"
+      },
+      "terminal": true
+    }
+  ],
+  "transitions": [
+    {
+      "id": "start",
+      "from": "placed",
+      "to": "in_progress",
+      "label": {
+        "en": "Start processing",
+        "de": "Bearbeitung starten",
+        "fr": "Commencer le traitement",
+        "es": "Iniciar gestión"
+      }
+    },
+    {
+      "id": "pack",
+      "from": "in_progress",
+      "to": "packed",
+      "label": {
+        "en": "Confirm packed",
+        "de": "Verpackung bestätigen",
+        "fr": "Confirmer la préparation",
+        "es": "Confirmar preparación"
+      }
+    },
+    {
+      "id": "complete",
+      "from": "packed",
+      "to": "completed",
+      "label": {
+        "en": "Complete order",
+        "de": "Bestellung abschließen",
+        "fr": "Terminer la commande",
+        "es": "Completar pedido"
+      }
+    },
+    {
+      "id": "cancel_new",
+      "from": "placed",
+      "to": "cancelled",
+      "label": {
+        "en": "Cancel order",
+        "de": "Bestellung stornieren",
+        "fr": "Annuler la commande",
+        "es": "Cancelar pedido"
+      }
+    },
+    {
+      "id": "cancel_active",
+      "from": "in_progress",
+      "to": "cancelled",
+      "label": {
+        "en": "Cancel order",
+        "de": "Bestellung stornieren",
+        "fr": "Annuler la commande",
+        "es": "Cancelar pedido"
+      }
+    }
+  ]
+}

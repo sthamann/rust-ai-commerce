@@ -73,7 +73,7 @@ pub(crate) fn validate_config(s: &Settings) -> Result<()> {
     for v in &s.payments {
         if !["manual", "simulated", "app"].contains(&v.mode.as_str())
             || v.name.len() > 80
-            || (v.mode == "app" && v.id != "paypal-sandbox")
+            || (v.mode == "app" && !["paypal-sandbox", "paypal-live"].contains(&v.id.as_str()))
         {
             return Err(bad("Unsupported payment mode"));
         }

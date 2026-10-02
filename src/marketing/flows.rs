@@ -18,7 +18,15 @@ pub(crate) struct Flow {
 impl Flow {
     pub(crate) fn validate(&self) -> Result<()> {
         self.condition.validate(0)?;
-        if !["order.placed", "payment.captured"].contains(&self.event.as_str())
+        if ![
+            "order.placed",
+            "payment.captured",
+            "order.state_changed",
+            "payment.state_changed",
+            "delivery.state_changed",
+            "payment.updated",
+        ]
+        .contains(&self.event.as_str())
             || !["note", "ai_proposal"].contains(&self.action.as_str())
             || !["de-DE", "en-GB", "fr-FR", "es-ES"].contains(&self.locale.as_str())
             || ["en", "de", "fr", "es"].iter().any(|l| {
@@ -39,7 +47,16 @@ pub(crate) async fn project_flows(
     kind: &str,
     data: &Value,
 ) -> Result<()> {
-    if !["order.placed", "payment.captured"].contains(&kind) {
+    if ![
+        "order.placed",
+        "payment.captured",
+        "order.state_changed",
+        "payment.state_changed",
+        "delivery.state_changed",
+        "payment.updated",
+    ]
+    .contains(&kind)
+    {
         return Ok(());
     }
     let rows = sqlx::query("SELECT id,data FROM commerce_flows WHERE tenant=$1 ORDER BY id")
@@ -50,11 +67,23 @@ pub(crate) async fn project_flows(
     let order=sqlx::query("SELECT c.* ,o.data AS order_data FROM orders o JOIN carts c ON c.id=o.cart_id WHERE o.tenant=$1 AND o.id=$2").bind(t).bind(order_id).fetch_optional(&mut *tx).await?;
     let Some(order) = order else { return Ok(()) };
     let cart = stored(&order)?;
-    let q: Value = order.get("order_data");
+    let q: Value = data
+        .get("order")
+        .cloned()
+        .unwrap_or_else(|| order.get("order_data"));
+    let mut context = q["cart"].clone();
+    context["orderState"] = q["state"].clone();
+    context["paymentState"] = q["payment"]["state"].clone();
+    context["deliveryStates"] = json!(
+        q["deliveries"]
+            .as_array()
+            .map(|ds| ds.iter().map(|d| d["state"].clone()).collect::<Vec<_>>())
+            .unwrap_or_default()
+    );
     for row in rows {
         let f: Flow = serde_json::from_value(row.get("data")).map_err(|_| bad("Invalid flow"))?;
-        if f.active && f.event == kind && f.condition.matches(&cart, &q["cart"]) {
-            sqlx::query("INSERT INTO flow_jobs(id,tenant,flow,event_id,definition) VALUES($1,$2,$3,$4,$5) ON CONFLICT(tenant,flow,event_id) DO NOTHING").bind(uid()).bind(t).bind(row.get::<String,_>("id")).bind(event).bind(json!({"flow":f,"orderId":order_id,"orderNumber":q["orderNumber"],"totalPrice":q["cart"]["price"]["totalPrice"]})).execute(&mut *tx).await?;
+        if f.active && f.event == kind && f.condition.matches(&cart, &context) {
+            sqlx::query("INSERT INTO flow_jobs(id,tenant,flow,event_id,definition) VALUES($1,$2,$3,$4,$5) ON CONFLICT(tenant,flow,event_id) DO NOTHING").bind(uid()).bind(t).bind(row.get::<String,_>("id")).bind(event).bind(json!({"flow":f,"orderId":order_id,"orderNumber":q["orderNumber"],"totalPrice":q["cart"]["price"]["totalPrice"],"event":kind,"transition":data})).execute(&mut *tx).await?;
         }
     }
     Ok(())
@@ -82,7 +111,7 @@ pub(crate) async fn flow_once(a: &App) -> Result<()> {
     let authorized = if f.actor.as_deref() == Some("bootstrap") {
         true
     } else {
-        sqlx::query_scalar::<_,bool>("SELECT EXISTS(SELECT 1 FROM memberships WHERE tenant=COALESCE((SELECT live_tenant FROM shop_environments WHERE tenant=$1),$1) AND user_id=$2 AND active AND role IN ('owner','admin'))").bind(&t).bind(&f.actor).fetch_one(&a.db).await?
+        sqlx::query_scalar::<_,bool>("SELECT EXISTS(SELECT 1 FROM memberships WHERE tenant=COALESCE((SELECT live_tenant FROM shop_environments WHERE tenant=$1),$1) AND user_id=$2 AND active AND (role='owner' OR (permissions='null'::jsonb AND role='admin') OR (permissions ? 'settings.write' AND ($3='note' OR permissions ? 'catalog.write'))))").bind(&t).bind(&f.actor).bind(&f.action).fetch_one(&a.db).await?
     };
     let result: Result<Value> = if !authorized {
         Err(Error(
@@ -102,6 +131,11 @@ pub(crate) async fn flow_once(a: &App) -> Result<()> {
         Ok(v) => ("completed", Some(v), None),
         Err(e) => ("failed", None, Some(e.1)),
     };
-    sqlx::query("UPDATE flow_jobs SET state=$1,result=$2,error=$3,lease_until=NULL WHERE id=$4 AND state='running'").bind(state).bind(value).bind(error).bind(id).execute(&a.db).await?;
+    let mut tx = a.db.begin().await?;
+    let n=sqlx::query("UPDATE flow_jobs SET state=$1,result=$2,error=$3,lease_until=NULL WHERE id=$4 AND state='running'").bind(state).bind(&value).bind(error).bind(&id).execute(&mut *tx).await?.rows_affected();
+    if n == 1 && state == "completed" && f.action == "note" {
+        sqlx::query("INSERT INTO order_activity(tenant,order_id,actor,kind,data) VALUES($1,$2,$3,'flow',$4)").bind(&t).bind(definition["orderId"].as_str().unwrap_or("")).bind(f.actor.as_deref().unwrap_or("flow")).bind(json!({"text":instruction,"flowJob":id,"event":definition["event"],"locale":f.locale})).execute(&mut *tx).await?;
+    }
+    tx.commit().await?;
     Ok(())
 }

@@ -3,6 +3,57 @@ use crate::*;
 
 pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
     (
+        "merchant.workflow",
+        "Read multilingual state machine and transitions",
+    ),
+    (
+        "merchant.workflow.save",
+        "Revision-bound declarative workflow extension",
+    ),
+    (
+        "merchant.product.content",
+        "Read four-language product content",
+    ),
+    (
+        "merchant.product.save",
+        "Revision-bound product content update",
+    ),
+    (
+        "merchant.product.assets",
+        "Read asset metadata without binary secrets",
+    ),
+    ("merchant.asset.publish", "Digest-bound file publication"),
+    (
+        "merchant.customer.addresses",
+        "List owning customer address book",
+    ),
+    (
+        "merchant.customer.address.save",
+        "Create/update customer address and defaults with revision",
+    ),
+    (
+        "merchant.customer.address.delete",
+        "Delete customer address with revision",
+    ),
+    ("merchant.customers", "Search tenant customers"),
+    ("merchant.customer", "Read customer details"),
+    ("merchant.customer.save", "Revision-checked customer update"),
+    ("merchant.order", "Read order detail and activity"),
+    (
+        "merchant.order.transition",
+        "Revision-checked order payment or delivery transition",
+    ),
+    ("merchant.order.note", "Append an operational note"),
+    ("merchant.receipts", "Read immutable order receipts"),
+    (
+        "merchant.receipt.create",
+        "Generate a numbered immutable receipt and PDF",
+    ),
+    (
+        "merchant.payment",
+        "Explicitly approved idempotent provider command",
+    ),
+    (
         "developer.builds",
         "Read own immutable app development versions",
     ),
@@ -68,6 +119,9 @@ pub(crate) async fn capabilities() -> Json<Value> {
     )
 }
 pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+    if operations::permission(name).is_some() {
+        return operations::invoke(a, h, name, v).await;
+    }
     if name.starts_with("developer.") {
         return developer::invoke(a, h, name, v).await;
     }
@@ -79,6 +133,7 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
     }
     if name.starts_with("knowledge.") {
         merchant(a, h)?;
+        auth::permit(h, "knowledge.read")?;
     }
     if name == "merchant.apply" {
         auth::permit(h, "catalog")?;

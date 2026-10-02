@@ -6,13 +6,18 @@ import MessageText from "./MessageText";
 import UsersManager, { type Session } from "./UsersManager";
 import AppsManager from "./AppsManager";
 import AutomationView from "./AutomationView";
+import OrdersManager from "./OrdersManager";
+import CustomersManager from "./CustomersManager";
+import AccessManager from "./AccessManager";
+import { useOperationsText } from "./operations-i18n";
+import "./operations.css";
 import ProductDataView from "./ProductDataView";
 import StoryfrontView from "./StoryfrontView";
 import DeveloperView from "./DeveloperView";
 import EnvironmentManager, { type Environment } from "./EnvironmentManager";
 import { useWorkbenchText } from "./workbench-i18n";
 import "./workbench.css";
-import CommerceManager from "./CommerceManager";
+import SettingsWorkspace from "./SettingsWorkspace";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Icon, { type IconName } from "./Icon";
 import { locales, useLocale } from "./i18n";
@@ -36,7 +41,9 @@ type Tab =
   | "developers"
   | "environments"
   | "automation"
-  | "productData";
+  | "productData"
+  | "orders"
+  | "customers";
 export default function Merchant({
   onChanged,
   onExit,
@@ -46,32 +53,40 @@ export default function Merchant({
 }) {
   const { locale, setLocale, t, date } = useLocale();
   const { w } = useWorkbenchText();
+  const { o } = useOperationsText();
   const tabLabel = (id: Tab) =>
-    [
-      "storyfronts",
-      "developers",
-      "environments",
-      "automation",
-      "productData",
-    ].includes(id)
-      ? w(
-          id as
-            | "storyfronts"
-            | "developers"
-            | "environments"
-            | "automation"
-            | "productData",
-        )
-      : t(
-          id as Exclude<
-            Tab,
-            | "storyfronts"
-            | "developers"
-            | "environments"
-            | "automation"
-            | "productData"
-          >,
-        );
+    id === "commerce"
+      ? t("settings")
+      : id === "orders" || id === "customers"
+        ? o(id)
+        : [
+              "storyfronts",
+              "developers",
+              "environments",
+              "automation",
+              "productData",
+            ].includes(id)
+          ? w(
+              id as
+                | "storyfronts"
+                | "developers"
+                | "environments"
+                | "automation"
+                | "productData",
+            )
+          : t(
+              id as Exclude<
+                Tab,
+                | "storyfronts"
+                | "developers"
+                | "environments"
+                | "automation"
+                | "productData"
+                | "orders"
+                | "customers"
+              >,
+            );
+  const [access, setAccess] = useState<string[]>([]);
   const [environments, setEnvironments] = useState<Environment[]>([]);
   const [environment, setEnvironment] = useState("");
   const [token, setToken] = useState(
@@ -177,6 +192,12 @@ export default function Merchant({
     },
     [liveRequest, environment, token, locale],
   );
+  useEffect(() => {
+    if (token)
+      void request("/api/auth/access")
+        .then((v) => setAccess(v.permissions))
+        .catch(() => setAccess([]));
+  }, [token, request]);
   const refreshEnvironments = useCallback(
     async () =>
       setEnvironments((await liveRequest("/api/environments")).environments),
@@ -321,6 +342,8 @@ export default function Merchant({
   const nav: { id: Tab; icon: IconName }[] = [
     { id: "assistant", icon: "chat" },
     { id: "overview", icon: "pulse" },
+    { id: "orders", icon: "box" },
+    { id: "customers", icon: "agents" },
     { id: "knowledge", icon: "graph" },
     { id: "agents", icon: "agents" },
     { id: "commerce", icon: "box" },
@@ -363,23 +386,33 @@ export default function Merchant({
           {t("newChat")}
         </button>
         <nav aria-label={t("studio")}>
-          {nav.map((n) => (
-            <button
-              key={n.id}
-              aria-current={tab === n.id ? "page" : undefined}
-              className={tab === n.id ? "active" : ""}
-              onClick={() => {
-                setTab(n.id);
-                setMenu(false);
-              }}
-            >
-              <Icon name={n.icon} />
-              <span>{tabLabel(n.id)}</span>
-              {n.id === "overview" && data?.summary.ordersToday ? (
-                <b>{data.summary.ordersToday}</b>
-              ) : null}
-            </button>
-          ))}
+          {nav
+            .filter((n) =>
+              n.id === "customers"
+                ? access.includes("customers.read")
+                : n.id === "orders"
+                  ? access.includes("orders.read")
+                  : n.id === "productData"
+                    ? access.includes("catalog.write")
+                    : true,
+            )
+            .map((n) => (
+              <button
+                key={n.id}
+                aria-current={tab === n.id ? "page" : undefined}
+                className={tab === n.id ? "active" : ""}
+                onClick={() => {
+                  setTab(n.id);
+                  setMenu(false);
+                }}
+              >
+                <Icon name={n.icon} />
+                <span>{tabLabel(n.id)}</span>
+                {n.id === "overview" && data?.summary.ordersToday ? (
+                  <b>{data.summary.ordersToday}</b>
+                ) : null}
+              </button>
+            ))}
         </nav>
         <div className="sidebar-conversations">
           <span className="section-label">{t("conversations")}</span>
@@ -401,7 +434,7 @@ export default function Merchant({
           )}
         </div>
         <div className="sidebar-bottom">
-          <button onClick={() => setSettings(true)}>
+          <button onClick={() => setTab("commerce")}>
             <Icon name="settings" />
             {t("settings")}
           </button>
@@ -521,7 +554,10 @@ export default function Merchant({
             </a>
           </div>
         )}
-        <main id="studio-content" className={`studio-main view-${tab}`}>
+        <main
+          id="studio-content"
+          className={`studio-main view-${tab} ${["assistant", "overview", "knowledge"].includes(tab) ? "" : "is-workspace"}`}
+        >
           <div className="studio-content">
             {(error || notice) && (
               <div
@@ -556,7 +592,17 @@ export default function Merchant({
                 </button>
               </div>
             )}
-            {tab === "automation" ? (
+            {tab === "orders" ? (
+              <OrdersManager
+                request={request}
+                headers={{
+                  Authorization: `Bearer ${token}`,
+                  "x-tenant": environment || workspace,
+                }}
+              />
+            ) : tab === "customers" ? (
+              <CustomersManager request={request} />
+            ) : tab === "automation" ? (
               <AutomationView request={request} role={role} />
             ) : tab === "productData" ? (
               <ProductDataView request={request} />
@@ -577,48 +623,51 @@ export default function Merchant({
                 onSelect={setEnvironment}
               />
             ) : tab === "users" ? (
-              <UsersManager
-                token={token}
-                workspace={workspace}
-                onSession={(session: Session) => {
-                  if (session.token) {
-                    sessionStorage.setItem("rac-user-token", session.token);
-                    setToken(session.token);
-                  }
-                  sessionStorage.setItem(
-                    "rac-user-workspace",
-                    session.workspace,
-                  );
-                  setWorkspace(session.workspace);
-                  setWorkspaceName(
-                    session.workspaces.find((w) => w.id === session.workspace)
-                      ?.name ?? session.workspace,
-                  );
-                  history.replaceState(
-                    null,
-                    "",
-                    `?shop=${session.workspace}#merchant`,
-                  );
-                }}
-                onWorkspace={(id, name) => {
-                  sessionStorage.setItem("rac-user-workspace", id);
-                  setWorkspace(id);
-                  setWorkspaceName(name);
-                  history.replaceState(null, "", `?shop=${id}#merchant`);
-                  setMessages([]);
-                  setId(undefined);
-                  setData(undefined);
-                }}
-                onLogout={() => {
-                  sessionStorage.removeItem("rac-user-token");
-                  sessionStorage.removeItem("rac-user-workspace");
-                  setToken("");
-                  setConnected(false);
-                  setData(undefined);
-                  setMessages([]);
-                  setConversations([]);
-                }}
-              />
+              <>
+                <UsersManager
+                  token={token}
+                  workspace={workspace}
+                  onSession={(session: Session) => {
+                    if (session.token) {
+                      sessionStorage.setItem("rac-user-token", session.token);
+                      setToken(session.token);
+                    }
+                    sessionStorage.setItem(
+                      "rac-user-workspace",
+                      session.workspace,
+                    );
+                    setWorkspace(session.workspace);
+                    setWorkspaceName(
+                      session.workspaces.find((w) => w.id === session.workspace)
+                        ?.name ?? session.workspace,
+                    );
+                    history.replaceState(
+                      null,
+                      "",
+                      `?shop=${session.workspace}#merchant`,
+                    );
+                  }}
+                  onWorkspace={(id, name) => {
+                    sessionStorage.setItem("rac-user-workspace", id);
+                    setWorkspace(id);
+                    setWorkspaceName(name);
+                    history.replaceState(null, "", `?shop=${id}#merchant`);
+                    setMessages([]);
+                    setId(undefined);
+                    setData(undefined);
+                  }}
+                  onLogout={() => {
+                    sessionStorage.removeItem("rac-user-token");
+                    sessionStorage.removeItem("rac-user-workspace");
+                    setToken("");
+                    setConnected(false);
+                    setData(undefined);
+                    setMessages([]);
+                    setConversations([]);
+                  }}
+                />
+                {connected && <AccessManager request={liveRequest} />}
+              </>
             ) : tab === "assistant" ? (
               <section className="studio-conversation">
                 <div className="conversation-topline">
@@ -843,7 +892,13 @@ export default function Merchant({
               tab === "apps" ? (
                 <AppsManager request={request} token={token} role={role} />
               ) : tab === "commerce" ? (
-                <CommerceManager token={token} />
+                <SettingsWorkspace
+                  request={request}
+                  rights={access}
+                  onConnections={() => setSettings(true)}
+                  onTeam={() => setTab("users")}
+                  onAutomation={() => setTab("automation")}
+                />
               ) : tab === "overview" ? (
                 <OverviewView
                   data={data}
@@ -880,7 +935,7 @@ export default function Merchant({
               </div>
             )}
           </div>
-          {tab !== "agents" && (
+          {["assistant", "overview", "knowledge"].includes(tab) && (
             <PreviewPanel
               product={selected}
               request={request}

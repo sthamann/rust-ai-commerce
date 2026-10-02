@@ -68,6 +68,7 @@ pub(crate) async fn seed(a: &App) -> Result<()> {
             .unwrap()
             .to_string();
         sqlx::query("INSERT INTO customers(tenant,email,password_hash,company,group_name) VALUES($1,'buyer@example.test',$2,'Example Studio','business') ON CONFLICT DO NOTHING").bind(t).bind(password_hash).execute(&a.db).await?;
+        accounts::seed_demo_address(&mut *a.db.acquire().await?, t).await?;
         sqlx::query("INSERT INTO experiences(tenant,data) VALUES($1,$2) ON CONFLICT DO NOTHING")
             .bind(t)
             .bind(json!({"mode":"balanced","headline":"Objects for a more considered everyday."}))

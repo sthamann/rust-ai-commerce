@@ -2,9 +2,13 @@
 //! The legacy MERCHANT_TOKEN is an instance administrator bootstrap credential only.
 use crate::*;
 mod credentials;
+mod integrations;
 mod invitations;
+pub(crate) use integrations::*;
 mod members;
 mod middleware;
+mod permissions;
+pub(crate) use permissions::*;
 mod provision;
 mod registration;
 pub(crate) use provision::create_workspace;

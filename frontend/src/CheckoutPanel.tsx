@@ -1,3 +1,6 @@
+import { useCustomerText } from "./customer-i18n";
+import CheckoutDetails from "./CheckoutDetails";
+import { addressComplete } from "./customer-types";
 import { useWorkbenchText } from "./workbench-i18n";
 /** Accessible cart dialog: authoritative totals, delivery context and checkout. */
 import { useEffect, useRef, useState } from "react";
@@ -14,17 +17,20 @@ export default function CheckoutPanel({
   onSelection,
   onBuy,
   onCoupons,
+  onCart,
 }: {
   cart?: Cart;
   order?: Order;
   busy: boolean;
   onClose: () => void;
+  onCart: (c: Cart) => void;
   onQuantity: (id: string, q: number) => void;
   onSelection: (s: Selection) => Promise<void>;
   onBuy: () => void;
   onCoupons: (codes: string[]) => Promise<void>;
 }) {
   const { s, money } = useShopText();
+  const { c } = useCustomerText();
   const ref = useRef<HTMLDialogElement>(null);
   const [selection, setSelection] = useState<Selection>();
   const [saving, setSaving] = useState(false);
@@ -38,12 +44,6 @@ export default function CheckoutPanel({
   const dirty =
     !!cart?.selectionNeedsConfirmation ||
     JSON.stringify(selection) !== JSON.stringify(cart?.checkout);
-  const address = selection?.address ?? {
-    name: "",
-    street: "",
-    postalCode: "",
-    city: "",
-  };
   const set = (patch: Partial<Selection>) =>
     setSelection((old) => (old ? { ...old, ...patch } : old));
   return (
@@ -147,120 +147,15 @@ export default function CheckoutPanel({
               </div>
             ))}
             {selection && (
-              <form
-                className="checkout-selection"
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  setSaving(true);
-                  setError("");
-                  try {
-                    await onSelection(selection);
-                  } catch (e) {
-                    setError((e as Error).message);
-                  } finally {
-                    setSaving(false);
-                  }
-                }}
-              >
-                <h3>
-                  {s("delivery")} & {s("payment")}
-                </h3>
-                <label>
-                  {s("country")}
-                  <select
-                    value={selection.country}
-                    disabled={busy || saving}
-                    onChange={(e) => {
-                      const country = e.target.value;
-                      const methods = cart.availableShippingMethods.filter(
-                        (v) => v.countries.includes(country),
-                      );
-                      set({
-                        country,
-                        shippingMethodId:
-                          methods.find(
-                            (v) => v.id === selection.shippingMethodId,
-                          )?.id ??
-                          methods[0]?.id ??
-                          "",
-                      });
-                    }}
-                  >
-                    {cart.availableCountries.map((v) => (
-                      <option key={v} value={v}>
-                        {s(v)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  {s("shipping")}
-                  <select
-                    disabled={busy || saving}
-                    value={selection.shippingMethodId}
-                    onChange={(e) => set({ shippingMethodId: e.target.value })}
-                  >
-                    {cart.availableShippingMethods
-                      .filter((v) => v.countries.includes(selection.country))
-                      .map((v) => (
-                        <option key={v.id} value={v.id}>
-                          {s(v.name)} · {money(v.price)}
-                        </option>
-                      ))}
-                  </select>
-                </label>
-                {selection.shippingMethodId !== "pickup" && (
-                  <div className="address-fields">
-                    {(["name", "street", "postalCode", "city"] as const).map(
-                      (key) => (
-                        <label key={key}>
-                          {s(key)}
-                          <input
-                            autoComplete={
-                              {
-                                name: "shipping name",
-                                street: "shipping street-address",
-                                postalCode: "shipping postal-code",
-                                city: "shipping address-level2",
-                              }[key]
-                            }
-                            required
-                            maxLength={160}
-                            value={address[key]}
-                            onChange={(e) =>
-                              set({
-                                address: { ...address, [key]: e.target.value },
-                              })
-                            }
-                          />
-                        </label>
-                      ),
-                    )}
-                  </div>
-                )}
-                <label>
-                  {s("payment")}
-                  <select
-                    disabled={busy || saving}
-                    value={selection.paymentMethodId}
-                    onChange={(e) => set({ paymentMethodId: e.target.value })}
-                  >
-                    {cart.availablePaymentMethods.map((v) => (
-                      <option key={v.id} value={v.id}>
-                        {s(v.name)}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <button
-                  className="shop-secondary"
-                  disabled={busy || saving || !dirty}
-                >
-                  {s("saveSelection")}
-                </button>
-                {dirty && <small>{s("unsaved")}</small>}
-                {error && <p role="alert">{error}</p>}
-              </form>
+              <CheckoutDetails
+                cart={cart}
+                selection={selection}
+                onChange={set}
+                onCart={onCart}
+                busy={busy}
+                dirty={dirty}
+                onSave={() => onSelection(selection)}
+              />
             )}
             <form
               className="checkout-selection"
@@ -332,14 +227,28 @@ export default function CheckoutPanel({
             )}
             <button
               className="shop-primary"
-              disabled={busy || saving || dirty || !cart.lineItems.length}
+              disabled={
+                busy ||
+                saving ||
+                dirty ||
+                !cart.lineItems.length ||
+                !addressComplete(selection?.billingAddress) ||
+                !(selection?.customerEmail ?? cart.customerEmail)
+              }
               onClick={onBuy}
             >
-              {busy ? s("processing") : s("buy")}
+              {busy
+                ? s("processing")
+                : cart.availablePaymentMethods.find(
+                      (p) => p.id === selection?.paymentMethodId,
+                    )?.mode === "simulated"
+                  ? s("buy")
+                  : c("placeOrder")}
               <Icon name="arrow" size={18} />
             </button>
           </>
         )}
+        {error && <p role="alert">{error}</p>}
         <p className="shop-disclosure">{s("simulation")}</p>
       </div>
     </dialog>

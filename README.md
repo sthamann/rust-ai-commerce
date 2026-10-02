@@ -32,6 +32,33 @@ This is also a laboratory for porting selected original Shopware behavior to Rus
 
 The interface supports **English, German, French and Spanish**. MIT licensed.
 
+## Customers, checkout and order operations
+
+The storefront now shares a full **customer address book** with Commerce Studio:
+registration/sign-in, separate default billing/shipping addresses, structured
+contacts, payment preferences and own order history. Checkout copies the selected
+customer/address records into the order, so later account edits do not rewrite it.
+Guest email entry never grants an existing account's identity or order access.
+
+Commerce Studio provides **Customers** and **Orders** with direct server-owned
+workflow actions, payment-job progress, tracking, activity and four-language
+numbered PDF documents. Company/document issuer data is centrally stored under
+**Settings → Company details**. Apps have a category catalog and individual
+package workspaces. Fine team rights and expiring per-shop API/MCP keys use the
+same request-time authorization checks.
+
+Product attachments, private purchased downloads, rich descriptions and selected
+asset/workflow releases are connected to their actual storefront/order consumers.
+Read the [operations/API guide and precise boundaries](docs/merchant-operations.md),
+[Shopware feature matrix](docs/shopware-parity.md) and [source map](docs/source-map.md).
+This remains a bounded prototype: full Shopware entity/DAL/API parity, production
+identity/account recovery, graphical full FlowSequence behavior and a supported
+Shopware Payments connector are still missing.
+
+![Customer address book with separate billing and shipping defaults](docs/assets/customer-address-book-en.png)
+
+![Actual isolated demo order completed through the storefront](docs/assets/storefront-order-complete-en.png)
+
 ## Merchant workbench and private releases
 
 The workbench now has **Storyfronts**, **Developers**, **Environments**,
@@ -160,7 +187,7 @@ See [implementation and limits](docs/intelligence-apps-payments.md),
 The current verification includes **5,872 bounded comparisons** against original
 Shopware 6.7.14.2 PHP classes. These cover selected pricing/context/tax operations and numeric rule comparisons;
 they do not establish full Shopware compatibility. The current workbench verification
-also records 36 Rust unit tests and 161 actual HTTP check groups, including
+also records 44 Rust unit tests and 191 actual HTTP check groups across 18 suites, including
 private releases, customer authority, concurrent checkout and bounded catalog reads.
 
 ## Contribute
