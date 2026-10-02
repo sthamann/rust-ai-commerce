@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Actual Studio API, localization and original-kernel consumer checks."""
-import json,os,urllib.request,urllib.error,pathlib,uuid
+import json,os,urllib.request,urllib.error,pathlib,uuid,http.client,socket
 base=os.environ.get('BASE_URL','http://127.0.0.1:8787');auth={'Authorization':'Bearer '+os.environ['MERCHANT_TOKEN']};checks=[]
 def call(path,body=None,headers=None,expected=200):
  req=urllib.request.Request(base+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(headers or {})})
@@ -22,6 +22,17 @@ ch=call('/store-api/product',{}, {'x-commerce-locale':'de-CH'})
 assert de['elements']==ch['elements'] and len(ch['languageIdChain'])==3
 assert call('/store-api/context',headers={'sw-language-id':'1'*32})['locale']=='de-DE'
 call('/store-api/product',{}, {'x-commerce-locale':'unknown'},400);ok('Swiss German falls back through original parent chain; header selection and unavailable locale')
+# Send headers and the body separately, the case that exposed truncated large responses.
+endpoint=urllib.parse.urlsplit(base);conn=http.client.HTTPConnection(endpoint.hostname,endpoint.port,timeout=30)
+conn.putrequest('POST','/store-api/product');conn.putheader('Content-Type','application/json');conn.putheader('Content-Length','2');conn.endheaders()
+conn.sock.settimeout(.2)
+try:
+ early=conn.sock.recv(1)
+ raise AssertionError('Catalog replied before consuming its POST body: '+repr(early))
+except socket.timeout:pass
+conn.sock.settimeout(30);conn.send(b'{}');response=conn.getresponse()
+assert response.status==200 and json.loads(response.read())['total']==6
+conn.close();ok('Catalog consumes a separately transmitted POST body before returning the response')
 before=call('/api/merchant/overview',headers=auth)
 for qty,effective in [(1,2),(3,2),(5,4),(100,20)]:
  q=call('/api/merchant/quote',{'productId':'shelf','quantity':qty},auth)

@@ -1,0 +1,998 @@
+{
+  "recordedAt": "2026-10-02T10:31:22.255759+00:00",
+  "scope": "Separate sequential diagnostic probes; not used in promoted latency/throughput results. Same isolated PostgreSQL fixtures. 3-second request timeout. No retries.",
+  "initialAbortedAttempts": [
+    "Python 3.14 keep-alive catalog JSON-body run: read timeout; aborted before report.",
+    "Python 3.14 fresh-connection JSON-body run: connection reset during warm-up; aborted.",
+    "Python 3.12 fresh-connection JSON-body run: connection reset during warm-up; aborted."
+  ],
+  "baselineBinarySha256": "4812541834afe52e5a8f1aef4f7889df24036bf4c5a754bd71db4737c68b12f9",
+  "optimizedBinarySha256": "9aca4695a12f860101fc7d4e7ddbccbb82ab552d21ea15e50005d1857fb9f2f2",
+  "baselineNoBodyControl": {
+    "requests": 64,
+    "clients": 16,
+    "postBody": "none",
+    "errors": 0,
+    "samples": [
+      {
+        "request": 0,
+        "ok": true,
+        "ms": 247.81
+      },
+      {
+        "request": 1,
+        "ok": true,
+        "ms": 197.638
+      },
+      {
+        "request": 2,
+        "ok": true,
+        "ms": 266.525
+      },
+      {
+        "request": 3,
+        "ok": true,
+        "ms": 212.125
+      },
+      {
+        "request": 4,
+        "ok": true,
+        "ms": 234.99
+      },
+      {
+        "request": 5,
+        "ok": true,
+        "ms": 228.192
+      },
+      {
+        "request": 6,
+        "ok": true,
+        "ms": 117.348
+      },
+      {
+        "request": 7,
+        "ok": true,
+        "ms": 222.087
+      },
+      {
+        "request": 8,
+        "ok": true,
+        "ms": 207.584
+      },
+      {
+        "request": 9,
+        "ok": true,
+        "ms": 230.329
+      },
+      {
+        "request": 10,
+        "ok": true,
+        "ms": 199.907
+      },
+      {
+        "request": 11,
+        "ok": true,
+        "ms": 258.069
+      },
+      {
+        "request": 12,
+        "ok": true,
+        "ms": 217.123
+      },
+      {
+        "request": 13,
+        "ok": true,
+        "ms": 261.526
+      },
+      {
+        "request": 14,
+        "ok": true,
+        "ms": 202.881
+      },
+      {
+        "request": 15,
+        "ok": true,
+        "ms": 249.218
+      },
+      {
+        "request": 16,
+        "ok": true,
+        "ms": 152.05
+      },
+      {
+        "request": 17,
+        "ok": true,
+        "ms": 99.275
+      },
+      {
+        "request": 18,
+        "ok": true,
+        "ms": 99.153
+      },
+      {
+        "request": 19,
+        "ok": true,
+        "ms": 99.766
+      },
+      {
+        "request": 20,
+        "ok": true,
+        "ms": 100.614
+      },
+      {
+        "request": 21,
+        "ok": true,
+        "ms": 100.409
+      },
+      {
+        "request": 22,
+        "ok": true,
+        "ms": 110.71
+      },
+      {
+        "request": 23,
+        "ok": true,
+        "ms": 126.227
+      },
+      {
+        "request": 24,
+        "ok": true,
+        "ms": 121.454
+      },
+      {
+        "request": 25,
+        "ok": true,
+        "ms": 100.932
+      },
+      {
+        "request": 26,
+        "ok": true,
+        "ms": 121.815
+      },
+      {
+        "request": 27,
+        "ok": true,
+        "ms": 113.378
+      },
+      {
+        "request": 28,
+        "ok": true,
+        "ms": 112.811
+      },
+      {
+        "request": 29,
+        "ok": true,
+        "ms": 156.505
+      },
+      {
+        "request": 30,
+        "ok": true,
+        "ms": 112.919
+      },
+      {
+        "request": 31,
+        "ok": true,
+        "ms": 105.736
+      },
+      {
+        "request": 32,
+        "ok": true,
+        "ms": 151.729
+      },
+      {
+        "request": 33,
+        "ok": true,
+        "ms": 122.428
+      },
+      {
+        "request": 34,
+        "ok": true,
+        "ms": 126.412
+      },
+      {
+        "request": 35,
+        "ok": true,
+        "ms": 136.864
+      },
+      {
+        "request": 36,
+        "ok": true,
+        "ms": 148.576
+      },
+      {
+        "request": 37,
+        "ok": true,
+        "ms": 124.55
+      },
+      {
+        "request": 38,
+        "ok": true,
+        "ms": 119.208
+      },
+      {
+        "request": 39,
+        "ok": true,
+        "ms": 118.963
+      },
+      {
+        "request": 40,
+        "ok": true,
+        "ms": 95.956
+      },
+      {
+        "request": 41,
+        "ok": true,
+        "ms": 108.511
+      },
+      {
+        "request": 42,
+        "ok": true,
+        "ms": 159.236
+      },
+      {
+        "request": 43,
+        "ok": true,
+        "ms": 169.136
+      },
+      {
+        "request": 44,
+        "ok": true,
+        "ms": 138.031
+      },
+      {
+        "request": 45,
+        "ok": true,
+        "ms": 174.697
+      },
+      {
+        "request": 46,
+        "ok": true,
+        "ms": 175.384
+      },
+      {
+        "request": 47,
+        "ok": true,
+        "ms": 120.767
+      },
+      {
+        "request": 48,
+        "ok": true,
+        "ms": 132.232
+      },
+      {
+        "request": 49,
+        "ok": true,
+        "ms": 136.267
+      },
+      {
+        "request": 50,
+        "ok": true,
+        "ms": 115.618
+      },
+      {
+        "request": 51,
+        "ok": true,
+        "ms": 125.596
+      },
+      {
+        "request": 52,
+        "ok": true,
+        "ms": 153.784
+      },
+      {
+        "request": 53,
+        "ok": true,
+        "ms": 130.918
+      },
+      {
+        "request": 54,
+        "ok": true,
+        "ms": 139.193
+      },
+      {
+        "request": 55,
+        "ok": true,
+        "ms": 139.479
+      },
+      {
+        "request": 56,
+        "ok": true,
+        "ms": 140.952
+      },
+      {
+        "request": 57,
+        "ok": true,
+        "ms": 140.794
+      },
+      {
+        "request": 58,
+        "ok": true,
+        "ms": 122.012
+      },
+      {
+        "request": 59,
+        "ok": true,
+        "ms": 116.529
+      },
+      {
+        "request": 60,
+        "ok": true,
+        "ms": 126.122
+      },
+      {
+        "request": 61,
+        "ok": true,
+        "ms": 133.055
+      },
+      {
+        "request": 62,
+        "ok": true,
+        "ms": 112.483
+      },
+      {
+        "request": 63,
+        "ok": true,
+        "ms": 129.648
+      }
+    ]
+  },
+  "baselineJsonBody": {
+    "requests": 64,
+    "clients": 16,
+    "postBody": "{}",
+    "errors": 3,
+    "samples": [
+      {
+        "request": 0,
+        "ok": true,
+        "ms": 164.061
+      },
+      {
+        "request": 1,
+        "ok": true,
+        "ms": 171.041
+      },
+      {
+        "request": 2,
+        "ok": true,
+        "ms": 178.437
+      },
+      {
+        "request": 3,
+        "ok": true,
+        "ms": 167.052
+      },
+      {
+        "request": 4,
+        "ok": true,
+        "ms": 174.194
+      },
+      {
+        "request": 5,
+        "ok": true,
+        "ms": 180.725
+      },
+      {
+        "request": 6,
+        "ok": false,
+        "ms": 243.027,
+        "error": "ConnectionResetError: [Errno 54] Connection reset by peer"
+      },
+      {
+        "request": 7,
+        "ok": true,
+        "ms": 238.22
+      },
+      {
+        "request": 8,
+        "ok": true,
+        "ms": 234.211
+      },
+      {
+        "request": 9,
+        "ok": false,
+        "ms": 181.609,
+        "error": "ConnectionResetError: [Errno 54] Connection reset by peer"
+      },
+      {
+        "request": 10,
+        "ok": true,
+        "ms": 240.827
+      },
+      {
+        "request": 11,
+        "ok": true,
+        "ms": 183.587
+      },
+      {
+        "request": 12,
+        "ok": true,
+        "ms": 228.29
+      },
+      {
+        "request": 13,
+        "ok": true,
+        "ms": 243.341
+      },
+      {
+        "request": 14,
+        "ok": true,
+        "ms": 251.861
+      },
+      {
+        "request": 15,
+        "ok": true,
+        "ms": 246.084
+      },
+      {
+        "request": 16,
+        "ok": true,
+        "ms": 124.052
+      },
+      {
+        "request": 17,
+        "ok": true,
+        "ms": 130.121
+      },
+      {
+        "request": 18,
+        "ok": true,
+        "ms": 110.905
+      },
+      {
+        "request": 19,
+        "ok": true,
+        "ms": 146.427
+      },
+      {
+        "request": 20,
+        "ok": true,
+        "ms": 119.604
+      },
+      {
+        "request": 21,
+        "ok": true,
+        "ms": 142.428
+      },
+      {
+        "request": 22,
+        "ok": true,
+        "ms": 121.56
+      },
+      {
+        "request": 23,
+        "ok": true,
+        "ms": 157.085
+      },
+      {
+        "request": 24,
+        "ok": true,
+        "ms": 130.13
+      },
+      {
+        "request": 25,
+        "ok": false,
+        "ms": 132.026,
+        "error": "ConnectionResetError: [Errno 54] Connection reset by peer"
+      },
+      {
+        "request": 26,
+        "ok": true,
+        "ms": 132.267
+      },
+      {
+        "request": 27,
+        "ok": true,
+        "ms": 108.938
+      },
+      {
+        "request": 28,
+        "ok": true,
+        "ms": 136.252
+      },
+      {
+        "request": 29,
+        "ok": true,
+        "ms": 128.217
+      },
+      {
+        "request": 30,
+        "ok": true,
+        "ms": 115.615
+      },
+      {
+        "request": 31,
+        "ok": true,
+        "ms": 101.755
+      },
+      {
+        "request": 32,
+        "ok": true,
+        "ms": 116.941
+      },
+      {
+        "request": 33,
+        "ok": true,
+        "ms": 107.219
+      },
+      {
+        "request": 34,
+        "ok": true,
+        "ms": 104.889
+      },
+      {
+        "request": 35,
+        "ok": true,
+        "ms": 105.848
+      },
+      {
+        "request": 36,
+        "ok": true,
+        "ms": 117.499
+      },
+      {
+        "request": 37,
+        "ok": true,
+        "ms": 106.481
+      },
+      {
+        "request": 38,
+        "ok": true,
+        "ms": 109.698
+      },
+      {
+        "request": 39,
+        "ok": true,
+        "ms": 123.92
+      },
+      {
+        "request": 40,
+        "ok": true,
+        "ms": 102.202
+      },
+      {
+        "request": 41,
+        "ok": true,
+        "ms": 123.53
+      },
+      {
+        "request": 42,
+        "ok": true,
+        "ms": 115.856
+      },
+      {
+        "request": 43,
+        "ok": true,
+        "ms": 128.878
+      },
+      {
+        "request": 44,
+        "ok": true,
+        "ms": 134.993
+      },
+      {
+        "request": 45,
+        "ok": true,
+        "ms": 126.66
+      },
+      {
+        "request": 46,
+        "ok": true,
+        "ms": 115.931
+      },
+      {
+        "request": 47,
+        "ok": true,
+        "ms": 125.981
+      },
+      {
+        "request": 48,
+        "ok": true,
+        "ms": 115.503
+      },
+      {
+        "request": 49,
+        "ok": true,
+        "ms": 125.219
+      },
+      {
+        "request": 50,
+        "ok": true,
+        "ms": 113.927
+      },
+      {
+        "request": 51,
+        "ok": true,
+        "ms": 112.817
+      },
+      {
+        "request": 52,
+        "ok": true,
+        "ms": 134.372
+      },
+      {
+        "request": 53,
+        "ok": true,
+        "ms": 100.696
+      },
+      {
+        "request": 54,
+        "ok": true,
+        "ms": 135.735
+      },
+      {
+        "request": 55,
+        "ok": true,
+        "ms": 120.742
+      },
+      {
+        "request": 56,
+        "ok": true,
+        "ms": 110.794
+      },
+      {
+        "request": 57,
+        "ok": true,
+        "ms": 112.292
+      },
+      {
+        "request": 58,
+        "ok": true,
+        "ms": 101.579
+      },
+      {
+        "request": 59,
+        "ok": true,
+        "ms": 95.508
+      },
+      {
+        "request": 60,
+        "ok": true,
+        "ms": 147.02
+      },
+      {
+        "request": 61,
+        "ok": true,
+        "ms": 124.676
+      },
+      {
+        "request": 62,
+        "ok": true,
+        "ms": 147.859
+      },
+      {
+        "request": 63,
+        "ok": true,
+        "ms": 159.494
+      }
+    ]
+  },
+  "optimizedJsonBody": {
+    "requests": 64,
+    "clients": 16,
+    "postBody": "{}",
+    "errors": 0,
+    "samples": [
+      {
+        "request": 0,
+        "ok": true,
+        "ms": 154.769
+      },
+      {
+        "request": 1,
+        "ok": true,
+        "ms": 91.678
+      },
+      {
+        "request": 2,
+        "ok": true,
+        "ms": 142.798
+      },
+      {
+        "request": 3,
+        "ok": true,
+        "ms": 99.026
+      },
+      {
+        "request": 4,
+        "ok": true,
+        "ms": 147.853
+      },
+      {
+        "request": 5,
+        "ok": true,
+        "ms": 94.863
+      },
+      {
+        "request": 6,
+        "ok": true,
+        "ms": 114.365
+      },
+      {
+        "request": 7,
+        "ok": true,
+        "ms": 134.037
+      },
+      {
+        "request": 8,
+        "ok": true,
+        "ms": 101.779
+      },
+      {
+        "request": 9,
+        "ok": true,
+        "ms": 135.392
+      },
+      {
+        "request": 10,
+        "ok": true,
+        "ms": 124.483
+      },
+      {
+        "request": 11,
+        "ok": true,
+        "ms": 106.975
+      },
+      {
+        "request": 12,
+        "ok": true,
+        "ms": 115.281
+      },
+      {
+        "request": 13,
+        "ok": true,
+        "ms": 118.467
+      },
+      {
+        "request": 14,
+        "ok": true,
+        "ms": 126.067
+      },
+      {
+        "request": 15,
+        "ok": true,
+        "ms": 101.305
+      },
+      {
+        "request": 16,
+        "ok": true,
+        "ms": 67.796
+      },
+      {
+        "request": 17,
+        "ok": true,
+        "ms": 69.862
+      },
+      {
+        "request": 18,
+        "ok": true,
+        "ms": 62.739
+      },
+      {
+        "request": 19,
+        "ok": true,
+        "ms": 147.066
+      },
+      {
+        "request": 20,
+        "ok": true,
+        "ms": 149.201
+      },
+      {
+        "request": 21,
+        "ok": true,
+        "ms": 73.36
+      },
+      {
+        "request": 22,
+        "ok": true,
+        "ms": 174.051
+      },
+      {
+        "request": 23,
+        "ok": true,
+        "ms": 145.153
+      },
+      {
+        "request": 24,
+        "ok": true,
+        "ms": 133.557
+      },
+      {
+        "request": 25,
+        "ok": true,
+        "ms": 98.979
+      },
+      {
+        "request": 26,
+        "ok": true,
+        "ms": 48.03
+      },
+      {
+        "request": 27,
+        "ok": true,
+        "ms": 92.738
+      },
+      {
+        "request": 28,
+        "ok": true,
+        "ms": 96.163
+      },
+      {
+        "request": 29,
+        "ok": true,
+        "ms": 102.117
+      },
+      {
+        "request": 30,
+        "ok": true,
+        "ms": 83.054
+      },
+      {
+        "request": 31,
+        "ok": true,
+        "ms": 96.414
+      },
+      {
+        "request": 32,
+        "ok": true,
+        "ms": 115.949
+      },
+      {
+        "request": 33,
+        "ok": true,
+        "ms": 109.34
+      },
+      {
+        "request": 34,
+        "ok": true,
+        "ms": 102.733
+      },
+      {
+        "request": 35,
+        "ok": true,
+        "ms": 114.265
+      },
+      {
+        "request": 36,
+        "ok": true,
+        "ms": 93.523
+      },
+      {
+        "request": 37,
+        "ok": true,
+        "ms": 58.34
+      },
+      {
+        "request": 38,
+        "ok": true,
+        "ms": 50.422
+      },
+      {
+        "request": 39,
+        "ok": true,
+        "ms": 66.177
+      },
+      {
+        "request": 40,
+        "ok": true,
+        "ms": 58.66
+      },
+      {
+        "request": 41,
+        "ok": true,
+        "ms": 76.38
+      },
+      {
+        "request": 42,
+        "ok": true,
+        "ms": 75.955
+      },
+      {
+        "request": 43,
+        "ok": true,
+        "ms": 72.908
+      },
+      {
+        "request": 44,
+        "ok": true,
+        "ms": 73.465
+      },
+      {
+        "request": 45,
+        "ok": true,
+        "ms": 97.887
+      },
+      {
+        "request": 46,
+        "ok": true,
+        "ms": 87.323
+      },
+      {
+        "request": 47,
+        "ok": true,
+        "ms": 113.692
+      },
+      {
+        "request": 48,
+        "ok": true,
+        "ms": 129.328
+      },
+      {
+        "request": 49,
+        "ok": true,
+        "ms": 112.91
+      },
+      {
+        "request": 50,
+        "ok": true,
+        "ms": 120.935
+      },
+      {
+        "request": 51,
+        "ok": true,
+        "ms": 104.427
+      },
+      {
+        "request": 52,
+        "ok": true,
+        "ms": 116.052
+      },
+      {
+        "request": 53,
+        "ok": true,
+        "ms": 109.043
+      },
+      {
+        "request": 54,
+        "ok": true,
+        "ms": 120.489
+      },
+      {
+        "request": 55,
+        "ok": true,
+        "ms": 121.578
+      },
+      {
+        "request": 56,
+        "ok": true,
+        "ms": 117.157
+      },
+      {
+        "request": 57,
+        "ok": true,
+        "ms": 108.553
+      },
+      {
+        "request": 58,
+        "ok": true,
+        "ms": 108.896
+      },
+      {
+        "request": 59,
+        "ok": true,
+        "ms": 111.376
+      },
+      {
+        "request": 60,
+        "ok": true,
+        "ms": 111.874
+      },
+      {
+        "request": 61,
+        "ok": true,
+        "ms": 86.078
+      },
+      {
+        "request": 62,
+        "ok": true,
+        "ms": 90.68
+      },
+      {
+        "request": 63,
+        "ok": true,
+        "ms": 67.275
+      }
+    ]
+  }
+}

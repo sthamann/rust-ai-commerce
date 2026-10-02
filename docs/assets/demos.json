@@ -1,0 +1,33 @@
+{
+  "clips": {
+    "variants": {
+      "durationSeconds": 18.0,
+      "width": 1440,
+      "height": 900,
+      "bytes": 230897,
+      "sha256": "e9413707df2d445e3eca13fd3030f2f2906721eb5791524fc567bf6884ec31f2",
+      "source": "Actual running prototype; synthetic shop; no mocked browser responses",
+      "editing": "Original-speed screen capture with pauses removed"
+    },
+    "apps": {
+      "durationSeconds": 11.166667,
+      "width": 1440,
+      "height": 900,
+      "bytes": 210992,
+      "sha256": "33a7091ff8ccfe418ce677baf95beb610614be47ed9d199018009b8eddfa7878",
+      "source": "Actual running prototype; synthetic shop; no mocked browser responses",
+      "editing": "Original-speed continuous screen capture"
+    },
+    "approval": {
+      "durationSeconds": 19.0,
+      "width": 1440,
+      "height": 900,
+      "bytes": 785455,
+      "sha256": "a4b45bdc22710325166256d3cfd307b482c2a34e6e86aa09f6aa3e0a281d8034",
+      "source": "Actual running prototype; synthetic shop; no mocked browser responses",
+      "editing": "Original-speed screen capture with pauses removed"
+    }
+  },
+  "payment": "Simulated/manual/Sandbox; no real money",
+  "latencyClaim": false
+}

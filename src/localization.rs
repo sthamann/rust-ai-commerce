@@ -29,29 +29,58 @@ pub(super) async fn language_context(a: &App, h: &HeaderMap) -> Result<(String, 
     Ok((selected.get("locale"), chain))
 }
 pub(super) async fn localized_products(a: &App, t: &str, chain: &[String]) -> Result<Vec<Product>> {
-    let mut ps = products(a, t).await?;
-    let rows=sqlx::query("SELECT product_id,language_id,name,description FROM product_translations WHERE tenant=$1 AND language_id=ANY($2)").bind(t).bind(chain).fetch_all(&a.db).await?;
+    localize_products(a, t, chain, products(a, t).await?).await
+}
+
+pub(super) async fn localize_products(
+    a: &App,
+    t: &str,
+    chain: &[String],
+    mut ps: Vec<Product>,
+) -> Result<Vec<Product>> {
+    let ids = ps.iter().map(|p| p.id.clone()).collect::<Vec<_>>();
+    let rows=sqlx::query("SELECT product_id,language_id,name,description FROM product_translations WHERE tenant=$1 AND language_id=ANY($2) AND product_id=ANY($3)").bind(t).bind(chain).bind(&ids).fetch_all(&a.db).await?;
+    let mut translations: HashMap<String, ProductTranslations> = HashMap::new();
+    for row in rows {
+        translations
+            .entry(row.get("product_id"))
+            .or_default()
+            .insert(
+                row.get("language_id"),
+                (row.get("name"), row.get("description")),
+            );
+    }
     for p in &mut ps {
-        for field in ["name", "description"] {
-            for id in chain {
-                if let Some(row) = rows.iter().find(|r| {
-                    r.get::<String, _>("product_id") == p.id
-                        && r.get::<String, _>("language_id") == *id
-                }) && let Some(value) = row.get::<Option<String>, _>(field)
-                {
-                    // NULL falls back; an explicitly empty string is a translation.
-                    if field == "name" {
-                        p.name = value
-                    } else {
-                        p.description = value
-                    };
-                    break;
-                }
+        if let Some(values) = translations.get(&p.id) {
+            if let Some(name) = translated_field(values, chain, false) {
+                p.name = name.to_owned();
+            }
+            if let Some(description) = translated_field(values, chain, true) {
+                p.description = description.to_owned();
             }
         }
     }
     Ok(ps)
 }
+type ProductTranslations = HashMap<String, (Option<String>, Option<String>)>;
+
+fn translated_field<'a>(
+    values: &'a ProductTranslations,
+    chain: &[String],
+    description: bool,
+) -> Option<&'a str> {
+    // Resolve each field independently: NULL falls back, an empty string does not.
+    chain.iter().find_map(|id| {
+        values.get(id).and_then(|(name, text)| {
+            if description {
+                text.as_deref()
+            } else {
+                name.as_deref()
+            }
+        })
+    })
+}
+
 pub(super) async fn context_info(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let (locale, chain) = language_context(&a, &h).await?;
     Ok(Json(
@@ -106,4 +135,30 @@ pub(super) async fn preview_quote(
     Ok(Json(
         json!({"locale":locale,"requestedQuantity":requested,"effectiveQuantity":quantity,"quote":quote(&c,&ps)?,"sideEffects":false}),
     ))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn indexed_translations_preserve_field_fallback_and_empty_values() {
+        let values = HashMap::from([
+            ("child".into(), (Some(String::new()), None)),
+            (
+                "parent".into(),
+                (
+                    Some("Parent name".into()),
+                    Some("Parent description".into()),
+                ),
+            ),
+        ]);
+        let chain = vec!["missing".into(), "child".into(), "parent".into()];
+        assert_eq!(translated_field(&values, &chain, false), Some(""));
+        assert_eq!(
+            translated_field(&values, &chain, true),
+            Some("Parent description")
+        );
+        assert_eq!(translated_field(&values, &["absent".into()], false), None);
+    }
 }

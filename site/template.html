@@ -1,33 +1,59 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{title}}</title>
-  <meta name="description" content="{{description}}">
-  <meta name="robots" content="index,follow">
-  <meta name="theme-color" content="#f8f6f1">
-  <link rel="canonical" href="{{canonical}}">
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="{{title}}">
-  <meta property="og:description" content="{{description}}">
-  <meta property="og:url" content="{{canonical}}">
-  <meta property="og:image" content="{{image}}">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="{{title}}">
-  <meta name="twitter:description" content="{{description}}">
-  <meta name="twitter:image" content="{{image}}">
-  <script type="application/ld+json">{{schema}}</script>
-</head>
-<body>
-  <a class="skip" href="#main">Skip to content</a>
-  <header class="header wrap">
-    <a class="brand" href="index.html"><span class="mark" aria-hidden="true">r / c</span> Rust AI Commerce</a>
-    <nav aria-label="Main navigation"><a href="quickstart.html">Quickstart</a><a href="mcp.html">MCP</a><a href="shopware.html">Shopware ports</a><a class="github" href="https://github.com/sthamann/rust-ai-commerce">GitHub ↗</a></nav>
-  </header>
-  <main id="main" class="wrap">{{content}}</main>
-  <footer class="wrap footer"><span>Open source. Merchant control. MIT licensed.</span><div><a href="https://github.com/sthamann/rust-ai-commerce/blob/main/CONTRIBUTING.md">Contribute</a><a href="https://github.com/sthamann/rust-ai-commerce/blob/main/docs/security.md">Security & scope</a><a href="sitemap.xml">Sitemap</a></div><p>Experimental prototype · Simulated/manual/Sandbox payments · No production-readiness claim</p></footer>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{title}}</title>
+    <meta name="description" content="{{description}}" />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#0c0e11" />
+    <link rel="canonical" href="{{canonical}}" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="{{title}}" />
+    <meta property="og:description" content="{{description}}" />
+    <meta property="og:url" content="{{canonical}}" />
+    <meta property="og:image" content="{{image}}" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{{title}}" />
+    <meta name="twitter:description" content="{{description}}" />
+    <meta name="twitter:image" content="{{image}}" />
+    <script type="application/ld+json">
+      {{schema}}
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="header wrap">
+      <a class="brand" href="index.html"
+        ><span class="mark" aria-hidden="true">r/</span> Rust AI Commerce</a
+      >
+      <nav aria-label="Main navigation">
+        <a href="index.html#demo">Demos</a
+        ><a href="benchmarks.html">Benchmarks</a
+        ><a href="quickstart.html">Docs</a
+        ><a class="github" href="https://github.com/sthamann/rust-ai-commerce"
+          >GitHub ↗</a
+        >
+      </nav>
+    </header>
+    <main id="main" class="wrap">{{content}}</main>
+    <footer class="wrap footer">
+      <span>Open source. Merchant control. MIT licensed.</span>
+      <div>
+        <a
+          href="https://github.com/sthamann/rust-ai-commerce/blob/main/CONTRIBUTING.md"
+          >Contribute</a
+        ><a
+          href="https://github.com/sthamann/rust-ai-commerce/blob/main/docs/security.md"
+          >Security & scope</a
+        ><a href="sitemap.xml">Sitemap</a>
+      </div>
+      <p>
+        Experimental prototype · Simulated/manual/Sandbox payments · No
+        production-readiness claim
+      </p>
+    </footer>
+  </body>
 </html>
