@@ -16,7 +16,7 @@ This is also a laboratory for porting selected original Shopware behavior to Rus
 [![Verify prototype](https://github.com/sthamann/rust-ai-commerce/actions/workflows/verify.yml/badge.svg)](https://github.com/sthamann/rust-ai-commerce/actions/workflows/verify.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-![Commerce Studio: assistant, shop activity and storefront preview](docs/assets/commerce-studio-en.jpg)
+[![Merchant reviews a local AI proposal before approving the price change](docs/assets/merchant-proposal-en.png)](https://sthamann.github.io/rust-ai-commerce/#demo)
 
 ## Why try it?
 
@@ -44,7 +44,7 @@ cd rust-ai-commerce
 Open [Storefront](http://127.0.0.1:8787/),
 [Commerce Studio](http://127.0.0.1:8787/#merchant), or the
 [example product](http://127.0.0.1:8787/#product/mug).
-In Studio, select **Team & access → Create workspace** to create a personal owner
+In Studio, select **Team & access → Create shop** to create a personal owner
 account and a separate synthetic shop. Then explore products, quantity prices,
 cart and simulated checkout. AI chat and semantic indexing require their model
 services; ordinary commerce operations do not.
@@ -66,6 +66,11 @@ and PostgreSQL to `127.0.0.1:15487`.
   [architecture](docs/architecture.md) and [Shopware migration workflow](docs/migration.md).
 
 ## See the merchant-control flow
+
+[Watch the recorded demo](https://sthamann.github.io/rust-ai-commerce/#demo):
+a local model proposes EUR 69.90 instead of EUR 74.90 for the lamp; the price
+changes only after merchant approval and is then visible in the storefront.
+The recording uses a synthetic shop; waiting time is shortened.
 
 1. Ask the assistant to propose a catalog change.
 2. Inspect the stored proposal and the exact fields that would change.

@@ -39,7 +39,7 @@ def build():
             'title': html.escape(page['title']),
             'description': html.escape(page['description'], quote=True),
             'canonical': url,
-            'image': BASE + 'assets/commerce-studio-en.jpg',
+            'image': BASE + 'assets/merchant-proposal-en.png',
             'schema': json.dumps(schema, ensure_ascii=False).replace('<', '\\u003c'),
             'content': (ROOT / 'site/pages' / page['file']).read_text(),
         }
