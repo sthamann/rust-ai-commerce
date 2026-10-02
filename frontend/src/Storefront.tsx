@@ -11,6 +11,8 @@ import {
 import Art from "./ProductArt";
 import Icon from "./Icon";
 import ProductPage from "./ProductPage";
+import PaymentSession from "./PaymentSession";
+import "./apps.css";
 import CheckoutPanel from "./CheckoutPanel";
 import "./shop.css";
 const session = localStorage.getItem("rac-session") || crypto.randomUUID();
@@ -77,7 +79,7 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
             token ? undefined : { session },
             token ?? undefined,
           );
-          if (c.status !== "open")
+          if (c.status !== "open" && !location.hash.startsWith("#payment/"))
             c = await shopApi<Cart>("/store-api/checkout/cart", { session });
         } catch {
           c = await shopApi<Cart>("/store-api/checkout/cart", { session });
@@ -169,6 +171,20 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
       const o = await r.json();
       if (!r.ok) throw new Error(o.errors?.[0]?.detail ?? "Order failed");
       setOrder(o);
+      if (o.payment.attemptId) {
+        setCart(
+          await shopApi<Cart>(
+            "/store-api/checkout/cart",
+            undefined,
+            cart.token,
+          ),
+        );
+        localStorage.setItem(
+          `rac-payment-token:${o.payment.attemptId}`,
+          cart.token,
+        );
+        return;
+      }
       const next = await shopApi<Cart>("/store-api/checkout/cart", { session });
       save(next);
       await catalog(next.token);
@@ -243,8 +259,24 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
           </button>
         </div>
       )}
-      {id ? (
-        <ProductPage id={id} cart={cart} busy={busy} onAdd={add} />
+      {location.hash.startsWith("#payment/") &&
+      localStorage.getItem(`rac-payment-token:${location.hash.slice(9)}`) ? (
+        <main className="shop-content">
+          <PaymentSession
+            id={location.hash.slice(9)}
+            token={localStorage.getItem(
+              `rac-payment-token:${location.hash.slice(9)}`,
+            )!}
+          />
+        </main>
+      ) : id ? (
+        <ProductPage
+          id={id}
+          cart={cart}
+          busy={busy}
+          onAdd={add}
+          onCart={save}
+        />
       ) : (
         <main className="shop-content">
           <section className="shop-hero">

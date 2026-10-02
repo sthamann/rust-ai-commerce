@@ -68,6 +68,7 @@ export type Order = {
   cart: Cart;
   payment: {
     provider: string;
+    attemptId?: string;
     state: string;
     realMoneyCharged?: boolean;
     method?: Payment;

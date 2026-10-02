@@ -41,7 +41,9 @@ password recovery, verified email, abuse/rate controls and session management.
 
 All business relations are tenant-filtered in native HTTP, graph/vector and
 MCP paths. Database tables share one PostgreSQL application identity;
-**database RLS and physically isolated tenants are not implemented**. These
+**core-wide RLS and physically isolated tenants are not implemented**. Managed app
+tables have forced RLS; the local DB account is a superuser, which bypasses it.
+A restricted-identity regression proves the policy, not production containment. These
 application checks and small HTTP tests do not prove production containment
 against a compromised server/database identity. Production provisioning,
 billing, quotas, tenant deletion/export, backup isolation and domain routing
@@ -52,7 +54,8 @@ cart tokens remain independently scoped and rotate on B2B demo login.
 
 Core mutation paths bind SQL/Cypher parameters and use row locks, persisted
 idempotency and optimistic revisions. Completed quotes are immutable. Payment
-methods are simulated/manual; no PSP keys/card data/real charges exist.
+methods are simulated/manual or Sandbox. PayPal credentials stay on the server;
+no card data or live-money charges are handled.
 Fulfillment records are internal states, not a dispatched physical shipment.
 Tax rates and calendars are prototype configuration, not jurisdiction advice.
 
@@ -73,6 +76,9 @@ Wasm guests have no host imports/WASI and bounded fuel/memory/stack/source.
 Compilation occurs before activation; checkout refreshes a changed persisted
 policy before execution, including across app instances. Traps roll back
 purchase. A process-isolated compiler is still a production requirement.
+
+See [app and payment boundaries](intelligence-apps-payments.md) for the opaque
+iframe/action gateway, native adapter, exact receipt checks and remaining gaps.
 
 Learning counts use synthetic sessions/orders; they are not LLM weight
 training or demonstrated causal sales uplift. Production behavior tracking

@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 """Cloud wire-contract tests using local HTTP servers, NOT live cloud inference."""
-import json, os, pathlib, subprocess, threading, time, urllib.request, urllib.error, uuid
+import json, os, pathlib, subprocess, threading, time, urllib.request, urllib.error, uuid, concurrent.futures
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 root = pathlib.Path(__file__).resolve().parents[1]
 root.joinpath('.run').mkdir(exist_ok=True)
-captured = []; checks = []; behavior = {'mode': 'normal'}
+captured = []; checks = []; behavior = {'mode': 'normal'}; inference_started=threading.Event()
 proposal = {'summary':'HTTP provider contract test; not live inference.', 'changes':[{'product_id':'lamp','price':71.23}], 'experience':None, 'expected_experience_revision':None}
 class Handler(BaseHTTPRequestHandler):
     def log_message(self,*args): pass
     def do_POST(self):
         body=json.loads(self.rfile.read(int(self.headers['Content-Length'])))
         captured.append((self.path,{k.lower():v for k,v in self.headers.items()},body))
+        if behavior['mode']=='slow':
+            inference_started.set();time.sleep(1.5)
         if behavior['mode']=='reject':
             self.send_response(429); self.end_headers(); return
         if self.path=='/v1/responses':
@@ -72,6 +74,34 @@ try:
         assert next(p for p in call('/api/search/product',{},personal(owner))['elements'] if p['id']=='lamp')['price']==71.23
         assert next(p for p in call('/api/search/product',{},personal(other))['elements'] if p['id']=='lamp')['price']==before
         passed('Personal reader can plan; only authorized editor executes in the owning shop')
+    behavior['mode']='normal'
+    call('/api/apps',{'builtIn':'engraving'})
+    before=call('/api/apps/engraving/entities/rules')['elements'][0]
+    proposal['changes']=[];proposal['app_action']={'app':'engraving','action':'save_rules','arguments_json':json.dumps({'id':'default','fields':{'fee_minor':350}})}
+    planned=call('/api/agent/chat',{'message':'Set engraving fee to 350 cents; preview only.','inference':{'provider':'openai'}})
+    app_task=planned['messages'][-1]['data']['taskId']
+    assert call('/api/apps/engraving/entities/rules')['elements'][0]['fee_minor']==before['fee_minor']
+    assert call('/api/agent/tasks/'+app_task+'/apply',{'approve':True})['applied']
+    after=call('/api/apps/engraving/entities/rules')['elements'][0];assert after['fee_minor']==350
+    call('/api/agent/tasks/'+app_task+'/apply',{'approve':True});assert call('/api/apps/engraving/entities/rules')['elements'][0]['revision']==after['revision']
+    passed('Registered app action uses grounded preview, explicit atomic approval and idempotent replay')
+    proposal['app_action']['arguments_json']=json.dumps({'id':'default','fields':{'fee_minor':400}})
+    planned=call('/api/agent/chat',{'message':'Preview another fee change.','inference':{'provider':'openai'}})
+    app_task=planned['messages'][-1]['data']['taskId']
+    call('/api/apps/engraving/entities/rules',{'id':'default','revision':after['revision'],'fields':{'fee_minor':450}})
+    call('/api/agent/tasks/'+app_task+'/apply',{'approve':True},expected=409)
+    assert call('/api/apps/engraving/entities/rules')['elements'][0]['fee_minor']==450
+    passed('App record changed after preview rejects approval without partial writes')
+    proposal.pop('app_action');behavior['mode']='slow';inference_started.clear()
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        turn=executor.submit(call,'/api/agent/chat',{'conversationId':cid,'message':'Slow provider lease test','inference':{'provider':'openai'}})
+        assert inference_started.wait(10)
+        call('/api/agent/chat',{'conversationId':cid,'message':'Concurrent conflicting turn','inference':{'provider':'openai'}},expected=409)
+        assert call('/health')['status']=='ok'
+        idle=subprocess.check_output(['docker','exec','rust-ai-commerce-postgres-1','psql','-U','commerce','-d','commerce','-Atc',"SELECT count(*) FROM pg_stat_activity WHERE state='idle in transaction' AND query LIKE '%pg_try_advisory_xact_lock%'"],text=True).strip()
+        assert idle=='0';assert turn.result()['messages'][-1]['data']['taskId']
+    behavior['mode']='normal'
+    passed('Conversation lease excludes concurrent turns while inference holds no advisory transaction or DB connection')
     report={'passed':len(checks),'liveCloudInference':False,'checks':checks}
     print(json.dumps(report,indent=2))
     if os.environ.get('REPORT_PATH'): pathlib.Path(os.environ['REPORT_PATH']).write_text(json.dumps(report,indent=2)+'\n')

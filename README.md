@@ -7,7 +7,7 @@ MIT licensed. The complete interface supports **English, German, French and
 Spanish**; this README and its screenshots use English.
 
 Orders, inventory, reviews, settings and conversations are durable. Payments
-are **simulated or manually recorded**; no real money is charged. This is a
+are **simulated, manually recorded or PayPal Sandbox**; no real money is charged. This is a
 working migration laboratory, not a complete drop-in Shopware replacement.
 
 ![English product detail: SKU options, gallery and quantity prices](docs/assets/product-detail-en.jpg)
@@ -92,7 +92,7 @@ persists one order for concurrent idempotent retries.
 ![English checkout with country, delivery, payment and authoritative totals](docs/assets/checkout-en.jpg)
 
 Tax rates, fulfillment statuses and dates are prototype configuration. There
-is no real PSP, carrier label, legal invoice, complete tax jurisdiction engine,
+is no live-money PSP, carrier label, legal invoice, complete tax jurisdiction engine,
 returns pipeline or original Shopware delivery processor.
 
 ## Multi-user merchant workspaces
@@ -120,12 +120,12 @@ invocation, not just interface controls.
 
 This is a working application boundary with real isolation tests, not proof
 of a production SaaS deployment. SSO/MFA/recovery, quotas, verified email,
-billing, tenant lifecycle, RLS, physical separation and failover remain open.
+billing, tenant lifecycle, core-wide RLS, physical separation and failover remain open.
 
-## Commerce Studio · v0.4
+## Commerce Studio · v0.5
 
 The light workspace uses Shopware-inspired blue accents and a large assistant.
-An optional slate-blue theme remains available. Six integrated views provide:
+An optional slate-blue theme remains available. Seven integrated views provide:
 
 | View | Actual shop operation |
 |---|---|
@@ -135,6 +135,7 @@ An optional slate-blue theme remains available. Six integrated views provide:
 | Agent commerce | Customer journey, actual adapter call counters and separate ChatGPT/Claude connection status |
 | Sales & delivery | Tax/shipping/payment settings, review moderation and order fulfillment records |
 | Team & access | Personal sign-in, workspace creation, invitations, roles and shop switching |
+| Apps & payments | Versioned app installation, own data/forms, external UI panels and payment ledger |
 
 ![English Commerce Studio with shop activity and preview](docs/assets/commerce-studio-en.jpg)
 
@@ -197,6 +198,37 @@ relationships are curated demo facts. Vector ranking is exact on the small
 catalog; million-product capacity, ANN recall, distributed graph sharding and
 production multi-tenant performance are **unmeasured**.
 
+## Evidence-driven shop intelligence and full app examples
+
+Orders now project into **durable, evidence-linked co-purchase relationships** in
+AGE. Shop intelligence shows what was observed, simulation provenance and ideas
+for review. A merchant-approved association is consumed on the product page and
+in customer advice. This changes operational memory; model weights remain fixed
+and observed correlation does not prove sales uplift.
+
+Apps now define **versioned typed entities, relationships, HTTP/MCP actions,
+product slots and admin panels**. The engraving app connects a customer product
+configuration to the real taxed cart, order and merchant view. The assistant can
+propose a registered app-data change and execute it after explicit approval.
+An external workshop app runs its own service, iframe UI and SQLite event inbox.
+Managed app tables have forced tenant RLS; core tables retain application filters.
+
+The first payment adapter is **native PayPal Sandbox Orders v2** with persistent
+attempts, reserved stock, idempotent capture/refund, verified webhooks and leased
+workers. It is not Shopware Payments. That example reports a missing official
+standalone connector contract and is deliberately unavailable at checkout.
+Configure server-only accounts before trying a real Sandbox handoff.
+
+Long model calls no longer hold database transactions/connections. Bounded
+context, conversation leases and independent payment/app workers address concrete
+contention. Whole-catalog operations remain elsewhere; no Shopware speedup or
+million-product capacity is claimed.
+
+[Implementation and limits](docs/intelligence-apps-payments.md) ·
+[App manifests, SDK and runnable examples](extensions/README.md)
+
+![English app workspace with its own data and payment readiness](docs/assets/apps-en.png)
+
 ## Executable extensions
 
 Four real pure-Wasm policies use the current B2B purchase approval ABI:
@@ -237,6 +269,11 @@ python3 scripts/commerce.py
 python3 scripts/users.py
 TEST_PERSONAL=1 python3 scripts/providers.py
 python3 scripts/extensions.py
+python3 scripts/apps.py
+python3 scripts/payments.py
+python3 scripts/services.py
+# After apps.py has created its isolated test workspace:
+TEST_MODEL=1 python3 scripts/app_inference.py
 TEST_EMBEDDING=1 TEST_MODEL=1 python3 scripts/intelligence.py
 TEST_MODEL=1 python3 scripts/studio.py
 ```
@@ -244,7 +281,7 @@ TEST_MODEL=1 python3 scripts/studio.py
 These checks create synthetic accounts, carts, orders, reviews, conversations
 and approved price changes. Extension tests submit simulated B2B orders on a
 second app instance and restore the previous policy. Configuration tests restore
-the prior settings. No payment provider is contacted. Cloud adapters are tested
+the prior settings. Default verification uses local payment contract fixtures; no live PayPal Sandbox traffic is claimed. Cloud adapters are tested
 with local wire-contract servers; live OpenAI/Claude quality is **unverified**.
 Real local model/embedding checks are separate and opt-in.
 
@@ -268,7 +305,7 @@ across an external application/database restart.
 CI runs build/type/format/lint checks, Rust tests, original-PHP comparisons and
 real database suites. No 100% line/branch coverage claim is made.
 [Source/test map](docs/source-map.md) documents coverage and remaining checks.
-Historical small-catalog v0.1 load measurements are not v0.4 capacity claims.
+Historical small-catalog v0.1 load measurements are not v0.5 capacity claims.
 
 ## Architecture and migration
 
@@ -287,7 +324,12 @@ flowchart TD
   CORE --> WASM[Persisted bounded Wasm policy]
   CORE --> DB[(Open PostgreSQL + AGE + pgvector)]
   GRAPH --> DB
+  CORE --> APPS[Registered app actions / own typed entities]
+  APPS --> SERVICE[Independent app service and iframe SDK]
+  DB --> PAY[Leased payment worker / Sandbox provider]
   DB --> MEMORY[Shop conversations / observations / outbox]
+  MEMORY --> EVIDENCE[AGE co-purchase evidence / hypotheses]
+  EVIDENCE --> APPROVED[Merchant-approved customer recommendations]
   MEMORY --> UI
   REF[Original Shopware PHP] --> DIFF[Differential migration gates]
   CORE --> DIFF
@@ -307,7 +349,7 @@ it does not automatically produce a correct full-core translation.
 The precise [Shopware feature matrix](docs/shopware-parity.md) distinguishes
 original behavioral ports, working native feature equivalents for the prototype
 and missing functionality. Full collectors/processors/rule engine, DAL/CMS,
-promotions, original variant inheritance, exact Admin/Store API schemas, real
+promotions, original variant inheritance, exact Admin/Store API schemas, live-money
 payments/fulfillment, commercial B2B modules and PHP plugins remain missing.
 
 [Migration workflow](docs/migration.md) · [Architecture decisions](docs/architecture.md) ·

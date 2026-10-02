@@ -52,6 +52,7 @@ pub(crate) async fn product_detail(
             revision: 0,
             status: "preview".into(),
             data: Cart {
+                app_configurations: HashMap::new(),
                 items: vec![Item {
                     id: id.clone(),
                     quantity: qty,

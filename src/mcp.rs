@@ -47,9 +47,24 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
             json!({"protocolVersion":if v["params"]["protocolVersion"]=="2025-11-25"{"2025-11-25"}else{"2026-07-28"},"capabilities":{"tools":{},"resources":{}},"serverInfo":{"name":"rust-ai-commerce","version":env!("CARGO_PKG_VERSION")}}),
         ),
         "ping" => Ok(json!({})),
-        "tools/list" => Ok(
-            json!({"tools":CAPABILITIES.iter().filter(|(n,_)|!(n.starts_with("merchant.") || n.starts_with("knowledge.")) || merchant(&a,&h).is_ok() && (*n!="merchant.apply" || auth::permit(&h,"catalog").is_ok())).map(|(n,d)|json!({"name":n,"description":d,"inputSchema":tool_schema(n)})).collect::<Vec<_>>()}),
-        ),
+        "tools/list" => {
+            let mut tools = CAPABILITIES
+                .iter()
+                .filter(|(n, _)| {
+                    !(n.starts_with("merchant.") || n.starts_with("knowledge."))
+                        || merchant(&a, &h).is_ok()
+                            && (*n != "merchant.apply" || auth::permit(&h, "catalog").is_ok())
+                })
+                .map(|(n, d)| json!({"name":n,"description":d,"inputSchema":tool_schema(n)}))
+                .collect::<Vec<_>>();
+            match apps::app_tools(&a, &h).await {
+                Ok(apps) => {
+                    tools.extend(apps);
+                    Ok(json!({"tools":tools}))
+                }
+                Err(e) => Err(e),
+            }
+        }
         "tools/call" => match invoke(
             &a,
             &h,

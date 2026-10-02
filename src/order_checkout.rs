@@ -18,11 +18,11 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         .await?
         .ok_or(bad("Cart not found"))?;
     let mut c = stored(&r)?;
-    let fingerprint = hash(&format!(
-        "{}:{}",
-        c.id,
-        serde_json::to_string(&json!({"items":c.data.items,"checkout":c.data.checkout,"group":c.data.group,"buyer":c.data.buyer})).unwrap()
-    ));
+    let mut purchase = json!({"items":c.data.items,"checkout":c.data.checkout,"group":c.data.group,"buyer":c.data.buyer});
+    if !c.data.app_configurations.is_empty() {
+        purchase["appConfigurations"] = json!(c.data.app_configurations);
+    }
+    let fingerprint = hash(&format!("{}:{}", c.id, purchase));
     if let Some(r) =
         sqlx::query("SELECT data,fingerprint FROM orders WHERE tenant=$1 AND idempotency_key=$2")
             .bind(&c.tenant)
@@ -58,6 +58,7 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     let config: commerce::Settings = serde_json::from_value(settings.get("data"))
         .map_err(|_| bad("Invalid commerce configuration"))?;
     let selected = commerce::selection(&c.data);
+    apps::validate_configurations(&mut tx, &c).await?;
     if selected.shipping_method_id != "pickup" && selected.address.is_none() {
         return Err(bad("Delivery address required"));
     }
@@ -69,7 +70,7 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         &config,
         settings.get("revision"),
     )?;
-    commerce::dates(a, &mut q).await?;
+    commerce::dates_conn(&mut tx, &mut q).await?;
     for i in &c.data.items {
         let p = ps.iter().find(|p| p.id == i.id).unwrap();
         if p.stock < i.quantity as i32 {
@@ -103,10 +104,26 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
             return Err(conflict("Company purchase rejected by tenant extension"));
         }
     }
+    let external = q["paymentMethod"]["mode"] == "app";
+    if external && selected.payment_method_id != "paypal-sandbox" {
+        return Err(bad("Provider connector is not configured"));
+    }
+    if external {
+        payments::account(&c.tenant)?;
+        payments::base()?;
+    }
     let id = uid();
     // Explicit simulated authorization: no external money is charged.
-    let order = json!({"id":id,"orderNumber":format!("RAC-{}",&id[..8]),"cart":q,"state":"placed","channel":c.data.channel,"revision":1,"deliveries":q["deliveries"],"payment":{"method":q["paymentMethod"],"provider":if q["paymentMethod"]["mode"]=="simulated"{"simulated"}else{"manual"},"state":if q["paymentMethod"]["mode"]=="simulated"{"authorized"}else{"pending"},"realMoneyCharged":false},"customerGroup":c.data.group});
+    let mut order = json!({"id":id,"orderNumber":format!("RAC-{}",&id[..8]),"cart":q,"state":"placed","channel":c.data.channel,"revision":1,"deliveries":q["deliveries"],"payment":{"method":q["paymentMethod"],"provider":if q["paymentMethod"]["mode"]=="simulated"{"simulated"}else{"manual"},"state":if q["paymentMethod"]["mode"]=="simulated"{"authorized"}else{"pending"},"realMoneyCharged":false},"customerGroup":c.data.group});
     sqlx::query("INSERT INTO orders(id,tenant,cart_id,idempotency_key,fingerprint,data) VALUES($1,$2,$3,$4,$5,$6)").bind(&id).bind(&c.tenant).bind(&c.id).bind(key).bind(&fingerprint).bind(&order).execute(&mut *tx).await?;
+    if external {
+        payments::prepare(&mut tx, &c, &mut order, minor).await?;
+        sqlx::query("UPDATE orders SET data=$1 WHERE id=$2")
+            .bind(&order)
+            .bind(&id)
+            .execute(&mut *tx)
+            .await?;
+    }
     for i in &c.data.items {
         sqlx::query(
             "UPDATE products SET stock=stock-$1,revision=revision+1 WHERE tenant=$2 AND id=$3",
@@ -123,7 +140,7 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         .bind(&c.id)
         .execute(&mut *tx)
         .await?;
-    if let Some(e)=sqlx::query("UPDATE exposures SET rewarded=true WHERE tenant=$1 AND session=$2 AND rewarded=false RETURNING variant").bind(&c.tenant).bind(&c.data.session).fetch_optional(&mut *tx).await? {
+    if !external && let Some(e)=sqlx::query("UPDATE exposures SET rewarded=true WHERE tenant=$1 AND session=$2 AND rewarded=false RETURNING variant").bind(&c.tenant).bind(&c.data.session).fetch_optional(&mut *tx).await? {
         sqlx::query("UPDATE policy SET purchases=purchases+1 WHERE tenant=$1 AND variant=$2").bind(&c.tenant).bind(e.get::<String,_>("variant")).execute(&mut *tx).await?;
     }
     sqlx::query("INSERT INTO outbox(tenant,kind,data) VALUES($1,'order.placed',$2)")

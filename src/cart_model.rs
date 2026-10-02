@@ -8,6 +8,8 @@ pub(crate) struct Item {
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub(crate) struct Cart {
+    #[serde(default)]
+    pub(crate) app_configurations: HashMap<String, apps::Configuration>,
     pub(crate) items: Vec<Item>,
     pub(crate) group: String,
     pub(crate) email: Option<String>,

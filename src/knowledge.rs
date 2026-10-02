@@ -72,10 +72,11 @@ pub async fn seed_relations(db: &PgPool, tenant: &str) -> Result<(), sqlx::Error
     Ok(())
 }
 pub async fn graph(db: &PgPool, tenant: &str) -> Result<Value, sqlx::Error> {
-    let needs=cypher(db,"MATCH (p:Product {tenant:$tenant})-[r:SERVES]->(n:Need {tenant:$tenant}) RETURN {product_id:p.product_id, need:n.name, source:r.source, confidence:r.confidence}",json!({"tenant":tenant})).await?;
-    let pairs=cypher(db,"MATCH (a:Product {tenant:$tenant})-[r:PAIRS_WITH]->(b:Product {tenant:$tenant}) RETURN {left:a.product_id, right:b.product_id, source:r.source}",json!({"tenant":tenant})).await?;
+    let needs=cypher(db,"MATCH (p:Product {tenant:$tenant})-[r:SERVES]->(n:Need {tenant:$tenant}) RETURN {product_id:p.product_id, need:n.name, source:r.source, confidence:r.confidence} LIMIT 48",json!({"tenant":tenant})).await?;
+    let pairs=cypher(db,"MATCH (a:Product {tenant:$tenant})-[r:PAIRS_WITH]->(b:Product {tenant:$tenant}) RETURN {left:a.product_id, right:b.product_id, source:r.source} LIMIT 48",json!({"tenant":tenant})).await?;
+    let observed=cypher(db,"MATCH (a:Product {tenant:$tenant})-[r:CO_PURCHASED]->(b:Product {tenant:$tenant}) RETURN {left:a.product_id,right:b.product_id,orders:r.orders,source:r.source,lastEvent:r.event_id} ORDER BY r.orders DESC LIMIT 24",json!({"tenant":tenant})).await?;
     Ok(
-        json!({"engine":"Apache AGE","tenant":tenant,"needs":needs,"pairs":pairs,"facts":"curated demo relations; not learned or inferred facts"}),
+        json!({"engine":"Apache AGE","tenant":tenant,"needs":needs,"pairs":pairs,"observedPairs":observed,"facts":"SERVES/PAIRS_WITH are curated; CO_PURCHASED are order observations with evidence, not causal claims"}),
     )
 }
 pub async fn embedding(
@@ -121,4 +122,23 @@ pub async fn search(
     };
     let hits=rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"name":r.get::<String,_>("name"),"price":r.get::<f64,_>("price"),"stock":r.get::<i32,_>("stock"),"revision":r.get::<i64,_>("revision"),"score":r.get::<f64,_>("score")})).collect::<Vec<_>>();
     Ok(json!({"mode":mode,"hits":hits,"graph":graph(db,tenant).await?}))
+}
+
+pub async fn sync_observation(
+    conn: &mut PgConnection,
+    tenant: &str,
+    left: &str,
+    right: &str,
+    orders: i64,
+    event: i64,
+) -> Result<(), sqlx::Error> {
+    let sql = "SELECT result::text FROM ag_catalog.cypher('commerce', $graph$MATCH (a:Product {tenant:$tenant,product_id:$left}),(b:Product {tenant:$tenant,product_id:$right}) MERGE (a)-[r:CO_PURCHASED]->(b) SET r.orders=$orders,r.event_id=$event,r.source='order-observation' RETURN r.orders$graph$, $1) AS (result ag_catalog.agtype)";
+    sqlx::query(sql)
+        .bind(GraphParams(
+            json!({"tenant":tenant,"left":left,"right":right,"orders":orders,"event":event})
+                .to_string(),
+        ))
+        .execute(conn)
+        .await?;
+    Ok(())
 }

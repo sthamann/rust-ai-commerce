@@ -39,6 +39,9 @@ jobs:
           python3 scripts/commerce.py
           python3 scripts/users.py
           TEST_PERSONAL=1 python3 scripts/providers.py
+          python3 scripts/apps.py
+          python3 scripts/payments.py
+          python3 scripts/services.py
           python3 scripts/extensions.py
           python3 scripts/structure.py
       # Real model checks are opt-in locally: CI does not replace them with a fake.

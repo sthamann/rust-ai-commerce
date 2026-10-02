@@ -1,5 +1,6 @@
 /** KnowledgeView renders verified shop state and typed user actions. */
 import { useState } from "react";
+import MemoryView from "./MemoryView";
 import Icon from "./Icon";
 import ProductArt from "./ProductArt";
 import { useLocale } from "./i18n";
@@ -74,6 +75,7 @@ export function KnowledgeView({
           {t("memory")}
         </span>
       </div>
+      <MemoryView request={request} />
       <div className="knowledge-layout">
         <section className="studio-card graph-card">
           <div className="card-heading">

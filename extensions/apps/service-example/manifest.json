@@ -1,0 +1,105 @@
+{
+  "id": "workshop_notes",
+  "version": "1.0.0",
+  "coreApi": "1",
+  "runtime": "service",
+  "name": {
+    "en": "Workshop notes",
+    "de": "Werkstattnotizen",
+    "fr": "Notes d\u2019atelier",
+    "es": "Notas del taller"
+  },
+  "permissions": [
+    "data.read",
+    "data.write",
+    "admin.slot",
+    "service.call",
+    "events.read"
+  ],
+  "entities": [
+    {
+      "name": "notes",
+      "fields": [
+        {
+          "name": "title",
+          "kind": "string",
+          "required": true,
+          "indexed": true
+        }
+      ]
+    },
+    {
+      "name": "tickets",
+      "fields": [
+        {
+          "name": "note_id",
+          "kind": "string",
+          "required": true,
+          "indexed": true,
+          "references": "notes"
+        },
+        {
+          "name": "title",
+          "kind": "string",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "slots": [
+    {
+      "location": "admin.apps",
+      "component": "entity-form",
+      "label": {
+        "en": "Notes",
+        "de": "Notizen",
+        "fr": "Notes",
+        "es": "Notas"
+      }
+    },
+    {
+      "location": "admin.apps",
+      "component": "iframe",
+      "label": {
+        "en": "Workshop notes",
+        "de": "Werkstattnotizen",
+        "fr": "Notes d\u2019atelier",
+        "es": "Notas del taller"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "name": "notes",
+      "description": "Read app-owned workshop notes",
+      "handler": "list",
+      "entity": "notes",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "availability",
+      "description": "Ask the isolated workshop service for availability",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "sku"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "events": [
+    "order.placed"
+  ]
+}

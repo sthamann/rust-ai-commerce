@@ -1,6 +1,7 @@
 /** Merchant interface strings: es. */
 import type { Dictionary } from "./en";
 export const es: Dictionary = {
+  apps: "Apps y pagos",
   readOnly:
     "Acceso de lectura: un editor o administrador debe aprobar este cambio.",
   users: "Equipo y acceso",

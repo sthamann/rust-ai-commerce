@@ -34,6 +34,12 @@ pub(crate) async fn bootstrap() -> App {
         .execute(&bootstrap)
         .await
         .expect("workspace schema");
+    sqlx::raw_sql(include_str!(
+        "../migrations/010-apps-intelligence-payments.sql"
+    ))
+    .execute(&bootstrap)
+    .await
+    .expect("app/payment/memory schema");
     let db = PgPoolOptions::new()
         .max_connections(20)
         .after_connect(|conn, _| {
@@ -53,11 +59,13 @@ pub(crate) async fn bootstrap() -> App {
         "MERCHANT_TOKEN must have at least 24 characters"
     );
     let http = reqwest::Client::builder()
+        .redirect(reqwest::redirect::Policy::none())
         .timeout(std::time::Duration::from_secs(180))
         .build()
         .unwrap();
     let a = App {
         db,
+        inference_slots: Arc::new(tokio::sync::Semaphore::new(4)),
         token: Arc::new(auth),
         inference: Inference::from_env(http.clone()),
         http,
@@ -126,15 +134,6 @@ pub(crate) async fn bootstrap() -> App {
             .expect("graph relations");
     }
     bootstrap.close().await;
-    let worker = a.clone();
-    tokio::spawn(async move {
-        let mut interval = tokio::time::interval(std::time::Duration::from_millis(250));
-        loop {
-            interval.tick().await;
-            if let Err(e) = consume_once(&worker).await {
-                eprintln!("outbox consumer: {}", e.1);
-            }
-        }
-    });
+    workers::start(&a);
     a
 }

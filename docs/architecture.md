@@ -1,12 +1,15 @@
+See [v0.5 connected intelligence, app and payment paths](intelligence-apps-payments.md)
+for the current implementation and performance limits.
+
 # Architecture decisions and next boundaries
 
-## One deployable core first
+## One transactional core, independently deployable workers
 
 Start with one Rust/Axum process and PostgreSQL 17 with Apache AGE and pgvector. This is the smallest unit that
 can prove checkout behavior, protocol reuse and tenant isolation together.
-Extract independently scalable processes only when measured contention or
-different operational requirements justify it: inference, search projections,
-event consumers and connector execution are the first candidates. Prices,
+The v0.5 runtime can separately deploy HTTP, memory/outbox, payment and app-event
+roles. SQL leases and receipts coordinate their work. Inference still uses an
+external Ollama/provider service and process-local admission. Prices,
 reservations and order placement share a database transaction initially.
 
 Catalog operations use a pool of 20 connections. Checkout locks the cart and
@@ -16,8 +19,8 @@ progress independently. There is no unbounded model call in this transaction.
 All writes originate from deterministic operations, not model-generated SQL.
 
 Next production steps: decimal/integer money type with explicit currency scale,
-tenant row-level security, migrations with checksums/version locks, dedicated
-inventory reservations and payment state machines, caches invalidated by
+tenant row-level security, migrations with checksums/version locks, broader
+inventory reservations and production payment state machines, caches invalidated by
 outbox events, observability, resource admission and tenant quotas. The current
 money implementation deliberately reproduces Shopware float behavior inside
 the ported slice; changing representations requires the differential gate.
@@ -49,8 +52,8 @@ memory are tested. Source/digest survive restart; boot recompiles saved modules.
 
 This is a genuine small sandbox, not a general PHP JIT. More powerful hooks
 need versioned typed host capabilities and a separate quota/sandbox worker.
-Activation caches are process-local: coordinated invalidation/version pinning
-must precede horizontally replicated extension activation. Compilation also
+Activation caches are process-local and refresh from the persisted policy inside
+checkout; the two-instance extension regression verifies this boundary. Compilation also
 needs stronger process-level time/memory limits for untrusted SaaS authors.
 
 ## Standards are adapters

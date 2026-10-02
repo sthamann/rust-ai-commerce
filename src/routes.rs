@@ -3,6 +3,9 @@ use crate::*;
 
 pub(crate) fn router(a: App) -> Router {
     Router::new()
+        .merge(apps::app_router())
+        .merge(payments::payment_router())
+        .merge(cognition::cognition_router())
         .route("/health", get(health))
         .route("/api/auth/register", post(auth::register_user))
         .route("/api/auth/login", post(auth::user_login))

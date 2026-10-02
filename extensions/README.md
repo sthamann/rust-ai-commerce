@@ -52,3 +52,100 @@ containing the demo B2B buyer and template catalog if needed.
 Adding hooks for discount rules, content or fulfillment requires a new typed
 host contract, role authorization and transaction tests. A guest does not gain
 those capabilities merely by exporting a function with that name.
+
+## Versioned apps · API 1
+
+The WAT examples above remain supported. The broader app API adds independently
+installed packages with their own data, actions and UI. See
+[full implementation and limits](../docs/intelligence-apps-payments.md).
+
+| Package | Executable features | Example files |
+|---|---|---|
+| Product personalization | Own price-rule entity; HTTP/MCP read/write; product form; server-taxed per-unit cart surcharge; order configuration view; agent preview/approval | [manifest](apps/engraving/manifest.json) |
+| Workshop notes | Own notes/tickets tables and tenant foreign reference; admin forms; native MCP actions; external service action, opaque iframe UI and durable SQLite event inbox | [manifest](apps/service-example/manifest.json), [service](apps/service-example/server.py), [browser SDK](sdk/browser.js) |
+| PayPal Sandbox | Native provider adapter, checkout handoff, paid/refund ledger and app administration | [manifest](apps/paypal/manifest.json), [`src/payments`](../src/payments) |
+| Shopware Payments readiness | Explicit connector status in admin; cannot process payment until its official standalone contract is verified | [manifest](apps/shopware-payments/manifest.json) |
+
+Install built-ins with `POST /api/apps` and `{"builtIn":"engraving"}`, `paypal` or
+`shopware_payments`, or submit `{"manifest":...}` for your own API-1 manifest.
+Use an owner/admin personal session and the owning `x-tenant`. Installation is
+atomic. `PUT /api/apps/{id}` accepts active/revision for deactivation/reactivation;
+data and immutable version history remain. No uninstall/data deletion is provided.
+
+A manifest declares `api`, `id`, three-part `version`, localized `name`, `runtime`,
+`permissions`, `entities`, `actions`, `slots` and `events`. Entity fields are
+string/integer/boolean and may reference another entity in the same app. Root
+metadata (`tenant`, `id`, `revision`) is core-owned. Identifiers are constrained;
+DDL is generated, never submitted by the app. Each action has a typed flat
+`inputSchema` and registered list/save/configurations/service handler. Arbitrary
+JSON Schema nesting/validation keywords are not implemented.
+
+`data.read`, `data.write`, `storefront.slot`, `admin.slot`, `service.call` and
+`events.read` are supported capabilities. Public writes to managed entities are
+prohibited. Public service actions must be explicitly declared and should be
+read-only: their business side effects require an additional application-specific
+customer authorization/approval contract. Do not put secrets in editor-writable
+entities. Only operator configuration carries service/payment credentials.
+
+List/save your data through `/api/apps/{id}/entities/{entity}`. Saves use
+`{"id":"one","revision":0,"fields":{"title":"My note"}}`; existing records require
+their actual revision. The same operation is a declared action at
+`/api/apps/{id}/actions/{name}` and MCP `app.{id}.{name}`. The planner exposes
+registered managed save actions as reviewable proposals, with revisions bound
+by the server. Existing-record revisions omitted/guessed by the model cannot
+bypass the comparison.
+
+### Run the external app
+
+Start the provided service in a separate terminal:
+
+```sh
+APP_TOKEN=choose-a-private-development-token \
+APP_DB=.run/workshop-app.sqlite \
+python3 extensions/apps/service-example/server.py
+```
+
+Configure the core and independently deployed app worker with this server-only
+value, then restart them:
+
+```sh
+export APP_SERVICES='{"workshop_notes":{"url":"http://127.0.0.1:8795","uiUrl":"http://127.0.0.1:8795/","token":"choose-a-private-development-token"}}'
+# Main HTTP process; projects core events without delivering external events:
+PROCESS_ROLE=http target/debug/rust-ai-commerce
+# Separate terminal, with the same DB/APP_SERVICES configuration:
+PROCESS_ROLE=app-worker target/debug/rust-ai-commerce
+```
+
+Install `apps/service-example/manifest.json` in your synthetic shop with
+`POST /api/apps`. Apps & payments shows managed data editors and the iframe.
+The UI uses `connectCommerce()` from the SDK and can call `sdk.action('notes')`
+or `sdk.action('availability', {sku:'mug'})`. Core session tokens never enter
+this iframe. The availability result is explicitly synthetic, not a real ERP.
+The app UI owns its content localization; the host supplies the selected locale
+in the SDK context. This example provides English, German, French and Spanish copy and shows ordinary notes instead of raw JSON.
+
+Events contain tenant, event ID, kind, data and stable `idempotencyKey`.
+The service must deduplicate `(tenant, idempotencyKey)` in its own storage. Delivery
+is at least once; timeouts are retried, never exactly-once remote execution.
+The SQLite example persists and deduplicates its inbox. Eight failed deliveries
+move to failed; an operator retry/dead-letter dashboard remains future work.
+
+External-service execution is a separate process, **not a microVM sandbox**.
+Deployment needs resource/network limits; the supplied service is a development
+example. The browser boundary is an opaque iframe and constrained action bridge.
+No app may choose an arbitrary backend URL through a merchant manifest.
+
+### App and payment verification
+
+```sh
+set -a; source .env; set +a
+python3 scripts/apps.py
+python3 scripts/services.py
+python3 scripts/payments.py
+# Real local inference, using the synthetic workspace created by apps.py:
+TEST_MODEL=1 python3 scripts/app_inference.py
+```
+
+These use real core/DB operations and a real standalone SQLite service. Payment
+wire responses/signature verification are simulated by a local contract server;
+no actual PayPal Sandbox account is contacted. Real local inference is separate.

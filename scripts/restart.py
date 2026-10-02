@@ -21,6 +21,12 @@ if users.exists():
             if key=='graph':
                 for field in ('needs','pairs'):own[key][field].sort(key=lambda v:json.dumps(v,sort_keys=True))
         state['personalWorkspaces'][label]=own
+apps=root/'.run/apps-v5.json'
+if apps.exists():
+    owner=json.loads(apps.read_text())['owner']; hs={'Authorization':'Bearer '+owner['token'],'x-tenant':owner['workspace']}
+    state['appMemory']={}
+    for label,route in [('packages','/api/apps'),('rules','/api/apps/engraving/entities/rules'),('memory','/api/intelligence'),('recommendations','/store-api/intelligence/recommendations/mug')]:
+        with urllib.request.urlopen(urllib.request.Request(base+route,headers=hs)) as response:state['appMemory'][label]=json.load(response)
 state['knowledge']=req('/api/knowledge')
 for key in ('needs','pairs'):
     state['knowledge'][key].sort(key=lambda v:json.dumps(v,sort_keys=True))
@@ -29,6 +35,6 @@ state['conversations']=req('/api/agent/conversations')
 state['histories']={c['id']:req('/api/agent/conversations/'+c['id']) for c in state['conversations']['conversations']}
 if a.mode=='snapshot':path.write_text(json.dumps(state,sort_keys=True));path.chmod(0o600);print('Saved synthetic persisted-state snapshot');raise SystemExit()
 old=json.loads(path.read_text());assert state==old,'State changed across restart'
-report={'serverAndDatabaseRestart':'passed','catalogProducts':len(state['catalog']['elements']),'orders':len(state['orders']['data']),'storedTasks':len(state['tasks']['tasks']),'policyCountersIdentical':True,'eventProjectionIdentical':True,'extensionVersionIdentical':True,'graphRelationsIdentical':True,'semanticVectorsIdentical':True,'indexedProducts':state['semanticIndex']['indexedProducts'],'conversationHistoriesIdentical':True,'conversations':len(state['histories']),'personalSessionsAndWorkspacesIdentical':bool(state.get('personalWorkspaces')),'commerceConfigurationAndDeliveryStateIdentical':True,'stateDigest':hashlib.sha256(json.dumps(state,sort_keys=True).encode()).hexdigest()}
+report={'serverAndDatabaseRestart':'passed','catalogProducts':len(state['catalog']['elements']),'orders':len(state['orders']['data']),'storedTasks':len(state['tasks']['tasks']),'policyCountersIdentical':True,'eventProjectionIdentical':True,'extensionVersionIdentical':True,'graphRelationsIdentical':True,'semanticVectorsIdentical':True,'indexedProducts':state['semanticIndex']['indexedProducts'],'conversationHistoriesIdentical':True,'conversations':len(state['histories']),'personalSessionsAndWorkspacesIdentical':bool(state.get('personalWorkspaces')),'commerceConfigurationAndDeliveryStateIdentical':True,'appsAndObservedKnowledgeIdentical':bool(state.get('appMemory')),'stateDigest':hashlib.sha256(json.dumps(state,sort_keys=True).encode()).hexdigest()}
 print(json.dumps(report,indent=2))
 if os.environ.get('REPORT_PATH'):pathlib.Path(os.environ['REPORT_PATH']).write_text(json.dumps(report,indent=2)+'\n')

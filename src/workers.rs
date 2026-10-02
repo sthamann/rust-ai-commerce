@@ -1,0 +1,52 @@
+//! Independently deployable worker roles; leases and durable receipts coordinate replicas.
+use crate::*;
+pub(crate) fn start(a: &App) {
+    let role = env::var("PROCESS_ROLE").unwrap_or("all".into());
+    assert!(
+        [
+            "all",
+            "http",
+            "memory-worker",
+            "payment-worker",
+            "app-worker"
+        ]
+        .contains(&role.as_str()),
+        "Unsupported PROCESS_ROLE"
+    );
+    if ["all", "http", "memory-worker"].contains(&role.as_str()) {
+        let worker = a.clone();
+        tokio::spawn(async move {
+            let mut ticks = tokio::time::interval(std::time::Duration::from_millis(250));
+            loop {
+                ticks.tick().await;
+                if let Err(e) = consume_once(&worker).await {
+                    eprintln!("memory/outbox worker: {}", e.1);
+                }
+            }
+        });
+    }
+    if ["all", "payment-worker"].contains(&role.as_str()) {
+        let worker = a.clone();
+        tokio::spawn(async move {
+            let mut ticks = tokio::time::interval(std::time::Duration::from_millis(250));
+            loop {
+                ticks.tick().await;
+                if let Err(e) = payments::payment_once(&worker).await {
+                    eprintln!("payment worker: {}", e.1);
+                }
+            }
+        });
+    }
+    if ["all", "app-worker"].contains(&role.as_str()) {
+        let worker = a.clone();
+        tokio::spawn(async move {
+            let mut ticks = tokio::time::interval(std::time::Duration::from_millis(250));
+            loop {
+                ticks.tick().await;
+                if let Err(e) = apps::deliver_once(&worker).await {
+                    eprintln!("app worker: {}", e.1);
+                }
+            }
+        });
+    }
+}

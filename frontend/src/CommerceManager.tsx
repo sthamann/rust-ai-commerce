@@ -403,17 +403,22 @@ export default function CommerceManager({ token }: { token: string }) {
                   </small>
                 )}
                 <div className="commerce-order-actions">
-                  {["pending", "authorized"].includes(o.payment.state) && (
-                    <button
-                      className="studio-secondary"
-                      disabled={busy}
-                      onClick={() =>
-                        setConfirm({ order: o, kind: "payment", state: "paid" })
-                      }
-                    >
-                      {s("markPaid")}
-                    </button>
-                  )}
+                  {o.payment.provider !== "paypal" &&
+                    ["pending", "authorized"].includes(o.payment.state) && (
+                      <button
+                        className="studio-secondary"
+                        disabled={busy}
+                        onClick={() =>
+                          setConfirm({
+                            order: o,
+                            kind: "payment",
+                            state: "paid",
+                          })
+                        }
+                      >
+                        {s("markPaid")}
+                      </button>
+                    )}
                   {o.deliveries?.[0]?.state === "open" && (
                     <>
                       <input

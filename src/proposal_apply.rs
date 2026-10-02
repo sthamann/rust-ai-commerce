@@ -15,6 +15,9 @@ pub(crate) async fn apply(a: &App, t: &str, id: &str) -> Result<Value> {
     let v: Value = r.get("proposal");
     let p: Proposal =
         serde_json::from_value(v["proposal"].clone()).map_err(|e| bad(e.to_string()))?;
+    if let Some(change) = &p.app_action {
+        apps::apply_change(&mut tx, t, change).await?;
+    }
     for c in p.changes {
         let product_id = c.product_id.clone();
         let n=sqlx::query("UPDATE products SET price=COALESCE($1,price),stock=COALESCE($2,stock),revision=revision+1 WHERE tenant=$3 AND id=$4 AND revision=$5").bind(c.price).bind(c.stock).bind(t).bind(c.product_id).bind(c.expected_revision).execute(&mut *tx).await?.rows_affected();

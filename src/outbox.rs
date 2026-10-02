@@ -13,6 +13,10 @@ pub(crate) async fn consume_once(a: &App) -> Result<()> {
     let rows=sqlx::query("SELECT * FROM outbox WHERE delivered_at IS NULL ORDER BY id LIMIT 50 FOR UPDATE SKIP LOCKED").fetch_all(&mut *tx).await?;
     for r in rows {
         let id = r.get::<i64, _>("id");
+        let t = r.get::<String, _>("tenant");
+        let kind = r.get::<String, _>("kind");
+        cognition::project(&mut tx, &t, id, &kind, &r.get::<Value, _>("data")).await?;
+        apps::project_events(&mut tx, &t, id, &kind).await?;
         sqlx::query("INSERT INTO projections(event_id,tenant,kind,data) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING").bind(id).bind(r.get::<String,_>("tenant")).bind(r.get::<String,_>("kind")).bind(r.get::<Value,_>("data")).execute(&mut *tx).await?;
         sqlx::query("UPDATE outbox SET delivered_at=now() WHERE id=$1")
             .bind(id)

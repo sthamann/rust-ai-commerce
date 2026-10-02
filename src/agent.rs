@@ -160,17 +160,7 @@ pub(super) async fn merchant_chat(
             .await?;
         id
     };
-    // Try-lock a transaction to reject simultaneous turns, rather than replaying
-    // inconsistent conversation histories. No product locks during inference.
-    let mut lock = a.db.begin().await?;
-    let admitted: bool =
-        sqlx::query_scalar("SELECT pg_try_advisory_xact_lock(hashtextextended($1,2))")
-            .bind(format!("{t}:{id}"))
-            .fetch_one(&mut *lock)
-            .await?;
-    if !admitted {
-        return Err(conflict("A turn is already running in this conversation"));
-    }
+    let owner = chat_lease::admit(&a, &t, &id).await?;
     let previous = messages(&a, &t, &id).await?;
     let history = previous
         .iter()
@@ -194,15 +184,24 @@ pub(super) async fn merchant_chat(
     .bind(instruction)
     .execute(&a.db)
     .await?;
-    let output = plan_with(
-        &a,
-        &t,
-        instruction,
-        selection.as_ref(),
-        &history,
-        &language_context(&a, &h).await?.0,
+    let output = tokio::time::timeout(
+        std::time::Duration::from_secs(190),
+        plan_with(
+            &a,
+            &t,
+            instruction,
+            selection.as_ref(),
+            &history,
+            &language_context(&a, &h).await?.0,
+        ),
     )
-    .await;
+    .await
+    .unwrap_or_else(|_| {
+        Err(Error(
+            StatusCode::GATEWAY_TIMEOUT,
+            "Model turn timed out".into(),
+        ))
+    });
     let (content, data) = match output {
         Ok(task) => (
             task["preview"]["proposal"]["summary"]
@@ -216,8 +215,7 @@ pub(super) async fn merchant_chat(
             json!({"error":true,"providerUnavailable":e.0==StatusCode::BAD_GATEWAY}),
         ),
     };
-    sqlx::query("INSERT INTO chat_messages(tenant,conversation_id,role,content,data) VALUES($1,$2,'assistant',$3,$4)").bind(&t).bind(&id).bind(content).bind(data).execute(&a.db).await?;
-    lock.commit().await?;
+    chat_lease::release(&a, &t, &id, &owner, &content, &data).await?;
     Ok(Json(
         json!({"conversationId":id,"messages":messages(&a,&t,&id).await?}),
     ))

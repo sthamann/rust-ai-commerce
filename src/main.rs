@@ -26,6 +26,12 @@ use tower_http::services::ServeDir;
 use uuid::Uuid;
 
 mod agent;
+mod apps;
+mod chat_lease;
+mod cognition;
+mod http_limits;
+mod payments;
+mod workers;
 use agent::*;
 mod localization;
 use localization::*;
@@ -87,6 +93,10 @@ pub(crate) use routes::*;
 #[tokio::main]
 async fn main() {
     let a = bootstrap().await;
+    if env::var("PROCESS_ROLE").is_ok_and(|s| s.ends_with("-worker")) {
+        let _ = tokio::signal::ctrl_c().await;
+        return;
+    }
     let app = router(a);
     let addr = env::var("BIND_ADDR").unwrap_or("127.0.0.1:8787".into());
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();

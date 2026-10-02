@@ -87,6 +87,7 @@ pub(super) async fn preview_quote(
         revision: 0,
         status: "preview".into(),
         data: Cart {
+            app_configurations: HashMap::new(),
             items: vec![Item {
                 id: id.into(),
                 quantity,

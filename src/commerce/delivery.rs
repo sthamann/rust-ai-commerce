@@ -125,6 +125,9 @@ pub(crate) fn enrich(
     Ok(q)
 }
 pub(crate) async fn dates(a: &App, q: &mut Value) -> Result<()> {
+    dates_conn(&mut *a.db.acquire().await?, q).await
+}
+pub(crate) async fn dates_conn(conn: &mut sqlx::PgConnection, q: &mut Value) -> Result<()> {
     if let Some(d) = q["deliveries"].as_array_mut().and_then(|d| d.first_mut()) {
         let min = d["deliveryTime"]["minDays"].as_i64().unwrap() as i32;
         let max = d["deliveryTime"]["maxDays"].as_i64().unwrap() as i32;
@@ -133,7 +136,7 @@ pub(crate) async fn dates(a: &App, q: &mut Value) -> Result<()> {
         )
         .bind(min)
         .bind(max)
-        .fetch_one(&a.db)
+        .fetch_one(conn)
         .await?;
         d["deliveryDate"] = json!({"earliest":r.get::<String,_>("earliest"),"latest":r.get::<String,_>("latest"),"basis":"calendar-days"});
     }

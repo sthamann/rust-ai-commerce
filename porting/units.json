@@ -227,6 +227,74 @@
         "additional-typed-hooks",
         "compiler-process-isolation"
       ]
+    },
+    {
+      "id": "managed-apps",
+      "status": "native-prototype",
+      "source": [],
+      "implementation": [
+        "src/apps",
+        "migrations/010-apps-intelligence-payments.sql",
+        "frontend/src/AppsManager.tsx"
+      ],
+      "gates": [
+        [
+          "python3",
+          "scripts/apps.py"
+        ],
+        [
+          "python3",
+          "scripts/services.py"
+        ]
+      ],
+      "remaining": [
+        "original-app-protocol",
+        "signed-packages",
+        "destructive-migrations",
+        "microvm-isolation"
+      ]
+    },
+    {
+      "id": "order-memory",
+      "status": "native-prototype",
+      "source": [],
+      "implementation": [
+        "src/cognition",
+        "src/outbox.rs"
+      ],
+      "gates": [
+        [
+          "python3",
+          "scripts/apps.py"
+        ]
+      ],
+      "remaining": [
+        "randomized-experiments",
+        "causal-uplift",
+        "large-scale-graph"
+      ]
+    },
+    {
+      "id": "sandbox-payment",
+      "status": "native-prototype",
+      "source": [],
+      "implementation": [
+        "src/payments",
+        "src/order_checkout.rs"
+      ],
+      "gates": [
+        [
+          "python3",
+          "scripts/payments.py"
+        ]
+      ],
+      "remaining": [
+        "actual-sandbox-account-run",
+        "shopware-payments-contract",
+        "live-payments",
+        "authorization-void",
+        "refund-event-reconciliation"
+      ]
     }
   ]
 }

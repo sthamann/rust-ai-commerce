@@ -3,6 +3,7 @@ import ProposalCard from "./ProposalCard";
 import PreviewDialog from "./PreviewDialog";
 import MessageText from "./MessageText";
 import UsersManager, { type Session } from "./UsersManager";
+import AppsManager from "./AppsManager";
 import CommerceManager from "./CommerceManager";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Icon, { type IconName } from "./Icon";
@@ -16,7 +17,13 @@ import {
 } from "./StudioViews";
 import "./studio.css";
 type Tab =
-  "assistant" | "overview" | "knowledge" | "agents" | "commerce" | "users";
+  | "assistant"
+  | "overview"
+  | "knowledge"
+  | "agents"
+  | "commerce"
+  | "users"
+  | "apps";
 export default function Merchant({
   onChanged,
   onExit,
@@ -70,9 +77,9 @@ export default function Merchant({
   const bottom = useRef<HTMLDivElement>(null);
   const composer = useRef<HTMLTextAreaElement>(null);
   const request: RequestFn = useCallback(
-    async (path, body) => {
+    async (path, body, method) => {
       const r = await fetch(path, {
-        method: body === undefined ? "GET" : "POST",
+        method: method ?? (body === undefined ? "GET" : "POST"),
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -223,6 +230,7 @@ export default function Merchant({
     { id: "agents", icon: "agents" },
     { id: "commerce", icon: "box" },
     { id: "users", icon: "lock" },
+    { id: "apps", icon: "plus" },
   ];
   return (
     <div className="studio" data-theme={theme}>
@@ -307,7 +315,7 @@ export default function Merchant({
             rel="noreferrer"
           >
             {t("source")}
-            <span>v0.4</span>
+            <span>v0.5</span>
           </a>
         </div>
       </aside>
@@ -678,7 +686,9 @@ export default function Merchant({
                 </div>
               </section>
             ) : data ? (
-              tab === "commerce" ? (
+              tab === "apps" ? (
+                <AppsManager request={request} token={token} role={role} />
+              ) : tab === "commerce" ? (
                 <CommerceManager token={token} />
               ) : tab === "overview" ? (
                 <OverviewView

@@ -1,0 +1,117 @@
+{
+  "id": "engraving",
+  "version": "1.0.0",
+  "coreApi": "1",
+  "runtime": "declarative",
+  "name": {
+    "en": "Product personalization",
+    "de": "Produktpersonalisierung",
+    "fr": "Personnalisation produit",
+    "es": "Personalizaci\u00f3n de productos"
+  },
+  "permissions": [
+    "data.read",
+    "data.write",
+    "storefront.slot",
+    "admin.slot"
+  ],
+  "entities": [
+    {
+      "name": "rules",
+      "fields": [
+        {
+          "name": "fee_minor",
+          "kind": "integer",
+          "required": true,
+          "indexed": false
+        }
+      ],
+      "publicRead": false
+    }
+  ],
+  "slots": [
+    {
+      "location": "product.detail",
+      "component": "engraving",
+      "label": {
+        "en": "Make it yours",
+        "de": "Mach es zu deinem",
+        "fr": "Personnalisez-le",
+        "es": "Hazlo tuyo"
+      }
+    },
+    {
+      "location": "admin.apps",
+      "component": "entity-form",
+      "label": {
+        "en": "Personalization fee",
+        "de": "Personalisierungspreis",
+        "fr": "Prix de personnalisation",
+        "es": "Precio de personalizaci\u00f3n"
+      }
+    },
+    {
+      "location": "admin.order",
+      "component": "entity-list",
+      "label": {
+        "en": "Personalized orders",
+        "de": "Personalisierte Bestellungen",
+        "fr": "Commandes personnalis\u00e9es",
+        "es": "Pedidos personalizados"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "name": "rules",
+      "description": "Read the shop personalization rules",
+      "handler": "list",
+      "entity": "rules",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "public": false
+    },
+    {
+      "name": "save_rules",
+      "description": "Change the personalization fee; explicit merchant action required",
+      "handler": "save",
+      "entity": "rules",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "fields": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "fields"
+        ],
+        "additionalProperties": false
+      },
+      "public": false
+    },
+    {
+      "name": "orders",
+      "description": "Read personalized order positions with their stored configurations",
+      "handler": "configurations",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "public": false
+    }
+  ],
+  "events": []
+}

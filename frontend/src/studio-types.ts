@@ -85,6 +85,7 @@ export type Preview = {
   catalogBefore: Product[];
   proposal: {
     summary: string;
+    app_action?: { app: string; action: string; arguments_json: string } | null;
     changes: {
       product_id: string;
       price?: number | null;
@@ -111,4 +112,8 @@ export type Provider = {
   model: string;
   configured: boolean;
 };
-export type RequestFn = (path: string, body?: unknown) => Promise<any>;
+export type RequestFn = (
+  path: string,
+  body?: unknown,
+  method?: string,
+) => Promise<any>;

@@ -24,6 +24,11 @@ pub(crate) async fn transition_order(
     let kind = v["kind"].as_str().ok_or(bad("Kind required"))?;
     match kind {
         "payment" => {
+            if o["payment"]["provider"] == "paypal" {
+                return Err(conflict(
+                    "External payments require a confirmed provider receipt",
+                ));
+            }
             let current = o["payment"]["state"].as_str().unwrap_or("");
             if target != "paid" || !["pending", "authorized"].contains(&current) {
                 return Err(conflict("Invalid payment transition"));

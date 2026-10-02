@@ -1,0 +1,143 @@
+.app-card {
+  padding: 24px;
+  margin: 18px 0;
+}
+.app-card header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.app-card h2,
+.app-card h3 {
+  margin: 0 0 10px;
+}
+.app-card p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+.app-install,
+.app-actions,
+.app-hypothesis > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0;
+}
+.app-entity {
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+}
+.app-entity form,
+.app-payment form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 14px;
+}
+.app-entity label,
+.app-payment label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.app-entity input,
+.app-payment input {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: inherit;
+}
+.app-records {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.app-records button {
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+}
+.app-card pre {
+  max-height: 260px;
+  overflow: auto;
+  font-size: 12px;
+}
+.app-payment,
+.app-hypothesis {
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.app-slot {
+  border: 1px solid #d4e4f3;
+  background: #f4f9fe;
+  border-radius: 16px;
+  padding: 20px;
+  margin: 20px 0;
+  color: #253b50;
+}
+.app-slot h3 {
+  margin: 0 0 10px;
+}
+.app-slot p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+.app-slot label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.app-slot input {
+  padding: 12px;
+  border: 1px solid #c7d8e8;
+  border-radius: 9px;
+  background: white;
+  color: #253b50;
+  width: 100%;
+  box-sizing: border-box;
+}
+.app-slot button,
+.app-slot a {
+  margin: 10px 10px 0 0;
+}
+.app-hypothesis strong {
+  display: block;
+}
+.studio[data-theme="dark"] .app-slot {
+  background: #1c2938;
+  color: #e6f0fa;
+}
+
+.app-frame {
+  width: 100%;
+  min-height: 320px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin: 18px 0;
+  background: #f4f9ff;
+}
+
+.pdp-recommendations {
+  padding: 32px 0;
+  border-top: 1px solid #d4e4f3;
+}
+.pdp-recommendations > div {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.pdp-recommendations a {
+  display: grid;
+  gap: 8px;
+  background: #f4f9fe;
+  padding: 18px;
+  border-radius: 14px;
+  color: #253b50;
+  text-decoration: none;
+}

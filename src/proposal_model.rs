@@ -14,6 +14,8 @@ pub(crate) struct Change {
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub(crate) struct Proposal {
+    #[serde(default)]
+    pub(crate) app_action: Option<apps::AppChange>,
     pub(crate) summary: String,
     pub(crate) changes: Vec<Change>,
     #[serde(default)]

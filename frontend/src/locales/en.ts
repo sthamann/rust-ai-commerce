@@ -1,5 +1,6 @@
 /** Merchant interface strings: en. */
 export const en = {
+  apps: "Apps & payments",
   readOnly:
     "Read-only access: an editor or administrator must approve this change.",
   users: "Team & access",

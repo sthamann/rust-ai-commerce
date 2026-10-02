@@ -23,6 +23,9 @@ pub(crate) fn permit(h: &HeaderMap, kind: &str) -> Result<()> {
     }
 }
 fn action(path: &str, method: &str) -> &'static str {
+    if path.starts_with("/api/apps/") && path.contains("/actions/") {
+        return "read";
+    }
     if path.starts_with("/api/workspace/") {
         return "users";
     }

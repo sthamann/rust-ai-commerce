@@ -1,5 +1,6 @@
 /** ProposalCard keeps merchant interaction separate from workspace orchestration. */
 import Icon from "./Icon";
+import { useAppText } from "./app-i18n";
 import { useLocale } from "./i18n";
 import type { Message } from "./studio-types";
 export default function ProposalCard({
@@ -14,10 +15,16 @@ export default function ProposalCard({
   canApply: boolean;
 }) {
   const { t, money } = useLocale();
+  const { a } = useAppText();
   const preview = message.data.preview;
   if (!preview) return null;
   const changes = preview.proposal.changes;
-  if (!changes.length && !preview.proposal.experience) return null;
+  if (
+    !changes.length &&
+    !preview.proposal.experience &&
+    !preview.proposal.app_action
+  )
+    return null;
   return (
     <section
       className={`proposal-review ${message.applied ? "is-applied" : ""}`}
@@ -64,6 +71,24 @@ export default function ProposalCard({
           </div>
         );
       })}
+      {preview.proposal.app_action && (
+        <div className="review-product">
+          <b>{preview.proposal.app_action.app}</b>
+          <p>{preview.proposal.app_action.action}</p>
+          {Object.entries(
+            JSON.parse(preview.proposal.app_action.arguments_json).fields ?? {},
+          ).map(([field, value]) => (
+            <p key={field}>
+              <span>{a(field)}</span> ·{" "}
+              <strong>
+                {field === "fee_minor" && typeof value === "number"
+                  ? money(value / 100)
+                  : String(value)}
+              </strong>
+            </p>
+          ))}
+        </div>
+      )}
       {preview.proposal.experience && (
         <div className="review-product">
           <b>{t("storefront")}</b>

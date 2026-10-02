@@ -29,7 +29,7 @@ pub(crate) fn quote(c: &StoredCart, ps: &[Product]) -> Result<Value> {
         } else {
             p.price
         };
-        let calc = calculate(&PriceInput {
+        let mut calc = calculate(&PriceInput {
             price: base * discount,
             quantity: i.quantity,
             tax_rate: p.tax_rate,
@@ -47,9 +47,35 @@ pub(crate) fn quote(c: &StoredCart, ps: &[Product]) -> Result<Value> {
             reference: p.reference_price.clone(),
             ..PriceInput::default()
         });
+        if let Some(config) = c.data.app_configurations.get(&i.id) {
+            let gross = config.fee_minor as f64 / 100.;
+            let fee = calculate(&PriceInput {
+                price: if b2b {
+                    gross / (1. + p.tax_rate / 100.)
+                } else {
+                    gross
+                },
+                quantity: i.quantity,
+                tax_rate: p.tax_rate,
+                gross: !b2b,
+                ..PriceInput::default()
+            });
+            calc.unit_price = math_round(calc.unit_price + fee.unit_price, 2);
+            calc.total_price = math_round(calc.total_price + fee.total_price, 2);
+            calc.tax = math_round(calc.tax + fee.tax, 2);
+            calc.calculated_taxes.extend(fee.calculated_taxes);
+        }
         total += calc.total_price;
         taxes += calc.tax;
         lines.push(json!({"id":p.id,"referencedId":p.id,"label":format!("{}{}",p.name,p.options.as_object().filter(|o|!o.is_empty()).map(|o|format!(" · {}",o.values().filter_map(|v|v.as_str()).collect::<Vec<_>>().join(" / "))).unwrap_or_default()),"quantity":i.quantity,"stock":p.stock,"price":{"unitPrice":calc.unit_price,"totalPrice":calc.total_price,"calculatedTaxes":calc.calculated_taxes.iter().map(|t|json!({"tax":t.tax,"taxRate":t.tax_rate,"price":t.price})).collect::<Vec<_>>(),"listPrice":calc.list_price,"regulationPrice":calc.regulation_price.map(|price|json!({"price":price})),"referencePrice":calc.reference_price},"discountPercent":math_round((1.-discount)*100.,0),"ruleId":tier.map(|t|&t.rule_id),"minPurchase":p.min_purchase,"purchaseSteps":p.purchase_steps,"maxPurchase":p.max_purchase}));
+    }
+    for line in &mut lines {
+        if let Some(config) = line["id"]
+            .as_str()
+            .and_then(|id| c.data.app_configurations.get(id))
+        {
+            line["configuration"] = json!({"app":"engraving","version":config.app_version,"text":config.text,"feeMinor":config.fee_minor});
+        }
     }
     let total = math_round(total, 2);
     let taxes = math_round(taxes, 2);

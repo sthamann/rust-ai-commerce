@@ -50,6 +50,7 @@ pub(crate) async fn new_cart(
         tenant: t.into(),
         token: uid(),
         data: Cart {
+            app_configurations: HashMap::new(),
             items: vec![],
             group: "consumer".into(),
             email: None,

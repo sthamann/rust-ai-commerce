@@ -2,17 +2,21 @@
 import { useEffect, useState } from "react";
 import { useShopText } from "./shop-i18n";
 import { shopApi, type Cart, type Detail } from "./shop-api";
+import MemoryRecommendations from "./MemoryRecommendations";
+import AppSlot from "./AppSlot";
 import Icon from "./Icon";
 export default function ProductPage({
   id,
   cart,
   busy,
   onAdd,
+  onCart,
 }: {
   id: string;
   cart?: Cart;
   busy: boolean;
   onAdd: (id: string, q: number) => void;
+  onCart: (c: Cart) => void;
 }) {
   const { s, money, locale } = useShopText();
   const [data, setData] = useState<Detail>();
@@ -186,6 +190,7 @@ export default function ProductPage({
             <span>SKU {p.id}</span>
           </div>
           {!p.stock && <small>{s("soldHint")}</small>}
+          <AppSlot productId={p.id} cart={cart} onCart={onCart} />
           <div className="pdp-buy">
             <label>
               {s("quantity")}
@@ -286,6 +291,7 @@ export default function ProductPage({
           </dl>
         </section>
       </div>
+      <MemoryRecommendations productId={p.id} />
       <section className="pdp-reviews" id="product-reviews">
         <div>
           <p className="shop-kicker">03 / {s("reviews")}</p>

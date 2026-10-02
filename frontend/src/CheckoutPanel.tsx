@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useShopText } from "./shop-i18n";
 import type { Cart, Order, Selection } from "./shop-api";
+import PaymentSession from "./PaymentSession";
 import Icon from "./Icon";
 export default function CheckoutPanel({
   cart,
@@ -78,6 +79,9 @@ export default function CheckoutPanel({
               </small>
             </div>
           </div>
+        )}
+        {order?.payment.attemptId && cart && (
+          <PaymentSession id={order.payment.attemptId} token={cart.token} />
         )}
         {!cart?.lineItems.length ? (
           <p>{s("empty")}</p>

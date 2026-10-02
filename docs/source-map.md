@@ -78,6 +78,36 @@ inputs and state effects. A module's presence does not count as a test.
 | [`src/studio.rs`](../src/studio.rs) | Verified merchant overview facts consumed by the chat and activity views. | `studio.py + users.py` |
 | [`src/ucp.rs`](../src/ucp.rs) | Selected UCP checkout adapters sharing the native cart. | `protocols.py + integration.py + commerce.py + users.py` |
 
+## New v0.5 modules
+
+| File | Responsibility | Coverage |
+|---|---|---|
+| [`src/apps/configurator.rs`](../src/apps/configurator.rs) | Engraving example: server-owned surcharge, typed cart data and checkout revision verification. | `apps.py + services.py + providers.py + app_inference.py` |
+| [`src/apps/data.rs`](../src/apps/data.rs) | Managed app tables: typed writes, optimistic revisions, bounded reads and local RLS context. | `apps.py + services.py + providers.py + app_inference.py` |
+| [`src/apps/events.rs`](../src/apps/events.rs) | Durable at-least-once app events, retry leases and stable event idempotency keys. | `apps.py + services.py + providers.py + app_inference.py` |
+| [`src/apps/gateway.rs`](../src/apps/gateway.rs) | One permission-aware action gateway serves HTTP, UI and MCP; service egress is operator configured. | `apps.py + services.py + providers.py + app_inference.py` |
+| [`src/apps/manifest.rs`](../src/apps/manifest.rs) | Strict package contract; identifiers and limits are checked before any schema DDL. | `apps.py + services.py + providers.py + app_inference.py` |
+| [`src/apps/mod.rs`](../src/apps/mod.rs) | Versioned app packages: managed data, UI slots, agent tools and isolated service calls. | `apps.py + services.py + providers.py + app_inference.py` |
+| [`src/apps/planning.rs`](../src/apps/planning.rs) | Registered managed app actions join the same preview/approve transaction as core changes. | `apps.py + services.py + providers.py + app_inference.py` |
+| [`src/apps/registry.rs`](../src/apps/registry.rs) | Atomic installation and additive schema upgrades; immutable version digests preserve history. | `apps.py + services.py + providers.py + app_inference.py` |
+| [`src/apps/routes.rs`](../src/apps/routes.rs) | Tenant-scoped package lifecycle, generated data endpoints and a shared action adapter. | `apps.py + services.py + providers.py + app_inference.py` |
+| [`src/cognition/context.rs`](../src/cognition/context.rs) | Bounded localized catalog retrieval before inference; full catalog size never expands the prompt. | `apps.py + live intelligence.py/studio.py + restart.py` |
+| [`src/cognition/mod.rs`](../src/cognition/mod.rs) | Evidence-based shop memory: event receipts, observed pairs, reviewable hypotheses and bounded context. | `apps.py + live intelligence.py/studio.py + restart.py` |
+| [`src/cognition/projection.rs`](../src/cognition/projection.rs) | Exactly-once local observation projection; associations retain order/event evidence and simulation labels. | `apps.py + live intelligence.py/studio.py + restart.py` |
+| [`src/cognition/recommendations.rs`](../src/cognition/recommendations.rs) | Merchant-approved associations are consumed by the public shop without exposing order counts or identities. | `apps.py + live intelligence.py/studio.py + restart.py` |
+| [`src/cognition/routes.rs`](../src/cognition/routes.rs) | Merchant memory endpoints and revision-bound experiment/dismissal decisions. | `apps.py + live intelligence.py/studio.py + restart.py` |
+| [`src/payments/mod.rs`](../src/payments/mod.rs) | Provider-independent payment ledger and durable workers; the first adapter is explicitly PayPal Sandbox. | `payments.py (local wire fixture) + Rust integer-money tests` |
+| [`src/payments/operations.rs`](../src/payments/operations.rs) | Durable idempotent payment commands, customer context binding and serial refund admission. | `payments.py (local wire fixture) + Rust integer-money tests` |
+| [`src/payments/paypal.rs`](../src/payments/paypal.rs) | Native PayPal Orders v2 sandbox wire adapter; credentials never enter prompts or browser responses. | `payments.py (local wire fixture) + Rust integer-money tests` |
+| [`src/payments/provider.rs`](../src/payments/provider.rs) | Payment provider identity, tenant account configuration and immutable wire context. | `payments.py (local wire fixture) + Rust integer-money tests` |
+| [`src/payments/routes.rs`](../src/payments/routes.rs) | Customer payment status/capture and merchant refund operations share the durable command API. | `payments.py (local wire fixture) + Rust integer-money tests` |
+| [`src/payments/storage.rs`](../src/payments/storage.rs) | Transactional provider receipts and order state updates; external responses cannot invent amounts or tenants. | `payments.py (local wire fixture) + Rust integer-money tests` |
+| [`src/payments/webhooks.rs`](../src/payments/webhooks.rs) | PayPal verifies webhook signatures before inbox insertion; provider reconciliation confirms monetary state. | `payments.py (local wire fixture) + Rust integer-money tests` |
+| [`src/payments/worker.rs`](../src/payments/worker.rs) | Leased payment jobs; network runs after claim commit, fenced receipts prevent duplicate local effects. | `payments.py (local wire fixture) + Rust integer-money tests` |
+| [`src/chat_lease.rs`](../src/chat_lease.rs) | Short, cross-replica conversation leases; inference never retains a database transaction. | `providers.py` |
+| [`src/workers.rs`](../src/workers.rs) | Independently deployable worker roles; leases and durable receipts coordinate replicas. | `services.py + payments.py` |
+| [`src/http_limits.rs`](../src/http_limits.rs) | Bounded streaming responses for extension services and payment providers. | `services.py + payments.py + build` |
+
 ## Frontend
 
 | File/group | Responsibility | Verification |
@@ -99,13 +129,24 @@ committed automated browser regression suite. Accessibility, assistive-device
 coverage, all mobile breakpoints and exhaustive visual diffs remain additional
 work; do not infer those from screenshots or typechecking.
 
+App frontend modules: `AppsManager`/`AppEntity` manage lifecycle/data;
+`AppFrame` provides the constrained iframe SDK bridge; `AppSlot` personalizes
+products; `PaymentSession`/`PaymentManager` display customer/provider state;
+`MemoryView`/`MemoryRecommendations` connect evidence to approved suggestions.
+`app-i18n` supplies four-language host vocabulary; `apps.css` scopes their layout.
+Verification: strict build plus actual browser navigation/data/configuration,
+backed by `apps.py`, `services.py`, `payments.py` and `providers.py`. No automated
+visual/iframe-browser regression suite is claimed.
+
 ## Persistence, fixtures and tooling
 
 Migrations 001–005 retain the earlier core/graph/context model. 006 adds SKU
 metadata, review storage and commerce settings; 007 initializes synthetic demo
 commerce once; 008 adds personal users/memberships/invitations/sessions; 009
 corrects template variant capacity and the authored example review. Migrations
-are additive; existing stock/orders/prices are retained. No production Shopware
+are additive; existing stock/orders/prices are retained. Migration 010 adds
+managed app metadata/DDL, event deliveries, knowledge evidence and payment
+attempts/jobs/inbox/reservations; core monetary quotes retain their original shape. No production Shopware
 store is imported by these migrations.
 
 `fixtures/demo-catalog.json` and `demo-settings.json` are fixed public templates

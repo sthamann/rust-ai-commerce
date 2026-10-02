@@ -41,6 +41,7 @@ pub(crate) async fn catalog(State(a): State<App>, h: HeaderMap) -> Result<Json<V
                 revision: 0,
                 status: "preview".into(),
                 data: Cart {
+                    app_configurations: HashMap::new(),
                     items: vec![],
                     group: "consumer".into(),
                     email: None,

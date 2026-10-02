@@ -4,6 +4,7 @@ use crate::*;
 #[derive(Clone)]
 pub(crate) struct App {
     pub(crate) db: PgPool,
+    pub(crate) inference_slots: Arc<tokio::sync::Semaphore>,
     pub(crate) token: Arc<String>,
     pub(crate) http: reqwest::Client,
     pub(crate) inference: Inference,
