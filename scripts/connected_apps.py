@@ -311,6 +311,10 @@ with tempfile.TemporaryDirectory(prefix="commerce-connectors-") as folder:
 
     try:
         wait(ready)
+        with urllib.request.urlopen(base + "/store-api/apps/analytics.js") as response:
+            assert response.headers.get_content_type() == "text/javascript"
+            assert response.headers.get("X-Content-Type-Options") == "nosniff"
+            assert response.read().decode() == (ROOT / "extensions/sdk/analytics.js").read_text()
 
         def user():
             return api(

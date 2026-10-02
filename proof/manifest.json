@@ -262,8 +262,8 @@
     },
     "src/apps/routes.rs": {
       "status": "unproved",
-      "sha256": "92fd85ed30558dac814f5fc15a6afd8f4acefe5c9735b07db93a9bd24eed4c90",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "5defac62b96283f252039f692674991fd913a1d830a7acac2cb5960a784acbc5",
+      "review": "Reviewed public SDK route: fixed compile-time credential-free source, JavaScript MIME, nosniff; fixture checks exact production adapter; no tenant state or action permission bypass. Shared adapter accepts only ISO currency codes."
     },
     "src/apps/runtime.rs": {
       "status": "unproved",

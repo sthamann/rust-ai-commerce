@@ -63,7 +63,7 @@ export function createAnalytics({
     if (!active || !allowed.has(name)) return false;
     const clean = {
       send_to: measurementId,
-      currency: "EUR",
+      currency: /^[A-Z]{3}$/.test(data.currency || "") ? data.currency : "EUR",
       sales_channel: channel,
     };
     if (data.items)

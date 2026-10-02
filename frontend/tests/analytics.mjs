@@ -9,6 +9,7 @@ const a=context.createAnalytics({shop:'a',channel:'one',measurementId:'G-TEST123
 assert.equal(scripts.length,0);assert.equal(a.event('purchase',{transaction_id:'before'}),false);
 a.consent(true);assert.equal(scripts.length,1);assert.equal(scripts[0].src,'https://www.googletagmanager.com/gtag/js?id=G-TEST12345');
 a.event('view_item',{items:[{item_id:'mug',item_name:'Mug',price:24.9,quantity:1,email:'private@example.test'}],email:'private@example.test'});
+a.event('view_item',{currency:'USD',items:[{item_id:'mug'}]});assert(JSON.stringify(context.window.dataLayer).includes('USD'));
 a.event('page_view',{});assert(a.event('purchase',{transaction_id:'order-one',value:24.9}));assert(!a.event('purchase',{transaction_id:'order-one',value:24.9}));
 let layer=JSON.stringify(context.window.dataLayer);assert(!layer.includes('private-ticket'));assert(!layer.includes('private@example.test'));assert(layer.includes('view_item'));assert(layer.includes('purchase'));assert(layer.includes('send_to'));
 a.consent(false);assert.equal(scripts.length,0);assert(!a.event('view_item',{}));assert(context.window['ga-disable-G-TEST12345']);

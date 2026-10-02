@@ -172,3 +172,19 @@ Primary contracts:
 [Gmail history](https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.history/list),
 [Slack posting](https://docs.slack.dev/reference/methods/chat.postMessage/),
 [Slack OAuth](https://docs.slack.dev/authentication/installing-with-oauth/).
+
+## Storyfront integration
+
+The companion Storyfront connector reads only the admitted shop's public measurement
+ID through its server-side commerce bridge. It serves the identical consent adapter
+from `/store-api/apps/analytics.js` through a same-origin proxy. Consent controls are
+available in English, German, French and Spanish. No configured app means no Google
+script. Page/product views, actual bag additions and authoritative checkout transfers
+produce events after consent; purchases are recorded by the native checkout.
+
+Storyfront view/bag events use its public product IDs; checkout events use the native
+SKU IDs from the reviewed cart. Their identifiers can differ after slug normalization;
+this release does not reconcile those identifiers in GA reports. The initial connector
+uses the `default` sales channel. Native storefronts support per-channel measurement
+IDs. There is no cross-domain identity stitching or automatic consent transfer between
+Storyfront and the native checkout.

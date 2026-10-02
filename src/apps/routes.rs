@@ -3,6 +3,7 @@ use super::*;
 pub(crate) fn app_router() -> Router<App> {
     Router::new()
         .merge(evidence_routes::router())
+        .route("/store-api/apps/analytics.js", get(analytics_sdk))
         .route("/api/apps", get(app_list).post(app_install))
         .route("/api/apps/{id}", axum::routing::put(app_state))
         .route("/api/apps/{id}/actions/{action}", post(app_action))
@@ -175,4 +176,16 @@ async fn configure_action(
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     Ok(Json(configure(&a, &h, &id, &v).await?))
+}
+
+/// The shared public consent adapter contains no tenant configuration or provider credentials.
+async fn analytics_sdk() -> impl axum::response::IntoResponse {
+    (
+        [
+            ("content-type", "text/javascript; charset=utf-8"),
+            ("cache-control", "public, max-age=3600"),
+            ("x-content-type-options", "nosniff"),
+        ],
+        include_str!("../../extensions/sdk/analytics.js"),
+    )
 }
