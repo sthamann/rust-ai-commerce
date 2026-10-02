@@ -641,7 +641,7 @@
     "report": "formal-verification.json",
     "guide": "formal-verification.md",
     "policies": 13,
-    "theorems": 20,
+    "theorems": 33,
     "compiledComparisons": 3558,
     "entireCoreProved": false
   },

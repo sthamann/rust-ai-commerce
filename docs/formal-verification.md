@@ -1,7 +1,7 @@
 # Lean-checked commerce contracts
 
 The prototype now runs Lean 4.29.1 proofs for **13 policies used in production
-Rust paths**. Twenty theorems cover the properties below. This is **not a
+Rust paths**. Thirty-three theorems cover the properties below. This is **not a
 certificate that the entire commerce core is correct or bug-free**. The current
 inventory contains 146 Rust modules: one extracted policy module, eight reviewed
 binding modules, one comparison driver and 136 unproved modules. Binding review
@@ -55,6 +55,11 @@ they do not prove the translator correct for every program.
 | `checkout_contact_admissible` | Financial checkout requires email and billing data; simulated checkout has an explicit exception | `src/order_checkout.rs` |
 | `receipt_admissible` | Accepted provider receipts match amount and currency and confirm the outcome | `src/payments/receipt_guard.rs` |
 
+Every policy also has an exact acceptance theorem. This proves that valid
+inputs are accepted as well as unsafe inputs rejected; replacing a policy with
+`false` (or a discount cap with zero) fails. These are contracts on supplied
+facts, not proofs that database/network adapters obtain those facts correctly.
+
 The [proof statements](../proof/Commerce/Claims.lean) and
 [source inventory](../proof/manifest.json) are the precise scope. For example,
 the discount cap theorem does **not** prove the complete tax/rounding/distribution
@@ -73,13 +78,13 @@ The existing **Verify prototype / verify** job now also:
    verification workflow also require an explicit recorded review after changes.
 3. Builds proofs with the pinned Lean toolchain and rechecks compiled declarations
    using bundled `leanchecker`.
-4. Audits all 20 required theorems' transitive axioms. Only Lean's standard
+4. Audits all 33 required theorems' transitive axioms. Only Lean's standard
    `propext`, `Quot.sound` and `Classical.choice` foundations are allowed. `sorry`,
    `admit`, custom axioms, `native_decide` and missing theorem audits fail.
 5. Executes compiled Rust and Lean functions on **3,558** identical inputs:
    exhaustive Boolean assignments plus numeric boundaries/random cases, including
    `u64::MAX`. Their output types and values must match.
-6. Requires Lean to reject **15** deliberately broken policy variants. Also
+6. Requires Lean to reject **28** deliberately broken policy variants. Also
    rejects 14 unsupported grammar examples, three stale/unclassified/disconnected
    inventory cases and nine proof-shortcut/axiom/missing-audit examples.
 7. Runs existing Rust, PHP-reference and real PostgreSQL HTTP regressions.

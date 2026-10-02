@@ -83,4 +83,66 @@ theorem receipt_exact (expected received : Nat) (currency confirmed : Bool)
     (h : receipt_admissible expected received currency confirmed = true) :
     expected = received ∧ currency = true ∧ confirmed = true := by
   simpa [receipt_admissible, and_assoc] using h
+
+/-- The cap also preserves every valid requested discount exactly. -/
+theorem discount_exact (total requested : Nat) : discount_cap total requested = min total requested := by
+  rfl
+/-- Valid stock reservations are accepted, not merely safe when accepted. -/
+theorem stock_exact (stock quantity : Nat) :
+    stock_admissible stock quantity = true ↔ 0 < quantity ∧ quantity ≤ stock := by
+  simp [stock_admissible]
+/-- Exact refund admission includes completeness for valid refunds. -/
+theorem refund_exact (captured refunded requested : Nat) :
+    refund_admissible captured refunded requested = true ↔
+    0 < requested ∧ refunded + requested ≤ captured := by
+  simp only [refund_admissible, Bool.and_eq_true, decide_eq_true_eq]
+  omega
+/-- Correct positive revisions are always admitted. -/
+theorem revision_exact_behavior (current expected : Nat) :
+    revision_admissible current expected = true ↔ 0 < current ∧ current = expected := by
+  simp [revision_admissible]
+/-- Exact replay behavior preserves valid same-cart retries. -/
+theorem replay_exact (sameCart cartOpen fingerprint : Bool) :
+    replay_admissible sameCart cartOpen fingerprint = true ↔
+    sameCart = true ∧ (cartOpen = false ∨ fingerprint = true) := by
+  cases sameCart <;> cases cartOpen <;> cases fingerprint <;> simp [replay_admissible]
+/-- Authentication, recognized scope and an actual grant are necessary and sufficient. -/
+theorem scope_exact (auth known owner explicit grant fallback : Bool) :
+    scope_admissible auth known owner explicit grant fallback = true ↔
+    auth = true ∧ known = true ∧ (owner = true ∨ (explicit = true ∧ grant = true) ∨
+      (explicit = false ∧ fallback = true)) := by
+  cases auth <;> cases known <;> cases owner <;> cases explicit <;> cases grant <;> cases fallback <;> simp [scope_admissible]
+/-- Nonterminal operational edits remain possible. -/
+theorem order_edit_exact (terminal : Bool) : order_edit_admissible terminal = true ↔ terminal = false := by
+  cases terminal <;> simp [order_edit_admissible]
+/-- Ready nonterminal orders can complete. -/
+theorem completion_exact (terminal payment deliveries : Bool) :
+    completion_admissible terminal payment deliveries = true ↔
+    terminal = false ∧ payment = true ∧ deliveries = true := by
+  cases terminal <;> cases payment <;> cases deliveries <;> simp [completion_admissible]
+/-- Native cancellation is admitted precisely within the business guard. -/
+theorem cancellation_exact (terminal external refund deliveries : Bool) :
+    cancellation_admissible terminal external refund deliveries = true ↔
+    terminal = false ∧ external = false ∧ refund = false ∧ deliveries = true := by
+  cases terminal <;> cases external <;> cases refund <;> cases deliveries <;> simp [cancellation_admissible]
+/-- Valid native manual payments remain possible. -/
+theorem manual_payment_exact (terminal external pending targetPaid : Bool) :
+    manual_payment_admissible terminal external pending targetPaid = true ↔
+    terminal = false ∧ external = false ∧ pending = true ∧ targetPaid = true := by
+  cases terminal <;> cases external <;> cases pending <;> cases targetPaid <;> simp [manual_payment_admissible]
+/-- Unblocked paid/simulated orders receive their permitted download. -/
+theorem download_exact (blocked paid simulated : Bool) :
+    download_admissible blocked paid simulated = true ↔
+    blocked = false ∧ (paid = true ∨ simulated = true) := by
+  cases blocked <;> cases paid <;> cases simulated <;> simp [download_admissible]
+/-- Contact admission preserves both financial and explicitly simulated behavior. -/
+theorem checkout_contact_exact (simulated email billing : Bool) :
+    checkout_contact_admissible simulated email billing = true ↔
+    simulated = true ∨ (email = true ∧ billing = true) := by
+  cases simulated <;> cases email <;> cases billing <;> simp [checkout_contact_admissible]
+/-- Exact matching receipts are accepted as well as mismatches rejected. -/
+theorem receipt_exact_behavior (expected received : Nat) (currency confirmed : Bool) :
+    receipt_admissible expected received currency confirmed = true ↔
+    expected = received ∧ currency = true ∧ confirmed = true := by
+  simp [receipt_admissible, and_assoc]
 end CommerceKernel

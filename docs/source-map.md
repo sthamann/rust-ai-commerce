@@ -237,7 +237,7 @@ this does not claim every source line or every original Shopware operation is co
 
 | File | Responsibility | Verification |
 |---|---|---|
-| [`src/verified_kernel.rs`](../src/verified_kernel.rs) | Thirteen pure production admission/cap policies | Twenty Lean theorems; compiled Rust/Lean conformance; broken-policy mutations |
+| [`src/verified_kernel.rs`](../src/verified_kernel.rs) | Thirteen pure production admission/cap policies | Thirty-three Lean theorems; compiled Rust/Lean conformance; broken-policy mutations |
 | [`src/bin/verified_kernel.rs`](../src/bin/verified_kernel.rs) | Generated JSON comparison driver calling the real policy module | 3,558 comparison cases; generated drift guard |
 | [`src/payments/receipt_guard.rs`](../src/payments/receipt_guard.rs) | Checked amount conversion and provider receipt policy binding | `payments.py`; reviewed binding, not a proof of the parser |
 

@@ -1,12 +1,12 @@
 {
   "status": "passed",
   "scope": "Extracted production policies; NOT full Rust/server correctness",
-  "sourceCommit": "7cb0cbd5cd85f6031574afd198c4cc8afd64b2dc",
+  "sourceCommit": "94096cda924b9f4458ff48f75b7bdf22995ecd93",
   "workingTreeChanged": true,
   "leanToolchain": "leanprover/lean4:v4.29.1",
   "policies": 13,
   "axiomAudit": {
-    "theorems": 20,
+    "theorems": 33,
     "sorry": 0,
     "customAxioms": 0,
     "nativeDecisionAxioms": 0,
@@ -40,7 +40,7 @@
     "Operating system and provider protocols"
   ],
   "negativeControls": {
-    "brokenPoliciesRejectedByLean": 15,
+    "brokenPoliciesRejectedByLean": 28,
     "unsupportedSyntaxRejected": 14,
     "staleUnclassifiedDisconnectedBindingsRejected": 3,
     "proofShortcutsUnexpectedAxiomsMissingAuditsRejected": 9,

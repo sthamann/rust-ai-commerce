@@ -9,7 +9,8 @@
       "theorems": [
         "discount_bounded",
         "discount_requested",
-        "discount_conservation"
+        "discount_conservation",
+        "discount_exact"
       ]
     },
     "stock_admissible": {
@@ -18,7 +19,8 @@
       ],
       "theorems": [
         "stock_positive_bounded",
-        "stock_conservation"
+        "stock_conservation",
+        "stock_exact"
       ]
     },
     "refund_admissible": {
@@ -27,7 +29,8 @@
       ],
       "theorems": [
         "refund_bounded",
-        "refund_zero_denied"
+        "refund_zero_denied",
+        "refund_exact"
       ]
     },
     "revision_admissible": {
@@ -35,7 +38,8 @@
         "src/commerce/fulfillment.rs"
       ],
       "theorems": [
-        "revision_exact"
+        "revision_exact",
+        "revision_exact_behavior"
       ]
     },
     "replay_admissible": {
@@ -44,7 +48,8 @@
       ],
       "theorems": [
         "replay_same_cart",
-        "replay_open_fingerprint"
+        "replay_open_fingerprint",
+        "replay_exact"
       ]
     },
     "scope_admissible": {
@@ -53,7 +58,8 @@
       ],
       "theorems": [
         "scope_authenticated_known",
-        "scope_explicit_no_escalation"
+        "scope_explicit_no_escalation",
+        "scope_exact"
       ]
     },
     "order_edit_admissible": {
@@ -61,7 +67,8 @@
         "src/commerce/order_workflow.rs"
       ],
       "theorems": [
-        "terminal_edit_denied"
+        "terminal_edit_denied",
+        "order_edit_exact"
       ]
     },
     "completion_admissible": {
@@ -69,7 +76,8 @@
         "src/commerce/order_workflow.rs"
       ],
       "theorems": [
-        "completion_safe"
+        "completion_safe",
+        "completion_exact"
       ]
     },
     "cancellation_admissible": {
@@ -77,7 +85,8 @@
         "src/commerce/order_workflow.rs"
       ],
       "theorems": [
-        "cancellation_safe"
+        "cancellation_safe",
+        "cancellation_exact"
       ]
     },
     "manual_payment_admissible": {
@@ -85,7 +94,8 @@
         "src/commerce/fulfillment.rs"
       ],
       "theorems": [
-        "manual_payment_safe"
+        "manual_payment_safe",
+        "manual_payment_exact"
       ]
     },
     "download_admissible": {
@@ -94,7 +104,8 @@
       ],
       "theorems": [
         "download_blocked_denied",
-        "download_payment_required"
+        "download_payment_required",
+        "download_exact"
       ]
     },
     "checkout_contact_admissible": {
@@ -102,7 +113,8 @@
         "src/order_checkout.rs"
       ],
       "theorems": [
-        "financial_contact_required"
+        "financial_contact_required",
+        "checkout_contact_exact"
       ]
     },
     "receipt_admissible": {
@@ -110,7 +122,8 @@
         "src/payments/receipt_guard.rs"
       ],
       "theorems": [
-        "receipt_exact"
+        "receipt_exact",
+        "receipt_exact_behavior"
       ]
     }
   },
@@ -948,8 +961,8 @@
       "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
     },
     "proof/Commerce/Claims.lean": {
-      "sha256": "1654c7d3a7c75bffe2a8aa9581a1c469259a25a1ca28843f001909ca6586c78f",
-      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+      "sha256": "e612082974c6bcfab52d493a92b872963d38b4bbcbee596bf992f33c2dfb9cae",
+      "review": "Added necessary-and-sufficient admission contracts and exact discount behavior; deny-all mutations must fail, production Rust unchanged"
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -972,8 +985,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "43c58598bda4188ef3f96d439a2de6331a28f46a5d05e88006ed2794e1e30ad4",
-      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+      "sha256": "39816bb1f86a21f67fb87c860b0ee54cec047722a71732de55e21c63883c6bf1",
+      "review": "Added necessary-and-sufficient admission contracts and exact discount behavior; deny-all mutations must fail, production Rust unchanged"
     },
     "scripts/formal/registry.py": {
       "sha256": "a1836d65c2e2cebfce3d82fe31381508dbdcc71ff0a430922c3316c995261197",

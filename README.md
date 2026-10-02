@@ -62,7 +62,7 @@ Shopware Payments connector are still missing.
 ## Lean-checked production policies
 
 The real Rust checkout, order workflow, access, refund and download paths now
-call a small pure kernel with **13 policies and 20 Lean-proved properties**.
+call a small pure kernel with **13 policies and 33 Lean-proved properties**.
 The production functions are extracted through a closed typed grammar; compiled
 Rust/Lean outputs are compared on 3,558 cases. Deliberately broken policies must
 fail the proof checks. CI also audits transitive axioms and locks every Rust,

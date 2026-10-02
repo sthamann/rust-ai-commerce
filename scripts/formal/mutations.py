@@ -43,12 +43,13 @@ def proof_failures(root):
             return subprocess.run(['elan','run',toolchain,'lean','Commerce/Claims.lean'],cwd=path,env=env,capture_output=True,text=True)
         baseline=compile_model(source)
         if baseline.returncode:raise ValueError('Negative-control baseline failed: '+baseline.stdout+baseline.stderr)
-        for name,old,new in MUTANTS:
+        rejecting=[(f.name, re.sub(r'\s+',' ',re.search(r'pub fn '+f.name+r'\([^{}]*\) -> (?:bool|u64) \{([^{}]*)\}',source).group(1)).strip(), 'false' if f.result=='bool' else '0') for f in Parser(source).parse()]
+        for name,old,new in [*MUTANTS,*rejecting]:
             result=compile_model(mutated(source,name,old,new))
             if result.returncode==0:raise ValueError('Lean accepted broken policy '+name+': '+new)
             if not any(s in result.stdout for s in ['unsolved goals','Type mismatch','type mismatch','omega could not prove','Tactic `rfl` failed']):
                 raise ValueError('Mutation failed for infrastructure rather than a property: '+result.stdout+result.stderr)
-    return len(MUTANTS)
+    return len(MUTANTS)+len(rejecting)
 
 def closed_grammar():
     bad=['x + 1','x - 1','x * 2','x.wrapping_add(1)','x as u64','if true { x } else { 0 }','{ x }',

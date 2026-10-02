@@ -96,7 +96,7 @@ remain the narrowly specified pricing/context/shipping-tax/rule-comparison ports
 
 ## Formal safeguards (additional to upstream behavior comparison)
 
-Thirteen selected Rust commerce policies are backed by twenty Lean theorems and
+Thirteen selected Rust commerce policies are backed by thirty-three Lean theorems and
 compiled Rust/Lean conformance checks. They preserve native admission/cap rules
 in checkout, permissions, operational transitions, refunds, receipts and downloads.
 This is a bounded new safeguard, **not proof of full Shopware equivalence** or of
