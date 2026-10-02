@@ -103,3 +103,26 @@ This is a bounded new safeguard, **not proof of full Shopware equivalence** or o
 all surrounding implementation. The original PHP differential suites and real
 HTTP/PostgreSQL checks remain separate. See [formal coverage](formal-verification.md)
 and the machine-readable inventory in `proof/manifest.json`.
+
+## Connected-app migration update
+
+The rule framework now shares original Shopware numeric, string, string-array and UUID
+comparison behavior, checked against 1,976 PHP cases. The graphical rule editor edits
+real AND/OR/NOT condition trees; original supported condition payloads normalize through
+`/api/automation/import-condition`. The common native checkout scopes include customer
+email/authentication/group, country, shipping/payment method, sales channel and cart
+conditions. `cartLineItem` handles parent-product matching and original per-line negative
+operators, and `cartLineItemsInCartCount`/`customerCustomerGroup` are accepted source names.
+
+This is **partial condition-catalog parity**: 15 of 120 original source names have an
+implemented native scope. `reference/rule-catalog.json` names every missing source class;
+full line-item/property/media/measurement and arbitrary FlowSequence behavior remains
+open. Original entity UUIDs require explicit identity migration to native IDs. Existing
+native `lineItemId` and `shippingCountry` are distinct legacy conditions and are not
+misrepresented as the corresponding original class semantics.
+
+App subscriptions and own typed app events now share the durable outbox. Flow app actions
+use the same HTTP/MCP gateway and recheck current rights before delivery. GA4, Gmail and
+Slack are new independent integrations, not claimed ports of an original Shopware provider
+plugin. Their real wire/database fixtures and live-credential boundary are documented in
+`docs/connected-apps.md`.

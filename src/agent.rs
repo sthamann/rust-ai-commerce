@@ -129,6 +129,7 @@ pub(super) async fn merchant_chat(
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
+    auth::permit(&h, "knowledge.read")?;
     let instruction = v["message"]
         .as_str()
         .filter(|s| !s.is_empty() && s.len() <= 4000)

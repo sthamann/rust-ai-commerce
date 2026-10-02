@@ -2,7 +2,16 @@
 use super::*;
 pub(super) fn validate(m: &apps::Manifest) -> Result<()> {
     apps::validate(m)?;
-    if ["engraving", "paypal", "shopware_payments", "storyfront"].contains(&m.id.as_str())
+    if [
+        "engraving",
+        "paypal",
+        "shopware_payments",
+        "storyfront",
+        "google_analytics",
+        "gmail",
+        "slack",
+    ]
+    .contains(&m.id.as_str())
         || m.runtime != "declarative"
         || m.configuration.is_some()
         || !m.events.is_empty()

@@ -5,6 +5,9 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("app_flow_admissible","!read_only","true"),
+ ('rule_authenticated','customer_present == required','true'),
+ ('rule_boolean_comparison','neq && !equal','neq && equal'),
  ('discount_cap','total.min(requested)','requested'),
  ('stock_admissible','quantity <= stock','quantity >= stock'),
  ('refund_admissible','requested <= captured.saturating_sub(refunded)','true'),

@@ -66,3 +66,24 @@ pub fn receipt_admissible(
 ) -> bool {
     expected == received && same_currency && confirmed
 }
+
+/// A guest address never grants the authenticated-customer rule.
+pub fn rule_authenticated(customer_present: bool, required: bool) -> bool {
+    customer_present == required
+}
+
+/// Explicit supported comparison operators select equality, inequality or emptiness.
+pub fn rule_boolean_comparison(
+    equal: bool,
+    empty: bool,
+    eq: bool,
+    neq: bool,
+    is_empty: bool,
+) -> bool {
+    eq && equal || neq && !equal || is_empty && empty
+}
+
+/// Only an explicitly eligible private mutation action may be bound to a durable flow.
+pub fn app_flow_admissible(allowed: bool, read_only: bool, is_public: bool) -> bool {
+    allowed && !read_only && !is_public
+}

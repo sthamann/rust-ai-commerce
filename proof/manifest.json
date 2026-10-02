@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "13 extracted production policies; surrounding modules remain unproved",
+  "claim": "16 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -125,6 +125,33 @@
         "receipt_exact",
         "receipt_exact_behavior"
       ]
+    },
+    "rule_authenticated": {
+      "bindings": [
+        "src/marketing/rule_match.rs"
+      ],
+      "theorems": [
+        "rule_authenticated_exact",
+        "rule_guest_denied"
+      ]
+    },
+    "rule_boolean_comparison": {
+      "bindings": [
+        "src/rule_comparison.rs",
+        "src/marketing/rule_match.rs"
+      ],
+      "theorems": [
+        "rule_comparison_exact"
+      ]
+    },
+    "app_flow_admissible": {
+      "bindings": [
+        "src/marketing/app_flows.rs"
+      ],
+      "theorems": [
+        "app_flow_exact",
+        "app_flow_readonly_denied"
+      ]
     }
   },
   "sources": {
@@ -170,8 +197,8 @@
     },
     "src/agent.rs": {
       "status": "unproved",
-      "sha256": "8c199b9f7aabed1e45b40c5d8c55e9f5cc43e1fd854e5351020346a4b68b10ae",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "bcc1afea0fc18e3b2cd6541efc5aeb332ef817afd80bde680fffd4cfd00fd240",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/apps/cart_contributions.rs": {
       "status": "unproved",
@@ -193,20 +220,35 @@
       "sha256": "8c33a80ca7dbe7a47b99af00ae4639ea792b9d8e296808745becdc253fde1c9c",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/apps/evidence.rs": {
+      "status": "unproved",
+      "sha256": "f2594461335bdf96dd03303d2c3de382987aff74c62a0410159ee9148823397b",
+      "review": "Reviewed connected app tenant/OAuth/import race fences and per-shop AGE write serialization; 48 Rust tests, 1976 original rule comparison cases, 9 real connector groups, 4 private-state regressions and 18 commerce suites in two batches. Surrounding adapters remain unproved."
+    },
+    "src/apps/evidence_routes.rs": {
+      "status": "unproved",
+      "sha256": "3ca6c8f67f04a5da1021e71f9b745d7a3f3f3c4f6347b5a3460694de3761164f",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+    },
     "src/apps/gateway.rs": {
       "status": "unproved",
-      "sha256": "f56fd043310d6aa6c7c10d1d4093d1ccc7b50f85f39dde9c5a2b6a436de94936",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "3bd2bfd5c8d2d6a9e74e771192ac166d52dda5f7d479406b4ab06a784b4de8a4",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/apps/manifest.rs": {
       "status": "unproved",
-      "sha256": "9bf0f9991fc66aadec3bec05288b95de986e46ee00c1cba082faa126d9e5af8e",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "5bae51bded69ec8e402a4af25888f1a4b2ab3658f495f9e23ae43ab38e7e8a29",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+    },
+    "src/apps/manifest_validation.rs": {
+      "status": "unproved",
+      "sha256": "958113aa28ce9ae192172248b9cccc8b6c996812edd9169aa13931a0288f465b",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/apps/mod.rs": {
       "status": "unproved",
-      "sha256": "9d2828772e17d73798138c17dbaf9cfe17b01fc69e4f7dd205eb7b9a25d538da",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "84448d38513779e6311dfc24ded325c28a00581681cd85f35d28fc52f9649824",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/apps/planning.rs": {
       "status": "unproved",
@@ -220,8 +262,8 @@
     },
     "src/apps/routes.rs": {
       "status": "unproved",
-      "sha256": "c58286b0dfaeee95e9285cebc3f3bca112ae4f8072cfb9bed39f5af99a1aea72",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "5defac62b96283f252039f692674991fd913a1d830a7acac2cb5960a784acbc5",
+      "review": "Reviewed public SDK route: fixed compile-time credential-free source, JavaScript MIME, nosniff; fixture checks exact production adapter; no tenant state or action permission bypass. Shared adapter accepts only ISO currency codes."
     },
     "src/apps/runtime.rs": {
       "status": "unproved",
@@ -315,13 +357,13 @@
     },
     "src/bin/rules.rs": {
       "status": "unproved",
-      "sha256": "4ece28317e4d10375c234d94cc4348568cc02e0bd2b1d1c4e81342ad1236a6ac",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "213bf0b3fa0685aaae78db8d27b713677e3254189590fdb554163a3040995200",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "91b915f7ef6d3bdef327a5c03a2bfa90621ff0e8fd6f629e9b0fb66e35cbd608",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "6bfbb8aaad1a3a8141b2369af1ce2cd14e06f284713d4745d6a187da8a063b9c",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
@@ -330,8 +372,8 @@
     },
     "src/capabilities.rs": {
       "status": "unproved",
-      "sha256": "adc089535cbe53401f34f194adf7735c876d6ed0c4841adfe11f73e03beaf9a1",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "d26b36845f44d05fdad36b727111e79eb8e06a79d02766b994418b0158254a32",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/cart_model.rs": {
       "status": "unproved",
@@ -345,8 +387,8 @@
     },
     "src/cart_price.rs": {
       "status": "unproved",
-      "sha256": "fce0a05ca572bff20c9da7bfb9bdf74e20b0cb990ae14d269dfc96421341585f",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "f84dd254905278c66c709a6635875504d8d91b7840f9ecba8289fb9f4e2ee9b8",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/cart_routes.rs": {
       "status": "unproved",
@@ -530,8 +572,8 @@
     },
     "src/developer/builds.rs": {
       "status": "unproved",
-      "sha256": "f16a09a5afc6dcaa16b121cfac2148acff1f9e91c584f67d2433064c8003eaa6",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "866c6598de76678a9ea51360e2f3bb4e8d547cf8e7b765f99c2464850f49e74b",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/developer/generation.rs": {
       "status": "unproved",
@@ -605,8 +647,8 @@
     },
     "src/knowledge.rs": {
       "status": "unproved",
-      "sha256": "f913f278e012749e3f6d990703326c1c2d1b131a259636309de5313070853349",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "1ea55aa62d64d06fc3610eae5da35216025356add45fda0ea0b3f12bafcfbf29",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/lib.rs": {
       "status": "unproved",
@@ -623,6 +665,16 @@
       "sha256": "f617ececb7acd25364c6b902cc77ef15fcb023a694c3aa14f8d6ac026b6c9e72",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/marketing/app_flows.rs": {
+      "status": "reviewed-binding",
+      "sha256": "a6488c897d8c74e9837db15ebf3233fc9f150a8d7a29bea379896b6d88fd35c6",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+    },
+    "src/marketing/catalog.rs": {
+      "status": "unproved",
+      "sha256": "ef26c955bf31f0b2711b96810ecedc9a76b2aed27dfea2ff70ab743769b64175",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+    },
     "src/marketing/channels.rs": {
       "status": "unproved",
       "sha256": "839f0e817aba6bfa710c32572cddc0ec70a31d2cfdcf2c0cb6f4ef39b09a3a4d",
@@ -630,13 +682,13 @@
     },
     "src/marketing/flows.rs": {
       "status": "unproved",
-      "sha256": "22b1f59c68df8af7d4090eb73502decce5f5a7f559c0875e5342e80dc4bf1a6e",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "e9551c645f9e254afabe9a66b84597ad48900f4f6bcaf86338cbf77bbbd049ed",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/marketing/mod.rs": {
       "status": "unproved",
-      "sha256": "c14b636e686c2231e17c1ae255b473f513c0e06cd7e88c00ac3ec5efaeca5306",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "c62bf65d0499a3ca8f8e71de3160edaaa69b2e0f0a74bc43dc65862ba663ea25",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/marketing/promotions.rs": {
       "status": "unproved",
@@ -645,23 +697,38 @@
     },
     "src/marketing/routes.rs": {
       "status": "unproved",
-      "sha256": "f33a881347505f6eff4b06e68d68b599223c8a7968ccc423049302c389cda713",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "fb72b9d03171aef4febb686d3d5e1516652946c194d5f69aba999b632991503c",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+    },
+    "src/marketing/rule_fields.rs": {
+      "status": "unproved",
+      "sha256": "175d4f7dfeaa906151e0cecba4ab8a135f618517c49fb822347d13c712b31638",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+    },
+    "src/marketing/rule_match.rs": {
+      "status": "reviewed-binding",
+      "sha256": "a394f3380b23e336645d9300bf84d4439fc8ecc897dcfce1c05518aa93ae1774",
+      "review": "Reviewed connected apps and real protocol consumers: 48 Rust tests, 1976 original PHP rule comparisons, 9 database/HTTP connector groups with forbidden flow targets and cross-tenant evidence, plus 18 commerce suites across two batches. Added original guest shipping-country regression. Adapters remain unproved."
+    },
+    "src/marketing/rule_tests.rs": {
+      "status": "unproved",
+      "sha256": "df67643c075b43489d7466d28c7b310f7d621c85e909f25f11b81f4044130a78",
+      "review": "Reviewed connected apps and real protocol consumers: 48 Rust tests, 1976 original PHP rule comparisons, 9 database/HTTP connector groups with forbidden flow targets and cross-tenant evidence, plus 18 commerce suites across two batches. Added original guest shipping-country regression. Adapters remain unproved."
     },
     "src/marketing/rules.rs": {
       "status": "unproved",
-      "sha256": "1f93ebc8227ea819f24c0162998ae5bdcf11ad2f6d0bca83eb3c5de2b18f7754",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "e19b4fcc28207c96640eea448ff925f5347d483fd522e74709eb82c8889513a4",
+      "review": "Reviewed connected apps and real protocol consumers: 48 Rust tests, 1976 original PHP rule comparisons, 9 database/HTTP connector groups with forbidden flow targets and cross-tenant evidence, plus 18 commerce suites across two batches. Added original guest shipping-country regression. Adapters remain unproved."
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "8d647fd392f54fad45f4015b112a919cab39a71c027a54c7738b1ffc38252472",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "ff70a3acc0bebb773252e03fed00db98e3f5f8de0615a0ee0b87fa7dce1b2389",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "7d7662663b03a7e10f9107e4bad812968e7e2db4231db94378e6d53f880762d9",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "c1397e13a05ea5db3d6f4eef1590fbddd560eaf868526722069903c4e5ec3792",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -765,8 +832,8 @@
     },
     "src/planner.rs": {
       "status": "unproved",
-      "sha256": "9541ba61c0f0ed9fc579ea0ef951945ca7420efaddc04a4e50d0c6afe60a2d01",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "567013616f192cb4605a3c0972d66b98758b38b6f98c3b3a41a3f338207d08ba",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/pricing.rs": {
       "status": "unproved",
@@ -794,9 +861,9 @@
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
     "src/rule_comparison.rs": {
-      "status": "unproved",
-      "sha256": "62e29d4aa5b80860dcb879db1873d02d2e8fdc75d48687819d00837fc1a424c7",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "status": "reviewed-binding",
+      "sha256": "21896c8f75ba14ebf30b4c35a1ee3e99658fd821aa411c601b7d5ebcb3c24011",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/sandbox.rs": {
       "status": "unproved",
@@ -850,19 +917,19 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "535867f9e8d185b5d919980309ffac8d503b6b27a5f110e8e4b7b9d9511a8351",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "014d1b4e86216fe39aba92f534f88c3078e027fe906f4725e52db4cd0e4e5edf",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/workers.rs": {
       "status": "unproved",
-      "sha256": "710564663ff2bd1f2200e26f5eff5d6d268c5022edd6ad80d44070dd9af99d8d",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "749a0ca49dd71333d6f98159e0589fbee6a25210b8c1a9148897244e7608d73e",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     }
   },
   "inputs": {
     ".github/workflows/verify.yml": {
-      "sha256": "0e185887afd9fc5557585c8dc6eab36cc2400b580db166945ce5647a32d48ab7",
-      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+      "sha256": "3a536177a01481f7e9cf524cec18cc1eb76fdbd41f74e1a64d0e9e22da40c9b6",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "Cargo.lock": {
       "sha256": "5568d6215c3f896914be87977c1bfb8bdb1f4d746c3af6ad9cf945a4f7da5fe4",
@@ -960,9 +1027,17 @@
       "sha256": "db5baadc23d8438aaa8c0563ca5b65f2fae8d248941c22be973bcb10e7a0408c",
       "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
     },
+    "migrations/022-app-evidence.sql": {
+      "sha256": "3a66445ca757d10421d5f17a51033583c79235ed2b8ef7aa7d771a6e740013b2",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+    },
+    "migrations/023-app-poll-scheduling.sql": {
+      "sha256": "bec70513efd9c4e709c74614c17ae6857cd33c2c21c009d7973bca7d40cda6b6",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+    },
     "proof/Commerce/Claims.lean": {
-      "sha256": "e612082974c6bcfab52d493a92b872963d38b4bbcbee596bf992f33c2dfb9cae",
-      "review": "Added necessary-and-sufficient admission contracts and exact discount behavior; deny-all mutations must fail, production Rust unchanged"
+      "sha256": "bcc0270e7e08a4e7222c319341fdcbc01db1a7f5b22f50e9750a7baa124eaab3",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -985,8 +1060,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "39816bb1f86a21f67fb87c860b0ee54cec047722a71732de55e21c63883c6bf1",
-      "review": "Added necessary-and-sufficient admission contracts and exact discount behavior; deny-all mutations must fail, production Rust unchanged"
+      "sha256": "79e6995a3832364ef8d290ee5026a31eead6ccde3c7ac911009293d981dc200a",
+      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "scripts/formal/registry.py": {
       "sha256": "a1836d65c2e2cebfce3d82fe31381508dbdcc71ff0a430922c3316c995261197",

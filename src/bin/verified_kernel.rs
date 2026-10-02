@@ -103,6 +103,24 @@ fn eval(j: &Value) -> Result<Value, String> {
                 .ok_or("Invalid same_currency")?,
             args["confirmed"].as_bool().ok_or("Invalid confirmed")?
         ))),
+        Some("rule_authenticated") => Ok(json!(rule_authenticated(
+            args["customer_present"]
+                .as_bool()
+                .ok_or("Invalid customer_present")?,
+            args["required"].as_bool().ok_or("Invalid required")?
+        ))),
+        Some("rule_boolean_comparison") => Ok(json!(rule_boolean_comparison(
+            args["equal"].as_bool().ok_or("Invalid equal")?,
+            args["empty"].as_bool().ok_or("Invalid empty")?,
+            args["eq"].as_bool().ok_or("Invalid eq")?,
+            args["neq"].as_bool().ok_or("Invalid neq")?,
+            args["is_empty"].as_bool().ok_or("Invalid is_empty")?
+        ))),
+        Some("app_flow_admissible") => Ok(json!(app_flow_admissible(
+            args["allowed"].as_bool().ok_or("Invalid allowed")?,
+            args["read_only"].as_bool().ok_or("Invalid read_only")?,
+            args["is_public"].as_bool().ok_or("Invalid is_public")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

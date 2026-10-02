@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useAppText } from "./app-i18n";
 import type { RequestFn } from "./studio-types";
+import ConnectorPanel from "./ConnectorPanel";
 import AppFrame from "./AppFrame";
 import AppEntity, { type Entity } from "./AppEntity";
 import { useCustomerText } from "./customer-i18n";
@@ -98,7 +99,15 @@ export default function AppsManager({
         <p>{a("intro")}</p>
       </div>
       <div className="app-install">
-        {["engraving", "paypal", "shopware_payments", "storyfront"]
+        {[
+          "engraving",
+          "paypal",
+          "shopware_payments",
+          "storyfront",
+          "google_analytics",
+          "gmail",
+          "slack",
+        ]
           .filter(
             (id) =>
               !packages.some((p) => p.id === id) ||
@@ -123,7 +132,13 @@ export default function AppsManager({
                   ? "PayPal Sandbox"
                   : id === "storyfront"
                     ? "Storyfront"
-                    : "Shopware Payments"}
+                    : id === "shopware_payments"
+                      ? "Shopware Payments"
+                      : id === "google_analytics"
+                        ? "Google Analytics"
+                        : id === "gmail"
+                          ? "Gmail"
+                          : "Slack"}
             </button>
           ))}
       </div>
@@ -251,6 +266,11 @@ export default function AppsManager({
                 </dd>
               </dl>
             )}
+            {detailTab === "appDetails" &&
+              p.active &&
+              ["google_analytics", "gmail", "slack"].includes(p.id) && (
+                <ConnectorPanel app={p.id} request={request} manage={manage} />
+              )}
             {detailTab === "appDetails" && (
               <p>
                 {c(`${appCategory(p)}Category`)} · {p.id} ·{" "}

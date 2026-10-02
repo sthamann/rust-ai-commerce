@@ -56,6 +56,14 @@ for (const [key, values] of Object.entries(customers)) {
     key,
   );
 }
+const connected = module("../src/connected-i18n.ts").connectedWords;
+for (const [key, values] of Object.entries(connected)) {
+  assert.equal(values.length, 4, key);
+  assert(
+    values.every((v) => v.trim()),
+    key,
+  );
+}
 const { responseError } = module("../src/errors-i18n.ts");
 const errors = [];
 for (locale of ["en-GB", "de-DE", "fr-FR", "es-ES"]) {

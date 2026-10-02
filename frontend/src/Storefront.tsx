@@ -9,6 +9,7 @@ import {
   type Order,
   type Selection,
 } from "./shop-api";
+import ShopAnalytics, { commerceEvent } from "./ShopAnalytics";
 import Art from "./ProductArt";
 import Icon from "./Icon";
 import CustomerAccount from "./CustomerAccount";
@@ -208,6 +209,22 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
           cart.token,
         ),
       );
+      const item = products.find((p) => p.id === pid);
+      const actual = cart.lineItems.find((i) => i.id === pid);
+      commerceEvent("add_to_cart", {
+        items: [
+          {
+            item_id: pid,
+            item_name: item?.name ?? actual?.label ?? pid,
+            price:
+              item?.calculated_price?.unitPrice ??
+              item?.price ??
+              actual?.price.unitPrice ??
+              0,
+            quantity: q,
+          },
+        ],
+      });
       setBag(true);
       setOrder(undefined);
     });
@@ -321,6 +338,14 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
   );
   return (
     <div className="shop">
+      <ShopAnalytics
+        shop={shopTenant}
+        channel={salesChannel}
+        products={products}
+        cart={cart}
+        bag={bag}
+        order={order}
+      />
       {new URLSearchParams(location.search).get("sandbox") === "1" && (
         <div className="sandbox-banner">
           {w("stage")} · {w("exclusion")}

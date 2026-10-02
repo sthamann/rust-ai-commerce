@@ -1,4 +1,6 @@
 import Commerce.Claims
+#print axioms CommerceKernel.app_flow_exact
+#print axioms CommerceKernel.app_flow_readonly_denied
 #print axioms CommerceKernel.cancellation_exact
 #print axioms CommerceKernel.cancellation_safe
 #print axioms CommerceKernel.checkout_contact_exact
@@ -25,6 +27,9 @@ import Commerce.Claims
 #print axioms CommerceKernel.replay_same_cart
 #print axioms CommerceKernel.revision_exact
 #print axioms CommerceKernel.revision_exact_behavior
+#print axioms CommerceKernel.rule_authenticated_exact
+#print axioms CommerceKernel.rule_comparison_exact
+#print axioms CommerceKernel.rule_guest_denied
 #print axioms CommerceKernel.scope_authenticated_known
 #print axioms CommerceKernel.scope_exact
 #print axioms CommerceKernel.scope_explicit_no_escalation

@@ -1,0 +1,43 @@
+{
+  "id": "order_alerts",
+  "version": "1.0.0",
+  "coreApi": "1",
+  "runtime": "declarative",
+  "category": "operations",
+  "name": {
+    "en": "Order alerts",
+    "de": "Bestellmeldungen",
+    "fr": "Alertes de commande",
+    "es": "Alertas de pedidos"
+  },
+  "permissions": [
+    "events.publish"
+  ],
+  "entities": [],
+  "slots": [],
+  "events": [],
+  "actions": [
+    {
+      "name": "support_received",
+      "description": "Publish a typed support event for installed flows",
+      "handler": "emit",
+      "permission": "apps.manage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "orderNumber": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title"
+        ],
+        "additionalProperties": false
+      },
+      "flowAllowed": true
+    }
+  ]
+}

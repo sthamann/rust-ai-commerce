@@ -13,24 +13,111 @@ pub(crate) enum Condition {
     Always,
     #[serde(rename = "cartCartAmount")]
     Amount { operator: String, amount: f64 },
-    #[serde(rename = "cartLineItemCount")]
+    #[serde(rename = "cartLineItemCount", alias = "cartLineItemsInCartCount")]
     Count { operator: String, count: f64 },
-    #[serde(rename = "customerGroup")]
-    Group { values: Vec<String> },
+    #[serde(rename = "customerGroup", alias = "customerCustomerGroup")]
+    Group {
+        #[serde(default)]
+        values: Vec<String>,
+        #[serde(default = "equal")]
+        operator: String,
+    },
     #[serde(rename = "shippingCountry")]
-    Country { values: Vec<String> },
+    Country {
+        #[serde(default)]
+        values: Vec<String>,
+        #[serde(default = "equal")]
+        operator: String,
+    },
     #[serde(rename = "salesChannel")]
-    Channel { values: Vec<String> },
+    Channel {
+        #[serde(default)]
+        values: Vec<String>,
+        #[serde(default = "equal")]
+        operator: String,
+    },
     #[serde(rename = "lineItemId")]
-    Product { values: Vec<String> },
+    Product {
+        #[serde(default)]
+        values: Vec<String>,
+        #[serde(default = "equal")]
+        operator: String,
+    },
+    #[serde(rename = "cartLineItem")]
+    OriginalProduct {
+        #[serde(default)]
+        values: Vec<String>,
+        #[serde(default = "equal")]
+        operator: String,
+    },
     #[serde(rename = "orderState")]
-    OrderState { values: Vec<String> },
+    OrderState {
+        #[serde(default)]
+        values: Vec<String>,
+        #[serde(default = "equal")]
+        operator: String,
+    },
     #[serde(rename = "paymentState")]
-    PaymentState { values: Vec<String> },
+    PaymentState {
+        #[serde(default)]
+        values: Vec<String>,
+        #[serde(default = "equal")]
+        operator: String,
+    },
     #[serde(rename = "deliveryState")]
-    DeliveryState { values: Vec<String> },
+    DeliveryState {
+        #[serde(default)]
+        values: Vec<String>,
+        #[serde(default = "equal")]
+        operator: String,
+    },
+    #[serde(rename = "shippingMethod")]
+    ShippingMethod {
+        #[serde(default)]
+        values: Vec<String>,
+        #[serde(default = "equal")]
+        operator: String,
+    },
+    #[serde(rename = "paymentMethod")]
+    PaymentMethod {
+        #[serde(default)]
+        values: Vec<String>,
+        #[serde(default = "equal")]
+        operator: String,
+    },
+    #[serde(rename = "customerBillingCountry")]
+    BillingCountry {
+        #[serde(default)]
+        values: Vec<String>,
+        #[serde(default = "equal")]
+        operator: String,
+    },
+    #[serde(rename = "customerShippingCountry")]
+    CustomerShippingCountry {
+        #[serde(default)]
+        values: Vec<String>,
+        #[serde(default = "equal")]
+        operator: String,
+    },
+    #[serde(rename = "customerEmail")]
+    Email { email: String, operator: String },
     #[serde(rename = "customerLoggedIn")]
-    LoggedIn,
+    LoggedIn {
+        #[serde(default = "yes", rename = "isLoggedIn")]
+        is_logged_in: bool,
+    },
+    #[serde(rename = "contextField")]
+    Field {
+        field: String,
+        operator: String,
+        value: Value,
+    },
+    #[serde(rename = "eventField")]
+    EventField {
+        path: String,
+        operator: String,
+        value: Value,
+    },
 }
 impl Condition {
     pub(crate) fn validate(&self, depth: usize) -> Result<()> {
@@ -59,82 +146,61 @@ impl Condition {
                     return Err(bad("Invalid numeric rule"));
                 }
             }
-            Self::OrderState { values }
-            | Self::PaymentState { values }
-            | Self::DeliveryState { values }
-            | Self::Group { values }
-            | Self::Country { values }
-            | Self::Channel { values }
-            | Self::Product { values }
-                if (values.len() > 50 || values.iter().any(|v| v.is_empty() || v.len() > 100)) =>
+            Self::Email { email, operator }
+                if email.len() > 254 || !["=", "!="].contains(&operator.as_str()) =>
+            {
+                return Err(bad("Invalid email rule"));
+            }
+            Self::OriginalProduct { values, operator }
+            | Self::ShippingMethod { values, operator }
+            | Self::PaymentMethod { values, operator }
+            | Self::BillingCountry { values, operator }
+            | Self::CustomerShippingCountry { values, operator }
+            | Self::OrderState { values, operator }
+            | Self::PaymentState { values, operator }
+            | Self::DeliveryState { values, operator }
+            | Self::Group { values, operator }
+            | Self::Country { values, operator }
+            | Self::Channel { values, operator }
+            | Self::Product { values, operator }
+                if (values.len() > 50
+                    || values.iter().any(|v| v.is_empty() || v.len() > 100)
+                    || !["=", "!=", "empty"].contains(&operator.as_str())) =>
             {
                 return Err(bad("Invalid rule values"));
+            }
+            Self::Field {
+                field,
+                operator,
+                value,
+            } => rule_fields::validate(field, operator, value)?,
+            Self::EventField {
+                path,
+                operator,
+                value,
+            } => {
+                if path.split('.').count() > 6
+                    || path.len() > 120
+                    || !path.split('.').all(|p| {
+                        !p.is_empty() && p.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'_')
+                    })
+                {
+                    return Err(bad("Invalid event field path"));
+                }
+                rule_fields::validate_value(operator, value)?;
             }
             _ => {}
         }
         Ok(())
     }
-    pub(crate) fn matches(&self, c: &StoredCart, q: &Value) -> bool {
-        match self {
-            Self::And { children } => children.iter().all(|v| v.matches(c, q)),
-            Self::Or { children } => children.iter().any(|v| v.matches(c, q)),
-            Self::Not { child } => !child.matches(c, q),
-            Self::Always => true,
-            Self::Amount { operator, amount } => numeric(
-                q["price"]["totalPrice"].as_f64().unwrap_or(0.),
-                *amount,
-                operator,
-            ),
-            Self::Count { operator, count } => numeric(c.data.items.len() as f64, *count, operator),
-            Self::Group { values } => values.contains(&c.data.group),
-            Self::Country { values } => values.contains(&commerce::selection(&c.data).country),
-            Self::Channel { values } => values.contains(&c.data.sales_channel),
-            Self::Product { values } => c.data.items.iter().any(|i| values.contains(&i.id)),
-            Self::OrderState { values } => q["orderState"]
-                .as_str()
-                .is_some_and(|v| values.iter().any(|x| x == v)),
-            Self::PaymentState { values } => q["paymentState"]
-                .as_str()
-                .is_some_and(|v| values.iter().any(|x| x == v)),
-            Self::DeliveryState { values } => q["deliveryStates"].as_array().is_some_and(|ds| {
-                ds.iter()
-                    .any(|d| d.as_str().is_some_and(|v| values.iter().any(|x| x == v)))
-            }),
-            Self::LoggedIn => c.data.email.is_some(),
-        }
-    }
-}
-fn numeric(a: f64, b: f64, op: &str) -> bool {
-    rust_ai_commerce::rule_comparison::numeric(Some(a), Some(b), op).unwrap_or(false)
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn rejects_unknown_and_unbounded_conditions() {
-        assert!(serde_json::from_value::<Condition>(json!({"type":"runShell"})).is_err());
-        assert!(
-            Condition::Amount {
-                operator: "exec".into(),
-                amount: 1.
-            }
-            .validate(0)
-            .is_err()
-        );
-        assert!(
-            Condition::And {
-                children: vec![Condition::Always; 21]
-            }
-            .validate(0)
-            .is_err()
-        );
-    }
-    #[test]
-    fn operators_match_boundaries() {
-        assert!(numeric(100., 100., "="));
-        assert!(!numeric(99., 100., ">="));
-        assert!(numeric(100., 100., ">="));
-        assert!(!numeric(100., 100., "<"));
-    }
+fn yes() -> bool {
+    true
 }
+fn equal() -> String {
+    "=".into()
+}
+#[cfg(test)]
+#[path = "rule_tests.rs"]
+mod tests;

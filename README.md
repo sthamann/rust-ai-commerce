@@ -59,12 +59,35 @@ Shopware Payments connector are still missing.
 
 ![Actual isolated demo order completed through the storefront](docs/assets/storefront-order-complete-en.png)
 
+## Connected apps and graphical automation
+
+Install **Google Analytics**, **Gmail** and **Slack** from the Apps workspace. Each has
+its own multilingual OAuth/settings page. Google Analytics loads the actual GA4 tag
+in the native storefront after consent and imports reports; Gmail imports a support
+label into private shop knowledge; Slack receives order notifications or rule-bound
+Flow Builder actions. Private sources are consumed by the merchant model prompt and
+MCP, with source IDs and AGE product relationships. Apps can publish typed events,
+and the visual builder edits nested AND/OR/NOT conditions and app actions.
+
+[Setup, provider permissions, event API and tested boundaries](docs/connected-apps.md)
+· [Order-alert app and Slack flow example](extensions/apps/order-alerts)
+· [Original Shopware condition inventory](reference/rule-catalog.json)
+
+Local: install `extensions/services/connectors/requirements.txt`, configure the Google/
+Slack OAuth clients in ignored `.env`, then run `CONNECTED_APPS=1 scripts/dev.sh`.
+Existing app services are preserved. Protocol fixtures test the entire provider-to-core
+path without external messages or paid model calls; live account authorization requires
+your provider clients. Imports are manual in this version. The native builder does not
+claim parity with the full original condition catalog or arbitrary FlowSequences.
+
+![Visual order-event flow with nested conditions and a Slack app action](docs/assets/slack-flow-en.jpg)
+
 ## Lean-checked production policies
 
 The real Rust checkout, order workflow, access, refund and download paths now
-call a small pure kernel with **13 policies and 33 Lean-proved properties**.
+call a small pure kernel with **16 policies and 38 Lean-proved properties**.
 The production functions are extracted through a closed typed grammar; compiled
-Rust/Lean outputs are compared on 3,558 cases. Deliberately broken policies must
+Rust/Lean outputs are compared on 3,602 cases. Deliberately broken policies must
 fail the proof checks. CI also audits transitive axioms and locks every Rust,
 schema, build and proof input to an explicitly reviewed source inventory.
 

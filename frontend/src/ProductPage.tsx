@@ -1,3 +1,4 @@
+import { commerceEvent, analyticsItems } from "./ShopAnalytics";
 import RichDescription from "./RichDescription";
 import ProductAttachments from "./ProductAttachments";
 /** Product family, gallery, context pricing and moderated customer reviews. */
@@ -56,6 +57,22 @@ export default function ProductPage({
       ++detailRequest.current;
     };
   }, [id, locale, cart?.token, cart?.customerGroup, cart?.checkout.country]);
+  const tracked = useRef("");
+  useEffect(() => {
+    const emit = () => {
+      if (
+        data &&
+        tracked.current !== data.product.id &&
+        commerceEvent("view_item", { items: analyticsItems([data.product]) })
+      ) {
+        commerceEvent("page_view", {});
+        tracked.current = data.product.id;
+      }
+    };
+    emit();
+    window.addEventListener("commerce:analytics-ready", emit);
+    return () => window.removeEventListener("commerce:analytics-ready", emit);
+  }, [data]);
   useEffect(() => {
     const seo = data?.product.extra?.seo?.[locale.slice(0, 2)];
     if (seo) {

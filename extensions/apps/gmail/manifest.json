@@ -1,0 +1,130 @@
+{
+  "id": "gmail",
+  "version": "1.0.0",
+  "coreApi": "1",
+  "runtime": "service",
+  "name": {
+    "en": "Gmail Support",
+    "de": "Gmail Support",
+    "fr": "Assistance Gmail",
+    "es": "Soporte Gmail"
+  },
+  "category": "operations",
+  "permissions": [
+    "service.call",
+    "events.read",
+    "knowledge.write"
+  ],
+  "entities": [],
+  "slots": [],
+  "actions": [
+    {
+      "name": "status",
+      "description": "gmail status",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": true,
+      "permission": "knowledge.read"
+    },
+    {
+      "name": "connect",
+      "description": "gmail connect",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage"
+    },
+    {
+      "name": "disconnect",
+      "description": "gmail disconnect",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage"
+    },
+    {
+      "name": "configure",
+      "description": "gmail configure",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "settings": {
+            "type": "object"
+          },
+          "revision": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "settings",
+          "revision"
+        ],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage"
+    },
+    {
+      "name": "sync",
+      "description": "gmail sync",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "requestKey": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "requestKey"
+        ],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage",
+      "flowAllowed": true
+    },
+    {
+      "name": "labels",
+      "description": "gmail labels",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": true,
+      "permission": "apps.manage"
+    }
+  ],
+  "events": []
+}
