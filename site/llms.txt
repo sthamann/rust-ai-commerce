@@ -1,0 +1,22 @@
+# Rust AI Commerce
+
+> An MIT-licensed Rust ecommerce prototype for merchant-approved AI operations,
+> local LLMs, partial MCP/UCP adapters and selected original Shopware behavior ports.
+
+## Start
+- [Overview](https://sthamann.github.io/rust-ai-commerce/)
+- [Local quickstart](https://sthamann.github.io/rust-ai-commerce/quickstart.html)
+- [Local MCP bridge](https://sthamann.github.io/rust-ai-commerce/mcp.html)
+- [Shopware behavior ports](https://sthamann.github.io/rust-ai-commerce/shopware.html)
+
+## Original documentation
+- [Repository](https://github.com/sthamann/rust-ai-commerce)
+- [Feature matrix](https://github.com/sthamann/rust-ai-commerce/blob/main/docs/shopware-parity.md)
+- [Recorded verification](https://github.com/sthamann/rust-ai-commerce/blob/main/docs/verification.json)
+- [Security and SaaS boundaries](https://github.com/sthamann/rust-ai-commerce/blob/main/docs/security.md)
+
+## Limits
+Working prototype. Payments simulated/manual/Sandbox; no real money is charged.
+Not a full Shopware replacement or validated production SaaS.
+MCP/UCP are partial bindings. Hosted accounts and production OAuth are not configured.
+Live cloud quality, production scale and causal sales uplift are unverified.
