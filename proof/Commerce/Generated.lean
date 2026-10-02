@@ -51,4 +51,7 @@ def rule_boolean_comparison (equal : Bool) (empty : Bool) (eq : Bool) (neq : Boo
 def app_flow_admissible (allowed : Bool) (read_only : Bool) (is_public : Bool) : Bool :=
   ((allowed && (!read_only)) && (!is_public))
 
+def platform_admissible (personal : Bool) (granted : Bool) (active : Bool) : Bool :=
+  ((personal && granted) && active)
+
 end CommerceKernel

@@ -125,11 +125,25 @@ pub(crate) async fn authenticate(
         "x-rac-role",
         "x-rac-tenant",
         "x-rac-permissions",
+        "x-rac-platform-user",
     ] {
         request.headers_mut().remove(key);
     }
     let path = request.uri().path().to_string();
     let method = request.method().to_string();
+    // Global administration has its own personal-session grant; tenant/admin/bootstrap roles cannot inherit it.
+    if path.starts_with("/api/platform/") {
+        match crate::platform::authenticate(&a, request.headers()).await {
+            Ok(user) => {
+                request
+                    .headers_mut()
+                    .insert("x-rac-platform-user", user.parse().unwrap());
+            }
+            Err(e) => return e.into_response(),
+        }
+        return next.run(request).await;
+    }
+
     let public = [
         "/api/auth/login",
         "/api/auth/register",
@@ -150,6 +164,7 @@ pub(crate) async fn authenticate(
   if environment_parent.is_some() && credential.is_none() && (path.starts_with("/store-api/") || path.starts_with("/api/") || path.starts_with("/ucp/") || path=="/mcp"){return Err(Error(StatusCode::UNAUTHORIZED,"Private sandbox requires a merchant session".into()));}
   if let Some(token)=credential {
    if token==*a.token {
+    if env::var("ALLOW_BOOTSTRAP_AUTH").as_deref()==Ok("false"){return Err(Error(StatusCode::UNAUTHORIZED,"Personal merchant session required".into()));}
     let t=tenant(request.headers())?;
     request.headers_mut().insert("x-rac-user","bootstrap".parse().unwrap());request.headers_mut().insert("x-rac-role","owner".parse().unwrap());request.headers_mut().insert("x-rac-tenant",t.parse().unwrap());
    }else{

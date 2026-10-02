@@ -261,3 +261,19 @@ reviewed bindings, not whole-module proofs. See the
 | `scripts/{connected_apps,connector_store_tests,rule_differential}.py` | Actual provider/model wire path, state fences and original PHP comparison regressions |
 
 The upstream condition-by-condition status is recorded in `reference/rule-catalog.json`.
+
+## Platform control plane
+
+| File | Responsibility | Coverage |
+|---|---|---|
+| [`src/platform/auth.rs`](../src/platform/auth.rs) | Independent platform authorization: live personal sessions, current grants, no integration/bootstrap escalation. | `platform.py + platform_setup.py + hosting_container.py`; auth conjunction additionally extracted to Lean |
+| [`src/platform/bootstrap.rs`](../src/platform/bootstrap.rs) | Offline first-operator setup: migration-only process, supplied strong credentials, password proof for existing accounts. | `platform.py + platform_setup.py + hosting_container.py`; auth conjunction additionally extracted to Lean |
+| [`src/platform/metrics.rs`](../src/platform/metrics.rs) | Aggregate-only control-plane reads: real tenants, bounded pages, explicit currencies and simulated/confirmed amounts. | `platform.py + platform_setup.py + hosting_container.py`; auth conjunction additionally extracted to Lean |
+| [`src/platform/mod.rs`](../src/platform/mod.rs) | Global SaaS control plane: operator-only aggregate statistics and audited shop provisioning. | `platform.py + platform_setup.py + hosting_container.py`; auth conjunction additionally extracted to Lean |
+| [`src/platform/provision.rs`](../src/platform/provision.rs) | Operator shop creation commits ownership, settings and audit atomically; never issues another user's credentials. | `platform.py + platform_setup.py + hosting_container.py`; auth conjunction additionally extracted to Lean |
+
+Frontend: `PlatformConsole` coordinates state; `PlatformSignIn` owns personal login;
+`PlatformLanguage` selects locales; `PlatformDashboard` renders factual metrics;
+`PlatformShops` owns directory/provisioning views; `platform-api` is the typed
+transport and `platform-i18n` contains complete operator UI translations.
+The production-mode Docker smoke test checks the packaged server and frontend.

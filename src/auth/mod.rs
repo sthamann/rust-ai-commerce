@@ -11,7 +11,7 @@ mod permissions;
 pub(crate) use permissions::*;
 mod provision;
 mod registration;
-pub(crate) use provision::create_workspace;
+pub(crate) use provision::{create_workspace, provision_shop};
 mod sessions;
 pub(crate) use credentials::*;
 pub(crate) use invitations::*;

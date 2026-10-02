@@ -5,6 +5,8 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("platform_admissible","personal &&","true &&"),
+ ("platform_admissible","granted &&","true &&"),
  ("app_flow_admissible","!read_only","true"),
  ('rule_authenticated','customer_present == required','true'),
  ('rule_boolean_comparison','neq && !equal','neq && equal'),

@@ -87,3 +87,8 @@ pub fn rule_boolean_comparison(
 pub fn app_flow_admissible(allowed: bool, read_only: bool, is_public: bool) -> bool {
     allowed && !read_only && !is_public
 }
+
+/// Global administration requires a personal session and a current independent operator grant.
+pub fn platform_admissible(personal: bool, granted: bool, active: bool) -> bool {
+    personal && granted && active
+}

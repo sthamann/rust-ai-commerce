@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "16 extracted production policies; surrounding modules remain unproved",
+  "claim": "17 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -151,6 +151,15 @@
       "theorems": [
         "app_flow_exact",
         "app_flow_readonly_denied"
+      ]
+    },
+    "platform_admissible": {
+      "bindings": [
+        "src/platform/auth.rs"
+      ],
+      "theorems": [
+        "platform_exact",
+        "platform_personal_required"
       ]
     }
   },
@@ -312,13 +321,13 @@
     },
     "src/auth/middleware.rs": {
       "status": "unproved",
-      "sha256": "e9bd1ecc5fcdb6fdad2f13b0016d0733b0e334d592155207b23d72d786f87e3b",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "3b623674ea0b9f63842d00a9e9e192756172a93ebbf77fc02b3bfb1c8061821f",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "src/auth/mod.rs": {
       "status": "unproved",
-      "sha256": "46046ec1d4076b5d0554e6964a74a3276ab109c2d6afcbf24e11531947533611",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "ea9dc94792cfe1dbaa8899991fd4ab3437ba4ba926a5945a2e051ed331a7c9ba",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "src/auth/permissions.rs": {
       "status": "reviewed-binding",
@@ -327,13 +336,13 @@
     },
     "src/auth/provision.rs": {
       "status": "unproved",
-      "sha256": "43d689cf083ae71ce2552b5a0a58dd37a1914389ac2e2c2083f1915de26d981d",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "012d9b9fb5953533e6b68da467109c26e9cd32eb1650ad0644148ffb32158753",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "src/auth/registration.rs": {
       "status": "unproved",
-      "sha256": "16d97cfd4acbc10fd2330b0057ea3dd1c3c1a418dcd051966041d956404a7257",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "a7ceb717c97d1bff43a6a33dca043639dc31e483da94f4bcba58fd2039bfccf4",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "src/auth/sessions.rs": {
       "status": "unproved",
@@ -362,13 +371,13 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "6bfbb8aaad1a3a8141b2369af1ce2cd14e06f284713d4745d6a187da8a063b9c",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "2ee50d32c3b2698c849885a2078e8108a57482a2848542411f3e92ab7b8363fa",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
-      "sha256": "34a51c60374e079a9cc908983626c58e6ca2efc182640bdc3f28aa8bc6e282b8",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "eb6931ccd9e0f04d1a864445b9fcf70bf2b446fad9d380281378f0ee3ea884b8",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "src/capabilities.rs": {
       "status": "unproved",
@@ -662,8 +671,8 @@
     },
     "src/main.rs": {
       "status": "unproved",
-      "sha256": "f617ececb7acd25364c6b902cc77ef15fcb023a694c3aa14f8d6ac026b6c9e72",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "9e9f4e8c060b9fbb9abf8f868346e7662ea1a6f73c35154d1bace0127b45fa86",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "src/marketing/app_flows.rs": {
       "status": "reviewed-binding",
@@ -727,8 +736,8 @@
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "c1397e13a05ea5db3d6f4eef1590fbddd560eaf868526722069903c4e5ec3792",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "8f7dc4a3aa419221dd798d37aa85523eed68784426bb263cf09f9edf3deefe78",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -835,6 +844,31 @@
       "sha256": "567013616f192cb4605a3c0972d66b98758b38b6f98c3b3a41a3f338207d08ba",
       "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
+    "src/platform/auth.rs": {
+      "status": "reviewed-binding",
+      "sha256": "92742eee29ac6d56037dd71b6c33539bec3c9dd3649d46e668fd54879e42067e",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+    },
+    "src/platform/bootstrap.rs": {
+      "status": "unproved",
+      "sha256": "03f2ebb9948db2e7f3296c07a3efdaec344d66c7815a4e5dc0f37cc993b022a8",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+    },
+    "src/platform/metrics.rs": {
+      "status": "unproved",
+      "sha256": "4c23021258f114bd402b39906730b9d3e23f68be3b3780eed2686d9066f468d3",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+    },
+    "src/platform/mod.rs": {
+      "status": "unproved",
+      "sha256": "d280331a1c7c261650ce28c4976e17cb988da443fe35a8b3d8dbdf798a9d5548",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+    },
+    "src/platform/provision.rs": {
+      "status": "unproved",
+      "sha256": "d3a7bf5f25ba7663cb1f962acf17627355f4a8dd0e61eb0b1a0da43f21aac70e",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+    },
     "src/pricing.rs": {
       "status": "unproved",
       "sha256": "421ebdf7a78c2b46da9c1ee567d2df7052077db7f7c7919cccb516b1e020baac",
@@ -857,8 +891,8 @@
     },
     "src/routes.rs": {
       "status": "unproved",
-      "sha256": "1193f7715e70870ed5ce18194a87bce86be4357bbc2c35553d4d386ab89f4e21",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "735da9803759c69c5fbe00f136deefd242bb819cfe64f81a20de9b430f599df8",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "src/rule_comparison.rs": {
       "status": "reviewed-binding",
@@ -917,8 +951,8 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "014d1b4e86216fe39aba92f534f88c3078e027fe906f4725e52db4cd0e4e5edf",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "a8644edc47bfd1f6190ea98ab998ac172ceb4bb835b7de847e6dc2faf957165c",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "src/workers.rs": {
       "status": "unproved",
@@ -928,8 +962,8 @@
   },
   "inputs": {
     ".github/workflows/verify.yml": {
-      "sha256": "3a536177a01481f7e9cf524cec18cc1eb76fdbd41f74e1a64d0e9e22da40c9b6",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "85cf2cabd367257723068f9b97f738983711c65a0ba685346993e5a96ae28d38",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "Cargo.lock": {
       "sha256": "5568d6215c3f896914be87977c1bfb8bdb1f4d746c3af6ad9cf945a4f7da5fe4",
@@ -1035,9 +1069,13 @@
       "sha256": "bec70513efd9c4e709c74614c17ae6857cd33c2c21c009d7973bca7d40cda6b6",
       "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
+    "migrations/024-platform.sql": {
+      "sha256": "a738ed9ee5e013c3e8535d125eb652b9361aff214b8de0e7d0910da47ab45b59",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+    },
     "proof/Commerce/Claims.lean": {
-      "sha256": "bcc0270e7e08a4e7222c319341fdcbc01db1a7f5b22f50e9750a7baa124eaab3",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "a602f00d955edef034b8ae442d3e0a9c9ce775e37c62de701aea7f6187aae0b2",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -1060,8 +1098,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "79e6995a3832364ef8d290ee5026a31eead6ccde3c7ac911009293d981dc200a",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "b9848ac02df02c87185e4cac0e2502c1f602f2cfb624f0810bdfc1235759a0e2",
+      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "scripts/formal/registry.py": {
       "sha256": "a1836d65c2e2cebfce3d82fe31381508dbdcc71ff0a430922c3316c995261197",

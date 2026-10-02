@@ -121,6 +121,11 @@ fn eval(j: &Value) -> Result<Value, String> {
             args["read_only"].as_bool().ok_or("Invalid read_only")?,
             args["is_public"].as_bool().ok_or("Invalid is_public")?
         ))),
+        Some("platform_admissible") => Ok(json!(platform_admissible(
+            args["personal"].as_bool().ok_or("Invalid personal")?,
+            args["granted"].as_bool().ok_or("Invalid granted")?,
+            args["active"].as_bool().ok_or("Invalid active")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

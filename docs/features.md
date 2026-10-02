@@ -293,3 +293,12 @@ payments/fulfillment, commercial B2B modules and PHP plugins remain missing.
 
 [Migration workflow](migration.md) · [Architecture decisions](architecture.md) ·
 [Security and SaaS limits](security.md) · [Model connections](connectors.md)
+
+## Platform operator administration
+
+Separate personal platform grants, audited empty/sample shop creation, bounded
+shop directory, global and per-shop statistics, staging exclusion, four-language
+UI, immediate revocation and production-mode bootstrap are implemented.
+`platform.py` and `platform_setup.py` exercise actual PostgreSQL/HTTP behavior.
+[Exact metrics and limits](platform.md), [deployment status](deployment.md).
+No public host, custom-domain provisioning, billing or failover is claimed.

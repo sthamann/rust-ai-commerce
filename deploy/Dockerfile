@@ -4,6 +4,7 @@ WORKDIR /build/frontend
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
+COPY extensions/sdk/ /build/extensions/sdk/
 RUN npm run build
 FROM rust:1.96-bookworm AS rust
 WORKDIR /build

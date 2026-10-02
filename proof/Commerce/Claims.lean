@@ -166,4 +166,13 @@ theorem app_flow_exact (allowed readOnly isPublic : Bool) :
 theorem app_flow_readonly_denied (allowed isPublic : Bool) :
     app_flow_admissible allowed true isPublic = false := by
   cases allowed <;> cases isPublic <;> simp [app_flow_admissible]
+/-- Tenant roles and revoked operator grants cannot confer global access. -/
+theorem platform_exact (personal granted active : Bool) :
+    platform_admissible personal granted active = true ↔
+    personal = true ∧ granted = true ∧ active = true := by
+  cases personal <;> cases granted <;> cases active <;> simp [platform_admissible]
+/-- Bootstrap and integration credentials are never admitted as personal operator sessions. -/
+theorem platform_personal_required (granted active : Bool) :
+    platform_admissible false granted active = false := by
+  cases granted <;> cases active <;> simp [platform_admissible]
 end CommerceKernel

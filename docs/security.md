@@ -113,3 +113,15 @@ actual Rust consumers. This does not prove SQL tenant isolation, authentication,
 provider/extension safety or whole-system correctness. Existing security and
 behavioral regressions remain mandatory, as do explicit reviews of source,
 schema/build and proof-tool changes.
+
+## Experimental public hosting
+
+The dedicated `deploy/compose.yaml` enforces no demo seeding, closed merchant
+signup and disabled instance-token HTTP authentication. Personal operator grants
+are offline, audited and distinct from tenant roles; grant/revocation is checked
+on every `/api/platform/*` request. The bootstrap password belongs only to the
+one-shot operator container, never the long-running Rust environment. Review
+existing demo databases before exposing them: these flags do not delete old
+known-password accounts. See [host procedure](deployment.md) and
+[operator API boundary](platform.md). These gates are not comprehensive abuse,
+MFA, email verification, account recovery or full core-wide RLS hardening.
