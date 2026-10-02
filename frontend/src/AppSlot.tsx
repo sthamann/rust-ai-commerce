@@ -1,41 +1,64 @@
-/** Registered product slot for the engraving app; all configuration and prices come from the server. */
+/** Generic registered product configuration slot. App packages own labels, input names and business rules. */
 import { useEffect, useState } from "react";
 import { shopApi, type Cart } from "./shop-api";
 import { useAppText } from "./app-i18n";
-export default function AppSlot({
-  productId,
-  cart,
-  onCart,
-}: {
-  productId: string;
-  cart?: Cart;
-  onCart: (c: Cart) => void;
-}) {
-  const { a, locale } = useAppText();
-  const [enabled, setEnabled] = useState(false);
-  const [text, setText] = useState("");
-  const [saved, setSaved] = useState(false);
-  const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
+type Slot = {
+  app: string;
+  version: string;
+  slot: { component: string };
+  configuration?: {
+    inputField: string;
+    label: Record<string, string>;
+    hint: Record<string, string>;
+  };
+};
+type Props = { productId: string; cart?: Cart; onCart: (c: Cart) => void };
+export default function AppSlot(props: Props) {
+  const { locale } = useAppText();
+  const [slots, setSlots] = useState<Slot[]>([]);
   useEffect(() => {
     let active = true;
-    setSaved(false);
-    shopApi<{ slots: { app: string }[] }>("/store-api/apps/slots")
+    shopApi<{ slots: Slot[] }>("/store-api/apps/slots")
       .then((v) => {
-        if (active) setEnabled(v.slots.some((s) => s.app === "engraving"));
+        if (active) setSlots(v.slots);
       })
       .catch(() => {
-        if (active) setEnabled(false);
+        if (active) setSlots([]);
       });
     return () => {
       active = false;
     };
-  }, [locale, productId]);
-  if (!enabled) return null;
+  }, [locale, props.productId]);
+  return slots
+    .filter(
+      (s) => s.slot.component === "product-configuration" && s.configuration,
+    )
+    .map((slot) => (
+      <ConfigurationForm
+        key={`${slot.app}:${slot.version}:${props.productId}`}
+        slot={slot}
+        {...props}
+      />
+    ));
+}
+function ConfigurationForm({
+  slot,
+  productId,
+  cart,
+  onCart,
+}: Props & { slot: Slot }) {
+  const { a, locale } = useAppText();
+  const [text, setText] = useState("");
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const c = slot.configuration!;
+  const label = c.label[locale.slice(0, 2)] ?? c.label.en ?? slot.app;
+  const hint = c.hint[locale.slice(0, 2)] ?? c.hint.en;
   return (
     <section className="app-slot">
-      <h3>{a("engraving")}</h3>
-      <p>{a("engravingHint")}</p>
+      <h3>{label}</h3>
+      {hint && <p>{hint}</p>}
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -45,8 +68,12 @@ export default function AppSlot({
           try {
             onCart(
               await shopApi<Cart>(
-                "/store-api/apps/engraving/configure",
-                { productId, text, revision: cart.revision },
+                `/store-api/apps/${slot.app}/configure`,
+                {
+                  productId,
+                  fields: { [c.inputField]: text },
+                  revision: cart.revision,
+                },
                 cart.token,
               ),
             );
@@ -59,10 +86,10 @@ export default function AppSlot({
         }}
       >
         <label>
-          {a("engraving")}
+          {label}
           <input
             value={text}
-            maxLength={40}
+            maxLength={2000}
             required
             onChange={(e) => {
               setText(e.target.value);
@@ -74,7 +101,7 @@ export default function AppSlot({
           {a("save")}
         </button>
       </form>
-      {saved && <p role="status">{a("engravingSaved")}</p>}
+      {saved && <p role="status">{a("configurationSaved")}</p>}
       {error && <p role="alert">{error}</p>}
     </section>
   );

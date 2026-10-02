@@ -47,7 +47,12 @@ pub(crate) fn quote(c: &StoredCart, ps: &[Product]) -> Result<Value> {
             reference: p.reference_price.clone(),
             ..PriceInput::default()
         });
-        if let Some(config) = c.data.app_configurations.get(&i.id) {
+        for config in c
+            .data
+            .app_configurations
+            .values()
+            .filter(|v| v.product_id == i.id)
+        {
             let gross = config.fee_minor as f64 / 100.;
             let fee = calculate(&PriceInput {
                 price: if b2b {
@@ -70,11 +75,17 @@ pub(crate) fn quote(c: &StoredCart, ps: &[Product]) -> Result<Value> {
         lines.push(json!({"id":p.id,"referencedId":p.id,"label":format!("{}{}",p.name,p.options.as_object().filter(|o|!o.is_empty()).map(|o|format!(" · {}",o.values().filter_map(|v|v.as_str()).collect::<Vec<_>>().join(" / "))).unwrap_or_default()),"quantity":i.quantity,"stock":p.stock,"price":{"unitPrice":calc.unit_price,"totalPrice":calc.total_price,"calculatedTaxes":calc.calculated_taxes.iter().map(|t|json!({"tax":t.tax,"taxRate":t.tax_rate,"price":t.price})).collect::<Vec<_>>(),"listPrice":calc.list_price,"regulationPrice":calc.regulation_price.map(|price|json!({"price":price})),"referencePrice":calc.reference_price},"discountPercent":math_round((1.-discount)*100.,0),"ruleId":tier.map(|t|&t.rule_id),"minPurchase":p.min_purchase,"purchaseSteps":p.purchase_steps,"maxPurchase":p.max_purchase}));
     }
     for line in &mut lines {
-        if let Some(config) = line["id"]
-            .as_str()
-            .and_then(|id| c.data.app_configurations.get(id))
-        {
-            line["configuration"] = json!({"app":"engraving","version":config.app_version,"text":config.text,"feeMinor":config.fee_minor});
+        let mut configs = c
+            .data
+            .app_configurations
+            .values()
+            .filter(|v| Some(v.product_id.as_str()) == line["id"].as_str())
+            .map(|v| json!(v))
+            .collect::<Vec<_>>();
+        configs.sort_by(|a, b| a["app"].as_str().cmp(&b["app"].as_str()));
+        if !configs.is_empty() {
+            line["configuration"] = configs[0].clone();
+            line["appConfigurations"] = json!(configs);
         }
     }
     let total = math_round(total, 2);

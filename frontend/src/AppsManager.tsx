@@ -31,13 +31,23 @@ export default function AppsManager({
   const [packages, setPackages] = useState<Package[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [resultApp, setResultApp] = useState("");
   const [result, setResult] = useState<{
     elements: {
       orderId: string;
       items: {
         referencedId: string;
         quantity: number;
-        configuration?: { text: string; feeMinor: number };
+        configuration?: {
+          text?: string;
+          fields?: Record<string, string>;
+          feeMinor: number;
+        };
+        appConfigurations?: {
+          app: string;
+          fields: Record<string, string>;
+          feeMinor: number;
+        }[];
       }[];
     }[];
   }>();
@@ -77,7 +87,12 @@ export default function AppsManager({
       </div>
       <div className="app-install">
         {["engraving", "paypal", "shopware_payments"]
-          .filter((id) => !packages.some((p) => p.id === id))
+          .filter(
+            (id) =>
+              !packages.some((p) => p.id === id) ||
+              (id === "engraving" &&
+                packages.some((p) => p.id === id && p.version === "1.0.0")),
+          )
           .map((id) => (
             <button
               className="studio-secondary"
@@ -89,7 +104,7 @@ export default function AppsManager({
                 })
               }
             >
-              {a("install")} ·{" "}
+              {a(packages.some((p) => p.id === id) ? "upgrade" : "install")} ·{" "}
               {id === "engraving"
                 ? a("engraving")
                 : id === "paypal"
@@ -150,14 +165,15 @@ export default function AppsManager({
                     className="studio-secondary"
                     key={act.name}
                     onClick={() =>
-                      void run(async () =>
+                      void run(async () => {
+                        setResultApp(p.id);
                         setResult(
                           await request(
                             `/api/apps/${p.id}/actions/${act.name}`,
                             {},
                           ),
-                        ),
-                      )
+                        );
+                      })
                     }
                   >
                     {act.handler === "configurations"
@@ -174,20 +190,27 @@ export default function AppsManager({
           <h2>{a("actions")}</h2>
           {!result.elements.length && <p>{a("emptyOrders")}</p>}
           {result.elements.flatMap((order) =>
-            order.items
-              .filter((row) => row.configuration)
-              .map((row) => (
-                <article key={`${order.orderId}:${row.referencedId}`}>
-                  <strong>{row.configuration!.text}</strong>
+            order.items.flatMap((row) => {
+              const configs =
+                row.appConfigurations?.filter((c) => c.app === resultApp) ??
+                (row.configuration ? [row.configuration] : []);
+              return configs.map((c, i) => (
+                <article key={`${order.orderId}:${row.referencedId}:${i}`}>
+                  <strong>
+                    {Object.values(
+                      c.fields ?? { text: "text" in c ? c.text : "" },
+                    ).join(" · ")}
+                  </strong>
                   <p>
                     {row.quantity} × {row.referencedId} ·{" "}
-                    {money(row.configuration!.feeMinor / 100)}
+                    {money(c.feeMinor / 100)}
                   </p>
                   <small>
                     {a("orderLabel")}: {order.orderId}
                   </small>
                 </article>
-              )),
+              ));
+            }),
           )}
         </section>
       )}

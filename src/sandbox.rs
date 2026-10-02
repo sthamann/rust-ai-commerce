@@ -3,7 +3,7 @@ use wasmtime::{Config, Engine, Instance, Module, Store, StoreLimits, StoreLimits
 struct Limits {
     memory: StoreLimits,
 }
-/// Only a typed integer approval hook is exposed. No WASI, network, filesystem,
+/// Typed integer approval and app-contribution hooks are exposed. No WASI, network, filesystem,
 /// clocks or host imports. Compiled modules are reused; another replica's changed
 /// source is compiled on a blocking worker before checkout invokes its hook.
 pub struct Sandbox {
@@ -33,6 +33,54 @@ impl Sandbox {
     pub fn source_matches(&self, source: &str) -> bool {
         self.source == source
     }
+    /// Generic cart contribution ABI; business acceptance belongs to the app module.
+    pub fn contribution(&self, fee_minor: i64, input_length: i64) -> Result<i64, String> {
+        let mut store = Store::new(
+            &self.engine,
+            Limits {
+                memory: StoreLimitsBuilder::new()
+                    .memory_size(1 << 20)
+                    .instances(1)
+                    .memories(1)
+                    .tables(1)
+                    .build(),
+            },
+        );
+        store.limiter(|s| &mut s.memory);
+        store.set_fuel(10_000).map_err(|e| e.to_string())?;
+        let instance = Instance::new(&mut store, &self.module, &[]).map_err(|e| e.to_string())?;
+        instance
+            .get_typed_func::<(i64, i64), i64>(&mut store, "configuration_fee")
+            .map_err(|e| e.to_string())?
+            .call(&mut store, (fee_minor, input_length))
+            .map_err(|e| format!("{e:#}"))
+    }
+    /// Verify both contribution exports and let the app validate its price input.
+    pub fn validate_contribution(&self, fee: i64) -> Result<bool, String> {
+        let mut store = Store::new(
+            &self.engine,
+            Limits {
+                memory: StoreLimitsBuilder::new()
+                    .memory_size(1 << 20)
+                    .instances(1)
+                    .memories(1)
+                    .tables(1)
+                    .build(),
+            },
+        );
+        store.limiter(|s| &mut s.memory);
+        store.set_fuel(10_000).map_err(|e| e.to_string())?;
+        let instance = Instance::new(&mut store, &self.module, &[]).map_err(|e| e.to_string())?;
+        instance
+            .get_typed_func::<(i64, i64), i64>(&mut store, "configuration_fee")
+            .map_err(|e| e.to_string())?;
+        instance
+            .get_typed_func::<i64, i32>(&mut store, "validate_fee")
+            .map_err(|e| e.to_string())?
+            .call(&mut store, fee)
+            .map(|v| v == 1)
+            .map_err(|e| format!("{e:#}"))
+    }
     pub fn approve(&self, total_minor: i64, limit_minor: i64) -> Result<bool, String> {
         let mut store = Store::new(
             &self.engine,
@@ -59,6 +107,26 @@ impl Sandbox {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn app_owns_contribution_rules() {
+        let source = include_str!("../extensions/apps/engraving/configuration.wat");
+        let engraving = Sandbox::new(source).unwrap();
+        assert!(engraving.validate_contribution(300).unwrap());
+        assert!(!engraving.validate_contribution(-1).unwrap());
+        assert_eq!(engraving.contribution(300, 40).unwrap(), 300);
+        assert_eq!(engraving.contribution(300, 41).unwrap(), -1);
+        let different = Sandbox::new(&source.replace("i64.const 40", "i64.const 12")).unwrap();
+        assert_eq!(different.contribution(300, 13).unwrap(), -1);
+        assert_eq!(engraving.contribution(300, 13).unwrap(), 300);
+        assert!(
+            Sandbox::new("(module)")
+                .unwrap()
+                .validate_contribution(1)
+                .is_err()
+        );
+        let trap = Sandbox::new("(module (func (export \"configuration_fee\") (param i64 i64) (result i64) (loop br 0) i64.const 0))").unwrap();
+        assert!(trap.contribution(1, 1).unwrap_err().contains("fuel"));
+    }
     #[test]
     fn real_guest_execution() {
         let s = Sandbox::new(include_str!("../extensions/company-limit.wat")).unwrap();

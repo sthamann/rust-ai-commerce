@@ -118,3 +118,5 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md). Useful contributions include
 reproducible bugs, clearer setup instructions, locale improvements and bounded
 behavior ports with original-source comparisons. Please include the current
 version, steps to reproduce and expected versus observed behavior.
+
+App-owned product rules: engraving and gift-message packages supply their own Wasm business rules, input fields and localized forms. The core hosts a generic cart-contribution contract. See [extension examples](extensions/README.md#app-owned-product-configuration).

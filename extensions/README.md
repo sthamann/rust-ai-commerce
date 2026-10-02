@@ -72,7 +72,7 @@ Use an owner/admin personal session and the owning `x-tenant`. Installation is
 atomic. `PUT /api/apps/{id}` accepts active/revision for deactivation/reactivation;
 data and immutable version history remain. No uninstall/data deletion is provided.
 
-A manifest declares `api`, `id`, three-part `version`, localized `name`, `runtime`,
+A manifest declares `coreApi`, `id`, three-part `version`, localized `name`, `runtime`,
 `permissions`, `entities`, `actions`, `slots` and `events`. Entity fields are
 string/integer/boolean and may reference another entity in the same app. Root
 metadata (`tenant`, `id`, `revision`) is core-owned. Identifiers are constrained;
@@ -149,3 +149,41 @@ TEST_MODEL=1 python3 scripts/app_inference.py
 These use real core/DB operations and a real standalone SQLite service. Payment
 wire responses/signature verification are simulated by a local contract server;
 no actual PayPal Sandbox account is contacted. Real local inference is separate.
+
+### App-owned product configuration
+
+Product configuration is a host capability, **not engraving logic in the core**.
+The two runnable examples are [engraving](apps/engraving/manifest.json) and
+[gift message](apps/gift-message/manifest.json). Their `configuration.wat` files
+own their rules: engraving accepts 1–40 characters and fees of 0–100,000 cents;
+gift messages accept 1–12 characters and fees of 0–500 cents. Each manifest embeds
+the matching Wasm source, localized labels/hints, its own input field, typed entity
+and default data. Submit the gift-message manifest through the normal app installation API;
+no Rust branch or recompilation is needed to add it.
+
+The generic host invokes two exports:
+
+```text
+validate_fee(fee_minor: i64) -> i32          # 1 accepts app price data
+configuration_fee(fee_minor: i64, input_length: i64) -> i64
+                                          # negative rejects; otherwise gross EUR cents per item
+```
+
+The platform enforces printable bounded input, tenant/authentication boundaries,
+resource and money ceilings, immutable package versions, cart/data revisions and
+authoritative quantity/tax calculation. The package owns its business predicates.
+`POST /store-api/apps/{id}/configure` accepts
+`{"productId":"mug","revision":3,"fields":{"message":"For Ada"}}` with the cart
+context token and owning tenant. Input field names are declared by the package.
+Multiple apps compose on a SKU; order `appConfigurations` records each app separately.
+The generic storefront renders registered `product-configuration` slots.
+
+This initial pure-Wasm contract passes price and character count, not full text or
+arbitrary product data into Wasm. Richer rules need a versioned typed ABI or an
+external service contract; the example does not claim a universal configurator.
+
+Upgrade engraving 1.0 to 1.1 explicitly from Apps & payments. Existing rule data
+remains; open carts must be reconfigured against the new version. Completed orders
+retain their original snapshot and idempotent checkout replay. The small core
+`compatibility.rs` adapter reads the older cart format; it contains no current
+engraving acceptance or price rules.

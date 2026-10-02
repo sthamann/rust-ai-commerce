@@ -1,0 +1,24 @@
+{
+  "scope": "App-owned product configuration refactor",
+  "rustTests": 27,
+  "httpChecks": [
+    "Built-in installation creates actual typed app tables",
+    "Typed writes and independent workspace installations enforce data boundaries",
+    "App optimistic updates never alter another shop",
+    "Forced app RLS filters another tenant even when SQL omits an application tenant predicate",
+    "HTTP and authorized MCP consume the same app capability",
+    "Configuration adds server-derived taxed fee to the actual cart",
+    "Stale fees reject checkout; confirmed configuration persists in the merchant order",
+    "Order event creates durable graph association with exact evidence and no causal claim",
+    "Hypothesis review records a decision without inventing an experiment",
+    "Approved association reaches a real public storefront consumer without leaking order evidence",
+    "Custom app entities/relationships and additive upgrades preserve data; unsafe schema changes fail",
+    "Read-only members can query apps but cannot install or change their data",
+    "Deactivation removes capabilities while retaining app data",
+    "Independent app-owned Wasm rules and fields compose on one SKU with real taxed checkout",
+    "Missing app ABI rejects installation before publishing a package or creating schema"
+  ],
+  "passed": 15,
+  "localUi": "Upgrade from engraving 1.0 to 1.1 preserves 800-cent rule; product form saves Ada through generic route",
+  "paymentTraffic": "none"
+}

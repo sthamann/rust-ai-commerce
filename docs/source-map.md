@@ -82,7 +82,7 @@ inputs and state effects. A module's presence does not count as a test.
 
 | File | Responsibility | Coverage |
 |---|---|---|
-| [`src/apps/configurator.rs`](../src/apps/configurator.rs) | Engraving example: server-owned surcharge, typed cart data and checkout revision verification. | `apps.py + services.py + providers.py + app_inference.py` |
+| [`src/apps/cart_contributions.rs`](../src/apps/cart_contributions.rs) | Generic app-to-cart contribution contract, revision binding and order read model. | `apps.py + services.py + providers.py + app_inference.py` |
 | [`src/apps/data.rs`](../src/apps/data.rs) | Managed app tables: typed writes, optimistic revisions, bounded reads and local RLS context. | `apps.py + services.py + providers.py + app_inference.py` |
 | [`src/apps/events.rs`](../src/apps/events.rs) | Durable at-least-once app events, retry leases and stable event idempotency keys. | `apps.py + services.py + providers.py + app_inference.py` |
 | [`src/apps/gateway.rs`](../src/apps/gateway.rs) | One permission-aware action gateway serves HTTP, UI and MCP; service egress is operator configured. | `apps.py + services.py + providers.py + app_inference.py` |
@@ -164,3 +164,10 @@ credentials and DB backups remain ignored in `.run`, `.env` and local work.
 See [shopware-parity.md](shopware-parity.md) for exact equivalence boundaries and
 [security.md](security.md) for production gaps. No 100% code-coverage or full
 Shopware compatibility claim is made.
+
+| File | Responsibility | Verification |
+|---|---|---|
+| [`src/apps/runtime.rs`](../src/apps/runtime.rs) | Generic cached Wasm ABI execution; no app business rules. | Rust Wasm boundary tests + `apps.py` |
+| [`src/apps/compatibility.rs`](../src/apps/compatibility.rs) | Explicit adapter for pre-1.1 engraving cart records; completed snapshots stay immutable. | Rust compatibility regression |
+| [`extensions/apps/engraving/configuration.wat`](../extensions/apps/engraving/configuration.wat) | App-owned text-length and fee acceptance rules. | Rust guest tests + `apps.py` |
+| [`extensions/apps/gift-message/configuration.wat`](../extensions/apps/gift-message/configuration.wat) | Independent app with its own length/fee limits and input field. | `apps.py` real taxed checkout |

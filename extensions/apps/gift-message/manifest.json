@@ -1,13 +1,13 @@
 {
-  "id": "engraving",
-  "version": "1.1.0",
+  "id": "gift_message",
+  "version": "1.0.0",
   "coreApi": "1",
   "runtime": "declarative",
   "name": {
-    "en": "Product personalization",
-    "de": "Produktpersonalisierung",
-    "fr": "Personnalisation produit",
-    "es": "Personalización de productos"
+    "en": "Gift message",
+    "de": "Geschenknachricht",
+    "fr": "Message cadeau",
+    "es": "Mensaje de regalo"
   },
   "permissions": [
     "data.read",
@@ -34,10 +34,10 @@
       "location": "product.detail",
       "component": "product-configuration",
       "label": {
-        "en": "Make it yours",
-        "de": "Mach es zu deinem",
-        "fr": "Personnalisez-le",
-        "es": "Hazlo tuyo"
+        "en": "Add a gift message",
+        "de": "Geschenknachricht hinzufügen",
+        "fr": "Ajouter un message cadeau",
+        "es": "Añadir un mensaje de regalo"
       }
     },
     {
@@ -64,7 +64,7 @@
   "actions": [
     {
       "name": "rules",
-      "description": "Read the shop personalization rules",
+      "description": "Read gift-message price rules",
       "handler": "list",
       "entity": "rules",
       "inputSchema": {
@@ -76,7 +76,7 @@
     },
     {
       "name": "save_rules",
-      "description": "Change the personalization fee; explicit merchant action required",
+      "description": "Change gift-message price rules",
       "handler": "save",
       "entity": "rules",
       "inputSchema": {
@@ -102,7 +102,7 @@
     },
     {
       "name": "orders",
-      "description": "Read personalized order positions with their stored configurations",
+      "description": "Show orders with gift messages",
       "handler": "configurations",
       "entity": null,
       "inputSchema": {
@@ -118,22 +118,22 @@
     "entity": "rules",
     "record": "default",
     "priceField": "fee_minor",
-    "inputField": "text",
-    "wasmSource": ";; Engraving-owned rules: printable input is checked by the host; app defines length and fee.\n(module\n  (func $valid_fee (export \"validate_fee\") (param $fee i64) (result i32)\n    local.get $fee i64.const 0 i64.ge_s\n    local.get $fee i64.const 100000 i64.le_s i32.and)\n  (func (export \"configuration_fee\") (param $fee i64) (param $length i64) (result i64)\n    local.get $fee call $valid_fee\n    local.get $length i64.const 1 i64.ge_s i32.and\n    local.get $length i64.const 40 i64.le_s i32.and\n    if (result i64) local.get $fee else i64.const -1 end))\n",
+    "inputField": "message",
+    "wasmSource": ";; Gift-message-owned rules: printable input is checked by the host; app defines length and fee.\n(module\n  (func $valid_fee (export \"validate_fee\") (param $fee i64) (result i32)\n    local.get $fee i64.const 0 i64.ge_s\n    local.get $fee i64.const 500 i64.le_s i32.and)\n  (func (export \"configuration_fee\") (param $fee i64) (param $length i64) (result i64)\n    local.get $fee call $valid_fee\n    local.get $length i64.const 1 i64.ge_s i32.and\n    local.get $length i64.const 12 i64.le_s i32.and\n    if (result i64) local.get $fee else i64.const -1 end))\n",
     "defaultFields": {
-      "fee_minor": 300
+      "fee_minor": 150
     },
     "label": {
-      "en": "Personalize this product",
-      "de": "Produkt personalisieren",
-      "fr": "Personnaliser ce produit",
-      "es": "Personalizar este producto"
+      "en": "Add a gift message",
+      "de": "Geschenknachricht hinzufügen",
+      "fr": "Ajouter un message cadeau",
+      "es": "Añadir un mensaje de regalo"
     },
     "hint": {
-      "en": "Up to 40 characters. Price and tax are calculated by the shop.",
-      "de": "Bis zu 40 Zeichen. Der Shop berechnet Aufpreis und Steuer.",
-      "fr": "40 caractères maximum. La boutique calcule le supplément et la taxe.",
-      "es": "Hasta 40 caracteres. La tienda calcula el suplemento y el impuesto."
+      "en": "Up to 12 characters. Price and tax are calculated by the shop.",
+      "de": "Bis zu 12 Zeichen. Preis und Steuer berechnet der Shop.",
+      "fr": "12 caractères maximum. Prix et taxe calculés par la boutique.",
+      "es": "Hasta 12 caracteres. Precio e impuestos calculados por la tienda."
     }
   }
 }

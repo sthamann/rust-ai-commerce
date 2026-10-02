@@ -34,11 +34,13 @@ pub(crate) struct StoredCart {
     pub(crate) status: String,
 }
 pub(crate) fn stored(r: &sqlx::postgres::PgRow) -> Result<StoredCart> {
+    let mut data: Value = r.get("data");
+    apps::upgrade_cart(&mut data);
     Ok(StoredCart {
         id: r.get("id"),
         tenant: r.get("tenant"),
         token: r.get("token"),
-        data: serde_json::from_value(r.get("data")).map_err(|e| bad(e.to_string()))?,
+        data: serde_json::from_value(data).map_err(|e| bad(e.to_string()))?,
         revision: r.get("revision"),
         status: r.get("status"),
     })

@@ -23,14 +23,17 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         purchase["appConfigurations"] = json!(c.data.app_configurations);
     }
     let fingerprint = hash(&format!("{}:{}", c.id, purchase));
-    if let Some(r) =
-        sqlx::query("SELECT data,fingerprint FROM orders WHERE tenant=$1 AND idempotency_key=$2")
-            .bind(&c.tenant)
-            .bind(key)
-            .fetch_optional(&mut *tx)
-            .await?
+    if let Some(r) = sqlx::query(
+        "SELECT data,fingerprint,cart_id FROM orders WHERE tenant=$1 AND idempotency_key=$2",
+    )
+    .bind(&c.tenant)
+    .bind(key)
+    .fetch_optional(&mut *tx)
+    .await?
     {
-        if r.get::<String, _>("fingerprint") != fingerprint {
+        if r.get::<String, _>("cart_id") != c.id
+            || (c.status == "open" && r.get::<String, _>("fingerprint") != fingerprint)
+        {
             return Err(conflict("Idempotency key was used for another purchase"));
         }
         return Ok(r.get("data"));

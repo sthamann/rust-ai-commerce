@@ -32,14 +32,16 @@ tools=call('/mcp',{'jsonrpc':'2.0','id':1,'method':'tools/list'},h)['result']['t
 assert not any(t['name'].startswith('app.') for t in call('/mcp',{'jsonrpc':'2.0','id':1,'method':'tools/list'},{'x-tenant':u['workspace']})['result']['tools'])
 record=call('/mcp',{'jsonrpc':'2.0','id':2,'method':'tools/call','params':{'name':'app.engraving.rules','arguments':{}}},h)['result']['structuredContent'];assert record['elements'][0]['fee_minor']==500;check('HTTP and authorized MCP consume the same app capability')
 ch={'x-tenant':u['workspace']};c=call('/store-api/checkout/cart',{'session':uuid.uuid4().hex},ch);ch['sw-context-token']=c['token']
-c=call('/store-api/apps/engraving/configure',{'productId':'mug','text':'Ada','revision':c['revision']},ch)
+c=call('/store-api/apps/engraving/configure',{'productId':'mug','fields':{'text':'Ada'},'revision':c['revision']},ch)
 c=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'mug','quantity':2},{'referencedId':'notebook','quantity':1}]},ch)
-mug=next(i for i in c['lineItems'] if i['id']=='mug');assert mug['price']['unitPrice']==29.9 and mug['configuration']['text']=='Ada'
+mug=next(i for i in c['lineItems'] if i['id']=='mug');assert mug['price']['unitPrice']==29.9 and mug['configuration']['fields']['text']=='Ada'
 assert abs(c['price']['totalPrice']-72.3)<1e-8;check('Configuration adds server-derived taxed fee to the actual cart')
 call('/api/apps/engraving/entities/rules',{'id':'default','revision':2,'fields':{'fee_minor':700}},h)
 call('/store-api/checkout/order',{}, {**ch,'Idempotency-Key':uuid.uuid4().hex},expected=409)
-c=call('/store-api/apps/engraving/configure',{'productId':'mug','text':'Ada','revision':c['revision']},ch)
-o=call('/store-api/checkout/order',{}, {**ch,'Idempotency-Key':uuid.uuid4().hex});assert next(i for i in o['cart']['lineItems'] if i['id']=='mug')['configuration']['feeMinor']==700
+c=call('/store-api/apps/engraving/configure',{'productId':'mug','fields':{'text':'Ada'},'revision':c['revision']},ch)
+order_key=uuid.uuid4().hex
+o=call('/store-api/checkout/order',{}, {**ch,'Idempotency-Key':order_key});assert next(i for i in o['cart']['lineItems'] if i['id']=='mug')['configuration']['feeMinor']==700
+assert call('/store-api/checkout/order',{}, {**ch,'Idempotency-Key':order_key})['id']==o['id']
 assert call('/api/apps/engraving/actions/orders',{},h)['elements'][0]['orderId']==o['id'];check('Stale fees reject checkout; confirmed configuration persists in the merchant order')
 for _ in range(60):
     memory=call('/api/intelligence',h=h)
@@ -75,6 +77,27 @@ call('/api/apps/engraving',{'active':False,'revision':pack['revision']},h,'PUT')
 call('/api/apps/engraving/actions/rules',{},h,expected=409)
 call('/api/apps/engraving',{'active':True,'revision':pack['revision']+1},h,'PUT')
 assert call('/api/apps/engraving/entities/rules',h=h)['elements'][0]['fee_minor']==700;check('Deactivation removes capabilities while retaining app data')
+# A second independently packaged module has different business rules; core has no app branch.
+gift=json.loads((ROOT/'extensions/apps/gift-message/manifest.json').read_text())
+call('/api/apps',{'manifest':gift},h)
+call('/api/apps/gift_message/entities/rules',{'id':'default','revision':1,'fields':{'fee_minor':501}},h,expected=400)
+c=call('/store-api/checkout/cart',{'session':uuid.uuid4().hex},{'x-tenant':u['workspace']})
+ch2={'x-tenant':u['workspace'],'sw-context-token':c['token']}
+call('/store-api/apps/gift_message/configure',{'productId':'mug','fields':{'message':'too long input'},'revision':c['revision']},ch2,expected=400)
+call('/store-api/apps/gift_message/configure',{'productId':'mug','fields':{'message':'Ada','tenant':'other'},'revision':c['revision']},ch2,expected=400)
+c=call('/store-api/apps/gift_message/configure',{'productId':'mug','fields':{'message':'Ada'},'revision':c['revision']},ch2)
+c=call('/store-api/apps/engraving/configure',{'productId':'mug','fields':{'text':'Ada'},'revision':c['revision']},ch2)
+c=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'mug','quantity':2}]},ch2)
+assert c['lineItems'][0]['price']['unitPrice']==33.4 and len(c['lineItems'][0]['appConfigurations'])==2
+key2=uuid.uuid4().hex
+o2=call('/store-api/checkout/order',{}, {**ch2,'Idempotency-Key':key2})
+assert o2['cart']['lineItems'][0]['price']['totalPrice']==66.8
+assert call('/api/apps/gift_message/actions/orders',{},h)['elements'][0]['orderId']==o2['id']
+check('Independent app-owned Wasm rules and fields compose on one SKU with real taxed checkout')
+broken=copy.deepcopy(gift);broken['id']='broken_config';broken['configuration']['wasmSource']='(module)'
+call('/api/apps',{'manifest':broken},h,expected=400)
+assert not any(p['id']=='broken_config' for p in call('/api/apps',h=h)['packages'])
+check('Missing app ABI rejects installation before publishing a package or creating schema')
 state={'owner':u,'orderId':o['id'],'memory':memory,'checks':checks,'passed':len(checks)}
 if os.getenv('REPORT_PATH'):pathlib.Path(os.environ['REPORT_PATH']).write_text(json.dumps(state,indent=2)+'\n')
 print(json.dumps({'passed':len(checks)}))

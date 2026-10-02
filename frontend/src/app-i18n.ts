@@ -87,6 +87,13 @@ const words = {
     "Ajoutez des fonctions à votre boutique, avec leurs données et actions.",
     "Añade funciones a tu tienda, con sus propios datos y acciones.",
   ],
+  upgrade: ["Upgrade", "Aktualisieren", "Mettre à jour", "Actualizar"],
+  configurationSaved: [
+    "Configuration saved for this product",
+    "Konfiguration für dieses Produkt gespeichert",
+    "Configuration enregistrée pour ce produit",
+    "Configuración guardada para este producto",
+  ],
   install: ["Install", "Installieren", "Installer", "Instalar"],
   active: ["Active", "Aktiv", "Active", "Activa"],
   inactive: [

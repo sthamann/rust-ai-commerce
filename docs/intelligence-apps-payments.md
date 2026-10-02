@@ -75,6 +75,8 @@ There is no microVM/container resource isolation, package-signing marketplace,
 arbitrary frontend bundle injection, WIT host ABI or automatic PHP transpiler.
 Deployment resource/network boundaries remain the operator's responsibility.
 
+App-specific engraving validation lives in `extensions/apps/engraving/configuration.wat` and its manifest. The generic host in `src/apps/cart_contributions.rs` binds revisions and applies the result; `src/apps/runtime.rs` executes the package ABI. An independent gift-message package uses the same contract with different rules and input fields.
+
 The engraving example is genuinely connected: product slot → authoritative
 configuration → taxed cart surcharge per unit → revision check → immutable order
 configuration → merchant order view. Removing the line removes the fee; old
