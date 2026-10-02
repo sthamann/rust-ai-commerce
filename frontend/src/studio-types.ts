@@ -18,6 +18,12 @@ export type Product = {
   }[];
 };
 export type Graph = {
+  documents?: {
+    product_id: string;
+    document_id: string;
+    title: string;
+    source: string;
+  }[];
   needs: {
     product_id: string;
     need: string;

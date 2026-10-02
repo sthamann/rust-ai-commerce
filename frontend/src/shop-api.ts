@@ -1,3 +1,4 @@
+import { responseError } from "./errors-i18n";
 import { getLocale } from "./i18n";
 export type Product = {
   id: string;
@@ -18,6 +19,12 @@ export type Product = {
   max_purchase?: number;
   delivery_days: number;
   list_price?: number;
+  extra?: {
+    seo?: Record<string, { title: string; description: string; slug: string }>;
+    specifications?: Record<string, Record<string, string>>;
+    crossSelling?: string[];
+    shippingFree?: boolean;
+  };
 };
 export type Selection = {
   country: string;
@@ -81,6 +88,14 @@ export type Order = {
   }[];
 };
 export type Cart = {
+  couponCodes?: string[];
+  discountTotal?: number;
+  discounts?: {
+    id: string;
+    name: Record<string, string>;
+    kind: string;
+    amount: number;
+  }[];
   id: string;
   token: string;
   revision: number;
@@ -148,13 +163,32 @@ export async function shopApi<T = unknown>(
     headers: {
       "Content-Type": "application/json",
       "x-commerce-locale": getLocale(),
+      "sw-sales-channel-id":
+        new URLSearchParams(location.search).get("channel") ?? "default",
+      ...(localStorage.getItem(
+        `rac-customer:${new URLSearchParams(location.search).get("shop") ?? "atelier"}`,
+      )
+        ? {
+            "x-customer-token": localStorage.getItem(
+              `rac-customer:${new URLSearchParams(location.search).get("shop") ?? "atelier"}`,
+            )!,
+          }
+        : {}),
       "x-tenant": new URLSearchParams(location.search).get("shop") ?? "atelier",
       ...(token ? { "sw-context-token": token } : {}),
-      ...(merchant ? { Authorization: `Bearer ${merchant}` } : {}),
+      ...(merchant ||
+      (new URLSearchParams(location.search).get("sandbox") === "1"
+        ? sessionStorage.getItem("rac-user-token")
+        : "")
+        ? {
+            Authorization: `Bearer ${merchant || sessionStorage.getItem("rac-user-token")}`,
+          }
+        : {}),
     },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const v = await r.json();
-  if (!r.ok) throw new Error(v.errors?.[0]?.detail ?? r.statusText);
+  if (!r.ok)
+    throw responseError(v.errors?.[0]?.detail ?? r.statusText, r.status);
   return v;
 }

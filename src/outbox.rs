@@ -17,6 +17,7 @@ pub(crate) async fn consume_once(a: &App) -> Result<()> {
         let kind = r.get::<String, _>("kind");
         cognition::project(&mut tx, &t, id, &kind, &r.get::<Value, _>("data")).await?;
         apps::project_events(&mut tx, &t, id, &kind).await?;
+        marketing::project_flows(&mut tx, &t, id, &kind, &r.get::<Value, _>("data")).await?;
         sqlx::query("INSERT INTO projections(event_id,tenant,kind,data) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING").bind(id).bind(r.get::<String,_>("tenant")).bind(r.get::<String,_>("kind")).bind(r.get::<Value,_>("data")).execute(&mut *tx).await?;
         sqlx::query("UPDATE outbox SET delivered_at=now() WHERE id=$1")
             .bind(id)

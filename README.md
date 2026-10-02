@@ -28,12 +28,44 @@ This is also a laboratory for porting selected original Shopware behavior to Rus
 | Rust ecommerce and B2B checkout | SKU variants, quantity prices, tax/shipping configuration and durable demo orders |
 | Shopware behavior in Rust | Bounded ports checked against original Shopware PHP classes |
 | Storyfront shops | Catalog/variant/media import and checkout transfer through a separate [Storyfront app](docs/storyfront.md) |
-
 | Self-hosted storage | PostgreSQL + Apache AGE + pgvector; no paid database service required |
 
 ![Connected Storyfront product](docs/storyfront-product.png)
 
 The interface supports **English, German, French and Spanish**. MIT licensed.
+
+## Merchant workbench and private releases
+
+The workbench now has **Storyfronts**, **Developers**, **Environments**,
+**Automation** and **Product content** sections. An existing merchant can create
+additional shops. Prompt-generated apps are immutable reviewed drafts, installed
+in a private sandbox and selectively published with their own typed data/API/UI.
+Codex and Claude Code can use the exported package schema and authorized MCP
+workflow; OpenAI/Anthropic model APIs and local Ollama generate app drafts.
+
+Product pages support source-bound questions; merchants upload private text/PDF
+sources and explicitly publish them. Customer accounts expose profile editing and
+own orders. Native campaigns/coupons/free shipping, rule conditions, durable
+note/AI-proposal flows and scoped sales channels share the real checkout path.
+Product translations/specifications/SEO/cross-selling and behavior-based ranking
+are connected to their storefront consumers.
+
+Read the [workbench guide and exact limits](docs/workbench.md) and the prepared
+[Vercel + self-hosted deployment](docs/deployment.md). The four-language interface
+extends to the new tabs, forms, native app fields and customer account/checkout
+flow; user-authored sources and earlier conversation messages retain their
+original language. Real model quality and full Shopware Rule/Flow parity remain
+separate verification work.
+
+![Versioned local-model app draft in the merchant developer tab](docs/assets/merchant-developer-en.jpg)
+
+A local Qwen run generated **Product Care** with translated app labels, a typed
+`guides` entity, API actions and a product-detail slot. The reviewed package and
+its four-language care record were installed in a private sandbox and selectively
+published; the live parent product and 500 ml variant render that same app record.
+This is one verified declarative app, not a claim of arbitrary app-generation quality.
+
+![Selected app and record release with a durable receipt](docs/assets/merchant-release-en.jpg)
 
 ## Try the commerce app first — no model download
 
@@ -126,8 +158,8 @@ See [implementation and limits](docs/intelligence-apps-payments.md),
 - [Original Shopware migration units](porting/units.json) and [migration workflow](docs/migration.md)
 - [Architecture decisions](docs/architecture.md), [security](docs/security.md), [third-party licenses](THIRD_PARTY.md)
 
-The recorded suite includes **4,592 bounded comparisons** against original
-Shopware 6.7.14.2 PHP classes. These cover selected pricing/context/tax operations;
+The current verification includes **5,872 bounded comparisons** against original
+Shopware 6.7.14.2 PHP classes. These cover selected pricing/context/tax operations and numeric rule comparisons;
 they do not establish full Shopware compatibility.
 
 ## Contribute

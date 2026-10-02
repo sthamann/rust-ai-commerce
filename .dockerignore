@@ -1,0 +1,11 @@
+.git
+.env
+.run
+target
+frontend/node_modules
+frontend/dist
+reference/vendor
+artifacts
+docs
+.site
+.codebase-memory

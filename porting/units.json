@@ -295,6 +295,89 @@
         "authorization-void",
         "refund-event-reconciliation"
       ]
+    },
+    {
+      "id": "numeric-rule-comparison",
+      "status": "partial-port",
+      "source": [
+        "Framework/Rule/RuleComparison.php",
+        "Framework/Util/FloatComparator.php"
+      ],
+      "implementation": [
+        "src/rule_comparison.rs",
+        "src/marketing/rules.rs"
+      ],
+      "gates": [
+        [
+          "python3",
+          "scripts/rule_differential.py"
+        ]
+      ],
+      "remaining": [
+        "full-condition-hierarchy",
+        "string-array-date-comparisons"
+      ]
+    },
+    {
+      "id": "rules-flows-promotions-channels",
+      "status": "native-prototype",
+      "source": [
+        "Checkout/Cart/Rule/CartAmountRule.php",
+        "Content/Flow",
+        "Checkout/Promotion",
+        "System/SalesChannel"
+      ],
+      "implementation": [
+        "src/marketing",
+        "src/discount.rs",
+        "frontend/src/AutomationView.tsx"
+      ],
+      "gates": [
+        [
+          "python3",
+          "scripts/marketing_accounts.py"
+        ],
+        [
+          "python3",
+          "scripts/developer_documents.py"
+        ]
+      ],
+      "remaining": [
+        "full-upstream-rule-flow-interchange",
+        "full-promotion-set-calculators",
+        "channel-tax-currency-domains"
+      ]
+    },
+    {
+      "id": "private-workbench",
+      "status": "native-prototype",
+      "source": [],
+      "implementation": [
+        "src/staging",
+        "src/developer",
+        "src/documents",
+        "src/accounts"
+      ],
+      "gates": [
+        [
+          "python3",
+          "scripts/staging.py"
+        ],
+        [
+          "python3",
+          "scripts/developer_documents.py"
+        ],
+        [
+          "python3",
+          "scripts/marketing_accounts.py"
+        ]
+      ],
+      "remaining": [
+        "isolated-service-builder",
+        "git-ide",
+        "rollback-conflict-merge",
+        "production-identity"
+      ]
     }
   ]
 }

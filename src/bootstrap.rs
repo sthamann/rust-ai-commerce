@@ -40,10 +40,26 @@ pub(crate) async fn bootstrap() -> App {
     .execute(&bootstrap)
     .await
     .expect("app/payment/memory schema");
+    sqlx::raw_sql(include_str!("../migrations/011-documents.sql"))
+        .execute(&bootstrap)
+        .await
+        .expect("document knowledge schema");
     sqlx::raw_sql(include_str!("../migrations/012-checkout-handoff.sql"))
         .execute(&bootstrap)
         .await
         .expect("checkout handoff schema");
+    sqlx::raw_sql(include_str!("../migrations/013-staging-developer.sql"))
+        .execute(&bootstrap)
+        .await
+        .expect("staging/developer schema");
+    sqlx::raw_sql(include_str!("../migrations/014-customer-accounts.sql"))
+        .execute(&bootstrap)
+        .await
+        .expect("customer accounts schema");
+    sqlx::raw_sql(include_str!("../migrations/015-rules-flows-channels.sql"))
+        .execute(&bootstrap)
+        .await
+        .expect("rules/flows/channels schema");
     let db = PgPoolOptions::new()
         .max_connections(20)
         .after_connect(|conn, _| {
@@ -81,6 +97,7 @@ pub(crate) async fn bootstrap() -> App {
         .fetch_all(&a.db)
         .await
         .unwrap();
+    let mut compiled = HashMap::new();
     for tenant in &tenants {
         let t = tenant.get::<String, _>("id");
         // Built-in tenants need the same persisted, lockable policy as newly registered shops.
@@ -100,10 +117,11 @@ pub(crate) async fn bootstrap() -> App {
             .fetch_one(&a.db)
             .await
             .expect("persisted extension");
-        a.sandboxes
-            .write()
-            .unwrap()
-            .insert(t, Arc::new(Sandbox::new(&wat).expect("saved extension")));
+        let sandbox = compiled
+            .entry(hash(&wat))
+            .or_insert_with(|| Arc::new(Sandbox::new(&wat).expect("saved extension")))
+            .clone();
+        a.sandboxes.write().unwrap().insert(t, sandbox);
     }
     seed(&a).await.expect("seed");
     sqlx::raw_sql(include_str!("../migrations/003-seed.sql"))
@@ -122,18 +140,19 @@ pub(crate) async fn bootstrap() -> App {
         .execute(&a.db)
         .await
         .expect("variant properties");
-    for tenant in &tenants {
-        let t = tenant.get::<String, _>("id");
-        for p in products(&a, &t).await.unwrap() {
+    // Provisioning and mutation transactions maintain every other tenant's graph.
+    // Replicas must not scan/rewrite the complete multi-shop catalog on startup.
+    for t in ["atelier", "workshop"] {
+        for p in products(&a, t).await.unwrap() {
             knowledge::sync_product(
                 &mut a.db.acquire().await.unwrap(),
-                &t,
+                t,
                 &serde_json::to_value(p).unwrap(),
             )
             .await
             .expect("graph product");
         }
-        knowledge::seed_relations(&a.db, &t)
+        knowledge::seed_relations(&a.db, t)
             .await
             .expect("graph relations");
     }

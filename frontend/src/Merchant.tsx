@@ -1,9 +1,17 @@
+import { responseError } from "./errors-i18n";
 import SettingsDialog from "./SettingsDialog";
 import ProposalCard from "./ProposalCard";
 import PreviewDialog from "./PreviewDialog";
 import MessageText from "./MessageText";
 import UsersManager, { type Session } from "./UsersManager";
 import AppsManager from "./AppsManager";
+import AutomationView from "./AutomationView";
+import ProductDataView from "./ProductDataView";
+import StoryfrontView from "./StoryfrontView";
+import DeveloperView from "./DeveloperView";
+import EnvironmentManager, { type Environment } from "./EnvironmentManager";
+import { useWorkbenchText } from "./workbench-i18n";
+import "./workbench.css";
 import CommerceManager from "./CommerceManager";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Icon, { type IconName } from "./Icon";
@@ -23,7 +31,12 @@ type Tab =
   | "agents"
   | "commerce"
   | "users"
-  | "apps";
+  | "apps"
+  | "storyfronts"
+  | "developers"
+  | "environments"
+  | "automation"
+  | "productData";
 export default function Merchant({
   onChanged,
   onExit,
@@ -32,6 +45,35 @@ export default function Merchant({
   onExit: () => void;
 }) {
   const { locale, setLocale, t, date } = useLocale();
+  const { w } = useWorkbenchText();
+  const tabLabel = (id: Tab) =>
+    [
+      "storyfronts",
+      "developers",
+      "environments",
+      "automation",
+      "productData",
+    ].includes(id)
+      ? w(
+          id as
+            | "storyfronts"
+            | "developers"
+            | "environments"
+            | "automation"
+            | "productData",
+        )
+      : t(
+          id as Exclude<
+            Tab,
+            | "storyfronts"
+            | "developers"
+            | "environments"
+            | "automation"
+            | "productData"
+          >,
+        );
+  const [environments, setEnvironments] = useState<Environment[]>([]);
+  const [environment, setEnvironment] = useState("");
   const [token, setToken] = useState(
     () => sessionStorage.getItem("rac-user-token") ?? "",
   );
@@ -76,24 +118,77 @@ export default function Merchant({
   const [updated, setUpdated] = useState("");
   const bottom = useRef<HTMLDivElement>(null);
   const composer = useRef<HTMLTextAreaElement>(null);
-  const request: RequestFn = useCallback(
+  const liveRequest: RequestFn = useCallback(
     async (path, body, method) => {
       const r = await fetch(path, {
         method: method ?? (body === undefined ? "GET" : "POST"),
         headers: {
-          "Content-Type": "application/json",
+          ...(body instanceof FormData
+            ? {}
+            : { "Content-Type": "application/json" }),
           Authorization: `Bearer ${token}`,
           "x-tenant": workspace,
           "x-commerce-locale": locale,
         },
-        body: body === undefined ? undefined : JSON.stringify(body),
+        body:
+          body === undefined
+            ? undefined
+            : body instanceof FormData
+              ? body
+              : JSON.stringify(body),
       });
       const value = await r.json();
-      if (!r.ok) throw new Error(value.errors?.[0]?.detail || r.statusText);
+      if (!r.ok)
+        throw responseError(
+          value.errors?.[0]?.detail || r.statusText,
+          r.status,
+        );
       return value;
     },
     [token, locale, workspace],
   );
+  const request: RequestFn = useCallback(
+    async (path, body, method) => {
+      if (!environment) return liveRequest(path, body, method);
+      const r = await fetch(path, {
+        method: method ?? (body === undefined ? "GET" : "POST"),
+        headers: {
+          ...(body instanceof FormData
+            ? {}
+            : { "Content-Type": "application/json" }),
+          Authorization: `Bearer ${token}`,
+          "x-tenant": environment,
+          "x-commerce-locale": locale,
+        },
+        body:
+          body === undefined
+            ? undefined
+            : body instanceof FormData
+              ? body
+              : JSON.stringify(body),
+      });
+      const value = await r.json();
+      if (!r.ok)
+        throw responseError(
+          value.errors?.[0]?.detail || r.statusText,
+          r.status,
+        );
+      return value;
+    },
+    [liveRequest, environment, token, locale],
+  );
+  const refreshEnvironments = useCallback(
+    async () =>
+      setEnvironments((await liveRequest("/api/environments")).environments),
+    [liveRequest],
+  );
+  useEffect(() => {
+    setEnvironment("");
+    setEnvironments([]);
+  }, [workspace]);
+  useEffect(() => {
+    if (token) void refreshEnvironments().catch(() => {});
+  }, [token, refreshEnvironments]);
   const refresh = useCallback(async () => {
     setData(await request("/api/merchant/overview"));
     setConversations((await request("/api/agent/conversations")).conversations);
@@ -122,7 +217,7 @@ export default function Merchant({
       request("/api/agent/providers"),
       request("/api/merchant/overview"),
       request("/api/agent/conversations"),
-      request("/api/auth/session"),
+      liveRequest("/api/auth/session"),
     ])
       .then(([providerData, overview, history, session]) => {
         if (!active) return;
@@ -229,7 +324,12 @@ export default function Merchant({
     { id: "knowledge", icon: "graph" },
     { id: "agents", icon: "agents" },
     { id: "commerce", icon: "box" },
+    { id: "productData", icon: "box" },
+    { id: "automation", icon: "pulse" },
     { id: "users", icon: "lock" },
+    { id: "storyfronts", icon: "box" },
+    { id: "developers", icon: "settings" },
+    { id: "environments", icon: "box" },
     { id: "apps", icon: "plus" },
   ];
   return (
@@ -274,7 +374,7 @@ export default function Merchant({
               }}
             >
               <Icon name={n.icon} />
-              <span>{t(n.id)}</span>
+              <span>{tabLabel(n.id)}</span>
               {n.id === "overview" && data?.summary.ordersToday ? (
                 <b>{data.summary.ordersToday}</b>
               ) : null}
@@ -337,10 +437,29 @@ export default function Merchant({
               <Icon name="menu" />
             </button>
             <span className="breadcrumb">
-              {workspaceName} <span>/</span> <strong>{t(tab)}</strong>
+              {workspaceName} <span>/</span> <strong>{tabLabel(tab)}</strong>
             </span>
           </div>
           <div className="topbar-actions">
+            {connected && (
+              <select
+                className="environment-switch"
+                aria-label={w("environments")}
+                value={environment}
+                onChange={(e) => {
+                  setEnvironment(e.target.value);
+                  setId(undefined);
+                  setMessages([]);
+                }}
+              >
+                <option value="">{w("live")}</option>
+                {environments.map((e) => (
+                  <option key={e.id} value={e.id}>
+                    {e.name}
+                  </option>
+                ))}
+              </select>
+            )}
             <button
               className="icon-button mobile-preview-button"
               aria-label={t("livePreview")}
@@ -387,6 +506,21 @@ export default function Merchant({
             </button>
           </div>
         </header>
+        {environment && (
+          <div className="sandbox-banner">
+            <span>
+              {w("stage")} ·{" "}
+              {environments.find((e) => e.id === environment)?.name}
+            </span>
+            <a
+              href={`/?shop=${environment}&sandbox=1#`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {w("preview")} ↗
+            </a>
+          </div>
+        )}
         <main id="studio-content" className={`studio-main view-${tab}`}>
           <div className="studio-content">
             {(error || notice) && (
@@ -422,7 +556,27 @@ export default function Merchant({
                 </button>
               </div>
             )}
-            {tab === "users" ? (
+            {tab === "automation" ? (
+              <AutomationView request={request} role={role} />
+            ) : tab === "productData" ? (
+              <ProductDataView request={request} />
+            ) : tab === "storyfronts" ? (
+              <StoryfrontView request={request} role={role} />
+            ) : tab === "developers" ? (
+              <DeveloperView
+                request={liveRequest}
+                environments={environments}
+                role={role}
+              />
+            ) : tab === "environments" ? (
+              <EnvironmentManager
+                request={liveRequest}
+                environments={environments}
+                onRefresh={refreshEnvironments}
+                role={role}
+                onSelect={setEnvironment}
+              />
+            ) : tab === "users" ? (
               <UsersManager
                 token={token}
                 workspace={workspace}
@@ -714,7 +868,7 @@ export default function Merchant({
             ) : (
               <div className="studio-empty">
                 <Icon name={nav.find((n) => n.id === tab)!.icon} size={48} />
-                <h1>{t(tab)}</h1>
+                <h1>{tabLabel(tab)}</h1>
                 <p>{t("connectFirst")}</p>
                 <button
                   className="studio-primary"

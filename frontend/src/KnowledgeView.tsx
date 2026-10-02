@@ -1,5 +1,7 @@
 /** KnowledgeView renders verified shop state and typed user actions. */
+import { useWorkbenchText } from "./workbench-i18n";
 import { useState } from "react";
+import DocumentsManager from "./DocumentsManager";
 import MemoryView from "./MemoryView";
 import Icon from "./Icon";
 import ProductArt from "./ProductArt";
@@ -32,6 +34,7 @@ export function KnowledgeView({
   onIntent: (s: string) => void;
   onProduct: (id: string) => void;
 }) {
+  const { w } = useWorkbenchText();
   const { t, locale, money, number } = useLocale();
   const [query, setQuery] = useState("");
   const [results, setResults] =
@@ -76,6 +79,24 @@ export function KnowledgeView({
         </span>
       </div>
       <MemoryView request={request} />
+      <DocumentsManager request={request} />
+      {!!graph.documents?.length && (
+        <section className="studio-card">
+          <h2>{w("documentRelations")}</h2>
+          {graph.documents.map((d) => (
+            <p key={d.document_id}>
+              <button
+                className="studio-text-button"
+                onClick={() => onProduct(d.product_id)}
+              >
+                {data.products.find((p) => p.id === d.product_id)?.name ??
+                  d.product_id}
+              </button>{" "}
+              → {d.title}
+            </p>
+          ))}
+        </section>
+      )}
       <div className="knowledge-layout">
         <section className="studio-card graph-card">
           <div className="card-heading">

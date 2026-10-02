@@ -138,7 +138,13 @@ pub(crate) async fn cart_json(a: &App, c: &StoredCart) -> Result<Value> {
     let mut preview = c.clone();
     preview.data.checkout = Some(selected.clone());
     let ps = commerce::tax_products(&ps, &selected, &config)?;
-    let mut result = commerce::enrich(quote(&preview, &ps)?, &preview, &ps, &config, revision)?;
+    let q = marketing::promote(
+        &mut *a.db.acquire().await?,
+        &preview,
+        commerce::enrich(quote(&preview, &ps)?, &preview, &ps, &config, revision)?,
+    )
+    .await?;
+    let mut result = commerce::enrich(q, &preview, &ps, &config, revision)?;
     result["selectionNeedsConfirmation"] = json!(changed);
     commerce::dates(a, &mut result).await?;
     result["locale"] = json!(locale);

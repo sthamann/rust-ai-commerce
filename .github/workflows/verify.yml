@@ -26,7 +26,7 @@ jobs:
       - run: npm ci && npm run format:check && npm run build
         working-directory: frontend
       - run: composer install --working-dir=reference --no-interaction --prefer-dist
-      - run: python3 scripts/differential.py && python3 scripts/context_differential.py && python3 scripts/delivery_differential.py
+      - run: python3 scripts/differential.py && python3 scripts/context_differential.py && python3 scripts/delivery_differential.py && python3 scripts/rule_differential.py
       - name: Real database integration
         run: |
           trap 'cat /tmp/commerce.log' ERR
@@ -44,5 +44,9 @@ jobs:
           python3 scripts/payments.py
           python3 scripts/services.py
           python3 scripts/extensions.py
+          python3 scripts/staging.py
+          python3 scripts/marketing_accounts.py
+          python3 scripts/developer_documents.py
+          node frontend/tests/locales.mjs
           python3 scripts/structure.py
       # Real model checks are opt-in locally: CI does not replace them with a fake.

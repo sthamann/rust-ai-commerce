@@ -1,3 +1,4 @@
+import { useWorkbenchText } from "./workbench-i18n";
 /** Accessible cart dialog: authoritative totals, delivery context and checkout. */
 import { useEffect, useRef, useState } from "react";
 import { useShopText } from "./shop-i18n";
@@ -12,6 +13,7 @@ export default function CheckoutPanel({
   onQuantity,
   onSelection,
   onBuy,
+  onCoupons,
 }: {
   cart?: Cart;
   order?: Order;
@@ -20,12 +22,15 @@ export default function CheckoutPanel({
   onQuantity: (id: string, q: number) => void;
   onSelection: (s: Selection) => Promise<void>;
   onBuy: () => void;
+  onCoupons: (codes: string[]) => Promise<void>;
 }) {
   const { s, money } = useShopText();
   const ref = useRef<HTMLDialogElement>(null);
   const [selection, setSelection] = useState<Selection>();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [coupon, setCoupon] = useState("");
+  const { w, locale } = useWorkbenchText();
   useEffect(() => {
     ref.current?.showModal();
   }, []);
@@ -257,6 +262,47 @@ export default function CheckoutPanel({
                 {error && <p role="alert">{error}</p>}
               </form>
             )}
+            <form
+              className="checkout-selection"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                setSaving(true);
+                setError("");
+                try {
+                  await onCoupons(coupon.trim() ? [coupon.trim()] : []);
+                } catch (e) {
+                  setError((e as Error).message);
+                } finally {
+                  setSaving(false);
+                }
+              }}
+            >
+              <label>
+                {w("coupon")}
+                <input
+                  value={coupon}
+                  onChange={(e) => setCoupon(e.target.value)}
+                  maxLength={64}
+                  placeholder={cart.couponCodes?.join(", ")}
+                />
+              </label>
+              <button className="shop-secondary" disabled={busy || saving}>
+                {w("applyCoupon")}
+              </button>
+              {!!cart.couponCodes?.length && (
+                <small>
+                  {cart.couponCodes.join(", ")} ·{" "}
+                  {cart.discounts?.length
+                    ? w("couponApplied")
+                    : w("couponNotApplicable")}
+                </small>
+              )}
+            </form>
+            {cart.discounts?.map((d) => (
+              <p key={d.id}>
+                {d.name[locale.slice(0, 2)] ?? d.id} · −{money(d.amount)}
+              </p>
+            ))}
             <dl className="bag-totals">
               <div>
                 <dt>{s("subtotal")}</dt>

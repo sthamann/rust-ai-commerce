@@ -105,6 +105,9 @@ pub(crate) async fn plan_with(
     } else if p.experience.is_some() {
         p.expected_experience_revision = Some(er.get("revision"));
     }
+    if let Some(experience) = p.experience.as_mut() {
+        experience["headlineLocale"] = json!(locale);
+    }
     validate_proposal(&p, &ps)?;
     let id = uid();
     let evidence = json!({"model":output.model,"inference":output.provider,"usage":output.usage,"evalCount":output.usage["output_tokens"],"knowledge":graph,"instruction":instruction,"locale":locale,"proposal":p,"verifiedFacts":facts,"catalogBefore":ps,"memory":memory,"contextLimit":24,"appActions":app_names,"appContext":app_context,"experienceBefore":er.get::<Value,_>("data"),"applied":false});

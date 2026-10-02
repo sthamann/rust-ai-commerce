@@ -16,7 +16,7 @@ def req(path,body=None,h=None,expected=200,backend=None):
     assert status==expected,(path,status,expected,data)
     return data
 # Read the exact prior policy privately from our local DB, so custom policies are preserved.
-r=subprocess.run(['docker','compose','-p','rust-ai-commerce','exec','-T','postgres','psql','-U','commerce','-d','commerce','-At','-c',"SELECT to_json(wat)::text FROM public.extensions WHERE tenant='"+tenant+"'"],check=True,capture_output=True,text=True)
+r=subprocess.run(['docker','compose','-p','rust-ai-commerce','exec','-T','postgres','psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-At','-c',"SELECT to_json(wat)::text FROM public.extensions WHERE tenant='"+tenant+"'"],check=True,capture_output=True,text=True)
 previous=json.loads(r.stdout.strip()) if r.stdout.strip() else (root/'extensions/company-limit.wat').read_text()
 previous_digest=hashlib.sha256(previous.encode()).hexdigest()
 def check(name):checks.append(name);print('PASS',name)

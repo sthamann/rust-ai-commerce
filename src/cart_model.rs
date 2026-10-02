@@ -9,6 +9,10 @@ pub(crate) struct Item {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub(crate) struct Cart {
     #[serde(default)]
+    pub(crate) coupons: Vec<String>,
+    #[serde(default = "default_channel")]
+    pub(crate) sales_channel: String,
+    #[serde(default)]
     pub(crate) app_configurations: HashMap<String, apps::Configuration>,
     pub(crate) items: Vec<Item>,
     pub(crate) group: String,
@@ -44,4 +48,8 @@ pub(crate) fn stored(r: &sqlx::postgres::PgRow) -> Result<StoredCart> {
         revision: r.get("revision"),
         status: r.get("status"),
     })
+}
+
+pub(crate) fn default_channel() -> String {
+    "default".into()
 }

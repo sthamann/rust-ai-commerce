@@ -8,7 +8,15 @@ pub(crate) async fn load_cart(a: &App, h: &HeaderMap) -> Result<StoredCart> {
         .fetch_optional(&a.db)
         .await?
         .ok_or(Error(StatusCode::NOT_FOUND, "Cart not found".into()))?;
-    stored(&r)
+    let c = stored(&r)?;
+    if c.data.sales_channel != marketing::channel_id(h) {
+        return Err(Error(
+            StatusCode::FORBIDDEN,
+            "Cart belongs to another sales channel".into(),
+        ));
+    }
+    marketing::channel(a, &c.tenant, &c.data.sales_channel, &c.data.locale).await?;
+    Ok(c)
 }
 pub(crate) async fn new_cart(
     a: &App,
@@ -50,6 +58,8 @@ pub(crate) async fn new_cart(
         tenant: t.into(),
         token: uid(),
         data: Cart {
+            coupons: vec![],
+            sales_channel: "default".into(),
             app_configurations: HashMap::new(),
             items: vec![],
             group: "consumer".into(),
@@ -87,4 +97,45 @@ pub(crate) fn validate_items(items: &[Item]) -> Result<()> {
         }
     }
     Ok(())
+}
+
+pub(crate) async fn new_cart_context(
+    a: &App,
+    h: &HeaderMap,
+    session: &str,
+    transport: &str,
+) -> Result<StoredCart> {
+    let t = tenant(h)?;
+    let locale = language_context(a, h).await?.0;
+    let channel = marketing::channel_id(h);
+    marketing::channel(a, &t, channel, &locale).await?;
+    let identity = if header(h, "x-customer-token").is_some() {
+        Some(accounts::identity(a, h).await?.1)
+    } else {
+        None
+    };
+    let mut c = new_cart(a, &t, session, &locale, transport).await?;
+    c.data.sales_channel = channel.into();
+    if let Some(email) = identity {
+        let r = sqlx::query(
+            "SELECT group_name,company,profile FROM customers WHERE tenant=$1 AND email=$2",
+        )
+        .bind(&t)
+        .bind(&email)
+        .fetch_one(&a.db)
+        .await?;
+        c.data.email = Some(email);
+        c.data.group = r.get("group_name");
+        c.data.company = r.get("company");
+        if let Some(checkout) = &mut c.data.checkout {
+            checkout.address =
+                serde_json::from_value(r.get::<Value, _>("profile")["address"].clone()).ok();
+        }
+    }
+    sqlx::query("UPDATE carts SET data=$1 WHERE id=$2")
+        .bind(json!(c.data))
+        .bind(&c.id)
+        .execute(&a.db)
+        .await?;
+    Ok(c)
 }

@@ -2,6 +2,22 @@
 use crate::*;
 
 pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
+    (
+        "developer.builds",
+        "Read own immutable app development versions",
+    ),
+    (
+        "developer.import",
+        "Import a reviewed declarative package as a draft in a private environment",
+    ),
+    (
+        "developer.stage",
+        "Explicitly install a digest-bound app build in a private sandbox",
+    ),
+    (
+        "developer.task",
+        "Export an environment-scoped coding-agent task",
+    ),
     ("catalog.search", "Read catalog"),
     (
         "catalog.detail",
@@ -52,6 +68,9 @@ pub(crate) async fn capabilities() -> Json<Value> {
     )
 }
 pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+    if name.starts_with("developer.") {
+        return developer::invoke(a, h, name, v).await;
+    }
     if let Some(app) = name.strip_prefix("app.") {
         let (id, action) = app
             .split_once('.')
@@ -110,14 +129,7 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
         "knowledge.graph" => Ok(knowledge::graph(&a.db, &tenant(h)?).await?),
         "knowledge.search" => retrieve(a, &tenant(h)?, v["query"].as_str().unwrap_or("")).await,
         "cart.create" => {
-            let c = new_cart(
-                a,
-                &tenant(h)?,
-                v["session"].as_str().unwrap_or(""),
-                &language_context(a, h).await?.0,
-                "mcp",
-            )
-            .await?;
+            let c = new_cart_context(a, h, v["session"].as_str().unwrap_or(""), "mcp").await?;
             cart_json(a, &c).await
         }
         "cart.quote" => cart_json(a, &load_cart(a, h).await?).await,

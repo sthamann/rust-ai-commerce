@@ -3,6 +3,15 @@ use crate::*;
 
 pub(crate) fn tool_schema(name: &str) -> Value {
     let props = match name {
+        "developer.import" => {
+            json!({"environment":{"type":"string"},"prompt":{"type":"string"},"summary":{"type":"object"},"manifest":{"type":"object"}})
+        }
+        "developer.stage" => {
+            json!({"buildId":{"type":"string"},"digest":{"type":"string"},"approve":{"type":"boolean"}})
+        }
+        "developer.task" => {
+            json!({"environment":{"type":"string"},"prompt":{"type":"string"},"agent":{"type":"string"}})
+        }
         "catalog.search" | "knowledge.search" => json!({"query":{"type":"string"}}),
         "cart.create" => json!({"session":{"type":"string"}}),
         "catalog.detail" => json!({"productId":{"type":"string"}}),
@@ -18,6 +27,9 @@ pub(crate) fn tool_schema(name: &str) -> Value {
         _ => json!({}),
     };
     let required = match name {
+        "developer.import" => vec!["environment", "prompt", "summary", "manifest"],
+        "developer.stage" => vec!["buildId", "digest", "approve"],
+        "developer.task" => vec!["environment", "prompt", "agent"],
         "cart.replace" => vec!["revision", "items"],
         "catalog.detail" => vec!["productId"],
         "checkout.select" => vec!["revision", "checkout"],
@@ -51,6 +63,9 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
             let mut tools = CAPABILITIES
                 .iter()
                 .filter(|(n, _)| {
+                    if n.starts_with("developer.") {
+                        return merchant(&a, &h).is_ok() && auth::permit(&h, "users").is_ok();
+                    }
                     !(n.starts_with("merchant.") || n.starts_with("knowledge."))
                         || merchant(&a, &h).is_ok()
                             && (*n != "merchant.apply" || auth::permit(&h, "catalog").is_ok())

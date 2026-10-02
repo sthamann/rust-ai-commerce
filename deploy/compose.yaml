@@ -1,0 +1,46 @@
+# Run from repository root: docker compose --env-file deploy/.env -f deploy/compose.yaml up -d --build
+services:
+  postgres:
+    build: ../database
+    environment:
+      POSTGRES_USER: commerce
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?required}
+      POSTGRES_DB: commerce
+    volumes: ["commerce-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U commerce"]
+      interval: 3s
+      timeout: 3s
+      retries: 60
+    restart: unless-stopped
+  commerce:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?postgres://commerce:encoded-password@postgres:5432/commerce}
+      MERCHANT_TOKEN: ${MERCHANT_TOKEN:?required}
+      BIND_ADDR: 0.0.0.0:8787
+      OLLAMA_URL: ${OLLAMA_URL:-http://ollama:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3.6:35b}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      APP_SERVICES: ${APP_SERVICES:-{}}
+    depends_on:
+      postgres: {condition: service_healthy}
+    restart: unless-stopped
+  gateway:
+    image: caddy:2
+    environment:
+      COMMERCE_DOMAIN: ${COMMERCE_DOMAIN:?public DNS name required}
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on: [commerce]
+    restart: unless-stopped
+volumes:
+  commerce-data:
+  caddy-data:
+  caddy-config:

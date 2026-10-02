@@ -13,3 +13,6 @@ __pycache__/
 /.site
 /.playwright-cli
 /output
+
+/deploy/.env
+/frontend/vercel.json

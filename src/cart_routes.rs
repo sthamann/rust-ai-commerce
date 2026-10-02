@@ -6,28 +6,14 @@ pub(crate) async fn create_cart(
     h: HeaderMap,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
-    let c = new_cart(
-        &a,
-        &tenant(&h)?,
-        v["session"].as_str().unwrap_or(""),
-        &language_context(&a, &h).await?.0,
-        "storefront",
-    )
-    .await?;
+    let c = new_cart_context(&a, &h, v["session"].as_str().unwrap_or(""), "storefront").await?;
     Ok(Json(cart_json(&a, &c).await?))
 }
 pub(crate) async fn get_cart(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let c = if header(&h, "sw-context-token").is_some() {
         load_cart(&a, &h).await?
     } else {
-        new_cart(
-            &a,
-            &tenant(&h)?,
-            "",
-            &language_context(&a, &h).await?.0,
-            "storefront",
-        )
-        .await?
+        new_cart_context(&a, &h, "", "storefront").await?
     };
     Ok(Json(cart_json(&a, &c).await?))
 }

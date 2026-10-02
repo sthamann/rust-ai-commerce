@@ -85,7 +85,7 @@ req('/api/merchant/commerce',{'revision':config['revision'],'data':config['data'
 # Expiration is exercised against the actual DB predicate, not a mocked clock.
 expired=req('/api/workspace/invitations',{'email':'expired-'+suffix+'@example.test','role':'viewer'},oh)
 assert all(c in '0123456789abcdef' for c in expired['id'])
-subprocess.run(['docker','compose','-p','rust-ai-commerce','exec','-T','postgres','psql','-U','commerce','-d','commerce','-c',"UPDATE user_invites SET expires_at=now()-interval '1 second' WHERE id='"+expired['id']+"'"],check=True,capture_output=True)
+subprocess.run(['docker','compose','-p','rust-ai-commerce','exec','-T','postgres','psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-c',"UPDATE user_invites SET expires_at=now()-interval '1 second' WHERE id='"+expired['id']+"'"],check=True,capture_output=True)
 req('/api/auth/accept',{'name':'Expired','password':password,'invitationToken':expired['token']},expected=404)
 check('expired invitation cannot create a membership')
 coowner=invite(owner,'owner','coowner')

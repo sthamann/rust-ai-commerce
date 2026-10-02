@@ -5,6 +5,11 @@ pub(crate) fn router(a: App) -> Router {
     Router::new()
         .merge(apps::app_router())
         .merge(checkout_handoff::router())
+        .merge(documents::router())
+        .merge(staging::router())
+        .merge(developer::router())
+        .merge(accounts::router())
+        .merge(marketing::router())
         .merge(payments::payment_router())
         .merge(cognition::cognition_router())
         .route("/health", get(health))
@@ -13,6 +18,7 @@ pub(crate) fn router(a: App) -> Router {
         .route("/api/auth/session", get(auth::user_session))
         .route("/api/auth/logout", post(auth::user_logout))
         .route("/api/auth/accept", post(auth::accept_invite))
+        .route("/api/workspaces", post(auth::create_workspace))
         .route("/api/workspace/members", get(auth::members))
         .route(
             "/api/workspace/members/{id}",
@@ -56,6 +62,10 @@ pub(crate) fn router(a: App) -> Router {
         .route("/store-api/checkout/cart/line-item", post(add_items))
         .route("/store-api/checkout/order", post(place_order))
         .route("/store-api/account/login", post(login))
+        .route(
+            "/api/merchant/products/{id}",
+            get(commerce::product_editor).put(commerce::edit_product),
+        )
         .route("/api/search/product", post(admin_catalog))
         .route("/api/search/order", post(orders))
         .route("/api/agent/plan", post(agent_plan))
@@ -71,6 +81,11 @@ pub(crate) fn router(a: App) -> Router {
         .route("/api/agent/tasks/{id}/apply", post(agent_apply))
         .route("/api/policy", get(policy_stats))
         .route("/api/experience", post(experience))
+        .route("/store-api/personalization/events", post(personalization))
+        .route(
+            "/store-api/personalization",
+            axum::routing::delete(forget_personalization),
+        )
         .route("/api/concierge", post(concierge))
         .route("/api/runtime", get(runtime))
         .route("/api/extensions/activate", post(activate_extension))

@@ -78,6 +78,10 @@ pub(crate) async fn authenticate(
         .and_then(|v| v.strip_prefix("Bearer "))
         .map(str::to_string);
     let auth_result:Result<()>=async {
+  let selected_tenant=tenant(request.headers())?;
+  let environment_parent=crate::staging::parent(&a,&selected_tenant).await?;
+  if environment_parent.is_some() && (path.starts_with("/api/workspace") || path.starts_with("/api/environments")){return Err(forbidden("Manage membership and environments in the live workspace"));}
+  if environment_parent.is_some() && credential.is_none() && (path.starts_with("/store-api/") || path.starts_with("/api/") || path.starts_with("/ucp/") || path=="/mcp"){return Err(Error(StatusCode::UNAUTHORIZED,"Private sandbox requires a merchant session".into()));}
   if let Some(token)=credential {
    if token==*a.token {
     let t=tenant(request.headers())?;
@@ -87,7 +91,8 @@ pub(crate) async fn authenticate(
     let user=session.get::<String,_>("user_id");
     let rows=sqlx::query("SELECT m.tenant,m.role FROM memberships m WHERE m.user_id=$1 AND m.active ORDER BY m.tenant").bind(&user).fetch_all(&a.db).await?;
     let chosen=header(request.headers(),"x-tenant").map(str::to_string).unwrap_or_else(||{let default=session.get::<String,_>("default_tenant");if rows.iter().any(|r|r.get::<String,_>("tenant")==default){default}else{rows.first().map(|r|r.get::<String,_>("tenant")).unwrap_or_default()}});
-    let member=rows.iter().find(|r|r.get::<String,_>("tenant")==chosen).ok_or(forbidden("No active membership in this workspace"))?;
+    let scope=crate::staging::parent(&a,&chosen).await?.unwrap_or_else(||chosen.clone());
+    let member=rows.iter().find(|r|r.get::<String,_>("tenant")==scope).ok_or(forbidden("No active membership in this workspace"))?;
     request.headers_mut().insert("x-tenant",chosen.parse().map_err(|_|bad("Invalid tenant"))?);
     request.headers_mut().insert("x-rac-tenant",chosen.parse().unwrap());request.headers_mut().insert("x-rac-user",user.parse().unwrap());request.headers_mut().insert("x-rac-role",member.get::<String,_>("role").parse().unwrap());
    }

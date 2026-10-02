@@ -5,6 +5,10 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     if key.len() < 8 || key.len() > 128 {
         return Err(bad("Idempotency-Key must contain 8..128 characters"));
     }
+    let admitted = load_cart(a, h).await?;
+    for i in &admitted.data.items {
+        marketing::admit_product(a, h, &i.id).await?;
+    }
     let mut tx = a.db.begin().await?;
     let lock_key = format!("{}:{key}", tenant(h)?);
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,0))")
@@ -18,7 +22,7 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         .await?
         .ok_or(bad("Cart not found"))?;
     let mut c = stored(&r)?;
-    let mut purchase = json!({"items":c.data.items,"checkout":c.data.checkout,"group":c.data.group,"buyer":c.data.buyer});
+    let mut purchase = json!({"items":c.data.items,"checkout":c.data.checkout,"group":c.data.group,"buyer":c.data.buyer,"coupons":c.data.coupons,"salesChannel":c.data.sales_channel});
     if !c.data.app_configurations.is_empty() {
         purchase["appConfigurations"] = json!(c.data.app_configurations);
     }
@@ -67,7 +71,18 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     }
     let priced = commerce::tax_products(&ps, &selected, &config)?;
     let mut q = commerce::enrich(
-        quote(&c, &priced)?,
+        marketing::promote(
+            &mut tx,
+            &c,
+            commerce::enrich(
+                quote(&c, &priced)?,
+                &c,
+                &priced,
+                &config,
+                settings.get("revision"),
+            )?,
+        )
+        .await?,
         &c,
         &priced,
         &config,
@@ -108,6 +123,9 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         }
     }
     let external = q["paymentMethod"]["mode"] == "app";
+    if external && staging::parent(a, &c.tenant).await?.is_some() {
+        return Err(bad("External payments are disabled in private sandboxes"));
+    }
     if external && selected.payment_method_id != "paypal-sandbox" {
         return Err(bad("Provider connector is not configured"));
     }
@@ -119,6 +137,7 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     // Explicit simulated authorization: no external money is charged.
     let mut order = json!({"id":id,"orderNumber":format!("RAC-{}",&id[..8]),"cart":q,"state":"placed","channel":c.data.channel,"revision":1,"deliveries":q["deliveries"],"payment":{"method":q["paymentMethod"],"provider":if q["paymentMethod"]["mode"]=="simulated"{"simulated"}else{"manual"},"state":if q["paymentMethod"]["mode"]=="simulated"{"authorized"}else{"pending"},"realMoneyCharged":false},"customerGroup":c.data.group});
     sqlx::query("INSERT INTO orders(id,tenant,cart_id,idempotency_key,fingerprint,data) VALUES($1,$2,$3,$4,$5,$6)").bind(&id).bind(&c.tenant).bind(&c.id).bind(key).bind(&fingerprint).bind(&order).execute(&mut *tx).await?;
+    marketing::record_uses(&mut tx, &c.tenant, &id, &q).await?;
     if external {
         payments::prepare(&mut tx, &c, &mut order, minor).await?;
         sqlx::query("UPDATE orders SET data=$1 WHERE id=$2")

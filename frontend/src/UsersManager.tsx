@@ -89,7 +89,7 @@ export default function UsersManager({
     <section className="commerce-manager users-manager">
       <div className="commerce-title">
         <div>
-          <p className="kicker">COMMERCE / WORKSPACES</p>
+          <p className="kicker">COMMERCE / {s("workspace")}</p>
           <h1>{s("users")}</h1>
           <p>{s("workspaceHint")}</p>
         </div>
@@ -114,6 +114,47 @@ export default function UsersManager({
           </button>
         )}
       </div>
+      {session && (
+        <details>
+          <summary>{s("register")}</summary>
+          <form
+            className="commerce-fields"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const f = new FormData(e.currentTarget);
+              void run(async () => {
+                const created = await shopApi<Session>(
+                  "/api/workspaces",
+                  {
+                    workspaceId: f.get("workspaceId"),
+                    workspaceName: f.get("workspaceName"),
+                  },
+                  undefined,
+                  undefined,
+                  token,
+                );
+                onSession(created);
+              });
+            }}
+          >
+            <label>
+              {s("workspaceName")}
+              <input name="workspaceName" required maxLength={100} />
+            </label>
+            <label>
+              {s("workspaceId")}
+              <input
+                name="workspaceId"
+                required
+                pattern="[a-z0-9][a-z0-9-]{1,47}"
+              />
+            </label>
+            <button className="studio-primary" disabled={busy}>
+              {s("register")}
+            </button>
+          </form>
+        </details>
+      )}
       {error && (
         <p className="commerce-error" role="alert">
           {error}

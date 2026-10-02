@@ -17,6 +17,13 @@ pub(crate) async fn set_cart(
     buyer: Option<Option<Value>>,
 ) -> Result<StoredCart> {
     validate_items(&items)?;
+    let existing = load_cart(a, h).await?;
+    for i in &items {
+        marketing::admit_product(a, h, &i.id).await?;
+    }
+    if existing.status != "open" {
+        return Err(conflict("Cart is terminal"));
+    }
     let mut tx = a.db.begin().await?;
     let r = sqlx::query("SELECT * FROM carts WHERE tenant=$1 AND token=$2 FOR UPDATE")
         .bind(tenant(h)?)

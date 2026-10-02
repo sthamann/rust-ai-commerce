@@ -75,8 +75,23 @@ pub async fn graph(db: &PgPool, tenant: &str) -> Result<Value, sqlx::Error> {
     let needs=cypher(db,"MATCH (p:Product {tenant:$tenant})-[r:SERVES]->(n:Need {tenant:$tenant}) RETURN {product_id:p.product_id, need:n.name, source:r.source, confidence:r.confidence} LIMIT 48",json!({"tenant":tenant})).await?;
     let pairs=cypher(db,"MATCH (a:Product {tenant:$tenant})-[r:PAIRS_WITH]->(b:Product {tenant:$tenant}) RETURN {left:a.product_id, right:b.product_id, source:r.source} LIMIT 48",json!({"tenant":tenant})).await?;
     let observed=cypher(db,"MATCH (a:Product {tenant:$tenant})-[r:CO_PURCHASED]->(b:Product {tenant:$tenant}) RETURN {left:a.product_id,right:b.product_id,orders:r.orders,source:r.source,lastEvent:r.event_id} ORDER BY r.orders DESC LIMIT 24",json!({"tenant":tenant})).await?;
+    let documents=cypher(db,"MATCH (p:Product {tenant:$tenant})-[:HAS_DOCUMENT]->(d:Document {tenant:$tenant}) RETURN {product_id:p.product_id,document_id:d.document_id,title:d.title,source:d.source} LIMIT 100",json!({"tenant":tenant})).await?;
+    let published: Vec<String> = sqlx::query_scalar(
+        "SELECT id FROM knowledge_documents WHERE tenant=$1 AND visibility='public'",
+    )
+    .bind(tenant)
+    .fetch_all(db)
+    .await?;
+    let documents = documents
+        .into_iter()
+        .filter(|d| {
+            d["document_id"]
+                .as_str()
+                .is_some_and(|id| published.iter().any(|p| p == id))
+        })
+        .collect::<Vec<_>>();
     Ok(
-        json!({"engine":"Apache AGE","tenant":tenant,"needs":needs,"pairs":pairs,"observedPairs":observed,"facts":"SERVES/PAIRS_WITH are curated; CO_PURCHASED are order observations with evidence, not causal claims"}),
+        json!({"documents":documents,"engine":"Apache AGE","tenant":tenant,"needs":needs,"pairs":pairs,"observedPairs":observed,"facts":"SERVES/PAIRS_WITH are curated; CO_PURCHASED are order observations with evidence, not causal claims"}),
     )
 }
 pub async fn embedding(
@@ -88,6 +103,7 @@ pub async fn embedding(
     let response = http
         .post(format!("{}/api/embed", url.trim_end_matches('/')))
         .json(&json!({"model":model,"input":text,"truncate":false}))
+        .timeout(std::time::Duration::from_secs(10))
         .send()
         .await
         .map_err(|_| "Embedding service unavailable")?;
@@ -124,6 +140,24 @@ pub async fn search(
     Ok(json!({"mode":mode,"hits":hits,"graph":graph(db,tenant).await?}))
 }
 
+/// Persist source provenance as an actual AGE document node and product relation.
+pub async fn sync_document(
+    conn: &mut PgConnection,
+    tenant: &str,
+    id: &str,
+    product: Option<&str>,
+    title: &str,
+    digest: &str,
+) -> Result<(), sqlx::Error> {
+    let params = GraphParams(
+        json!({"tenant":tenant,"id":id,"product":product,"title":title,"hash":digest}).to_string(),
+    );
+    sqlx::query("SELECT result::text FROM ag_catalog.cypher('commerce', $graph$MERGE (d:Document {tenant:$tenant,document_id:$id}) SET d.title=$title,d.content_hash=$hash,d.source='merchant-document' RETURN d.document_id$graph$, $1) AS (result ag_catalog.agtype)").bind(params).execute(&mut *conn).await?;
+    if product.is_some() {
+        sqlx::query("SELECT result::text FROM ag_catalog.cypher('commerce', $graph$MATCH (p:Product {tenant:$tenant,product_id:$product}),(d:Document {tenant:$tenant,document_id:$id}) MERGE (p)-[:HAS_DOCUMENT]->(d) RETURN d.document_id$graph$, $1) AS (result ag_catalog.agtype)").bind(GraphParams(json!({"tenant":tenant,"id":id,"product":product}).to_string())).execute(conn).await?;
+    }
+    Ok(())
+}
 pub async fn sync_observation(
     conn: &mut PgConnection,
     tenant: &str,

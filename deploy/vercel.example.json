@@ -1,0 +1,79 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/api",
+      "destination": "https://commerce-api.example.com/api"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://commerce-api.example.com/api/:path*"
+    },
+    {
+      "source": "/store-api",
+      "destination": "https://commerce-api.example.com/store-api"
+    },
+    {
+      "source": "/store-api/:path*",
+      "destination": "https://commerce-api.example.com/store-api/:path*"
+    },
+    {
+      "source": "/media",
+      "destination": "https://commerce-api.example.com/media"
+    },
+    {
+      "source": "/media/:path*",
+      "destination": "https://commerce-api.example.com/media/:path*"
+    },
+    {
+      "source": "/mcp",
+      "destination": "https://commerce-api.example.com/mcp"
+    },
+    {
+      "source": "/mcp/:path*",
+      "destination": "https://commerce-api.example.com/mcp/:path*"
+    },
+    {
+      "source": "/ucp",
+      "destination": "https://commerce-api.example.com/ucp"
+    },
+    {
+      "source": "/ucp/:path*",
+      "destination": "https://commerce-api.example.com/ucp/:path*"
+    },
+    {
+      "source": "/.well-known",
+      "destination": "https://commerce-api.example.com/.well-known"
+    },
+    {
+      "source": "/.well-known/:path*",
+      "destination": "https://commerce-api.example.com/.well-known/:path*"
+    },
+    {
+      "source": "/health",
+      "destination": "https://commerce-api.example.com/health"
+    },
+    {
+      "source": "/health/:path*",
+      "destination": "https://commerce-api.example.com/health/:path*"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(api|store-api|mcp|ucp)(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        }
+      ]
+    }
+  ]
+}

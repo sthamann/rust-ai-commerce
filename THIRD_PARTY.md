@@ -1,7 +1,8 @@
 # Upstream attribution
 
 The quantity calculation and proportional delivery-tax allocation behavior in
-`src/pricing.rs`, and context/tier/quantity selection behavior in `src/context.rs`,
+`src/pricing.rs`, context/tier/quantity selection behavior in `src/context.rs`,
+and numeric epsilon/null comparison semantics in `src/rule_comparison.rs`,
 are partial behavioral
 port of Shopware Core 6.7.14.2, reference commit
 `de074a584d77d8abb09ddb21d8799f083a61a3da`.
@@ -27,7 +28,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-`reference/price.php`, `reference/context.php`, and `reference/delivery.php`
+`reference/price.php`, `reference/context.php`, `reference/delivery.php`, and `reference/rules.php`
 instantiate the original installed upstream classes;
 the repository does not vendor Shopware, a commercial B2B package, or a model.
 PHP rounding behavior was checked against the official PHP 8.5 runtime and
@@ -49,3 +50,10 @@ their licenses must be obtained separately through the chosen model provider.
 The Dockerfile builds AGE at commit `502f2c1fa32a04497dc286237186e58ac4956a53`
 and pgvector at tag `v0.8.6`. No BSL/SSPL database or proprietary edition is
 required. Model-provider APIs remain optional external services.
+
+## Document parser
+
+`pdf-extract` 0.12.1 (MIT) extracts searchable PDF text. `libc` (MIT OR Apache-2.0)
+provides CPU limits and Linux address-space limits for its child process.
+Dependencies remain external registry packages and retain their bundled license files.
+No OCR, parser microVM, or arbitrary customer-code execution is implied.

@@ -1,0 +1,153 @@
+/* Merchant workbench uses the studio's light-blue design tokens and responsive review panels. */
+.workbench .studio-card {
+  margin-bottom: 22px;
+  padding: 26px;
+}
+.workbench label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.workbench input:not([type="checkbox"]),
+.workbench textarea,
+.workbench select,
+.environment-switch {
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 13px;
+  font: inherit;
+}
+.workbench textarea {
+  width: 100%;
+  resize: vertical;
+  box-sizing: border-box;
+}
+.workbench form > button {
+  margin-top: 14px;
+}
+.workbench-row {
+  display: flex;
+  gap: 16px;
+  align-items: end;
+  flex-wrap: wrap;
+}
+.workbench-row label {
+  flex: 1;
+  min-width: 160px;
+}
+.workbench pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: var(--bg);
+  padding: 16px;
+  border-radius: 12px;
+  max-height: 360px;
+  overflow: auto;
+  font-size: 12px;
+}
+.workbench details {
+  margin: 16px 0;
+}
+.workbench summary {
+  cursor: pointer;
+  color: var(--accent);
+}
+.release-change,
+.developer-build {
+  padding: 18px 0;
+  border-top: 1px solid var(--border);
+}
+.release-change > label {
+  flex-direction: row;
+  align-items: center;
+}
+.diff-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  min-width: 0;
+}
+.diff-columns > div {
+  min-width: 0;
+}
+.developer-build > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.developer-composer form {
+  margin-top: 22px;
+}
+.sandbox-banner {
+  background: #e7f2ff;
+  color: #185da0;
+  padding: 10px 26px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  border-bottom: 1px solid #c7def6;
+}
+.product-question {
+  margin: 32px 0;
+  border: 1px solid #d8e6f4;
+  background: #f4f9ff;
+  border-radius: 18px;
+  padding: 26px;
+}
+.product-question form {
+  display: flex;
+  gap: 12px;
+  margin: 18px 0;
+}
+.product-question input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #cbdced;
+  border-radius: 8px;
+}
+@media (max-width: 850px) {
+  .diff-columns {
+    grid-template-columns: 1fr;
+  }
+  .environment-switch {
+    max-width: 140px;
+  }
+  .workbench-row {
+    align-items: stretch;
+  }
+  .product-question form {
+    flex-direction: column;
+  }
+}
+
+.workbench-grid {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(350px, 2fr);
+  gap: 22px;
+  margin-top: 22px;
+}
+.workbench .checkbox-label {
+  flex-direction: row;
+  align-items: center;
+  margin: 14px 0;
+}
+.workbench fieldset {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin: 18px 0;
+  padding: 18px;
+}
+.workbench label + label {
+  margin-top: 12px;
+}
+@media (max-width: 900px) {
+  .workbench-grid {
+    grid-template-columns: 1fr;
+  }
+}

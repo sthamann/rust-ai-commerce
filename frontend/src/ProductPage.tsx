@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useShopText } from "./shop-i18n";
 import { shopApi, type Cart, type Detail } from "./shop-api";
 import MemoryRecommendations from "./MemoryRecommendations";
+import ProductQuestion from "./ProductQuestion";
 import AppSlot from "./AppSlot";
 import Icon from "./Icon";
 export default function ProductPage({
@@ -49,6 +50,21 @@ export default function ProductPage({
       active = false;
     };
   }, [id, locale, cart?.token, cart?.customerGroup, cart?.checkout.country]);
+  useEffect(() => {
+    const seo = data?.product.extra?.seo?.[locale.slice(0, 2)];
+    if (seo) {
+      document.title = seo.title;
+      let meta = document.querySelector<HTMLMetaElement>(
+        'meta[name="description"]',
+      );
+      if (!meta) {
+        meta = document.createElement("meta");
+        meta.name = "description";
+        document.head.append(meta);
+      }
+      meta.content = seo.description;
+    }
+  }, [data, locale]);
   if (!data)
     return (
       <main className="shop-content" aria-busy={!error}>
@@ -57,6 +73,10 @@ export default function ProductPage({
       </main>
     );
   const p = data.product;
+  const specs =
+    p.extra?.specifications?.[locale.slice(0, 2)] ??
+    p.extra?.specifications?.en ??
+    {};
   const effective = Math.max(
     p.min_purchase,
     Math.floor(
@@ -190,7 +210,12 @@ export default function ProductPage({
             <span>SKU {p.id}</span>
           </div>
           {!p.stock && <small>{s("soldHint")}</small>}
-          <AppSlot productId={p.id} cart={cart} onCart={onCart} />
+          <AppSlot
+            productId={p.id}
+            familyId={p.parent_id ?? p.id}
+            cart={cart}
+            onCart={onCart}
+          />
           <div className="pdp-buy">
             <label>
               {s("quantity")}
@@ -282,15 +307,27 @@ export default function ProductPage({
           <p className="shop-kicker">02 / {s("properties")}</p>
           <h2>{s("properties")}</h2>
           <dl>
-            {Object.entries(p.properties).map(([key, value]) => (
-              <div key={key}>
-                <dt>{s(key)}</dt>
-                <dd>{s(value)}</dd>
-              </div>
-            ))}
+            {Object.entries({ ...p.properties, ...specs }).map(
+              ([key, value]) => (
+                <div key={key}>
+                  <dt>{s(key)}</dt>
+                  <dd>{s(value)}</dd>
+                </div>
+              ),
+            )}
           </dl>
         </section>
       </div>
+      <ProductQuestion productId={p.id} />
+      {p.extra?.crossSelling?.length ? (
+        <section className="app-slot">
+          {p.extra.crossSelling.map((id) => (
+            <a key={id} href={`#product/${encodeURIComponent(id)}`}>
+              {id} ↗
+            </a>
+          ))}
+        </section>
+      ) : null}
       <MemoryRecommendations productId={p.id} />
       <section className="pdp-reviews" id="product-reviews">
         <div>

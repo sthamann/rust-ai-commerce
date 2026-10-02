@@ -33,9 +33,10 @@ pub(crate) async fn cart_products(
         if let Some(parent) = parents.get(parent_id) {
             p.name = parent.name.clone();
             p.description = parent.description.clone();
+            p.extra = inherited_extra(&parent.extra, &p.extra);
         }
     }
-    Ok(selected)
+    localize_products(a, t, chain, selected).await
 }
 
 pub(crate) async fn sku_products(a: &App, t: &str, chain: &[String]) -> Result<Vec<Product>> {
@@ -52,8 +53,30 @@ pub(crate) async fn sku_products(a: &App, t: &str, chain: &[String]) -> Result<V
         if let Some(parent) = p.parent_id.as_deref().and_then(|id| parents.get(id)) {
             p.name = parent.name.clone();
             p.description = parent.description.clone();
+            p.extra = inherited_extra(&parent.extra, &p.extra);
         }
         result.push(p);
     }
-    Ok(result)
+    localize_products(a, t, chain, result).await
+}
+
+/// Absent SKU metadata inherits from the family; explicit values (including false) override.
+fn inherited_extra(parent: &Value, child: &Value) -> Value {
+    let mut merged = parent.as_object().cloned().unwrap_or_default();
+    if let Some(fields) = child.as_object() {
+        merged.extend(fields.clone());
+    }
+    Value::Object(merged)
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn sku_metadata_inherits_without_overwriting_explicit_values() {
+        let parent = json!({"shippingFree":true,"specifications":{"fr":{"Matière":"Grès"}},"crossSelling":["notebook"]});
+        assert_eq!(inherited_extra(&parent, &json!({})), parent);
+        let child = inherited_extra(&parent, &json!({"shippingFree":false}));
+        assert_eq!(child["shippingFree"], false);
+        assert_eq!(child["specifications"], parent["specifications"]);
+    }
 }

@@ -3,6 +3,8 @@ use crate::*;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub(crate) struct Product {
+    #[serde(default)]
+    pub(crate) extra: Value,
     pub(crate) id: String,
     pub(crate) name: String,
     pub(crate) category: String,
@@ -26,6 +28,7 @@ pub(crate) struct Product {
 }
 pub(crate) fn product(r: &sqlx::postgres::PgRow) -> Product {
     Product {
+        extra: r.get("extra"),
         parent_id: r.get("parent_id"),
         options: r.get("options"),
         media: r.get("media"),

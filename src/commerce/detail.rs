@@ -7,6 +7,7 @@ pub(crate) async fn product_detail(
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = tenant(&h)?;
+    marketing::admit_product(&a, &h, &id).await?;
     let (_, chain) = language_context(&a, &h).await?;
     let ps = sku_products(&a, &t, &chain).await?;
     let p = ps
@@ -14,7 +15,8 @@ pub(crate) async fn product_detail(
         .find(|p| p.id == id)
         .ok_or(Error(StatusCode::NOT_FOUND, "Product not found".into()))?;
     let family = p.parent_id.as_deref().unwrap_or(&p.id);
-    let family_ps = ps
+    let visible = marketing::filter_channel(&a, &h, ps.clone()).await?;
+    let family_ps = visible
         .iter()
         .filter(|v| v.id == family || v.parent_id.as_deref() == Some(family))
         .collect::<Vec<_>>();
@@ -52,6 +54,8 @@ pub(crate) async fn product_detail(
             revision: 0,
             status: "preview".into(),
             data: Cart {
+                coupons: vec![],
+                sales_channel: "default".into(),
                 app_configurations: HashMap::new(),
                 items: vec![Item {
                     id: id.clone(),

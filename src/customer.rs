@@ -18,13 +18,7 @@ pub(crate) async fn login(
             StatusCode::UNAUTHORIZED,
             "Invalid credentials".into(),
         ))?;
-    // Demo account only; production registration and credential lifecycle are not implemented.
-    let saved = r.get::<String, _>("password_hash");
-    let parsed = PasswordHash::new(&saved).map_err(|_| bad("Invalid stored credential"))?;
-    if Argon2::default()
-        .verify_password(password.as_bytes(), &parsed)
-        .is_err()
-    {
+    if !auth::verify_password(password.to_owned(), r.get("password_hash")).await? {
         return Err(Error(
             StatusCode::UNAUTHORIZED,
             "Invalid credentials".into(),
@@ -53,5 +47,7 @@ pub(crate) async fn login(
     tx.commit().await?;
     c.token = new_token;
     c.revision += 1;
-    Ok(Json(cart_json(&a, &c).await?))
+    let mut result = cart_json(&a, &c).await?;
+    result["customerToken"] = json!(accounts::session(&a, &t, email).await?);
+    Ok(Json(result))
 }

@@ -43,6 +43,9 @@ pub(crate) fn start(a: &App) {
             let mut ticks = tokio::time::interval(std::time::Duration::from_millis(250));
             loop {
                 ticks.tick().await;
+                if let Err(e) = marketing::flow_once(&worker).await {
+                    eprintln!("flow worker: {}", e.1);
+                }
                 if let Err(e) = apps::deliver_once(&worker).await {
                     eprintln!("app worker: {}", e.1);
                 }

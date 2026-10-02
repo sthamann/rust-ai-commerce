@@ -20,7 +20,7 @@ pub(crate) async fn catalog_request(
 pub(crate) async fn catalog(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let (locale, chain) = language_context(&a, &h).await?;
     let t = tenant(&h)?;
-    let ps = localized_products(&a, &t, &chain).await?;
+    let ps = marketing::filter_channel(&a, &h, localized_products(&a, &t, &chain).await?).await?;
     let mut data = vec![];
     let c = if header(&h, "sw-context-token").is_some() {
         Some(load_cart(&a, &h).await?)
@@ -51,6 +51,8 @@ pub(crate) async fn catalog(State(a): State<App>, h: HeaderMap) -> Result<Json<V
                 revision: 0,
                 status: "preview".into(),
                 data: Cart {
+                    coupons: vec![],
+                    sales_channel: marketing::channel_id(&h).into(),
                     app_configurations: HashMap::new(),
                     items: vec![],
                     group: "consumer".into(),

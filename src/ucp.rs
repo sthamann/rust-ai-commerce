@@ -83,16 +83,8 @@ pub(crate) async fn ucp_create(
     h: HeaderMap,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
-    let t = tenant(&h)?;
     let items = ucp_items(&v)?;
-    let c = new_cart(
-        &a,
-        &t,
-        v["session"].as_str().unwrap_or(""),
-        &language_context(&a, &h).await?.0,
-        "ucp",
-    )
-    .await?;
+    let c = new_cart_context(&a, &h, v["session"].as_str().unwrap_or(""), "ucp").await?;
     let mut ch = h.clone();
     ch.insert("sw-context-token", c.token.parse().unwrap());
     let c = set_cart(&a, &ch, items, Some(1), Some(v.get("buyer").cloned())).await?;

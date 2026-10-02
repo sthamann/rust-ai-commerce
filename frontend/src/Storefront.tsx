@@ -1,3 +1,4 @@
+import { responseError } from "./errors-i18n";
 import { useEffect, useState, useRef } from "react";
 import { locales, type Locale } from "./i18n";
 import { useShopText } from "./shop-i18n";
@@ -10,11 +11,14 @@ import {
 } from "./shop-api";
 import Art from "./ProductArt";
 import Icon from "./Icon";
+import CustomerAccount from "./CustomerAccount";
 import ProductPage from "./ProductPage";
 import PaymentSession from "./PaymentSession";
 import "./apps.css";
 import CheckoutPanel from "./CheckoutPanel";
 import "./shop.css";
+import "./workbench.css";
+import { useWorkbenchText } from "./workbench-i18n";
 const session = localStorage.getItem("rac-session") || crypto.randomUUID();
 localStorage.setItem("rac-session", session);
 function productId() {
@@ -28,9 +32,15 @@ function productId() {
 }
 export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
   const { s, money, locale, setLocale } = useShopText();
+  const { w } = useWorkbenchText();
   const shopTenant =
     new URLSearchParams(location.search).get("shop") ?? "atelier";
-  const cartKey = `rac-cart:${shopTenant}`;
+  const salesChannel =
+    new URLSearchParams(location.search).get("channel") ?? "default";
+  const cartKey =
+    salesChannel === "default"
+      ? `rac-cart:${shopTenant}`
+      : `rac-cart:${shopTenant}:${salesChannel}`;
   const transfer = useRef<{ ticket: string; promise: Promise<Cart> } | null>(
     null,
   );
@@ -40,6 +50,7 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [bag, setBag] = useState(false);
+  const [account, setAccount] = useState(false);
   const [order, setOrder] = useState<Order>();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
@@ -48,6 +59,11 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
     explanation: string;
     recommended_ids: string[];
   }>();
+  const [ranked, setRanked] = useState<string[]>([]);
+  const [personalized, setPersonalized] = useState(false);
+  const [adaptation, setAdaptation] = useState(
+    localStorage.getItem(`rac-adaptation:${shopTenant}`) === "1",
+  );
   const [viewed, setViewed] = useState<Record<string, number>>({});
   const [experience, setExperience] = useState<{
     variant: string;
@@ -189,10 +205,17 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
           "Idempotency-Key": `browser-${cart.id}`,
           "x-commerce-locale": locale,
           "x-tenant": shopTenant,
+          "sw-sales-channel-id": salesChannel,
+          ...(new URLSearchParams(location.search).get("sandbox") === "1"
+            ? {
+                Authorization: `Bearer ${sessionStorage.getItem("rac-user-token")}`,
+              }
+            : {}),
         },
       });
       const o = await r.json();
-      if (!r.ok) throw new Error(o.errors?.[0]?.detail ?? "Order failed");
+      if (!r.ok)
+        throw responseError(o.errors?.[0]?.detail ?? "Order failed", r.status);
       setOrder(o);
       if (o.payment.attemptId) {
         setCart(
@@ -212,8 +235,32 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
       save(next);
       await catalog(next.token);
     });
+  useEffect(() => {
+    if (!adaptation || !cart || !id) return;
+    let active = true;
+    shopApi<{ rankedProductIds: string[]; adapted: boolean }>(
+      "/store-api/personalization/events",
+      {
+        productId: id,
+        eventId: crypto.randomUUID().replaceAll("-", ""),
+        kind: "view",
+      },
+      cart.token,
+    )
+      .then((v) => {
+        if (active) {
+          setRanked(v.rankedProductIds);
+          setPersonalized(v.adapted);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [id, adaptation, cart?.id]);
   const affinity = Object.entries(viewed).sort((a, b) => b[1] - a[1])[0];
-  const adapted = !!affinity && affinity[1] >= 3;
+  const adapted =
+    adaptation && (personalized || (!!affinity && affinity[1] >= 3));
   const list = products
     .filter(
       (p) =>
@@ -223,13 +270,20 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
           .includes(query.toLowerCase()),
     )
     .sort((a, b) =>
-      adapted
-        ? Number(b.category === affinity[0]) -
-          Number(a.category === affinity[0])
-        : 0,
+      adaptation && ranked.length
+        ? ranked.indexOf(a.id) - ranked.indexOf(b.id)
+        : adapted && affinity
+          ? Number(b.category === affinity[0]) -
+            Number(a.category === affinity[0])
+          : 0,
     );
   return (
     <div className="shop">
+      {new URLSearchParams(location.search).get("sandbox") === "1" && (
+        <div className="sandbox-banner">
+          {w("stage")} · {w("exclusion")}
+        </div>
+      )}
       <header className="shop-nav">
         <a href="#" className="shop-brand">
           atelier<span> / </span>
@@ -255,6 +309,7 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
               ? "Example Studio · B2B"
               : s("business")}
           </button>
+          <button onClick={() => setAccount(true)}>{w("account")}</button>
           <button onClick={onMerchant}>{s("studio")} ↗</button>
         </nav>
         <select
@@ -268,6 +323,32 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
             </option>
           ))}
         </select>
+        <button
+          className="shop-text-button"
+          aria-pressed={adaptation}
+          onClick={() => {
+            const enabled = !adaptation;
+            setAdaptation(enabled);
+            localStorage.setItem(
+              `rac-adaptation:${shopTenant}`,
+              enabled ? "1" : "0",
+            );
+            if (!enabled) {
+              setRanked([]);
+              setPersonalized(false);
+              setViewed({});
+              if (cart)
+                void shopApi(
+                  "/store-api/personalization",
+                  undefined,
+                  cart.token,
+                  "DELETE",
+                ).catch(() => {});
+            }
+          }}
+        >
+          {w(adaptation ? "adaptationOn" : "adaptationOff")}
+        </button>
         <button className="shop-bag-button" onClick={() => setBag(true)}>
           <Icon name="box" size={18} />
           {s("bag")}{" "}
@@ -304,7 +385,7 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
         <main className="shop-content">
           <section className="shop-hero">
             <div>
-              <p className="shop-kicker">ATELIER / CONSIDERED OBJECTS</p>
+              <p className="shop-kicker">ATELIER / {w("consideredObjects")}</p>
               <h1>
                 {experience?.headline &&
                 experience.headline !==
@@ -320,7 +401,10 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
             </div>
             <div className="shop-hero-art">
               <Art id="chair" />
-              <span>01 / FORM CHAIR · OAK & LINEN</span>
+              <span>
+                01 /{" "}
+                {products.find((p) => p.id === "chair")?.name ?? s("furniture")}
+              </span>
             </div>
           </section>
           <section className="shop-concierge">
@@ -365,7 +449,7 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
           <section className="shop-collection" id="collection">
             <div className="collection-title">
               <div>
-                <p className="shop-kicker">ATELIER / COLLECTION</p>
+                <p className="shop-kicker">ATELIER / {s("collection")}</p>
                 <h2>{s("collection")}</h2>
               </div>
               <span>
@@ -455,6 +539,13 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
         <p>{s("simulation")}</p>
         <a href="https://github.com/sthamann/rust-ai-commerce">GitHub ↗</a>
       </footer>
+      {account && (
+        <CustomerAccount
+          cart={cart}
+          onCart={save}
+          onClose={() => setAccount(false)}
+        />
+      )}
       {bag && (
         <CheckoutPanel
           cart={cart}
@@ -464,6 +555,15 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
           onQuantity={quantity}
           onSelection={selection}
           onBuy={buy}
+          onCoupons={async (codes) => {
+            const result = await shopApi<Cart>(
+              "/store-api/checkout/coupons",
+              { codes, revision: cart?.revision },
+              cart?.token,
+              "PUT",
+            );
+            save(result);
+          }}
         />
       )}
     </div>

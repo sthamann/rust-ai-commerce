@@ -24,13 +24,17 @@ use std::{
 };
 use tower_http::services::ServeDir;
 use uuid::Uuid;
-
+mod accounts;
 mod agent;
 mod apps;
 mod chat_lease;
 mod cognition;
+mod developer;
+mod documents;
 mod http_limits;
+mod marketing;
 mod payments;
+mod staging;
 mod workers;
 use agent::*;
 mod localization;
@@ -90,9 +94,14 @@ mod bootstrap;
 pub(crate) use bootstrap::*;
 mod routes;
 pub(crate) use routes::*;
-
-#[tokio::main]
-async fn main() {
+fn main() {
+    if env::args().nth(1).as_deref() == Some("--extract-pdf") {
+        documents::extract_pdf();
+        return;
+    }
+    tokio::runtime::Runtime::new().unwrap().block_on(run());
+}
+async fn run() {
     let a = bootstrap().await;
     if env::var("PROCESS_ROLE").is_ok_and(|s| s.ends_with("-worker")) {
         let _ = tokio::signal::ctrl_c().await;

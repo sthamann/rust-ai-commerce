@@ -37,7 +37,14 @@ pub(crate) fn enrich(
     let free = shipping
         .free_above
         .is_some_and(|limit| gross_items >= limit);
-    let gross = if c.data.items.is_empty() || free {
+    let all_free = !c.data.items.is_empty()
+        && c.data.items.iter().all(|i| {
+            ps.iter()
+                .find(|p| p.id == i.id)
+                .is_some_and(|p| p.extra["shippingFree"] == true)
+        });
+    let gross = if c.data.items.is_empty() || free || all_free || q["promotionFreeShipping"] == true
+    {
         0.
     } else {
         shipping.price

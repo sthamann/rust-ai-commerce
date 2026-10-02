@@ -5,14 +5,29 @@ import { useAppText } from "./app-i18n";
 type Slot = {
   app: string;
   version: string;
-  slot: { component: string };
+  slot: { component: string; label?: Record<string, string> };
+  entities?: {
+    name: string;
+    label: Record<string, string>;
+    action?: string;
+    fields: {
+      name: string;
+      label?: Record<string, string>;
+      translatable?: boolean;
+    }[];
+  }[];
   configuration?: {
     inputField: string;
     label: Record<string, string>;
     hint: Record<string, string>;
   };
 };
-type Props = { productId: string; cart?: Cart; onCart: (c: Cart) => void };
+type Props = {
+  productId: string;
+  familyId?: string;
+  cart?: Cart;
+  onCart: (c: Cart) => void;
+};
 export default function AppSlot(props: Props) {
   const { locale } = useAppText();
   const [slots, setSlots] = useState<Slot[]>([]);
@@ -29,17 +44,100 @@ export default function AppSlot(props: Props) {
       active = false;
     };
   }, [locale, props.productId]);
-  return slots
-    .filter(
-      (s) => s.slot.component === "product-configuration" && s.configuration,
+  return (
+    <>
+      {slots.map((slot, i) =>
+        slot.slot.component === "product-configuration" &&
+        slot.configuration ? (
+          <ConfigurationForm
+            key={`${slot.app}:${slot.version}:${props.productId}`}
+            slot={slot}
+            {...props}
+          />
+        ) : slot.slot.component === "entity-list" ? (
+          <PublicEntities
+            key={`${slot.app}:${i}`}
+            slot={slot}
+            productId={props.productId}
+            familyId={props.familyId}
+          />
+        ) : null,
+      )}
+    </>
+  );
+}
+function PublicEntities({
+  slot,
+  productId,
+  familyId,
+}: {
+  slot: Slot;
+  productId: string;
+  familyId?: string;
+}) {
+  const { locale } = useAppText();
+  const lang = locale.slice(0, 2);
+  const [records, setRecords] = useState<
+    { name: string; elements: Record<string, unknown>[] }[]
+  >([]);
+  useEffect(() => {
+    let active = true;
+    Promise.all(
+      (slot.entities ?? [])
+        .filter((e) => e.action)
+        .map(async (e) => ({
+          name: e.name,
+          ...(await shopApi<{ elements: Record<string, unknown>[] }>(
+            `/store-api/apps/${slot.app}/actions/${e.action}`,
+            {},
+          )),
+        })),
     )
-    .map((slot) => (
-      <ConfigurationForm
-        key={`${slot.app}:${slot.version}:${props.productId}`}
-        slot={slot}
-        {...props}
-      />
-    ));
+      .then((v) => {
+        if (active) setRecords(v);
+      })
+      .catch(() => {
+        if (active) setRecords([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, [slot.app, productId, locale]);
+  return (
+    <section className="app-slot">
+      <h3>{slot.slot.label?.[lang] ?? slot.slot.label?.en ?? slot.app}</h3>
+      {records.flatMap((group) =>
+        group.elements
+          .filter(
+            (r) =>
+              !r.product_id ||
+              r.product_id === productId ||
+              r.product_id === familyId,
+          )
+          .map((r) => (
+            <dl key={`${group.name}:${r.id}`}>
+              {slot.entities
+                ?.find((e) => e.name === group.name)
+                ?.fields.filter((f) => f.name !== "product_id")
+                .map((f) => {
+                  const value = r[f.name];
+                  const text =
+                    f.translatable && value && typeof value === "object"
+                      ? ((value as Record<string, string>)[lang] ??
+                        (value as Record<string, string>).en)
+                      : String(value ?? "");
+                  return (
+                    <div key={f.name}>
+                      <dt>{f.label?.[lang] ?? f.label?.en ?? f.name}</dt>
+                      <dd>{text}</dd>
+                    </div>
+                  );
+                })}
+            </dl>
+          )),
+      )}
+    </section>
+  );
 }
 function ConfigurationForm({
   slot,

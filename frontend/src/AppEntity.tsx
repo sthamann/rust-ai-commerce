@@ -4,7 +4,14 @@ import { useAppText } from "./app-i18n";
 import type { RequestFn } from "./studio-types";
 export type Entity = {
   name: string;
-  fields: { name: string; kind: string; required: boolean }[];
+  label?: Record<string, string>;
+  fields: {
+    name: string;
+    label?: Record<string, string>;
+    translatable?: boolean;
+    kind: string;
+    required: boolean;
+  }[];
 };
 export default function AppEntity({
   app,
@@ -17,7 +24,16 @@ export default function AppEntity({
   request: RequestFn;
   canWrite: boolean;
 }) {
-  const { a } = useAppText();
+  const { a, locale } = useAppText();
+  const lang = locale.slice(0, 2);
+  const label = (v: { name: string; label?: Record<string, string> }) =>
+    v.label?.[lang] ?? v.label?.en ?? a(v.name);
+  const fieldValue = (f: Entity["fields"][number], value: unknown) =>
+    f.translatable && value && typeof value === "object"
+      ? ((value as Record<string, string>)[lang] ??
+        (value as Record<string, string>).en ??
+        "")
+      : value;
   const [records, setRecords] = useState<Record<string, unknown>[]>([]);
   const [id, setId] = useState("default");
   const [revision, setRevision] = useState(0);
@@ -54,7 +70,7 @@ export default function AppEntity({
   return (
     <section className="app-entity">
       <h3>
-        {a("records")} · {a(entity.name)}
+        {a("records")} · {label(entity)}
       </h3>
       <div className="app-records">
         {records.map((r) => (
@@ -72,7 +88,7 @@ export default function AppEntity({
           >
             {String(r.id)} ·{" "}
             {entity.fields
-              .map((f) => `${a(f.name)}: ${r[f.name] ?? "—"}`)
+              .map((f) => `${label(f)}: ${fieldValue(f, r[f.name]) ?? "—"}`)
               .join(" · ")}
           </button>
         ))}
@@ -113,7 +129,7 @@ export default function AppEntity({
         </label>
         {entity.fields.map((f) => (
           <label key={f.name}>
-            {a(f.name)}
+            {label(f)}
             <input
               type={
                 f.kind === "integer"
@@ -123,7 +139,9 @@ export default function AppEntity({
                     : "text"
               }
               value={
-                f.kind === "boolean" ? undefined : String(fields[f.name] ?? "")
+                f.kind === "boolean"
+                  ? undefined
+                  : String(fieldValue(f, fields[f.name]) ?? "")
               }
               checked={
                 f.kind === "boolean" ? Boolean(fields[f.name]) : undefined
@@ -138,7 +156,14 @@ export default function AppEntity({
                       ? Number(e.target.value)
                       : f.kind === "boolean"
                         ? e.target.checked
-                        : e.target.value,
+                        : f.translatable
+                          ? {
+                              ...(typeof fields[f.name] === "object"
+                                ? (fields[f.name] as Record<string, string>)
+                                : {}),
+                              [lang]: e.target.value,
+                            }
+                          : e.target.value,
                 })
               }
             />

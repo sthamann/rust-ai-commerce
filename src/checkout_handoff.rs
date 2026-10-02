@@ -7,6 +7,7 @@ pub(crate) fn router() -> Router<App> {
 }
 async fn issue(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Result<Json<Value>> {
     let t = tenant(&h)?;
+    let _ = load_cart(&a, &h).await?;
     let mut tx = a.db.begin().await?;
     let r = sqlx::query("SELECT * FROM carts WHERE tenant=$1 AND token=$2 FOR UPDATE")
         .bind(&t)
@@ -27,7 +28,7 @@ async fn issue(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Resu
         .bind(hash(&ticket)).bind(&t).bind(&c.id).execute(&mut *tx).await?;
     tx.commit().await?;
     Ok(Json(
-        json!({"checkoutPath":format!("/?shop={t}#checkout/{ticket}"),"expiresInSeconds":600,"singleUse":true}),
+        json!({"checkoutPath":format!("/?shop={t}&channel={}#checkout/{ticket}",c.data.sales_channel),"expiresInSeconds":600,"singleUse":true}),
     ))
 }
 async fn consume(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Result<Json<Value>> {
@@ -42,6 +43,12 @@ async fn consume(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Re
         .bind(&t).bind(hash(ticket)).fetch_optional(&mut *tx).await?
         .ok_or(Error(StatusCode::GONE,"Checkout ticket expired or already used".into()))?;
     let c = stored(&r)?;
+    if c.data.sales_channel != marketing::channel_id(&h) {
+        return Err(Error(
+            StatusCode::FORBIDDEN,
+            "Cart belongs to another sales channel".into(),
+        ));
+    }
     if c.status != "open" {
         return Err(conflict("Cart is terminal"));
     }

@@ -129,6 +129,13 @@ export const de = {
   orderPlaced: "Bestellung gespeichert",
   simulation:
     "Prototyp: keine echte Abbuchung. Bestand und Bestellung werden gespeichert.",
+  placed: "Bestellung aufgegeben",
+  captured: "Zahlung bestätigt",
+  partially_refunded: "Teilweise erstattet",
+  refunded: "Erstattet",
+  cancelled: "Storniert",
+  failed: "Fehlgeschlagen",
+  uncertain: "Bestätigung ausstehend",
   authorized: "Zahlung simuliert autorisiert",
   paid: "Als bezahlt erfasst",
   open: "Lieferung offen",

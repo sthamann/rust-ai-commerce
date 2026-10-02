@@ -174,3 +174,29 @@ Shopware compatibility claim is made.
 
 | [`src/checkout_handoff.rs`](../src/checkout_handoff.rs) | Generic expiring, single-use transfer of an authoritative cart; rotates tokens. | `checkout_handoff.py` real PostgreSQL concurrency/order checks |
 | [`extensions/apps/storyfront/manifest.json`](../extensions/apps/storyfront/manifest.json) | Storyfront app capabilities, separate service and merchant UI contract. | Installed package + actual connector/browser flow; see `storyfront.md` |
+
+
+## Workbench and additional commerce domains
+
+| Files | Responsibility | Tests |
+|---|---|---|
+| `src/staging/{clone,snapshot,documents,release,mod}.rs` | Private clones, publishable units, document provenance and selected conflict-checked atomic releases | `staging.py`, `marketing_accounts.py` |
+| `src/developer/{generation,builds,routes,mod}.rs` | Structured model schema, immutable versions, restricted runtimes, staging/import/MCP tasks | `developer_documents.py`, `staging.py`, Rust validation tests |
+| `src/documents/{ingestion,parser,retrieval,questions,mod}.rs` | Bounded PDF/text ingestion, private/public sources, actual graph/chunks/vector retrieval and cited PDP answers | `developer_documents.py` including real PDF child process |
+| `src/accounts/{mod,profile}.rs`, `customer.rs`, `cart_storage.rs` | Separate customer sessions, profile/password/history and trusted identity reuse | `marketing_accounts.py`, `commerce.py` |
+| `src/auth/provision.rs`, `registration.rs` | Shared synthetic template provisioning for first and additional owned shops | `marketing_accounts.py`, `users.py` |
+| `src/marketing/{rules,promotions,flows,channels,routes,mod}.rs` | Bounded AST, authoritative campaigns, durable note/proposal jobs and sales-channel scope | Rust rule tests, `marketing_accounts.py`, `developer_documents.py` |
+| `src/rule_comparison.rs`, `src/bin/rules.rs`, `reference/rules.php` | Original Shopware numeric comparison behavior, independent batch oracle | `rule_differential.py`: 1,280 comparisons |
+| `src/discount.rs` | Exact-cent proportional basket discount allocation | Rust conservation/bounds tests, concurrent coupon HTTP checkout |
+| `src/commerce/product_edit.rs` | Revision-bound translations and advanced metadata; own product/reference validation | `marketing_accounts.py` and selected release |
+| `src/experience.rs` | Persisted layout policy plus owned-session signal ranking/clearing | `intelligence.py`, `marketing_accounts.py` |
+| `frontend/src/{DeveloperView,EnvironmentManager,StoryfrontView,AutomationView,ProductDataView}.tsx` | Dedicated merchant workbench forms and review surfaces | Strict frontend build, actual browser review |
+| `frontend/src/{CustomerAccount,DocumentsManager,ProductQuestion}.tsx` | Customer account editing/history and private upload/cited shopper questions | Native HTTP suites and browser forms |
+| `frontend/src/{workbench-i18n,errors-i18n}.ts`, `frontend/tests/locales.mjs` | Four-language typed vocabulary and exact/fallback errors | Locale parity/nonempty/error tests |
+| `deploy/*`, `scripts/prepare_vercel.py` | Self-hosted image/TLS network and credential-free Vercel API rewrite generation | Container build/start and Compose/static checks |
+
+Migrations 011, 013–015 add source documents/chunks, environment/release/build
+records, customer sessions/profiles, rules/promotions/flows/channels/product
+metadata and anonymous behavior signals. Migration 012 contains checkout handoff.
+The domain file guard remains enforced: Rust modules at most 320 lines, `main.rs`
+at most 120 lines, each module starts with its responsibility comment.
