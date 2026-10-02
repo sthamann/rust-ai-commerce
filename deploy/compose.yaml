@@ -31,6 +31,21 @@ services:
     depends_on:
       postgres: {condition: service_healthy}
     restart: unless-stopped
+  connectors:
+    profiles: [connected-apps]
+    build:
+      context: ..
+      dockerfile: extensions/services/connectors/Dockerfile
+    environment:
+      CONNECTOR_SECRET_KEY: ${CONNECTOR_SECRET_KEY:-}
+      CONNECTOR_GATEWAY_TOKEN: ${CONNECTOR_GATEWAY_TOKEN:-}
+      CONNECTOR_PUBLIC_URL: https://${COMMERCE_DOMAIN}/connected-apps
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      SLACK_CLIENT_ID: ${SLACK_CLIENT_ID:-}
+      SLACK_CLIENT_SECRET: ${SLACK_CLIENT_SECRET:-}
+    volumes: ["connector-data:/state"]
+    restart: unless-stopped
   gateway:
     image: caddy:2
     environment:
@@ -46,3 +61,4 @@ volumes:
   commerce-data:
   caddy-data:
   caddy-config:
+  connector-data:

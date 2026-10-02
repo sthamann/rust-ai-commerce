@@ -48,6 +48,14 @@ pub(crate) fn start(a: &App) {
         });
     }
     if ["all", "app-worker"].contains(&role.as_str()) {
+        let collector = a.clone();
+        tokio::spawn(async move {
+            let mut ticks = tokio::time::interval(std::time::Duration::from_secs(5));
+            loop {
+                ticks.tick().await;
+                let _ = apps::collect_sources(&collector).await;
+            }
+        });
         let worker = a.clone();
         tokio::spawn(async move {
             let mut ticks = tokio::time::interval(std::time::Duration::from_millis(250));

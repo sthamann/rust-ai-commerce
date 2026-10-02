@@ -90,6 +90,10 @@ pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
         "knowledge.search",
         "Semantic product retrieval with live price/stock and graph evidence",
     ),
+    (
+        "knowledge.external",
+        "Read merchant-private Gmail/Analytics sources with provenance",
+    ),
     ("cart.create", "Create customer cart"),
     (
         "cart.replace",
@@ -171,6 +175,9 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
                 commerce::select_checkout(State(a.clone()), h.clone(), Json(v.clone())).await?;
             Ok(v)
         }
+        "knowledge.external" => Ok(
+            json!({"elements":apps::private_evidence(a,&tenant(h)?,v["query"].as_str().unwrap_or("")).await?}),
+        ),
         "knowledge.graph" => Ok(knowledge::graph(&a.db, &tenant(h)?).await?),
         "knowledge.search" => retrieve(a, &tenant(h)?, v["query"].as_str().unwrap_or("")).await,
         "cart.create" => {
@@ -200,6 +207,7 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
             .await
         }
         "merchant.plan" => {
+            auth::permit(h, "knowledge.read")?;
             let t = merchant(a, h)?;
             let (locale, _) = language_context(a, h).await?;
             plan_with(

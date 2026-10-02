@@ -176,3 +176,49 @@ pub async fn sync_observation(
         .await?;
     Ok(())
 }
+
+/// Private app source provenance; storefront graph queries never expose these nodes.
+pub async fn sync_integration(
+    conn: &mut PgConnection,
+    tenant: &str,
+    app: &str,
+    id: &str,
+    source: &Value,
+    deleted: bool,
+) -> Result<(), sqlx::Error> {
+    let params=GraphParams(json!({"tenant":tenant,"app":app,"id":id,"title":source["title"],"kind":source["kind"],"order":source["metadata"]["orderNumber"]}).to_string());
+    let query = if deleted {
+        if id.is_empty() {
+            "MATCH (e:AppEvidence {tenant:$tenant,app:$app}) DETACH DELETE e RETURN 1"
+        } else {
+            "MATCH (e:AppEvidence {tenant:$tenant,app:$app,source_id:$id}) DETACH DELETE e RETURN 1"
+        }
+    } else {
+        "MERGE (s:Shop {tenant:$tenant}) MERGE (e:AppEvidence {tenant:$tenant,app:$app,source_id:$id}) SET e.title=$title,e.kind=$kind,e.private=true MERGE (s)-[:HAS_PRIVATE_SOURCE]->(e) RETURN e.source_id"
+    };
+    let sql = format!(
+        "SELECT result::text FROM ag_catalog.cypher('commerce',$graph${query}$graph$,$1) AS (result ag_catalog.agtype)"
+    );
+    sqlx::query(sqlx::AssertSqlSafe(sql.as_str()))
+        .bind(params)
+        .execute(&mut *conn)
+        .await?;
+    if !deleted {
+        let ids = source["metadata"]["productIds"]
+            .as_array()
+            .map(|xs| {
+                xs.iter()
+                    .filter_map(Value::as_str)
+                    .take(30)
+                    .collect::<Vec<_>>()
+            })
+            .unwrap_or_default();
+        let params =
+            GraphParams(json!({"tenant":tenant,"app":app,"id":id,"products":ids}).to_string());
+        sqlx::query("SELECT result::text FROM ag_catalog.cypher('commerce',$graph$MATCH (e:AppEvidence {tenant:$tenant,app:$app,source_id:$id})-[r:REFERENCES_PRODUCT]->() DELETE r RETURN 1$graph$,$1) AS (result ag_catalog.agtype)").bind(params).execute(&mut *conn).await?;
+        let params =
+            GraphParams(json!({"tenant":tenant,"app":app,"id":id,"products":ids}).to_string());
+        sqlx::query("SELECT result::text FROM ag_catalog.cypher('commerce',$graph$MATCH (e:AppEvidence {tenant:$tenant,app:$app,source_id:$id}), (p:Product {tenant:$tenant}) WHERE p.product_id IN $products MERGE (e)-[:REFERENCES_PRODUCT]->(p) RETURN p.product_id$graph$,$1) AS (result ag_catalog.agtype)").bind(params).execute(conn).await?;
+    }
+    Ok(())
+}

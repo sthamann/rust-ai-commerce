@@ -145,4 +145,25 @@ theorem receipt_exact_behavior (expected received : Nat) (currency confirmed : B
     receipt_admissible expected received currency confirmed = true ↔
     expected = received ∧ currency = true ∧ confirmed = true := by
   simp [receipt_admissible, and_assoc]
+/-- The rule checks actual customer authentication rather than a supplied guest email. -/
+theorem rule_authenticated_exact (present required : Bool) :
+    rule_authenticated present required = true ↔ present = required := by
+  cases present <;> cases required <;> simp [rule_authenticated]
+/-- A guest cannot satisfy the authenticated customer branch. -/
+theorem rule_guest_denied : rule_authenticated false true = false := by
+  simp [rule_authenticated]
+/-- Supported comparison selection exactly preserves all three Boolean operations. -/
+theorem rule_comparison_exact (equal empty eq neq isEmpty : Bool) :
+    rule_boolean_comparison equal empty eq neq isEmpty = true ↔
+    (eq = true ∧ equal = true) ∨ (neq = true ∧ equal = false) ∨ (isEmpty = true ∧ empty = true) := by
+  cases equal <;> cases empty <;> cases eq <;> cases neq <;> cases isEmpty <;> simp [rule_boolean_comparison]
+/-- Eligibility requires an explicit private mutation capability. -/
+theorem app_flow_exact (allowed readOnly isPublic : Bool) :
+    app_flow_admissible allowed readOnly isPublic = true ↔
+    allowed = true ∧ readOnly = false ∧ isPublic = false := by
+  cases allowed <;> cases readOnly <;> cases isPublic <;> simp [app_flow_admissible]
+/-- Read-only actions can never become a flow mutation. -/
+theorem app_flow_readonly_denied (allowed isPublic : Bool) :
+    app_flow_admissible allowed true isPublic = false := by
+  cases allowed <;> cases isPublic <;> simp [app_flow_admissible]
 end CommerceKernel

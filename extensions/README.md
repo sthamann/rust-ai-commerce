@@ -219,3 +219,29 @@ The example does not run arbitrary code on the transition, automatically install
 its workflow, or implement the complete Shopware graphical Flow Builder.
 `python3 scripts/merchant_operations.py` exercises installation, validation,
 concurrent exact-once transition, the actual flow note and selective publication.
+
+## Connected provider apps and order-alert example
+
+`apps/google-analytics`, `apps/gmail` and `apps/slack` are service apps. Their provider
+implementation lives outside the Rust kernel in `services/connectors/`; their manifest
+capabilities work through the ordinary HTTP/MCP action gateway. See
+[the OAuth, private knowledge and deployment guide](../docs/connected-apps.md).
+
+`apps/order-alerts/manifest.json` demonstrates an `events.publish` action, publishing
+`app.order_alerts.support_received` after schema/merchant permission checks. Install it
+through `POST /api/apps` with `{manifest: ...}`. `slack-flow.json` is a real graphical
+flow definition: orders above EUR 100 in the consumer group invoke `slack.post_order`.
+Install/connect Slack first, choose a bot-accessible channel, then save the definition
+through `PUT /api/automation/flows/order_alerts` with `{revision:0,data: ...}`. The
+four-language instruction is the Slack template. The core supplies a stable delivery
+key, event kind and sanitized order facts; the app handles external delivery receipts.
+
+`GET /api/automation/catalog` lists actual app actions and emitted/import events for the
+visual builder. A mail import can trigger `app.gmail.source_imported` and test
+`eventField` facts such as `sourceKind`, `title` or `metadata.orderNumber`. AI-proposal
+actions remain reviewable; private support text never becomes a system instruction.
+
+The reusable `sdk/analytics.js` adapter also supports headless storefronts. Read only
+public `google_analytics.tracking` configuration for the correct tenant/sales channel,
+collect customer consent, then call `event()` for real ecommerce actions. Never embed
+merchant/provider credentials or duplicate a tag managed by another storefront plugin.

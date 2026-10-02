@@ -2,6 +2,7 @@
 use super::*;
 pub(crate) fn router() -> Router<App> {
     Router::new()
+        .merge(catalog::router())
         .route("/api/automation", get(list))
         .route("/api/automation/{kind}/{id}", axum::routing::put(save))
         .route("/api/automation/rules/preview", post(preview))
@@ -81,6 +82,7 @@ async fn save(
             let f: flows::Flow =
                 serde_json::from_value(data.clone()).map_err(|_| bad("Invalid flow"))?;
             f.validate()?;
+            validate_app_flow(&a, &t, &h, &f).await?;
             data["actor"] = json!(header(&h, "x-rac-user").unwrap_or("bootstrap"));
         }
         "channels" => {

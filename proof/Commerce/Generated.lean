@@ -42,4 +42,13 @@ def checkout_contact_admissible (simulated : Bool) (email_present : Bool) (billi
 def receipt_admissible (expected : Nat) (received : Nat) (same_currency : Bool) (confirmed : Bool) : Bool :=
   (((decide (expected = received)) && same_currency) && confirmed)
 
+def rule_authenticated (customer_present : Bool) (required : Bool) : Bool :=
+  (decide (customer_present = required))
+
+def rule_boolean_comparison (equal : Bool) (empty : Bool) (eq : Bool) (neq : Bool) (is_empty : Bool) : Bool :=
+  (((eq && equal) || (neq && (!equal))) || (is_empty && empty))
+
+def app_flow_admissible (allowed : Bool) (read_only : Bool) (is_public : Bool) : Bool :=
+  ((allowed && (!read_only)) && (!is_public))
+
 end CommerceKernel

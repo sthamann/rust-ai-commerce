@@ -245,3 +245,19 @@ All 146 Rust files have explicit status and reviewed hashes in
 [`proof/manifest.json`](../proof/manifest.json). The eight consumer modules are
 reviewed bindings, not whole-module proofs. See the
 [exact formal coverage and remaining gaps](formal-verification.md).
+
+## Connected provider apps and automation
+
+| Files | Responsibility |
+|---|---|
+| `extensions/services/connectors/{server,oauth,transport,store,providers}.py` | Independent app runtime, provider OAuth/API, encrypted private state and durable jobs |
+| `extensions/apps/{gmail,google-analytics,slack}/manifest.json` | Versioned app API/MCP capabilities and scopes |
+| `src/apps/evidence.rs`, `src/apps/evidence_routes.rs` | Tenant-private incremental imports, retrieval, polling and purge fences |
+| `src/knowledge.rs` | Private AGE source and product provenance, separated from public graph |
+| `src/planner.rs` | Actual private-source model context and persisted task evidence |
+| `src/marketing/{rules,rule_match,rule_fields,catalog,app_flows,flows}.rs` | Condition schema, original comparison/facts, upstream import, app-aware durable flow execution |
+| `frontend/src/{ConnectorPanel,RuleBuilder,FlowBuilder,ShopAnalytics}.tsx` | Multilingual app details, recursive graphical automation, consent and commerce events |
+| `extensions/sdk/analytics.js` | Reusable consent-bound GA4 adapter for headless frontends |
+| `scripts/{connected_apps,connector_store_tests,rule_differential}.py` | Actual provider/model wire path, state fences and original PHP comparison regressions |
+
+The upstream condition-by-condition status is recorded in `reference/rule-catalog.json`.

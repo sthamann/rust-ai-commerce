@@ -1,4 +1,9 @@
 {$COMMERCE_DOMAIN} {
-    encode zstd gzip
+  encode zstd gzip
+  handle_path /connected-apps/* {
+    reverse_proxy connectors:8797
+  }
+  handle {
     reverse_proxy commerce:8787
+  }
 }

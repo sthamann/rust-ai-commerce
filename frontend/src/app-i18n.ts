@@ -75,12 +75,7 @@ const words = {
     "Paiement expiré",
     "Pago caducado",
   ],
-  apps: [
-    "Apps & payments",
-    "Apps & Zahlungen",
-    "Apps et paiements",
-    "Apps y pagos",
-  ],
+  apps: ["Apps", "Apps", "Applications", "Apps"],
   intro: [
     "Add capabilities to your shop. Each app keeps its own data and actions.",
     "Erweitere deinen Shop. Jede App hat eigene Daten und Aktionen.",

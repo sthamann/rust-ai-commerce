@@ -24,6 +24,11 @@ jobs:
           php-version: '8.4'
           extensions: curl, dom, fileinfo, gd, intl, mbstring, pdo_mysql, pdo_sqlite, sodium, zip
           tools: composer:v2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install connector cryptography dependency
+        run: python3 -m pip install -r extensions/services/connectors/requirements.txt
       - run: cargo fmt --check && cargo clippy --locked --all-targets -- -D warnings && cargo test --locked && cargo build --locked --bins
       - name: Install pinned Lean toolchain
         uses: leanprover/lean-action@f061402b660e0c34644504b324e830f2991d4865 # v1
@@ -53,6 +58,7 @@ jobs:
         run: |
           trap 'cat /tmp/commerce.log' ERR
           target/debug/rust-ai-commerce > /tmp/commerce.log 2>&1 &
+          commerce_pid=$!
           for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8787/health && break || sleep 1; done
           python3 scripts/studio.py
           python3 scripts/integration.py
@@ -72,6 +78,11 @@ jobs:
           python3 scripts/merchant_operations.py
           python3 scripts/customer_accounts.py
           python3 scripts/developer_documents.py
+          kill "$commerce_pid"
+          wait "$commerce_pid" || true
+          python3 scripts/connector_store_tests.py
+          python3 scripts/connected_apps.py
+          node frontend/tests/analytics.mjs
           node frontend/tests/locales.mjs
           python3 scripts/structure.py
       # Real model checks are opt-in locally: CI does not replace them with a fake.

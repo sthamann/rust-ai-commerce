@@ -1,6 +1,9 @@
+import { useConnectedText } from "./connected-i18n";
+import RuleBuilder, { type AutomationCatalog } from "./RuleBuilder";
+import FlowBuilder from "./FlowBuilder";
 /** Typed merchant rule/campaign/flow/channel forms with exact JSON available for advanced review. */
 import { useEffect, useState } from "react";
-import { useOperationsText } from "./operations-i18n";
+
 import { useWorkbenchText } from "./workbench-i18n";
 import type { RequestFn, Message } from "./studio-types";
 import ProposalCard from "./ProposalCard";
@@ -14,8 +17,37 @@ export default function AutomationView({
   request: RequestFn;
   role: string;
 }) {
+  const { x } = useConnectedText();
+  const [imported, setImported] = useState("");
   const { w, locale } = useWorkbenchText();
-  const { o } = useOperationsText();
+  const [catalog, setCatalog] = useState<AutomationCatalog>({
+    conditions: [
+      "andContainer",
+      "orContainer",
+      "notContainer",
+      "alwaysValid",
+      "cartCartAmount",
+      "cartLineItemCount",
+      "customerGroup",
+      "shippingCountry",
+      "salesChannel",
+      "lineItemId",
+      "customerLoggedIn",
+      "orderState",
+      "paymentState",
+      "deliveryState",
+      "contextField",
+      "eventField",
+    ],
+    fields: [],
+    events: ["order.placed"],
+    apps: [],
+  });
+  useEffect(() => {
+    request("/api/automation/catalog")
+      .then(setCatalog)
+      .catch(() => {});
+  }, [request]);
   const [kind, setKind] = useState<Kind>("rules");
   const [rows, setRows] = useState<Record<Kind, Config[]>>({
     rules: [],
@@ -205,65 +237,37 @@ export default function AutomationView({
               {w("enabled")}
             </label>
             {kind === "rules" && (
-              <>
-                <label>
-                  {w("condition")}
-                  <select
-                    value={data.condition.type}
-                    onChange={(e) =>
-                      update(
-                        "condition",
-                        e.target.value === "cartCartAmount"
-                          ? {
-                              type: e.target.value,
-                              operator: ">=",
-                              amount: 100,
-                            }
-                          : e.target.value === "customerGroup"
-                            ? { type: e.target.value, values: ["consumer"] }
-                            : { type: e.target.value },
-                      )
-                    }
-                  >
-                    <option value="cartCartAmount">{w("cartAmount")}</option>
-                    <option value="customerGroup">{w("customerGroup")}</option>
-                    <option value="customerLoggedIn">{w("loggedIn")}</option>
-                    <option value="alwaysValid">{w("always")}</option>
-                  </select>
-                </label>
-                {data.condition.type === "cartCartAmount" && (
-                  <label>
-                    {w("threshold")}
-                    <input
-                      type="number"
-                      min={0}
-                      step=".01"
-                      value={data.condition.amount}
-                      onChange={(e) =>
-                        update("condition", {
-                          ...data.condition,
-                          amount: Number(e.target.value),
-                        })
-                      }
-                    />
-                  </label>
-                )}
-                {data.condition.type === "customerGroup" && (
-                  <select
-                    aria-label={w("customerGroup")}
-                    value={data.condition.values[0]}
-                    onChange={(e) =>
-                      update("condition", {
-                        type: "customerGroup",
-                        values: [e.target.value],
-                      })
-                    }
-                  >
-                    <option value="consumer">{w("consumer")}</option>
-                    <option value="business">B2B</option>
-                  </select>
-                )}
-              </>
+              <details>
+                <summary>{x("import")}</summary>
+                <textarea
+                  aria-label={x("import")}
+                  value={imported}
+                  onChange={(e) => setImported(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="studio-secondary"
+                  disabled={busy || !manage || !imported.trim()}
+                  onClick={() =>
+                    void run(async () => {
+                      const v = await request(
+                        "/api/automation/import-condition",
+                        JSON.parse(imported),
+                      );
+                      update("condition", v.condition);
+                    })
+                  }
+                >
+                  {x("import")}
+                </button>
+              </details>
+            )}
+            {kind === "rules" && (
+              <RuleBuilder
+                value={data.condition}
+                onChange={(r) => update("condition", r)}
+                catalog={catalog}
+              />
             )}
             {kind === "promotions" && (
               <>
@@ -312,7 +316,7 @@ export default function AutomationView({
                 </label>
               </>
             )}
-            {(kind === "promotions" || kind === "flows") && (
+            {kind === "promotions" && (
               <label>
                 {w("condition")}
                 <select
@@ -332,45 +336,16 @@ export default function AutomationView({
                     </option>
                   ))}
                 </select>
-                <small>
-                  {(kind === "promotions" ? data.rule : data.condition).type}
-                </small>
+                <RuleBuilder
+                  value={data.rule}
+                  onChange={(r) => update("rule", r)}
+                  catalog={catalog}
+                />
               </label>
             )}
             {kind === "flows" && (
               <>
-                <label>
-                  {w("trigger")}
-                  <select
-                    value={data.event}
-                    onChange={(e) => update("event", e.target.value)}
-                  >
-                    <option value="order.placed">{w("orderPlaced")}</option>
-                    {[
-                      "order.state_changed",
-                      "payment.state_changed",
-                      "delivery.state_changed",
-                      "payment.updated",
-                    ].map((event) => (
-                      <option key={event} value={event}>
-                        {o(event)}
-                      </option>
-                    ))}
-                    <option value="payment.captured">
-                      {w("paymentCaptured")}
-                    </option>
-                  </select>
-                </label>
-                <label>
-                  {w("action")}
-                  <select
-                    value={data.action}
-                    onChange={(e) => update("action", e.target.value)}
-                  >
-                    <option value="note">{w("note")}</option>
-                    <option value="ai_proposal">{w("aiProposal")}</option>
-                  </select>
-                </label>
+                <FlowBuilder data={data} update={update} catalog={catalog} />
                 {langs.map((lang) => (
                   <label key={lang}>
                     {w("instruction")} · {lang}

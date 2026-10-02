@@ -1,0 +1,727 @@
+{
+  "upstream": "shopware/core 6.7.14.2",
+  "conditions": [
+    {
+      "type": "adminSalesChannelSource",
+      "source": "Checkout/Cart/Rule/AdminSalesChannelSourceRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "orderAffiliateCode",
+      "source": "Checkout/Cart/Rule/AffiliateCodeOfOrderRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "alwaysValid",
+      "source": "Checkout/Cart/Rule/AlwaysValidRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "orderCampaignCode",
+      "source": "Checkout/Cart/Rule/CampaignCodeOfOrderRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartCartAmount",
+      "source": "Checkout/Cart/Rule/CartAmountRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "cartHasDeliveryFreeItem",
+      "source": "Checkout/Cart/Rule/CartHasDeliveryFreeItemRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartPositionPrice",
+      "source": "Checkout/Cart/Rule/CartPositionPriceRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartShippingCost",
+      "source": "Checkout/Cart/Rule/CartShippingCostRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartTaxDisplay",
+      "source": "Checkout/Cart/Rule/CartTaxDisplayRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartTotalPurchasePrice",
+      "source": "Checkout/Cart/Rule/CartTotalPurchasePriceRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartVolume",
+      "source": "Checkout/Cart/Rule/CartVolumeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartWeight",
+      "source": "Checkout/Cart/Rule/CartWeightRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartGoodsCount",
+      "source": "Checkout/Cart/Rule/GoodsCountRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartGoodsPrice",
+      "source": "Checkout/Cart/Rule/GoodsPriceRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemActualStock",
+      "source": "Checkout/Cart/Rule/LineItemActualStockRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemClearanceSale",
+      "source": "Checkout/Cart/Rule/LineItemClearanceSaleRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemCreationDate",
+      "source": "Checkout/Cart/Rule/LineItemCreationDateRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemCustomField",
+      "source": "Checkout/Cart/Rule/LineItemCustomFieldRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemDimensionHeight",
+      "source": "Checkout/Cart/Rule/LineItemDimensionHeightRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemDimensionLength",
+      "source": "Checkout/Cart/Rule/LineItemDimensionLengthRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemDimensionVolume",
+      "source": "Checkout/Cart/Rule/LineItemDimensionVolumeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemDimensionWeight",
+      "source": "Checkout/Cart/Rule/LineItemDimensionWeightRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemDimensionWidth",
+      "source": "Checkout/Cart/Rule/LineItemDimensionWidthRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemGoodsTotal",
+      "source": "Checkout/Cart/Rule/LineItemGoodsTotalRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemInGroup",
+      "source": "Checkout/Cart/Rule/LineItemGroupRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemInCategory",
+      "source": "Checkout/Cart/Rule/LineItemInCategoryRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemInProductStream",
+      "source": "Checkout/Cart/Rule/LineItemInProductStreamRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemIsNew",
+      "source": "Checkout/Cart/Rule/LineItemIsNewRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemListPriceRatio",
+      "source": "Checkout/Cart/Rule/LineItemListPriceRatioRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemListPrice",
+      "source": "Checkout/Cart/Rule/LineItemListPriceRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemOfManufacturer",
+      "source": "Checkout/Cart/Rule/LineItemOfManufacturerRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemOfType",
+      "source": "Checkout/Cart/Rule/LineItemOfTypeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemPerItemQuantity",
+      "source": "Checkout/Cart/Rule/LineItemPerItemQuantityRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemProductStates",
+      "source": "Checkout/Cart/Rule/LineItemProductStatesRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemProductType",
+      "source": "Checkout/Cart/Rule/LineItemProductTypeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemPromoted",
+      "source": "Checkout/Cart/Rule/LineItemPromotedRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemProperty",
+      "source": "Checkout/Cart/Rule/LineItemPropertyRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemPropertyValue",
+      "source": "Checkout/Cart/Rule/LineItemPropertyValueRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemPurchasePrice",
+      "source": "Checkout/Cart/Rule/LineItemPurchasePriceRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemReleaseDate",
+      "source": "Checkout/Cart/Rule/LineItemReleaseDateRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItem",
+      "source": "Checkout/Cart/Rule/LineItemRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "cartLineItemStock",
+      "source": "Checkout/Cart/Rule/LineItemStockRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemTag",
+      "source": "Checkout/Cart/Rule/LineItemTagRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemTaxation",
+      "source": "Checkout/Cart/Rule/LineItemTaxationRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemTotalPrice",
+      "source": "Checkout/Cart/Rule/LineItemTotalPriceRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemUnitPrice",
+      "source": "Checkout/Cart/Rule/LineItemUnitPriceRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemVariantValue",
+      "source": "Checkout/Cart/Rule/LineItemVariantValueRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemWithQuantity",
+      "source": "Checkout/Cart/Rule/LineItemWithQuantityRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemWrapper",
+      "source": "Checkout/Cart/Rule/LineItemWrapperRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "cartLineItemsInCartCount",
+      "source": "Checkout/Cart/Rule/LineItemsInCartCountRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "paymentMethod",
+      "source": "Checkout/Cart/Rule/PaymentMethodRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "shippingMethod",
+      "source": "Checkout/Cart/Rule/ShippingMethodRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "cart_tax_rule",
+      "source": "Checkout/Cart/Tax/Struct/TaxRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerAffiliateCode",
+      "source": "Checkout/Customer/Rule/AffiliateCodeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerBillingCity",
+      "source": "Checkout/Customer/Rule/BillingCityRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerBillingCountry",
+      "source": "Checkout/Customer/Rule/BillingCountryRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "customerBillingState",
+      "source": "Checkout/Customer/Rule/BillingStateRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerBillingStreet",
+      "source": "Checkout/Customer/Rule/BillingStreetRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerBillingZipCode",
+      "source": "Checkout/Customer/Rule/BillingZipCodeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerCampaignCode",
+      "source": "Checkout/Customer/Rule/CampaignCodeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerAge",
+      "source": "Checkout/Customer/Rule/CustomerAgeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerBirthday",
+      "source": "Checkout/Customer/Rule/CustomerBirthdayRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerCreatedByAdmin",
+      "source": "Checkout/Customer/Rule/CustomerCreatedByAdminRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerCustomField",
+      "source": "Checkout/Customer/Rule/CustomerCustomFieldRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerCustomerGroup",
+      "source": "Checkout/Customer/Rule/CustomerGroupRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "customerLoggedIn",
+      "source": "Checkout/Customer/Rule/CustomerLoggedInRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "customerCustomerNumber",
+      "source": "Checkout/Customer/Rule/CustomerNumberRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerRequestedGroup",
+      "source": "Checkout/Customer/Rule/CustomerRequestedGroupRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerSalutation",
+      "source": "Checkout/Customer/Rule/CustomerSalutationRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerTag",
+      "source": "Checkout/Customer/Rule/CustomerTagRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerDaysSinceFirstLogin",
+      "source": "Checkout/Customer/Rule/DaysSinceFirstLoginRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerDaysSinceLastLogin",
+      "source": "Checkout/Customer/Rule/DaysSinceLastLoginRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerDaysSinceLastOrder",
+      "source": "Checkout/Customer/Rule/DaysSinceLastOrderRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerDifferentAddresses",
+      "source": "Checkout/Customer/Rule/DifferentAddressesRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerEmail",
+      "source": "Checkout/Customer/Rule/EmailRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "customerIsActive",
+      "source": "Checkout/Customer/Rule/IsActiveRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerIsCompany",
+      "source": "Checkout/Customer/Rule/IsCompanyRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerIsGuest",
+      "source": "Checkout/Customer/Rule/IsGuestCustomerRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerIsNewsletterRecipient",
+      "source": "Checkout/Customer/Rule/IsNewsletterRecipientRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerLastName",
+      "source": "Checkout/Customer/Rule/LastNameRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "numberOfReviews",
+      "source": "Checkout/Customer/Rule/NumberOfReviewsRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerOrderCount",
+      "source": "Checkout/Customer/Rule/OrderCountRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerOrderTotalAmount",
+      "source": "Checkout/Customer/Rule/OrderTotalAmountRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerShippingCity",
+      "source": "Checkout/Customer/Rule/ShippingCityRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerShippingCountry",
+      "source": "Checkout/Customer/Rule/ShippingCountryRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "customerShippingState",
+      "source": "Checkout/Customer/Rule/ShippingStateRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerShippingStreet",
+      "source": "Checkout/Customer/Rule/ShippingStreetRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "customerShippingZipCode",
+      "source": "Checkout/Customer/Rule/ShippingZipCodeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "promotionCodeOfType",
+      "source": "Checkout/Promotion/Rule/PromotionCodeOfTypeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "promotionLineItem",
+      "source": "Checkout/Promotion/Rule/PromotionLineItemRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "promotionValue",
+      "source": "Checkout/Promotion/Rule/PromotionValueRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "promotionsInCartCount",
+      "source": "Checkout/Promotion/Rule/PromotionsInCartCountRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "orderCreatedByAdmin",
+      "source": "Content/Flow/Rule/OrderCreatedByAdminRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "orderCustomField",
+      "source": "Content/Flow/Rule/OrderCustomFieldRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "orderDeliveryStatus",
+      "source": "Content/Flow/Rule/OrderDeliveryStatusRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "orderDocumentType",
+      "source": "Content/Flow/Rule/OrderDocumentTypeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "orderDocumentTypeSent",
+      "source": "Content/Flow/Rule/OrderDocumentTypeSentRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "orderStatus",
+      "source": "Content/Flow/Rule/OrderStatusRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "orderTag",
+      "source": "Content/Flow/Rule/OrderTagRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "orderTrackingCode",
+      "source": "Content/Flow/Rule/OrderTrackingCodeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "orderTransactionStatus",
+      "source": "Content/Flow/Rule/OrderTransactionStatusRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "iterator",
+      "source": "DevOps/StaticAnalyze/PHPStan/Rules/TaggedServiceContractRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "andContainer",
+      "source": "Framework/Rule/Container/AndRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "allLineItemsContainer",
+      "source": "Framework/Rule/Container/MatchAllLineItemsRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "notContainer",
+      "source": "Framework/Rule/Container/NotRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "orContainer",
+      "source": "Framework/Rule/Container/OrRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "xorContainer",
+      "source": "Framework/Rule/Container/XorRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "dateRange",
+      "source": "Framework/Rule/DateRangeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "rule_",
+      "source": "Framework/Rule/Rule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "salesChannel",
+      "source": "Framework/Rule/SalesChannelRule.php",
+      "status": "implemented-scope",
+      "nativeModule": "src/marketing/rules.rs + src/marketing/rule_match.rs"
+    },
+    {
+      "type": "scriptRule",
+      "source": "Framework/Rule/ScriptRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "simple",
+      "source": "Framework/Rule/SimpleRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "timeRange",
+      "source": "Framework/Rule/TimeRangeRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "unknown_condition",
+      "source": "Framework/Rule/UnknownConditionRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "dayOfWeek",
+      "source": "Framework/Rule/WeekdayRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "currency",
+      "source": "System/Currency/Rule/CurrencyRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "language",
+      "source": "System/Language/Rule/LanguageRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "rule_counting_true",
+      "source": "Test/Stub/Rule/CountingTrueRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "false",
+      "source": "Test/Stub/Rule/FalseRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    },
+    {
+      "type": "true",
+      "source": "Test/Stub/Rule/TrueRule.php",
+      "status": "not-ported",
+      "nativeModule": null
+    }
+  ],
+  "completeCatalogParity": false,
+  "identityMapping": "Rules use native entity IDs; translate Shopware UUID references during catalog/customer migration. No guessed mappings."
+}

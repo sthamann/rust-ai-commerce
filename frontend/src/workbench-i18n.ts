@@ -204,8 +204,8 @@ export const workbenchWords = {
     "Ejecuciones de flujos",
   ],
   nativeSubset: [
-    "This prototype supports bounded rule conditions and note/AI-proposal flows. It does not yet cover every Shopware rule or action.",
-    "Der Prototyp unterstützt begrenzte Regelbedingungen sowie Notiz- und KI-Vorschlags-Flows. Noch nicht alle Shopware-Regeln und Aktionen sind abgedeckt.",
+    "Create event flows with conditions, app actions, order notes and AI proposals. It does not yet cover every Shopware rule or action.",
+    "Erstelle Ereignis-Flows mit Bedingungen, App-Aktionen, Bestellnotizen und KI-Vorschlägen. Noch nicht alle Shopware-Regeln und Aktionen sind abgedeckt.",
     "Le prototype prend en charge un sous-ensemble de règles et de flux. Toutes les règles Shopware ne sont pas encore couvertes.",
     "El prototipo admite un subconjunto de reglas y flujos. Aún no cubre todas las reglas de Shopware.",
   ],

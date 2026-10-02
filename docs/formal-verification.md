@@ -1,11 +1,11 @@
 # Lean-checked commerce contracts
 
-The prototype now runs Lean 4.29.1 proofs for **13 policies used in production
-Rust paths**. Thirty-three theorems cover the properties below. This is **not a
+The prototype now runs Lean 4.29.1 proofs for **16 policies used in production
+Rust paths**. Thirty-eight theorems cover the properties below. This is **not a
 certificate that the entire commerce core is correct or bug-free**. The current
-inventory contains 146 Rust modules: one extracted policy module, eight reviewed
-binding modules, one comparison driver and 136 unproved modules. Binding review
-is not a proof of those eight modules.
+inventory contains 154 Rust modules: one extracted policy module, eleven reviewed
+binding modules, one comparison driver and 141 unproved modules. Binding review
+is not a proof of those eleven modules.
 
 ## Connection to the real application
 
@@ -54,6 +54,9 @@ they do not prove the translator correct for every program.
 | `download_admissible` | Blocked orders grant no download; admitted downloads require payment or explicit simulated authorization | `src/assets/download.rs` |
 | `checkout_contact_admissible` | Financial checkout requires email and billing data; simulated checkout has an explicit exception | `src/order_checkout.rs` |
 | `receipt_admissible` | Accepted provider receipts match amount and currency and confirm the outcome | `src/payments/receipt_guard.rs` |
+| `rule_authenticated` | A guest cannot satisfy the authenticated-customer condition; both Boolean branches match exactly | `src/marketing/rule_match.rs` |
+| `rule_boolean_comparison` | Equality, inequality and emptiness select the exact Boolean result | `src/rule_comparison.rs` |
+| `app_flow_admissible` | Only explicitly eligible private mutation actions can be flow targets | `src/marketing/app_flows.rs` |
 
 Every policy also has an exact acceptance theorem. This proves that valid
 inputs are accepted as well as unsafe inputs rejected; replacing a policy with
@@ -81,10 +84,10 @@ The existing **Verify prototype / verify** job now also:
 4. Audits all 33 required theorems' transitive axioms. Only Lean's standard
    `propext`, `Quot.sound` and `Classical.choice` foundations are allowed. `sorry`,
    `admit`, custom axioms, `native_decide` and missing theorem audits fail.
-5. Executes compiled Rust and Lean functions on **3,558** identical inputs:
+5. Executes compiled Rust and Lean functions on **3,602** identical inputs:
    exhaustive Boolean assignments plus numeric boundaries/random cases, including
    `u64::MAX`. Their output types and values must match.
-6. Requires Lean to reject **28** deliberately broken policy variants. Also
+6. Requires Lean to reject **34** deliberately broken policy variants. Also
    rejects 14 unsupported grammar examples, three stale/unclassified/disconnected
    inventory cases and nine proof-shortcut/axiom/missing-audit examples.
 7. Runs existing Rust, PHP-reference and real PostgreSQL HTTP regressions.
@@ -148,3 +151,15 @@ properties have actually been specified.
 For Lean's trust model and axiom limitations, see the primary documentation:
 [proof validation](https://lean-lang.org/doc/reference/latest/ValidatingProofs/)
 and [axioms](https://lean-lang.org/doc/reference/latest/Axioms/).
+
+## Connected-app rule contracts
+
+Three additional extracted policies have production consumers: `rule_authenticated`
+uses actual authenticated customer presence, `app_flow_admissible` admits only explicitly eligible private mutation actions, and `rule_boolean_comparison` selects
+supported equality/inequality/empty semantics. Five Lean properties state exact
+behavior and reject granting the logged-in branch to a guest. The original string,
+Unicode conversion, wildcard matching, UUID comparison input construction and the
+surrounding rule AST evaluation remain reviewed/tested Rust, not fully proved modules.
+Provider OAuth, encrypted storage, Gmail/GA4 imports, Slack delivery and private graph
+projection remain unproved integration code with real local HTTP/database regression
+coverage. No whole-core or bug-free certification is claimed.

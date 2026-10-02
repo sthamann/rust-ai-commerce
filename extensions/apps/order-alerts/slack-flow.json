@@ -1,0 +1,40 @@
+{
+  "name": {
+    "en": "Order alerts",
+    "de": "Bestellmeldungen",
+    "fr": "Alertes de commande",
+    "es": "Alertas de pedidos"
+  },
+  "active": true,
+  "event": "order.placed",
+  "condition": {
+    "type": "andContainer",
+    "children": [
+      {
+        "type": "cartCartAmount",
+        "operator": ">=",
+        "amount": 100
+      },
+      {
+        "type": "customerGroup",
+        "values": [
+          "consumer"
+        ],
+        "operator": "="
+      }
+    ]
+  },
+  "action": "app_action",
+  "instruction": {
+    "en": "Order {orderNumber} \u00b7 {totalPrice} EUR",
+    "de": "Bestellung {orderNumber} \u00b7 {totalPrice} EUR",
+    "fr": "Commande {orderNumber} \u00b7 {totalPrice} EUR",
+    "es": "Pedido {orderNumber} \u00b7 {totalPrice} EUR"
+  },
+  "locale": "en-GB",
+  "appAction": {
+    "app": "slack",
+    "action": "post_order",
+    "arguments": {}
+  }
+}
