@@ -63,6 +63,9 @@ try:
  passed('Structured prompt generates immutable app, typed translated fields persist in sandbox, unknown translation keys rejected')
  tools=call('/mcp',{'jsonrpc':'2.0','id':1,'method':'tools/list'},a)['result']['tools'];assert any(t['name']=='developer.import' for t in tools)
  public=call('/mcp',{'jsonrpc':'2.0','id':1,'method':'tools/list'},tenant=slug)['result']['tools'];assert not any(t['name'].startswith('developer.') for t in public)
+ task=call('/mcp',{'jsonrpc':'2.0','id':2,'method':'tools/call','params':{'name':'developer.task','arguments':{'environment':e['id'],'prompt':'Extend the care app','agent':'codex'}}},a)['result']['structuredContent']
+ assert task['agent']=='codex' and task['mcpConfig']['mcpServers']['rust-commerce-dev']['args']==['scripts/mcp_stdio.py']
+ assert a['token'] not in json.dumps(task) and task['appSchema'] and e['id'] in task['task']
  passed('Codex/Claude MCP development tools are present only for authorized merchant roles')
  doc=call('/api/knowledge/documents',{'title':'Cup data sheet','productId':'mug','content':'Dishwasher safe stoneware cup. Capacity: 500 ml.'},a)
  behavior['mode']='de-DE'

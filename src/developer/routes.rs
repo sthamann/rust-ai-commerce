@@ -90,7 +90,20 @@ pub(crate) async fn task(
         .as_str()
         .filter(|s| s.len() <= 8000)
         .ok_or(bad("Prompt required"))?;
+    let origin =
+        env::var("COMMERCE_PUBLIC_ORIGIN").unwrap_or_else(|_| "http://127.0.0.1:8787".into());
+    let url = reqwest::Url::parse(&origin).map_err(|_| bad("Invalid public commerce origin"))?;
+    let local = matches!(url.host_str(), Some("localhost" | "127.0.0.1" | "[::1]"));
+    if (url.scheme() != "https" && !(url.scheme() == "http" && local))
+        || !url.username().is_empty()
+        || url.password().is_some()
+        || url.path() != "/"
+        || url.query().is_some()
+        || url.fragment().is_some()
+    {
+        return Err(bad("Invalid public commerce origin"));
+    }
     Ok(Json(
-        json!({"task":format!("Build a declarative Rust Commerce app. Requirements: {prompt}\nTarget private sandbox: {env}. Localize name and slot labels in en/de/fr/es. Read the appSchema and installed GET /api/apps examples returned with this task. Return a versioned manifest via POST /api/developer/import with environment, prompt, summary and manifest. Stage via POST /api/developer/builds/{{id}}/stage with approve=true and digest. Test data/API/UI in the sandbox. Never publish to live without a merchant's explicit selected release. Services and arbitrary executable code need a separate isolated builder and review."),"appSchema":generation::schema(),"mcpEndpoint":"/mcp","mcpConfig":{"mcpServers":{"rust-commerce-dev":{"command":"python3","args":[env::current_dir().unwrap().join("scripts/mcp_stdio.py").to_string_lossy()],"env":{"COMMERCE_URL":"http://127.0.0.1:8787","COMMERCE_TENANT":t,"COMMERCE_SESSION_TOKEN":"<personal session token; store locally only>"}}}},"credentials":"Use your personal merchant session. Export does not include credentials.","agent":v["agent"]}),
+        json!({"task":format!("Build a declarative Rust Commerce app. Requirements: {prompt}\nTarget private sandbox: {env}. Localize name and slot labels in en/de/fr/es. Read the appSchema and installed GET /api/apps examples returned with this task. Return a versioned manifest via POST /api/developer/import with environment, prompt, summary and manifest. Stage via POST /api/developer/builds/{{id}}/stage with approve=true and digest. Test data/API/UI in the sandbox. Never publish to live without a merchant's explicit selected release. Services and arbitrary executable code need a separate isolated builder and review."),"appSchema":generation::schema(),"mcpEndpoint":"/mcp","mcpConfig":{"mcpServers":{"rust-commerce-dev":{"command":"python3","args":["scripts/mcp_stdio.py"],"env":{"COMMERCE_URL":url.origin().ascii_serialization(),"COMMERCE_TENANT":t,"COMMERCE_SESSION_TOKEN":"<personal session token; store locally only>"}}}},"credentials":"Use your personal merchant session. Export does not include credentials. Run this MCP configuration from your local repository checkout; the helper is client-side.","agent":v["agent"]}),
     ))
 }

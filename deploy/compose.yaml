@@ -21,6 +21,8 @@ services:
       DATABASE_URL: ${DATABASE_URL:?postgres://commerce:encoded-password@postgres:5432/commerce}
       MERCHANT_TOKEN: ${MERCHANT_TOKEN:?required}
       BIND_ADDR: 0.0.0.0:8787
+      BOOTSTRAP_MODE: ${BOOTSTRAP_MODE:-auto}
+      COMMERCE_PUBLIC_ORIGIN: https://${COMMERCE_DOMAIN:?public DNS name required}
       OLLAMA_URL: ${OLLAMA_URL:-http://ollama:11434}
       OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3.6:35b}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}

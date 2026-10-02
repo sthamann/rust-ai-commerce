@@ -109,7 +109,7 @@ export default function DeveloperView({
                     ? "Claude"
                     : p.id === "openai"
                       ? "OpenAI"
-                      : p.name}
+                      : w("localModel")}
                 </option>
               ))}
             </select>

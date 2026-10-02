@@ -38,7 +38,9 @@ Codex and Claude Code can use the exported task, schema and local MCP bridge.
 `developer.builds`, `developer.import`, `developer.stage` and `developer.task`
 are exposed only to permitted merchant roles. Set `COMMERCE_SESSION_TOKEN`
 locally in the client configuration; exported tasks contain a placeholder, never
-credentials. The developer tab does not log into a consumer ChatGPT/Claude
+credentials. Run the exported helper from a local repository checkout;
+`COMMERCE_PUBLIC_ORIGIN` selects the HTTPS backend for deployed installations.
+The developer tab does not log into a consumer ChatGPT/Claude
 account or run arbitrary shell code. Model API integration and external coding
 client integration are distinct mechanisms.
 
