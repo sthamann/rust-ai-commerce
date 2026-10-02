@@ -17,11 +17,13 @@ pub(crate) async fn set_cart(
     buyer: Option<Option<Value>>,
 ) -> Result<StoredCart> {
     validate_items(&items)?;
-    let mut tx = a.db.begin().await?;
-    let r = sqlx::query("SELECT * FROM carts WHERE tenant=$1 AND token=$2 FOR UPDATE")
+    // Validate the candidate before taking a cart lock. These helpers use the
+    // pool: holding one connection per edit while requesting another can exhaust
+    // the pool and deadlock concurrent edits. The revision is checked again below.
+    let r = sqlx::query("SELECT * FROM carts WHERE tenant=$1 AND token=$2")
         .bind(tenant(h)?)
         .bind(token(h)?)
-        .fetch_optional(&mut *tx)
+        .fetch_optional(&a.db)
         .await?
         .ok_or(bad("Cart not found"))?;
     let mut c = stored(&r)?;
@@ -32,7 +34,7 @@ pub(crate) async fn set_cart(
         return Err(conflict("Cart revision changed; reload before editing"));
     }
     let (_, chain) = language_context(a, h).await?;
-    let ps = commerce::sku_products(a, &c.tenant, &chain).await?;
+    let ps = commerce::cart_products(a, &c.tenant, &chain, &items).await?;
     c.data.items = items
         .into_iter()
         .map(|mut item| {
@@ -49,6 +51,19 @@ pub(crate) async fn set_cart(
         c.data.buyer = b;
     }
     cart_json(a, &c).await?;
+    let mut tx = a.db.begin().await?;
+    let locked =
+        sqlx::query("SELECT revision,status FROM carts WHERE tenant=$1 AND token=$2 FOR UPDATE")
+            .bind(&c.tenant)
+            .bind(&c.token)
+            .fetch_one(&mut *tx)
+            .await?;
+    if locked.get::<String, _>("status") != "open" {
+        return Err(conflict("Cart is terminal"));
+    }
+    if locked.get::<i64, _>("revision") != c.revision {
+        return Err(conflict("Cart revision changed; reload before editing"));
+    }
     c.revision += 1;
     sqlx::query("UPDATE carts SET data=$1,revision=$2 WHERE id=$3")
         .bind(json!(c.data))

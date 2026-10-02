@@ -38,22 +38,61 @@ pub(crate) async fn cart_products(
     Ok(selected)
 }
 
-pub(crate) async fn sku_products(a: &App, t: &str, chain: &[String]) -> Result<Vec<Product>> {
-    let roots = localized_products(a, t, chain).await?;
-    let rows =
-        sqlx::query("SELECT * FROM products WHERE tenant=$1 AND parent_id IS NOT NULL ORDER BY id")
-            .bind(t)
-            .fetch_all(&a.db)
-            .await?;
-    let mut result = roots.clone();
-    let parents: HashMap<_, _> = roots.iter().map(|p| (p.id.as_str(), p)).collect();
-    for r in rows {
-        let mut p = product(&r);
-        if let Some(parent) = p.parent_id.as_deref().and_then(|id| parents.get(id)) {
-            p.name = parent.name.clone();
-            p.description = parent.description.clone();
-        }
-        result.push(p);
+pub(crate) async fn family_products(
+    a: &App,
+    t: &str,
+    chain: &[String],
+    id: &str,
+    criteria: &CatalogCriteria,
+) -> Result<(Vec<Product>, String, Option<String>)> {
+    let limit = criteria.page_size()?;
+    let selected = sqlx::query("SELECT * FROM products WHERE tenant=$1 AND id=$2")
+        .bind(t)
+        .bind(id)
+        .fetch_optional(&a.db)
+        .await?
+        .ok_or(Error(StatusCode::NOT_FOUND, "Product not found".into()))?;
+    let selected = product(&selected);
+    let family = selected
+        .parent_id
+        .as_deref()
+        .unwrap_or(&selected.id)
+        .to_owned();
+    let roots = sqlx::query("SELECT * FROM products WHERE tenant=$1 AND id=$2")
+        .bind(t)
+        .bind(&family)
+        .fetch_all(&a.db)
+        .await?;
+    let roots = localize_products(a, t, chain, roots.iter().map(product).collect()).await?;
+    let rows = sqlx::query(
+        "SELECT * FROM products WHERE tenant=$1 AND parent_id=$2 AND id>$3 ORDER BY id LIMIT $4",
+    )
+    .bind(t)
+    .bind(&family)
+    .bind(criteria.after.as_deref().unwrap_or(""))
+    .bind((limit + 1) as i64)
+    .fetch_all(&a.db)
+    .await?;
+    let next_cursor = (rows.len() > limit).then(|| rows[limit - 1].get::<String, _>("id"));
+    let mut result = roots;
+    for row in rows.iter().take(limit) {
+        result.push(product(row));
     }
-    Ok(result)
+    // A deep-linked SKU remains visible even when it is outside the requested page.
+    if !result.iter().any(|p| p.id == id) {
+        result.push(selected);
+    }
+    let parent = result
+        .iter()
+        .find(|p| p.id == family)
+        .map(|p| (p.name.clone(), p.description.clone()));
+    if let Some((name, description)) = parent {
+        for p in &mut result {
+            if p.parent_id.as_deref() == Some(&family) {
+                p.name = name.clone();
+                p.description = description.clone();
+            }
+        }
+    }
+    Ok((result, family, next_cursor))
 }

@@ -37,6 +37,7 @@ jobs:
           python3 scripts/protocols.py
           python3 scripts/intelligence.py
           python3 scripts/commerce.py
+          python3 scripts/scalability.py --container rust-ai-commerce-postgres-1
           python3 scripts/users.py
           TEST_PERSONAL=1 python3 scripts/providers.py
           python3 scripts/apps.py

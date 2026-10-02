@@ -95,3 +95,24 @@ Never point a test run at a shop whose data you need to preserve.
 - **First build is slow:** database extensions and Rust dependencies are compiled locally.
 
 [Project overview](../README.md) · [Full feature tour](features.md) · [Security scope](security.md)
+
+## Separate setup, HTTP and workers
+
+Local development defaults to `BOOTSTRAP_MODE=auto` and `PROCESS_ROLE=all`.
+For independently operated processes, run setup once before starting replicas:
+
+```sh
+BOOTSTRAP_MODE=migrate target/release/rust-ai-commerce
+BOOTSTRAP_MODE=serve PROCESS_ROLE=http target/release/rust-ai-commerce
+# Separate terminals/processes, using the same private database configuration:
+BOOTSTRAP_MODE=serve PROCESS_ROLE=memory-worker target/release/rust-ai-commerce
+BOOTSTRAP_MODE=serve PROCESS_ROLE=payment-worker target/release/rust-ai-commerce
+BOOTSTRAP_MODE=serve PROCESS_ROLE=app-worker target/release/rust-ai-commerce
+```
+
+The HTTP role does not consume the durable outbox. The memory worker creates
+commerce projections and app deliveries; the app worker delivers them. Serve
+refuses an incomplete setup. Schema checksums detect changed applied migrations
+when running setup; keep applied source immutable and add new migration files.
+Plan the initial index build before serving a large existing database. This
+process separation is a foundation, not a production deployment recipe.

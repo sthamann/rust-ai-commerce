@@ -16,25 +16,22 @@ pub(super) async fn track_channels(State(a): State<App>, request: Request, next:
     let t = tenant(request.headers()).ok();
     let response = next.run(request).await;
     if let (Some(channel), Some(t)) = (channel, t) {
-        let failure = if response.status().is_client_error() || response.status().is_server_error()
-        {
-            1_i64
-        } else {
-            0
-        };
+        let failure = response.status().is_client_error() || response.status().is_server_error();
         // Diagnostic counters are best-effort and do not delay commerce. They
         // count HTTP calls (including synthetic tests/admin reads), never people.
-        tokio::spawn(async move {
-            let _=sqlx::query("INSERT INTO channel_metrics(tenant,channel,calls,failures) VALUES($1,$2,1,$3) ON CONFLICT(tenant,channel) DO UPDATE SET calls=channel_metrics.calls+1,failures=channel_metrics.failures+$3,last_seen=now()")
-                .bind(t).bind(channel).bind(failure).execute(&a.db).await;
-        });
+        a.channel_metrics.record(t, channel, failure);
     }
     response
 }
-pub(super) async fn merchant_overview(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn merchant_overview(
+    State(a): State<App>,
+    h: HeaderMap,
+    axum::extract::Query(criteria): axum::extract::Query<CatalogCriteria>,
+) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     let (locale, chain) = language_context(&a, &h).await?;
-    let ps = localized_products(&a, &t, &chain).await?;
+    let page = product_page(&a, &t, &chain, &criteria).await?;
+    let ps = &page.products;
     let stats=sqlx::query("SELECT count(*) AS orders,coalesce(sum((data->'cart'->'price'->>'totalPrice')::double precision),0) AS revenue,count(*) FILTER(WHERE created_at>=current_date) AS today FROM orders WHERE tenant=$1").bind(&t).fetch_one(&a.db).await?;
     let rows=sqlx::query("SELECT data,created_at::text AS time FROM orders WHERE tenant=$1 ORDER BY created_at DESC LIMIT 8").bind(&t).fetch_all(&a.db).await?;
     let orders=rows.iter().map(|r| {let data=r.get::<Value,_>("data");json!({"id":data["id"],"number":data["orderNumber"],"total":data["cart"]["price"]["totalPrice"],"channel":data.get("channel").cloned().unwrap_or(json!("unknown")),"time":r.get::<String,_>("time"),"payment":"simulated"})}).collect::<Vec<_>>();
@@ -53,7 +50,7 @@ pub(super) async fn merchant_overview(State(a): State<App>, h: HeaderMap) -> Res
     let channels=sqlx::query("SELECT channel,calls,failures,last_seen::text AS last_seen FROM channel_metrics WHERE tenant=$1 ORDER BY channel").bind(&t).fetch_all(&a.db).await?;
     let providers = a.inference.providers();
     Ok(Json(json!({
-        "locale":locale,"tenant":t,"dataMode":"synthetic-demo","products":ps,
+        "locale":locale,"tenant":t,"dataMode":"synthetic-demo","products":ps,"productsPagination":{"nextCursor":page.next_cursor,"hasMore":page.next_cursor.is_some(),"limit":page.limit},
         "summary":{"orders":stats.get::<i64,_>("orders"),"ordersToday":stats.get::<i64,_>("today"),"revenue":stats.get::<f64,_>("revenue"),"pendingPlans":plans.get::<i64,_>("pending"),"appliedPlans":plans.get::<i64,_>("applied")},
         "orders":orders,"timeline":timeline.iter().map(|r|json!({"day":r.get::<String,_>("day"),"orders":r.get::<i64,_>("orders"),"revenue":r.get::<f64,_>("revenue")})).collect::<Vec<_>>(),
         "knowledge":{"graph":graph,"indexedProducts":index.get::<i64,_>("count"),"lastIndexed":index.get::<Option<String>,_>("updated"),"provenance":"curated-demo","modelWeightsLearn":false},

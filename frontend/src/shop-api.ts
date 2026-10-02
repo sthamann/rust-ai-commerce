@@ -126,6 +126,11 @@ export type Detail = {
   product: Product;
   familyId: string;
   variants: Product[];
+  variantsPagination: {
+    nextCursor: string | null;
+    hasMore: boolean;
+    limit: number;
+  };
   calculatedPrices: {
     quantity: number;
     price: Price;

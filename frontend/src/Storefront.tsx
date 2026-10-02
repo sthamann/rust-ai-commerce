@@ -43,6 +43,10 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
   const [order, setOrder] = useState<Order>();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("all");
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [pageCursor, setPageCursor] = useState<string>();
+  const [catalogLoading, setCatalogLoading] = useState(false);
+  const catalogRequest = useRef(0);
   const [wish, setWish] = useState("");
   const [advice, setAdvice] = useState<{
     explanation: string;
@@ -57,11 +61,56 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
     setCart(c);
     localStorage.setItem(cartKey, c.token);
   };
-  const catalog = async (token?: string) =>
-    setProducts(
-      (await shopApi<{ elements: Product[] }>("/store-api/product", {}, token))
-        .elements,
+  const catalog = async (token?: string, after?: string) => {
+    const request = ++catalogRequest.current;
+    setCatalogLoading(true);
+    try {
+      const page = await shopApi<{
+        elements: Product[];
+        nextCursor: string | null;
+      }>(
+        "/store-api/product",
+        {
+          limit: 50,
+          after,
+          search: query.trim() || undefined,
+          category: category === "all" ? undefined : category,
+        },
+        token,
+      );
+      if (request === catalogRequest.current) {
+        setProducts(page.elements);
+        setNextCursor(page.nextCursor);
+        setPageCursor(after);
+      }
+    } finally {
+      if (request === catalogRequest.current) setCatalogLoading(false);
+    }
+  };
+  useEffect(() => {
+    if (!cart) return;
+    let active = true;
+    const timer = window.setTimeout(
+      () => {
+        catalog(cart.token).catch((e) => {
+          if (active) setError((e as Error).message);
+        });
+      },
+      query ? 200 : 0,
     );
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+      ++catalogRequest.current;
+    };
+  }, [
+    query,
+    category,
+    locale,
+    cart?.token,
+    cart?.customerGroup,
+    cart?.checkout.country,
+  ]);
   useEffect(() => {
     const hash = () => {
       setId(productId());
@@ -109,7 +158,6 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
           }
         if (!active) return;
         save(c);
-        await catalog(c.token);
         const exp = await shopApi<{ variant: string; headline?: string }>(
           "/api/experience",
           { session },
@@ -177,7 +225,6 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
         "PUT",
       ),
     );
-    await catalog(cart.token);
   };
   const buy = () =>
     run(async () => {
@@ -210,24 +257,14 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
       }
       const next = await shopApi<Cart>("/store-api/checkout/cart", { session });
       save(next);
-      await catalog(next.token);
     });
   const affinity = Object.entries(viewed).sort((a, b) => b[1] - a[1])[0];
   const adapted = !!affinity && affinity[1] >= 3;
-  const list = products
-    .filter(
-      (p) =>
-        (category === "all" || p.category === category) &&
-        `${p.name} ${p.description}`
-          .toLowerCase()
-          .includes(query.toLowerCase()),
-    )
-    .sort((a, b) =>
-      adapted
-        ? Number(b.category === affinity[0]) -
-          Number(a.category === affinity[0])
-        : 0,
-    );
+  const list = [...products].sort((a, b) =>
+    adapted
+      ? Number(b.category === affinity[0]) - Number(a.category === affinity[0])
+      : 0,
+  );
   return (
     <div className="shop">
       <header className="shop-nav">
@@ -247,7 +284,6 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
                   cart.token,
                 );
                 save(c);
-                await catalog(c.token);
               })
             }
           >
@@ -398,6 +434,7 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
               />
             </div>
             <div
+              aria-busy={catalogLoading}
               className={`shop-grid ${experience?.variant === "comparison" || query.length > 3 ? "comparison" : ""}`}
             >
               {list.map((p) => (
@@ -446,6 +483,25 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
                   </a>
                 </article>
               ))}
+            </div>
+            <div className="shop-filters">
+              {catalogLoading && <p role="status">{s("loading")}</p>}
+              {pageCursor && (
+                <button
+                  disabled={catalogLoading || busy}
+                  onClick={() => run(() => catalog(cart?.token))}
+                >
+                  {s("firstPage")}
+                </button>
+              )}
+              {nextCursor && (
+                <button
+                  disabled={catalogLoading || busy}
+                  onClick={() => run(() => catalog(cart?.token, nextCursor))}
+                >
+                  {s("nextPage")} →
+                </button>
+              )}
             </div>
           </section>
         </main>

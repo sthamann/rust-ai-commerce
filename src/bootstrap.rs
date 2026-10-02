@@ -5,58 +5,49 @@ pub(crate) async fn bootstrap() -> App {
     tracing_subscriber::fmt()
         .with_env_filter(env::var("RUST_LOG").unwrap_or("info".into()))
         .init();
-    let bootstrap = PgPoolOptions::new()
-        .max_connections(1)
-        .connect(&env::var("DATABASE_URL").expect("DATABASE_URL required"))
-        .await
-        .expect("PostgreSQL connection");
-    sqlx::query("SELECT pg_advisory_lock(7193511)")
-        .execute(&bootstrap)
-        .await
-        .expect("migration lock");
-    sqlx::raw_sql(include_str!("../migrations/001.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("schema");
-    sqlx::raw_sql(include_str!("../migrations/002.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("open graph/vector schema");
-    sqlx::raw_sql(include_str!("../migrations/004-context.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("context schema");
-    sqlx::raw_sql(include_str!("../migrations/006-commerce.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("commerce schema");
-    sqlx::raw_sql(include_str!("../migrations/008-workspaces.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("workspace schema");
-    sqlx::raw_sql(include_str!(
-        "../migrations/010-apps-intelligence-payments.sql"
-    ))
-    .execute(&bootstrap)
-    .await
-    .expect("app/payment/memory schema");
-    sqlx::raw_sql(include_str!("../migrations/012-checkout-handoff.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("checkout handoff schema");
+    let mode = env::var("BOOTSTRAP_MODE").unwrap_or("auto".into());
+    assert!(
+        ["auto", "serve", "migrate"].contains(&mode.as_str()),
+        "Unsupported BOOTSTRAP_MODE"
+    );
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL required");
+    let setup = if mode == "serve" {
+        None
+    } else {
+        let pool = PgPoolOptions::new()
+            .max_connections(1)
+            .connect(&database_url)
+            .await
+            .expect("PostgreSQL setup connection");
+        migrations::apply(&pool).await;
+        Some(pool)
+    };
     let db = PgPoolOptions::new()
         .max_connections(20)
         .after_connect(|conn, _| {
             Box::pin(async move {
-                sqlx::raw_sql("LOAD 'age'; SET search_path = ag_catalog, public")
+                // Short, indexed OLTP reads spend more time compiling a JIT plan
+                // than executing it. This setting is local to application sessions.
+                sqlx::raw_sql("LOAD 'age'; SET search_path = ag_catalog, public; SET jit = off")
                     .execute(conn)
                     .await?;
                 Ok(())
             })
         })
-        .connect(&env::var("DATABASE_URL").unwrap())
+        .connect(&database_url)
         .await
         .expect("graph connection");
+    let current: Option<String> = sqlx::query_scalar(
+        "SELECT checksum FROM public.commerce_migrations WHERE version='014-bounded-catalog'",
+    )
+    .fetch_optional(&db)
+    .await
+    .expect("Run BOOTSTRAP_MODE=migrate before serving");
+    assert_eq!(
+        current.as_deref(),
+        Some(hash(include_str!("../migrations/014-bounded-catalog.sql")).as_str()),
+        "Schema not ready: run BOOTSTRAP_MODE=migrate"
+    );
     let auth = env::var("MERCHANT_TOKEN").expect("MERCHANT_TOKEN required");
     assert!(
         auth.len() >= 24,
@@ -76,68 +67,37 @@ pub(crate) async fn bootstrap() -> App {
         model: Arc::new(env::var("OLLAMA_MODEL").unwrap_or("qwen3.6:35b".into())),
         ollama: Arc::new(env::var("OLLAMA_URL").unwrap_or("http://127.0.0.1:11434".into())),
         sandboxes: Arc::new(RwLock::new(HashMap::new())),
+        channel_metrics: Arc::new(channel_metrics::ChannelMetrics::default()),
     };
-    let tenants = sqlx::query("SELECT id FROM tenants ORDER BY id")
-        .fetch_all(&a.db)
-        .await
-        .unwrap();
-    for tenant in &tenants {
-        let t = tenant.get::<String, _>("id");
-        // Built-in tenants need the same persisted, lockable policy as newly registered shops.
-        // ON CONFLICT preserves an existing merchant policy and its revision.
-        let default = include_str!("../extensions/company-limit.wat");
-        sqlx::query(
-            "INSERT INTO extensions(tenant,wat,digest) VALUES($1,$2,$3) ON CONFLICT DO NOTHING",
-        )
-        .bind(&t)
-        .bind(default)
-        .bind(hash(default))
-        .execute(&a.db)
-        .await
-        .expect("default extension");
-        let wat: String = sqlx::query_scalar("SELECT wat FROM extensions WHERE tenant=$1")
-            .bind(&t)
-            .fetch_one(&a.db)
-            .await
-            .expect("persisted extension");
-        a.sandboxes
-            .write()
-            .unwrap()
-            .insert(t, Arc::new(Sandbox::new(&wat).expect("saved extension")));
+    if let Some(setup) = setup {
+        migrations::seed_demo(&a, &setup).await;
+        setup.close().await;
     }
-    seed(&a).await.expect("seed");
-    sqlx::raw_sql(include_str!("../migrations/003-seed.sql"))
-        .execute(&a.db)
-        .await
-        .expect("price metadata seed");
-    sqlx::raw_sql(include_str!("../migrations/005-context-seed.sql"))
-        .execute(&a.db)
-        .await
-        .expect("context seed");
-    sqlx::raw_sql(include_str!("../migrations/007-commerce-seed.sql"))
-        .execute(&a.db)
-        .await
-        .expect("commerce seed");
-    sqlx::raw_sql(include_str!("../migrations/009-variant-properties.sql"))
-        .execute(&a.db)
-        .await
-        .expect("variant properties");
-    for tenant in &tenants {
-        let t = tenant.get::<String, _>("id");
-        for p in products(&a, &t).await.unwrap() {
-            knowledge::sync_product(
-                &mut a.db.acquire().await.unwrap(),
-                &t,
-                &serde_json::to_value(p).unwrap(),
-            )
-            .await
-            .expect("graph product");
+    let seeded: bool = sqlx::query_scalar(
+        "SELECT EXISTS(SELECT 1 FROM public.commerce_migrations WHERE version='demo-v1')",
+    )
+    .fetch_one(&a.db)
+    .await
+    .expect("completed setup");
+    assert!(seeded, "Setup is incomplete: run BOOTSTRAP_MODE=migrate");
+    // Only the two built-in demo policies are eager. Other tenant policies are
+    // validated lazily against their persisted source in the existing checkout path.
+    for t in ["atelier", "workshop"] {
+        if let Some(wat) =
+            sqlx::query_scalar::<_, String>("SELECT wat FROM extensions WHERE tenant=$1")
+                .bind(t)
+                .fetch_optional(&a.db)
+                .await
+                .expect("persisted extension")
+        {
+            a.sandboxes.write().unwrap().insert(
+                t.into(),
+                Arc::new(Sandbox::new(&wat).expect("saved extension")),
+            );
         }
-        knowledge::seed_relations(&a.db, &t)
-            .await
-            .expect("graph relations");
     }
-    bootstrap.close().await;
-    workers::start(&a);
+    if mode != "migrate" {
+        workers::start(&a);
+    }
     a
 }

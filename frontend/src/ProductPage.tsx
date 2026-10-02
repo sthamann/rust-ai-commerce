@@ -1,5 +1,5 @@
 /** Product family, gallery, context pricing and moderated customer reviews. */
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useShopText } from "./shop-i18n";
 import { shopApi, type Cart, type Detail } from "./shop-api";
 import MemoryRecommendations from "./MemoryRecommendations";
@@ -25,7 +25,10 @@ export default function ProductPage({
   const [quantity, setQuantity] = useState(1);
   const [reviewed, setReviewed] = useState(false);
   const [sending, setSending] = useState(false);
+  const [variantsLoading, setVariantsLoading] = useState(false);
+  const detailRequest = useRef(0);
   useEffect(() => {
+    ++detailRequest.current;
     let active = true;
     setData(undefined);
     setError("");
@@ -47,6 +50,7 @@ export default function ProductPage({
       });
     return () => {
       active = false;
+      ++detailRequest.current;
     };
   }, [id, locale, cart?.token, cart?.customerGroup, cart?.checkout.country]);
   if (!data)
@@ -182,6 +186,46 @@ export default function ProductPage({
               </div>
             </fieldset>
           ))}
+          {data.variantsPagination.nextCursor && (
+            <button
+              className="shop-secondary"
+              disabled={variantsLoading}
+              onClick={async () => {
+                const request = detailRequest.current;
+                setVariantsLoading(true);
+                try {
+                  const page = await shopApi<Detail>(
+                    `/store-api/product/${encodeURIComponent(id)}?after=${encodeURIComponent(data.variantsPagination.nextCursor!)}&limit=50`,
+                    {},
+                    cart?.token,
+                  );
+                  if (request === detailRequest.current)
+                    setData((previous) =>
+                      previous
+                        ? {
+                            ...previous,
+                            variants: [
+                              ...new Map(
+                                [...previous.variants, ...page.variants].map(
+                                  (v) => [v.id, v],
+                                ),
+                              ).values(),
+                            ],
+                            variantsPagination: page.variantsPagination,
+                          }
+                        : previous,
+                    );
+                } catch (e) {
+                  if (request === detailRequest.current)
+                    setError((e as Error).message);
+                } finally {
+                  setVariantsLoading(false);
+                }
+              }}
+            >
+              {variantsLoading ? s("loading") : s("moreVariants")}
+            </button>
+          )}
           <div
             className={`availability ${p.stock ? "in-stock" : "out-of-stock"}`}
           >

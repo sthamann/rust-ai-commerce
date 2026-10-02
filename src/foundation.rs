@@ -11,6 +11,7 @@ pub(crate) struct App {
     pub(crate) model: Arc<String>,
     pub(crate) ollama: Arc<String>,
     pub(crate) sandboxes: Arc<RwLock<HashMap<String, Arc<Sandbox>>>>,
+    pub(crate) channel_metrics: Arc<channel_metrics::ChannelMetrics>,
 }
 #[derive(Debug)]
 pub(crate) struct Error(pub(crate) StatusCode, pub(crate) String);

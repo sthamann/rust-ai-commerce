@@ -10,17 +10,27 @@ pub(crate) async fn health(State(a): State<App>) -> Result<Json<Value>> {
 pub(crate) async fn catalog_request(
     State(a): State<App>,
     h: HeaderMap,
-    _body: axum::body::Bytes,
+    body: axum::body::Bytes,
 ) -> Result<Json<Value>> {
     // Drain the POST body before returning a large response. Otherwise clients
     // sending headers and body separately can observe a reset/truncated response.
-    catalog(State(a), h).await
+    let criteria = if body.is_empty() {
+        CatalogCriteria::default()
+    } else {
+        serde_json::from_slice(&body).map_err(|_| bad("Invalid catalog criteria"))?
+    };
+    catalog_page(State(a), h, criteria).await
 }
 
-pub(crate) async fn catalog(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn catalog_page(
+    State(a): State<App>,
+    h: HeaderMap,
+    criteria: CatalogCriteria,
+) -> Result<Json<Value>> {
     let (locale, chain) = language_context(&a, &h).await?;
     let t = tenant(&h)?;
-    let ps = localized_products(&a, &t, &chain).await?;
+    let page = product_page(&a, &t, &chain, &criteria).await?;
+    let ps = &page.products;
     let mut data = vec![];
     let c = if header(&h, "sw-context-token").is_some() {
         Some(load_cart(&a, &h).await?)
@@ -39,7 +49,7 @@ pub(crate) async fn catalog(State(a): State<App>, h: HeaderMap) -> Result<Json<V
             .unwrap_or("consumer"),
         &settings,
     );
-    let priced = commerce::tax_products(&ps, &selected, &settings)?;
+    let priced = commerce::tax_products(ps, &selected, &settings)?;
     for p in &priced {
         let mut preview = if let Some(c) = &c {
             c.clone()
@@ -77,6 +87,6 @@ pub(crate) async fn catalog(State(a): State<App>, h: HeaderMap) -> Result<Json<V
         data.push(v);
     }
     Ok(Json(
-        json!({"elements":data,"total":ps.len(),"locale":locale,"languageIdChain":chain}),
+        json!({"elements":data,"total":if criteria.after.is_none() && page.next_cursor.is_none() {Some(ps.len())} else {None},"nextCursor":page.next_cursor,"hasMore":page.next_cursor.is_some(),"limit":page.limit,"locale":locale,"languageIdChain":chain}),
     ))
 }

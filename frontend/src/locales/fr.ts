@@ -1,6 +1,10 @@
 /** Merchant interface strings: fr. */
 import type { Dictionary } from "./en";
 export const fr: Dictionary = {
+  catalogPageNotice:
+    "Les {count} premiers produits sont affichés. Parcourez la collection pour en voir davantage.",
+  lowStockShown: "{count} produits avec un stock faible sur cette page",
+
   apps: "Apps et paiements",
   readOnly:
     "Accès en lecture : un éditeur ou administrateur doit approuver cette modification.",
