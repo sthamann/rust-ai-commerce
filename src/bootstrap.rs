@@ -5,74 +5,39 @@ pub(crate) async fn bootstrap() -> App {
     tracing_subscriber::fmt()
         .with_env_filter(env::var("RUST_LOG").unwrap_or("info".into()))
         .init();
-    let bootstrap = PgPoolOptions::new()
-        .max_connections(1)
-        .connect(&env::var("DATABASE_URL").expect("DATABASE_URL required"))
-        .await
-        .expect("PostgreSQL connection");
-    sqlx::query("SELECT pg_advisory_lock(7193511)")
-        .execute(&bootstrap)
-        .await
-        .expect("migration lock");
-    sqlx::raw_sql(include_str!("../migrations/001.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("schema");
-    sqlx::raw_sql(include_str!("../migrations/002.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("open graph/vector schema");
-    sqlx::raw_sql(include_str!("../migrations/004-context.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("context schema");
-    sqlx::raw_sql(include_str!("../migrations/006-commerce.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("commerce schema");
-    sqlx::raw_sql(include_str!("../migrations/008-workspaces.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("workspace schema");
-    sqlx::raw_sql(include_str!(
-        "../migrations/010-apps-intelligence-payments.sql"
-    ))
-    .execute(&bootstrap)
-    .await
-    .expect("app/payment/memory schema");
-    sqlx::raw_sql(include_str!("../migrations/011-documents.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("document knowledge schema");
-    sqlx::raw_sql(include_str!("../migrations/012-checkout-handoff.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("checkout handoff schema");
-    sqlx::raw_sql(include_str!("../migrations/013-staging-developer.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("staging/developer schema");
-    sqlx::raw_sql(include_str!("../migrations/014-customer-accounts.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("customer accounts schema");
-    sqlx::raw_sql(include_str!("../migrations/015-rules-flows-channels.sql"))
-        .execute(&bootstrap)
-        .await
-        .expect("rules/flows/channels schema");
+    let mode = env::var("BOOTSTRAP_MODE").unwrap_or("auto".into());
+    assert!(
+        ["auto", "serve", "migrate"].contains(&mode.as_str()),
+        "Unsupported BOOTSTRAP_MODE"
+    );
+    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL required");
+    let setup = if mode == "serve" {
+        None
+    } else {
+        let pool = PgPoolOptions::new()
+            .max_connections(1)
+            .connect(&database_url)
+            .await
+            .expect("PostgreSQL setup connection");
+        migrations::apply(&pool).await;
+        Some(pool)
+    };
     let db = PgPoolOptions::new()
         .max_connections(20)
         .after_connect(|conn, _| {
             Box::pin(async move {
-                sqlx::raw_sql("LOAD 'age'; SET search_path = ag_catalog, public")
+                // Short, indexed OLTP reads spend more time compiling a JIT plan
+                // than executing it. This setting is local to application sessions.
+                sqlx::raw_sql("LOAD 'age'; SET search_path = ag_catalog, public; SET jit = off")
                     .execute(conn)
                     .await?;
                 Ok(())
             })
         })
-        .connect(&env::var("DATABASE_URL").unwrap())
+        .connect(&database_url)
         .await
         .expect("graph connection");
+    migrations::ready(&db).await;
     let auth = env::var("MERCHANT_TOKEN").expect("MERCHANT_TOKEN required");
     assert!(
         auth.len() >= 24,
@@ -92,71 +57,59 @@ pub(crate) async fn bootstrap() -> App {
         model: Arc::new(env::var("OLLAMA_MODEL").unwrap_or("qwen3.6:35b".into())),
         ollama: Arc::new(env::var("OLLAMA_URL").unwrap_or("http://127.0.0.1:11434".into())),
         sandboxes: Arc::new(RwLock::new(HashMap::new())),
+        channel_metrics: Arc::new(channel_metrics::ChannelMetrics::default()),
     };
-    let tenants = sqlx::query("SELECT id FROM tenants ORDER BY id")
-        .fetch_all(&a.db)
+    if let Some(setup) = setup {
+        migrations::seed_demo(&a, &setup).await;
+        setup.close().await;
+    }
+    let seeded: bool = sqlx::query_scalar(
+        "SELECT EXISTS(SELECT 1 FROM public.commerce_migrations WHERE version='demo-v1')",
+    )
+    .fetch_one(&a.db)
+    .await
+    .expect("completed setup");
+    assert!(seeded, "Setup is incomplete: run BOOTSTRAP_MODE=migrate");
+    // Only the two built-in demo policies are eager. Other tenant policies are
+    // validated lazily against their persisted source in the existing checkout path.
+    for t in ["atelier", "workshop"] {
+        if let Some(wat) =
+            sqlx::query_scalar::<_, String>("SELECT wat FROM extensions WHERE tenant=$1")
+                .bind(t)
+                .fetch_optional(&a.db)
+                .await
+                .expect("persisted extension")
+        {
+            a.sandboxes.write().unwrap().insert(
+                t.into(),
+                Arc::new(Sandbox::new(&wat).expect("saved extension")),
+            );
+        }
+    }
+    if mode != "migrate" {
+        workers::start(&a);
+    }
+    a
+}
+
+pub(crate) async fn run() {
+    let a = bootstrap().await;
+    if env::var("BOOTSTRAP_MODE").is_ok_and(|s| s == "migrate") {
+        return;
+    }
+    if env::var("PROCESS_ROLE").is_ok_and(|s| s.ends_with("-worker")) {
+        let _ = tokio::signal::ctrl_c().await;
+        return;
+    }
+    let app = router(a.clone());
+    let addr = env::var("BIND_ADDR").unwrap_or("127.0.0.1:8787".into());
+    let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
+    println!("rust-ai-commerce listening on http://{addr}");
+    axum::serve(listener, app)
+        .with_graceful_shutdown(async {
+            let _ = tokio::signal::ctrl_c().await;
+        })
         .await
         .unwrap();
-    let mut compiled = HashMap::new();
-    for tenant in &tenants {
-        let t = tenant.get::<String, _>("id");
-        // Built-in tenants need the same persisted, lockable policy as newly registered shops.
-        // ON CONFLICT preserves an existing merchant policy and its revision.
-        let default = include_str!("../extensions/company-limit.wat");
-        sqlx::query(
-            "INSERT INTO extensions(tenant,wat,digest) VALUES($1,$2,$3) ON CONFLICT DO NOTHING",
-        )
-        .bind(&t)
-        .bind(default)
-        .bind(hash(default))
-        .execute(&a.db)
-        .await
-        .expect("default extension");
-        let wat: String = sqlx::query_scalar("SELECT wat FROM extensions WHERE tenant=$1")
-            .bind(&t)
-            .fetch_one(&a.db)
-            .await
-            .expect("persisted extension");
-        let sandbox = compiled
-            .entry(hash(&wat))
-            .or_insert_with(|| Arc::new(Sandbox::new(&wat).expect("saved extension")))
-            .clone();
-        a.sandboxes.write().unwrap().insert(t, sandbox);
-    }
-    seed(&a).await.expect("seed");
-    sqlx::raw_sql(include_str!("../migrations/003-seed.sql"))
-        .execute(&a.db)
-        .await
-        .expect("price metadata seed");
-    sqlx::raw_sql(include_str!("../migrations/005-context-seed.sql"))
-        .execute(&a.db)
-        .await
-        .expect("context seed");
-    sqlx::raw_sql(include_str!("../migrations/007-commerce-seed.sql"))
-        .execute(&a.db)
-        .await
-        .expect("commerce seed");
-    sqlx::raw_sql(include_str!("../migrations/009-variant-properties.sql"))
-        .execute(&a.db)
-        .await
-        .expect("variant properties");
-    // Provisioning and mutation transactions maintain every other tenant's graph.
-    // Replicas must not scan/rewrite the complete multi-shop catalog on startup.
-    for t in ["atelier", "workshop"] {
-        for p in products(&a, t).await.unwrap() {
-            knowledge::sync_product(
-                &mut a.db.acquire().await.unwrap(),
-                t,
-                &serde_json::to_value(p).unwrap(),
-            )
-            .await
-            .expect("graph product");
-        }
-        knowledge::seed_relations(&a.db, t)
-            .await
-            .expect("graph relations");
-    }
-    bootstrap.close().await;
-    workers::start(&a);
-    a
+    a.channel_metrics.flush(&a.db).await;
 }

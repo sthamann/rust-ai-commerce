@@ -41,6 +41,7 @@ with tempfile.TemporaryDirectory() as directory:
         order=call('/store-api/checkout/order',{}, {**ch,'Idempotency-Key':uuid.uuid4().hex})
         time.sleep(.8)
         with sqlite3.connect(db) as conn:assert conn.execute('SELECT count(*) FROM events').fetchone()[0]==0
+        start([str(ROOT/'target/debug/rust-ai-commerce')],{**env,'PROCESS_ROLE':'memory-worker'},'service-memory-worker-test.log')
         worker=start([str(ROOT/'target/debug/rust-ai-commerce')],{**env,'PROCESS_ROLE':'app-worker'},'service-worker-test.log')
         for _ in range(80):
             with sqlite3.connect(db) as conn:rows=conn.execute('SELECT tenant,event_key,data FROM events').fetchall()

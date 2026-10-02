@@ -1,5 +1,9 @@
 /** Storefront and operational interface strings: de. */
 export const de = {
+  firstPage: "Erste Seite",
+  nextPage: "Nächste Seite",
+  moreVariants: "Weitere Varianten laden",
+
   users: "Team & Zugang",
   login: "Anmelden",
   register: "Shop erstellen",

@@ -85,25 +85,14 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
     }
     match name {
         "catalog.search" => {
-            let Json(mut result) = catalog(State(a.clone()), h.clone()).await?;
-            let query = v["query"].as_str().unwrap_or("").to_lowercase();
-            result["elements"] = json!(
-                result["elements"]
-                    .as_array()
-                    .unwrap()
-                    .iter()
-                    .filter(|p| format!(
-                        "{} {}",
-                        p["name"].as_str().unwrap_or(""),
-                        p["description"].as_str().unwrap_or("")
-                    )
-                    .to_lowercase()
-                    .contains(&query))
-                    .collect::<Vec<_>>()
-            );
+            let criteria =
+                serde_json::from_value(v.clone()).map_err(|_| bad("Invalid catalog criteria"))?;
+            let Json(result) = catalog_page(State(a.clone()), h.clone(), criteria).await?;
             Ok(result)
         }
         "catalog.detail" => {
+            let criteria =
+                serde_json::from_value(v.clone()).map_err(|_| bad("Invalid variant criteria"))?;
             let Json(v) = commerce::product_detail(
                 State(a.clone()),
                 h.clone(),
@@ -113,6 +102,7 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
                         .ok_or(bad("Product ID required"))?
                         .into(),
                 ),
+                axum::extract::Query(criteria),
             )
             .await?;
             Ok(v)

@@ -150,12 +150,35 @@ pub(crate) async fn personalization(
     let rows=sqlx::query("SELECT p.category,sum(s.views+s.cart_adds*3)::bigint AS score FROM session_signals s JOIN products p ON p.tenant=s.tenant AND p.id=s.product_id WHERE s.tenant=$1 AND s.session=$2 AND s.updated_at>now()-interval '30 days' GROUP BY p.category").bind(&c.tenant).bind(&session).fetch_all(&mut *tx).await?;
     tx.commit().await?;
     let (_, chain) = language_context(&a, &h).await?;
-    let mut ps =
-        marketing::filter_channel(&a, &h, localized_products(&a, &c.tenant, &chain).await?)
-            .await?
-            .into_iter()
-            .filter(|p| p.stock > 0)
-            .collect::<Vec<_>>();
+    let preferred = rows
+        .iter()
+        .max_by_key(|r| r.get::<i64, _>("score"))
+        .map(|r| r.get::<String, _>("category"));
+    let scope = marketing::catalog_scope(&a, &h).await?;
+    let criteria = CatalogCriteria {
+        category: preferred,
+        product_ids: scope.clone(),
+        ..Default::default()
+    };
+    let mut ps = product_page(&a, &c.tenant, &chain, &criteria)
+        .await?
+        .products;
+    let page = product_page(
+        &a,
+        &c.tenant,
+        &chain,
+        &CatalogCriteria {
+            product_ids: scope,
+            ..Default::default()
+        },
+    )
+    .await?;
+    for p in page.products {
+        if !ps.iter().any(|v| v.id == p.id) {
+            ps.push(p);
+        }
+    }
+    ps.retain(|p| p.stock > 0);
     let score = |p: &Product| {
         rows.iter()
             .find(|r| r.get::<String, _>("category") == p.category)
@@ -164,7 +187,7 @@ pub(crate) async fn personalization(
     };
     ps.sort_by(|x, y| score(y).cmp(&score(x)).then(x.id.cmp(&y.id)));
     Ok(Json(
-        json!({"rankedProductIds":ps.iter().map(|p|&p.id).collect::<Vec<_>>(),"adapted":rows.iter().any(|r|r.get::<i64,_>("score")>=3),"basis":"observed-session-category-affinity","stored":n==1,"causalUpliftProven":false}),
+        json!({"rankedProductIds":ps.iter().map(|p|&p.id).collect::<Vec<_>>(),"adapted":rows.iter().any(|r|r.get::<i64,_>("score")>=3),"basis":"observed-session-category-affinity","stored":n==1,"candidateLimit":100,"causalUpliftProven":false}),
     ))
 }
 /// Clear this anonymous shop session's behavior and allow the shopper to turn adaptation off.

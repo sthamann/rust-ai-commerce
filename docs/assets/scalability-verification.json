@@ -1,0 +1,109 @@
+{
+  "millionProductServeStartupMs": [
+    80.492,
+    79.494,
+    88.097
+  ],
+  "startupScope": "fresh application process, warm OS/database caches; includes two demo Wasm policies; readiness polled every 50 ms",
+  "migrationLedgerUnchanged": true,
+  "migrateJobExitsSuccessfully": true,
+  "unpreparedServeRefusesStartup": true,
+  "httpLeavesDurableOutboxPending": true,
+  "independentWorkerDeliversEvent": true,
+  "projectionCountAfterWorkerRestart": 1,
+  "sourceCommit": "cc3f73d55ef66c20d3ed1a42da9a691238dd2d3b",
+  "binarySha256": "24db14487879d216a7d27de1580e5acb3be2216d889c19c01cf1886137cd2fe3",
+  "population": {
+    "rootProducts": 1000000,
+    "translations": 1000000
+  },
+  "fullSuite": [
+    {
+      "suite": "differential",
+      "exitCode": 0,
+      "seconds": 0.43
+    },
+    {
+      "suite": "context_differential",
+      "exitCode": 0,
+      "seconds": 0.36
+    },
+    {
+      "suite": "delivery_differential",
+      "exitCode": 0,
+      "seconds": 0.55
+    },
+    {
+      "suite": "studio",
+      "exitCode": 0,
+      "seconds": 0.69
+    },
+    {
+      "suite": "integration",
+      "exitCode": 0,
+      "seconds": 0.76
+    },
+    {
+      "suite": "protocols",
+      "exitCode": 0,
+      "seconds": 0.58
+    },
+    {
+      "suite": "intelligence",
+      "exitCode": 0,
+      "seconds": 0.32
+    },
+    {
+      "suite": "commerce",
+      "exitCode": 0,
+      "seconds": 1.27
+    },
+    {
+      "suite": "scalability",
+      "exitCode": 0,
+      "seconds": 3.39
+    },
+    {
+      "suite": "users",
+      "exitCode": 0,
+      "seconds": 4.85
+    },
+    {
+      "suite": "providers",
+      "exitCode": 0,
+      "seconds": 3.33
+    },
+    {
+      "suite": "apps",
+      "exitCode": 0,
+      "seconds": 2.95
+    },
+    {
+      "suite": "checkout_handoff",
+      "exitCode": 0,
+      "seconds": 1.66
+    },
+    {
+      "suite": "payments",
+      "exitCode": 0,
+      "seconds": 5.39
+    },
+    {
+      "suite": "services",
+      "exitCode": 0,
+      "seconds": 3.27
+    },
+    {
+      "suite": "extensions",
+      "exitCode": 0,
+      "seconds": 2.49
+    },
+    {
+      "suite": "structure",
+      "exitCode": 0,
+      "seconds": 0.05
+    }
+  ],
+  "note": "Runtime checks preceded the final cart lookup change; bootstrap and worker code are identical. Full suites ran after the final cart fix.",
+  "fullSuiteSourceCommit": "8791bcd0e13773f3006f7b1eae780cb14f008d12"
+}

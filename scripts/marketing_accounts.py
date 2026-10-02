@@ -64,6 +64,10 @@ assert len(completed)==1 and completed[0]['result']['note']=='Nouvelle commande'
 passed('Real committed order event executes one durable localized note flow; malformed translated instructions fail without panic')
 config('channels','cups',{'name':name,'active':True,'kind':'headless','locales':['de-DE','en-GB','fr-FR','es-ES'],'productIds':['mug']})
 channel={**sh,'sw-sales-channel-id':'cups'};visible=call('/store-api/product',{},channel)['elements'];assert [p['id'] for p in visible]==['mug']
+page=call('/store-api/product',{'limit':1},channel)
+assert [p['id'] for p in page['elements']]==['mug'] and not page['hasMore']
+assert [p['id'] for p in call('/store-api/product',{'limit':1,'search':visible[0]['name']},channel)['elements']]==['mug']
+assert call('/store-api/product',{'product_ids':['chair']},channel)['elements'][0]['id']=='mug'
 call('/store-api/product/chair',{},channel,expected=404)
 c,hh=cart(channel);call('/store-api/checkout/cart',{'revision':c['revision'],'items':[{'id':'chair','quantity':1}]},hh,expected=404,method='PUT');c=items(c,hh,[('mug-terracotta-500',1)])
 call('/store-api/checkout/cart',h={**hh,'sw-sales-channel-id':'default'},expected=403)

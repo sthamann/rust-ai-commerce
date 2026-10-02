@@ -11,9 +11,14 @@ pub(crate) async fn question(
         .as_str()
         .filter(|s| !s.trim().is_empty() && s.len() <= 2000)
         .ok_or(bad("Question must contain 1..2000 bytes"))?;
-    let detail = commerce::product_detail(State(a.clone()), h.clone(), Path(id.clone()))
-        .await?
-        .0;
+    let detail = commerce::product_detail(
+        State(a.clone()),
+        h.clone(),
+        Path(id.clone()),
+        axum::extract::Query(CatalogCriteria::default()),
+    )
+    .await?
+    .0;
     let sources = search(&a, &t, Some(&id), request, true).await?;
     let locale = language_context(&a, &h).await?.0;
     let schema = json!({"type":"object","properties":{"answer":{"type":"string"},"source_ids":{"type":"array","items":{"type":"string"}},"missing_information":{"type":"boolean"}},"required":["answer","source_ids","missing_information"],"additionalProperties":false});

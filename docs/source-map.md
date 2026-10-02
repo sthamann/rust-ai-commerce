@@ -200,3 +200,15 @@ records, customer sessions/profiles, rules/promotions/flows/channels/product
 metadata and anonymous behavior signals. Migration 012 contains checkout handoff.
 The domain file guard remains enforced: Rust modules at most 320 lines, `main.rs`
 at most 120 lines, each module starts with its responsibility comment.
+## Bounded reads and setup
+
+| File | Responsibility | Behavioral verification |
+|---|---|---|
+| [`src/catalog_page.rs`](../src/catalog_page.rs), [`src/catalog_search.sql`, `src/catalog_channel.sql`](../src/catalog_search.sql) | Tenant cursor pages, literal localized server search and enforced limits. | `scalability.py`: complete traversal, later-page search, mixed-field language fallback, wildcards, tenant boundaries; million-product HTTP benchmark |
+| [`src/channel_metrics.rs`](../src/channel_metrics.rs) | Capped best-effort diagnostic buffer and bounded bulk writes. | Rust buffer-bound test + persisted counters in `scalability.py` |
+| [`src/migrations.rs`](../src/migrations.rs) | Serialized checksummed setup and fixed demo seed; no catalog-wide restart scan. | Fresh database full suites; manual serve/migrate/readiness and independent-worker restart checks |
+
+`scalability.py` also checks a 120-variant family, last-page reviews, deep links,
+64 cart edits with 32 clients and competing optimistic revisions. Independent
+processes were restarted against the million-product database, with warm database
+caches; this is not a machine/database cold-start or failover test.

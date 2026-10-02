@@ -96,7 +96,7 @@ The LLM's weights remain fixed. Intelligence comes from persisted sources,
 observations, approved associations, bounded context, proposals and actual
 consumer paths. **Personalization** is a shopper toggle: owned-cart view signals
 update an anonymous shop/session affinity profile; ranked, available channel
-products immediately change order. Events are deduplicated, bounded and can be
+products immediately change order within bounded candidate pages (at most 100). Events are deduplicated, bounded and can be
 cleared. This is category affinity, not demonstrated causal sales uplift or
 universal hyper-personalization. Shipping and price are recalculated by the core.
 
@@ -149,3 +149,19 @@ routes; full Shopware advanced-price/currency inheritance remains a bounded port
 Fixtures verify protocol/authority/consumer behavior, not real-model quality.
 See [the feature matrix](shopware-parity.md), [source map](source-map.md) and
 [deployment preparation](deployment.md) for implementation and remaining work.
+
+## Verified local-model walkthrough
+
+In a real local Qwen run, a prompt generated the Product Care app, with a typed
+`guides` entity, list/save APIs, four-language labels and a product-detail slot.
+The merchant saved care instructions in all four locales, then selected only the
+app and its record for publication. Both the parent mug and the 500 ml variant
+rendered the published care instructions. A separate German PDP question was
+answered correctly with dishwasher suitability and the selected 500 ml capacity.
+This demonstrates those concrete paths; it does not measure general model quality.
+
+The independent Storyfront connector imports all root/variant pages up to its
+explicit 250-product prototype cap, and the existing names/descriptions in all
+four languages. Imported translations are source facts, not generated guesses.
+Storyfront's broader scene/chrome localization belongs to its separate frontend;
+this workbench does not automatically translate old generated stories.

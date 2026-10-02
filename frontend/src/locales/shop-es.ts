@@ -1,6 +1,10 @@
 /** Storefront and operational interface strings: es. */
 import type { Key } from "./shop-de";
 export const es: Record<Key, string> = {
+  firstPage: "Primera página",
+  nextPage: "Página siguiente",
+  moreVariants: "Cargar más variantes",
+
   studio: "Commerce Studio",
   users: "Equipo y acceso",
   login: "Iniciar sesión",

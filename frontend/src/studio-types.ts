@@ -37,6 +37,11 @@ export type Overview = {
   locale: string;
   dataMode: string;
   products: Product[];
+  productsPagination: {
+    nextCursor: string | null;
+    hasMore: boolean;
+    limit: number;
+  };
   summary: {
     orders: number;
     ordersToday: number;

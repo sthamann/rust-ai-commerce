@@ -30,8 +30,6 @@ This is also a laboratory for porting selected original Shopware behavior to Rus
 | Storyfront shops | Catalog/variant/media import and checkout transfer through a separate [Storyfront app](docs/storyfront.md) |
 | Self-hosted storage | PostgreSQL + Apache AGE + pgvector; no paid database service required |
 
-![Connected Storyfront product](docs/storyfront-product.png)
-
 The interface supports **English, German, French and Spanish**. MIT licensed.
 
 ## Merchant workbench and private releases
@@ -124,10 +122,11 @@ revisions before applying an approved proposal. See the [security scope](docs/se
 
 ## Inspect measured performance
 
-The [local benchmark comparison](https://sthamann.github.io/rust-ai-commerce/benchmarks.html)
-reports translated 6-/1,000-product catalogs, a 20-line cart and fresh durable
-checkouts. It includes baseline/optimized results, raw latencies, response checks,
-hardware and source/binary metadata. [Reproduce the setup](docs/benchmarks.md).
+The [local benchmark page](https://sthamann.github.io/rust-ai-commerce/benchmarks.html)
+reports a physical **1,000,000-product catalog with 1,000,000 translations**,
+product pages, search, a 20-line cart and fresh durable checkouts at fixed arrivals
+of 100 and 500 requests/s. It retains the historical 1,000-product comparison,
+failed-run records, raw latencies, response checks and source/binary metadata. [Reproduce the setup](docs/benchmarks.md).
 These bounded synthetic measurements do not establish production capacity or LLM speed.
 
 ## Current status and limits

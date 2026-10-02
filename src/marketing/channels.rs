@@ -87,3 +87,15 @@ pub(crate) async fn filter_channel(
         })
         .collect())
 }
+
+/// Internal scope is never taken from caller-supplied catalog criteria.
+pub(crate) async fn catalog_scope(a: &App, h: &HeaderMap) -> Result<Option<Vec<String>>> {
+    Ok(channel(
+        a,
+        &tenant(h)?,
+        channel_id(h),
+        &language_context(a, h).await?.0,
+    )
+    .await?
+    .and_then(|c| (!c.product_ids.is_empty()).then_some(c.product_ids)))
+}

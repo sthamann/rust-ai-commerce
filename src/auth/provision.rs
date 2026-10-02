@@ -99,7 +99,7 @@ pub(crate) async fn create_workspace(
         .write()
         .unwrap()
         .insert(slug.into(), Arc::new(sandbox));
-    for p in products(&a, slug).await? {
+    for p in prototype_products(&a, slug).await? {
         knowledge::sync_product(&mut *a.db.acquire().await?, slug, &json!(p)).await?;
     }
     knowledge::seed_relations(&a.db, slug).await?;

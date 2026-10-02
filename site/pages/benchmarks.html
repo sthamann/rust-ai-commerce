@@ -2,8 +2,115 @@
   <p class="eyebrow">Performance / reproducible local evidence</p>
   <h1>Show the speed.<br /><span class="accent">Show the work.</span></h1>
   <p class="lead">
-    A measured Rust → PostgreSQL path. Real HTTP, validated prices and durable
-    orders. Baseline and optimized release builds on the same local database.
+    A real million-product database. Bounded reads, validated prices and durable
+    orders through Rust and PostgreSQL. Fixed arrivals include client queue
+    time.
+  </p>
+  <div class="benchmark-summary">
+    <span>1,000,000 products + 1,000,000 translations</span>
+    <span>{{million_requests}} measured requests · zero errors</span>
+    <span>{{million_orders}} unique persisted orders, including warm-up</span>
+    <span>500 offered requests/s · 16 generator workers</span>
+  </div>
+  <h2>The million-product measurement</h2>
+  <p>
+    At 500 offered requests/s, each read workload runs for approximately 4
+    seconds; checkout for 2 seconds. p50, p95 and p99 include scheduling, client
+    queue, new HTTP connections, the full response and validation. The achieved
+    rate follows the offered rate; this is a short probe, not maximum capacity.
+    No response cache bypasses PostgreSQL.
+  </p>
+  <div
+    class="table-scroll"
+    role="region"
+    aria-label="Million-product results"
+    tabindex="0"
+  >
+    <table class="benchmark-table">
+      <thead>
+        <tr>
+          <th scope="col">Workload</th>
+          <th scope="col">p50 ms</th>
+          <th scope="col">p95 ms</th>
+          <th scope="col">p99 ms</th>
+          <th scope="col">Achieved requests/s</th>
+          <th scope="col">Errors / requests</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{million_rows}}
+      </tbody>
+    </table>
+  </div>
+  <div class="actions">
+    <a class="button primary" href="assets/benchmark-million-500.json"
+      >Download all raw latencies ↗</a
+    >
+    <a class="button" href="assets/scalability-verification.json"
+      >Inspect population and restart checks ↗</a
+    >
+  </div>
+  <p>
+    Apple M3 Ultra, 512 GiB host RAM; Docker engine limited to about 7.65 GiB
+    and 24 CPUs. PostgreSQL 17 uses warm caches, fsync and synchronous commit
+    enabled. Rust release build; Python client shares the host. A pure HTTP
+    process and an independent outbox worker are active. Checkout changes stock
+    and commits an order; payment is simulated.
+  </p>
+  <h2>The 100 requests/s control</h2>
+  <p>
+    The same final build also ran 1,000 requests per read workload and 500 fresh
+    checkouts at fixed arrivals of 100/s: 6,500 measured requests, zero errors,
+    516 unique persisted orders including warm-up. These longer 10-second reads
+    provide the matched follow-up to the failed cart run below.
+  </p>
+  <div
+    class="table-scroll"
+    role="region"
+    aria-label="100 requests per second control"
+    tabindex="0"
+  >
+    <table class="benchmark-table">
+      <thead>
+        <tr>
+          <th scope="col">Workload</th>
+          <th scope="col">p50 ms</th>
+          <th scope="col">p95 ms</th>
+          <th scope="col">p99 ms</th>
+          <th scope="col">Achieved requests/s</th>
+          <th scope="col">Errors / requests</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{million_100_rows}}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    <a href="assets/benchmark-million.json"
+      >Download the complete 100/s control ↗</a
+    >
+  </p>
+  <h2>The failed cart run — and the fix</h2>
+  <p>
+    The first million-product run achieved only 34.9 cart reads/s at an offered
+    100/s. Its client admission guard rejected 634 of 1,000 scheduled reads;
+    successful cart reads had p95 645.3 ms. PostgreSQL scanned the entire tenant
+    for an OR/subquery. Direct indexed SKU and parent lookups removed that scan.
+    The identical workload was then rerun: cart p95 fell to 14.7 ms with zero
+    errors. Both tables above contain the final build.
+  </p>
+  <p>
+    <a href="assets/benchmark-million-before-cart-fix.json"
+      >Inspect the failed run and all client rejection records ↗</a
+    >
+  </p>
+  <h2>The earlier full-catalog comparison</h2>
+  <p>
+    The historical comparison below returned all 1,000 products in one response
+    and used closed-loop clients. The current API returns at most 100 (default
+    50), so its smaller response is not a like-for-like full-catalog speedup.
+    The original results and diagnostics remain available.
   </p>
   <div class="benchmark-summary">
     <span>{{measured_requests}} measured requests per build</span
@@ -11,7 +118,7 @@
     ><span>{{persisted_orders}} unique persisted orders, including warm-up</span
     ><span>Recorded {{benchmark_date}}</span>
   </div>
-  <h2>The complete comparison</h2>
+  <h2>Historical results: all workloads</h2>
   <p>
     Each cell is the median of three rounds. p95 is the 95th-percentile duration
     inside a round, including the complete HTTP response and JSON validation.
@@ -78,7 +185,7 @@
     </dd>
     <dt>Software</dt>
     <dd>
-      macOS · cargo release build with thin LTO · PostgreSQL 16 in Docker, using
+      macOS · cargo release build with thin LTO · PostgreSQL 17 in Docker, using
       the project's AGE + pgvector image.
     </dd>
     <dt>Fixtures</dt>
@@ -132,11 +239,11 @@
   </p>
   <h2>What these numbers do not establish</h2>
   <p>
-    Production capacity, internet latency, cold-cache performance,
-    million-product catalogs, distributed deployment, real payment-provider
-    performance and local LLM generation speed remain unmeasured here. There is
-    no Shopware speed comparison. These are bounded local measurements, not a
-    production SLA or maximum server capacity.
+    Production capacity, internet latency, cold-cache performance, a many-shop
+    fleet, distributed deployment, real payment-provider performance and local
+    LLM generation speed remain unmeasured here. There is no Shopware speed
+    comparison. These are bounded local measurements, not a production SLA or
+    maximum server capacity.
   </p>
   <p><a href="index.html#demo">Watch the short feature clips →</a></p>
 </article>

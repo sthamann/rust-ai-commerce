@@ -14,7 +14,11 @@ remain server-side. Point DNS to the backend host and allow ports 80/443.
 docker compose --env-file deploy/.env -f deploy/compose.yaml up -d --build
 ```
 
-The image builds the real Rust binary and frontend. The runtime runs as a
+The image builds the real Rust binary and frontend. Setup records checksummed
+migrations once; `BOOTSTRAP_MODE=migrate` performs setup without starting workers,
+and `BOOTSTRAP_MODE=serve` requires every schema to be ready. The default `auto`
+mode handles the first admitted experimental deployment. Serving replicas do not
+scan or rewrite all tenant catalogs at startup. The runtime runs as a
 non-root user. PostgreSQL/AGE/pgvector have no published database port in this
 setup. Caddy terminates HTTPS and proxies to Rust on the private container
 network. [Caddy's automatic HTTPS](https://caddyserver.com/docs/automatic-https)

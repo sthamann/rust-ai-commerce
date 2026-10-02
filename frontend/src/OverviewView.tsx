@@ -42,8 +42,15 @@ export function OverviewView({
         <div className="metric">
           <Icon name="graph" />
           <span>{t("products")}</span>
-          <strong>{data.products.length}</strong>
-          <small>{t("lowStock", { count: low.length })}</small>
+          <strong>
+            {data.products.length}
+            {data.productsPagination.hasMore ? "+" : ""}
+          </strong>
+          <small>
+            {t(data.productsPagination.hasMore ? "lowStockShown" : "lowStock", {
+              count: low.length,
+            })}
+          </small>
         </div>
         <div className="metric">
           <Icon name="chat" />
@@ -103,6 +110,14 @@ export function OverviewView({
               <Icon name="arrow" size={16} />
             </button>
           ))}
+          {data.productsPagination.hasMore && (
+            <p className="empty-note">
+              {t("catalogPageNotice", { count: data.products.length })}{" "}
+              <a href={`/?shop=${encodeURIComponent(data.tenant)}`}>
+                {t("storefront")} ↗
+              </a>
+            </p>
+          )}
         </section>
       </div>
       <section className="studio-card">
