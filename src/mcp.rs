@@ -3,9 +3,14 @@ use crate::*;
 
 pub(crate) fn tool_schema(name: &str) -> Value {
     let props = match name {
-        "catalog.search" | "knowledge.search" => json!({"query":{"type":"string"}}),
+        "catalog.search" => {
+            json!({"query":{"type":"string","maxLength":200},"category":{"type":"string","maxLength":100},"after":{"type":"string","maxLength":200},"limit":{"type":"integer","minimum":1,"maximum":100}})
+        }
+        "knowledge.search" => json!({"query":{"type":"string"}}),
         "cart.create" => json!({"session":{"type":"string"}}),
-        "catalog.detail" => json!({"productId":{"type":"string"}}),
+        "catalog.detail" => {
+            json!({"productId":{"type":"string"},"after":{"type":"string","maxLength":200},"limit":{"type":"integer","minimum":1,"maximum":100}})
+        }
         "checkout.select" => {
             json!({"revision":{"type":"integer"},"checkout":{"type":"object","properties":{"country":{"type":"string"},"shippingMethodId":{"type":"string"},"paymentMethodId":{"type":"string"},"address":{"type":["object","null"],"properties":{"name":{"type":"string"},"street":{"type":"string"},"postalCode":{"type":"string"},"city":{"type":"string"}},"required":["name","street","postalCode","city"],"additionalProperties":false}},"required":["country","shippingMethodId","paymentMethodId"],"additionalProperties":false}})
         }

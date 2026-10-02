@@ -1,9 +1,13 @@
 //! Merchant catalogue and Wasm extension activation/state.
 use crate::*;
 
-pub(crate) async fn admin_catalog(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn admin_catalog(
+    State(a): State<App>,
+    h: HeaderMap,
+    body: axum::body::Bytes,
+) -> Result<Json<Value>> {
     merchant(&a, &h)?;
-    catalog(State(a), h).await
+    catalog_request(State(a), h, body).await
 }
 pub(crate) async fn activate_extension(
     State(a): State<App>,

@@ -5,18 +5,18 @@ pub(crate) async fn product_detail(
     State(a): State<App>,
     h: HeaderMap,
     Path(id): Path<String>,
+    axum::extract::Query(criteria): axum::extract::Query<CatalogCriteria>,
 ) -> Result<Json<Value>> {
     let t = tenant(&h)?;
     let (_, chain) = language_context(&a, &h).await?;
-    let ps = sku_products(&a, &t, &chain).await?;
+    let (ps, family, next_cursor) = family_products(&a, &t, &chain, &id, &criteria).await?;
     let p = ps
         .iter()
         .find(|p| p.id == id)
         .ok_or(Error(StatusCode::NOT_FOUND, "Product not found".into()))?;
-    let family = p.parent_id.as_deref().unwrap_or(&p.id);
     let family_ps = ps
         .iter()
-        .filter(|v| v.id == family || v.parent_id.as_deref() == Some(family))
+        .filter(|v| v.id == family || v.parent_id.as_deref() == Some(&family))
         .collect::<Vec<_>>();
     let c = if header(&h, "sw-context-token").is_some() {
         Some(load_cart(&a, &h).await?)
@@ -71,8 +71,9 @@ pub(crate) async fn product_detail(
         let q = quote(&preview, &priced)?;
         price_tiers.push(json!({"quantity":qty,"price":q["lineItems"][0]["price"],"discountPercent":q["lineItems"][0]["discountPercent"]}));
     }
-    let rows=sqlx::query("SELECT id,author,rating,title,content,verified,demo,created_at::text AS time FROM product_reviews WHERE tenant=$1 AND approved AND product_id=ANY($2) ORDER BY created_at DESC LIMIT 50").bind(&t).bind(family_ps.iter().map(|p|p.id.clone()).collect::<Vec<_>>()).fetch_all(&a.db).await?;
-    let stats=sqlx::query("SELECT count(*) AS count,coalesce(avg(rating),0)::double precision AS rating FROM product_reviews WHERE tenant=$1 AND approved AND product_id=ANY($2)").bind(&t).bind(family_ps.iter().map(|p|p.id.clone()).collect::<Vec<_>>()).fetch_one(&a.db).await?;
+    // Review aggregates cover the whole family, independently of variant pagination.
+    let rows=sqlx::query("SELECT r.id,r.author,r.rating,r.title,r.content,r.verified,r.demo,r.created_at::text AS time FROM product_reviews r WHERE r.tenant=$1 AND r.approved AND (r.product_id=$2 OR EXISTS(SELECT 1 FROM products p WHERE p.tenant=r.tenant AND p.id=r.product_id AND p.parent_id=$2)) ORDER BY r.created_at DESC LIMIT 50").bind(&t).bind(&family).fetch_all(&a.db).await?;
+    let stats=sqlx::query("SELECT count(*) AS count,coalesce(avg(r.rating),0)::double precision AS rating FROM product_reviews r WHERE r.tenant=$1 AND r.approved AND (r.product_id=$2 OR EXISTS(SELECT 1 FROM products p WHERE p.tenant=r.tenant AND p.id=r.product_id AND p.parent_id=$2))").bind(&t).bind(&family).fetch_one(&a.db).await?;
     let count = stats.get::<i64, _>("count");
     let rating = stats.get::<f64, _>("rating");
     let method = config.shipping.iter().find(|v| {
@@ -92,6 +93,6 @@ pub(crate) async fn product_detail(
         .unwrap_or_default();
     product["variantLabel"] = json!(suffix);
     Ok(Json(
-        json!({"product":product,"familyId":family,"variants":family_ps,"calculatedPrices":price_tiers,"delivery":delivery,"taxStatus":if group=="business"{"net"}else{"gross"},"country":selection.country,"reviews":{"count":count,"average":rating,"elements":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"author":r.get::<String,_>("author"),"rating":r.get::<i32,_>("rating"),"title":r.get::<String,_>("title"),"content":r.get::<String,_>("content"),"verifiedPurchase":r.get::<bool,_>("verified"),"demo":r.get::<bool,_>("demo"),"time":r.get::<String,_>("time")})).collect::<Vec<_>>()}}),
+        json!({"product":product,"familyId":family,"variants":family_ps,"variantsPagination":{"nextCursor":next_cursor,"hasMore":next_cursor.is_some(),"limit":criteria.page_size()?},"calculatedPrices":price_tiers,"delivery":delivery,"taxStatus":if group=="business"{"net"}else{"gross"},"country":selection.country,"reviews":{"count":count,"average":rating,"elements":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"author":r.get::<String,_>("author"),"rating":r.get::<i32,_>("rating"),"title":r.get::<String,_>("title"),"content":r.get::<String,_>("content"),"verifiedPurchase":r.get::<bool,_>("verified"),"demo":r.get::<bool,_>("demo"),"time":r.get::<String,_>("time")})).collect::<Vec<_>>()}}),
     ))
 }

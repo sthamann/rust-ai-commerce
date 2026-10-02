@@ -51,14 +51,14 @@ pub(crate) fn product(r: &sqlx::postgres::PgRow) -> Product {
             .and_then(|v| serde_json::from_value(v).ok()),
     }
 }
-pub(crate) async fn products(a: &App, t: &str) -> Result<Vec<Product>> {
-    Ok(
-        sqlx::query("SELECT * FROM products WHERE tenant=$1 AND parent_id IS NULL ORDER BY id")
-            .bind(t)
-            .fetch_all(&a.db)
-            .await?
-            .iter()
-            .map(product)
-            .collect(),
+pub(crate) async fn prototype_products(a: &App, t: &str) -> Result<Vec<Product>> {
+    Ok(sqlx::query(
+        "SELECT * FROM products WHERE tenant=$1 AND parent_id IS NULL ORDER BY id LIMIT 101",
     )
+    .bind(t)
+    .fetch_all(&a.db)
+    .await?
+    .iter()
+    .map(product)
+    .collect())
 }

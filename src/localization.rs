@@ -28,10 +28,6 @@ pub(super) async fn language_context(a: &App, h: &HeaderMap) -> Result<(String, 
         language_chain(&selected.get::<String, _>("id"), &available, &languages).map_err(bad)?;
     Ok((selected.get("locale"), chain))
 }
-pub(super) async fn localized_products(a: &App, t: &str, chain: &[String]) -> Result<Vec<Product>> {
-    localize_products(a, t, chain, products(a, t).await?).await
-}
-
 pub(super) async fn localize_products(
     a: &App,
     t: &str,
@@ -94,8 +90,17 @@ pub(super) async fn preview_quote(
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     let (locale, chain) = language_context(&a, &h).await?;
-    let ps = localized_products(&a, &t, &chain).await?;
     let id = v["productId"].as_str().ok_or(bad("Product ID required"))?;
+    let ps = commerce::cart_products(
+        &a,
+        &t,
+        &chain,
+        &[Item {
+            id: id.into(),
+            quantity: 1,
+        }],
+    )
+    .await?;
     let product = ps
         .iter()
         .find(|p| p.id == id)

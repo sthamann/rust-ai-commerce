@@ -55,6 +55,8 @@ mod order_checkout;
 pub(crate) use order_checkout::*;
 mod catalog_routes;
 pub(crate) use catalog_routes::*;
+mod catalog_page;
+pub(crate) use catalog_page::*;
 mod cart_routes;
 mod checkout_handoff;
 pub(crate) use cart_routes::*;
@@ -88,17 +90,22 @@ mod seed;
 pub(crate) use seed::*;
 mod bootstrap;
 pub(crate) use bootstrap::*;
+mod channel_metrics;
+mod migrations;
 mod routes;
 pub(crate) use routes::*;
 
 #[tokio::main]
 async fn main() {
     let a = bootstrap().await;
+    if env::var("BOOTSTRAP_MODE").is_ok_and(|s| s == "migrate") {
+        return;
+    }
     if env::var("PROCESS_ROLE").is_ok_and(|s| s.ends_with("-worker")) {
         let _ = tokio::signal::ctrl_c().await;
         return;
     }
-    let app = router(a);
+    let app = router(a.clone());
     let addr = env::var("BIND_ADDR").unwrap_or("127.0.0.1:8787".into());
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     println!("rust-ai-commerce listening on http://{addr}");
@@ -108,4 +115,5 @@ async fn main() {
         })
         .await
         .unwrap();
+    a.channel_metrics.flush(&a.db).await;
 }

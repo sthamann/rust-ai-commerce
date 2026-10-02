@@ -1,10 +1,14 @@
 # SaaS scalability: bounded work, independent cells, measured economics
 
-This is a proposed implementation roadmap, based on repository commit
-`0de4c3bb24ecbbb8181a745fa6d2ab9d14fd0258`. It does not claim that million-product
-catalogs, thousands of tenants or the load targets below have been demonstrated.
-The [current benchmark](benchmarks.md) measures a local prototype, not production
-capacity or superiority to another platform.
+The first delivery stage is implemented: bounded catalog/detail/overview reads,
+server-side localized filtering, cart-sized edit/preview reads, batched diagnostic
+counters, versioned setup and a pure HTTP process role. A real local database with
+**1,000,000 synthetic root products and 1,000,000 German translations** is used for
+[the reproducible measurement](benchmarks.md). This demonstrates the measured
+requests on one local database; thousands of tenants, production capacity and the
+fleet load targets below remain proposed work.
+
+The following sections distinguish delivered work from the remaining roadmap.
 
 The three workloads need different solutions:
 
@@ -19,19 +23,26 @@ parallelize writes to the same inventory record.
 
 ## 1. Remove work proportional to the whole shop
 
-The current [catalog endpoint](../src/catalog_routes.rs) loads and serializes all
-root products. [Product detail](../src/commerce/detail.rs) calls `sku_products`,
-which loads the complete SKU catalog before selecting one product family.
-[Merchant overview](../src/studio.rs) includes all root products and computes order
-aggregates on demand. The cart path already loads only relevant SKUs and parents;
-preserve that improvement.
+The [catalog endpoint](../src/catalog_routes.rs) now returns a default page of 50
+root products, with an enforced maximum of 100 and a product-ID cursor. Search
+and category filters run on the server before pagination, including field-level
+language fallback. Search candidates use trigram indexes; common and rare search
+terms receive custom query plans and application connections disable PostgreSQL
+JIT compilation for this short OLTP workload.
 
-Implement server-side filtering and cursor pagination with a hard maximum page
-size. Product detail must fetch only the selected SKU, parent and a bounded page
-of variants, translations and applicable pricing rules. Index the actual filter
-and sort combinations; use query plans to decide additional indexes. Avoid an
-exact full-catalog count on every page. Publish incremental dashboard aggregates
-instead of scanning historical orders per dashboard request.
+[Product detail](../src/commerce/detail.rs) reads the selected SKU, parent and a
+bounded variant page; deep-linked variants and family-wide reviews are retained.
+Cart edits, cart reads and individual price previews fetch their referenced SKUs.
+[Merchant overview](../src/studio.rs) limits product rows and explicitly identifies
+page-scoped stock indicators. Storefront paging and variant loading use the same
+server contract. The response `total` is null when an exact whole-catalog count
+would require extra work; clients use `hasMore` and `nextCursor`.
+
+**Remaining:** order/review aggregates can still scan history; publish incremental
+read models. Cursor traversal is live, not a snapshot under concurrent imports.
+Very short substring searches or rare unmatched fallback phrases can still scan
+many candidates in PostgreSQL even though returned rows and application memory
+are bounded. Measure these separately before promising arbitrary-search SLOs.
 
 Acceptance: a page or product-detail request does not materialize the entire
 catalog; returned rows and application memory remain bounded as the catalog grows
@@ -40,25 +51,27 @@ existing correctness checks.
 
 ## 2. Make HTTP capacity independent of background work
 
-[Bootstrap](../src/bootstrap.rs) runs migrations and synchronizes every tenant's
-root products into the knowledge graph. It also loads and compiles tenant
-policies. A new HTTP replica therefore performs work proportional to stored data.
-Use a dedicated migration job and resumable incremental projection jobs; HTTP
-readiness must not require scanning every shop. Load tenant configuration lazily
-through bounded, versioned caches.
+[Bootstrap](../src/bootstrap.rs) now separates `BOOTSTRAP_MODE=migrate` (setup and
+exit) from `serve` (check readiness and serve, without DDL or seed scans). `auto`
+preserves simple local development. A checksum ledger and serialized setup job
+apply schema changes once; the demo graph seed covers only the 12 fixed demo roots.
+Only the two demo policies are compiled eagerly. The existing policy path loads
+other tenants lazily and checks persisted policy changes.
 
-Process roles already exist in [workers](../src/workers.rs), but the `http` role
-also runs the memory/outbox loop. Separate serving, projection, payment, app and
-inference resources explicitly. Bound queue admission and concurrency by both
-tenant and cell. Budget database connections across the deployment: 100 replicas
-with 20 connections each can request 2,000 connections to the same database.
-Validate connection-pooler compatibility with AGE setup, prepared statements and
-transaction-scoped tenant context before introducing one.
+[Process roles](../src/workers.rs) now keep `http` separate from the memory/outbox,
+payment and app workers. Run the memory worker explicitly for projections and
+app-event production. The default `all` remains useful locally. Diagnostic
+channel counters use one bounded buffer (1,024 tenant/channel keys), one bulk
+write per second and a one-second write timeout. They can be dropped on failure
+or buffer overflow; orders and payment events remain durable. Counters still
+use PostgreSQL, so export them to a dedicated metrics system for production.
 
-[Channel tracking](../src/studio.rs) currently starts a task that updates one
-shared tenant/channel counter row for every request. Batch best-effort diagnostic
-metrics outside the transactional commerce database. Never apply that lossy
-policy to orders, payment records or billable business events.
+**Remaining:** per-tenant admission, connection budgets across replicas, bounded
+versioned tenant-policy caches, resumable catalog/AI projection jobs and resource
+isolation under competing workloads. A 20-connection pool per process is not a
+fleet-wide budget. Validate pooler compatibility with AGE and prepared statements.
+The initial 014 migration builds indexes transactionally; plan its upgrade window
+for an existing large database. It is not an online index build.
 
 The [app runtime cache](../src/apps/runtime.rs) clears all entries when its size
 reaches 64 and compiles while holding its cache mutex. Replace this with bounded
@@ -133,8 +146,9 @@ effects under retries, worker crashes, reservation expiration and failover.
 
 ## 6. Make large imports and AI incremental
 
-[Reindex](../src/agent.rs) currently loads the catalog, rejects more than 100 root
-products and embeds products sequentially. Replace this with streaming batches,
+[Reindex](../src/agent.rs) reads at most 101 root products, rejects more than
+100 and embeds products sequentially. The bounded guard avoids materializing a
+million-product catalog, but does not implement million-product AI indexing. Replace this with streaming batches,
 resumable jobs and per-tenant budgets. Bulk imports need staging, validation,
 bounded database batches and a versioned publication step. Rebuild only changed
 documents and model versions; avoid redundant embeddings for identical variant
@@ -209,8 +223,9 @@ must use an authorized test setup and disclose what cannot be measured externall
 
 ## Recommended delivery sequence
 
-1. Bound catalog/detail/dashboard work, remove per-read database counters, and
-   isolate HTTP startup/resources. Validate one million products in one cell.
+1. Delivered: bound catalog/detail and overview product rows, batch per-read
+   counters, isolate HTTP startup, and measure a synthetic million-product catalog.
+   Still needed in this stage: historical dashboard read models and interference tests.
 2. Add correct cache invalidation, short inventory transactions, tenant quotas
    and incremental import/search pipelines. Measure cell capacity and economics.
 3. Operate two to four cells, test tenant movement, failures and restoration.

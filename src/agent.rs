@@ -68,7 +68,7 @@ pub(super) async fn reindex(State(a): State<App>, h: HeaderMap) -> Result<Json<V
     let t = merchant(&a, &h)?;
     let model = embedding_model();
     let mut count = 0;
-    let ps = products(&a, &t).await?;
+    let ps = prototype_products(&a, &t).await?;
     if ps.len() > 100 {
         return Err(bad("Prototype indexing batch is limited to 100 products"));
     }

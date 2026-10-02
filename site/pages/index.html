@@ -161,32 +161,33 @@
       <h2>The numbers.<br /><span class="accent">And the receipts.</span></h2>
     </div>
     <p>
-      Real HTTP requests through Rust into PostgreSQL. Release build. Three
-      rounds. Every response checked.
+      One million products plus one million translations in PostgreSQL. Release
+      build. Fixed arrivals of 500 requests/s. Every response checked.
     </p>
   </div>
   <div class="metric-grid">
     <article class="metric">
-      <span class="mono">1,000-PRODUCT CATALOG</span
-      ><strong>{{catalog_rps}}<small>req/s</small></strong>
-      <p>{{catalog_p95}} ms p95 · 16 concurrent clients</p>
+      <span class="mono">1M PRODUCTS / 50-PRODUCT PAGE</span
+      ><strong>{{million_catalog_p95}}<small>ms p95</small></strong>
+      <p>500 offered requests/s · real HTTP + PostgreSQL</p>
     </article>
     <article class="metric">
-      <span class="mono">20-LINE CART / 1,000 PRODUCTS</span
-      ><strong>{{cart_p95}}<small>ms p95</small></strong>
-      <p>16 concurrent clients · full validated quote</p>
+      <span class="mono">20-LINE CART / 1M PRODUCTS</span
+      ><strong>{{million_cart_p95}}<small>ms p95</small></strong>
+      <p>500 offered requests/s · full validated quote</p>
     </article>
     <article class="metric">
       <span class="mono">DURABLE CHECKOUT</span
-      ><strong>{{checkout_p95}}<small>ms p95</small></strong>
-      <p>16 concurrent clients · unique simulated orders</p>
+      ><strong>{{million_checkout_p95}}<small>ms p95</small></strong>
+      <p>500 offered requests/s · fresh durable orders</p>
     </article>
   </div>
   <div class="perf-footer">
     <p>
       Local Apple M3 Ultra · 512 GiB RAM · warm caches · Python client on the
-      same host.<br />Closed-loop test; these results do not establish
-      production capacity or LLM speed.
+      same host · 16 generator workers.<br />Short fixed-arrival probes with no
+      response cache; these results do not establish maximum or production
+      capacity. Payments are simulated.
     </p>
     <a class="button" href="benchmarks.html">Inspect the benchmark ↗</a>
   </div>

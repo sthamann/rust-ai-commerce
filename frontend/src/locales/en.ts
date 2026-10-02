@@ -1,5 +1,9 @@
 /** Merchant interface strings: en. */
 export const en = {
+  catalogPageNotice:
+    "Showing the first {count} products. Browse the collection to see more.",
+  lowStockShown: "{count} products with low stock on this page",
+
   apps: "Apps & payments",
   readOnly:
     "Read-only access: an editor or administrator must approve this change.",
