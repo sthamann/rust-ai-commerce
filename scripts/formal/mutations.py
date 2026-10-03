@@ -5,6 +5,7 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("app_read_admissible","!mutating","true"),
  ("platform_admissible","personal &&","true &&"),
  ("platform_admissible","granted &&","true &&"),
  ("app_flow_admissible","!read_only","true"),

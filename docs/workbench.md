@@ -29,7 +29,7 @@ Channel IDs do not grant merchant authorization.
    Generation saves an immutable draft; it does not install or publish it.
 4. Choose **Install in staging**. The manifest creates actual typed app tables,
    authorized API actions and native admin/storefront slots in that private shop.
-5. Select the sandbox in the workbench header. Use **Apps & payments** to edit
+5. Select the sandbox in the workbench header. Use **Apps** to edit
    app records, and **Preview** to inspect its shopper UI.
 6. Return to **Environments**. Review before/after data, select exact changes and
    publish. App installation and individual app records are separate selections.
@@ -46,7 +46,7 @@ client integration are distinct mechanisms.
 
 The generated runtime supports declarative entities, translated string fields,
 string/integer/boolean validation, native forms/lists and list/save actions.
-Existing Wasm and service apps remain supported by the general app system;
+Reviewed service manifests can also be imported/staged with own UI surfaces, API aliases and selected AI context; external calls stay disabled in staging. [Full app contract](app-platform.md). Existing Wasm apps remain supported;
 arbitrary source compilation, destructive migrations, custom React components,
 Git commits and deployment of new service executables require an external build.
 Database versions/digests are immutable and exportable JSON, not a hosted Git IDE.

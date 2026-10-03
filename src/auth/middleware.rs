@@ -84,7 +84,7 @@ fn action(path: &str, method: &str) -> &'static str {
             "payments.manage"
         };
     }
-    if path.starts_with("/api/apps/") && path.contains("/actions/") {
+    if path.starts_with("/api/apps/") && (path.contains("/actions/") || path.contains("/http/")) {
         return "read";
     }
     if path.starts_with("/api/workspace/") {

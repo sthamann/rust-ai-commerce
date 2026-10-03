@@ -74,7 +74,7 @@ An optional slate-blue theme remains available. Seven integrated views provide:
 | Agent commerce | Customer journey, actual adapter call counters and separate ChatGPT/Claude connection status |
 | Sales & delivery | Tax/shipping/payment settings, review moderation and order fulfillment records |
 | Team & access | Personal sign-in, workspace creation, invitations, roles and shop switching |
-| Apps & payments | Versioned app installation, own data/forms, external UI panels and payment ledger |
+| Apps | Versioned app installation, own data/forms, external UI panels and payment ledger |
 
 ![English Commerce Studio with shop activity and preview](assets/commerce-studio-en.jpg)
 
@@ -302,3 +302,5 @@ UI, immediate revocation and production-mode bootstrap are implemented.
 `platform.py` and `platform_setup.py` exercise actual PostgreSQL/HTTP behavior.
 [Exact metrics and limits](platform.md), [deployment status](deployment.md).
 No public host, custom-domain provisioning, billing or failover is claimed.
+
+Full apps now add own admin modules, storefront pages/panels, namespaced API routes, selected AI context and independent storage. See [app-platform.md](app-platform.md) for connected examples and tested boundaries.

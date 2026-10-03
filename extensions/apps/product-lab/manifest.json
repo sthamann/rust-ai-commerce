@@ -1,0 +1,274 @@
+{
+  "coreApi": "1",
+  "id": "product_lab",
+  "version": "1.0.0",
+  "runtime": "service",
+  "category": "ai",
+  "name": {
+    "en": "Product Lab",
+    "de": "Produktlabor",
+    "fr": "Laboratoire produit",
+    "es": "Laboratorio de productos"
+  },
+  "permissions": [
+    "data.read",
+    "data.write",
+    "admin.slot",
+    "storefront.slot",
+    "service.call",
+    "events.read",
+    "events.publish"
+  ],
+  "entities": [
+    {
+      "name": "guides",
+      "label": {
+        "en": "Product advice",
+        "de": "Produktberatung",
+        "fr": "Conseils produit",
+        "es": "Consejos de producto"
+      },
+      "publicRead": true,
+      "fields": [
+        {
+          "name": "product_id",
+          "kind": "string",
+          "required": true,
+          "indexed": true,
+          "label": {
+            "en": "Product SKU",
+            "de": "Artikelnummer",
+            "fr": "Référence",
+            "es": "Referencia"
+          }
+        },
+        {
+          "name": "title",
+          "kind": "string",
+          "translatable": true,
+          "required": true,
+          "label": {
+            "en": "Title",
+            "de": "Titel",
+            "fr": "Titre",
+            "es": "Título"
+          }
+        },
+        {
+          "name": "specification",
+          "kind": "json",
+          "required": false,
+          "label": {
+            "en": "Structured facts",
+            "de": "Strukturierte Fakten",
+            "fr": "Données structurées",
+            "es": "Datos estructurados"
+          }
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "name": "catalog",
+      "handler": "list",
+      "entity": "guides",
+      "description": "Read the app catalogue",
+      "public": true,
+      "readOnly": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer"
+          },
+          "after": {
+            "type": "string"
+          },
+          "filter": {
+            "type": "object"
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "save_entry",
+      "handler": "save",
+      "entity": "guides",
+      "description": "Save reviewed product advice",
+      "public": false,
+      "readOnly": false,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "fields": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "fields"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "recommend",
+      "handler": "service",
+      "entity": null,
+      "description": "Answer a product care question from this app’s published advice",
+      "public": true,
+      "readOnly": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string"
+          },
+          "question": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productId",
+          "question"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "support_received",
+      "handler": "emit",
+      "entity": null,
+      "description": "Publish a support event",
+      "public": false,
+      "readOnly": false,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string"
+          },
+          "topic": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productId",
+          "topic"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "slots": [
+    {
+      "location": "admin.apps",
+      "component": "entity-form",
+      "label": {
+        "en": "Published advice",
+        "de": "Veröffentlichte Beratung",
+        "fr": "Conseils publiés",
+        "es": "Consejos publicados"
+      }
+    }
+  ],
+  "events": [
+    "order.placed",
+    "app.record.changed"
+  ],
+  "surfaces": [
+    {
+      "id": "lab",
+      "location": "admin.navigation",
+      "label": {
+        "en": "Product Lab",
+        "de": "Produktlabor",
+        "fr": "Laboratoire produit",
+        "es": "Laboratorio de productos"
+      },
+      "uiPath": "v1/index.html",
+      "actions": [
+        "catalog",
+        "recommend"
+      ]
+    },
+    {
+      "id": "advice",
+      "location": "product.detail",
+      "label": {
+        "en": "Ask Product Lab",
+        "de": "Produktlabor fragen",
+        "fr": "Demander au laboratoire",
+        "es": "Preguntar al laboratorio"
+      },
+      "uiPath": "v1/index.html",
+      "actions": [
+        "catalog",
+        "recommend"
+      ]
+    },
+    {
+      "id": "finder",
+      "location": "storefront.page",
+      "label": {
+        "en": "Product advice",
+        "de": "Produktberatung",
+        "fr": "Conseils produit",
+        "es": "Consejos de producto"
+      },
+      "uiPath": "v1/index.html",
+      "actions": [
+        "catalog",
+        "recommend"
+      ]
+    }
+  ],
+  "apiRoutes": [
+    {
+      "path": "advice",
+      "method": "POST",
+      "scope": "storefront",
+      "action": "recommend"
+    },
+    {
+      "path": "guides",
+      "method": "GET",
+      "scope": "storefront",
+      "action": "catalog"
+    },
+    {
+      "path": "guides",
+      "method": "POST",
+      "scope": "admin",
+      "action": "save_entry"
+    }
+  ],
+  "intelligence": {
+    "description": {
+      "en": "Product-care advice and structured specifications. Propose guide changes for merchant review.",
+      "de": "Produktberatung und strukturierte Spezifikationen. Änderungen als prüfbaren Vorschlag erstellen.",
+      "fr": "Conseils et spécifications. Proposer les changements pour validation.",
+      "es": "Consejos y especificaciones. Proponer cambios para revisión."
+    },
+    "tools": [
+      "catalog",
+      "save_entry",
+      "recommend"
+    ],
+    "entities": [
+      "guides"
+    ]
+  }
+}

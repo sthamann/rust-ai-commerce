@@ -74,7 +74,7 @@ data and immutable version history remain. No uninstall/data deletion is provide
 
 A manifest declares `coreApi`, `id`, three-part `version`, localized `name`, `runtime`,
 `permissions`, `entities`, `actions`, `slots` and `events`. Entity fields are
-string/integer/boolean and may reference another entity in the same app. Root
+string/integer/boolean, translated strings and bounded JSON objects/arrays; scalar fields may reference another entity in the same app. Root
 metadata (`tenant`, `id`, `revision`) is core-owned. Identifiers are constrained;
 DDL is generated, never submitted by the app. Each action has a typed flat
 `inputSchema` and registered list/save/configurations/service handler. Arbitrary
@@ -117,7 +117,7 @@ PROCESS_ROLE=app-worker target/debug/rust-ai-commerce
 ```
 
 Install `apps/service-example/manifest.json` in your synthetic shop with
-`POST /api/apps`. Apps & payments shows managed data editors and the iframe.
+`POST /api/apps`. Apps shows managed data editors and the iframe.
 The UI uses `connectCommerce()` from the SDK and can call `sdk.action('notes')`
 or `sdk.action('availability', {sku:'mug'})`. Core session tokens never enter
 this iframe. The availability result is explicitly synthetic, not a real ERP.
@@ -245,3 +245,12 @@ The reusable `sdk/analytics.js` adapter also supports headless storefronts. Read
 public `google_analytics.tracking` configuration for the correct tenant/sales channel,
 collect customer consent, then call `event()` for real ecommerce actions. Never embed
 merchant/provider credentials or duplicate a tag managed by another storefront plugin.
+
+## Full UI/API/AI apps
+
+[Product Lab](apps/product-lab) owns a Studio module, product-detail panel,
+storefront page, API aliases, selected AI context, managed JSONB guides and an
+independent SQLite/event inbox. Run `PRODUCT_LAB=1 ./scripts/dev.sh` from the repository root; install the manifest explicitly.
+No core recompilation is needed. Guest UIs can use any framework through the scoped
+[SDK](sdk/browser.js), including live context updates and size requests.
+Read the [complete extension contract and resource/performance boundaries](../docs/app-platform.md).

@@ -92,3 +92,8 @@ pub fn app_flow_admissible(allowed: bool, read_only: bool, is_public: bool) -> b
 pub fn platform_admissible(personal: bool, granted: bool, active: bool) -> bool {
     personal && granted && active
 }
+
+/// GET app routes require declared read-only behavior and exclude managed mutations.
+pub fn app_read_admissible(read_only: bool, mutating: bool) -> bool {
+    read_only && !mutating
+}

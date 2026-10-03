@@ -1,22 +1,27 @@
 /** Opaque-origin app UI. Its SDK can invoke only this app's declared, server-authorized actions. */
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { RequestFn } from "./studio-types";
 import { useAppText } from "./app-i18n";
 export default function AppFrame({
   app,
   url,
   request,
+  allowedActions,
+  context: surfaceContext = {},
 }: {
   app: string;
   url: string;
   request: RequestFn;
+  allowedActions?: string[];
+  context?: Record<string, unknown>;
 }) {
   const ref = useRef<HTMLIFrameElement>(null);
   const { locale } = useAppText();
   const nonce = useMemo(() => crypto.randomUUID(), [app, url, locale]);
+  const [height, setHeight] = useState(400);
   const context = () =>
     ref.current?.contentWindow?.postMessage(
-      { type: "commerce.context", app, locale, nonce },
+      { type: "commerce.context", app, locale, nonce, context: surfaceContext },
       "*",
     );
   useEffect(() => {
@@ -24,15 +29,22 @@ export default function AppFrame({
       if (
         event.source !== ref.current?.contentWindow ||
         event.origin !== "null" ||
-        event.data?.type !== "commerce.action" ||
         event.data?.nonce !== nonce
       )
         return;
+      if (event.data?.type === "commerce.resize") {
+        const h = event.data.height;
+        if (typeof h === "number" && Number.isFinite(h))
+          setHeight(Math.max(180, Math.min(1200, h)));
+        return;
+      }
+      if (event.data?.type !== "commerce.action") return;
       const { id, action, input } = event.data;
       if (
         typeof id !== "string" ||
         typeof action !== "string" ||
-        !/^[a-z][a-z0-9_]{0,31}$/.test(action)
+        !/^[a-z][a-z0-9_]{0,31}$/.test(action) ||
+        (allowedActions && !allowedActions.includes(action))
       )
         return;
       try {
@@ -53,7 +65,8 @@ export default function AppFrame({
     };
     window.addEventListener("message", listener);
     return () => window.removeEventListener("message", listener);
-  }, [app, nonce, request]);
+  }, [app, nonce, request, allowedActions]);
+  useEffect(context, [nonce, surfaceContext]);
   return (
     <iframe
       key={`${app}:${locale}`}
@@ -63,6 +76,8 @@ export default function AppFrame({
       referrerPolicy="no-referrer"
       title={app}
       className="app-frame"
+      loading="lazy"
+      style={{ height }}
       onLoad={context}
     />
   );

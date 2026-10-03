@@ -175,4 +175,13 @@ theorem platform_exact (personal granted active : Bool) :
 theorem platform_personal_required (granted active : Bool) :
     platform_admissible false granted active = false := by
   cases granted <;> cases active <;> simp [platform_admissible]
+/-- GET admission cannot authorize a managed mutation. -/
+theorem app_read_safe (readOnly mutating : Bool)
+    (h : app_read_admissible readOnly mutating = true) :
+    readOnly = true ∧ mutating = false := by
+  cases readOnly <;> cases mutating <;> simp_all [app_read_admissible]
+/-- The read admission policy accepts exactly declared non-mutating operations. -/
+theorem app_read_exact (readOnly mutating : Bool) :
+    app_read_admissible readOnly mutating = (readOnly && !mutating) := by rfl
+
 end CommerceKernel

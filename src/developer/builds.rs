@@ -12,16 +12,13 @@ pub(super) fn validate(m: &apps::Manifest) -> Result<()> {
         "slack",
     ]
     .contains(&m.id.as_str())
-        || m.runtime != "declarative"
         || m.configuration.is_some()
-        || !m.events.is_empty()
-        || m.permissions.contains(&"service.call".into())
         || m.slots
             .iter()
             .any(|s| !matches!(s.component.as_str(), "entity-list" | "entity-form"))
     {
         return Err(bad(
-            "Developer draft supports declarative data, API actions and native UI slots; service/Wasm code requires an external reviewed build",
+            "Reserved apps and Wasm configuration require a separate reviewed package; service code remains operator deployed",
         ));
     }
     for lang in ["en", "de", "fr", "es"] {
@@ -91,7 +88,7 @@ pub(super) async fn save(
 mod tests {
     use super::*;
     #[test]
-    fn developer_cannot_install_services_or_reserved_apps() {
+    fn developer_rejects_reserved_apps() {
         let m: apps::Manifest = serde_json::from_str(include_str!(
             "../../extensions/apps/storyfront/manifest.json"
         ))

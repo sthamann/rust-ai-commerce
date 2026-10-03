@@ -627,25 +627,25 @@
   "limits": [
     "No full Shopware Core/Admin/Store API equivalence or measured 100 percent code coverage",
     "Rule/Flow engine supports documented native subset; full upstream catalog/interchange and promotion calculators remain open",
-    "Developer generation supports reviewed declarative apps; arbitrary source builds, custom React, Git IDE and external service rollout require external builders",
+    "Built-in prompt generation supports declarative apps; reviewed full service manifests/UI/API/AI can be imported/staged. Arbitrary source builds, Git IDE and external service rollout require external builders/operators",
     "Staging excludes customers/orders/payment secrets and preserves live inventory; no destructive changes, automatic merging/rollback or large-catalog branch strategy",
     "No measured performance ratio versus Shopware; integrated million-product benchmarks belong to their documented workload/commit",
     "Fixed model weights, persisted evidence and category-affinity consumers; no demonstrated causal uplift or online weight training",
     "Vercel/self-hosted deployment prepared and Linux container exercised; no public HTTPS deployment or hardened SaaS certification",
     "Storyfront title/description import is multilingual; earlier generated stories and its broader scene/chrome localization are not automatically translated",
     "PayPal wallet Orders v2 wire/reconciliation/refund/BN verified with local Sandbox fixtures; Live mode prepared but no live settlement tested. Shopware Payments standalone connector remains unconnected.",
-    "Partial formal verification: 13 production policies / 20 Lean properties; translator, surrounding Rust, SQL, providers, frontend and AI behavior remain unproved."
+    "Partial formal verification: 18 production policies / 42 Lean properties; translator, surrounding Rust, SQL, providers, frontend and AI behavior remain unproved."
   ],
-  "sourceStatus": "Latest complete recheck: 18 HTTP suites / 193 groups, 44 Rust units, 5872 PHP comparisons and Lean formal gate. Older browser/model/deployment observations retain their original scope.",
+  "sourceStatus": "Current extension delta: 50 Rust units, 84 affected HTTP groups, actual browser/container checks and 18-policy formal gate; previous full-core suite observations retain their recorded source/date.",
   "formalVerification": {
     "status": "passed",
     "scope": "Extracted production policies; NOT full Rust/server correctness",
-    "sourceCommit": "061f13408f3df52e500237111265e6d8c1ebcc0d",
+    "sourceCommit": "9aee43cc96774e62bfcf655067e62d597ddb4970",
     "workingTreeChanged": true,
     "leanToolchain": "leanprover/lean4:v4.29.1",
-    "policies": 17,
+    "policies": 18,
     "axiomAudit": {
-      "theorems": 40,
+      "theorems": 42,
       "sorry": 0,
       "customAxioms": 0,
       "nativeDecisionAxioms": 0,
@@ -657,17 +657,17 @@
     },
     "compiledEnvironmentRechecked": true,
     "conformance": {
-      "cases": 3610,
+      "cases": 3614,
       "mismatches": 0,
       "allBooleanAssignments": true,
       "numericBoundaryIncludesU64Max": true,
       "seed": 20261002
     },
     "inventory": {
-      "rustModules": 159,
+      "rustModules": 162,
       "extractedPolicyModules": 1,
-      "reviewedBindingModules": 12,
-      "unprovedModules": 145,
+      "reviewedBindingModules": 13,
+      "unprovedModules": 147,
       "reviewedSchemaBuildProofInputs": 38,
       "entireCoreProved": false
     },
@@ -679,7 +679,7 @@
       "Operating system and provider protocols"
     ],
     "mutationControls": {
-      "brokenPoliciesRejectedByLean": 37,
+      "brokenPoliciesRejectedByLean": 39,
       "unsupportedSyntaxRejected": 14,
       "staleUnclassifiedDisconnectedBindingsRejected": 3,
       "proofShortcutsUnexpectedAxiomsMissingAuditsRejected": 9,
@@ -800,5 +800,68 @@
     "documentation": "README, platform, deployment, source map, feature/security/proof guides updated",
     "grossCaptureRefundRegression": "passed with synthetic persisted capture/refund facts, no live PSP",
     "connectorShutdownRegression": "passed: deterministic red/green shutdown case, five private-state tests and nine full provider/core protocol fixture groups"
+  },
+  "fullAppPlatform": {
+    "date": "2026-10-03",
+    "sourceBaseCommit": "9aee43cc96774e62bfcf655067e62d597ddb4970",
+    "workingTreeChanged": true,
+    "rustUnitTests": 50,
+    "affectedHttpGroups": 84,
+    "affectedSuites": {
+      "app_surfaces": 9,
+      "apps": 16,
+      "services": 5,
+      "staging": 6,
+      "developer_documents": 8,
+      "users": 19,
+      "providers": 12,
+      "connected_apps": 9
+    },
+    "appSurfaces": {
+      "passed": 9,
+      "checks": [
+        "Private admin navigation and public product/page surfaces resolve real app UI without credentials",
+        "Nested JSON persists; keyset pages and indexed filters work; stale/public writes and oversized pages fail",
+        "Actual model wire receives only selected bounded app context; approval updates a record beyond the first page",
+        "HTTP and agent/MCP consume the same custom service action; app data remains tenant-isolated",
+        "Unsafe paths, private tools on public surfaces and mutating GET contracts are rejected",
+        "Namespaced custom routes preserve current merchant permissions",
+        "Reviewed external app manifests can be staged; private sandboxes cannot execute live service actions",
+        "Eight slow app calls trigger bounded admission; real cart creation and a second tenant continue independently",
+        "Deactivation removes navigation/surfaces and blocks routes while retaining versioned app data"
+      ],
+      "coreCartDuringBusyAppMs": 13.146,
+      "runtime": "debug local synthetic database; not a production capacity benchmark",
+      "paidModelCalls": 0
+    },
+    "container": {
+      "nonRoot": true,
+      "readOnlyRoot": true,
+      "memoryMiB": 128,
+      "cpus": 0.5,
+      "pids": 64,
+      "actualUiAndAction": true,
+      "hostileMicroVmClaim": false
+    },
+    "browser": {
+      "adminModule": true,
+      "productQuestion": true,
+      "customStorefrontPage": true,
+      "guestLocales": [
+        "en-GB",
+        "de-DE",
+        "fr-FR",
+        "es-ES"
+      ],
+      "screenshots": [
+        "assets/app-admin-en.jpg",
+        "assets/app-page-en.jpg"
+      ]
+    },
+    "sdk": "source/nonce provenance, result/error, resize and dynamic context tests passed",
+    "frontend": "strict type/build/format passed; entry 258.82 kB uncompressed; separate lazy Studio/shop/platform chunks",
+    "paidProviderCalls": 0,
+    "productionCapacityClaim": false,
+    "localLifecycle": "Owned stop/start preserved private key and all other app service configurations"
   }
 }

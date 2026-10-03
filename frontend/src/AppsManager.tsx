@@ -64,7 +64,10 @@ export default function AppsManager({
       }[];
     }[];
   }>();
-  const load = async () => setPackages((await request("/api/apps")).packages);
+  const load = async () => {
+    setPackages((await request("/api/apps")).packages);
+    dispatchEvent(new Event("commerce.apps.changed"));
+  };
   useEffect(() => {
     let active = true;
     request("/api/apps")

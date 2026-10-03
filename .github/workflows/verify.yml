@@ -74,6 +74,7 @@ jobs:
           python3 scripts/checkout_handoff.py
           python3 scripts/payments.py
           python3 scripts/services.py
+          python3 scripts/app_surfaces.py
           python3 scripts/extensions.py
           python3 scripts/staging.py
           python3 scripts/marketing_accounts.py
@@ -85,6 +86,7 @@ jobs:
           python3 scripts/connector_store_tests.py
           python3 scripts/connected_apps.py
           node frontend/tests/analytics.mjs
+          node frontend/tests/app-sdk.mjs
           node frontend/tests/locales.mjs
           python3 scripts/structure.py
       # Real model checks are opt-in locally: CI does not replace them with a fake.

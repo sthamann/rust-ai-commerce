@@ -18,6 +18,11 @@ docker compose -p "${COMPOSE_PROJECT_NAME:-rust-ai-commerce}" up -d --build --wa
 cargo build --locked
 if [ "${CONNECTED_APPS:-0}" = "1" ]; then
   python3 scripts/connectors.py start
+fi
+if [ "${PRODUCT_LAB:-0}" = "1" ]; then
+  python3 scripts/product_lab.py start
+fi
+if [ "${CONNECTED_APPS:-0}" = "1" ] || [ "${PRODUCT_LAB:-0}" = "1" ]; then
   export APP_SERVICES="$(python3 - <<'PYMERGE'
 import json,os,pathlib
 services=json.loads(os.getenv('APP_SERVICES','{}'));services.update(json.loads(pathlib.Path('.run/connector-services.json').read_text()));print(json.dumps(services))

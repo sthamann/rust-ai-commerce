@@ -1,3 +1,4 @@
+import { AppSurfaceSlot } from "./AppSurfaces";
 import { useCustomerText } from "./customer-i18n";
 import CheckoutDetails from "./CheckoutDetails";
 import { addressComplete } from "./customer-types";
@@ -63,6 +64,10 @@ export default function CheckoutPanel({
         </button>
       </div>
       <div className="bag-body">
+        <AppSurfaceSlot
+          location="cart.summary"
+          context={{ itemCount: cart?.lineItems.length ?? 0 }}
+        />
         {order && (
           <div className="order-confirmation" role="status">
             <Icon name="check" />

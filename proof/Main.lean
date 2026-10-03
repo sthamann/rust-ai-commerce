@@ -23,6 +23,7 @@ def evalRequest (j : Json) : Except String Json := do
   | "rule_boolean_comparison" => pure (toJson (rule_boolean_comparison ((← (args.getObjVal? "equal") >>= Json.getBool?)) ((← (args.getObjVal? "empty") >>= Json.getBool?)) ((← (args.getObjVal? "eq") >>= Json.getBool?)) ((← (args.getObjVal? "neq") >>= Json.getBool?)) ((← (args.getObjVal? "is_empty") >>= Json.getBool?))))
   | "app_flow_admissible" => pure (toJson (app_flow_admissible ((← (args.getObjVal? "allowed") >>= Json.getBool?)) ((← (args.getObjVal? "read_only") >>= Json.getBool?)) ((← (args.getObjVal? "is_public") >>= Json.getBool?))))
   | "platform_admissible" => pure (toJson (platform_admissible ((← (args.getObjVal? "personal") >>= Json.getBool?)) ((← (args.getObjVal? "granted") >>= Json.getBool?)) ((← (args.getObjVal? "active") >>= Json.getBool?))))
+  | "app_read_admissible" => pure (toJson (app_read_admissible ((← (args.getObjVal? "read_only") >>= Json.getBool?)) ((← (args.getObjVal? "mutating") >>= Json.getBool?))))
   | _ => throw "Unknown policy"
 
 def main : IO Unit := do

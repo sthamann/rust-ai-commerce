@@ -1,3 +1,9 @@
+import {
+  AppSurfaceProvider,
+  AppSurfaceSlot,
+  StorefrontAppNavigation,
+  StorefrontAppPage,
+} from "./AppSurfaces";
 import { responseError } from "./errors-i18n";
 import { useEffect, useState, useRef } from "react";
 import { locales, type Locale } from "./i18n";
@@ -48,6 +54,7 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<Cart>();
   const [id, setId] = useState(productId);
+  const [appPath, setAppPath] = useState(location.hash);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [bag, setBag] = useState(false);
@@ -131,6 +138,7 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
   useEffect(() => {
     const hash = () => {
       setId(productId());
+      setAppPath(location.hash);
       if (productId()) window.scrollTo({ top: 0, behavior: "instant" });
     };
     window.addEventListener("hashchange", hash);
@@ -337,322 +345,347 @@ export default function Storefront({ onMerchant }: { onMerchant: () => void }) {
         : 0,
   );
   return (
-    <div className="shop">
-      <ShopAnalytics
-        shop={shopTenant}
-        channel={salesChannel}
-        products={products}
-        cart={cart}
-        bag={bag}
-        order={order}
-      />
-      {new URLSearchParams(location.search).get("sandbox") === "1" && (
-        <div className="sandbox-banner">
-          {w("stage")} · {w("exclusion")}
-        </div>
-      )}
-      <header className="shop-nav">
-        <a href="#" className="shop-brand">
-          atelier<span> / </span>
-        </a>
-        <nav>
-          <a href="#">{s("collection")}</a>
-          <button
-            disabled={busy || !cart}
-            onClick={() =>
-              run(async () => {
-                if (!cart || cart.customerGroup === "business") return;
-                const c = await shopApi<Cart>(
-                  "/store-api/account/login",
-                  { email: "buyer@example.test", password: "demo-business" },
-                  cart.token,
-                );
-                save(c);
-              })
-            }
-          >
-            {cart?.customerGroup === "business"
-              ? "Example Studio · B2B"
-              : s("business")}
-          </button>
-          <button onClick={() => setAccount(true)}>{w("account")}</button>
-          <button onClick={onMerchant}>{s("studio")} ↗</button>
-        </nav>
-        <select
-          aria-label={t("language")}
-          value={locale}
-          onChange={(e) => setLocale(e.target.value as Locale)}
-        >
-          {Object.entries(locales).map(([key, label]) => (
-            <option key={key} value={key}>
-              {label}
-            </option>
-          ))}
-        </select>
-        <button
-          className="shop-text-button"
-          aria-pressed={adaptation}
-          onClick={() => {
-            const enabled = !adaptation;
-            setAdaptation(enabled);
-            localStorage.setItem(
-              `rac-adaptation:${shopTenant}`,
-              enabled ? "1" : "0",
-            );
-            if (!enabled) {
-              setRanked([]);
-              setPersonalized(false);
-              setViewed({});
-              if (cart)
-                void shopApi(
-                  "/store-api/personalization",
-                  undefined,
-                  cart.token,
-                  "DELETE",
-                ).catch(() => {});
-            }
-          }}
-        >
-          {w(adaptation ? "adaptationOn" : "adaptationOff")}
-        </button>
-        <button className="shop-bag-button" onClick={() => setBag(true)}>
-          <Icon name="box" size={18} />
-          {s("bag")}{" "}
-          <b>{cart?.lineItems.reduce((n, i) => n + i.quantity, 0) ?? 0}</b>
-        </button>
-      </header>
-      {error && (
-        <div role="alert" className="shop-error">
-          {error}
-          <button aria-label={s("close")} onClick={() => setError("")}>
-            <Icon name="close" />
-          </button>
-        </div>
-      )}
-      {location.hash.startsWith("#payment/") &&
-      localStorage.getItem(`rac-payment-token:${location.hash.slice(9)}`) ? (
-        <main className="shop-content">
-          <PaymentSession
-            id={location.hash.slice(9)}
-            token={localStorage.getItem(
-              `rac-payment-token:${location.hash.slice(9)}`,
-            )!}
-          />
-        </main>
-      ) : id ? (
-        <ProductPage
-          id={id}
+    <AppSurfaceProvider
+      public
+      request={(path, body) => shopApi(path, body, cart?.token)}
+      scopeKey={`${shopTenant}:${salesChannel}`}
+    >
+      <div className="shop">
+        <ShopAnalytics
+          shop={shopTenant}
+          channel={salesChannel}
+          products={products}
           cart={cart}
-          busy={busy}
-          onAdd={add}
-          onCart={save}
-        />
-      ) : (
-        <main className="shop-content">
-          <section className="shop-hero">
-            <div>
-              <p className="shop-kicker">ATELIER / {w("consideredObjects")}</p>
-              <h1>
-                {experience?.headline &&
-                experience.headline !==
-                  "Objects for a more considered everyday."
-                  ? experience.headline
-                  : s("hero")}
-              </h1>
-              <p>{s("intro")}</p>
-              <a className="shop-primary" href="#collection">
-                {s("explore")}
-                <Icon name="arrow" />
-              </a>
-            </div>
-            <div className="shop-hero-art">
-              <Art id="chair" />
-              <span>
-                01 /{" "}
-                {products.find((p) => p.id === "chair")?.name ?? s("furniture")}
-              </span>
-            </div>
-          </section>
-          <section className="shop-concierge">
-            <div>
-              <p className="shop-kicker">{s("ask")}</p>
-              <p>{s("wish")}</p>
-            </div>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                run(async () => {
-                  const v = await shopApi<{
-                    answer: { explanation: string; recommended_ids: string[] };
-                  }>("/api/concierge", { request: wish }, cart?.token);
-                  setAdvice(v.answer);
-                  setQuery("");
-                  setCategory("all");
-                });
-              }}
-            >
-              <input
-                aria-label={s("ask")}
-                value={wish}
-                onChange={(e) => setWish(e.target.value)}
-                placeholder={s("wish")}
-              />
-              <button disabled={busy || !wish} className="shop-secondary">
-                {busy ? s("thinking") : s("ask")} ↗
-              </button>
-            </form>
-            {advice && (
-              <div className="shop-advice" role="status">
-                <p>{advice.explanation}</p>
-                {advice.recommended_ids.map((pid) => (
-                  <a key={pid} href={`#product/${pid}`}>
-                    {products.find((p) => p.id === pid)?.name} ↗
-                  </a>
-                ))}
-              </div>
-            )}
-          </section>
-          <section className="shop-collection" id="collection">
-            <div className="collection-title">
-              <div>
-                <p className="shop-kicker">ATELIER / {s("collection")}</p>
-                <h2>{s("collection")}</h2>
-              </div>
-              <span>
-                {adapted
-                  ? s("adapted")
-                  : s(
-                      experience?.variant === "comparison"
-                        ? "comparison"
-                        : "discovery",
-                    )}
-              </span>
-            </div>
-            <div className="shop-filters">
-              <div>
-                {["all", "furniture", "lighting", "objects"].map((c) => (
-                  <button
-                    key={c}
-                    aria-pressed={category === c}
-                    onClick={() => setCategory(c)}
-                  >
-                    {s(c)}
-                  </button>
-                ))}
-              </div>
-              <input
-                aria-label={s("search")}
-                placeholder={s("search")}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-              />
-            </div>
-            <div
-              aria-busy={catalogLoading}
-              className={`shop-grid ${experience?.variant === "comparison" || query.length > 3 ? "comparison" : ""}`}
-            >
-              {list.map((p) => (
-                <article
-                  key={p.id}
-                  className="shop-product"
-                  onMouseEnter={() =>
-                    setViewed((v) => ({
-                      ...v,
-                      [p.category]: (v[p.category] ?? 0) + 1,
-                    }))
-                  }
-                >
-                  <a
-                    className="shop-product-image"
-                    href={`#product/${p.id}`}
-                    aria-label={`${s("details")}: ${p.name}`}
-                  >
-                    <img
-                      src={p.media[0]?.url ?? `/media/${p.id}-front.svg`}
-                      alt={p.name}
-                      loading="lazy"
-                      width="400"
-                      height="320"
-                    />
-                    <span>
-                      {p.stock ? `${p.stock} ${s("available")}` : s("sold")}
-                    </span>
-                  </a>
-                  <div className="shop-product-info">
-                    <p className="shop-kicker">{s(p.category)}</p>
-                    <a href={`#product/${p.id}`}>
-                      <h3>{p.name}</h3>
-                    </a>
-                    <p>{p.description}</p>
-                    <strong>
-                      {money(p.calculated_price?.unitPrice ?? p.price)}
-                    </strong>
-                    <small>
-                      {s(cart?.customerGroup === "business" ? "net" : "gross")}
-                    </small>
-                  </div>
-                  <a className="shop-product-link" href={`#product/${p.id}`}>
-                    {s("details")}
-                    <Icon name="arrow" size={18} />
-                  </a>
-                </article>
-              ))}
-            </div>
-            <div className="shop-filters">
-              {catalogLoading && <p role="status">{s("loading")}</p>}
-              {pageCursor && (
-                <button
-                  disabled={catalogLoading || busy}
-                  onClick={() => run(() => catalog(cart?.token))}
-                >
-                  {s("firstPage")}
-                </button>
-              )}
-              {nextCursor && (
-                <button
-                  disabled={catalogLoading || busy}
-                  onClick={() => run(() => catalog(cart?.token, nextCursor))}
-                >
-                  {s("nextPage")} →
-                </button>
-              )}
-            </div>
-          </section>
-        </main>
-      )}
-      <footer className="shop-footer">
-        <strong>atelier /</strong>
-        <p>{s("simulation")}</p>
-        <a href="https://github.com/sthamann/rust-ai-commerce">GitHub ↗</a>
-      </footer>
-      {account && (
-        <CustomerAccount
-          cart={cart}
-          onCart={save}
-          onClose={() => setAccount(false)}
-        />
-      )}
-      {bag && (
-        <CheckoutPanel
-          cart={cart}
+          bag={bag}
           order={order}
-          busy={busy}
-          onClose={() => setBag(false)}
-          onQuantity={quantity}
-          onSelection={selection}
-          onCart={save}
-          onBuy={buy}
-          onCoupons={async (codes) => {
-            const result = await shopApi<Cart>(
-              "/store-api/checkout/coupons",
-              { codes, revision: cart?.revision },
-              cart?.token,
-              "PUT",
-            );
-            save(result);
-          }}
         />
-      )}
-    </div>
+        {new URLSearchParams(location.search).get("sandbox") === "1" && (
+          <div className="sandbox-banner">
+            {w("stage")} · {w("exclusion")}
+          </div>
+        )}
+        <header className="shop-nav">
+          <a href="#" className="shop-brand">
+            atelier<span> / </span>
+          </a>
+          <nav>
+            <a href="#">{s("collection")}</a>
+            <StorefrontAppNavigation />
+            <button
+              disabled={busy || !cart}
+              onClick={() =>
+                run(async () => {
+                  if (!cart || cart.customerGroup === "business") return;
+                  const c = await shopApi<Cart>(
+                    "/store-api/account/login",
+                    { email: "buyer@example.test", password: "demo-business" },
+                    cart.token,
+                  );
+                  save(c);
+                })
+              }
+            >
+              {cart?.customerGroup === "business"
+                ? "Example Studio · B2B"
+                : s("business")}
+            </button>
+            <button onClick={() => setAccount(true)}>{w("account")}</button>
+            <button onClick={onMerchant}>{s("studio")} ↗</button>
+          </nav>
+          <select
+            aria-label={t("language")}
+            value={locale}
+            onChange={(e) => setLocale(e.target.value as Locale)}
+          >
+            {Object.entries(locales).map(([key, label]) => (
+              <option key={key} value={key}>
+                {label}
+              </option>
+            ))}
+          </select>
+          <button
+            className="shop-text-button"
+            aria-pressed={adaptation}
+            onClick={() => {
+              const enabled = !adaptation;
+              setAdaptation(enabled);
+              localStorage.setItem(
+                `rac-adaptation:${shopTenant}`,
+                enabled ? "1" : "0",
+              );
+              if (!enabled) {
+                setRanked([]);
+                setPersonalized(false);
+                setViewed({});
+                if (cart)
+                  void shopApi(
+                    "/store-api/personalization",
+                    undefined,
+                    cart.token,
+                    "DELETE",
+                  ).catch(() => {});
+              }
+            }}
+          >
+            {w(adaptation ? "adaptationOn" : "adaptationOff")}
+          </button>
+          <button className="shop-bag-button" onClick={() => setBag(true)}>
+            <Icon name="box" size={18} />
+            {s("bag")}{" "}
+            <b>{cart?.lineItems.reduce((n, i) => n + i.quantity, 0) ?? 0}</b>
+          </button>
+        </header>
+        <AppSurfaceSlot
+          location="storefront.header"
+          context={{ salesChannel }}
+        />
+        {error && (
+          <div role="alert" className="shop-error">
+            {error}
+            <button aria-label={s("close")} onClick={() => setError("")}>
+              <Icon name="close" />
+            </button>
+          </div>
+        )}
+        {location.hash.startsWith("#payment/") &&
+        localStorage.getItem(`rac-payment-token:${location.hash.slice(9)}`) ? (
+          <main className="shop-content">
+            <PaymentSession
+              id={location.hash.slice(9)}
+              token={localStorage.getItem(
+                `rac-payment-token:${location.hash.slice(9)}`,
+              )!}
+            />
+          </main>
+        ) : appPath.startsWith("#app/") ? (
+          <StorefrontAppPage path={appPath} />
+        ) : id ? (
+          <ProductPage
+            id={id}
+            cart={cart}
+            busy={busy}
+            onAdd={add}
+            onCart={save}
+          />
+        ) : (
+          <main className="shop-content">
+            <AppSurfaceSlot
+              location="storefront.home"
+              context={{ salesChannel }}
+            />
+            <section className="shop-hero">
+              <div>
+                <p className="shop-kicker">
+                  ATELIER / {w("consideredObjects")}
+                </p>
+                <h1>
+                  {experience?.headline &&
+                  experience.headline !==
+                    "Objects for a more considered everyday."
+                    ? experience.headline
+                    : s("hero")}
+                </h1>
+                <p>{s("intro")}</p>
+                <a className="shop-primary" href="#collection">
+                  {s("explore")}
+                  <Icon name="arrow" />
+                </a>
+              </div>
+              <div className="shop-hero-art">
+                <Art id="chair" />
+                <span>
+                  01 /{" "}
+                  {products.find((p) => p.id === "chair")?.name ??
+                    s("furniture")}
+                </span>
+              </div>
+            </section>
+            <section className="shop-concierge">
+              <div>
+                <p className="shop-kicker">{s("ask")}</p>
+                <p>{s("wish")}</p>
+              </div>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  run(async () => {
+                    const v = await shopApi<{
+                      answer: {
+                        explanation: string;
+                        recommended_ids: string[];
+                      };
+                    }>("/api/concierge", { request: wish }, cart?.token);
+                    setAdvice(v.answer);
+                    setQuery("");
+                    setCategory("all");
+                  });
+                }}
+              >
+                <input
+                  aria-label={s("ask")}
+                  value={wish}
+                  onChange={(e) => setWish(e.target.value)}
+                  placeholder={s("wish")}
+                />
+                <button disabled={busy || !wish} className="shop-secondary">
+                  {busy ? s("thinking") : s("ask")} ↗
+                </button>
+              </form>
+              {advice && (
+                <div className="shop-advice" role="status">
+                  <p>{advice.explanation}</p>
+                  {advice.recommended_ids.map((pid) => (
+                    <a key={pid} href={`#product/${pid}`}>
+                      {products.find((p) => p.id === pid)?.name} ↗
+                    </a>
+                  ))}
+                </div>
+              )}
+            </section>
+            <section className="shop-collection" id="collection">
+              <div className="collection-title">
+                <div>
+                  <p className="shop-kicker">ATELIER / {s("collection")}</p>
+                  <h2>{s("collection")}</h2>
+                </div>
+                <span>
+                  {adapted
+                    ? s("adapted")
+                    : s(
+                        experience?.variant === "comparison"
+                          ? "comparison"
+                          : "discovery",
+                      )}
+                </span>
+              </div>
+              <div className="shop-filters">
+                <div>
+                  {["all", "furniture", "lighting", "objects"].map((c) => (
+                    <button
+                      key={c}
+                      aria-pressed={category === c}
+                      onClick={() => setCategory(c)}
+                    >
+                      {s(c)}
+                    </button>
+                  ))}
+                </div>
+                <input
+                  aria-label={s("search")}
+                  placeholder={s("search")}
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                />
+              </div>
+              <div
+                aria-busy={catalogLoading}
+                className={`shop-grid ${experience?.variant === "comparison" || query.length > 3 ? "comparison" : ""}`}
+              >
+                {list.map((p) => (
+                  <article
+                    key={p.id}
+                    className="shop-product"
+                    onMouseEnter={() =>
+                      setViewed((v) => ({
+                        ...v,
+                        [p.category]: (v[p.category] ?? 0) + 1,
+                      }))
+                    }
+                  >
+                    <a
+                      className="shop-product-image"
+                      href={`#product/${p.id}`}
+                      aria-label={`${s("details")}: ${p.name}`}
+                    >
+                      <img
+                        src={p.media[0]?.url ?? `/media/${p.id}-front.svg`}
+                        alt={p.name}
+                        loading="lazy"
+                        width="400"
+                        height="320"
+                      />
+                      <span>
+                        {p.stock ? `${p.stock} ${s("available")}` : s("sold")}
+                      </span>
+                    </a>
+                    <div className="shop-product-info">
+                      <p className="shop-kicker">{s(p.category)}</p>
+                      <a href={`#product/${p.id}`}>
+                        <h3>{p.name}</h3>
+                      </a>
+                      <p>{p.description}</p>
+                      <strong>
+                        {money(p.calculated_price?.unitPrice ?? p.price)}
+                      </strong>
+                      <small>
+                        {s(
+                          cart?.customerGroup === "business" ? "net" : "gross",
+                        )}
+                      </small>
+                    </div>
+                    <a className="shop-product-link" href={`#product/${p.id}`}>
+                      {s("details")}
+                      <Icon name="arrow" size={18} />
+                    </a>
+                  </article>
+                ))}
+              </div>
+              <div className="shop-filters">
+                {catalogLoading && <p role="status">{s("loading")}</p>}
+                {pageCursor && (
+                  <button
+                    disabled={catalogLoading || busy}
+                    onClick={() => run(() => catalog(cart?.token))}
+                  >
+                    {s("firstPage")}
+                  </button>
+                )}
+                {nextCursor && (
+                  <button
+                    disabled={catalogLoading || busy}
+                    onClick={() => run(() => catalog(cart?.token, nextCursor))}
+                  >
+                    {s("nextPage")} →
+                  </button>
+                )}
+              </div>
+            </section>
+          </main>
+        )}
+        <footer className="shop-footer">
+          <strong>atelier /</strong>
+          <p>{s("simulation")}</p>
+          <a href="https://github.com/sthamann/rust-ai-commerce">GitHub ↗</a>
+        </footer>
+        {account && (
+          <CustomerAccount
+            cart={cart}
+            onCart={save}
+            onClose={() => setAccount(false)}
+          />
+        )}
+        {bag && (
+          <CheckoutPanel
+            cart={cart}
+            order={order}
+            busy={busy}
+            onClose={() => setBag(false)}
+            onQuantity={quantity}
+            onSelection={selection}
+            onCart={save}
+            onBuy={buy}
+            onCoupons={async (codes) => {
+              const result = await shopApi<Cart>(
+                "/store-api/checkout/coupons",
+                { codes, revision: cart?.revision },
+                cart?.token,
+                "PUT",
+              );
+              save(result);
+            }}
+          />
+        )}
+      </div>
+    </AppSurfaceProvider>
   );
 }

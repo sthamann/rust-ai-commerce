@@ -277,3 +277,19 @@ Frontend: `PlatformConsole` coordinates state; `PlatformSignIn` owns personal lo
 `PlatformShops` owns directory/provisioning views; `platform-api` is the typed
 transport and `platform-i18n` contains complete operator UI translations.
 The production-mode Docker smoke test checks the packaged server and frontend.
+
+## Full-app surfaces and execution admission
+
+| Files | Responsibility | Verification |
+|---|---|---|
+| `src/apps/{surfaces,surface_tests}.rs` | UI contract registry, namespaced route/action adapter, scope and mutating GET rejection | `app_surfaces.py`, Rust contract tests, extracted read admission proof |
+| `src/apps/service_limits.rs`, `foundation.rs`, `bootstrap.rs` | Shared non-queuing per-process/per-tenant-app service limits | Slow-service real-cart/second-tenant test and Rust drop/reuse test |
+| `src/apps/{data,registry,planning,gateway}.rs`, `src/planner.rs` | JSONB, indexed bounded pages, direct revision binding, selected bounded AI context and unified actions | Deep-page approved local-model wire fixture; existing app/service/staging regressions |
+| `frontend/src/{AppSurfaces,AppFrame}.tsx`, `extensions/sdk/browser.js` | New Studio/shop navigation and context-aware opaque UI bridge | Actual multilingual browser question/module/page and `frontend/tests/app-sdk.mjs` |
+| `extensions/apps/product-lab/*`, `scripts/product_lab.py` | Independent app code/storage/UI/container and private optional launcher | `app_surfaces.py`, actual non-root resource-limited container smoke |
+| `frontend/src/main.tsx` | Separate lazy Studio/storefront/platform loading | Strict production frontend build |
+
+Every host location and limit is listed in [the full app contract](app-platform.md).
+External app code, service declarations and frontend behavior remain outside the
+partial Lean proofs. No new core database migration was required for these optional
+manifest fields and generated app tables.

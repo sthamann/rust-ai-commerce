@@ -54,4 +54,7 @@ def app_flow_admissible (allowed : Bool) (read_only : Bool) (is_public : Bool) :
 def platform_admissible (personal : Bool) (granted : Bool) (active : Bool) : Bool :=
   ((personal && granted) && active)
 
+def app_read_admissible (read_only : Bool) (mutating : Bool) : Bool :=
+  (read_only && (!mutating))
+
 end CommerceKernel

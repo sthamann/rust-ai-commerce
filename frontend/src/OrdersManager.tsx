@@ -1,3 +1,4 @@
+import { AppSurfaceSlot } from "./AppSurfaces";
 /** Order operations UI. All changes call the same domain endpoints exposed through MCP. */
 import { useState, useEffect, useCallback } from "react";
 import type { RequestFn } from "./studio-types";
@@ -47,16 +48,22 @@ export default function OrdersManager({
       </div>
       {error && <p role="alert">{error}</p>}
       {selected ? (
-        <OrderDetail
-          id={selected}
-          request={request}
-          rights={rights}
-          onBack={() => {
-            setSelected(undefined);
-            void load();
-          }}
-          download={(path) => downloadFile(path, headers)}
-        />
+        <>
+          <AppSurfaceSlot
+            location="admin.order"
+            context={{ orderId: selected }}
+          />
+          <OrderDetail
+            id={selected}
+            request={request}
+            rights={rights}
+            onBack={() => {
+              setSelected(undefined);
+              void load();
+            }}
+            download={(path) => downloadFile(path, headers)}
+          />
+        </>
       ) : (
         <section className="studio-card">
           <label>

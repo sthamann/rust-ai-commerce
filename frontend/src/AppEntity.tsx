@@ -99,9 +99,13 @@ export default function AppEntity({
           setBusy(true);
           setError("");
           try {
+            const values = { ...fields };
+            for (const f of entity.fields)
+              if (f.kind === "json" && typeof values[f.name] === "string")
+                values[f.name] = JSON.parse(values[f.name] as string);
             const v = await request(
               `/api/apps/${app}/entities/${entity.name}`,
-              { id, revision, fields },
+              { id, revision, fields: values },
             );
             setRevision(v.revision);
             await load();
@@ -130,43 +134,58 @@ export default function AppEntity({
         {entity.fields.map((f) => (
           <label key={f.name}>
             {label(f)}
-            <input
-              type={
-                f.kind === "integer"
-                  ? "number"
-                  : f.kind === "boolean"
-                    ? "checkbox"
-                    : "text"
-              }
-              value={
-                f.kind === "boolean"
-                  ? undefined
-                  : String(fieldValue(f, fields[f.name]) ?? "")
-              }
-              checked={
-                f.kind === "boolean" ? Boolean(fields[f.name]) : undefined
-              }
-              required={f.required && f.kind !== "boolean"}
-              maxLength={2000}
-              onChange={(e) =>
-                setFields({
-                  ...fields,
-                  [f.name]:
-                    f.kind === "integer"
-                      ? Number(e.target.value)
-                      : f.kind === "boolean"
-                        ? e.target.checked
-                        : f.translatable
-                          ? {
-                              ...(typeof fields[f.name] === "object"
-                                ? (fields[f.name] as Record<string, string>)
-                                : {}),
-                              [lang]: e.target.value,
-                            }
-                          : e.target.value,
-                })
-              }
-            />
+            {f.kind === "json" ? (
+              <textarea
+                value={
+                  typeof fields[f.name] === "string"
+                    ? (fields[f.name] as string)
+                    : JSON.stringify(fields[f.name] ?? {}, null, 2)
+                }
+                maxLength={8192}
+                required={f.required}
+                onChange={(e) =>
+                  setFields({ ...fields, [f.name]: e.target.value })
+                }
+              />
+            ) : (
+              <input
+                type={
+                  f.kind === "integer"
+                    ? "number"
+                    : f.kind === "boolean"
+                      ? "checkbox"
+                      : "text"
+                }
+                value={
+                  f.kind === "boolean"
+                    ? undefined
+                    : String(fieldValue(f, fields[f.name]) ?? "")
+                }
+                checked={
+                  f.kind === "boolean" ? Boolean(fields[f.name]) : undefined
+                }
+                required={f.required && f.kind !== "boolean"}
+                maxLength={2000}
+                onChange={(e) =>
+                  setFields({
+                    ...fields,
+                    [f.name]:
+                      f.kind === "integer"
+                        ? Number(e.target.value)
+                        : f.kind === "boolean"
+                          ? e.target.checked
+                          : f.translatable
+                            ? {
+                                ...(typeof fields[f.name] === "object"
+                                  ? (fields[f.name] as Record<string, string>)
+                                  : {}),
+                                [lang]: e.target.value,
+                              }
+                            : e.target.value,
+                  })
+                }
+              />
+            )}
           </label>
         ))}
         <button className="studio-primary" disabled={!canWrite || busy}>
