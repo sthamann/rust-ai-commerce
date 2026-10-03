@@ -1,7 +1,7 @@
 [
   {
     "file": "index.html",
-    "title": "Rust AI Commerce — Open-source agentic commerce with merchant control",
+    "title": "Rust AI Commerce \u2014 Open-source agentic commerce with merchant control",
     "description": "Explore an open-source Rust ecommerce prototype with merchant-approved AI actions, local LLMs, MCP/UCP adapters and selected Shopware behavior ports."
   },
   {
@@ -23,5 +23,10 @@
     "file": "shopware.html",
     "title": "Port Shopware pricing behavior to Rust with differential tests",
     "description": "How Rust AI Commerce checks bounded pricing, context and shipping-tax ports against original Shopware PHP classes, with explicit compatibility limits."
+  },
+  {
+    "file": "playground.html",
+    "title": "Try a connected commerce playground | Rust AI Commerce",
+    "description": "Create a separate local shop and try product variants, customer addresses, a coupon, graphical order flows, delays and PDF invoices without a model provider."
   }
 ]

@@ -407,6 +407,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/context_differential.py](../scripts/context_differential.py) | Compare bounded context/tier/quantity ports with original Shopware methods. |
 | [scripts/customer_accounts.py](../scripts/customer_accounts.py) | Real registration/address/login/checkout lifecycle, ownership, CAS and immutable financial snapshots. |
 | [scripts/delivery_differential.py](../scripts/delivery_differential.py) | Compare the original PercentageTaxRuleBuilder with the live Rust port. |
+| [scripts/demo/fixtures.py](../scripts/demo/fixtures.py) | Four-language, provider-free commerce playground definitions; no credentials or real customer data. |
 | [scripts/developer_documents.py](../scripts/developer_documents.py) | Local model wire fixtures verify app generation, provenance and document privacy, without paid providers. |
 | [scripts/differential.py](../scripts/differential.py) | Independent PHP/Rust differential; fails on any money delta, not averaged error. |
 | [scripts/email_tests.py](../scripts/email_tests.py) | Real SMTP/TLS and provider HTTP fixtures plus Rust/PostgreSQL/MCP/flow consumers. No external mail. |
@@ -430,6 +431,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/platform.py](../scripts/platform.py) | Real PostgreSQL/HTTP operator control-plane regression; synthetic accounts only, no paid providers. |
 | [scripts/platform_admin.py](../scripts/platform_admin.py) | Grant/revoke an existing personal operator offline. Credentials remain in environment; no signup can grant this role. |
 | [scripts/platform_setup.py](../scripts/platform_setup.py) | Isolated production-mode bootstrap test. Creates/drops only a uniquely named synthetic database. |
+| [scripts/playground.py](../scripts/playground.py) | Create an isolated local shop through personal-owner APIs; reruns preserve merchant edits and never call providers. |
 | [scripts/port.py](../scripts/port.py) | Named, reviewable port gates; never marks an untested unit as complete. |
 | [scripts/prepare_host.py](../scripts/prepare_host.py) | Prepare private first-host configuration; no server purchase, SSH, deployment or secret logging. |
 | [scripts/prepare_vercel.py](../scripts/prepare_vercel.py) | Render same-origin Vercel API proxy configuration; no credentials, deployments or account changes. |

@@ -79,7 +79,7 @@ try:
     for suite in suites.get("tooling", []):
         run([sys.executable, f"scripts/{suite}.py"], env)
     run([sys.executable, "scripts/structure.py"], env)
-    print("PASS all registered integration and browser-contract suites")
+    print("PASS selected HTTP suites plus provider, browser-contract and tooling checks" if args.only else "PASS all registered integration and browser-contract suites")
 finally:
     if not args.existing_database:
         sql(f'DROP DATABASE "{name}" WITH (FORCE);')

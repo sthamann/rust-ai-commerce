@@ -58,6 +58,12 @@ python3 scripts/automation_registry.py
 python3 scripts/automation_differential.py
 ```
 
+The automation suite also executes `scripts/playground.py` as documented: a new
+owner-owned shop, repeat setup after an edited rule, both checkout branches and
+actual invoice records. `tooling_tests.py` has 12 tests, including refusal of
+remote credential destinations and unsafe state-file symlinks. See
+[the manual tour](playground.md) for the corresponding browser steps.
+
 ## Component regressions
 
 `frontend/tests/unit/` uses real components/hooks/transports, synthetic domain

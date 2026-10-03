@@ -10,11 +10,17 @@
 - [Local MCP bridge](https://sthamann.github.io/rust-ai-commerce/mcp.html)
 - [Shopware behavior ports](https://sthamann.github.io/rust-ai-commerce/shopware.html)
 
+- [Connected playground](https://sthamann.github.io/rust-ai-commerce/playground.html)
+
 ## Original documentation
 - [Repository](https://github.com/sthamann/rust-ai-commerce)
 - [Feature matrix](https://github.com/sthamann/rust-ai-commerce/blob/main/docs/shopware-parity.md)
 - [Recorded verification](https://github.com/sthamann/rust-ai-commerce/blob/main/docs/verification.json)
 - [Security and SaaS boundaries](https://github.com/sthamann/rust-ai-commerce/blob/main/docs/security.md)
+
+- [Rules and durable flows](https://github.com/sthamann/rust-ai-commerce/blob/main/docs/automation.md)
+- [Full app contract](https://github.com/sthamann/rust-ai-commerce/blob/main/docs/app-platform.md)
+- [Measured test coverage](https://github.com/sthamann/rust-ai-commerce/blob/main/docs/testing.md)
 
 ## Limits
 Working prototype. Payments simulated/manual/Sandbox; no real money is charged.

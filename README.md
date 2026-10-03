@@ -10,7 +10,7 @@ Browser and agent clients share the same pricing, inventory and checkout operati
 This is also a laboratory for porting selected original Shopware behavior to Rust.
 
 [Website & guides](https://sthamann.github.io/rust-ai-commerce/) ·
-[Quickstart](docs/quickstart.md) · [MCP setup](docs/connectors.md) ·
+[Quickstart](docs/quickstart.md) · [Hands-on playground](docs/playground.md) · [MCP setup](docs/connectors.md) ·
 [Feature matrix](docs/shopware-parity.md) · [Contributing](CONTRIBUTING.md)
 
 [![Verify prototype](https://github.com/sthamann/rust-ai-commerce/actions/workflows/verify.yml/badge.svg)](https://github.com/sthamann/rust-ai-commerce/actions/workflows/verify.yml)
@@ -210,6 +210,29 @@ take several minutes. No model is downloaded by this command. Private instance
 credentials are generated in ignored `.env`; the app binds to `127.0.0.1:8787`
 and PostgreSQL to `127.0.0.1:15487`.
 
+## Try the connected playground
+
+After creating your personal merchant account, run:
+
+```sh
+python3 scripts/playground.py --email your-personal-merchant@example.test
+```
+
+Enter your password at the private prompt. This creates a separate **Commerce
+Playground** and prints its Studio, storefront, product and sales-channel links.
+It contains the `TRY10` coupon, engraving app, a saved source rule and an active
+flow: check the €100 threshold → tag the chosen branch → wait on priority orders
+→ create an invoice → stop. Setup needs no model/provider and creates no orders.
+Re-running preserves your edits; credentials are not stored in its state file.
+
+[Follow the ten-minute tour](docs/playground.md): product/SKU/cart → customer and
+address book → simulated checkout → real flow execution → order detail/PDF,
+then explore staging, apps, product knowledge and optional AI.
+
+![Current product detail in the isolated playground](docs/assets/playground-product-en.jpg)
+
+![Current Studio order management with synthetic playground orders](docs/assets/playground-orders-en.jpg)
+
 ## Choose your next step
 
 - **Add local AI:** follow the [Ollama setup](docs/quickstart.md#add-local-ai-optional).
@@ -280,7 +303,7 @@ See [implementation and limits](docs/intelligence-apps-payments.md),
 - [Architecture decisions](docs/architecture.md), [security](docs/security.md), [third-party licenses](THIRD_PARTY.md)
 
 The current verification includes **7,000 bounded comparisons** against original
-Shopware 6.7.14.2 PHP classes. These cover selected pricing/context/tax operations and numeric rule comparisons, plus 432 cases against 74 concrete original condition classes;
+Shopware 6.7.14.2 PHP classes. These cover selected pricing/context/tax operations and numeric/string/array/UUID comparison primitives, plus 432 cases against 74 concrete original condition classes;
 they do not establish full Shopware compatibility. The current workbench verification
 now runs 58 Rust unit tests and 65 frontend component/hook tests, plus 22 real HTTP suites,
 three local provider suites, four browser contracts and verification-tool tests.

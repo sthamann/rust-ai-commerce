@@ -104,23 +104,30 @@ universal hyper-personalization. Shipping and price are recalculated by the core
 
 ## Rules, flows, campaigns and customers
 
-**Automation** has separate rule, promotion, flow and channel forms, plus an
-editable JSON contract for nested conditions. Numeric comparisons use the ported
-Shopware epsilon/null semantics. Supported conditions include boolean containers,
-cart amount/line count, customer group/login, country, channel and product IDs.
+**Rules & flows** has rule, campaign, connected event-flow and sales-channel
+workspaces. Typed source conditions and nested AND/OR/NOT/XOR trees are editable
+in the graphical builder; exact JSON is available for inspection. The reflected
+catalog has 114 production rule classes, 108 native scope bindings and 16 Core
+action names. 432 direct PHP cases cover 74 original conditions; registration is
+not complete behavioral parity. See [the exact automation contract](automation.md).
+
 Campaigns support percentage/fixed discounts, coupons, automatic application,
 free shipping, priority/exclusivity, time windows and global usage limits.
 Discount allocation conserves integer cents; tax is recalculated. Usage is
 recorded in the order transaction, including concurrent checkout protection.
 
-Flows consume actual order/payment outbox events and evaluate conditions. They
-create a localized shop note or a stored AI change proposal. AI proposals appear
-in the workbench and require merchant approval before mutation. Durable jobs
-prevent normal duplicate processing; a lost inference result becomes uncertain
-instead of being blindly repeated. Actor revocation blocks execution. Arbitrary
-flow actions, email delivery, full Shopware flow catalogs, nested delayed flows,
-per-customer coupons, promotion set-group/filter calculators and full upstream
-Rule/Flow Builder interchange are not implemented.
+Flows consume native order/payment/delivery events and namespaced app events.
+Graphs connect conditions, true/false branches, consecutive domain/app actions,
+durable delays and stop nodes. Current rights are rechecked on continuation;
+confirmed actions have reusable receipts and uncertain external effects are not
+blindly repeated. Saved referenced rules are frozen per event. AI nodes create
+reviewable proposals; no model response applies itself. Native metadata/status,
+invoice/delivery-note, download and configured mail-app actions are connected.
+Original trigger coverage, arbitrary source mail/document/group configurations,
+promotion groups, script rules, cross-flow recursion and full upstream
+FlowSequence interchange remain incomplete.
+
+[Create the provider-free playground and try both branches](playground.md).
 
 Shopper accounts support registration, login/logout, name/address editing,
 password changes and own order history. New carts reuse the customer's trusted
@@ -144,7 +151,10 @@ routes; full Shopware advanced-price/currency inheritance remains a bounded port
 - `scripts/marketing_accounts.py`: additional shops, customer authority/history,
   concurrent limited coupons, tax/free shipping, order flows, channels,
   metadata/document releases and persisted personalization.
-- `scripts/rule_differential.py`: 1,280 comparisons with the pinned original PHP.
+- `scripts/rule_differential.py`: 1,976 numeric/string/array/UUID comparisons;
+  `automation_differential.py`: 432 cases across 74 original conditions.
+- `scripts/automation.py`: real branching/actions/delays, frozen rules, actor
+  revocation, isolated failing flows and repeatable playground setup.
 - `frontend/tests/locales.mjs`: equal nonempty locale dictionaries and translated
   transport errors; strict frontend build covers typed component contracts.
 

@@ -1,6 +1,6 @@
 # Commerce features, architecture and verification
 
-[Project overview](../README.md) · [Quickstart](quickstart.md) · [Prototype scope](shopware-parity.md)
+[Project overview](../README.md) · [Quickstart](quickstart.md) · [Prototype scope](shopware-parity.md) · [Hands-on playground](playground.md)
 
 ## Product details and connected checkout
 
@@ -73,11 +73,15 @@ An optional slate-blue theme remains available. Seven integrated views provide:
 | Shop today | API-backed orders, inventory, proposals and real recorded activity |
 | Shop intelligence | AGE product/need graph, complementary products, semantic retrieval and observed learning counts |
 | Agent commerce | Customer journey, actual adapter call counters and separate ChatGPT/Claude connection status |
-| Sales & delivery | Tax/shipping/payment settings, review moderation and order fulfillment records |
+| Orders / Customers | Order detail, guarded workflow actions, customer fields/address books and immutable PDFs |
+| Settings | Central company data, countries, taxes, shipping and payment methods |
+| Product content | One product workspace for translations, descriptions, specifications, assets and reviews |
+| Rules & flows | Source-named conditions, connected branches/actions/delays, campaigns and sales channels |
+| Storyfronts / Developers / Staging | Catalog/checkout integration, reviewed app drafts and selected private releases |
 | Team & access | Personal sign-in, workspace creation, invitations, roles and shop switching |
-| Apps | Versioned app installation, own data/forms, external UI panels and payment ledger |
+| Apps | Categories and separate app detail/settings pages, managed records and app-owned UI |
 
-![English Commerce Studio with shop activity and preview](assets/commerce-studio-en.jpg)
+![Current order workspace in Commerce Studio](assets/playground-orders-en.jpg)
 
 The interactive preview uses the real server calculator; it creates no order
 or stock change. Numbers/dates, product text and model replies follow the
@@ -136,7 +140,9 @@ additive and retain the existing prototype volume; do not delete that volume
 when updating. Existing orders/prices/stock are preserved. The graph's template
 relationships are curated demo facts. Vector ranking is exact on the small
 catalog; million-product capacity, ANN recall, distributed graph sharding and
-production multi-tenant performance are **unmeasured**.
+production multi-tenant performance remain **unmeasured**. Bounded synthetic
+HTTP/catalog measurements on one million products are recorded separately in
+[benchmarks.md](benchmarks.md); they do not measure distributed AGE/ANN capacity.
 
 ## Evidence-driven shop intelligence and full app examples
 
@@ -167,7 +173,7 @@ million-product capacity is claimed.
 [Implementation and limits](intelligence-apps-payments.md) ·
 [App manifests, SDK and runnable examples](../extensions/README.md)
 
-![English app workspace with its own data and payment readiness](assets/apps-en.png)
+![Connected native event flow](assets/automation-flow-en.jpg)
 
 ## Executable extensions
 
@@ -233,11 +239,15 @@ cargo build --locked --bins
 python3 scripts/differential.py
 python3 scripts/context_differential.py
 python3 scripts/delivery_differential.py
+python3 scripts/rule_differential.py
+python3 scripts/automation_registry.py
+python3 scripts/automation_differential.py
 ```
 
 The runners instantiate original Shopware 6.7.14.2 PHP classes: **2,144 pricing**,
-**1,446 context/rule/quantity** and **1,002 proportional-tax** cases. These are
-4,592 bounded comparisons, not full-Core proof. No rewritten PHP calculator or
+**1,446 context/rule/quantity**, **1,002 proportional-tax**, **1,976 comparison
+primitive** and **432 direct rule-condition** cases. These are 7,000 bounded
+comparisons, including 74 original condition classes, not full-Core proof. No rewritten PHP calculator or
 selector is used as the oracle. `scripts/restart.py snapshot` / `verify` checks
 persisted commerce, personal sessions/workspaces, graph/vector and chat state
 across an external application/database restart.

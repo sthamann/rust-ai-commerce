@@ -38,6 +38,20 @@ Stop the app with Ctrl+C. Restart with `./scripts/dev.sh`; database data is
 retained. Stop the database with `docker compose -p rust-ai-commerce stop`.
 Do not remove its volume if you want to retain orders and accounts.
 
+## Add the connected playground
+
+After creating your personal merchant account:
+
+```sh
+python3 scripts/playground.py --email your-personal-merchant@example.test
+```
+
+Enter that account's password privately. This creates a separate **Commerce
+Playground** with a rule, `TRY10` coupon, Home collection sales channel, engraving
+app and active branching invoice flow. The script prints its Studio/storefront
+links. Repeating setup preserves your edits. No AI/provider calls or orders are
+made by setup. [Follow the ten-minute walkthrough](playground.md).
+
 ## Add local AI (optional)
 
 Install and start Ollama, then explicitly download the documented models:
