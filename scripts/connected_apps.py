@@ -3,6 +3,7 @@
 Only synthetic accounts and loopback provider endpoints; never charges or sends an external message.
 """
 
+import signal
 import base64, copy, json, os, pathlib, socket, sqlite3, subprocess, sys, tempfile, threading, time, urllib.parse, urllib.request, urllib.error, uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -747,7 +748,7 @@ with tempfile.TemporaryDirectory(prefix="commerce-connectors-") as folder:
             )
         )
     finally:
-        backend.terminate()
+        backend.send_signal(signal.SIGINT)
         backend.wait(20)
         log.close()
         stop_workers.set()

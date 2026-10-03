@@ -1,0 +1,265 @@
+/* studio: studio styles. Source order is preserved by the entry stylesheet. */
+/* Commerce Studio: scoped design tokens, no storefront styles in admin flows. */
+.studio {
+  --bg: #f5f8fc;
+  --surface: #ffffff;
+  --panel: #f1f5fb;
+  --hover: #e8f0ff;
+  --border: #dbe4f0;
+  --muted: #5e7089;
+  --text: #152843;
+  --accent: #1768eb;
+  --accent-text: #ffffff;
+  --positive: #087f70;
+  --warning: #956300;
+  --shadow: 0 18px 70px #163d7012;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, "DM Sans", system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 236px minmax(0, 1fr);
+  color-scheme: light;
+}
+.studio[data-theme="dark"] {
+  --bg: #17253b;
+  --surface: #1f314c;
+  --panel: #263c5d;
+  --hover: #2e4970;
+  --border: #405879;
+  --muted: #b2c3dc;
+  --text: #eff5ff;
+  --accent: #7ab1ff;
+  --accent-text: #102d55;
+  --positive: #79d6c4;
+  --warning: #ecc68d;
+  --shadow: 0 18px 70px #0003;
+  color-scheme: dark;
+}
+.studio * {
+  box-sizing: border-box;
+}
+.studio button,
+.studio input,
+.studio textarea,
+.studio select,
+.studio-dialog input,
+.studio-dialog select {
+  font: inherit;
+}
+.studio a {
+  color: inherit;
+  text-decoration: none;
+}
+.studio button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  border-radius: 8px;
+  touch-action: manipulation;
+  transition:
+    background 0.18s,
+    color 0.18s,
+    border-color 0.18s;
+  cursor: pointer;
+}
+.studio button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+.studio button:focus-visible,
+.studio a:focus-visible,
+.studio input:focus-visible,
+.studio textarea:focus-visible,
+.studio select:focus-visible,
+.studio-dialog :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.studio h1,
+.studio h2,
+.studio h3,
+.studio h4,
+.studio p {
+  margin: 0;
+}
+.studio h1 {
+  font-family: inherit;
+  font-size: clamp(28px, 3.2vw, 44px);
+  line-height: 1.15;
+  letter-spacing: -1.7px;
+  font-weight: 550;
+}
+.studio h2,
+.studio-dialog h2 {
+  font-family: inherit;
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: -0.5px;
+  font-weight: 550;
+}
+.studio h3 {
+  font-size: 14px;
+  font-weight: 550;
+}
+.studio small {
+  font-size: 12px;
+}
+.studio button svg,
+.studio a svg {
+  flex-shrink: 0;
+}
+.studio .icon-button,
+.studio-dialog .icon-button {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 0;
+}
+.studio .icon-button:hover,
+.studio-dialog .icon-button:hover {
+  background: var(--hover);
+}
+.studio .studio-primary,
+.studio-dialog .studio-primary {
+  background: var(--accent);
+  color: var(--accent-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  border-radius: 8px;
+}
+.studio .studio-primary:hover:not(:disabled),
+.studio-dialog .studio-primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+}
+.studio .studio-secondary,
+.studio-dialog .studio-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 14px;
+  min-height: 44px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text);
+}
+.studio .studio-secondary:hover,
+.studio-dialog .studio-secondary:hover {
+  background: var(--hover);
+}
+.studio input,
+.studio select,
+.studio textarea,
+.studio-dialog input,
+.studio-dialog select {
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-width: 0;
+}
+.studio input,
+.studio select,
+.studio-dialog input,
+.studio-dialog select {
+  padding: 10px 12px;
+  min-height: 44px;
+}
+.studio select {
+  max-width: 100%;
+}
+.studio input::placeholder,
+.studio textarea::placeholder {
+  color: var(--muted);
+}
+.studio .kicker,
+.studio-dialog .kicker {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: var(--muted);
+  font-weight: 550;
+}
+.studio .muted {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.studio-skip {
+  position: fixed;
+  left: 250px;
+  top: -100px;
+  background: var(--accent);
+  color: var(--accent-text);
+  padding: 12px;
+  z-index: 50;
+}
+.studio-skip:focus {
+  top: 8px;
+}
+.studio-sidebar {
+  height: 100dvh;
+  position: sticky;
+  top: 0;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  padding: 24px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 0;
+  z-index: 20;
+}
+.studio-brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 0 8px;
+  font-size: 20px;
+  letter-spacing: -0.5px;
+  line-height: 1.3;
+  font-weight: 600;
+}
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.brand-subtitle {
+  font-size: 11px;
+  display: block;
+  color: var(--muted);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}

@@ -13,7 +13,9 @@ Pure rules use Rust tests; API/domain/storage modules are exercised against real
 PostgreSQL, AGE and (where enabled) the real local model. Tests include rejected
 inputs and state effects. A module's presence does not count as a test.
 
-## Every Rust source file
+The maintained full inventory, including all newly added Rust files, frontend feature folders, independent services and SDKs, is [module-inventory.md](module-inventory.md). Coverage percentages and explicit remaining gaps are in [testing.md](testing.md). The tables below describe selected behavioral suites and must not be read as 100% coverage.
+
+## Rust behavioral test map
 
 | File | Responsibility | Coverage |
 |---|---|---|
@@ -120,7 +122,7 @@ inputs and state effects. A module's presence does not count as a test.
 | `Merchant.tsx` | Merchant workspace/session and chat orchestration | Browser personal sign-in/navigation/reload; users.py + real chat HTTP tests |
 | `SettingsDialog.tsx`, `ProposalCard.tsx`, `PreviewDialog.tsx`, `MessageText.tsx` | Focused merchant interactions | Build, browser interactions; proposal execution through HTTP tests |
 | `OverviewView.tsx`, `KnowledgeView.tsx`, `AgentsView.tsx`, `PreviewPanel.tsx` | API-backed activity, graph, protocol setup and server quote | Build, browser views; studio.py/intelligence.py |
-| `CommerceManager.tsx`, `UsersManager.tsx` | Tax/shipping/payment/reviews/orders and personal/team access | Browser rendering/sign-in; commerce.py + users.py |
+| `admin/catalog/ReviewModeration.tsx + admin/orders/OrderWorkflow.tsx`, `UsersManager.tsx` | Tax/shipping/payment/reviews/orders and personal/team access | Browser rendering/sign-in; commerce.py + users.py |
 | `i18n.tsx`, `locales/{en,de,fr,es,shop-*}.ts` | Merchant locale context and separate typed dictionaries | Typechecked equal keys and four localized API views |
 | `Icon.tsx`, `ProductArt.tsx`, scoped CSS | Reusable authored visuals | Build and screenshots; gallery asset HTTP resolution |
 
@@ -285,7 +287,7 @@ The production-mode Docker smoke test checks the packaged server and frontend.
 | `src/apps/{surfaces,surface_tests}.rs` | UI contract registry, namespaced route/action adapter, scope and mutating GET rejection | `app_surfaces.py`, Rust contract tests, extracted read admission proof |
 | `src/apps/service_limits.rs`, `foundation.rs`, `bootstrap.rs` | Shared non-queuing per-process/per-tenant-app service limits | Slow-service real-cart/second-tenant test and Rust drop/reuse test |
 | `src/apps/{data,registry,planning,gateway}.rs`, `src/planner.rs` | JSONB, indexed bounded pages, direct revision binding, selected bounded AI context and unified actions | Deep-page approved local-model wire fixture; existing app/service/staging regressions |
-| `frontend/src/{AppSurfaces,AppFrame}.tsx`, `extensions/sdk/browser.js` | New Studio/shop navigation and context-aware opaque UI bridge | Actual multilingual browser question/module/page and `frontend/tests/app-sdk.mjs` |
+| `frontend/src/shared/apps/{AppSurfaces,AppFrame}.tsx`, `extensions/sdk/browser.js` | New Studio/shop navigation and context-aware opaque UI bridge | Actual multilingual browser question/module/page and `frontend/tests/app-sdk.mjs` |
 | `extensions/apps/product-lab/*`, `scripts/product_lab.py` | Independent app code/storage/UI/container and private optional launcher | `app_surfaces.py`, actual non-root resource-limited container smoke |
 | `frontend/src/main.tsx` | Separate lazy Studio/storefront/platform loading | Strict production frontend build |
 

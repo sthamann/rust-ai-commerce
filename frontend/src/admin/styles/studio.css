@@ -1,0 +1,11 @@
+/* Ordered studio stylesheet entry; domain rules live in the adjacent folder. */
+@import "./studio/01-studio.css";
+@import "./studio/02-workspace-switch.css";
+@import "./studio/03-welcome-symbol.css";
+@import "./studio/04-review-product-div.css";
+@import "./studio/05-page-intro-p.css";
+@import "./studio/06-knowledge-stats-strong.css";
+@import "./studio/07-connection-card.css";
+@import "./studio/08-responsive.css";
+@import "./studio/09-responsive.css";
+@import "./studio/10-studio-mobile-preview-button.css";

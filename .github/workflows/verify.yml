@@ -28,8 +28,16 @@ jobs:
         with:
           python-version: '3.13'
       - name: Install connector cryptography dependency
-        run: python3 -m pip install -r extensions/services/connectors/requirements.txt
-      - run: cargo fmt --check && cargo clippy --locked --all-targets -- -D warnings && cargo test --locked && cargo build --locked --bins
+        run: python3 -m pip install -r extensions/services/connectors/requirements.txt -r scripts/testing/requirements.txt
+      - run: cargo fmt --check && cargo clippy --locked --all-targets -- -D warnings
+      - name: Instrument the real Rust unit and HTTP paths
+        run: |
+          rustup component add llvm-tools-preview
+          cargo install cargo-llvm-cov --version 0.9.1 --locked
+          echo "CARGO_LLVM_COV_TARGET_DIR=$PWD/target" >> "$GITHUB_ENV"
+          CARGO_LLVM_COV_TARGET_DIR="$PWD/target" cargo llvm-cov clean --workspace
+          CARGO_LLVM_COV_TARGET_DIR="$PWD/target" cargo llvm-cov show-env | python3 scripts/testing/coverage_env.py >> "$GITHUB_ENV"
+      - run: cargo test --locked && cargo build --locked --bins
       - name: Install pinned Lean toolchain
         uses: leanprover/lean-action@f061402b660e0c34644504b324e830f2991d4865 # v1
         with:
@@ -50,44 +58,30 @@ jobs:
           name: formal-verification-${{ github.sha }}
           path: artifacts/formal-*.json
           if-no-files-found: ignore
-      - run: npm ci && npm run format:check && npm run build
+      - run: npm ci && npm run format:check && npm run build && npm run architecture && npm run test:coverage
         working-directory: frontend
       - run: composer install --working-dir=reference --no-interaction --prefer-dist
       - run: python3 scripts/differential.py && python3 scripts/context_differential.py && python3 scripts/delivery_differential.py && python3 scripts/rule_differential.py
-      - name: Real database integration
+      - name: Real database and local provider integration (single suite registry)
         run: |
-          trap 'cat /tmp/commerce.log' ERR
-          target/debug/rust-ai-commerce > /tmp/commerce.log 2>&1 &
-          commerce_pid=$!
-          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8787/health && break || sleep 1; done
-          python3 scripts/studio.py
-          python3 scripts/integration.py
-          python3 scripts/protocols.py
-          python3 scripts/intelligence.py
-          python3 scripts/commerce.py
-          python3 scripts/scalability.py --container rust-ai-commerce-postgres-1
-          python3 scripts/platform_setup.py
-          python3 scripts/platform.py
-          python3 scripts/users.py
-          TEST_PERSONAL=1 python3 scripts/providers.py
-          python3 scripts/apps.py
-          python3 scripts/checkout_handoff.py
-          python3 scripts/payments.py
-          python3 scripts/services.py
-          python3 scripts/app_surfaces.py
-          python3 scripts/extensions.py
-          python3 scripts/staging.py
-          python3 scripts/marketing_accounts.py
-          python3 scripts/merchant_operations.py
-          python3 scripts/customer_accounts.py
-          python3 scripts/developer_documents.py
-          kill "$commerce_pid"
-          wait "$commerce_pid" || true
-          python3 scripts/email_tests.py
-          python3 scripts/connector_store_tests.py
-          python3 scripts/connected_apps.py
-          node frontend/tests/analytics.mjs
-          node frontend/tests/app-sdk.mjs
-          node frontend/tests/locales.mjs
-          python3 scripts/structure.py
-      # Real model checks are opt-in locally: CI does not replace them with a fake.
+          COVERAGE_PROCESS_START="$PWD/scripts/testing/.coveragerc" PYTHONPATH="$PWD/scripts/testing" python3 scripts/verify_integration.py --existing-database --container rust-ai-commerce-postgres-1
+      - name: Coverage reports and regression gates
+        run: |
+          mkdir -p artifacts/coverage
+          cargo llvm-cov report --json --output-path artifacts/coverage/rust.json
+          cargo llvm-cov report --html --output-dir artifacts/coverage/rust
+          python3 -m coverage combine --rcfile=scripts/testing/.coveragerc
+          python3 -m coverage json --rcfile=scripts/testing/.coveragerc
+          python3 -m coverage html --rcfile=scripts/testing/.coveragerc
+          python3 scripts/testing/coverage_report.py
+      - name: Preserve complete coverage reports, gaps and integration logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ github.sha }}
+          path: |
+            frontend/coverage
+            artifacts/coverage
+            artifacts/integration-server.log
+          if-no-files-found: warn
+      # External model/payment/OAuth checks remain opt-in; these reports do not certify live credentials.

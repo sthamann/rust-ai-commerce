@@ -1,0 +1,25 @@
+{
+  "note": "Initial measured floors; these are regression gates, not 100% system coverage. Increase them after adding meaningful tests; do not silently lower them.",
+  "minimums": {
+    "frontend": {
+      "lines": 32,
+      "branches": 25,
+      "functions": 24,
+      "statements": 32
+    },
+    "rust": {
+      "lines": 77,
+      "functions": 73,
+      "regions": 74
+    },
+    "python": {
+      "lines": 71,
+      "branches": 46
+    }
+  },
+  "full_modules": [
+    "frontend/src/admin/shell/requests.ts",
+    "frontend/src/admin/shell/useServerHealth.ts",
+    "frontend/src/shared/ui/WorkspaceBoundary.tsx"
+  ]
+}

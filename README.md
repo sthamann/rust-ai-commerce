@@ -280,8 +280,15 @@ See [implementation and limits](docs/intelligence-apps-payments.md),
 The current verification includes **5,872 bounded comparisons** against original
 Shopware 6.7.14.2 PHP classes. These cover selected pricing/context/tax operations and numeric rule comparisons;
 they do not establish full Shopware compatibility. The current workbench verification
-also records 44 Rust unit tests and 191 actual HTTP check groups across 18 suites, including
-private releases, customer authority, concurrent checkout and bounded catalog reads.
+now runs 50 Rust unit tests and 53 frontend component/hook tests, plus 21 real HTTP suites,
+three local provider suites, four browser contracts and verification-tool tests.
+These include private releases, customer authority, concurrent checkout and bounded catalog reads.
+
+## Modular source and measured quality
+
+The Studio, storefront and operator console live in dedicated feature folders; shared API, app, form and locale code has enforced ownership boundaries. Studio workspaces load lazily. Views and controllers are bounded, documented modules; ordered CSS fragments preserve the visual cascade. See the [frontend architecture](frontend/README.md), [complete source inventory](docs/module-inventory.md) and [testing guide](docs/testing.md).
+
+CI runs source-boundary/cycle/size checks, real integration, component regressions, original Shopware comparisons and existing Lean/mutation checks. It uploads full V8, LLVM and Python coverage reports and enforces reviewed regression floors. Untested source files remain in the reports. **Full-system 100% coverage is not achieved**; the strict audit fails until the remaining branches and unmeasured runtime scopes are covered. Current measured evidence and limitations are in [quality-baseline.json](docs/quality-baseline.json).
 
 ## Contribute
 

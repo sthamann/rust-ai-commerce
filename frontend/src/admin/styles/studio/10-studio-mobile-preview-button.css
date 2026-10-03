@@ -1,0 +1,174 @@
+/* studio: studio-mobile-preview-button styles. Source order is preserved by the entry stylesheet. */
+@media (prefers-reduced-motion: reduce) {
+  .studio *,
+  .studio *::before,
+  .studio *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+.studio .mobile-preview-button {
+  display: none;
+}
+.studio-preview-dialog {
+  background: var(--surface);
+  color: var(--text);
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: min(90vw, 360px);
+  max-height: 90dvh;
+}
+.studio-preview-dialog::backdrop {
+  background: #0009;
+  backdrop-filter: blur(6px);
+}
+.studio-preview-dialog .studio-preview {
+  display: block !important;
+  width: 100%;
+  max-height: 85dvh;
+  border: 0;
+  overflow: auto;
+}
+.studio-preview-dialog .preview-close {
+  position: absolute;
+  top: 10px;
+  right: 8px;
+  z-index: 1;
+}
+@media (max-width: 1024px) {
+  .studio .mobile-preview-button {
+    display: grid;
+  }
+}
+.learning-history {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin: 22px 0;
+}
+.learning-history > div {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 8px;
+  align-items: center;
+  text-align: center;
+}
+.learning-history span,
+.learning-history small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.learning-history strong {
+  font-size: 25px;
+  color: var(--accent);
+}
+@media (max-width: 600px) {
+  .learning-history {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.studio[data-theme="light"] .studio-topbar {
+  background: #fff;
+}
+.studio[data-theme="light"] .studio-sidebar {
+  background: linear-gradient(180deg, #ffffff 0%, #f6f9ff 100%);
+}
+.studio[data-theme="light"] .studio-brand > span:first-child {
+  background: #1768eb;
+  color: #fff;
+  border: 0;
+  box-shadow: 0 4px 16px #1768eb26;
+}
+.studio[data-theme="light"] .studio-sidebar nav button.active {
+  background: #e8f1ff;
+  color: #145bcc;
+  box-shadow: inset 3px 0 0 #1768eb;
+}
+.studio[data-theme="light"] .studio-preview {
+  background: #fff;
+}
+.studio[data-theme="light"] .preview-art {
+  background: linear-gradient(135deg, #e8f1ff, #eef7f9 65%, #edf0ff);
+  border: 1px solid #e0eafb;
+}
+.studio[data-theme="light"] .studio-welcome {
+  background: radial-gradient(ellipse at 70% 5%, #eaf2ff80, transparent 60%);
+}
+.studio[data-theme="light"] .studio-composer {
+  background: #fff;
+  box-shadow: 0 4px 28px #1544830d;
+  border: 1px solid #cad9ec;
+}
+.studio[data-theme="light"] .from-user .message-body > p {
+  background: #eaf2ff;
+  border: 1px solid #dce9fd;
+}
+.studio[data-theme="light"] .studio-card,
+.studio[data-theme="light"] .metric {
+  box-shadow: 0 3px 16px #12365f05;
+}
+.studio[data-theme="light"] .graph-card {
+  background: linear-gradient(180deg, #fff, #f8fbff);
+}
+.studio .verified-facts {
+  margin: 14px 0;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  font-size: 12px;
+}
+.verified-facts summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+.verified-facts dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 12px 0 0;
+}
+.verified-facts dl > div {
+  background: var(--panel);
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+.verified-facts dt {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.verified-facts dd {
+  margin: 0;
+}
+/* Email app: readable template editing and a safe text-only preview. */
+.email-panel section label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.email-panel textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+}
+.email-preview {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.email-preview pre {
+  white-space: pre-wrap;
+  font: inherit;
+  line-height: 1.7;
+}

@@ -1,0 +1,142 @@
+/* shop: shop-stepper styles. Source order is preserved by the entry stylesheet. */
+.shop-stepper {
+  border: 1px solid #dfe7ee;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+}
+.shop-stepper button {
+  border: 0;
+  background: none;
+  min-height: 44px;
+  width: 44px;
+  font-size: 18px;
+}
+.shop-stepper span {
+  min-width: 30px;
+  text-align: center;
+  font-size: 13px;
+}
+.shop-text-button {
+  border: 0;
+  background: none;
+  min-height: 44px;
+  color: var(--muted);
+  font-size: 11px !important;
+}
+.checkout-selection {
+  margin: 25px 0;
+  padding: 20px;
+  background: #f6f8fb;
+  border-radius: 8px;
+  display: grid;
+  gap: 14px;
+}
+.checkout-selection h3 {
+  font-size: 16px;
+  margin: 0 0 3px;
+}
+.checkout-selection label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.checkout-selection input,
+.checkout-selection select {
+  width: 100%;
+  font-size: 13px;
+}
+.address-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.address-fields label:first-child,
+.address-fields label:nth-child(2) {
+  grid-column: 1/-1;
+}
+.checkout-selection small {
+  font-size: 11px;
+  color: #87632b;
+  line-height: 1.5;
+}
+.bag-totals > div {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.bag-totals dd {
+  margin: 0;
+}
+.bag-totals .grand-total {
+  padding: 18px 0;
+  border-top: 1px solid #dfe7ee;
+  margin-top: 12px;
+  font-size: 20px;
+  color: var(--ink);
+  font-weight: 600;
+}
+.bag-body > .shop-primary {
+  width: 100%;
+}
+.shop-disclosure {
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin-top: 18px;
+}
+.order-confirmation {
+  display: flex;
+  gap: 12px;
+  padding: 18px;
+  background: #eef8f2;
+  border: 1px solid #c5e7d3;
+  border-radius: 7px;
+  color: #286243;
+}
+.order-confirmation strong {
+  font-size: 13px;
+}
+.order-confirmation p,
+.order-confirmation small,
+.delivery-estimate {
+  font-size: 11px;
+  line-height: 1.7;
+}
+@media (max-width: 1000px) {
+  .shop-nav {
+    gap: 10px;
+    padding: 0 25px;
+  }
+  .shop-nav nav {
+    gap: 12px;
+  }
+  .shop-nav nav button {
+    font-size: 11px;
+  }
+  .shop-content {
+    padding: 0 25px;
+  }
+  .pdp-main {
+    gap: 30px;
+  }
+  .shop-hero {
+    gap: 30px;
+  }
+  .pdp-purchase h1 {
+    font-size: 32px;
+  }
+  .pdp-reviews,
+  .pdp-details {
+    gap: 35px;
+  }
+  .shop-concierge {
+    grid-template-columns: 1fr;
+  }
+  .shop-grid {
+    gap: 24px 18px;
+  }
+}

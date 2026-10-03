@@ -152,7 +152,7 @@ automatic invitation dispatch or attachment/PDF sending are claimed in this vers
 - `email_templates.py`: bounded envelopes and four-language order rendering.
 - `email_service.py`: actions, event intake and durable queue submission.
 - `email_delivery.py`: real SMTP/STARTTLS/TLS, Resend and SendGrid HTTP delivery.
-- `frontend/src/EmailPanel.tsx`, `email-i18n.ts`: native multilingual app workspace.
+- `frontend/src/admin/apps/EmailPanel.tsx`, `email-i18n.ts`: native multilingual app workspace.
 - `src/marketing/flows.rs`: durable order-customer snapshot for the existing app flow adapter.
 
 `python3 scripts/email_tests.py` tests local SMTP with real STARTTLS/implicit TLS,
