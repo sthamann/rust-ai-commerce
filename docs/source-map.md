@@ -192,9 +192,9 @@ Shopware compatibility claim is made.
 | `src/discount.rs` | Exact-cent proportional basket discount allocation | Rust conservation/bounds tests, concurrent coupon HTTP checkout |
 | `src/commerce/product_edit.rs` | Revision-bound translations and advanced metadata; own product/reference validation | `marketing_accounts.py` and selected release |
 | `src/experience.rs` | Persisted layout policy plus owned-session signal ranking/clearing | `intelligence.py`, `marketing_accounts.py` |
-| `frontend/src/{DeveloperView,EnvironmentManager,StoryfrontView,AutomationView,ProductDataView}.tsx` | Dedicated merchant workbench forms and review surfaces | Strict frontend build, actual browser review |
-| `frontend/src/{CustomerAccount,DocumentsManager,ProductQuestion}.tsx` | Customer account editing/history and private upload/cited shopper questions | Native HTTP suites and browser forms |
-| `frontend/src/{workbench-i18n,errors-i18n}.ts`, `frontend/tests/locales.mjs` | Four-language typed vocabulary and exact/fallback errors | Locale parity/nonempty/error tests |
+| `frontend/src/admin/{developer,environments,storyfronts,automation,catalog}/` | Dedicated merchant workbench forms and review surfaces | Strict frontend build, actual browser review |
+| `frontend/src/storefront/account/CustomerAccount.tsx`, `admin/catalog/DocumentsManager.tsx`, `storefront/catalog/ProductQuestion.tsx` | Customer account editing/history and private upload/cited shopper questions | Native HTTP suites and browser forms |
+| `frontend/src/shared/i18n/{workbench-i18n,errors-i18n}.ts`, `frontend/tests/locales.mjs` | Four-language typed vocabulary and exact/fallback errors | Locale parity/nonempty/error tests |
 | `deploy/*`, `scripts/prepare_vercel.py` | Self-hosted image/TLS network and credential-free Vercel API rewrite generation | Container build/start and Compose/static checks |
 
 Migrations 011, 013–015 add source documents/chunks, environment/release/build
@@ -226,9 +226,9 @@ caches; this is not a machine/database cold-start or failover test.
 | `src/assets/*`, `src/staging/assets.rs` | Immutable MIME-checked upload bytes, publication digests, paid owning order download entitlement, typed rich blocks and selective asset release. `merchant_operations.py`. |
 | `src/auth/{permissions,integrations,members,invitations,middleware}.rs` | Fifteen scopes, per-shop hashed expiring keys, immediate revocation and non-escalating delegation. Permission units and HTTP/MCP negative tests. |
 | `src/payments/{paypal,provider,storage,worker,routes}.rs` | Per-shop Sandbox/Live wallet configuration, pinned official attribution, durable jobs and pending-refund GET recovery. Local wire fixture `payments.py`; no live PSP proof. |
-| `frontend/src/{CustomerFields,AddressFields,AddressCard,AddressBook,CheckoutIdentity,CheckoutDetails,CustomerAccount,CustomersManager}.tsx` | Same four-language contact/address interactions in buyer account, checkout and merchant CRM. Strict frontend build, locale tests and browser review. |
-| `frontend/src/{OrderDetail,OrderWorkflow,OrderPaymentDelivery,ReceiptPanel,OrdersManager}.tsx` | Direct eligible commands, same-job payment polling, immutable address/document views and event activity. |
-| `frontend/src/{SettingsWorkspace,MasterDataSettings,CommerceSettings,AppsManager}.tsx` | Central configuration and issuer, app categories and individual package workspaces; operational layouts use the full available width. |
+| `frontend/src/shared/customer/`, `storefront/{account,checkout}/`, `admin/customers/` | Same four-language contact/address interactions in buyer account, checkout and merchant CRM. Strict frontend build, locale tests and browser review. |
+| `frontend/src/admin/orders/` | Direct eligible commands, same-job payment polling, immutable address/document views and event activity. |
+| `frontend/src/admin/settings/`, `frontend/src/admin/apps/` | Central configuration and issuer, app categories and individual package workspaces; operational layouts use the full available width. |
 | Migrations `016`–`021` | Operations/documents/assets, fine-key storage, state-machine/idempotency storage, explicit schema repair, customer IDs/addresses/default foreign keys and explicitly synthetic demo-address backfill. Applied entries remain immutable/checksummed. |
 
 The file guard verifies every Rust module's responsibility header and maximum
@@ -258,7 +258,7 @@ reviewed bindings, not whole-module proofs. See the
 | `src/knowledge.rs` | Private AGE source and product provenance, separated from public graph |
 | `src/planner.rs` | Actual private-source model context and persisted task evidence |
 | `src/marketing/{rules,rule_match,rule_fields,catalog,app_flows,flows}.rs` | Condition schema, original comparison/facts, upstream import, app-aware durable flow execution |
-| `frontend/src/{ConnectorPanel,RuleBuilder,FlowBuilder,ShopAnalytics}.tsx` | Multilingual app details, recursive graphical automation, consent and commerce events |
+| `frontend/src/admin/apps/ConnectorPanel.tsx`, `admin/automation/{RuleBuilder,FlowBuilder}.tsx`, `storefront/analytics/ShopAnalytics.tsx` | Multilingual app details, recursive graphical automation, consent and commerce events |
 | `extensions/sdk/analytics.js` | Reusable consent-bound GA4 adapter for headless frontends |
 | `scripts/{connected_apps,connector_store_tests,rule_differential}.py` | Actual provider/model wire path, state fences and original PHP comparison regressions |
 
@@ -289,7 +289,7 @@ The production-mode Docker smoke test checks the packaged server and frontend.
 | `src/apps/{data,registry,planning,gateway}.rs`, `src/planner.rs` | JSONB, indexed bounded pages, direct revision binding, selected bounded AI context and unified actions | Deep-page approved local-model wire fixture; existing app/service/staging regressions |
 | `frontend/src/shared/apps/{AppSurfaces,AppFrame}.tsx`, `extensions/sdk/browser.js` | New Studio/shop navigation and context-aware opaque UI bridge | Actual multilingual browser question/module/page and `frontend/tests/app-sdk.mjs` |
 | `extensions/apps/product-lab/*`, `scripts/product_lab.py` | Independent app code/storage/UI/container and private optional launcher | `app_surfaces.py`, actual non-root resource-limited container smoke |
-| `frontend/src/main.tsx` | Separate lazy Studio/storefront/platform loading | Strict production frontend build |
+| `frontend/src/application/ApplicationRouter.tsx` + `main.tsx` | Separate lazy Studio/storefront/platform loading and root error recovery | Strict production frontend build |
 
 Every host location and limit is listed in [the full app contract](app-platform.md).
 External app code, service declarations and frontend behavior remain outside the
