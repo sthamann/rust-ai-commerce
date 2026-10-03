@@ -10,6 +10,8 @@ Rules consume server-owned cart, product, selected-address, customer-history and
 
 Saved rules can be referenced with `{"type":"ruleReference","ruleId":"eligible"}`. Only referenced IDs are fetched using tenant-bound indexed batch reads, with 100 referenced rules and depth eight as bounds. Reference limits apply independently to each matching flow; unrelated events and inactive flows are not loaded. Event jobs freeze their definitions and revisions. Missing/disabled references fail explicitly; recursive references cannot run indefinitely. Current actor membership and granular permissions are still checked when each delayed action executes.
 
+![Native connected flow editor with a reviewable AI action](assets/automation-flow-en.jpg)
+
 ## Source inventory and limits
 
 `reference/automation-catalog.php` reflects **114 concrete production Rule subclasses and 16 Core FlowAction names**. It excludes test classes and abstract helpers. This corrects the old text-only 120-name inventory, which was not an accurate count of executable production classes.

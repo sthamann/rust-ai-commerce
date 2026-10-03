@@ -68,13 +68,19 @@
 }
 .flow-branches {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 12px;
 }
 .flow-connection {
+  min-width: 0;
   border-top: 1px dashed #d6e2ec;
   padding-top: 14px;
   margin-top: 18px;
+}
+.flow-connection select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
 }
 .flow-branches .flow-connection:first-child {
   color: #25826a;
@@ -154,4 +160,14 @@
 }
 .flow-topology .edge-no {
   color: #bf8296;
+}
+
+.workbench-grid.flow-workspace {
+  grid-template-columns: 220px minmax(0, 1fr);
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .workbench-grid.flow-workspace {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

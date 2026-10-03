@@ -1,19 +1,19 @@
 {
   "metrics": {
     "frontend": {
-      "lines": 33.89,
-      "branches": 26.89,
-      "functions": 25.58,
-      "statements": 33.7
+      "lines": 35.12,
+      "branches": 28.64,
+      "functions": 26.59,
+      "statements": 34.82
     },
     "rust": {
-      "lines": 78.18789609304268,
-      "functions": 74.14543194530765,
-      "regions": 74.94920973795668
+      "lines": 78.89604415823366,
+      "functions": 75.21222410865875,
+      "regions": 75.65823516878216
     },
     "python": {
-      "lines": 72.58323305254713,
-      "branches": 48.07383627608346
+      "lines": 72.16335966095164,
+      "branches": 50.75301204819277
     }
   },
   "zero_hit_modules": {
@@ -26,6 +26,7 @@
       "frontend/src/admin/assistant/MessageText.tsx",
       "frontend/src/admin/assistant/ProposalCard.tsx",
       "frontend/src/admin/assistant/SettingsDialog.tsx",
+      "frontend/src/admin/automation/CustomFieldCondition.tsx",
       "frontend/src/admin/automation/FlowBuilder.tsx",
       "frontend/src/admin/automation/FlowInputs.tsx",
       "frontend/src/admin/catalog/ProductAssets.tsx",
@@ -80,6 +81,8 @@
     ],
     "python": [
       "scripts/app_inference.py",
+      "scripts/automation_differential.py",
+      "scripts/automation_registry.py",
       "scripts/benchmark.py",
       "scripts/build_site.py",
       "scripts/check_site.py",
@@ -104,8 +107,7 @@
       "scripts/product_lab.py",
       "scripts/restart.py",
       "scripts/rule_catalog.py",
-      "scripts/rule_differential.py",
-      "scripts/testing/sitecustomize.py"
+      "scripts/rule_differential.py"
     ]
   },
   "unmeasured": [
@@ -116,23 +118,27 @@
   ],
   "errors": [],
   "entireSystemFullyCovered": false,
-  "date": "2026-10-03",
-  "baseCommit": "b1cf3831f7112be18cc48c324e93de60077234b6",
-  "frontendTests": 53,
-  "rustUnitTests": 50,
-  "httpSuites": 21,
-  "providerSuites": 3,
-  "browserContracts": 4,
-  "toolingUnitTests": 10,
   "rust_not_emitted_by_compiler": [
     "src/apps/mod.rs",
     "src/apps/surface_tests.rs",
     "src/auth/mod.rs",
+    "src/automation_rules/tests.rs",
     "src/cognition/mod.rs",
     "src/commerce/mod.rs",
     "src/lib.rs",
     "src/marketing/mod.rs",
+    "src/marketing/pipeline_tests.rs",
     "src/marketing/rule_tests.rs",
     "src/payments/mod.rs"
-  ]
+  ],
+  "date": "2026-10-03",
+  "baseCommit": "ca9080650b5b393f2eb89dc06bb2f8926f83e7c6",
+  "verifiedMergeCommit": "c78910206cc7ba26077ce5562f82b06d374b8860",
+  "verificationUrl": "https://github.com/sthamann/rust-ai-commerce/actions/runs/37121567597",
+  "frontendTests": 65,
+  "rustUnitTests": 58,
+  "httpSuites": 22,
+  "providerSuites": 3,
+  "browserContracts": 4,
+  "toolingUnitTests": 10
 }

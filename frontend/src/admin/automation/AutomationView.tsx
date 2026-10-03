@@ -179,7 +179,9 @@ export default function AutomationView({
           </button>
         ))}
       </nav>
-      <div className="workbench-grid">
+      <div
+        className={`workbench-grid ${kind === "flows" ? "flow-workspace" : ""}`}
+      >
         <section className="studio-card">
           <h2>{w(kind)}</h2>
           {rows[kind].map((r) => (

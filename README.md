@@ -81,7 +81,9 @@ path without external messages or paid model calls; live account authorization r
 your provider clients. Imports are manual in this version. The native builder does not
 claim complete behavior/API parity with the original condition catalog or arbitrary source FlowSequences. The reflected production catalog contains 114 Rule subclasses and 16 Core actions; 108 rule scopes are executable natively, with 432 direct original-PHP comparison cases across 74 classes. Unsupported runtimes remain visibly disabled. Source-name registration is not a claim of complete equivalence.
 
-![Visual order-event flow with nested conditions and a Slack app action](docs/assets/slack-flow-en.jpg)
+![Connected flow with source-named condition, order tagging, durable delay and a reviewable AI proposal](docs/assets/automation-flow-en.jpg)
+
+[Slack app action example](docs/assets/slack-flow-en.jpg)
 
 ## Transactional email delivery
 
