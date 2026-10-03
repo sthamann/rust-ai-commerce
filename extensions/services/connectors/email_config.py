@@ -170,4 +170,4 @@ def smtp_target(s):
         for ip in ips
     ):
         raise ValueError("SMTP address is not allowed")
-    return ips[0], port
+    return list(dict.fromkeys(ips)), port

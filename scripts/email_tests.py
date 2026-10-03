@@ -9,7 +9,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "extensions/services/connectors"))
 from cryptography.fernet import Fernet
 from server import Connector, Handler
-import email_config, email_templates
+import email_config, email_templates, email_delivery
 
 
 def http(url, body=None, headers=None, method=None, expected=200):
@@ -267,6 +267,18 @@ class Contracts(unittest.TestCase):
             )
 
     def test_real_smtp_plain_starttls_and_implicit_tls(self):
+        sentinel = object()
+        with patch(
+            "email_delivery.socket.create_connection",
+            side_effect=[OSError("No IPv6 route"), sentinel],
+        ) as connect:
+            self.assertIs(
+                email_delivery.pinned_socket(
+                    (["2001:4860:4860::8888", "8.8.8.8"], 587), 8
+                ),
+                sentinel,
+            )
+            self.assertEqual(connect.call_args.args[0], ("8.8.8.8", 587))
         for mode in ("test_plain", "starttls", "tls"):
             self.smtp.implicit = mode == "tls"
             self.configure(dryRun=False, smtpSecurity=mode)

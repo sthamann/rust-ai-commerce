@@ -36,6 +36,12 @@ an exact port of Shopware's entire mail-template/document/message-queue subsyste
    explicitly labeled and only enabled with saved settings and a configured
    sender/transport. Real use needs your own credentials and sender verification.
 
+For hosted service URLs, follow the [connected-app operator setup](connected-apps.md#operator-setup):
+provide the persistent Fernet key and gateway token, then include an `email` entry
+in `APP_SERVICES` pointing to `https://YOUR_COMMERCE_DOMAIN/connected-apps/email`
+with the same gateway token. Preserve your other app entries. The browser receives
+neither that token nor provider credentials.
+
 New installations are **disabled**, **test mode on**, **automatic confirmations off**.
 Credentials are write-only: status returns configured flags, never secrets.
 An empty credential UI field preserves an existing credential; **Remove credentials

@@ -7,15 +7,26 @@ from email_config import smtp_target
 from transport import endpoint, NoRedirect, WireError
 
 
+def pinned_socket(target, timeout):
+    # Connect-only fallback among validated addresses; never repeat MAIL/DATA.
+    error = None
+    for ip in target[0]:
+        try:
+            return socket.create_connection((ip, target[1]), timeout)
+        except OSError as e:
+            error = e
+    raise error or OSError("SMTP host has no validated address")
+
+
 class PinnedSMTP(smtplib.SMTP):
     def _get_socket(self, host, port, timeout):
-        return socket.create_connection(self.target, timeout)
+        return pinned_socket(self.target, timeout)
 
 
 class PinnedSSL(smtplib.SMTP_SSL):
     def _get_socket(self, host, port, timeout):
         return self.context.wrap_socket(
-            socket.create_connection(self.target, timeout), server_hostname=host
+            pinned_socket(self.target, timeout), server_hostname=host
         )
 
 
