@@ -130,6 +130,12 @@ fn eval(j: &Value) -> Result<Value, String> {
             args["read_only"].as_bool().ok_or("Invalid read_only")?,
             args["mutating"].as_bool().ok_or("Invalid mutating")?
         ))),
+        Some("rule_xor_count") => Ok(json!(rule_xor_count(
+            args["hits"].as_u64().ok_or("Invalid hits")?
+        ))),
+        Some("flow_delay_admissible") => Ok(json!(flow_delay_admissible(
+            args["seconds"].as_u64().ok_or("Invalid seconds")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

@@ -1,0 +1,157 @@
+/* Actual graph nodes and original rule forms use the Studio theme and independent responsive columns. */
+.automation-canvas {
+  padding: 20px;
+  border: 1px solid var(--studio-border, #dbe5ef);
+  border-radius: 20px;
+  background: radial-gradient(#cfdeea 1px, transparent 1px) 0 0/16px 16px
+    #f5f9fc;
+}
+.automation-canvas > header,
+.automation-node > header,
+.automation-canvas > footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.automation-canvas > header h3 {
+  margin: 0;
+}
+.automation-canvas > header span,
+.source-rule-fields small {
+  color: #657d94;
+  font-size: 11px;
+}
+.automation-canvas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  padding: 24px 0;
+}
+.automation-node {
+  border: 1px solid #d8e4ee;
+  border-top: 3px solid #2196ee;
+  border-radius: 14px;
+  padding: 16px;
+  background: #fff;
+  box-shadow: 0 5px 18px #1538580a;
+  min-width: 0;
+}
+.automation-node.node-condition {
+  border-top-color: #9365d3;
+}
+.automation-node.node-delay {
+  border-top-color: #e4aa37;
+}
+.automation-node.node-stop {
+  border-top-color: #d36c78;
+}
+.automation-node > header {
+  font-size: 12px;
+  margin-bottom: 14px;
+}
+.automation-node > header button {
+  border: 0;
+  background: transparent;
+  color: #8093a5;
+  font-size: 20px;
+}
+.flow-entry {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px !important;
+}
+.flow-entry input {
+  width: auto !important;
+}
+.flow-branches {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.flow-connection {
+  border-top: 1px dashed #d6e2ec;
+  padding-top: 14px;
+  margin-top: 18px;
+}
+.flow-branches .flow-connection:first-child {
+  color: #25826a;
+}
+.flow-branches .flow-connection:last-child {
+  color: #bd5968;
+}
+.automation-canvas > footer {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.automation-canvas > footer button {
+  border: 1px solid #cbddeb;
+  border-radius: 10px;
+  background: #fff;
+  padding: 8px 12px;
+  color: #275d86;
+}
+.source-rule-fields {
+  display: grid;
+  gap: 12px;
+}
+.source-rule-fields small {
+  overflow-wrap: anywhere;
+}
+.source-rule-fields label,
+.flow-action-fields label {
+  min-width: 0;
+}
+.source-rule-fields input[type="checkbox"] {
+  width: auto;
+}
+@media (max-width: 720px) {
+  .automation-canvas-grid {
+    grid-template-columns: 1fr;
+  }
+  .flow-branches {
+    grid-template-columns: 1fr;
+  }
+}
+
+.flow-topology {
+  background: var(--surface-soft, #f5f8ff);
+  border: 1px solid var(--border, #dce5f3);
+  border-radius: 16px;
+  overflow: auto;
+  max-height: 420px;
+}
+.flow-topology svg {
+  width: 100%;
+  min-width: 600px;
+  display: block;
+}
+.flow-topology rect {
+  fill: var(--surface, #fff);
+  stroke: #c7d7ef;
+  stroke-width: 1.5;
+}
+.flow-topology .flow-start {
+  stroke: #2672ed;
+  stroke-width: 2.5;
+}
+.flow-topology text {
+  fill: var(--text, #253c59);
+  font-size: 12px;
+  font-family: inherit;
+}
+.flow-topology g[role="button"] {
+  cursor: pointer;
+}
+.flow-topology g[role="button"]:focus rect {
+  stroke: #2672ed;
+  stroke-width: 3;
+}
+.flow-topology .edge-yes {
+  color: #458dd4;
+}
+.flow-topology .edge-no {
+  color: #bf8296;
+}

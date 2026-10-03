@@ -64,7 +64,7 @@ jobs:
       - run: npm ci && npm run format:check && npm run build && npm run architecture && npm run test:coverage
         working-directory: frontend
       - run: composer install --working-dir=reference --no-interaction --prefer-dist
-      - run: python3 scripts/differential.py && python3 scripts/context_differential.py && python3 scripts/delivery_differential.py && python3 scripts/rule_differential.py
+      - run: python3 scripts/differential.py && python3 scripts/context_differential.py && python3 scripts/delivery_differential.py && python3 scripts/rule_differential.py && python3 scripts/automation_registry.py && python3 scripts/automation_differential.py
       - name: Real database and local provider integration (single suite registry)
         run: |
           COVERAGE_PROCESS_START="$PWD/scripts/testing/.coveragerc" PYTHONPATH="$PWD/scripts/testing" python3 scripts/verify_integration.py --existing-database --container rust-ai-commerce-postgres-1

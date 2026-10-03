@@ -1,5 +1,7 @@
 /** Graphical event → condition tree → action pipeline, including installed app actions. */
 import { useConnectedText } from "../../shared/i18n/connected-i18n";
+import FlowCanvas from "./FlowCanvas";
+import { useAutomationText } from "../../shared/i18n/automation-i18n";
 import FlowInputs from "./FlowInputs";
 import RuleBuilder, { type AutomationCatalog } from "./RuleBuilder";
 export default function FlowBuilder({
@@ -11,6 +13,7 @@ export default function FlowBuilder({
   update: (key: string, value: any) => void;
   catalog: AutomationCatalog;
 }) {
+  const { a } = useAutomationText();
   const { x, locale } = useConnectedText();
   const app = catalog.apps.find((a) => a.id === data.appAction?.app);
   const events = [
@@ -69,12 +72,48 @@ export default function FlowBuilder({
         <select
           aria-label={x("then")}
           value={data.action}
-          onChange={(e) => update("action", e.target.value)}
+          onChange={(e) => {
+            update("action", e.target.value);
+            if (e.target.value === "pipeline" && !data.pipeline)
+              update("pipeline", {
+                entry: "first",
+                nodes: [
+                  {
+                    id: "first",
+                    kind: "action",
+                    action: "note",
+                    config: { instruction: data.instruction ?? {} },
+                    next: null,
+                  },
+                ],
+              });
+          }}
         >
+          <option value="pipeline">{a("pipeline")}</option>
           <option value="note">{x("note")}</option>
           <option value="ai_proposal">{x("ai")}</option>
           <option value="app_action">{x("app")}</option>
         </select>
+        {data.action === "pipeline" && (
+          <FlowCanvas
+            value={
+              data.pipeline ?? {
+                entry: "first",
+                nodes: [
+                  {
+                    id: "first",
+                    kind: "action",
+                    action: "note",
+                    config: { instruction: data.instruction ?? {} },
+                    next: null,
+                  },
+                ],
+              }
+            }
+            onChange={(p) => update("pipeline", p)}
+            catalog={catalog}
+          />
+        )}
         {data.action === "app_action" && (
           <div className="connector-settings">
             <select

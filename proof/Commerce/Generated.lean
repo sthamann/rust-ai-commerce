@@ -57,4 +57,10 @@ def platform_admissible (personal : Bool) (granted : Bool) (active : Bool) : Boo
 def app_read_admissible (read_only : Bool) (mutating : Bool) : Bool :=
   (read_only && (!mutating))
 
+def rule_xor_count (hits : Nat) : Bool :=
+  (decide (hits = 1))
+
+def flow_delay_admissible (seconds : Nat) : Bool :=
+  (decide (seconds ≤ 2592000))
+
 end CommerceKernel

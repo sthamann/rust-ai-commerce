@@ -6,7 +6,7 @@ at 100%, and neither coverage nor the Lean subset proves the entire system bug-f
 
 ## Source architecture
 
-- Rust: 162 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
+- Rust: 184 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
 - Frontend: separate `admin/`, `storefront/`, `platform/` and `shared/` ownership. Views/controllers and styles are limited to 400 lines; locale data has a documented 700-line allowance. Runtime cycles, unresolved local imports, crossing application boundaries, missing folder contracts and undocumented source files fail CI.
 - Independent Python services, app examples and browser SDKs remain under `extensions/`; test tooling lives under `scripts/`. [The generated inventory](module-inventory.md) covers all these sources and is checked for drift.
 - Studio workspaces load lazily. Root application routing is isolated in `frontend/src/application/`; error boundaries keep workspace failures inside the current view and provide reload recovery for rejected cached module imports. The removed `CommerceManager` had no call site and duplicated old operational UI. Order state management remains in `admin/orders/OrderWorkflow.tsx`; product review moderation lives in `admin/catalog/ReviewModeration.tsx`.
@@ -41,19 +41,21 @@ from the process or the local `.env`. CI alone passes `--existing-database` for 
 already-disposable database. Failures remain failures, and child processes stop
 before database cleanup. SIGINT flushes optional Rust coverage profiles.
 
-`testing/suites.json` is the single registry for 21 HTTP suites, three local
+`testing/suites.json` is the single registry for 22 HTTP suites, three local
 provider/connector suites, four browser contracts and verification-tool tests.
 The local server uses an offline model URL; live model checks are separate, opt-in
 checks. Credentials, payments, mail and Slack are exercised against loopback
 protocol fixtures. Passing these does not demonstrate a real provider account.
 
-The four original-PHP comparison commands remain:
+The original-PHP comparisons and reflected automation catalog checks are:
 
 ```sh
 python3 scripts/differential.py
 python3 scripts/context_differential.py
 python3 scripts/delivery_differential.py
 python3 scripts/rule_differential.py
+python3 scripts/automation_registry.py
+python3 scripts/automation_differential.py
 ```
 
 ## Component regressions
@@ -68,6 +70,7 @@ supplied by a test. Cases include:
 - opt-in personalization, ranking, consent withdrawal and failed signals;
 - product gallery, variants, normalized purchase quantities, tier prices, SEO, reviews and public source-backed product questions;
 - delayed product answers after navigation and product-specific moderation with rejected writes;
+- connected flow branches/deletion, frozen execution traces, incomplete JSON drafts and source condition round-trips in four languages;
 - SMTP/Resend/SendGrid fields, saved secrets, read-only settings, translated templates and explicit dry-run test calls.
 
 ## Coverage collection

@@ -1,36 +1,49 @@
 /** Visual recursive rule tree: AND/OR/NOT groups, typed facts and editable leaf conditions. */
+import SourceRuleFields from "./SourceRuleFields";
+import {
+  fromSource,
+  toSource,
+  sourceRule,
+  type SourceDefinition,
+} from "./source-rules";
+import { useAutomationText } from "../../shared/i18n/automation-i18n";
 import { useState } from "react";
 import { useConnectedText } from "../../shared/i18n/connected-i18n";
 export type Rule = Record<string, any>;
 export type AutomationCatalog = {
+  rules?: { id: string; name: Record<string, string>; revision: number }[];
+  sourceConditions?: SourceDefinition[];
+  actions?: string[];
   conditions: string[];
   fields: string[];
   events: string[];
   apps: { id: string; manifest: any }[];
 };
 export const newRule = (type: string): Rule =>
-  type === "andContainer" || type === "orContainer"
-    ? { type, children: [{ type: "alwaysValid" }] }
-    : type === "notContainer"
-      ? { type, child: { type: "alwaysValid" } }
-      : type === "cartCartAmount"
-        ? { type, operator: ">=", amount: 100 }
-        : type === "cartLineItemCount"
-          ? { type, operator: ">=", count: 1 }
-          : type === "customerLoggedIn"
-            ? { type, isLoggedIn: true }
-            : type === "contextField"
-              ? { type, field: "customer.email", operator: "=", value: "" }
-              : type === "eventField"
-                ? {
-                    type,
-                    path: "sourceKind",
-                    operator: "=",
-                    value: "support_email",
-                  }
-                : ["alwaysValid"].includes(type)
-                  ? { type }
-                  : { type, values: [], operator: "=" };
+  type === "ruleReference"
+    ? { type, ruleId: "" }
+    : type === "andContainer" || type === "orContainer"
+      ? { type, children: [{ type: "alwaysValid" }] }
+      : type === "notContainer"
+        ? { type, child: { type: "alwaysValid" } }
+        : type === "cartCartAmount"
+          ? { type, operator: ">=", amount: 100 }
+          : type === "cartLineItemCount"
+            ? { type, operator: ">=", count: 1 }
+            : type === "customerLoggedIn"
+              ? { type, isLoggedIn: true }
+              : type === "contextField"
+                ? { type, field: "customer.email", operator: "=", value: "" }
+                : type === "eventField"
+                  ? {
+                      type,
+                      path: "sourceKind",
+                      operator: "=",
+                      value: "support_email",
+                    }
+                  : ["alwaysValid"].includes(type)
+                    ? { type }
+                    : { type, values: [], operator: "=" };
 export default function RuleBuilder({
   value,
   onChange,
@@ -43,6 +56,8 @@ export default function RuleBuilder({
   depth?: number;
 }) {
   const { x } = useConnectedText();
+  const { a, locale } = useAutomationText();
+  const source = catalog.sourceConditions?.find((d) => d.type === value.name);
   const [input, setInput] = useState("");
   const group = ["andContainer", "orContainer"].includes(value.type);
   const not = value.type === "notContainer";
@@ -54,18 +69,65 @@ export default function RuleBuilder({
         <span className="rule-node-dot" />
         <select
           aria-label={x("field")}
-          value={value.type}
-          onChange={(e) => onChange(newRule(e.target.value))}
+          value={source ? `source:${source.type}` : value.type}
+          onChange={(e) => {
+            const def = catalog.sourceConditions?.find(
+              (d) => `source:${a(d.type)}` === e.target.value,
+            );
+            onChange(def ? sourceRule(def) : newRule(e.target.value));
+          }}
         >
           {catalog.conditions.map((type) => (
             <option value={type} key={type}>
-              {x(type)}
+              {type === "ruleReference" ? a(type) : x(type)}
             </option>
           ))}
+          <optgroup label={a("original")}>
+            {catalog.sourceConditions?.map((d) => (
+              <option
+                key={a(d.type)}
+                value={`source:${a(d.type)}`}
+                disabled={!d.supported}
+              >
+                {a(d.type)}
+                {!d.supported ? ` · ${a("missing")}` : ""}
+              </option>
+            ))}
+          </optgroup>
         </select>
         <span className="rule-depth">{depth + 1}</span>
       </div>
-      {group ? (
+      {value.type === "ruleReference" && (
+        <label>
+          {a("ruleReference")}
+          <select
+            value={value.ruleId ?? ""}
+            onChange={(e) => set("ruleId", e.target.value)}
+          >
+            <option value="">—</option>
+            {catalog.rules?.map((r) => (
+              <option key={r.id} value={r.id}>
+                {r.name[locale.slice(0, 2)] ?? r.id}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+      {source ? (
+        <SourceRuleFields
+          definition={source}
+          config={value.config}
+          onChange={(config) => set("config", config)}
+          renderChild={(node, update) => (
+            <RuleBuilder
+              value={fromSource(node)}
+              onChange={(next) => update(toSource(next))}
+              catalog={catalog}
+              depth={depth + 1}
+            />
+          )}
+        />
+      ) : group ? (
         <>
           <div className="rule-children">
             {value.children.map((r: Rule, i: number) => (

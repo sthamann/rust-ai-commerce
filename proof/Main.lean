@@ -24,6 +24,8 @@ def evalRequest (j : Json) : Except String Json := do
   | "app_flow_admissible" => pure (toJson (app_flow_admissible ((← (args.getObjVal? "allowed") >>= Json.getBool?)) ((← (args.getObjVal? "read_only") >>= Json.getBool?)) ((← (args.getObjVal? "is_public") >>= Json.getBool?))))
   | "platform_admissible" => pure (toJson (platform_admissible ((← (args.getObjVal? "personal") >>= Json.getBool?)) ((← (args.getObjVal? "granted") >>= Json.getBool?)) ((← (args.getObjVal? "active") >>= Json.getBool?))))
   | "app_read_admissible" => pure (toJson (app_read_admissible ((← (args.getObjVal? "read_only") >>= Json.getBool?)) ((← (args.getObjVal? "mutating") >>= Json.getBool?))))
+  | "rule_xor_count" => pure (toJson (rule_xor_count ((← (args.getObjVal? "hits") >>= Json.getNat?))))
+  | "flow_delay_admissible" => pure (toJson (flow_delay_admissible ((← (args.getObjVal? "seconds") >>= Json.getNat?))))
   | _ => throw "Unknown policy"
 
 def main : IO Unit := do

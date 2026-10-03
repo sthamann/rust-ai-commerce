@@ -1,0 +1,3029 @@
+{
+  "adminSalesChannelSource": {
+    "native": {
+      "path": "adminSource",
+      "field": "hasAdminSalesChannelSource",
+      "kind": "bool"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "hasAdminSalesChannelSource": {
+          "name": "hasAdminSalesChannelSource",
+          "type": "bool",
+          "config": []
+        }
+      }
+    }
+  },
+  "allLineItemsContainer": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "minimumShouldMatch": {
+          "name": "minimumShouldMatch",
+          "type": "int",
+          "config": {}
+        },
+        "types": {
+          "name": "types",
+          "type": "multi-select",
+          "config": {}
+        }
+      }
+    }
+  },
+  "alwaysValid": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": null
+  },
+  "andContainer": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": null
+  },
+  "cartCartAmount": {
+    "native": {
+      "path": "price.totalPrice",
+      "field": "amount",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartGoodsCount": {
+    "native": {
+      "path": "goodsCount",
+      "field": "count",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "empty"
+        ]
+      },
+      "fields": {
+        "count": {
+          "name": "count",
+          "type": "float",
+          "config": {}
+        }
+      }
+    }
+  },
+  "cartGoodsPrice": {
+    "native": {
+      "path": "goodsPrice",
+      "field": "amount",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "empty"
+        ]
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {}
+        }
+      }
+    }
+  },
+  "cartHasDeliveryFreeItem": {
+    "native": {
+      "path": "hasDeliveryFreeItem",
+      "field": "allowed",
+      "kind": "bool"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "allowed": {
+          "name": "allowed",
+          "type": "bool",
+          "config": []
+        }
+      }
+    }
+  },
+  "cartLineItem": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": null
+  },
+  "cartLineItemActualStock": {
+    "native": {
+      "path": "line.stock",
+      "field": "stock",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "stock": {
+          "name": "stock",
+          "type": "int",
+          "config": []
+        }
+      }
+    }
+  },
+  "cartLineItemClearanceSale": {
+    "native": {
+      "path": "line.closeout",
+      "field": "clearanceSale",
+      "kind": "bool"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "clearanceSale": {
+          "name": "clearanceSale",
+          "type": "bool",
+          "config": {
+            "isMatchAny": true
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemCreationDate": {
+    "native": {
+      "path": "line.createdAt",
+      "field": "lineItemCreationDate",
+      "kind": "datetime"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "between"
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "lineItemCreationDate": {
+          "name": "lineItemCreationDate",
+          "type": "datetime",
+          "config": []
+        }
+      }
+    }
+  },
+  "cartLineItemCustomField": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": null
+  },
+  "cartLineItemDimensionHeight": {
+    "native": {
+      "path": "line.height",
+      "field": "amount",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "unit": "dimension",
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemDimensionLength": {
+    "native": {
+      "path": "line.length",
+      "field": "amount",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "unit": "dimension",
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemDimensionVolume": {
+    "native": {
+      "path": "line.volume",
+      "field": "amount",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "unit": "volume",
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemDimensionWeight": {
+    "native": {
+      "path": "line.weight",
+      "field": "amount",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "unit": "weight",
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemDimensionWidth": {
+    "native": {
+      "path": "line.width",
+      "field": "amount",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "unit": "dimension",
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemGoodsTotal": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          ">",
+          ">=",
+          "<",
+          "<="
+        ]
+      },
+      "fields": {
+        "count": {
+          "name": "count",
+          "type": "int",
+          "config": {}
+        }
+      }
+    }
+  },
+  "cartLineItemInCategory": {
+    "native": {
+      "path": "line.categoryIds",
+      "field": "categoryIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "categoryIds": {
+          "name": "categoryIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "category"
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemInGroup": {
+    "native": null,
+    "supported": false,
+    "status": "missing-runtime",
+    "behavioralParity": false,
+    "config": null
+  },
+  "cartLineItemInProductStream": {
+    "native": {
+      "path": "line.streamIds",
+      "field": "streamIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "streamIds": {
+          "name": "streamIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "product_stream"
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemIsNew": {
+    "native": {
+      "path": "line.isNew",
+      "field": "isNew",
+      "kind": "bool"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "isNew": {
+          "name": "isNew",
+          "type": "bool",
+          "config": {
+            "isMatchAny": true
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemListPrice": {
+    "native": {
+      "path": "line.listPrice",
+      "field": "amount",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemListPriceRatio": {
+    "native": {
+      "path": "line.listPriceRatio",
+      "field": "amount",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemOfManufacturer": {
+    "native": {
+      "path": "line.manufacturerId",
+      "field": "manufacturerIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "manufacturerIds": {
+          "name": "manufacturerIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "product_manufacturer"
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemOfType": {
+    "native": {
+      "path": "line.type",
+      "field": "lineItemType",
+      "kind": "string"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "lineItemType": {
+          "name": "lineItemType",
+          "type": "single-select",
+          "config": {
+            "options": [
+              "product",
+              "promotion"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemPerItemQuantity": {
+    "native": {
+      "path": "line.quantity",
+      "field": "quantity",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "quantity": {
+          "name": "quantity",
+          "type": "int",
+          "config": []
+        }
+      }
+    }
+  },
+  "cartLineItemProductStates": {
+    "native": {
+      "path": "line.states",
+      "field": "productState",
+      "kind": "membership"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "productState": {
+          "name": "productState",
+          "type": "single-select",
+          "config": {
+            "options": [
+              "is-physical",
+              "is-download"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemProductType": {
+    "native": {
+      "path": "line.productType",
+      "field": "productType",
+      "kind": "string"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "productType": {
+          "name": "productType",
+          "type": "single-select",
+          "config": {
+            "options": [
+              "physical",
+              "digital"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemPromoted": {
+    "native": {
+      "path": "line.promoted",
+      "field": "isPromoted",
+      "kind": "bool"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "isPromoted": {
+          "name": "isPromoted",
+          "type": "bool",
+          "config": {
+            "isMatchAny": true
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemProperty": {
+    "native": {
+      "path": "line.propertyAndOptionIds",
+      "field": "identifiers",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "identifiers": {
+          "name": "identifiers",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "property_group"
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemPropertyValue": {
+    "native": {
+      "path": "line.propertyIds",
+      "field": "identifiers",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "identifiers": {
+          "name": "identifiers",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "property_group_option"
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemPurchasePrice": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "type": {
+          "name": "type",
+          "type": "single-select",
+          "config": {
+            "options": [
+              "gross",
+              "net"
+            ]
+          }
+        },
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemReleaseDate": {
+    "native": {
+      "path": "line.releaseDate",
+      "field": "lineItemReleaseDate",
+      "kind": "datetime"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "between",
+          "empty"
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "lineItemReleaseDate": {
+          "name": "lineItemReleaseDate",
+          "type": "datetime",
+          "config": []
+        }
+      }
+    }
+  },
+  "cartLineItemStock": {
+    "native": {
+      "path": "line.availableStock",
+      "field": "stock",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "stock": {
+          "name": "stock",
+          "type": "int",
+          "config": []
+        }
+      }
+    }
+  },
+  "cartLineItemTag": {
+    "native": {
+      "path": "line.tags",
+      "field": "identifiers",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "identifiers": {
+          "name": "identifiers",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "tag"
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemTaxation": {
+    "native": {
+      "path": "line.taxId",
+      "field": "taxIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "taxIds": {
+          "name": "taxIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "tax"
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemTotalPrice": {
+    "native": {
+      "path": "line.totalPrice",
+      "field": "amount",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemUnitPrice": {
+    "native": {
+      "path": "line.unitPrice",
+      "field": "amount",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemVariantValue": {
+    "native": {
+      "path": "line.optionIds",
+      "field": "identifiers",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "identifiers": {
+          "name": "identifiers",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "property_group_option"
+          }
+        }
+      }
+    }
+  },
+  "cartLineItemWithQuantity": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          ">",
+          ">=",
+          "<",
+          "<="
+        ]
+      },
+      "fields": {
+        "id": {
+          "name": "id",
+          "type": "string",
+          "config": {}
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "int",
+          "config": {}
+        }
+      }
+    }
+  },
+  "cartLineItemWrapper": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": null
+  },
+  "cartLineItemsInCartCount": {
+    "native": {
+      "path": "lineCount",
+      "field": "count",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "count": {
+          "name": "count",
+          "type": "int",
+          "config": []
+        }
+      }
+    }
+  },
+  "cartPositionPrice": {
+    "native": {
+      "path": "price.positionPrice",
+      "field": "amount",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartShippingCost": {
+    "native": {
+      "path": "shippingCosts.totalPrice",
+      "field": "cartShippingCost",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "cartShippingCost": {
+          "name": "cartShippingCost",
+          "type": "float",
+          "config": {
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartTaxDisplay": {
+    "native": {
+      "path": "price.taxStatus",
+      "field": "taxDisplay",
+      "kind": "string"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "="
+        ]
+      },
+      "fields": {
+        "taxDisplay": {
+          "name": "taxDisplay",
+          "type": "single-select",
+          "config": {
+            "options": [
+              "gross",
+              "net"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "cartTotalPurchasePrice": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "type": {
+          "name": "type",
+          "type": "single-select",
+          "config": {
+            "options": [
+              "gross",
+              "net"
+            ]
+          }
+        },
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartVolume": {
+    "native": {
+      "path": "volume",
+      "field": "volume",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "volume": {
+          "name": "volume",
+          "type": "float",
+          "config": {
+            "unit": "volume",
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "cartWeight": {
+    "native": {
+      "path": "weight",
+      "field": "weight",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "weight": {
+          "name": "weight",
+          "type": "float",
+          "config": {
+            "unit": "weight",
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "currency": {
+    "native": {
+      "path": "currency",
+      "field": "currencyIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "currencyIds": {
+          "name": "currencyIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "currency"
+          }
+        }
+      }
+    }
+  },
+  "customerAffiliateCode": {
+    "native": {
+      "path": "customer.affiliateCode",
+      "field": "affiliateCode",
+      "kind": "string",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "affiliateCode": {
+          "name": "affiliateCode",
+          "type": "string",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerAge": {
+    "native": {
+      "path": "customer.age",
+      "field": "age",
+      "kind": "number",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "age": {
+          "name": "age",
+          "type": "int",
+          "config": {
+            "unit": "age"
+          }
+        }
+      }
+    }
+  },
+  "customerBillingCity": {
+    "native": {
+      "path": "billing.city",
+      "field": "cityName",
+      "kind": "string",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "cityName": {
+          "name": "cityName",
+          "type": "string",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerBillingCountry": {
+    "native": {
+      "path": "billing.country",
+      "field": "countryIds",
+      "kind": "set",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "countryIds": {
+          "name": "countryIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "country"
+          }
+        }
+      }
+    }
+  },
+  "customerBillingState": {
+    "native": {
+      "path": "billing.countryStateId",
+      "field": "stateIds",
+      "kind": "set",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "stateIds": {
+          "name": "stateIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "country_state"
+          }
+        }
+      }
+    }
+  },
+  "customerBillingStreet": {
+    "native": {
+      "path": "billing.street",
+      "field": "streetName",
+      "kind": "string",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "streetName": {
+          "name": "streetName",
+          "type": "string",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerBillingZipCode": {
+    "native": {
+      "path": "billing.zipcode",
+      "field": "zipCodes",
+      "kind": "zip",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ]
+      },
+      "fields": {
+        "zipCodes": {
+          "name": "zipCodes",
+          "type": "tagged",
+          "config": {}
+        }
+      }
+    }
+  },
+  "customerBirthday": {
+    "native": {
+      "path": "customer.birthday",
+      "field": "birthday",
+      "kind": "date",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "between",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "birthday": {
+          "name": "birthday",
+          "type": "date",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerCampaignCode": {
+    "native": {
+      "path": "customer.campaignCode",
+      "field": "campaignCode",
+      "kind": "string",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "campaignCode": {
+          "name": "campaignCode",
+          "type": "string",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerCreatedByAdmin": {
+    "native": {
+      "path": "customer.createdByAdmin",
+      "field": "shouldCustomerBeCreatedByAdmin",
+      "kind": "bool",
+      "withoutCustomer": "false"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "shouldCustomerBeCreatedByAdmin": {
+          "name": "shouldCustomerBeCreatedByAdmin",
+          "type": "bool",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerCustomField": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": null
+  },
+  "customerCustomerGroup": {
+    "native": {
+      "path": "customer.group",
+      "field": "customerGroupIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "customerGroupIds": {
+          "name": "customerGroupIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "customer_group"
+          }
+        }
+      }
+    }
+  },
+  "customerCustomerNumber": {
+    "native": {
+      "path": "customer.customerNumber",
+      "field": "numbers",
+      "kind": "string_array_lower",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "numbers": {
+          "name": "numbers",
+          "type": "tagged",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerDaysSinceFirstLogin": {
+    "native": {
+      "path": "customer.daysSinceFirstLogin",
+      "field": "daysPassed",
+      "kind": "number",
+      "withoutCustomer": "false"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "daysPassed": {
+          "name": "daysPassed",
+          "type": "float",
+          "config": {
+            "unit": "time",
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "customerDaysSinceLastLogin": {
+    "native": {
+      "path": "customer.daysSinceLastLogin",
+      "field": "daysPassed",
+      "kind": "number",
+      "withoutCustomer": "false"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "daysPassed": {
+          "name": "daysPassed",
+          "type": "float",
+          "config": {
+            "unit": "time",
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "customerDaysSinceLastOrder": {
+    "native": {
+      "path": "customer.daysSinceLastOrder",
+      "field": "daysPassed",
+      "kind": "number",
+      "withoutCustomer": "false"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "daysPassed": {
+          "name": "daysPassed",
+          "type": "float",
+          "config": {
+            "unit": "time",
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "customerDifferentAddresses": {
+    "native": {
+      "path": "customer.differentAddresses",
+      "field": "isDifferent",
+      "kind": "bool",
+      "withoutCustomer": "false"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "isDifferent": {
+          "name": "isDifferent",
+          "type": "bool",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerEmail": {
+    "native": {
+      "path": "customer.email",
+      "field": "email",
+      "kind": "wildcard",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "email": {
+          "name": "email",
+          "type": "string",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerIsActive": {
+    "native": {
+      "path": "customer.active",
+      "field": "isActive",
+      "kind": "bool",
+      "withoutCustomer": "false"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "isActive": {
+          "name": "isActive",
+          "type": "bool",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerIsCompany": {
+    "native": {
+      "path": "customer.isCompany",
+      "field": "isCompany",
+      "kind": "bool",
+      "withoutCustomer": "false"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "isCompany": {
+          "name": "isCompany",
+          "type": "bool",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerIsGuest": {
+    "native": {
+      "path": "customer.guest",
+      "field": "isGuest",
+      "kind": "bool",
+      "withoutCustomer": "false"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "isGuest": {
+          "name": "isGuest",
+          "type": "bool",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerIsNewsletterRecipient": {
+    "native": {
+      "path": "customer.newsletter",
+      "field": "isNewsletterRecipient",
+      "kind": "bool",
+      "withoutCustomer": "false"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "isNewsletterRecipient": {
+          "name": "isNewsletterRecipient",
+          "type": "bool",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerLastName": {
+    "native": {
+      "path": "customer.lastName",
+      "field": "lastName",
+      "kind": "string",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "lastName": {
+          "name": "lastName",
+          "type": "string",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerLoggedIn": {
+    "native": {
+      "path": "customer.loggedIn",
+      "field": "isLoggedIn",
+      "kind": "bool"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "isLoggedIn": {
+          "name": "isLoggedIn",
+          "type": "bool",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerOrderCount": {
+    "native": {
+      "path": "customer.orderCount",
+      "field": "count",
+      "kind": "number",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "count": {
+          "name": "count",
+          "type": "int",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerOrderTotalAmount": {
+    "native": {
+      "path": "customer.orderTotalAmount",
+      "field": "amount",
+      "kind": "number",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "customerRequestedGroup": {
+    "native": {
+      "path": "customer.requestedGroupId",
+      "field": "customerGroupIds",
+      "kind": "set",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "customerGroupIds": {
+          "name": "customerGroupIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "customer_group"
+          }
+        }
+      }
+    }
+  },
+  "customerSalutation": {
+    "native": {
+      "path": "customer.salutationId",
+      "field": "salutationIds",
+      "kind": "set",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "salutationIds": {
+          "name": "salutationIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "salutation",
+            "labelProperty": "displayName"
+          }
+        }
+      }
+    }
+  },
+  "customerShippingCity": {
+    "native": {
+      "path": "shipping.city",
+      "field": "cityName",
+      "kind": "string"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "cityName": {
+          "name": "cityName",
+          "type": "string",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerShippingCountry": {
+    "native": {
+      "path": "shipping.country",
+      "field": "countryIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "countryIds": {
+          "name": "countryIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "country"
+          }
+        }
+      }
+    }
+  },
+  "customerShippingState": {
+    "native": {
+      "path": "shipping.countryStateId",
+      "field": "stateIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "stateIds": {
+          "name": "stateIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "country_state"
+          }
+        }
+      }
+    }
+  },
+  "customerShippingStreet": {
+    "native": {
+      "path": "shipping.street",
+      "field": "streetName",
+      "kind": "string"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "streetName": {
+          "name": "streetName",
+          "type": "string",
+          "config": []
+        }
+      }
+    }
+  },
+  "customerShippingZipCode": {
+    "native": {
+      "path": "shipping.zipcode",
+      "field": "zipCodes",
+      "kind": "zip"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ]
+      },
+      "fields": {
+        "zipCodes": {
+          "name": "zipCodes",
+          "type": "tagged",
+          "config": {}
+        }
+      }
+    }
+  },
+  "customerTag": {
+    "native": {
+      "path": "customer.tags",
+      "field": "identifiers",
+      "kind": "set",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "identifiers": {
+          "name": "identifiers",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "tag"
+          }
+        }
+      }
+    }
+  },
+  "dateRange": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "fromDate": {
+          "name": "fromDate",
+          "type": "datetime",
+          "config": {}
+        },
+        "toDate": {
+          "name": "toDate",
+          "type": "datetime",
+          "config": {}
+        },
+        "useTime": {
+          "name": "useTime",
+          "type": "bool",
+          "config": {}
+        },
+        "timezone": {
+          "name": "timezone",
+          "type": "string",
+          "config": {}
+        }
+      }
+    }
+  },
+  "dayOfWeek": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "dayOfWeek": {
+          "name": "dayOfWeek",
+          "type": "single-select",
+          "config": {
+            "options": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ]
+          }
+        }
+      }
+    }
+  },
+  "language": {
+    "native": {
+      "path": "language",
+      "field": "languageIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "languageIds": {
+          "name": "languageIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "language"
+          }
+        }
+      }
+    }
+  },
+  "notContainer": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": null
+  },
+  "numberOfReviews": {
+    "native": {
+      "path": "customer.reviewCount",
+      "field": "count",
+      "kind": "number",
+      "withoutCustomer": "negative"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "count": {
+          "name": "count",
+          "type": "int",
+          "config": []
+        }
+      }
+    }
+  },
+  "orContainer": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": null
+  },
+  "orderAffiliateCode": {
+    "native": {
+      "path": "order.affiliateCode",
+      "field": "affiliateCode",
+      "kind": "string"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "affiliateCode": {
+          "name": "affiliateCode",
+          "type": "string",
+          "config": []
+        }
+      }
+    }
+  },
+  "orderCampaignCode": {
+    "native": {
+      "path": "order.campaignCode",
+      "field": "campaignCode",
+      "kind": "string"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "campaignCode": {
+          "name": "campaignCode",
+          "type": "string",
+          "config": []
+        }
+      }
+    }
+  },
+  "orderCreatedByAdmin": {
+    "native": {
+      "path": "order.createdByAdmin",
+      "field": "shouldOrderBeCreatedByAdmin",
+      "kind": "bool"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "shouldOrderBeCreatedByAdmin": {
+          "name": "shouldOrderBeCreatedByAdmin",
+          "type": "bool",
+          "config": []
+        }
+      }
+    }
+  },
+  "orderCustomField": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": null
+  },
+  "orderDeliveryStatus": {
+    "native": {
+      "path": "order.deliveryStates",
+      "field": "stateIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "stateIds": {
+          "name": "stateIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "state_machine_state",
+            "criteria": {
+              "associations": [
+                "stateMachine"
+              ],
+              "filters": [
+                {
+                  "type": "equals",
+                  "field": "state_machine_state.stateMachine.technicalName",
+                  "value": "order_delivery.state"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "orderDocumentType": {
+    "native": {
+      "path": "order.documentTypes",
+      "field": "documentIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "documentIds": {
+          "name": "documentIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "document_type"
+          }
+        }
+      }
+    }
+  },
+  "orderDocumentTypeSent": {
+    "native": {
+      "path": "order.sentDocumentTypes",
+      "field": "documentIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "documentIds": {
+          "name": "documentIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "document_type"
+          }
+        }
+      }
+    }
+  },
+  "orderStatus": {
+    "native": {
+      "path": "order.state",
+      "field": "stateIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "stateIds": {
+          "name": "stateIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "state_machine_state",
+            "criteria": {
+              "associations": [
+                "stateMachine"
+              ],
+              "filters": [
+                {
+                  "type": "equals",
+                  "field": "state_machine_state.stateMachine.technicalName",
+                  "value": "order.state"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "orderTag": {
+    "native": {
+      "path": "order.tags",
+      "field": "identifiers",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!=",
+          "empty"
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "identifiers": {
+          "name": "identifiers",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "tag"
+          }
+        }
+      }
+    }
+  },
+  "orderTrackingCode": {
+    "native": {
+      "path": "order.trackingSet",
+      "field": "isSet",
+      "kind": "bool"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "isSet": {
+          "name": "isSet",
+          "type": "bool",
+          "config": []
+        }
+      }
+    }
+  },
+  "orderTransactionStatus": {
+    "native": {
+      "path": "order.paymentStates",
+      "field": "stateIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "stateIds": {
+          "name": "stateIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "state_machine_state",
+            "criteria": {
+              "associations": [
+                "stateMachine"
+              ],
+              "filters": [
+                {
+                  "type": "equals",
+                  "field": "state_machine_state.stateMachine.technicalName",
+                  "value": "order_transaction.state"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "paymentMethod": {
+    "native": {
+      "path": "checkout.paymentMethodId",
+      "field": "paymentMethodIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "paymentMethodIds": {
+          "name": "paymentMethodIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "payment_method"
+          }
+        }
+      }
+    }
+  },
+  "promotionCodeOfType": {
+    "native": null,
+    "supported": false,
+    "status": "missing-runtime",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "promotionCodeType": {
+          "name": "promotionCodeType",
+          "type": "single-select",
+          "config": {
+            "options": [
+              "global",
+              "individual",
+              "fixed"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "promotionLineItem": {
+    "native": null,
+    "supported": false,
+    "status": "missing-runtime",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": true
+      },
+      "fields": {
+        "identifiers": {
+          "name": "identifiers",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "promotion"
+          }
+        }
+      }
+    }
+  },
+  "promotionValue": {
+    "native": {
+      "path": "promotionValue",
+      "field": "amount",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "amount": {
+          "name": "amount",
+          "type": "float",
+          "config": {
+            "digits": 10
+          }
+        }
+      }
+    }
+  },
+  "promotionsInCartCount": {
+    "native": {
+      "path": "promotionCount",
+      "field": "count",
+      "kind": "number"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          ">",
+          ">=",
+          "<",
+          "<=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "count": {
+          "name": "count",
+          "type": "int",
+          "config": []
+        }
+      }
+    }
+  },
+  "salesChannel": {
+    "native": {
+      "path": "salesChannel",
+      "field": "salesChannelIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "salesChannelIds": {
+          "name": "salesChannelIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "sales_channel",
+            "criteria": {
+              "associations": [
+                "type"
+              ],
+              "filters": [
+                {
+                  "type": "not",
+                  "operator": "AND",
+                  "queries": [
+                    {
+                      "type": "equalsAny",
+                      "field": "type.id",
+                      "value": [
+                        "ed535e5722134ac1aa6524f73e26881b",
+                        "5e29f9890c4d4d519a1c7f9d5c24b7c1"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "scriptRule": {
+    "native": null,
+    "supported": false,
+    "status": "missing-runtime",
+    "behavioralParity": false,
+    "config": null
+  },
+  "shippingMethod": {
+    "native": {
+      "path": "checkout.shippingMethodId",
+      "field": "shippingMethodIds",
+      "kind": "set"
+    },
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": {
+        "operators": [
+          "=",
+          "!="
+        ],
+        "isMatchAny": false
+      },
+      "fields": {
+        "shippingMethodIds": {
+          "name": "shippingMethodIds",
+          "type": "multi-entity-id-select",
+          "config": {
+            "entity": "shipping_method"
+          }
+        }
+      }
+    }
+  },
+  "simple": {
+    "native": null,
+    "supported": false,
+    "status": "missing-runtime",
+    "behavioralParity": false,
+    "config": null
+  },
+  "timeRange": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": {
+      "operatorSet": null,
+      "fields": {
+        "fromTime": {
+          "name": "fromTime",
+          "type": "string",
+          "config": {}
+        },
+        "toTime": {
+          "name": "toTime",
+          "type": "string",
+          "config": {}
+        },
+        "timezone": {
+          "name": "timezone",
+          "type": "string",
+          "config": {}
+        }
+      }
+    }
+  },
+  "unknown_condition": {
+    "native": null,
+    "supported": false,
+    "status": "missing-runtime",
+    "behavioralParity": false,
+    "config": null
+  },
+  "xorContainer": {
+    "native": null,
+    "supported": true,
+    "status": "native-scope",
+    "behavioralParity": false,
+    "config": null
+  }
+}

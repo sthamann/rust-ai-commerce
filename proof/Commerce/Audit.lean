@@ -16,6 +16,7 @@ import Commerce.Claims
 #print axioms CommerceKernel.download_exact
 #print axioms CommerceKernel.download_payment_required
 #print axioms CommerceKernel.financial_contact_required
+#print axioms CommerceKernel.flow_delay_exact
 #print axioms CommerceKernel.manual_payment_exact
 #print axioms CommerceKernel.manual_payment_safe
 #print axioms CommerceKernel.order_edit_exact
@@ -34,6 +35,8 @@ import Commerce.Claims
 #print axioms CommerceKernel.rule_authenticated_exact
 #print axioms CommerceKernel.rule_comparison_exact
 #print axioms CommerceKernel.rule_guest_denied
+#print axioms CommerceKernel.rule_xor_empty
+#print axioms CommerceKernel.rule_xor_exact
 #print axioms CommerceKernel.scope_authenticated_known
 #print axioms CommerceKernel.scope_exact
 #print axioms CommerceKernel.scope_explicit_no_escalation

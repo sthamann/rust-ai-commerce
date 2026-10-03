@@ -295,3 +295,14 @@ Every host location and limit is listed in [the full app contract](app-platform.
 External app code, service declarations and frontend behavior remain outside the
 partial Lean proofs. No new core database migration was required for these optional
 manifest fields and generated app tables.
+
+## Source rule and durable flow migration
+
+| Module | Behavior | Evidence / remaining boundary |
+|---|---|---|
+| `automation_rules/*`, `reference/automation-{catalog,rules}.php` | Source-named native comparison, typed custom fields, quantities/containers and calendar conditions | 432 actual original-class cases across 74 classes; full catalog/API parity remains unproved |
+| `marketing/{facts,line_facts,customer_facts,rule_snapshot}.rs` | Private tenant-owned facts, variant metadata inheritance and frozen referenced-rule versions | Real cart preview and event flow tests; source UUID and every original field/scope require further migration |
+| `marketing/{pipeline,pipeline_runtime,flow_actions,flow_mutations,flow_access}.rs` | DAG admission, branches/actions/delays, step receipts, actual domain writes and current rights | `scripts/automation.py` real HTTP/PostgreSQL checks; all original triggers/configurations and external exactly-once effects remain open |
+| `frontend/src/admin/automation/*`, `shared/i18n/automation-*.ts` | Connected graph, typed localized rule/action editors and stable graph transformations | Four-language component tests, source payload round-trips, dangling-edge and JSON draft regressions |
+
+See [automation](automation.md) for the precise supported/disabled catalog and action mappings.

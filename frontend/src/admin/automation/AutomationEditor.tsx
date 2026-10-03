@@ -208,22 +208,26 @@ export default function AutomationEditor({
       {kind === "flows" && (
         <>
           <FlowBuilder data={data} update={update} catalog={catalog} />
-          {langs.map((lang) => (
-            <label key={lang}>
-              {w("instruction")} · {lang}
-              <textarea
-                value={data.instruction?.[lang] ?? ""}
-                onChange={(e) =>
-                  update("instruction", {
-                    ...data.instruction,
-                    [lang]: e.target.value,
-                  })
-                }
-                maxLength={4000}
-              />
-            </label>
-          ))}
-          {data.action === "ai_proposal" && (
+          {data.action !== "pipeline" &&
+            langs.map((lang) => (
+              <label key={lang}>
+                {w("instruction")} · {lang}
+                <textarea
+                  value={data.instruction?.[lang] ?? ""}
+                  onChange={(e) =>
+                    update("instruction", {
+                      ...data.instruction,
+                      [lang]: e.target.value,
+                    })
+                  }
+                  maxLength={4000}
+                />
+              </label>
+            ))}
+          {(data.action === "ai_proposal" ||
+            data.pipeline?.nodes?.some(
+              (n: any) => n.action === "ai_proposal",
+            )) && (
             <label>
               {w("provider")}
               <select

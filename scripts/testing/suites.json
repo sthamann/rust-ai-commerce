@@ -20,7 +20,8 @@
     "marketing_accounts",
     "merchant_operations",
     "customer_accounts",
-    "developer_documents"
+    "developer_documents",
+    "automation"
   ],
   "providers": [
     "email_tests",

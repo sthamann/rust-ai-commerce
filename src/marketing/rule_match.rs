@@ -2,8 +2,51 @@
 use super::rules::Condition;
 use super::*;
 impl Condition {
+    pub(crate) fn checked_matches(&self, c: &StoredCart, q: &Value) -> Result<bool> {
+        self.checked_at(c, q, 0)
+    }
+    fn checked_at(&self, c: &StoredCart, q: &Value, depth: usize) -> Result<bool> {
+        if depth > 8 {
+            return Err(bad("Rule references contain a cycle or exceed depth 8"));
+        }
+        match self {
+            Self::Reference { rule_id } => {
+                let row = &q["ruleFacts"]["rules"][rule_id];
+                if !row["active"].is_boolean() {
+                    return Err(bad("Referenced rule unavailable in this tenant"));
+                }
+                if row["active"] == false {
+                    return Err(bad("Referenced rule disabled"));
+                }
+                let rule: Condition = serde_json::from_value(row["condition"].clone())
+                    .map_err(|_| bad("Invalid referenced rule"))?;
+                rule.validate(0)?;
+                rule.checked_at(c, q, depth + 1)
+            }
+            Self::Source { name, config } => {
+                rust_ai_commerce::automation_rules::evaluate(name, config, &q["ruleFacts"])
+                    .map_err(bad)
+            }
+            Self::And { children } | Self::Or { children } => {
+                let values = children
+                    .iter()
+                    .map(|v| v.checked_at(c, q, depth + 1))
+                    .collect::<Result<Vec<_>>>()?;
+                Ok(if matches!(self, Self::And { .. }) {
+                    values.iter().all(|x| *x)
+                } else {
+                    values.contains(&true)
+                })
+            }
+            Self::Not { child } => Ok(!child.checked_at(c, q, depth + 1)?),
+            _ => Ok(self.matches(c, q)),
+        }
+    }
     pub(crate) fn matches(&self, c: &StoredCart, q: &Value) -> bool {
         match self {
+            Self::Reference { .. } | Self::Source { .. } => {
+                self.checked_matches(c, q).unwrap_or(false)
+            }
             Self::And { children } => children.iter().all(|v| v.matches(c, q)),
             Self::Or { children } => children.iter().any(|v| v.matches(c, q)),
             Self::Not { child } => !child.matches(c, q),

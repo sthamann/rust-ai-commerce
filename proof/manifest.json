@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "18 extracted production policies; surrounding modules remain unproved",
+  "claim": "20 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -169,6 +169,23 @@
       "theorems": [
         "app_read_safe",
         "app_read_exact"
+      ]
+    },
+    "rule_xor_count": {
+      "bindings": [
+        "src/automation_rules/evaluation.rs"
+      ],
+      "theorems": [
+        "rule_xor_exact",
+        "rule_xor_empty"
+      ]
+    },
+    "flow_delay_admissible": {
+      "bindings": [
+        "src/marketing/pipeline.rs"
+      ],
+      "theorems": [
+        "flow_delay_exact"
       ]
     }
   },
@@ -373,6 +390,51 @@
       "sha256": "16ea1362829b09724ea6e80aea32e4cb7a03911115fd40431dda2e86162d99c9",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/automation_rules/comparison.rs": {
+      "status": "unproved",
+      "sha256": "36487e460f2f5bce2e7b1686b3806437861a33d69c755f6e15f071f5e3681a1c",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/automation_rules/containers.rs": {
+      "status": "unproved",
+      "sha256": "cd2811d34baa62853d198b8935ed363b2a1f2db55b6733e73a414b4315e08bde",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/automation_rules/evaluation.rs": {
+      "status": "reviewed-binding",
+      "sha256": "a332f227d44595b3d296174c3326588e54c5df3cf485b74b6c7ad38d9cfd0743",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/automation_rules/fields.rs": {
+      "status": "unproved",
+      "sha256": "ad598591f5dc756e59705aeb1bac18c6126a49bf664c675e74784c6136996a56",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/automation_rules/mod.rs": {
+      "status": "unproved",
+      "sha256": "11128c3a959c1e7997e2dc19c27c75c63b038be91e32f61c6bbdaf8ba1b2bae3",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/automation_rules/tests.rs": {
+      "status": "unproved",
+      "sha256": "e702f7168b116749a0c9d83990ef53d407777be9ee2ca679b6df75499c54fe22",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/automation_rules/time.rs": {
+      "status": "unproved",
+      "sha256": "e737e6ac931c788f20050a4b64286e79bb530e95e1cf25da1fe52d2db3bbe563",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/automation_rules/validation.rs": {
+      "status": "unproved",
+      "sha256": "fc8bf8b3bbfd7af6945f6d0a447c921a7e78ed11756849cbab0a7bd0d0c8778a",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/bin/automation_rules.rs": {
+      "status": "unproved",
+      "sha256": "9f7d8c00e395f43b96552b9db9e556592ffabca5f320a4fcd3c3d9d40d3263e8",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
     "src/bin/context.rs": {
       "status": "unproved",
       "sha256": "3795595ed6b1c685f1fca0161f7106b6c7eee7c90ed536a0cabd51651d4b9902",
@@ -395,8 +457,8 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "d1231e1cac69d51c1c84dbb0ceaf0c6ef11d0d0cacc79d73500f494d02317ada",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "ca48018420e6a75c13e978732f0b2e4ec36610335c0229c551ec309b66aa29da",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
@@ -405,8 +467,8 @@
     },
     "src/capabilities.rs": {
       "status": "unproved",
-      "sha256": "d26b36845f44d05fdad36b727111e79eb8e06a79d02766b994418b0158254a32",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "a77f55bc271dcde4bbd701e2c97e91d4c62a9a835ee46253dce68456d184fe28",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/cart_model.rs": {
       "status": "unproved",
@@ -435,8 +497,8 @@
     },
     "src/catalog_model.rs": {
       "status": "unproved",
-      "sha256": "771815aa7b89dca178e47fddf9429bb307c954d4740391d7409a838b6009bf02",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "1bb7cb68451ae7e76dda728701e9c084a9a5a3bcc3a04a5438d58eb76d7ac745",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/catalog_page.rs": {
       "status": "unproved",
@@ -540,8 +602,8 @@
     },
     "src/commerce/product_edit.rs": {
       "status": "unproved",
-      "sha256": "1f3bdbb7f4cfce8f3e3d0b5f10bfe0f9e75777a233cb217a227f80c06ed1aa00",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "b4bc4b660d080b55a365c5b987e9545ccf6d3c046439724a49d9715054459ea8",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/commerce/product_fields.rs": {
       "status": "unproved",
@@ -685,8 +747,8 @@
     },
     "src/lib.rs": {
       "status": "unproved",
-      "sha256": "3dd010426b56ec36ee30fe2e1531d22e60817310098a62021f2516f2bd8b653a",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "1c1f976e38989b2b3d4d64a2480e50a4d101861d7cd9764032dad679a3c323ae",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/localization.rs": {
       "status": "unproved",
@@ -705,33 +767,93 @@
     },
     "src/marketing/catalog.rs": {
       "status": "unproved",
-      "sha256": "ef26c955bf31f0b2711b96810ecedc9a76b2aed27dfea2ff70ab743769b64175",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "63b68665d237ddd6efa3e4690f4199b5dcc03eb061b76553de6772055b428a39",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/marketing/channels.rs": {
       "status": "unproved",
       "sha256": "839f0e817aba6bfa710c32572cddc0ec70a31d2cfdcf2c0cb6f4ef39b09a3a4d",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/marketing/customer_facts.rs": {
+      "status": "unproved",
+      "sha256": "6381eeee59989d6bf9e7c97f5f7f4a06dbd4b3e8d642d613a2f03da3350198a9",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/marketing/facts.rs": {
+      "status": "unproved",
+      "sha256": "6a6a87dd21f35bc227005a43a1621b063ba99233feadc814a172a7c5741a978e",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/marketing/flow_access.rs": {
+      "status": "unproved",
+      "sha256": "30cad10f82d2957f40cd064d1026613aab608cee09fc8e2340406cd4057444b7",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/marketing/flow_actions.rs": {
+      "status": "unproved",
+      "sha256": "3ed1a4e4f1f2704c528c1884fb509b2b8afd8f9e19778b60a5f732cdc368801f",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/marketing/flow_mutations.rs": {
+      "status": "unproved",
+      "sha256": "fd7e7728ff0d069d8acda1e133fdca6cf1ff092fd3336b03682cf49821c0aeb1",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
     "src/marketing/flows.rs": {
       "status": "unproved",
-      "sha256": "79bd64bc5fe154450a087b72fc6ce9f4cb7434b8b6fad8ef0b4f3026209bca92",
-      "review": "Reviewed email built-in registration and reserved-ID checks in apps/routes.rs, apps/manifest.rs, developer/builds.rs; existing permission/service gateway preserved. marketing/flows.rs snapshots committed orderCustomer and currency for queue recipient stability. verify.yml adds real SMTP/TLS/Resend/SendGrid and isolated PostgreSQL checkout-flow-MCP-staging regressions. No kernel policy or proof property changed; mail/network code remains unproved."
+      "sha256": "105def76e67125f9fb2eafb46135b280ee4a03f210146a5eac943dd61f437747",
+      "review": "Reviewed native scope evaluation, private tenant facts, per-matching-flow rule snapshot limits and isolated failures, bounded graphs, current-actor rechecks, durable delays and action receipts. Original PHP comparisons and actual checkout/delay/replay/revocation/oversized-reference regressions pass. Exact XOR and thirty-day admission guards have rejected negative mutations; interpreter, SQL and async orchestration remain unproved."
+    },
+    "src/marketing/gateway.rs": {
+      "status": "unproved",
+      "sha256": "d0bb9b42e68952dd8035da48a3aa226095b73547148db8b238d7f7191b6015d7",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/marketing/jobs.rs": {
+      "status": "unproved",
+      "sha256": "74148b2a41e0f01f9e84e06e02cdc0ae2e1b4450695254460d7216fcb95e7880",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/marketing/line_facts.rs": {
+      "status": "unproved",
+      "sha256": "9b9cfca1f0d4c1d9cbad9066c144169e43c0719553d96a5ef706a8bf6a871a51",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/marketing/metadata.rs": {
+      "status": "unproved",
+      "sha256": "1abeb95f41825a0debad40bf24143d25efe240cc098cd4a2631f275947571221",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/marketing/mod.rs": {
       "status": "unproved",
-      "sha256": "c62bf65d0499a3ca8f8e71de3160edaaa69b2e0f0a74bc43dc65862ba663ea25",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "cc6d664b601298f8f058493fb096a34607080f393ca841d98fc329904c5e0b1a",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/marketing/pipeline.rs": {
+      "status": "reviewed-binding",
+      "sha256": "554357f3e24a3ea638e9bbc39049e8ac68d5269255f5ef6fcb7d9dd5d8ec5cdb",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/marketing/pipeline_runtime.rs": {
+      "status": "unproved",
+      "sha256": "40740c09040f37ee78d9ce948eb36d7873d82392cbb011c024b07a008eebe7b8",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/marketing/pipeline_tests.rs": {
+      "status": "unproved",
+      "sha256": "935506a27ac45da63358801e124baa6aa8e245bd5c4db452a9ba4b4b8e62148a",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/marketing/promotions.rs": {
       "status": "unproved",
-      "sha256": "53e5fd9bc0c07ef4607c0178a3f5cd755a5c3b7f5c65b0195d2734a220101f1f",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "756e6e46f91681c965d1db342871fe775eacdd9988ec36ca4e83be5c885b3929",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/marketing/routes.rs": {
       "status": "unproved",
-      "sha256": "fb72b9d03171aef4febb686d3d5e1516652946c194d5f69aba999b632991503c",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "f419bea50e134897de4239f8355603e8876b033c4e78573ea026232d8aa3b772",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/marketing/rule_fields.rs": {
       "status": "unproved",
@@ -740,8 +862,13 @@
     },
     "src/marketing/rule_match.rs": {
       "status": "reviewed-binding",
-      "sha256": "a394f3380b23e336645d9300bf84d4439fc8ecc897dcfce1c05518aa93ae1774",
-      "review": "Reviewed connected apps and real protocol consumers: 48 Rust tests, 1976 original PHP rule comparisons, 9 database/HTTP connector groups with forbidden flow targets and cross-tenant evidence, plus 18 commerce suites across two batches. Added original guest shipping-country regression. Adapters remain unproved."
+      "sha256": "8429b90ab9872f46bddc3a822565a35c260400bbea9b11229d5b8dbc4a29b229",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/marketing/rule_snapshot.rs": {
+      "status": "unproved",
+      "sha256": "913a85c8c77ada2083aa1a902e50486fcbe31e4dae84670410eb457fa8273949",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/marketing/rule_tests.rs": {
       "status": "unproved",
@@ -750,18 +877,18 @@
     },
     "src/marketing/rules.rs": {
       "status": "unproved",
-      "sha256": "e19b4fcc28207c96640eea448ff925f5347d483fd522e74709eb82c8889513a4",
-      "review": "Reviewed connected apps and real protocol consumers: 48 Rust tests, 1976 original PHP rule comparisons, 9 database/HTTP connector groups with forbidden flow targets and cross-tenant evidence, plus 18 commerce suites across two batches. Added original guest shipping-country regression. Adapters remain unproved."
+      "sha256": "c886274852c6b1aaea6c5bec7c076a287d206516be69ba434928f7a551632ea8",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "ff70a3acc0bebb773252e03fed00db98e3f5f8de0615a0ee0b87fa7dce1b2389",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "14a266d1a801d9367007b9fd85d80d02b313c221386cca66170f99f8413d3e5e",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "8f7dc4a3aa419221dd798d37aa85523eed68784426bb263cf09f9edf3deefe78",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "70f94912912bfe341a0387d2cf5ee44f9d5a307e91206769401e7f91a6978639",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -975,8 +1102,8 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "6c0e5618a8fecb39543514e1bb67a539848bd54eacbd852bffd1744fc6b81026",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "4851559056dabb31acf52649496f532d561b6be4d9cdc9659b38ba75fb65f3c9",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "src/workers.rs": {
       "status": "unproved",
@@ -986,16 +1113,16 @@
   },
   "inputs": {
     ".github/workflows/verify.yml": {
-      "sha256": "0cdf16f48b7eaef1c6453cb10b6d77e2253bae4b04291519e0357b2d55101bb6",
-      "review": "Reviewed modular UI ownership, complete source coverage manifests, isolated integration suite registry and CI coverage floors. Broken mutation fixtures now write LLVM profiles outside the real-core coverage directory. No Rust policy or domain semantics changed."
+      "sha256": "0db0d5098d235f0a3bbb49bc50ed70ed0519cf04d563d76a31bd25cf7a5caa2b",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "Cargo.lock": {
-      "sha256": "5568d6215c3f896914be87977c1bfb8bdb1f4d746c3af6ad9cf945a4f7da5fe4",
-      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+      "sha256": "36240fbb9fcfda3ccd2ff73f5e001450f5de1fb00caa7191b364860a6f57adea",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "Cargo.toml": {
-      "sha256": "5b80564dd819d54d939d3d662816bf8ac2b274930e27e122752ee14dda491b34",
-      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+      "sha256": "94eca2d307777d529d7f7014d31453786088b89fb25cecc2e6cb113d2d7eef32",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "migrations/001.sql": {
       "sha256": "89fd780bf3d991bf3c056f4145e064e4aa030ef5e33a0fff1e5fc7330604a2a7",
@@ -1097,9 +1224,13 @@
       "sha256": "a738ed9ee5e013c3e8535d125eb652b9361aff214b8de0e7d0910da47ab45b59",
       "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
+    "migrations/025-automation-pipelines.sql": {
+      "sha256": "88d1da56ac8c56675dd2cbb49ddcccfea324d715616f96d51c416598c31ec26e",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
     "proof/Commerce/Claims.lean": {
-      "sha256": "229ac182c1d5addb8cf584d9e73412d8f41ed31667d8dc17a61483df16128667",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "5f8e07e5914ed4f3616143abf8983c6a4bb99045a5958ec6346771895bfbe841",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -1108,6 +1239,18 @@
     "proof/lean-toolchain": {
       "sha256": "7dc000621e0046d1aada809e2b7177e64454645cf4c741e9daaf79c99ec2e7a2",
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+    },
+    "reference/automation-native.json": {
+      "sha256": "2e1c6b88bcd8bcc33e4e18b99b85c082e2f53603475ac8e97f08490e5213f4ef",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "reference/automation-registry.json": {
+      "sha256": "2a13b82189be0fbad9be67e68505114f31b776f57d63ad914f128a67238088a1",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "reference/automation-source.json": {
+      "sha256": "b598dbc87d85c970ccec741b618e729f8f5ac83abb093ed24d87e1175ff5cb2c",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "scripts/formal/axioms.py": {
       "sha256": "127f41e9c2d1024e8784c915458e59a777460f71327f96d8c6b4bfc3b081aefe",
@@ -1122,12 +1265,12 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "c39723872fc897f9d95a02c6de87749c0151ff743c1a1f097d1ed201abec0623",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "76f836bd92fbd8863c346707022138f39d7ca5c79f93f7f1b89cb69a59313780",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "scripts/formal/registry.py": {
-      "sha256": "a1836d65c2e2cebfce3d82fe31381508dbdcc71ff0a430922c3316c995261197",
-      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+      "sha256": "7866a81790c3ee51bfd12c1d3ec69006d3aee19116ff0dc37197c231c4eeaabf",
+      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
     "scripts/formal/runners.py": {
       "sha256": "a009732dcf573aa10b33f02eef9c4bf57a3a44d34d1d4e8bb0b09868d0543a23",

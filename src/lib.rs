@@ -1,4 +1,5 @@
 //! Reusable pricing, context, sandbox, graph and inference modules.
+pub mod automation_rules;
 pub mod context;
 pub mod discount;
 pub mod inference;

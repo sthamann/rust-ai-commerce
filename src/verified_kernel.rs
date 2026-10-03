@@ -97,3 +97,12 @@ pub fn platform_admissible(personal: bool, granted: bool, active: bool) -> bool 
 pub fn app_read_admissible(read_only: bool, mutating: bool) -> bool {
     read_only && !mutating
 }
+
+/// Exclusive OR admits precisely one matching child.
+pub fn rule_xor_count(hits: u64) -> bool {
+    hits == 1
+}
+/// A durable flow delay is bounded to thirty days.
+pub fn flow_delay_admissible(seconds: u64) -> bool {
+    seconds <= 2592000
+}
