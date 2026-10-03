@@ -58,6 +58,7 @@ pub(crate) async fn bootstrap() -> App {
         ollama: Arc::new(env::var("OLLAMA_URL").unwrap_or("http://127.0.0.1:11434".into())),
         sandboxes: Arc::new(RwLock::new(HashMap::new())),
         channel_metrics: Arc::new(channel_metrics::ChannelMetrics::default()),
+        app_limits: Arc::new(apps::ServiceLimits::default()),
     };
     if let Some(setup) = setup {
         if env::var("SEED_DEMO").as_deref() != Ok("false") {

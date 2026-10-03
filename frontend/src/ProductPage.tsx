@@ -1,3 +1,4 @@
+import { AppSurfaceSlot } from "./AppSurfaces";
 import { commerceEvent, analyticsItems } from "./ShopAnalytics";
 import RichDescription from "./RichDescription";
 import ProductAttachments from "./ProductAttachments";
@@ -273,6 +274,10 @@ export default function ProductPage({
             <span>SKU {p.id}</span>
           </div>
           {!p.stock && <small>{s("soldHint")}</small>}
+          <AppSurfaceSlot
+            location="product.detail"
+            context={{ productId: p.id }}
+          />
           <AppSlot
             productId={p.id}
             familyId={p.parent_id ?? p.id}

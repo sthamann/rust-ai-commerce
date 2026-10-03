@@ -96,7 +96,7 @@ remain the narrowly specified pricing/context/shipping-tax/rule-comparison ports
 
 ## Formal safeguards (additional to upstream behavior comparison)
 
-Thirteen selected Rust commerce policies are backed by thirty-three Lean theorems and
+Eighteen selected Rust commerce policies are backed by forty-two Lean theorems and
 compiled Rust/Lean conformance checks. They preserve native admission/cap rules
 in checkout, permissions, operational transitions, refunds, receipts and downloads.
 This is a bounded new safeguard, **not proof of full Shopware equivalence** or of
@@ -126,3 +126,12 @@ use the same HTTP/MCP gateway and recheck current rights before delivery. GA4, G
 Slack are new independent integrations, not claimed ports of an original Shopware provider
 plugin. Their real wire/database fixtures and live-credential boundary are documented in
 `docs/connected-apps.md`.
+
+## Full-app extension delta (2026-10-03)
+
+Native app contracts now include own Studio modules, product/order panels,
+storefront pages/slots, namespaced HTTP aliases, selected AI tools/context,
+managed JSONB data and independently deployed code/storage. The Product Lab
+example exercises the shared UI/API/MCP gateway and overloaded-service isolation.
+See [the full app contract](app-platform.md). This is additional native extension
+capability, not Shopware PHP plugin ABI, App Script or Administration module parity.

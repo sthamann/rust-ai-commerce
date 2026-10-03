@@ -1,11 +1,11 @@
 # Lean-checked commerce contracts
 
-The prototype now runs Lean 4.29.1 proofs for **17 policies used in production
-Rust paths**. Forty theorems cover the properties below. This is **not a
+The prototype now runs Lean 4.29.1 proofs for **18 policies used in production
+Rust paths**. Forty-two theorems cover the properties below. This is **not a
 certificate that the entire commerce core is correct or bug-free**. The current
-inventory contains 159 Rust modules: one extracted policy module, twelve reviewed
-binding modules, one comparison driver and 145 unproved modules. Binding review
-is not a proof of those twelve modules.
+inventory contains 162 Rust modules: one extracted policy module, thirteen reviewed
+binding modules, one comparison driver and 147 unproved modules. Binding review
+is not a proof of those thirteen modules.
 
 ## Connection to the real application
 
@@ -54,6 +54,8 @@ they do not prove the translator correct for every program.
 | `download_admissible` | Blocked orders grant no download; admitted downloads require payment or explicit simulated authorization | `src/assets/download.rs` |
 | `checkout_contact_admissible` | Financial checkout requires email and billing data; simulated checkout has an explicit exception | `src/order_checkout.rs` |
 | `receipt_admissible` | Accepted provider receipts match amount and currency and confirm the outcome | `src/payments/receipt_guard.rs` |
+| `platform_admissible` | Operator access requires a personal identity, active grant and account | `src/platform/auth.rs` |
+| `app_read_admissible` | Read aliases admit declared read-only, non-mutating handlers | `src/apps/surfaces.rs` |
 | `rule_authenticated` | A guest cannot satisfy the authenticated-customer condition; both Boolean branches match exactly | `src/marketing/rule_match.rs` |
 | `rule_boolean_comparison` | Equality, inequality and emptiness select the exact Boolean result | `src/rule_comparison.rs` |
 | `app_flow_admissible` | Only explicitly eligible private mutation actions can be flow targets | `src/marketing/app_flows.rs` |
@@ -81,13 +83,13 @@ The existing **Verify prototype / verify** job now also:
    verification workflow also require an explicit recorded review after changes.
 3. Builds proofs with the pinned Lean toolchain and rechecks compiled declarations
    using bundled `leanchecker`.
-4. Audits all 33 required theorems' transitive axioms. Only Lean's standard
+4. Audits all 42 required theorems' transitive axioms. Only Lean's standard
    `propext`, `Quot.sound` and `Classical.choice` foundations are allowed. `sorry`,
    `admit`, custom axioms, `native_decide` and missing theorem audits fail.
-5. Executes compiled Rust and Lean functions on **3,610** identical inputs:
+5. Executes compiled Rust and Lean functions on **3,614** identical inputs:
    exhaustive Boolean assignments plus numeric boundaries/random cases, including
    `u64::MAX`. Their output types and values must match.
-6. Requires Lean to reject **37** deliberately broken policy variants. Also
+6. Requires Lean to reject **39** deliberately broken policy variants. Also
    rejects 14 unsupported grammar examples, three stale/unclassified/disconnected
    inventory cases and nine proof-shortcut/axiom/missing-audit examples.
 7. Runs existing Rust, PHP-reference and real PostgreSQL HTTP regressions.
@@ -168,3 +170,5 @@ The platform operator grant is also production-bound: personal credential, curre
 grant and active status must all hold. The surrounding session lookup, SQL, offline
 bootstrap and provisioning are reviewed/tested adapters, not Lean-proved database
 or deployment correctness.
+
+The app GET policy proves admission from declared metadata; it does not prove an external service is actually side-effect-free. See [the full app boundary](app-platform.md).

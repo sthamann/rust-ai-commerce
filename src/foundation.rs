@@ -12,6 +12,7 @@ pub(crate) struct App {
     pub(crate) ollama: Arc<String>,
     pub(crate) sandboxes: Arc<RwLock<HashMap<String, Arc<Sandbox>>>>,
     pub(crate) channel_metrics: Arc<channel_metrics::ChannelMetrics>,
+    pub(crate) app_limits: Arc<apps::ServiceLimits>,
 }
 #[derive(Debug)]
 pub(crate) struct Error(pub(crate) StatusCode, pub(crate) String);

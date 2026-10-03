@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import Merchant from "./Merchant";
-import Storefront from "./Storefront";
+const Merchant = lazy(() => import("./Merchant"));
+const Storefront = lazy(() => import("./Storefront"));
 import { LocaleProvider } from "./i18n";
 const PlatformConsole = lazy(() => import("./PlatformConsole"));
 function App() {
@@ -43,6 +43,8 @@ function App() {
 }
 createRoot(document.getElementById("root")!).render(
   <LocaleProvider>
-    <App />
+    <Suspense fallback={<div role="status">…</div>}>
+      <App />
+    </Suspense>
   </LocaleProvider>,
 );

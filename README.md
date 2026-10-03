@@ -83,6 +83,29 @@ claim parity with the full original condition catalog or arbitrary FlowSequences
 
 ![Visual order-event flow with nested conditions and a Slack app action](docs/assets/slack-flow-en.jpg)
 
+## Full apps without core changes
+
+Apps can add their own **Studio modules, product/order panels, storefront pages,
+HTTP APIs, MCP tools, AI context and database structures**. Their independently
+served UI can use any framework; the browser SDK calls the same authorized gateway
+as API/agent clients. Managed JSONB records and indexed cursor pages complement
+app-owned services/databases. Event subscriptions and selected staging releases
+use the existing durable app machinery.
+
+[Product Lab](extensions/apps/product-lab) demonstrates one connected app across
+admin, product detail, storefront, HTTP and MCP, in four languages. Run
+`PRODUCT_LAB=1 ./scripts/dev.sh`, then install its manifest in your test shop.
+The example retrieves sample care facts; it does not claim LLM-generated advice.
+[Contract, SDK, setup, isolation/performance evidence and precise limits](docs/app-platform.md).
+
+![App-owned Product Lab module in Commerce Studio](docs/assets/app-admin-en.jpg)
+
+Slow remote services have non-queuing per-app/tenant admission limits, timeouts and
+bounded payloads. Studio/storefront code loads separately. External code runs in
+independently deployed services; a resource-limited example container is provided.
+Automatic arbitrary source compilation, remote bundle signing and hostile-code
+microVM isolation remain separate work.
+
 ## Platform administration and hosting
 
 A dedicated **Commerce Platform** console at `/#platform` creates empty or
@@ -105,9 +128,9 @@ documentation site, not a hosted commerce backend.
 ## Lean-checked production policies
 
 The real Rust checkout, order workflow, access, refund and download paths now
-call a small pure kernel with **17 policies and 40 Lean-proved properties**.
+call a small pure kernel with **18 policies and 42 Lean-proved properties**.
 The production functions are extracted through a closed typed grammar; compiled
-Rust/Lean outputs are compared on 3,610 cases. Deliberately broken policies must
+Rust/Lean outputs are compared on 3,614 cases. Deliberately broken policies must
 fail the proof checks. CI also audits transitive axioms and locks every Rust,
 schema, build and proof input to an explicitly reviewed source inventory.
 

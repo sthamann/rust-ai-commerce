@@ -1,0 +1,5 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box}body{margin:0;padding:22px;font:15px system-ui;color:#18304e;background:#f2f7fd}h1{margin:0;font-size:24px}p{color:#657a94;line-height:1.6}form{display:grid;gap:12px}label{display:grid;gap:6px}input,button{font:inherit;border:1px solid #d0dfef;border-radius:12px;padding:12px;background:white;color:inherit}button{background:#176df1;color:white;cursor:pointer}button:disabled{opacity:.5}article{background:white;border:1px solid #dce7f3;border-radius:16px;padding:18px;margin-top:16px}small{color:#657a94}#answer{color:#18304e}#records:empty{display:none}
+</style><h1 id="title"></h1><p id="hint"></p><form id="question-form"><label><span id="product-label"></span><input id="product" required value="mug"></label><label><span id="question-label"></span><input id="question" required maxlength="500"></label><button id="ask"></button></form><article id="result" hidden><p id="answer" role="status"></p><small id="source"></small></article><div id="records"></div><script type="module" src="./app.js"></script></html>

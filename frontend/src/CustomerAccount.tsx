@@ -1,3 +1,4 @@
+import { AppSurfaceSlot } from "./AppSurfaces";
 import { useCallback } from "react";
 import AddressBook from "./AddressBook";
 import CustomerFields from "./CustomerFields";
@@ -97,6 +98,7 @@ export default function CustomerAccount({
         aria-modal="true"
         aria-label={w("account")}
       >
+        <AppSurfaceSlot location="account.overview" />
         <header>
           <h2>{w("account")}</h2>
           <button className="shop-secondary" onClick={onClose}>

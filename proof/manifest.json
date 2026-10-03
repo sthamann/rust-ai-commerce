@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "17 extracted production policies; surrounding modules remain unproved",
+  "claim": "18 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -161,6 +161,15 @@
         "platform_exact",
         "platform_personal_required"
       ]
+    },
+    "app_read_admissible": {
+      "bindings": [
+        "src/apps/surfaces.rs"
+      ],
+      "theorems": [
+        "app_read_safe",
+        "app_read_exact"
+      ]
     }
   },
   "sources": {
@@ -221,8 +230,8 @@
     },
     "src/apps/data.rs": {
       "status": "unproved",
-      "sha256": "aad1ab005e76cc8d67310587388f2b93643f7c1fed8c7490facc1937e79b6234",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "e21848130c8befa263174c807a6cb3b8d0a24c52c26b00834deab8c67b227927",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/apps/events.rs": {
       "status": "unproved",
@@ -241,43 +250,58 @@
     },
     "src/apps/gateway.rs": {
       "status": "unproved",
-      "sha256": "3bd2bfd5c8d2d6a9e74e771192ac166d52dda5f7d479406b4ab06a784b4de8a4",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "af5a8064c0a8b9c5e6cc8b4ed9a48358c737ff5b9d6c04287b1b63219ff9dd54",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/apps/manifest.rs": {
       "status": "unproved",
-      "sha256": "5bae51bded69ec8e402a4af25888f1a4b2ab3658f495f9e23ae43ab38e7e8a29",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "731bdd5423989d411e8dbf9efc63538f44922fcf98cfecfc9c86db48022f3b28",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/apps/manifest_validation.rs": {
       "status": "unproved",
-      "sha256": "958113aa28ce9ae192172248b9cccc8b6c996812edd9169aa13931a0288f465b",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "4494edba673b1f3e9062197177b90b5d9fd2b213d3faa8ee0b9a23e1285d75cc",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/apps/mod.rs": {
       "status": "unproved",
-      "sha256": "84448d38513779e6311dfc24ded325c28a00581681cd85f35d28fc52f9649824",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "d94b96afeffe9dce697dac80f50efe9ec4a52d4a7a24168b371b6aee87eaa25a",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/apps/planning.rs": {
       "status": "unproved",
-      "sha256": "2a1fb70c24a150b2e9fe8f41e86d0648e3e7f14cdf265d5d30006009124470ce",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "90c4670f867f7de808f335797ee33aae7805846c8cba782df2186fc0dbb52d9a",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/apps/registry.rs": {
       "status": "unproved",
-      "sha256": "b36ce3c42b00cb396fa175d722db6258c8b963592e4abfd4b37b4d067d8aa468",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "ae223630acc3b5f1140eff4babb03b204345e6eb7a57170bafa80ed00170b57a",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/apps/routes.rs": {
       "status": "unproved",
-      "sha256": "5defac62b96283f252039f692674991fd913a1d830a7acac2cb5960a784acbc5",
-      "review": "Reviewed public SDK route: fixed compile-time credential-free source, JavaScript MIME, nosniff; fixture checks exact production adapter; no tenant state or action permission bypass. Shared adapter accepts only ISO currency codes."
+      "sha256": "e0e4303213442d4905aa993723afcd257179f1baa9265eca79dd68fb220aba5c",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/apps/runtime.rs": {
       "status": "unproved",
       "sha256": "5ac06c331ea566a7d3d0220a45bd2d747736b8fdf555f5114d358f617cfd768a",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/apps/service_limits.rs": {
+      "status": "unproved",
+      "sha256": "e63296077d1627396eb01f0a56bd2d7ad5e2090ab4abc5bf5873e87a25fd86f3",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+    },
+    "src/apps/surface_tests.rs": {
+      "status": "unproved",
+      "sha256": "854cf8a47361e7f48bce454e0a1f68dac67a4f1f42bfbf4cab51d23bd0b9f12f",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+    },
+    "src/apps/surfaces.rs": {
+      "status": "reviewed-binding",
+      "sha256": "7c6795ce966b1efaa66ce5b51adba961848fcf6cd6b42f55c1b871a44e32b369",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/assets/download.rs": {
       "status": "reviewed-binding",
@@ -321,8 +345,8 @@
     },
     "src/auth/middleware.rs": {
       "status": "unproved",
-      "sha256": "3b623674ea0b9f63842d00a9e9e192756172a93ebbf77fc02b3bfb1c8061821f",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "3dbec43ee761dd6512a5f21d601737719f0ae0464d86b6b9b28fa80cc12573fc",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/auth/mod.rs": {
       "status": "unproved",
@@ -371,13 +395,13 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "2ee50d32c3b2698c849885a2078e8108a57482a2848542411f3e92ab7b8363fa",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "d1231e1cac69d51c1c84dbb0ceaf0c6ef11d0d0cacc79d73500f494d02317ada",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
-      "sha256": "eb6931ccd9e0f04d1a864445b9fcf70bf2b446fad9d380281378f0ee3ea884b8",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "8da89b90aa75262364d2f9fe23cd0e56872ad2bade6c329a2a0b94a8b757e297",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/capabilities.rs": {
       "status": "unproved",
@@ -581,8 +605,8 @@
     },
     "src/developer/builds.rs": {
       "status": "unproved",
-      "sha256": "866c6598de76678a9ea51360e2f3bb4e8d547cf8e7b765f99c2464850f49e74b",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "694ce019d87b22edd415826860f3c02bc12c7c110e062b4f1cc9f1c5d294ea18",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/developer/generation.rs": {
       "status": "unproved",
@@ -596,8 +620,8 @@
     },
     "src/developer/routes.rs": {
       "status": "unproved",
-      "sha256": "e67f73a933e1999dbc90cce22c973afd6e87525c338c161cf07e1b8b50da2cb0",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "f4d827f5f90268024ca1b7761e8dc6f4b4b0ff78e858f1490e20212f305f6f26",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/discount.rs": {
       "status": "reviewed-binding",
@@ -641,8 +665,8 @@
     },
     "src/foundation.rs": {
       "status": "unproved",
-      "sha256": "4dfdbbec06709697a68fa31371be626854bcc061e8be0d2252be60189582d0b4",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "0cbf3c571a8c3713bcc7a494f31644ba4aa780e4ca76d980392e413fa5e8fb19",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/http_limits.rs": {
       "status": "unproved",
@@ -841,8 +865,8 @@
     },
     "src/planner.rs": {
       "status": "unproved",
-      "sha256": "567013616f192cb4605a3c0972d66b98758b38b6f98c3b3a41a3f338207d08ba",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "841bc0436c7d7f7ba30a5d2c0d733b9c0f550d2d073af00d11c79383776416ce",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/platform/auth.rs": {
       "status": "reviewed-binding",
@@ -951,8 +975,8 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "a8644edc47bfd1f6190ea98ab998ac172ceb4bb835b7de847e6dc2faf957165c",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "6c0e5618a8fecb39543514e1bb67a539848bd54eacbd852bffd1744fc6b81026",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "src/workers.rs": {
       "status": "unproved",
@@ -962,8 +986,8 @@
   },
   "inputs": {
     ".github/workflows/verify.yml": {
-      "sha256": "85cf2cabd367257723068f9b97f738983711c65a0ba685346993e5a96ae28d38",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "d7ee65ecc7ac1176311d36cdbc06c35bb0b879c59c711955c8e4e01463d52187",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "Cargo.lock": {
       "sha256": "5568d6215c3f896914be87977c1bfb8bdb1f4d746c3af6ad9cf945a4f7da5fe4",
@@ -1074,8 +1098,8 @@
       "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
     "proof/Commerce/Claims.lean": {
-      "sha256": "a602f00d955edef034b8ae442d3e0a9c9ce775e37c62de701aea7f6187aae0b2",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "229ac182c1d5addb8cf584d9e73412d8f41ed31667d8dc17a61483df16128667",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -1098,8 +1122,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "b9848ac02df02c87185e4cac0e2502c1f602f2cfb624f0810bdfc1235759a0e2",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "c39723872fc897f9d95a02c6de87749c0151ff743c1a1f097d1ed201abec0623",
+      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
     "scripts/formal/registry.py": {
       "sha256": "a1836d65c2e2cebfce3d82fe31381508dbdcc71ff0a430922c3316c995261197",

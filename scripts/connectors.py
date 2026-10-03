@@ -43,7 +43,9 @@ def configuration():
         for a in ["gmail", "google_analytics", "slack"]
     }
     path = RUNTIME / "connector-services.json"
-    path.write_text(json.dumps(services))
+    existing = json.loads(path.read_text()) if path.exists() else {}
+    existing.update(services)
+    path.write_text(json.dumps(existing))
     path.chmod(0o600)
     return values
 

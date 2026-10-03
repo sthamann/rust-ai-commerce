@@ -1,3 +1,4 @@
+import { AppSurfaceSlot } from "./AppSurfaces";
 /** All four product translations and extra fields are edited together under a product revision. */
 import RichEditor from "./RichEditor";
 import ProductAssets from "./ProductAssets";
@@ -196,6 +197,10 @@ export default function ProductDataView({ request }: { request: RequestFn }) {
             onChange={(richDescription) =>
               setExtra({ ...extra, richDescription })
             }
+          />
+          <AppSurfaceSlot
+            location="admin.product"
+            context={{ productId: id }}
           />
           <details>
             <summary>{w("specifications")}</summary>

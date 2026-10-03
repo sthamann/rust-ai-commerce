@@ -44,17 +44,12 @@ pub(crate) async fn plan_with(
     let calls=channels.iter().map(|r|json!({"channel":r.get::<String,_>("channel"),"httpCallsIncludingTests":r.get::<i64,_>("calls"),"httpFailures":r.get::<i64,_>("failures")})).collect::<Vec<_>>();
     let facts = json!({"learningSignals":signals,"learningMethod":"epsilon-greedy selection with smoothed estimate (purchases+1)/(views+2); observed associations only, no proven causal uplift","modelWeightsUpdated":false,"graphProvenance":"curated SERVES/PAIRS_WITH; event-derived CO_PURCHASED associations with order evidence","channelCalls":calls,"externalChatGPTAccountLinked":false,"externalClaudeAccountLinked":false,"demoOrderCount":order_stats.get::<i64,_>("count"),"demoOrderTotalEUR":order_stats.get::<f64,_>("total"),"payment":"simulated"});
     let memory = cognition::observations(a, t).await?;
-    let app_names =
-        sqlx::query("SELECT manifest FROM app_packages WHERE tenant=$1 AND active LIMIT 12")
-            .bind(t)
-            .fetch_all(&a.db)
-            .await?
-            .iter()
-            .map(|r| {
-                let m: Value = r.get("manifest");
-                json!({"id":m["id"],"actions":m["actions"]})
-            })
-            .collect::<Vec<_>>();
+    let app_names = app_context
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|v| json!({"id":v["app"],"actions":v["actions"]}))
+        .collect::<Vec<_>>();
     let prompt = format!(
         "Installed app records/actions: {app_context}. For an explicitly requested app data change, propose app_action with app, action and arguments_json encoding the managed save action's id/fields object. Do not propose service calls or execute app actions. Bind no revisions yourself. Otherwise app_action=null.\nResponse locale: {locale}\nCatalog: {}\nKnowledge graph: {}\nExperience revision: {}\nExperience: {}\nEarlier conversation (context only): {}\nCurrent merchant instruction: {}",
         serde_json::to_string(&ps).unwrap(),

@@ -108,7 +108,7 @@ the verified prototype. See the exact [operations boundaries](merchant-operation
 
 Selected production admission/cap policies are extracted to Lean and checked in
 CI, with transitive axiom auditing, compiled conformance and negative mutations.
-The [formal guide](formal-verification.md) names all thirteen policies and their
+The [formal guide](formal-verification.md) names the extracted policies and their
 actual Rust consumers. This does not prove SQL tenant isolation, authentication,
 provider/extension safety or whole-system correctness. Existing security and
 behavioral regressions remain mandatory, as do explicit reviews of source,
@@ -125,3 +125,13 @@ existing demo databases before exposing them: these flags do not delete old
 known-password accounts. See [host procedure](deployment.md) and
 [operator API boundary](platform.md). These gates are not comprehensive abuse,
 MFA, email verification, account recovery or full core-wide RLS hardening.
+
+## Full app surface boundary
+
+Custom UI stays in an opaque iframe with source-window/nonce checks, selected
+bridge actions and current server permission checks. Only operator configuration
+chooses remote UI/service origins. Custom GET routes use the extracted read
+admission policy; its external `readOnly` fact remains trusted metadata. Service
+calls use per-process admission limits, five-second timeouts and 64 KiB payload
+bounds. The runnable container adds explicit resources but does not provide
+microVM security. See [the app contract and remaining production gaps](app-platform.md).
