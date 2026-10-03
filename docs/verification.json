@@ -636,7 +636,7 @@
     "PayPal wallet Orders v2 wire/reconciliation/refund/BN verified with local Sandbox fixtures; Live mode prepared but no live settlement tested. Shopware Payments standalone connector remains unconnected.",
     "Partial formal verification: 18 production policies / 42 Lean properties; translator, surrounding Rust, SQL, providers, frontend and AI behavior remain unproved."
   ],
-  "sourceStatus": "Current extension delta: 50 Rust units, 63 affected HTTP groups, actual browser/container checks and 18-policy formal gate; previous full-core suite observations retain their recorded source/date.",
+  "sourceStatus": "Current extension delta: 50 Rust units, 84 affected HTTP groups, actual browser/container checks and 18-policy formal gate; previous full-core suite observations retain their recorded source/date.",
   "formalVerification": {
     "status": "passed",
     "scope": "Extracted production policies; NOT full Rust/server correctness",
@@ -806,14 +806,16 @@
     "sourceBaseCommit": "9aee43cc96774e62bfcf655067e62d597ddb4970",
     "workingTreeChanged": true,
     "rustUnitTests": 50,
-    "affectedHttpGroups": 63,
+    "affectedHttpGroups": 84,
     "affectedSuites": {
       "app_surfaces": 9,
       "apps": 16,
       "services": 5,
       "staging": 6,
       "developer_documents": 8,
-      "users": 19
+      "users": 19,
+      "providers": 12,
+      "connected_apps": 9
     },
     "appSurfaces": {
       "passed": 9,
