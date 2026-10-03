@@ -1,4 +1,5 @@
 /** Typed merchant rule/campaign/flow/channel forms with exact JSON available for advanced review. */
+import FlowExecution from "./FlowExecution";
 import { useConnectedText } from "../../shared/i18n/connected-i18n";
 import { type Config, type Kind } from "./automation-types";
 import AutomationEditor from "./AutomationEditor";
@@ -87,6 +88,20 @@ export default function AutomationView({
       active = false;
     };
   }, [request]);
+  useEffect(() => {
+    let active = true;
+    const timer = window.setInterval(() => {
+      request("/api/automation/executions")
+        .then((v) => {
+          if (active) setJobs(v.jobs);
+        })
+        .catch(() => {});
+    }, 3000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, [request]);
   const fresh = (k: Kind) => {
     setKind(k);
     setId("");
@@ -164,7 +179,9 @@ export default function AutomationView({
           </button>
         ))}
       </nav>
-      <div className="workbench-grid">
+      <div
+        className={`workbench-grid ${kind === "flows" ? "flow-workspace" : ""}`}
+      >
         <section className="studio-card">
           <h2>{w(kind)}</h2>
           {rows[kind].map((r) => (
@@ -231,6 +248,7 @@ export default function AutomationView({
               )}
             </p>
             {j.result?.note && <p>{j.result.note}</p>}
+            <FlowExecution job={j} />
             {j.result?.preview && (
               <ProposalCard
                 message={

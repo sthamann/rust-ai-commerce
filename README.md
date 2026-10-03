@@ -53,7 +53,7 @@ asset/workflow releases are connected to their actual storefront/order consumers
 Read the [operations/API guide and precise boundaries](docs/merchant-operations.md),
 [Shopware feature matrix](docs/shopware-parity.md) and [source map](docs/source-map.md).
 This remains a bounded prototype: full Shopware entity/DAL/API parity, production
-identity/account recovery, graphical full FlowSequence behavior and a supported
+identity/account recovery, complete original FlowSequence interchange and a supported
 Shopware Payments connector are still missing.
 
 ![Customer address book with separate billing and shipping defaults](docs/assets/customer-address-book-en.png)
@@ -68,20 +68,22 @@ in the native storefront after consent and imports reports; Gmail imports a supp
 label into private shop knowledge; Slack receives order notifications or rule-bound
 Flow Builder actions. Private sources are consumed by the merchant model prompt and
 MCP, with source IDs and AGE product relationships. Apps can publish typed events,
-and the visual builder edits nested AND/OR/NOT conditions and app actions.
+and the visual builder edits nested AND/OR/NOT/XOR conditions, source-named typed rules and app actions. Connected flow graphs support true/false branches, consecutive actions, durable delays, stop nodes and saved-rule references.
 
 [Setup, provider permissions, event API and tested boundaries](docs/connected-apps.md)
 · [Order-alert app and Slack flow example](extensions/apps/order-alerts)
-· [Original Shopware condition inventory](reference/rule-catalog.json)
+· [Original production rule/action inventory](reference/automation-registry.json) · [Native rules and durable flow guide](docs/automation.md)
 
 Local: install `extensions/services/connectors/requirements.txt`, configure the Google/
 Slack OAuth clients in ignored `.env`, then run `CONNECTED_APPS=1 scripts/dev.sh`.
 Existing app services are preserved. Protocol fixtures test the entire provider-to-core
 path without external messages or paid model calls; live account authorization requires
 your provider clients. Imports are manual in this version. The native builder does not
-claim parity with the full original condition catalog or arbitrary FlowSequences.
+claim complete behavior/API parity with the original condition catalog or arbitrary source FlowSequences. The reflected production catalog contains 114 Rule subclasses and 16 Core actions; 108 rule scopes are executable natively, with 432 direct original-PHP comparison cases across 74 classes. Unsupported runtimes remain visibly disabled. Source-name registration is not a claim of complete equivalence.
 
-![Visual order-event flow with nested conditions and a Slack app action](docs/assets/slack-flow-en.jpg)
+![Connected flow with source-named condition, order tagging, durable delay and a reviewable AI proposal](docs/assets/automation-flow-en.jpg)
+
+[Slack app action example](docs/assets/slack-flow-en.jpg)
 
 ## Transactional email delivery
 
@@ -141,7 +143,7 @@ documentation site, not a hosted commerce backend.
 ## Lean-checked production policies
 
 The real Rust checkout, order workflow, access, refund and download paths now
-call a small pure kernel with **18 policies and 42 Lean-proved properties**.
+call a small pure kernel with **20 policies and 45 Lean-proved properties**.
 The production functions are extracted through a closed typed grammar; compiled
 Rust/Lean outputs are compared on 3,614 cases. Deliberately broken policies must
 fail the proof checks. CI also audits transitive axioms and locks every Rust,
@@ -277,10 +279,10 @@ See [implementation and limits](docs/intelligence-apps-payments.md),
 - [Original Shopware migration units](porting/units.json) and [migration workflow](docs/migration.md)
 - [Architecture decisions](docs/architecture.md), [security](docs/security.md), [third-party licenses](THIRD_PARTY.md)
 
-The current verification includes **5,872 bounded comparisons** against original
-Shopware 6.7.14.2 PHP classes. These cover selected pricing/context/tax operations and numeric rule comparisons;
+The current verification includes **7,000 bounded comparisons** against original
+Shopware 6.7.14.2 PHP classes. These cover selected pricing/context/tax operations and numeric rule comparisons, plus 432 cases against 74 concrete original condition classes;
 they do not establish full Shopware compatibility. The current workbench verification
-now runs 50 Rust unit tests and 53 frontend component/hook tests, plus 21 real HTTP suites,
+now runs 58 Rust unit tests and 65 frontend component/hook tests, plus 22 real HTTP suites,
 three local provider suites, four browser contracts and verification-tool tests.
 These include private releases, customer authority, concurrent checkout and bounded catalog reads.
 

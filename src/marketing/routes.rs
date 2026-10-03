@@ -3,7 +3,9 @@ use super::*;
 pub(crate) fn router() -> Router<App> {
     Router::new()
         .merge(catalog::router())
+        .merge(metadata::router())
         .route("/api/automation", get(list))
+        .route("/api/automation/executions", get(jobs::list))
         .route("/api/automation/{kind}/{id}", axum::routing::put(save))
         .route("/api/automation/rules/preview", post(preview))
         .route("/store-api/checkout/coupons", axum::routing::put(coupons))
@@ -17,7 +19,8 @@ fn table(kind: &str) -> Result<&'static str> {
         _ => Err(bad("Unknown configuration type")),
     }
 }
-async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+    auth::permit(&h, "settings.read")?;
     let t = merchant(&a, &h)?;
     let mut result = json!({});
     for kind in ["rules", "promotions", "flows", "channels"] {
@@ -35,11 +38,10 @@ async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
             .await?;
         result[kind]=json!(rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"data":r.get::<Value,_>("data"),"revision":r.get::<i64,_>("revision")})).collect::<Vec<_>>());
     }
-    let jobs=sqlx::query("SELECT j.id,j.flow,j.state,j.result,j.error,COALESCE((SELECT t.applied FROM tasks t WHERE t.tenant=j.tenant AND t.id=j.result->>'taskId'),false) AS applied FROM flow_jobs j WHERE j.tenant=$1 ORDER BY j.event_id DESC LIMIT 50").bind(&t).fetch_all(&a.db).await?;
-    result["jobs"]=json!(jobs.iter().map(|r|json!({"id":r.get::<String,_>("id"),"flow":r.get::<String,_>("flow"),"state":r.get::<String,_>("state"),"result":r.get::<Option<Value>,_>("result"),"error":r.get::<Option<String>,_>("error"),"applied":r.get::<bool,_>("applied")})).collect::<Vec<_>>());
+    result["jobs"] = jobs::values(&a, &t).await?;
     Ok(Json(result))
 }
-async fn save(
+pub(super) async fn save(
     State(a): State<App>,
     h: HeaderMap,
     Path((kind, id)): Path<(String, String)>,
@@ -83,6 +85,31 @@ async fn save(
                 serde_json::from_value(data.clone()).map_err(|_| bad("Invalid flow"))?;
             f.validate()?;
             validate_app_flow(&a, &t, &h, &f).await?;
+            if let Some(p) = &f.pipeline {
+                for node in &p.nodes {
+                    if let pipeline::Node::Action { action, config, .. } = node {
+                        auth::permit(&h, flow_actions::permission(action))?;
+                        if action == "ai_proposal" {
+                            auth::permit(&h, "knowledge.read")?;
+                        }
+                        if action == "app_action" || action == "action.mail.send" {
+                            let mut step = f.clone();
+                            step.action = "app_action".into();
+                            step.app_action = Some(flows::AppFlowAction {
+                                app: config["app"].as_str().unwrap_or("email").into(),
+                                action: config["action"].as_str().unwrap_or("send_order").into(),
+                                arguments: if action == "action.mail.send" {
+                                    json!({"locale":&f.locale[..2],"dryRun":false})
+                                } else {
+                                    config["arguments"].clone()
+                                },
+                            });
+                            validate_app_flow(&a, &t, &h, &step).await?;
+                        }
+                    }
+                }
+            }
+
             data["actor"] = json!(header(&h, "x-rac-user").unwrap_or("bootstrap"));
         }
         "channels" => {
@@ -150,8 +177,13 @@ async fn save(
     tx.commit().await?;
     Ok(Json(json!({"saved":true,"revision":expected+1})))
 }
-async fn preview(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Result<Json<Value>> {
+pub(super) async fn preview(
+    State(a): State<App>,
+    h: HeaderMap,
+    Json(v): Json<Value>,
+) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
+    auth::permit(&h, "settings.read")?;
     let c: rules::Condition =
         serde_json::from_value(v["condition"].clone()).map_err(|_| bad("Unsupported condition"))?;
     c.validate(0)?;
@@ -159,9 +191,17 @@ async fn preview(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Re
     if cart.tenant != t {
         return Err(bad("Wrong cart"));
     }
-    let q = cart_json(&a, &cart).await?;
+    let mut q = cart_json(&a, &cart).await?;
+    q["ruleFacts"] = facts::rule_facts(&mut *a.db.acquire().await?, &cart, &q).await?;
+    super::rule_snapshot::attach(
+        &mut *a.db.acquire().await?,
+        &t,
+        &v["condition"],
+        &mut q["ruleFacts"],
+    )
+    .await?;
     Ok(Json(
-        json!({"matched":c.matches(&cart,&q),"sideEffects":false}),
+        json!({"matched":c.checked_matches(&cart,&q)?,"sideEffects":false}),
     ))
 }
 async fn coupons(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Result<Json<Value>> {

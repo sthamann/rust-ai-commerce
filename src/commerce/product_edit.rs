@@ -18,6 +18,8 @@ struct Translation {
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct Extra {
+    #[serde(default)]
+    automation: Value,
     seo: HashMap<String, Seo>,
     specifications: HashMap<String, HashMap<String, String>>,
     cross_selling: Vec<String>,
@@ -84,6 +86,7 @@ pub(crate) async fn edit_product(
     if !edit.extra.rich_description.is_null() {
         assets::validate_rich(&edit.extra.rich_description)?;
     }
+    marketing::validate_metadata("products", &edit.extra.automation)?;
     if let Some(fields) = &edit.commerce {
         fields.validate()?;
     }

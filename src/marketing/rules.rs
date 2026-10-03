@@ -9,6 +9,13 @@ pub(crate) enum Condition {
     Or { children: Vec<Condition> },
     #[serde(rename = "notContainer")]
     Not { child: Box<Condition> },
+    #[serde(rename = "shopwareCondition")]
+    Source { name: String, config: Value },
+    #[serde(rename = "ruleReference")]
+    Reference {
+        #[serde(rename = "ruleId")]
+        rule_id: String,
+    },
     #[serde(rename = "alwaysValid")]
     Always,
     #[serde(rename = "cartCartAmount")]
@@ -125,6 +132,12 @@ impl Condition {
             return Err(bad("Maximum rule depth 8"));
         }
         match self {
+            Self::Reference { rule_id } if !apps::identifier(rule_id) => {
+                return Err(bad("Invalid referenced rule ID"));
+            }
+            Self::Source { name, config } => {
+                rust_ai_commerce::automation_rules::validate(name, config, depth).map_err(bad)?
+            }
             Self::And { children } | Self::Or { children } => {
                 if children.len() > 20 {
                     return Err(bad("Maximum 20 children"));

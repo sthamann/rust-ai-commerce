@@ -5,6 +5,8 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("rule_xor_count","hits == 1","hits <= 1"),
+ ("flow_delay_admissible","seconds <= 2592000","true"),
  ("app_read_admissible","!mutating","true"),
  ("platform_admissible","personal &&","true &&"),
  ("platform_admissible","granted &&","true &&"),

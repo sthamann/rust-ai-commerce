@@ -42,6 +42,21 @@ pub(crate) async fn promote(
     .bind(&c.tenant)
     .fetch_all(&mut *tx)
     .await?;
+    let mut evaluated = q.clone();
+    if !rows.is_empty() {
+        evaluated["ruleFacts"] = facts::rule_facts(tx, c, &q).await?;
+        super::rule_snapshot::attach(
+            tx,
+            &c.tenant,
+            &json!(
+                rows.iter()
+                    .map(|r| r.get::<Value, _>("data"))
+                    .collect::<Vec<_>>()
+            ),
+            &mut evaluated["ruleFacts"],
+        )
+        .await?;
+    }
     let mut applicable = vec![];
     for r in rows {
         let p: Promotion =
@@ -57,7 +72,7 @@ pub(crate) async fn promote(
         if !p.active
             || p.max_uses.is_some_and(|n| uses >= n)
             || p.code.as_ref().is_some_and(|v| !c.data.coupons.contains(v))
-            || !p.rule.matches(c, &q)
+            || !p.rule.checked_matches(c, &evaluated)?
         {
             continue;
         }

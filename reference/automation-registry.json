@@ -1,0 +1,4516 @@
+{
+  "upstream": "shopware/core 6.7.14.2",
+  "conditions": [
+    {
+      "type": "adminSalesChannelSource",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\AdminSalesChannelSourceRule",
+      "source": "Checkout/Cart/Rule/AdminSalesChannelSourceRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "hasAdminSalesChannelSource": {
+            "name": "hasAdminSalesChannelSource",
+            "type": "bool",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "hasAdminSalesChannelSource": [
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "adminSource",
+        "field": "hasAdminSalesChannelSource",
+        "kind": "bool"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "allLineItemsContainer",
+      "class": "Shopware\\Core\\Framework\\Rule\\Container\\MatchAllLineItemsRule",
+      "source": "Framework/Rule/Container/MatchAllLineItemsRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "minimumShouldMatch": {
+            "name": "minimumShouldMatch",
+            "type": "int",
+            "config": {}
+          },
+          "types": {
+            "name": "types",
+            "type": "multi-select",
+            "config": {}
+          }
+        }
+      },
+      "constraints": {
+        "rules": [
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfType"
+        ],
+        "minimumShouldMatch": [
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "types": [
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "alwaysValid",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\AlwaysValidRule",
+      "source": "Checkout/Cart/Rule/AlwaysValidRule.php",
+      "config": null,
+      "constraints": [],
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "andContainer",
+      "class": "Shopware\\Core\\Framework\\Rule\\Container\\AndRule",
+      "source": "Framework/Rule/Container/AndRule.php",
+      "config": null,
+      "constraints": {
+        "rules": [
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfType"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartCartAmount",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\CartAmountRule",
+      "source": "Checkout/Cart/Rule/CartAmountRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "price.totalPrice",
+        "field": "amount",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartGoodsCount",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\GoodsCountRule",
+      "source": "Checkout/Cart/Rule/GoodsCountRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "empty"
+          ]
+        },
+        "fields": {
+          "count": {
+            "name": "count",
+            "type": "float",
+            "config": {}
+          }
+        }
+      },
+      "constraints": {
+        "count": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "goodsCount",
+        "field": "count",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartGoodsPrice",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\GoodsPriceRule",
+      "source": "Checkout/Cart/Rule/GoodsPriceRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "empty"
+          ]
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {}
+          }
+        }
+      },
+      "constraints": {
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "goodsPrice",
+        "field": "amount",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartHasDeliveryFreeItem",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\CartHasDeliveryFreeItemRule",
+      "source": "Checkout/Cart/Rule/CartHasDeliveryFreeItemRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "allowed": {
+            "name": "allowed",
+            "type": "bool",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "allowed": [
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "hasDeliveryFreeItem",
+        "field": "allowed",
+        "kind": "bool"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItem",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemRule",
+      "source": "Checkout/Cart/Rule/LineItemRule.php",
+      "config": null,
+      "constraints": {
+        "identifiers": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemActualStock",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemActualStockRule",
+      "source": "Checkout/Cart/Rule/LineItemActualStockRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "stock": {
+            "name": "stock",
+            "type": "int",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "stock": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "line.stock",
+        "field": "stock",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemClearanceSale",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemClearanceSaleRule",
+      "source": "Checkout/Cart/Rule/LineItemClearanceSaleRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "clearanceSale": {
+            "name": "clearanceSale",
+            "type": "bool",
+            "config": {
+              "isMatchAny": true
+            }
+          }
+        }
+      },
+      "constraints": {
+        "clearanceSale": [
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "line.closeout",
+        "field": "clearanceSale",
+        "kind": "bool"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemCreationDate",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemCreationDateRule",
+      "source": "Checkout/Cart/Rule/LineItemCreationDateRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "between"
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "lineItemCreationDate": {
+            "name": "lineItemCreationDate",
+            "type": "datetime",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "lineItemCreationDate": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "line.createdAt",
+        "field": "lineItemCreationDate",
+        "kind": "datetime"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemCustomField",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemCustomFieldRule",
+      "source": "Checkout/Cart/Rule/LineItemCustomFieldRule.php",
+      "config": null,
+      "constraints": {
+        "renderedField": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank"
+        ],
+        "selectedField": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank"
+        ],
+        "selectedFieldSet": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank"
+        ],
+        "renderedFieldValue": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemDimensionHeight",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemDimensionHeightRule",
+      "source": "Checkout/Cart/Rule/LineItemDimensionHeightRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "unit": "dimension",
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "line.height",
+        "field": "amount",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemDimensionLength",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemDimensionLengthRule",
+      "source": "Checkout/Cart/Rule/LineItemDimensionLengthRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "unit": "dimension",
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "line.length",
+        "field": "amount",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemDimensionVolume",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemDimensionVolumeRule",
+      "source": "Checkout/Cart/Rule/LineItemDimensionVolumeRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "unit": "volume",
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "line.volume",
+        "field": "amount",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemDimensionWeight",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemDimensionWeightRule",
+      "source": "Checkout/Cart/Rule/LineItemDimensionWeightRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "unit": "weight",
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "line.weight",
+        "field": "amount",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemDimensionWidth",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemDimensionWidthRule",
+      "source": "Checkout/Cart/Rule/LineItemDimensionWidthRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "unit": "dimension",
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "line.width",
+        "field": "amount",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemGoodsTotal",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemGoodsTotalRule",
+      "source": "Checkout/Cart/Rule/LineItemGoodsTotalRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            ">",
+            ">=",
+            "<",
+            "<="
+          ]
+        },
+        "fields": {
+          "count": {
+            "name": "count",
+            "type": "int",
+            "config": {}
+          }
+        }
+      },
+      "constraints": {
+        "count": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemInCategory",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemInCategoryRule",
+      "source": "Checkout/Cart/Rule/LineItemInCategoryRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "categoryIds": {
+            "name": "categoryIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "category"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "categoryIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "line.categoryIds",
+        "field": "categoryIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemInGroup",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemGroupRule",
+      "source": "Checkout/Cart/Rule/LineItemGroupRule.php",
+      "config": null,
+      "constraints": {
+        "groupId": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "packagerKey": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "value": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "sorterKey": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "rules": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": null,
+      "supported": false,
+      "status": "missing-runtime",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemInProductStream",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemInProductStreamRule",
+      "source": "Checkout/Cart/Rule/LineItemInProductStreamRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "streamIds": {
+            "name": "streamIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "product_stream"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "streamIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "line.streamIds",
+        "field": "streamIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemIsNew",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemIsNewRule",
+      "source": "Checkout/Cart/Rule/LineItemIsNewRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "isNew": {
+            "name": "isNew",
+            "type": "bool",
+            "config": {
+              "isMatchAny": true
+            }
+          }
+        }
+      },
+      "constraints": {
+        "isNew": [
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "line.isNew",
+        "field": "isNew",
+        "kind": "bool"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemListPrice",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemListPriceRule",
+      "source": "Checkout/Cart/Rule/LineItemListPriceRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "line.listPrice",
+        "field": "amount",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemListPriceRatio",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemListPriceRatioRule",
+      "source": "Checkout/Cart/Rule/LineItemListPriceRatioRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "line.listPriceRatio",
+        "field": "amount",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemOfManufacturer",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemOfManufacturerRule",
+      "source": "Checkout/Cart/Rule/LineItemOfManufacturerRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "manufacturerIds": {
+            "name": "manufacturerIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "product_manufacturer"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "manufacturerIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "line.manufacturerId",
+        "field": "manufacturerIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemOfType",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemOfTypeRule",
+      "source": "Checkout/Cart/Rule/LineItemOfTypeRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "lineItemType": {
+            "name": "lineItemType",
+            "type": "single-select",
+            "config": {
+              "options": [
+                "product",
+                "promotion"
+              ]
+            }
+          }
+        }
+      },
+      "constraints": {
+        "lineItemType": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "line.type",
+        "field": "lineItemType",
+        "kind": "string"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemPerItemQuantity",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemPerItemQuantityRule",
+      "source": "Checkout/Cart/Rule/LineItemPerItemQuantityRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "quantity": {
+            "name": "quantity",
+            "type": "int",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "quantity": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "line.quantity",
+        "field": "quantity",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemProductStates",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemProductStatesRule",
+      "source": "Checkout/Cart/Rule/LineItemProductStatesRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "productState": {
+            "name": "productState",
+            "type": "single-select",
+            "config": {
+              "options": [
+                "is-physical",
+                "is-download"
+              ]
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "productState": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "line.states",
+        "field": "productState",
+        "kind": "membership"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemProductType",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemProductTypeRule",
+      "source": "Checkout/Cart/Rule/LineItemProductTypeRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "productType": {
+            "name": "productType",
+            "type": "single-select",
+            "config": {
+              "options": [
+                "physical",
+                "digital"
+              ]
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "productType": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "line.productType",
+        "field": "productType",
+        "kind": "string"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemPromoted",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemPromotedRule",
+      "source": "Checkout/Cart/Rule/LineItemPromotedRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "isPromoted": {
+            "name": "isPromoted",
+            "type": "bool",
+            "config": {
+              "isMatchAny": true
+            }
+          }
+        }
+      },
+      "constraints": {
+        "isPromoted": [
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "line.promoted",
+        "field": "isPromoted",
+        "kind": "bool"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemProperty",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemPropertyRule",
+      "source": "Checkout/Cart/Rule/LineItemPropertyRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "identifiers": {
+            "name": "identifiers",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "property_group"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "identifiers": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "line.propertyAndOptionIds",
+        "field": "identifiers",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemPropertyValue",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemPropertyValueRule",
+      "source": "Checkout/Cart/Rule/LineItemPropertyValueRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "identifiers": {
+            "name": "identifiers",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "property_group_option"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "identifiers": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "line.propertyIds",
+        "field": "identifiers",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemPurchasePrice",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemPurchasePriceRule",
+      "source": "Checkout/Cart/Rule/LineItemPurchasePriceRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "type": {
+            "name": "type",
+            "type": "single-select",
+            "config": {
+              "options": [
+                "gross",
+                "net"
+              ]
+            }
+          },
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "type": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemReleaseDate",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemReleaseDateRule",
+      "source": "Checkout/Cart/Rule/LineItemReleaseDateRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "between",
+            "empty"
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "lineItemReleaseDate": {
+            "name": "lineItemReleaseDate",
+            "type": "datetime",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "lineItemReleaseDate": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "line.releaseDate",
+        "field": "lineItemReleaseDate",
+        "kind": "datetime"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemStock",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemStockRule",
+      "source": "Checkout/Cart/Rule/LineItemStockRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "stock": {
+            "name": "stock",
+            "type": "int",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "stock": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "line.availableStock",
+        "field": "stock",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemTag",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemTagRule",
+      "source": "Checkout/Cart/Rule/LineItemTagRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "identifiers": {
+            "name": "identifiers",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "tag"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "identifiers": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "line.tags",
+        "field": "identifiers",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemTaxation",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemTaxationRule",
+      "source": "Checkout/Cart/Rule/LineItemTaxationRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "taxIds": {
+            "name": "taxIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "tax"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "taxIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "line.taxId",
+        "field": "taxIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemTotalPrice",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemTotalPriceRule",
+      "source": "Checkout/Cart/Rule/LineItemTotalPriceRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "line.totalPrice",
+        "field": "amount",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemUnitPrice",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemUnitPriceRule",
+      "source": "Checkout/Cart/Rule/LineItemUnitPriceRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "line.unitPrice",
+        "field": "amount",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemVariantValue",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemVariantValueRule",
+      "source": "Checkout/Cart/Rule/LineItemVariantValueRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "identifiers": {
+            "name": "identifiers",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "property_group_option"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "identifiers": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "line.optionIds",
+        "field": "identifiers",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemWithQuantity",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemWithQuantityRule",
+      "source": "Checkout/Cart/Rule/LineItemWithQuantityRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            ">",
+            ">=",
+            "<",
+            "<="
+          ]
+        },
+        "fields": {
+          "id": {
+            "name": "id",
+            "type": "string",
+            "config": {}
+          },
+          "quantity": {
+            "name": "quantity",
+            "type": "int",
+            "config": {}
+          }
+        }
+      },
+      "constraints": {
+        "id": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\Uuid"
+        ],
+        "quantity": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemWrapper",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemWrapperRule",
+      "source": "Checkout/Cart/Rule/LineItemWrapperRule.php",
+      "config": null,
+      "constraints": {
+        "container": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartLineItemsInCartCount",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\LineItemsInCartCountRule",
+      "source": "Checkout/Cart/Rule/LineItemsInCartCountRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "count": {
+            "name": "count",
+            "type": "int",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "count": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "lineCount",
+        "field": "count",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartPositionPrice",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\CartPositionPriceRule",
+      "source": "Checkout/Cart/Rule/CartPositionPriceRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "price.positionPrice",
+        "field": "amount",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartShippingCost",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\CartShippingCostRule",
+      "source": "Checkout/Cart/Rule/CartShippingCostRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "cartShippingCost": {
+            "name": "cartShippingCost",
+            "type": "float",
+            "config": {
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "cartShippingCost": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "shippingCosts.totalPrice",
+        "field": "cartShippingCost",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartTaxDisplay",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\CartTaxDisplayRule",
+      "source": "Checkout/Cart/Rule/CartTaxDisplayRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "taxDisplay": {
+            "name": "taxDisplay",
+            "type": "single-select",
+            "config": {
+              "options": [
+                "gross",
+                "net"
+              ]
+            }
+          }
+        }
+      },
+      "constraints": {
+        "taxDisplay": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "price.taxStatus",
+        "field": "taxDisplay",
+        "kind": "string"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartTotalPurchasePrice",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\CartTotalPurchasePriceRule",
+      "source": "Checkout/Cart/Rule/CartTotalPurchasePriceRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "type": {
+            "name": "type",
+            "type": "single-select",
+            "config": {
+              "options": [
+                "gross",
+                "net"
+              ]
+            }
+          },
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "type": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartVolume",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\CartVolumeRule",
+      "source": "Checkout/Cart/Rule/CartVolumeRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "volume": {
+            "name": "volume",
+            "type": "float",
+            "config": {
+              "unit": "volume",
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "volume": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "volume",
+        "field": "volume",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "cartWeight",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\CartWeightRule",
+      "source": "Checkout/Cart/Rule/CartWeightRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "weight": {
+            "name": "weight",
+            "type": "float",
+            "config": {
+              "unit": "weight",
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "weight": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "weight",
+        "field": "weight",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "currency",
+      "class": "Shopware\\Core\\System\\Currency\\Rule\\CurrencyRule",
+      "source": "System/Currency/Rule/CurrencyRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "currencyIds": {
+            "name": "currencyIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "currency"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "currencyIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "currency",
+        "field": "currencyIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerAffiliateCode",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\AffiliateCodeRule",
+      "source": "Checkout/Customer/Rule/AffiliateCodeRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "affiliateCode": {
+            "name": "affiliateCode",
+            "type": "string",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "affiliateCode": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.affiliateCode",
+        "field": "affiliateCode",
+        "kind": "string",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerAge",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\CustomerAgeRule",
+      "source": "Checkout/Customer/Rule/CustomerAgeRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "age": {
+            "name": "age",
+            "type": "int",
+            "config": {
+              "unit": "age"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "age": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.age",
+        "field": "age",
+        "kind": "number",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerBillingCity",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\BillingCityRule",
+      "source": "Checkout/Customer/Rule/BillingCityRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "cityName": {
+            "name": "cityName",
+            "type": "string",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "cityName": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "billing.city",
+        "field": "cityName",
+        "kind": "string",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerBillingCountry",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\BillingCountryRule",
+      "source": "Checkout/Customer/Rule/BillingCountryRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "countryIds": {
+            "name": "countryIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "country"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "countryIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "billing.country",
+        "field": "countryIds",
+        "kind": "set",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerBillingState",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\BillingStateRule",
+      "source": "Checkout/Customer/Rule/BillingStateRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "stateIds": {
+            "name": "stateIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "country_state"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "stateIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "billing.countryStateId",
+        "field": "stateIds",
+        "kind": "set",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerBillingStreet",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\BillingStreetRule",
+      "source": "Checkout/Customer/Rule/BillingStreetRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "streetName": {
+            "name": "streetName",
+            "type": "string",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "streetName": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "billing.street",
+        "field": "streetName",
+        "kind": "string",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerBillingZipCode",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\BillingZipCodeRule",
+      "source": "Checkout/Customer/Rule/BillingZipCodeRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ]
+        },
+        "fields": {
+          "zipCodes": {
+            "name": "zipCodes",
+            "type": "tagged",
+            "config": {}
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "zipCodes": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfType"
+        ]
+      },
+      "native": {
+        "path": "billing.zipcode",
+        "field": "zipCodes",
+        "kind": "zip",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerBirthday",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\CustomerBirthdayRule",
+      "source": "Checkout/Customer/Rule/CustomerBirthdayRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "between",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "birthday": {
+            "name": "birthday",
+            "type": "date",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "birthday": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.birthday",
+        "field": "birthday",
+        "kind": "date",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerCampaignCode",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\CampaignCodeRule",
+      "source": "Checkout/Customer/Rule/CampaignCodeRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "campaignCode": {
+            "name": "campaignCode",
+            "type": "string",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "campaignCode": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.campaignCode",
+        "field": "campaignCode",
+        "kind": "string",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerCreatedByAdmin",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\CustomerCreatedByAdminRule",
+      "source": "Checkout/Customer/Rule/CustomerCreatedByAdminRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "shouldCustomerBeCreatedByAdmin": {
+            "name": "shouldCustomerBeCreatedByAdmin",
+            "type": "bool",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "shouldCustomerBeCreatedByAdmin": [
+          "Symfony\\Component\\Validator\\Constraints\\NotNull",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.createdByAdmin",
+        "field": "shouldCustomerBeCreatedByAdmin",
+        "kind": "bool",
+        "withoutCustomer": "false"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerCustomField",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\CustomerCustomFieldRule",
+      "source": "Checkout/Customer/Rule/CustomerCustomFieldRule.php",
+      "config": null,
+      "constraints": {
+        "renderedField": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank"
+        ],
+        "selectedField": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank"
+        ],
+        "selectedFieldSet": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank"
+        ],
+        "renderedFieldValue": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerCustomerGroup",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\CustomerGroupRule",
+      "source": "Checkout/Customer/Rule/CustomerGroupRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "customerGroupIds": {
+            "name": "customerGroupIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "customer_group"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "customerGroupIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "customer.group",
+        "field": "customerGroupIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerCustomerNumber",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\CustomerNumberRule",
+      "source": "Checkout/Customer/Rule/CustomerNumberRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "numbers": {
+            "name": "numbers",
+            "type": "tagged",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "numbers": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfType"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "customer.customerNumber",
+        "field": "numbers",
+        "kind": "string_array_lower",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerDaysSinceFirstLogin",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\DaysSinceFirstLoginRule",
+      "source": "Checkout/Customer/Rule/DaysSinceFirstLoginRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "daysPassed": {
+            "name": "daysPassed",
+            "type": "float",
+            "config": {
+              "unit": "time",
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "daysPassed": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.daysSinceFirstLogin",
+        "field": "daysPassed",
+        "kind": "number",
+        "withoutCustomer": "false"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerDaysSinceLastLogin",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\DaysSinceLastLoginRule",
+      "source": "Checkout/Customer/Rule/DaysSinceLastLoginRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "daysPassed": {
+            "name": "daysPassed",
+            "type": "float",
+            "config": {
+              "unit": "time",
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "daysPassed": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.daysSinceLastLogin",
+        "field": "daysPassed",
+        "kind": "number",
+        "withoutCustomer": "false"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerDaysSinceLastOrder",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\DaysSinceLastOrderRule",
+      "source": "Checkout/Customer/Rule/DaysSinceLastOrderRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "daysPassed": {
+            "name": "daysPassed",
+            "type": "float",
+            "config": {
+              "unit": "time",
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "daysPassed": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.daysSinceLastOrder",
+        "field": "daysPassed",
+        "kind": "number",
+        "withoutCustomer": "false"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerDifferentAddresses",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\DifferentAddressesRule",
+      "source": "Checkout/Customer/Rule/DifferentAddressesRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "isDifferent": {
+            "name": "isDifferent",
+            "type": "bool",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "isDifferent": [
+          "Symfony\\Component\\Validator\\Constraints\\NotNull",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.differentAddresses",
+        "field": "isDifferent",
+        "kind": "bool",
+        "withoutCustomer": "false"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerEmail",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\EmailRule",
+      "source": "Checkout/Customer/Rule/EmailRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "email": {
+            "name": "email",
+            "type": "string",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "email": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.email",
+        "field": "email",
+        "kind": "wildcard",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerIsActive",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\IsActiveRule",
+      "source": "Checkout/Customer/Rule/IsActiveRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "isActive": {
+            "name": "isActive",
+            "type": "bool",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "isActive": [
+          "Symfony\\Component\\Validator\\Constraints\\NotNull",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.active",
+        "field": "isActive",
+        "kind": "bool",
+        "withoutCustomer": "false"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerIsCompany",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\IsCompanyRule",
+      "source": "Checkout/Customer/Rule/IsCompanyRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "isCompany": {
+            "name": "isCompany",
+            "type": "bool",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "isCompany": [
+          "Symfony\\Component\\Validator\\Constraints\\NotNull",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.isCompany",
+        "field": "isCompany",
+        "kind": "bool",
+        "withoutCustomer": "false"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerIsGuest",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\IsGuestCustomerRule",
+      "source": "Checkout/Customer/Rule/IsGuestCustomerRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "isGuest": {
+            "name": "isGuest",
+            "type": "bool",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "isGuest": [
+          "Symfony\\Component\\Validator\\Constraints\\NotNull",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.guest",
+        "field": "isGuest",
+        "kind": "bool",
+        "withoutCustomer": "false"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerIsNewsletterRecipient",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\IsNewsletterRecipientRule",
+      "source": "Checkout/Customer/Rule/IsNewsletterRecipientRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "isNewsletterRecipient": {
+            "name": "isNewsletterRecipient",
+            "type": "bool",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "isNewsletterRecipient": [
+          "Symfony\\Component\\Validator\\Constraints\\NotNull",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.newsletter",
+        "field": "isNewsletterRecipient",
+        "kind": "bool",
+        "withoutCustomer": "false"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerLastName",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\LastNameRule",
+      "source": "Checkout/Customer/Rule/LastNameRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "lastName": {
+            "name": "lastName",
+            "type": "string",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "lastName": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.lastName",
+        "field": "lastName",
+        "kind": "string",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerLoggedIn",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\CustomerLoggedInRule",
+      "source": "Checkout/Customer/Rule/CustomerLoggedInRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "isLoggedIn": {
+            "name": "isLoggedIn",
+            "type": "bool",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "isLoggedIn": [
+          "Symfony\\Component\\Validator\\Constraints\\NotNull",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "customer.loggedIn",
+        "field": "isLoggedIn",
+        "kind": "bool"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerOrderCount",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\OrderCountRule",
+      "source": "Checkout/Customer/Rule/OrderCountRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "count": {
+            "name": "count",
+            "type": "int",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "count": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "customer.orderCount",
+        "field": "count",
+        "kind": "number",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerOrderTotalAmount",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\OrderTotalAmountRule",
+      "source": "Checkout/Customer/Rule/OrderTotalAmountRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "customer.orderTotalAmount",
+        "field": "amount",
+        "kind": "number",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerRequestedGroup",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\CustomerRequestedGroupRule",
+      "source": "Checkout/Customer/Rule/CustomerRequestedGroupRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "customerGroupIds": {
+            "name": "customerGroupIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "customer_group"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "customerGroupIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "customer.requestedGroupId",
+        "field": "customerGroupIds",
+        "kind": "set",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerSalutation",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\CustomerSalutationRule",
+      "source": "Checkout/Customer/Rule/CustomerSalutationRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "salutationIds": {
+            "name": "salutationIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "salutation",
+              "labelProperty": "displayName"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "salutationIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "customer.salutationId",
+        "field": "salutationIds",
+        "kind": "set",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerShippingCity",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\ShippingCityRule",
+      "source": "Checkout/Customer/Rule/ShippingCityRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "cityName": {
+            "name": "cityName",
+            "type": "string",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "cityName": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "shipping.city",
+        "field": "cityName",
+        "kind": "string"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerShippingCountry",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\ShippingCountryRule",
+      "source": "Checkout/Customer/Rule/ShippingCountryRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "countryIds": {
+            "name": "countryIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "country"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "countryIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "shipping.country",
+        "field": "countryIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerShippingState",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\ShippingStateRule",
+      "source": "Checkout/Customer/Rule/ShippingStateRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "stateIds": {
+            "name": "stateIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "country_state"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "stateIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "shipping.countryStateId",
+        "field": "stateIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerShippingStreet",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\ShippingStreetRule",
+      "source": "Checkout/Customer/Rule/ShippingStreetRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "streetName": {
+            "name": "streetName",
+            "type": "string",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "streetName": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "shipping.street",
+        "field": "streetName",
+        "kind": "string"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerShippingZipCode",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\ShippingZipCodeRule",
+      "source": "Checkout/Customer/Rule/ShippingZipCodeRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ]
+        },
+        "fields": {
+          "zipCodes": {
+            "name": "zipCodes",
+            "type": "tagged",
+            "config": {}
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "zipCodes": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfType"
+        ]
+      },
+      "native": {
+        "path": "shipping.zipcode",
+        "field": "zipCodes",
+        "kind": "zip"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "customerTag",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\CustomerTagRule",
+      "source": "Checkout/Customer/Rule/CustomerTagRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "identifiers": {
+            "name": "identifiers",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "tag"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "identifiers": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "customer.tags",
+        "field": "identifiers",
+        "kind": "set",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "dateRange",
+      "class": "Shopware\\Core\\Framework\\Rule\\DateRangeRule",
+      "source": "Framework/Rule/DateRangeRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "fromDate": {
+            "name": "fromDate",
+            "type": "datetime",
+            "config": {}
+          },
+          "toDate": {
+            "name": "toDate",
+            "type": "datetime",
+            "config": {}
+          },
+          "useTime": {
+            "name": "useTime",
+            "type": "bool",
+            "config": {}
+          },
+          "timezone": {
+            "name": "timezone",
+            "type": "string",
+            "config": {}
+          }
+        }
+      },
+      "constraints": {
+        "fromDate": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\DateTime"
+        ],
+        "toDate": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\DateTime"
+        ],
+        "useTime": [
+          "Symfony\\Component\\Validator\\Constraints\\NotNull",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "timezone": [
+          "Symfony\\Component\\Validator\\Constraints\\Timezone"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "dayOfWeek",
+      "class": "Shopware\\Core\\Framework\\Rule\\WeekdayRule",
+      "source": "Framework/Rule/WeekdayRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "dayOfWeek": {
+            "name": "dayOfWeek",
+            "type": "single-select",
+            "config": {
+              "options": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "dayOfWeek": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Range"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "language",
+      "class": "Shopware\\Core\\System\\Language\\Rule\\LanguageRule",
+      "source": "System/Language/Rule/LanguageRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "languageIds": {
+            "name": "languageIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "language"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "languageIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "language",
+        "field": "languageIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "notContainer",
+      "class": "Shopware\\Core\\Framework\\Rule\\Container\\NotRule",
+      "source": "Framework/Rule/Container/NotRule.php",
+      "config": null,
+      "constraints": {
+        "rules": [
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfType"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "numberOfReviews",
+      "class": "Shopware\\Core\\Checkout\\Customer\\Rule\\NumberOfReviewsRule",
+      "source": "Checkout/Customer/Rule/NumberOfReviewsRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "count": {
+            "name": "count",
+            "type": "int",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "count": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "customer.reviewCount",
+        "field": "count",
+        "kind": "number",
+        "withoutCustomer": "negative"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "orContainer",
+      "class": "Shopware\\Core\\Framework\\Rule\\Container\\OrRule",
+      "source": "Framework/Rule/Container/OrRule.php",
+      "config": null,
+      "constraints": {
+        "rules": [
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfType"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "orderAffiliateCode",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\AffiliateCodeOfOrderRule",
+      "source": "Checkout/Cart/Rule/AffiliateCodeOfOrderRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "affiliateCode": {
+            "name": "affiliateCode",
+            "type": "string",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "affiliateCode": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "order.affiliateCode",
+        "field": "affiliateCode",
+        "kind": "string"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "orderCampaignCode",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\CampaignCodeOfOrderRule",
+      "source": "Checkout/Cart/Rule/CampaignCodeOfOrderRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "campaignCode": {
+            "name": "campaignCode",
+            "type": "string",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "campaignCode": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "order.campaignCode",
+        "field": "campaignCode",
+        "kind": "string"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "orderCreatedByAdmin",
+      "class": "Shopware\\Core\\Content\\Flow\\Rule\\OrderCreatedByAdminRule",
+      "source": "Content/Flow/Rule/OrderCreatedByAdminRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "shouldOrderBeCreatedByAdmin": {
+            "name": "shouldOrderBeCreatedByAdmin",
+            "type": "bool",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "shouldOrderBeCreatedByAdmin": [
+          "Symfony\\Component\\Validator\\Constraints\\NotNull",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "order.createdByAdmin",
+        "field": "shouldOrderBeCreatedByAdmin",
+        "kind": "bool"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "orderCustomField",
+      "class": "Shopware\\Core\\Content\\Flow\\Rule\\OrderCustomFieldRule",
+      "source": "Content/Flow/Rule/OrderCustomFieldRule.php",
+      "config": null,
+      "constraints": {
+        "renderedField": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank"
+        ],
+        "selectedField": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank"
+        ],
+        "selectedFieldSet": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank"
+        ],
+        "renderedFieldValue": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "orderDeliveryStatus",
+      "class": "Shopware\\Core\\Content\\Flow\\Rule\\OrderDeliveryStatusRule",
+      "source": "Content/Flow/Rule/OrderDeliveryStatusRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "stateIds": {
+            "name": "stateIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "state_machine_state",
+              "criteria": {
+                "associations": [
+                  "stateMachine"
+                ],
+                "filters": [
+                  {
+                    "type": "equals",
+                    "field": "state_machine_state.stateMachine.technicalName",
+                    "value": "order_delivery.state"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "stateIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "order.deliveryStates",
+        "field": "stateIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "orderDocumentType",
+      "class": "Shopware\\Core\\Content\\Flow\\Rule\\OrderDocumentTypeRule",
+      "source": "Content/Flow/Rule/OrderDocumentTypeRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "documentIds": {
+            "name": "documentIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "document_type"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "documentIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "order.documentTypes",
+        "field": "documentIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "orderDocumentTypeSent",
+      "class": "Shopware\\Core\\Content\\Flow\\Rule\\OrderDocumentTypeSentRule",
+      "source": "Content/Flow/Rule/OrderDocumentTypeSentRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "documentIds": {
+            "name": "documentIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "document_type"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "documentIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "order.sentDocumentTypes",
+        "field": "documentIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "orderStatus",
+      "class": "Shopware\\Core\\Content\\Flow\\Rule\\OrderStatusRule",
+      "source": "Content/Flow/Rule/OrderStatusRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "stateIds": {
+            "name": "stateIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "state_machine_state",
+              "criteria": {
+                "associations": [
+                  "stateMachine"
+                ],
+                "filters": [
+                  {
+                    "type": "equals",
+                    "field": "state_machine_state.stateMachine.technicalName",
+                    "value": "order.state"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "stateIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "order.state",
+        "field": "stateIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "orderTag",
+      "class": "Shopware\\Core\\Content\\Flow\\Rule\\OrderTagRule",
+      "source": "Content/Flow/Rule/OrderTagRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!=",
+            "empty"
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "identifiers": {
+            "name": "identifiers",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "tag"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "identifiers": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "order.tags",
+        "field": "identifiers",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "orderTrackingCode",
+      "class": "Shopware\\Core\\Content\\Flow\\Rule\\OrderTrackingCodeRule",
+      "source": "Content/Flow/Rule/OrderTrackingCodeRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "isSet": {
+            "name": "isSet",
+            "type": "bool",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "isSet": [
+          "Symfony\\Component\\Validator\\Constraints\\NotNull",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": {
+        "path": "order.trackingSet",
+        "field": "isSet",
+        "kind": "bool"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "orderTransactionStatus",
+      "class": "Shopware\\Core\\Content\\Flow\\Rule\\OrderTransactionStatusRule",
+      "source": "Content/Flow/Rule/OrderTransactionStatusRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "stateIds": {
+            "name": "stateIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "state_machine_state",
+              "criteria": {
+                "associations": [
+                  "stateMachine"
+                ],
+                "filters": [
+                  {
+                    "type": "equals",
+                    "field": "state_machine_state.stateMachine.technicalName",
+                    "value": "order_transaction.state"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "constraints": {
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ],
+        "stateIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ]
+      },
+      "native": {
+        "path": "order.paymentStates",
+        "field": "stateIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "paymentMethod",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\PaymentMethodRule",
+      "source": "Checkout/Cart/Rule/PaymentMethodRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "paymentMethodIds": {
+            "name": "paymentMethodIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "payment_method"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "paymentMethodIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "checkout.paymentMethodId",
+        "field": "paymentMethodIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "promotionCodeOfType",
+      "class": "Shopware\\Core\\Checkout\\Promotion\\Rule\\PromotionCodeOfTypeRule",
+      "source": "Checkout/Promotion/Rule/PromotionCodeOfTypeRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "promotionCodeType": {
+            "name": "promotionCodeType",
+            "type": "single-select",
+            "config": {
+              "options": [
+                "global",
+                "individual",
+                "fixed"
+              ]
+            }
+          }
+        }
+      },
+      "constraints": {
+        "promotionCodeType": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": null,
+      "supported": false,
+      "status": "missing-runtime",
+      "behavioralParity": false
+    },
+    {
+      "type": "promotionLineItem",
+      "class": "Shopware\\Core\\Checkout\\Promotion\\Rule\\PromotionLineItemRule",
+      "source": "Checkout/Promotion/Rule/PromotionLineItemRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": true
+        },
+        "fields": {
+          "identifiers": {
+            "name": "identifiers",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "promotion"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "identifiers": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": null,
+      "supported": false,
+      "status": "missing-runtime",
+      "behavioralParity": false
+    },
+    {
+      "type": "promotionValue",
+      "class": "Shopware\\Core\\Checkout\\Promotion\\Rule\\PromotionValueRule",
+      "source": "Checkout/Promotion/Rule/PromotionValueRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "amount": {
+            "name": "amount",
+            "type": "float",
+            "config": {
+              "digits": 10
+            }
+          }
+        }
+      },
+      "constraints": {
+        "amount": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "promotionValue",
+        "field": "amount",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "promotionsInCartCount",
+      "class": "Shopware\\Core\\Checkout\\Promotion\\Rule\\PromotionsInCartCountRule",
+      "source": "Checkout/Promotion/Rule/PromotionsInCartCountRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            ">",
+            ">=",
+            "<",
+            "<=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "count": {
+            "name": "count",
+            "type": "int",
+            "config": []
+          }
+        }
+      },
+      "constraints": {
+        "count": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "promotionCount",
+        "field": "count",
+        "kind": "number"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "salesChannel",
+      "class": "Shopware\\Core\\Framework\\Rule\\SalesChannelRule",
+      "source": "Framework/Rule/SalesChannelRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "salesChannelIds": {
+            "name": "salesChannelIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "sales_channel",
+              "criteria": {
+                "associations": [
+                  "type"
+                ],
+                "filters": [
+                  {
+                    "type": "not",
+                    "operator": "AND",
+                    "queries": [
+                      {
+                        "type": "equalsAny",
+                        "field": "type.id",
+                        "value": [
+                          "ed535e5722134ac1aa6524f73e26881b",
+                          "5e29f9890c4d4d519a1c7f9d5c24b7c1"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "constraints": {
+        "salesChannelIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "salesChannel",
+        "field": "salesChannelIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "scriptRule",
+      "class": "Shopware\\Core\\Framework\\Rule\\ScriptRule",
+      "source": "Framework/Rule/ScriptRule.php",
+      "config": null,
+      "constraints": [],
+      "native": null,
+      "supported": false,
+      "status": "missing-runtime",
+      "behavioralParity": false
+    },
+    {
+      "type": "shippingMethod",
+      "class": "Shopware\\Core\\Checkout\\Cart\\Rule\\ShippingMethodRule",
+      "source": "Checkout/Cart/Rule/ShippingMethodRule.php",
+      "config": {
+        "operatorSet": {
+          "operators": [
+            "=",
+            "!="
+          ],
+          "isMatchAny": false
+        },
+        "fields": {
+          "shippingMethodIds": {
+            "name": "shippingMethodIds",
+            "type": "multi-entity-id-select",
+            "config": {
+              "entity": "shipping_method"
+            }
+          }
+        }
+      },
+      "constraints": {
+        "shippingMethodIds": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfUuid"
+        ],
+        "operator": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Choice"
+        ]
+      },
+      "native": {
+        "path": "checkout.shippingMethodId",
+        "field": "shippingMethodIds",
+        "kind": "set"
+      },
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "simple",
+      "class": "Shopware\\Core\\Framework\\Rule\\SimpleRule",
+      "source": "Framework/Rule/SimpleRule.php",
+      "config": null,
+      "constraints": {
+        "match": [
+          "Symfony\\Component\\Validator\\Constraints\\NotNull",
+          "Symfony\\Component\\Validator\\Constraints\\Type"
+        ]
+      },
+      "native": null,
+      "supported": false,
+      "status": "missing-runtime",
+      "behavioralParity": false
+    },
+    {
+      "type": "timeRange",
+      "class": "Shopware\\Core\\Framework\\Rule\\TimeRangeRule",
+      "source": "Framework/Rule/TimeRangeRule.php",
+      "config": {
+        "operatorSet": null,
+        "fields": {
+          "fromTime": {
+            "name": "fromTime",
+            "type": "string",
+            "config": {}
+          },
+          "toTime": {
+            "name": "toTime",
+            "type": "string",
+            "config": {}
+          },
+          "timezone": {
+            "name": "timezone",
+            "type": "string",
+            "config": {}
+          }
+        }
+      },
+      "constraints": {
+        "toTime": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Regex"
+        ],
+        "fromTime": [
+          "Symfony\\Component\\Validator\\Constraints\\NotBlank",
+          "Symfony\\Component\\Validator\\Constraints\\Regex"
+        ],
+        "timezone": [
+          "Symfony\\Component\\Validator\\Constraints\\Timezone"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    },
+    {
+      "type": "unknown_condition",
+      "class": "Shopware\\Core\\Framework\\Rule\\UnknownConditionRule",
+      "source": "Framework/Rule/UnknownConditionRule.php",
+      "config": null,
+      "constraints": [],
+      "native": null,
+      "supported": false,
+      "status": "missing-runtime",
+      "behavioralParity": false
+    },
+    {
+      "type": "xorContainer",
+      "class": "Shopware\\Core\\Framework\\Rule\\Container\\XorRule",
+      "source": "Framework/Rule/Container/XorRule.php",
+      "config": null,
+      "constraints": {
+        "rules": [
+          "Shopware\\Core\\Framework\\Validation\\Constraint\\ArrayOfType"
+        ]
+      },
+      "native": null,
+      "supported": true,
+      "status": "native-scope",
+      "behavioralParity": false
+    }
+  ],
+  "actions": [
+    {
+      "name": "action.add.customer.affiliate.and.campaign.code",
+      "source": "Content/Flow/Dispatching/Action/AddCustomerAffiliateAndCampaignCodeAction.php"
+    },
+    {
+      "name": "action.add.customer.tag",
+      "source": "Content/Flow/Dispatching/Action/AddCustomerTagAction.php"
+    },
+    {
+      "name": "action.add.order.affiliate.and.campaign.code",
+      "source": "Content/Flow/Dispatching/Action/AddOrderAffiliateAndCampaignCodeAction.php"
+    },
+    {
+      "name": "action.add.order.tag",
+      "source": "Content/Flow/Dispatching/Action/AddOrderTagAction.php"
+    },
+    {
+      "name": "action.change.customer.group",
+      "source": "Content/Flow/Dispatching/Action/ChangeCustomerGroupAction.php"
+    },
+    {
+      "name": "action.change.customer.status",
+      "source": "Content/Flow/Dispatching/Action/ChangeCustomerStatusAction.php"
+    },
+    {
+      "name": "action.generate.document",
+      "source": "Content/Flow/Dispatching/Action/GenerateDocumentAction.php"
+    },
+    {
+      "name": "action.grant.download.access",
+      "source": "Content/Flow/Dispatching/Action/GrantDownloadAccessAction.php"
+    },
+    {
+      "name": "action.mail.send",
+      "source": "Content/Flow/Dispatching/Action/SendMailAction.php"
+    },
+    {
+      "name": "action.remove.customer.tag",
+      "source": "Content/Flow/Dispatching/Action/RemoveCustomerTagAction.php"
+    },
+    {
+      "name": "action.remove.order.tag",
+      "source": "Content/Flow/Dispatching/Action/RemoveOrderTagAction.php"
+    },
+    {
+      "name": "action.set.customer.custom.field",
+      "source": "Content/Flow/Dispatching/Action/SetCustomerCustomFieldAction.php"
+    },
+    {
+      "name": "action.set.customer.group.custom.field",
+      "source": "Content/Flow/Dispatching/Action/SetCustomerGroupCustomFieldAction.php"
+    },
+    {
+      "name": "action.set.order.custom.field",
+      "source": "Content/Flow/Dispatching/Action/SetOrderCustomFieldAction.php"
+    },
+    {
+      "name": "action.set.order.state",
+      "source": "Content/Flow/Dispatching/Action/SetOrderStateAction.php"
+    },
+    {
+      "name": "action.stop.flow",
+      "source": "Content/Flow/Dispatching/Action/StopFlowAction.php"
+    }
+  ],
+  "completeCatalogParity": false
+}

@@ -3,6 +3,26 @@ use crate::*;
 
 pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
     (
+        "automation.catalog",
+        "Read original rule scopes and executable native action contracts",
+    ),
+    (
+        "automation.list",
+        "Read own rule, promotion and flow definitions and jobs",
+    ),
+    (
+        "automation.save",
+        "Revision-bound rule, promotion, channel or flow graph write",
+    ),
+    (
+        "automation.preview",
+        "Evaluate a rule against an authoritative cart without effects",
+    ),
+    (
+        "automation.import",
+        "Validate and normalize an original Shopware condition without saving",
+    ),
+    (
         "merchant.workflow",
         "Read multilingual state machine and transitions",
     ),
@@ -123,6 +143,9 @@ pub(crate) async fn capabilities() -> Json<Value> {
     )
 }
 pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+    if name.starts_with("automation.") {
+        return marketing::invoke(a, h, name, v).await;
+    }
     if operations::permission(name).is_some() {
         return operations::invoke(a, h, name, v).await;
     }

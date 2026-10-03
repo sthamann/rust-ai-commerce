@@ -3,6 +3,10 @@ use crate::*;
 
 pub(crate) fn tool_schema(name: &str) -> Value {
     let props = match name {
+        "automation.save" => {
+            json!({"kind":{"type":"string","enum":["rules","flows","promotions","channels"]},"id":{"type":"string"},"revision":{"type":"integer","minimum":0},"data":{"type":"object"}})
+        }
+        "automation.preview" | "automation.import" => json!({"condition":{"type":"object"}}),
         "merchant.customer.addresses" => json!({"id":{"type":"string"}}),
         "merchant.customer.address.save" => {
             json!({"id":{"type":"string"},"addressId":{"type":"string"},"revision":{"type":"integer"},"address":{"type":"object"},"defaultBilling":{"type":"boolean"},"defaultShipping":{"type":"boolean"}})
@@ -64,6 +68,8 @@ pub(crate) fn tool_schema(name: &str) -> Value {
         _ => json!({}),
     };
     let required = match name {
+        "automation.save" => vec!["kind", "id", "revision", "data"],
+        "automation.preview" | "automation.import" => vec!["condition"],
         "merchant.customer.addresses" => vec!["id"],
         "merchant.customer.address.save" => vec!["id", "address"],
         "merchant.customer.address.delete" => vec!["id", "addressId", "revision"],
@@ -113,6 +119,12 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
             let mut tools = CAPABILITIES
                 .iter()
                 .filter(|(n, _)| {
+                    if n.starts_with("automation.") {
+                        return merchant(&a, &h).is_ok()
+                            && auth::permit(&h, "settings.read").is_ok()
+                            && (!matches!(*n, "automation.save" | "automation.import")
+                                || auth::permit(&h, "settings.write").is_ok());
+                    }
                     if n.starts_with("knowledge.") {
                         return merchant(&a, &h).is_ok()
                             && auth::permit(&h, "knowledge.read").is_ok();

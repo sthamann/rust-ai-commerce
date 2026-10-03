@@ -1,6 +1,6 @@
 # Lean-checked commerce contracts
 
-The prototype now runs Lean 4.29.1 proofs for **18 policies used in production
+The prototype now runs Lean 4.29.1 proofs for **20 policies used in production
 Rust paths**. Forty-two theorems cover the properties below. This is **not a
 certificate that the entire commerce core is correct or bug-free**. The current
 inventory contains 162 Rust modules: one extracted policy module, thirteen reviewed
@@ -83,7 +83,7 @@ The existing **Verify prototype / verify** job now also:
    verification workflow also require an explicit recorded review after changes.
 3. Builds proofs with the pinned Lean toolchain and rechecks compiled declarations
    using bundled `leanchecker`.
-4. Audits all 42 required theorems' transitive axioms. Only Lean's standard
+4. Audits all 45 required theorems' transitive axioms. Only Lean's standard
    `propext`, `Quot.sound` and `Classical.choice` foundations are allowed. `sorry`,
    `admit`, custom axioms, `native_decide` and missing theorem audits fail.
 5. Executes compiled Rust and Lean functions on **3,614** identical inputs:
@@ -172,3 +172,5 @@ bootstrap and provisioning are reviewed/tested adapters, not Lean-proved databas
 or deployment correctness.
 
 The app GET policy proves admission from declared metadata; it does not prove an external service is actually side-effect-free. See [the full app boundary](app-platform.md).
+
+The automation increment additionally extracts exact XOR hit-count admission and the thirty-day durable delay bound. Three new properties and negative mutations protect those production decisions. The rule interpreter, calendar parsing and SQL/async flow runtime remain unproved; [automation](automation.md) defines their actual test and migration boundaries.

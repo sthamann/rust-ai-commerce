@@ -3,6 +3,8 @@ use super::*;
 #[derive(Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub(crate) struct Flow {
+    #[serde(default)]
+    pub pipeline: Option<super::pipeline::Pipeline>,
     pub name: HashMap<String, String>,
     pub active: bool,
     pub event: String,
@@ -28,6 +30,12 @@ pub(crate) struct AppFlowAction {
 impl Flow {
     pub(crate) fn validate(&self) -> Result<()> {
         self.condition.validate(0)?;
+        if self.action == "pipeline" {
+            self.pipeline
+                .as_ref()
+                .ok_or(bad("Flow pipeline required"))?
+                .validate()?;
+        }
         if self.action == "app_action"
             && self.app_action.as_ref().is_none_or(|x| {
                 !apps::identifier(&x.app)
@@ -48,13 +56,14 @@ impl Flow {
         ]
         .contains(&self.event.as_str())
             && !valid_app_event(&self.event)
-            || !["note", "ai_proposal", "app_action"].contains(&self.action.as_str())
+            || !["note", "ai_proposal", "app_action", "pipeline"].contains(&self.action.as_str())
             || !["de-DE", "en-GB", "fr-FR", "es-ES"].contains(&self.locale.as_str())
-            || ["en", "de", "fr", "es"].iter().any(|l| {
-                self.instruction
-                    .get(*l)
-                    .is_none_or(|s| s.trim().is_empty() || s.len() > 3200)
-            })
+            || self.action != "pipeline"
+                && ["en", "de", "fr", "es"].iter().any(|l| {
+                    self.instruction
+                        .get(*l)
+                        .is_none_or(|s| s.trim().is_empty() || s.len() > 3200)
+                })
         {
             return Err(bad("Unsupported flow action, event or locale"));
         }
@@ -81,10 +90,14 @@ pub(crate) async fn project_flows(
     {
         return Ok(());
     }
-    let rows = sqlx::query("SELECT id,data FROM commerce_flows WHERE tenant=$1 ORDER BY id")
+    let rows = sqlx::query("SELECT id,data FROM commerce_flows WHERE tenant=$1 AND data->>'event'=$2 AND data->>'active'='true' ORDER BY id")
         .bind(t)
+        .bind(kind)
         .fetch_all(&mut *tx)
         .await?;
+    if rows.is_empty() {
+        return Ok(());
+    }
     let order_id = data["orderId"].as_str().unwrap_or("");
     let order=sqlx::query("SELECT c.* ,o.data AS order_data FROM orders o JOIN carts c ON c.id=o.cart_id WHERE o.tenant=$1 AND o.id=$2").bind(t).bind(order_id).fetch_optional(&mut *tx).await?;
     let (cart, q) = if let Some(order) = order {
@@ -111,10 +124,35 @@ pub(crate) async fn project_flows(
             .map(|ds| ds.iter().map(|d| d["state"].clone()).collect::<Vec<_>>())
             .unwrap_or_default()
     );
+    context["ruleFacts"] = facts::rule_facts(tx, &cart, &context).await?;
+    if !order_id.is_empty() {
+        facts::order_facts(tx, t, order_id, &q, &mut context["ruleFacts"]).await?;
+    }
     for row in rows {
-        let f: Flow = serde_json::from_value(row.get("data")).map_err(|_| bad("Invalid flow"))?;
-        if f.active && f.event == kind && f.condition.matches(&cart, &context) {
-            sqlx::query("INSERT INTO flow_jobs(id,tenant,flow,event_id,definition) VALUES($1,$2,$3,$4,$5) ON CONFLICT(tenant,flow,event_id) DO NOTHING").bind(uid()).bind(t).bind(row.get::<String,_>("id")).bind(event).bind(json!({"flow":f,"orderId":order_id,"orderNumber":q["orderNumber"],"totalPrice":q["cart"]["price"]["totalPrice"],"event":kind,"transition":data,"eventContext":data,"orderSnapshot":{"orderCustomer":q["orderCustomer"],"currencyId":q["currencyId"],"orderNumber":q["orderNumber"],"state":q["state"],"cart":{"price":q["cart"]["price"]}}})).execute(&mut *tx).await?;
+        let raw: Value = row.get("data");
+        let f: Flow = match serde_json::from_value(raw.clone()) {
+            Ok(flow) => flow,
+            Err(_) => {
+                sqlx::query("INSERT INTO flow_jobs(id,tenant,flow,event_id,definition,state,error) VALUES($1,$2,$3,$4,$5,'failed','Invalid stored flow schema') ON CONFLICT(tenant,flow,event_id) DO NOTHING").bind(uid()).bind(t).bind(row.get::<String,_>("id")).bind(event).bind(json!({"flow":raw,"orderId":order_id})).execute(&mut *tx).await?;
+                continue;
+            }
+        };
+        if !f.active || f.event != kind {
+            continue;
+        }
+        // Reference limits and malformed definitions belong to this flow, not to the whole outbox event.
+        let mut frozen = context.clone();
+        let matched =
+            match super::rule_snapshot::attach(tx, t, &raw, &mut frozen["ruleFacts"]).await {
+                Ok(()) => f.condition.checked_matches(&cart, &frozen),
+                Err(error) => Err(error),
+            };
+        if let Err(error) = &matched {
+            sqlx::query("INSERT INTO flow_jobs(id,tenant,flow,event_id,definition,state,error) VALUES($1,$2,$3,$4,$5,'failed',$6) ON CONFLICT(tenant,flow,event_id) DO NOTHING").bind(uid()).bind(t).bind(row.get::<String,_>("id")).bind(event).bind(json!({"flow":f,"orderId":order_id})).bind(&error.1).execute(&mut *tx).await?;
+            continue;
+        }
+        if matched.unwrap_or(false) {
+            sqlx::query("INSERT INTO flow_jobs(id,tenant,flow,event_id,definition) VALUES($1,$2,$3,$4,$5) ON CONFLICT(tenant,flow,event_id) DO NOTHING").bind(uid()).bind(t).bind(row.get::<String,_>("id")).bind(event).bind(json!({"flow":f,"orderId":order_id,"orderNumber":q["orderNumber"],"totalPrice":q["cart"]["price"]["totalPrice"],"event":kind,"transition":data,"eventContext":data,"cartData":cart.data,"ruleContext":frozen,"orderSnapshot":{"orderCustomer":q["orderCustomer"],"currencyId":q["currencyId"],"orderNumber":q["orderNumber"],"state":q["state"],"cart":{"price":q["cart"]["price"]}}})).execute(&mut *tx).await?;
         }
     }
     Ok(())
@@ -123,11 +161,13 @@ pub(crate) async fn flow_once(a: &App) -> Result<()> {
     // Expired inference is uncertain, never automatically repeated into duplicate change proposals.
     sqlx::query("UPDATE flow_jobs SET state='uncertain',error='Worker stopped before result confirmation' WHERE state='running' AND lease_until<now()").execute(&a.db).await?;
     let mut tx = a.db.begin().await?;
-    let row=sqlx::query("SELECT id,tenant,definition FROM flow_jobs WHERE state='queued' ORDER BY event_id LIMIT 1 FOR UPDATE SKIP LOCKED").fetch_optional(&mut *tx).await?;
+    let row=sqlx::query("SELECT id,tenant,definition,cursor,execution FROM flow_jobs WHERE state='queued' AND available_at<=now() ORDER BY available_at,event_id LIMIT 1 FOR UPDATE SKIP LOCKED").fetch_optional(&mut *tx).await?;
     let Some(row) = row else { return Ok(()) };
     let id: String = row.get("id");
     let t: String = row.get("tenant");
     let definition: Value = row.get("definition");
+    let cursor: Option<String> = row.get("cursor");
+    let execution: Value = row.get("execution");
     sqlx::query("UPDATE flow_jobs SET state='running',attempts=attempts+1,lease_until=now()+interval '5 minutes' WHERE id=$1").bind(&id).execute(&mut *tx).await?;
     tx.commit().await?;
     let f: Flow =
@@ -142,13 +182,19 @@ pub(crate) async fn flow_once(a: &App) -> Result<()> {
     let authorized = if f.actor.as_deref() == Some("bootstrap") {
         true
     } else {
-        sqlx::query_scalar::<_,bool>("SELECT EXISTS(SELECT 1 FROM memberships WHERE tenant=COALESCE((SELECT live_tenant FROM shop_environments WHERE tenant=$1),$1) AND user_id=$2 AND active AND (role='owner' OR (permissions='null'::jsonb AND role='admin') OR (permissions ? 'settings.write' AND ($3='note' OR $3='app_action' AND permissions ? 'apps.manage' OR $3='ai_proposal' AND permissions ? 'catalog.write' AND permissions ? 'knowledge.read'))))").bind(&t).bind(&f.actor).bind(&f.action).fetch_one(&a.db).await?
+        sqlx::query_scalar::<_,bool>("SELECT EXISTS(SELECT 1 FROM memberships WHERE tenant=COALESCE((SELECT live_tenant FROM shop_environments WHERE tenant=$1),$1) AND user_id=$2 AND active AND (role='owner' OR (permissions='null'::jsonb AND role='admin') OR (permissions ? 'settings.write' AND ($3='note' OR $3='pipeline' OR $3='app_action' AND permissions ? 'apps.manage' OR $3='ai_proposal' AND permissions ? 'catalog.write' AND permissions ? 'knowledge.read'))))").bind(&t).bind(&f.actor).bind(&f.action).fetch_one(&a.db).await?
     };
     let result: Result<Value> = if !authorized {
         Err(Error(
             StatusCode::FORBIDDEN,
             "Flow owner lost access".into(),
         ))
+    } else if f.action == "pipeline" {
+        if execution["finishAfterDelay"] == true {
+            Ok(json!({"completed":true}))
+        } else {
+            super::pipeline_runtime::run(a, &t, &id, &f, &definition, cursor).await
+        }
     } else if f.action == "app_action" {
         execute_app_flow(a, &t, &f, &id, &instruction, &definition).await
     } else if f.action == "note" {

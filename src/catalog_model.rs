@@ -3,7 +3,7 @@ use crate::*;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub(crate) struct Product {
-    #[serde(default)]
+    #[serde(default, serialize_with = "public_extra")]
     pub(crate) extra: Value,
     pub(crate) id: String,
     pub(crate) name: String,
@@ -64,4 +64,16 @@ pub(crate) async fn prototype_products(a: &App, t: &str) -> Result<Vec<Product>>
     .iter()
     .map(product)
     .collect())
+}
+
+/// Public product serialization excludes internal rule facts, notably supplier purchase prices.
+fn public_extra<S: serde::Serializer>(
+    extra: &Value,
+    serializer: S,
+) -> std::result::Result<S::Ok, S::Error> {
+    let mut public = extra.clone();
+    if let Some(object) = public.as_object_mut() {
+        object.remove("automation");
+    }
+    public.serialize(serializer)
 }
