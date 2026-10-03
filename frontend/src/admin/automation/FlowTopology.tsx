@@ -41,19 +41,20 @@ export default function FlowTopology({ value }: { value: Pipeline }) {
             .filter(([target]) => target && positions.has(target))
             .map(([target, label]) => {
               const to = positions.get(target!)!;
+              const branchY = label === a("no") ? 55 : label ? 25 : 35;
               return (
                 <g
                   key={`${n.id}-${target}-${label}`}
                   className={label === a("no") ? "edge-no" : "edge-yes"}
                 >
                   <path
-                    d={`M ${from.x + 180} ${from.y + 35} C ${from.x + 210} ${from.y + 35}, ${to.x - 30} ${to.y + 35}, ${to.x} ${to.y + 35}`}
+                    d={`M ${from.x + 180} ${from.y + branchY} C ${from.x + 210} ${from.y + branchY}, ${to.x - 30} ${to.y + 35}, ${to.x} ${to.y + 35}`}
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
                     markerEnd="url(#flow-arrow)"
                   />
-                  <text x={from.x + 190} y={from.y + 24}>
+                  <text x={from.x + 190} y={from.y + branchY - 6}>
                     {label}
                   </text>
                 </g>

@@ -92,6 +92,36 @@ check('Replayed flow jobs reuse persisted action results rather than repeat side
 for id in ['pipeline','false_branch','invoice']:
     current=next(x for x in call('/api/automation',h=mh)['flows']if x['id']==id);save(id,{**current['data'],'active':False},current['revision'])
 sql("UPDATE commerce_flows SET data=jsonb_set(data,'{active}','false') WHERE tenant='"+t+"' AND id IN ('bad_scope','bad_references');")
+mutation_customer=call('/store-api/account/register',{'email':'mutations'+suffix+'@example.test','name':'Mutation Buyer','password':'Synthetic-buyer-2026!'},public)
+mc_headers={**public,'x-customer-token':mutation_customer['customerToken']};mc=call('/store-api/checkout/cart',{},mc_headers);mc_headers['sw-context-token']=mc['token']
+mc=call('/store-api/checkout/cart',{'revision':mc['revision'],'items':[{'id':'mug','quantity':1}]},mc_headers,'PUT')
+mutations=[
+ ('add_customer','action.add.customer.tag',{'tags':['kept','temporary']}),
+ ('remove_customer','action.remove.customer.tag',{'tagIds':['temporary']}),
+ ('field_customer','action.set.customer.custom.field',{'field':'segment','value':{'name':'returning'}}),
+ ('codes_customer','action.add.customer.affiliate.and.campaign.code',{'affiliateCode':'partner','campaignCode':'autumn'}),
+ ('add_order','action.add.order.tag',{'tags':['kept','temporary']}),
+ ('remove_order','action.remove.order.tag',{'tagIds':['temporary']}),
+ ('codes_order','action.add.order.affiliate.and.campaign.code',{'affiliateCode':'partner','campaignCode':'autumn'}),
+ ('group','action.change.customer.group',{'customerGroupId':'business'}),
+ ('group_field','action.set.customer.group.custom.field',{'field':'tier','value':'priority'}),
+ ('deactivate','action.change.customer.status',{'active':False}),
+ ('reactivate','action.change.customer.status',{'active':True}),
+ ('note','note',{'instruction':names})]
+mutation_flow=flow([action(id,name,config,mutations[i+1][0]if i+1<len(mutations)else None)for i,(id,name,config)in enumerate(mutations)])
+save('mutations',mutation_flow)
+mutation_order=call('/store-api/checkout/order',{}, {**mc_headers,'Idempotency-Key':'mutations-'+suffix});mutation_job=wait('mutations')
+assert len(mutation_job['result']['trace'])==len(mutations)
+customer_id=mutation_order['orderCustomer']['customerId']
+customer_state=json.loads(sql("SELECT jsonb_build_object('group',group_name,'active',active,'automation',automation) FROM customers WHERE tenant='"+t+"' AND id='"+customer_id+"';"))
+assert customer_state=={'group':'business','active':True,'automation':{'tags':['kept'],'customFields':{'segment':{'name':'returning'}},'affiliateCode':'partner','campaignCode':'autumn'}}
+assert json.loads(sql("SELECT data FROM commerce_customer_groups WHERE tenant='"+t+"' AND id='business';"))['customFields']['tier']=='priority'
+assert int(sql("SELECT count(*) FROM customer_sessions WHERE tenant='"+t+"' AND email='mutations"+suffix+"@example.test';"))==0
+order_state=call('/api/merchant/orders/'+mutation_order['id'],h=mh)
+assert order_state['affiliateCode']=='partner'and order_state['campaignCode']=='autumn'
+assert json.loads(sql("SELECT data->'automation'->'tags' FROM orders WHERE tenant='"+t+"' AND id='"+mutation_order['id']+"';"))==['kept']
+current=next(x for x in call('/api/automation',h=mh)['flows']if x['id']=='mutations');save('mutations',{**current['data'],'active':False},current['revision'])
+check('Customer/order tag removal, typed fields, attribution, group fields and deactivate/reactivate actions commit real changes and revoke old sessions')
 revoked=flow([{'kind':'delay','id':'pause','seconds':60,'next':'effect'},action('effect','action.add.order.tag',{'tags':['must-not-run']})]);save('revoked',revoked)
 c=call('/store-api/checkout/cart',{},public);h={**public,'sw-context-token':c['token']};c=call('/store-api/checkout/cart',{'revision':c['revision'],'items':[{'id':'notebook','quantity':1}]},h,'PUT');second=call('/store-api/checkout/order',{}, {**h,'Idempotency-Key':'revoke-'+suffix})
 queued=wait('revoked','queued')
