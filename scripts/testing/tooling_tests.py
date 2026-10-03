@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Verification helpers reject coverage gaps and emit literal CI environment values."""
+import json
+import tempfile
 import copy
 from pathlib import Path
 import subprocess
@@ -7,7 +9,7 @@ import sys
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from coverage_report import violations
+from coverage_report import read_reports, violations
 
 
 class CoverageGates(unittest.TestCase):
@@ -36,6 +38,49 @@ class CoverageGates(unittest.TestCase):
         self.metrics['frontend'] = {'lines': 100, 'branches': 100}
         errors = violations(self.metrics, self.modules, self.policy, True)
         self.assertTrue(any('Unmeasured scope' in e for e in errors))
+
+    def test_reports_include_untouched_source_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'frontend/src/shared/api/fixture.ts'
+            source.parent.mkdir(parents=True)
+            source.write_text('export const fixture = 1;')
+            python_source = root / 'scripts/fixture.py'
+            python_source.parent.mkdir()
+            python_source.write_text('fixture = 1')
+            scores = {key: {'pct': 100} for key in ('lines', 'branches', 'functions', 'statements')}
+            frontend = {'total': scores, str(source): scores}
+            rust = {'data': [{'totals': {key: {'percent': 100} for key in ('lines', 'functions', 'regions')}, 'files': []}]}
+            python = {'totals': {'covered_lines': 1, 'num_statements': 1, 'covered_branches': 1, 'num_branches': 1},
+                      'files': {'scripts/fixture.py': {'summary': {'covered_lines': 1}}}}
+            files = {'frontend/coverage/coverage-summary.json': frontend, 'artifacts/coverage/rust.json': rust, 'artifacts/coverage/python.json': python}
+            for path, value in files.items():
+                target = root / path
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text(json.dumps(value))
+            metrics, modules, missing = read_reports(root)
+            self.assertEqual(metrics['frontend']['lines'], 100)
+            self.assertIn('frontend/src/shared/api/fixture.ts', modules)
+            self.assertEqual(missing['frontend'], [])
+            (source.parent / 'untested.ts').write_text('export const untested = 2;')
+            with self.assertRaisesRegex(ValueError, 'untested.ts'):
+                read_reports(root)
+
+    def test_reports_cannot_omit_a_python_service(self):
+        # The manifest check in read_reports is exercised by the synthetic report above.
+        # Check its independent Python source scope with a real temporary service file.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'frontend/coverage').mkdir(parents=True)
+            (root / 'artifacts/coverage').mkdir(parents=True)
+            (root / 'extensions/services').mkdir(parents=True)
+            (root / 'extensions/services/missing.py').write_text('value = 1')
+            scores = {key: {'pct': 100} for key in ('lines', 'branches', 'functions', 'statements')}
+            (root / 'frontend/coverage/coverage-summary.json').write_text(json.dumps({'total': scores}))
+            (root / 'artifacts/coverage/rust.json').write_text(json.dumps({'data': [{'totals': {key: {'percent': 100} for key in ('lines', 'functions', 'regions')}, 'files': []}]}))
+            (root / 'artifacts/coverage/python.json').write_text(json.dumps({'totals': {'covered_lines': 0, 'num_statements': 0, 'covered_branches': 0, 'num_branches': 0}, 'files': {}}))
+            with self.assertRaisesRegex(ValueError, 'missing.py'):
+                read_reports(root)
 
     def test_env_conversion_does_not_execute_shell_text(self):
         helper = Path(__file__).with_name('coverage_env.py')
