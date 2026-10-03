@@ -93,6 +93,8 @@ cargo llvm-cov report --json --output-path artifacts/coverage/rust.json
 cargo llvm-cov report --html --output-dir artifacts/coverage/rust
 ```
 
+Mutation variants write profiles outside the real-core report directory; deliberately broken code cannot inflate the production coverage metric.
+
 The Rust report measures lines, functions and regions, not branch coverage. The
 JSON preserves every module in this instrumented scope. Do not call covered
 regions exhaustive branch coverage.

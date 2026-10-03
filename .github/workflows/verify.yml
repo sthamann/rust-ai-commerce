@@ -50,6 +50,9 @@ jobs:
       - name: Lean production contracts, source review locks and compiled conformance
         run: python3 scripts/formal.py
       - name: Reject broken policies, proof shortcuts and disconnected bindings
+        env:
+          # Intentionally broken source variants must not inflate real-core coverage.
+          LLVM_PROFILE_FILE: /tmp/commerce-mutation-%p-%m.profraw
         run: python3 scripts/formal/mutations.py
       - name: Preserve formal verification evidence
         if: always()
