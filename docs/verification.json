@@ -132,5 +132,13 @@
   ],
   "previousRecord": "history/verification-2026-10-02.json",
   "ciMergeCommit": "c56f05d5359a2f9c5eb4ee06c5cfcfc037a83d2f",
-  "baseMergeCommit": "c3a2098b34dafcbf1a8fabf10f818ff244a760e9"
+  "baseMergeCommit": "c3a2098b34dafcbf1a8fabf10f818ff244a760e9",
+  "additionalAccountCheck": {
+    "recordKind": "Additional local regression after pinned CI; current head outcome remains in GitHub Actions",
+    "frontendTests": 67,
+    "accountCompositionTests": 2,
+    "formerFailure": "React reserved key prop prevented tenant session persistence",
+    "localFrontendLineCoverage": 37.56,
+    "coreSourceChanged": false
+  }
 }

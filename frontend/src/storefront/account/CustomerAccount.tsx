@@ -112,7 +112,7 @@ export default function CustomerAccount({
             run={run}
             register={register}
             cart={cart}
-            key={key}
+            sessionKey={key}
             onCart={onCart}
             setSigned={setSigned}
             w={w}

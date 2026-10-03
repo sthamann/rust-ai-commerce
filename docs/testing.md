@@ -153,3 +153,9 @@ of the 100% objective.
 
 Lean source review locks and mutation checks continue in CI unchanged in scope;
 see [formal verification](formal-verification.md) for precisely what is proved.
+
+The account composition regression exercises both login and registration through
+`CustomerAccount → CustomerSignIn → shopApi`. The simulated transport rejects
+protected profile/address/order reads unless the form persisted the exact
+tenant session key. This reproduces the former React-reserved `key` prop bug;
+backend address/customer isolation is separately exercised over real HTTP.
