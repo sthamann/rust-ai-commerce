@@ -64,7 +64,8 @@ export const es: Dictionary = {
   cancel: "Cancelar",
   failure: "No se pudo completar la solicitud.",
   details: "Detalles técnicos",
-  connectFirst: "Conecta la tienda para ver sus datos y usar el asistente.",
+  connectFirst:
+    "Inicia sesión en Studio para ver los datos y usar el asistente.",
   shopPulse: "Tu tienda de un vistazo.",
   shopPulseSub: "Pedidos, existencias y decisiones — desde la API comercial.",
   orders: "Pedidos",

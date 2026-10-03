@@ -83,6 +83,7 @@ jobs:
           python3 scripts/developer_documents.py
           kill "$commerce_pid"
           wait "$commerce_pid" || true
+          python3 scripts/email_tests.py
           python3 scripts/connector_store_tests.py
           python3 scripts/connected_apps.py
           node frontend/tests/analytics.mjs

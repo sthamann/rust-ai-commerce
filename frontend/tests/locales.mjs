@@ -64,6 +64,14 @@ for (const [key, values] of Object.entries(connected)) {
     key,
   );
 }
+const email = module("../src/email-i18n.ts").emailWords;
+for (const [key, values] of Object.entries(email)) {
+  assert.equal(values.length, 4, key);
+  assert(
+    values.every((v) => v.trim()),
+    key,
+  );
+}
 const { responseError } = module("../src/errors-i18n.ts");
 const errors = [];
 for (locale of ["en-GB", "de-DE", "fr-FR", "es-ES"]) {

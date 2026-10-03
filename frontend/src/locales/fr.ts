@@ -65,7 +65,7 @@ export const fr: Dictionary = {
   failure: "La demande n’a pas pu être terminée.",
   details: "Détails techniques",
   connectFirst:
-    "Connectez la boutique pour voir ses données et utiliser l’assistant.",
+    "Connectez-vous au Studio pour voir les données et utiliser l’assistant.",
   shopPulse: "Votre boutique en un regard.",
   shopPulseSub: "Commandes, stocks et décisions — depuis l’API commerce.",
   orders: "Commandes",

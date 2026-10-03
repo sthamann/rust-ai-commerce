@@ -2292,3 +2292,31 @@
 .verified-facts dd {
   margin: 0;
 }
+
+/* Email app: readable template editing and a safe text-only preview. */
+.email-panel section label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.email-panel textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+}
+.email-preview {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.email-preview pre {
+  white-space: pre-wrap;
+  font: inherit;
+  line-height: 1.7;
+}

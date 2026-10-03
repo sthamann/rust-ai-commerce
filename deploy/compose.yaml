@@ -65,6 +65,7 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
       SLACK_CLIENT_ID: ${SLACK_CLIENT_ID:-}
       SLACK_CLIENT_SECRET: ${SLACK_CLIENT_SECRET:-}
+      EMAIL_SMTP_HOSTS: ${EMAIL_SMTP_HOSTS:-}
     volumes: ["connector-data:/state"]
     restart: unless-stopped
   gateway:

@@ -1,6 +1,30 @@
 /** Four-language vocabulary for connected apps, consent and visual automation. */
 import { useLocale } from "./i18n";
 export const connectedWords: Record<string, readonly string[]> = {
+  studioSignIn: [
+    "Sign in to Studio",
+    "Im Studio anmelden",
+    "Se connecter au Studio",
+    "Iniciar sesión en Studio",
+  ],
+  studioSignedOut: [
+    "Studio sign-in required",
+    "Studio-Anmeldung erforderlich",
+    "Connexion au Studio requise",
+    "Se requiere iniciar sesión en Studio",
+  ],
+  serverReady: [
+    "Server reachable",
+    "Server erreichbar",
+    "Serveur accessible",
+    "Servidor disponible",
+  ],
+  serverUnavailable: [
+    "Server unavailable",
+    "Server nicht erreichbar",
+    "Serveur indisponible",
+    "Servidor no disponible",
+  ],
   "order.placed": [
     "Order placed",
     "Bestellung aufgegeben",

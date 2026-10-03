@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Separate app process with provider OAuth, encrypted persistence and durable jobs; no core provider code."""
 
-import hmac, json, os, re, threading, time, urllib.parse
+import hmac, json, os, re, smtplib, threading, time, urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from store import Store
 from oauth import OAuth
 from transport import WireError, endpoint, request
-import providers
+import providers, email_service, email_delivery
 from callback_page import render
 
-APPS = {"google_analytics", "gmail", "slack"}
+APPS = {"google_analytics", "gmail", "slack", "email"}
 
 
 class Connector:
@@ -39,6 +39,8 @@ class Connector:
         }
 
     def action(self, t, a, name, v):
+        if a == "email":
+            return email_service.action(self.store, t, name, v)
         if name == "status":
             return self.public(t, a)
         if name == "connect":
@@ -149,6 +151,8 @@ class Connector:
         if path == "exports":
             return self.store.exports(t, a, max(0, int(v.get("cursor", 0))))
         if path == "events":
+            if a == "email":
+                return email_service.event(self.store, t, v)
             if (
                 a == "slack"
                 and self.store.get(t, a)["settings"].get("notifyOrders")
@@ -177,7 +181,9 @@ class Connector:
         settings = self.store.get(t, a)["settings"]
         try:
             value = (
-                providers.slack(self.oauth, t, payload, settings)
+                email_delivery.deliver(self.store, job, payload)
+                if a == "email"
+                else providers.slack(self.oauth, t, payload, settings)
                 if a == "slack"
                 else providers.gmail(self.store, self.oauth, t, settings)
                 if a == "gmail"
@@ -191,12 +197,26 @@ class Connector:
                 "queued"
                 if e.status == 429 and job["attempts"] < 8
                 else "uncertain"
-                if a == "slack" and e.status >= 500
+                if a in ("slack", "email") and e.status >= 500
                 else "failed",
                 {"error": "Provider HTTP " + str(e.status)},
                 e.retry,
             )
-        except (TimeoutError, OSError):
+        except (
+            smtplib.SMTPAuthenticationError,
+            smtplib.SMTPConnectError,
+            smtplib.SMTPHeloError,
+            smtplib.SMTPNotSupportedError,
+            smtplib.SMTPRecipientsRefused,
+            smtplib.SMTPSenderRefused,
+            smtplib.SMTPDataError,
+        ):
+            self.store.finish(
+                job,
+                "failed",
+                {"error": "SMTP rejected delivery; verify credentials and envelope"},
+            )
+        except (TimeoutError, OSError, smtplib.SMTPException):
             self.store.finish(
                 job,
                 "uncertain",

@@ -1,3 +1,4 @@
+import { useConnectedText } from "./connected-i18n";
 import {
   AppSurfaceProvider,
   AdminAppNavigation,
@@ -60,6 +61,25 @@ export default function Merchant({
 }) {
   const { locale, setLocale, t, date } = useLocale();
   const { w } = useWorkbenchText();
+  const { x } = useConnectedText();
+  const [serverReady, setServerReady] = useState(false);
+  useEffect(() => {
+    let active = true;
+    const check = () =>
+      fetch("/health")
+        .then((r) => {
+          if (active) setServerReady(r.ok);
+        })
+        .catch(() => {
+          if (active) setServerReady(false);
+        });
+    void check();
+    const timer = setInterval(() => void check(), 30000);
+    return () => {
+      active = false;
+      clearInterval(timer);
+    };
+  }, []);
   const { o } = useOperationsText();
   const tabLabel = (id: Tab) =>
     id === "commerce"
@@ -536,7 +556,7 @@ export default function Merchant({
               </button>
               <span className="connection-state">
                 <i className={connected ? "on" : ""} />
-                {connected ? t("connected") : t("access")}
+                {connected ? t("connected") : x("studioSignedOut")}
               </span>
               <select
                 aria-label={t("language")}
@@ -558,7 +578,7 @@ export default function Merchant({
               </button>
               <button
                 className={connected ? "icon-button" : "studio-primary"}
-                aria-label={connected ? t("refresh") : t("connect")}
+                aria-label={connected ? t("refresh") : x("studioSignIn")}
                 disabled={busy}
                 onClick={() => (connected ? run(refresh) : selectTab("users"))}
               >
@@ -567,7 +587,7 @@ export default function Merchant({
                 ) : (
                   <>
                     <Icon name="link" size={16} />
-                    <span>{t("connect")}</span>
+                    <span>{x("studioSignIn")}</span>
                   </>
                 )}
               </button>
@@ -930,7 +950,12 @@ export default function Merchant({
                 </section>
               ) : data ? (
                 tab === "apps" ? (
-                  <AppsManager request={request} token={token} role={role} />
+                  <AppsManager
+                    key={environment || workspace}
+                    request={request}
+                    token={token}
+                    role={role}
+                  />
                 ) : tab === "commerce" ? (
                   <SettingsWorkspace
                     request={request}
@@ -967,9 +992,9 @@ export default function Merchant({
                   <p>{t("connectFirst")}</p>
                   <button
                     className="studio-primary"
-                    onClick={() => setSettings(true)}
+                    onClick={() => selectTab("users")}
                   >
-                    {t("connect")}
+                    {x("studioSignIn")}
                     <Icon name="link" size={18} />
                   </button>
                 </div>
@@ -987,8 +1012,9 @@ export default function Merchant({
           </main>
           <footer className="studio-statusbar">
             <span>
-              <i className={connected ? "on" : ""} />
-              {t("health")} · {connected ? t("healthy") : "—"}
+              <i className={serverReady ? "on" : ""} />
+              {t("health")} ·{" "}
+              {x(serverReady ? "serverReady" : "serverUnavailable")}
             </span>
             <span>{t("demo")}</span>
             {updated && (

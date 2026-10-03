@@ -65,7 +65,7 @@ export const de: Dictionary = {
   failure: "Die Anfrage konnte nicht abgeschlossen werden.",
   details: "Technische Details",
   connectFirst:
-    "Verbinde deinen Shop, um echte Daten zu sehen und den Assistenten zu nutzen.",
+    "Melde dich im Studio an, um Shopdaten zu sehen und den Assistenten zu nutzen.",
   shopPulse: "Dein Shop auf einen Blick.",
   shopPulseSub:
     "Bestellungen, Bestände und Entscheidungen — aus der Commerce-API.",
