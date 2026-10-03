@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { useAppText } from "./app-i18n";
 import type { RequestFn } from "./studio-types";
+import EmailPanel from "./EmailPanel";
+import { useEmailText } from "./email-i18n";
 import ConnectorPanel from "./ConnectorPanel";
 import AppFrame from "./AppFrame";
 import AppEntity, { type Entity } from "./AppEntity";
@@ -31,6 +33,7 @@ export default function AppsManager({
 }) {
   const { a, locale, money } = useAppText();
   const { c } = useCustomerText();
+  const { e } = useEmailText();
   const [selected, setSelected] = useState("");
   const [category, setCategory] = useState("all");
   const [detailTab, setDetailTab] = useState("appDetails");
@@ -110,6 +113,7 @@ export default function AppsManager({
           "google_analytics",
           "gmail",
           "slack",
+          "email",
         ]
           .filter(
             (id) =>
@@ -141,7 +145,9 @@ export default function AppsManager({
                         ? "Google Analytics"
                         : id === "gmail"
                           ? "Gmail"
-                          : "Slack"}
+                          : id === "email"
+                            ? e("title")
+                            : "Slack"}
             </button>
           ))}
       </div>
@@ -274,6 +280,9 @@ export default function AppsManager({
               ["google_analytics", "gmail", "slack"].includes(p.id) && (
                 <ConnectorPanel app={p.id} request={request} manage={manage} />
               )}
+            {detailTab === "appDetails" && p.active && p.id === "email" && (
+              <EmailPanel request={request} manage={manage} />
+            )}
             {detailTab === "appDetails" && (
               <p>
                 {c(`${appCategory(p)}Category`)} · {p.id} ·{" "}

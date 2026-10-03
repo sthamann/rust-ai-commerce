@@ -1,0 +1,26 @@
+{
+  "name": {
+    "en": "Order confirmation email",
+    "de": "Bestellbest\u00e4tigung per E-Mail",
+    "fr": "Confirmation de commande par e-mail",
+    "es": "Confirmaci\u00f3n de pedido por correo"
+  },
+  "active": true,
+  "event": "order.placed",
+  "condition": {
+    "type": "alwaysValid"
+  },
+  "action": "app_action",
+  "instruction": {
+    "en": "Send the saved order confirmation",
+    "de": "Gespeicherte Bestellbest\u00e4tigung senden",
+    "fr": "Envoyer la confirmation enregistr\u00e9e",
+    "es": "Enviar la confirmaci\u00f3n guardada"
+  },
+  "locale": "en-GB",
+  "appAction": {
+    "app": "email",
+    "action": "send_order",
+    "arguments": {}
+  }
+}

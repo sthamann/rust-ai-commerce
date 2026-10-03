@@ -52,7 +52,8 @@ select a workspace; they cannot grant membership.
 Invitations expire after 24 hours and can be redeemed once. Existing users
 must authenticate their own account when joining another shop. The final
 active owner cannot be removed. Invitation codes are returned for manual
-sharing; email dispatch is not implemented. Roles also protect MCP direct
+sharing; automatic invitation dispatch is not implemented. The separate
+[Email Delivery app](email-delivery.md) can send merchant-authorized transactional mail. Roles also protect MCP direct
 invocation, not just interface controls.
 
 ![English merchant workspace with personal users and roles](assets/team-en.jpg)
@@ -304,3 +305,13 @@ UI, immediate revocation and production-mode bootstrap are implemented.
 No public host, custom-domain provisioning, billing or failover is claimed.
 
 Full apps now add own admin modules, storefront pages/panels, namespaced API routes, selected AI context and independent storage. See [app-platform.md](app-platform.md) for connected examples and tested boundaries.
+
+## Transactional email service (new app implementation)
+
+SMTP with verified STARTTLS/implicit TLS, Resend and SendGrid (global/EU), encrypted
+per-shop configuration, text/HTML and CC/BCC, four-language order confirmations,
+API/MCP actions, order-event subscriptions and graphical app flows are implemented.
+[Source map, setup and exact tested boundaries](email-delivery.md). This is a new
+service abstraction, not full Shopware mail-template/message-queue parity. Attachments,
+provider delivery/bounce webhooks, per-customer/channel sender/language policy and
+automatic invitation emails remain missing.

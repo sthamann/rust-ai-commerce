@@ -63,7 +63,7 @@ export const en = {
   cancel: "Cancel",
   failure: "This request could not be completed.",
   details: "Technical details",
-  connectFirst: "Connect your shop to see live data and use the assistant.",
+  connectFirst: "Sign in to Studio to see shop data and use the assistant.",
   shopPulse: "Your shop, at a glance.",
   shopPulseSub: "Orders, inventory and decisions — from the commerce API.",
   orders: "Orders",

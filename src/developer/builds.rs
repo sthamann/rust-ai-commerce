@@ -10,6 +10,7 @@ pub(super) fn validate(m: &apps::Manifest) -> Result<()> {
         "google_analytics",
         "gmail",
         "slack",
+        "email",
     ]
     .contains(&m.id.as_str())
         || m.configuration.is_some()

@@ -83,6 +83,19 @@ claim parity with the full original condition catalog or arbitrary FlowSequences
 
 ![Visual order-event flow with nested conditions and a Slack app action](docs/assets/slack-flow-en.jpg)
 
+## Transactional email delivery
+
+Install **Email Delivery** from Apps and choose **SMTP**, **Resend** or **SendGrid**.
+Configure your sender, TLS/credentials and four-language order templates in its own
+workspace. Preview, dry-run and an explicitly labeled real test use the same durable
+queue as apps, API/MCP and graphical order-event flows. Provider credentials stay
+encrypted and write-only. Default installation never sends external mail.
+
+[Setup, API, flow example and delivery guarantees](docs/email-delivery.md).
+The local suite exercises real SMTP with STARTTLS/implicit TLS and both HTTP wire
+formats; an isolated Rust/PostgreSQL checkout actually reaches a local SMTP server.
+Inbox delivery/webhooks and a horizontally scaled mail queue are not yet implemented.
+
 ## Full apps without core changes
 
 Apps can add their own **Studio modules, product/order panels, storefront pages,

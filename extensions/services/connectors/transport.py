@@ -3,6 +3,9 @@
 import json, os, urllib.request, urllib.parse, urllib.error
 
 URLS = {
+    "resend": "https://api.resend.com",
+    "sendgrid": "https://api.sendgrid.com/v3",
+    "sendgrid_eu": "https://api.eu.sendgrid.com/v3",
     "google_authorize": "https://accounts.google.com/o/oauth2/v2/auth",
     "google_token": "https://oauth2.googleapis.com/token",
     "google_revoke": "https://oauth2.googleapis.com/revoke",

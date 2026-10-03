@@ -114,7 +114,7 @@ pub(crate) async fn project_flows(
     for row in rows {
         let f: Flow = serde_json::from_value(row.get("data")).map_err(|_| bad("Invalid flow"))?;
         if f.active && f.event == kind && f.condition.matches(&cart, &context) {
-            sqlx::query("INSERT INTO flow_jobs(id,tenant,flow,event_id,definition) VALUES($1,$2,$3,$4,$5) ON CONFLICT(tenant,flow,event_id) DO NOTHING").bind(uid()).bind(t).bind(row.get::<String,_>("id")).bind(event).bind(json!({"flow":f,"orderId":order_id,"orderNumber":q["orderNumber"],"totalPrice":q["cart"]["price"]["totalPrice"],"event":kind,"transition":data,"eventContext":data,"orderSnapshot":{"orderNumber":q["orderNumber"],"state":q["state"],"cart":{"price":q["cart"]["price"]}}})).execute(&mut *tx).await?;
+            sqlx::query("INSERT INTO flow_jobs(id,tenant,flow,event_id,definition) VALUES($1,$2,$3,$4,$5) ON CONFLICT(tenant,flow,event_id) DO NOTHING").bind(uid()).bind(t).bind(row.get::<String,_>("id")).bind(event).bind(json!({"flow":f,"orderId":order_id,"orderNumber":q["orderNumber"],"totalPrice":q["cart"]["price"]["totalPrice"],"event":kind,"transition":data,"eventContext":data,"orderSnapshot":{"orderCustomer":q["orderCustomer"],"currencyId":q["currencyId"],"orderNumber":q["orderNumber"],"state":q["state"],"cart":{"price":q["cart"]["price"]}}})).execute(&mut *tx).await?;
         }
     }
     Ok(())

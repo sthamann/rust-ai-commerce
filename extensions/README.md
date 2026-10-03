@@ -254,3 +254,12 @@ independent SQLite/event inbox. Run `PRODUCT_LAB=1 ./scripts/dev.sh` from the re
 No core recompilation is needed. Guest UIs can use any framework through the scoped
 [SDK](sdk/browser.js), including live context updates and size requests.
 Read the [complete extension contract and resource/performance boundaries](../docs/app-platform.md).
+
+## Email Delivery app
+
+`apps/email` connects standard SMTP (STARTTLS or implicit TLS), Resend and SendGrid
+through the same private API/MCP/flow capability. Its transport, encrypted settings
+and durable jobs live in four focused `services/connectors/email_*.py` modules.
+Use `order-confirmation-flow.json` after installing/configuring the app; never enable
+the automatic all-order path and an equivalent flow unintentionally. See the
+[complete configuration, template and test guide](../docs/email-delivery.md).

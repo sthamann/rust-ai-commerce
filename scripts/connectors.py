@@ -40,7 +40,7 @@ def configuration():
             "url": values["CONNECTOR_PUBLIC_URL"] + "/" + a,
             "token": values["CONNECTOR_GATEWAY_TOKEN"],
         }
-        for a in ["gmail", "google_analytics", "slack"]
+        for a in ["gmail", "google_analytics", "slack", "email"]
     }
     path = RUNTIME / "connector-services.json"
     existing = json.loads(path.read_text()) if path.exists() else {}
@@ -77,7 +77,7 @@ def start():
         **{
             k: v
             for k, v in operator.items()
-            if k.startswith(("GOOGLE_CLIENT_", "SLACK_CLIENT_"))
+            if k.startswith(("GOOGLE_CLIENT_", "SLACK_CLIENT_", "EMAIL_SMTP_"))
         },
     }
     log = open(RUNTIME / "connectors.log", "a")

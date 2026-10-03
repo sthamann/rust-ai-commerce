@@ -255,8 +255,8 @@
     },
     "src/apps/manifest.rs": {
       "status": "unproved",
-      "sha256": "731bdd5423989d411e8dbf9efc63538f44922fcf98cfecfc9c86db48022f3b28",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "234f408282f29ecd24063128915533df82bbc83bda97dee9b015d3f3a7feef93",
+      "review": "Reviewed email built-in registration and reserved-ID checks in apps/routes.rs, apps/manifest.rs, developer/builds.rs; existing permission/service gateway preserved. marketing/flows.rs snapshots committed orderCustomer and currency for queue recipient stability. verify.yml adds real SMTP/TLS/Resend/SendGrid and isolated PostgreSQL checkout-flow-MCP-staging regressions. No kernel policy or proof property changed; mail/network code remains unproved."
     },
     "src/apps/manifest_validation.rs": {
       "status": "unproved",
@@ -280,8 +280,8 @@
     },
     "src/apps/routes.rs": {
       "status": "unproved",
-      "sha256": "e0e4303213442d4905aa993723afcd257179f1baa9265eca79dd68fb220aba5c",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "404530ea99e579299b90f4998028da2097824aa6a182f09051c8329db521c974",
+      "review": "Reviewed email built-in registration and reserved-ID checks in apps/routes.rs, apps/manifest.rs, developer/builds.rs; existing permission/service gateway preserved. marketing/flows.rs snapshots committed orderCustomer and currency for queue recipient stability. verify.yml adds real SMTP/TLS/Resend/SendGrid and isolated PostgreSQL checkout-flow-MCP-staging regressions. No kernel policy or proof property changed; mail/network code remains unproved."
     },
     "src/apps/runtime.rs": {
       "status": "unproved",
@@ -605,8 +605,8 @@
     },
     "src/developer/builds.rs": {
       "status": "unproved",
-      "sha256": "694ce019d87b22edd415826860f3c02bc12c7c110e062b4f1cc9f1c5d294ea18",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "c51c38e5af4324f05004c4075437c6b15af79315a9905870b92b3162a4df6575",
+      "review": "Reviewed email built-in registration and reserved-ID checks in apps/routes.rs, apps/manifest.rs, developer/builds.rs; existing permission/service gateway preserved. marketing/flows.rs snapshots committed orderCustomer and currency for queue recipient stability. verify.yml adds real SMTP/TLS/Resend/SendGrid and isolated PostgreSQL checkout-flow-MCP-staging regressions. No kernel policy or proof property changed; mail/network code remains unproved."
     },
     "src/developer/generation.rs": {
       "status": "unproved",
@@ -715,8 +715,8 @@
     },
     "src/marketing/flows.rs": {
       "status": "unproved",
-      "sha256": "e9551c645f9e254afabe9a66b84597ad48900f4f6bcaf86338cbf77bbbd049ed",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "79bd64bc5fe154450a087b72fc6ce9f4cb7434b8b6fad8ef0b4f3026209bca92",
+      "review": "Reviewed email built-in registration and reserved-ID checks in apps/routes.rs, apps/manifest.rs, developer/builds.rs; existing permission/service gateway preserved. marketing/flows.rs snapshots committed orderCustomer and currency for queue recipient stability. verify.yml adds real SMTP/TLS/Resend/SendGrid and isolated PostgreSQL checkout-flow-MCP-staging regressions. No kernel policy or proof property changed; mail/network code remains unproved."
     },
     "src/marketing/mod.rs": {
       "status": "unproved",
@@ -986,8 +986,8 @@
   },
   "inputs": {
     ".github/workflows/verify.yml": {
-      "sha256": "d7ee65ecc7ac1176311d36cdbc06c35bb0b879c59c711955c8e4e01463d52187",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "9b554797a0b792decfdde032ee00fecfa1072765db54c81c87aad518a3290e5e",
+      "review": "Reviewed email built-in registration and reserved-ID checks in apps/routes.rs, apps/manifest.rs, developer/builds.rs; existing permission/service gateway preserved. marketing/flows.rs snapshots committed orderCustomer and currency for queue recipient stability. verify.yml adds real SMTP/TLS/Resend/SendGrid and isolated PostgreSQL checkout-flow-MCP-staging regressions. No kernel policy or proof property changed; mail/network code remains unproved."
     },
     "Cargo.lock": {
       "sha256": "5568d6215c3f896914be87977c1bfb8bdb1f4d746c3af6ad9cf945a4f7da5fe4",
