@@ -38,13 +38,19 @@ company details. It does not reset merchant edits or recreate orders.
 | Product details | Printed product link | Switch mug variant, image and quantity | SKU-specific availability and prices; core quantity calculation |
 | Product extension | Mug detail → engraving | Add a short inscription | The installed Wasm app supplies its own form/rule and a taxed cart contribution |
 | Coupon | Cart | Apply `TRY10` | A server-calculated 10% campaign discount, including adjusted taxes |
-| Customer account | Storefront → Account | Sign in as local synthetic `buyer@example.test` / `demo-business` | B2B customer profile/address book and own orders; this is not the Studio login |
+| Customer account | Storefront → Account | Register your own synthetic customer and sign in | Customer profile/address book and own orders; this is not the Studio login |
 | Checkout | Cart → checkout | Choose a valid billing/shipping address, delivery and simulated payment | Immutable order/address/method snapshots and one durable order |
 | Standard flow | Place one ordinary mug order below €100 | Studio → Rules & flows → Event flows | The No branch adds `playground-standard`, creates an invoice and stops |
 | Priority flow | Place two lamps, total at least €100 | Same workspace → Flow executions | The Yes branch adds `playground-priority`, waits 15 seconds, creates an invoice and stops |
 | Order operations | Studio → Orders → open your order | Use one eligible next-status action; inspect activity and Documents | State-machine transition/event and the generated numbered PDF |
 | Rule editing | Rules & flows → Rules | Edit “Cart total at least €100” | New orders use the changed condition; already queued events retain their frozen definition |
 | Sales channel | Printed collection link | Browse Home collection | Only mug, lamp, chair and their variants; a distinct channel-bound cart |
+
+Create a customer account with your own test email/password to exercise registration.
+If the instance enables `SEED_DEMO=true`, it also provides synthetic B2B
+`buyer@example.test` / `demo-business`. Secure instances with `SEED_DEMO=false`
+intentionally do not create that shared account. Playground setup does not bypass
+this setting or install a customer with a public known password.
 
 Choose **simulated card** for the initial tour. Bank transfer/invoice follow
 different payment states. Use the default channel if you want the whole sample
