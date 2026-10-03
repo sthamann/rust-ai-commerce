@@ -3,6 +3,7 @@ import { useState } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import FlowExecution from "../../src/admin/automation/FlowExecution";
+import RuleBuilder from "../../src/admin/automation/RuleBuilder";
 import FlowCanvas from "../../src/admin/automation/FlowCanvas";
 import JsonField from "../../src/admin/automation/JsonField";
 import {
@@ -143,3 +144,46 @@ it("shows the frozen branch trace and scheduled continuation from persisted jobs
   expect(screen.getByText(/No/)).toBeInTheDocument();
   expect(screen.getByText(/Tag order/)).toBeInTheDocument();
 });
+
+describe.each(["en-GB", "de-DE", "fr-FR", "es-ES"])(
+  "stable source selection in %s",
+  (locale) => {
+    it("keeps the source identifier separate from its translated label", () => {
+      localStorage.setItem("rac-locale", locale);
+      const changed = vi.fn();
+      const definitions = ["cartCartAmount", "cartGoodsCount"].map((type) => ({
+        type,
+        supported: true,
+        status: "native-scope",
+        source: "Checkout/Cart/Rule",
+        config: {
+          operatorSet: { operators: ["=", ">="] },
+          fields: { amount: { name: "amount", type: "float", config: {} } },
+        },
+      }));
+      render(
+        <RuleBuilder
+          value={{
+            type: "shopwareCondition",
+            name: "cartCartAmount",
+            config: { operator: ">=", amount: 100 },
+          }}
+          onChange={changed}
+          catalog={{ ...catalog, sourceConditions: definitions }}
+        />,
+        { wrapper: LocaleProvider },
+      );
+      const selection = screen.getAllByRole("combobox")[0];
+      expect(selection).toHaveValue("source:cartCartAmount");
+      fireEvent.change(selection, {
+        target: { value: "source:cartGoodsCount" },
+      });
+      expect(changed).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          type: "shopwareCondition",
+          name: "cartGoodsCount",
+        }),
+      );
+    });
+  },
+);

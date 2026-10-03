@@ -72,7 +72,7 @@ export default function RuleBuilder({
           value={source ? `source:${source.type}` : value.type}
           onChange={(e) => {
             const def = catalog.sourceConditions?.find(
-              (d) => `source:${a(d.type)}` === e.target.value,
+              (d) => `source:${d.type}` === e.target.value,
             );
             onChange(def ? sourceRule(def) : newRule(e.target.value));
           }}
@@ -85,8 +85,8 @@ export default function RuleBuilder({
           <optgroup label={a("original")}>
             {catalog.sourceConditions?.map((d) => (
               <option
-                key={a(d.type)}
-                value={`source:${a(d.type)}`}
+                key={d.type}
+                value={`source:${d.type}`}
                 disabled={!d.supported}
               >
                 {a(d.type)}

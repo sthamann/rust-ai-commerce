@@ -28,7 +28,7 @@ export default function SourceRuleFields({
       </small>
       {definition.config?.operatorSet && (
         <label>
-          {a("action")}
+          {a("operator")}
           <select
             value={config.operator ?? "="}
             onChange={(e) => set("operator", e.target.value)}
@@ -42,7 +42,7 @@ export default function SourceRuleFields({
       {Object.values(definition.config?.fields ?? {})
         .filter(() => config.operator !== "empty")
         .map((field) => (
-          <label key={a(field.name)}>
+          <label key={field.name}>
             {a(field.name)}
             {config.operator === "between" &&
             ["date", "datetime"].includes(field.type) ? (
