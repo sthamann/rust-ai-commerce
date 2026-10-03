@@ -1,69 +1,120 @@
 # Vercel frontend + self-hosted Rust / PostgreSQL
 
-This is the requested split deployment preparation. It does not deploy the
-long-lived Rust service or database into a Vercel function.
+**Current status:** the operator console and deployment package are implemented
+and tested locally. No public Rust backend or Vercel commerce deployment has been
+verified. The server/SSH target and public backend domain are still required.
+GitHub Pages hosts documentation, not the Rust commerce service.
 
-## Backend
+## Prepare the private host configuration
 
-Copy `deploy/.env.example` to ignored `deploy/.env`. Set a public DNS name, an
-independent generated database password and instance-admin credential. URL-encode
-the database password in `DATABASE_URL`. All model and app-service credentials
-remain server-side. Point DNS to the backend host and allow ports 80/443.
+Use a Linux host with Docker Compose, a public DNS name pointing to it and
+reachable ports 80/443. PostgreSQL/AGE/pgvector stay on the private Compose
+network. The repository does not purchase a server or reuse unrelated services.
 
-```sh
-docker compose --env-file deploy/.env -f deploy/compose.yaml up -d --build
-```
-
-The image builds the real Rust binary and frontend. Setup records checksummed
-migrations once; `BOOTSTRAP_MODE=migrate` performs setup without starting workers,
-and `BOOTSTRAP_MODE=serve` requires every schema to be ready. The default `auto`
-mode handles the first admitted experimental deployment. Serving replicas do not
-scan or rewrite all tenant catalogs at startup. The runtime runs as a
-non-root user. PostgreSQL/AGE/pgvector have no published database port in this
-setup. Caddy terminates HTTPS and proxies to Rust on the private container
-network. [Caddy's automatic HTTPS](https://caddyserver.com/docs/automatic-https)
-requires a reachable configured domain. Persistent volumes retain database and
-certificate state. Back up the database before upgrades.
-
-Ollama is an operator-controlled private service; the Compose file does not
-download a model or reserve a GPU. Optional OpenAI/Anthropic API secrets are
-provided only to Rust. Storyfront remains an independently deployed service;
-configure its admitted tenant mappings and `APP_SERVICES` as documented in
-[Storyfront setup](storyfront.md).
-
-## Frontend on Vercel
-
-Render the actual HTTPS backend origin into the frontend configuration:
+From the repository root:
 
 ```sh
-python3 scripts/prepare_vercel.py --backend https://YOUR-COMMERCE-API-DOMAIN
+python3 scripts/prepare_host.py --domain commerce-api.YOUR-DOMAIN --admin-email YOUR-OPERATOR-EMAIL
 ```
 
-Select `frontend` as the Vercel project's root, Vite as its framework, `npm run
-build` as its build command and `dist` as output. Generated `frontend/vercel.json`
-proxies `/api`, `/store-api`, `/mcp`, `/ucp`, `/.well-known`, `/media` and `/health`
-to the backend and serves the SPA for frontend routes. It contains no secrets.
-Vercel supports [external rewrites](https://vercel.com/docs/routing/rewrites)
-and [Vite deployments](https://vercel.com/docs/frameworks/frontend/vite).
-Auth/cart/agent routes are marked private and non-cacheable. Authenticated or
-personalized results must never be shared across tenants by a CDN rule.
+This creates ignored `deploy/.env` with mode 0600, independent generated database,
+instance and operator credentials. It refuses to overwrite an existing file and
+never prints secret values. Configure the private inference endpoint and optional
+provider/app endpoints there. Transfer this private file securely to the selected
+host; do not commit it or paste resolved Compose configuration into logs.
 
-A merchant can register a shop and create additional shops under that account.
-Use `?shop=SHOP_ID`, and optionally `&channel=CHANNEL_ID`, for a storefront.
-Staging previews use `&sandbox=1` plus the current personal merchant session.
-One frontend can serve many shops; private tenant membership checks remain in
-Rust. Custom domains and host-to-tenant provisioning are not implemented by the
+Public Compose enforces `SEED_DEMO=false`, `ALLOW_PUBLIC_SIGNUP=false` and
+`ALLOW_BOOTSTRAP_AUTH=false`. It creates no known demo customer accounts. Existing
+demo data is not deleted during an upgrade: never reuse an old publicly seeded
+demo database for a new public deployment without reviewing its accounts.
+
+## Start the backend and your operator account
+
+```sh
+docker compose --env-file deploy/.env -f deploy/compose.yaml up -d --build postgres commerce gateway
+docker compose --env-file deploy/.env -f deploy/compose.yaml --profile operator-setup run --rm operator
+```
+
+The image builds the real Rust binary and frontend, including the shared analytics
+SDK. Rust runs as UID 10001. The one-shot operator service receives the initial
+operator password; the long-running commerce service does not. After successful
+setup, remove `PLATFORM_ADMIN_PASSWORD` from the private file (retain your password
+in your own password manager). Sign in at `https://YOUR-BACKEND-DOMAIN/#platform`.
+No instance token should be entered in the browser. Use the console to create
+empty or example-catalogue shops, then invite individual merchant team members.
+
+Caddy terminates HTTPS and proxies to the internal Rust service.
+[Caddy automatic HTTPS](https://caddyserver.com/docs/automatic-https) requires a
+reachable configured domain. Persistent volumes retain PostgreSQL, uploaded
+binary product assets (stored in PostgreSQL), connector state and certificates.
+Back up PostgreSQL before upgrades; automatic backup/restore/failover is not yet
+implemented.
+
+Setup records immutable checksummed migrations. `BOOTSTRAP_MODE=migrate` performs
+setup without workers; `serve` requires all migrations to be ready. On upgrades,
+run a controlled migration-only job before restarting `serve` replicas; do not
+roll mixed schema versions blindly. The initial `auto` mode supports one admitted
+experimental deployment, not rolling-upgrade orchestration.
+
+Ollama is an operator-controlled private service. Compose does not download a
+model or reserve a GPU. Optional OpenAI/Anthropic credentials stay in Rust.
+The [connected-app service](connected-apps.md) is optional; configure private
+Google/Slack clients, encryption/gateway keys and the actual callback URL before
+starting the `connected-apps` profile. Storyfront remains independently deployed;
+configure its admitted tenant mappings and `APP_SERVICES` as in
+[Storyfront setup](storyfront.md). Creating a commerce shop does not automatically
+provision those external services or enable real payment credentials.
+
+## Deploy the frontend on Vercel
+
+Only after the backend is reachable over valid HTTPS:
+
+```sh
+python3 scripts/hosting_check.py --origin https://YOUR-BACKEND-DOMAIN
+python3 scripts/prepare_vercel.py --backend https://YOUR-BACKEND-DOMAIN
+```
+
+Create the dedicated `rust-ai-commerce` Vercel project from this GitHub repository.
+Select `frontend` as root, Vite, `npm run build`, and `dist`. **Enable including
+source files outside the root directory**: the frontend imports the shared
+`extensions/sdk/analytics` module. This is also covered by the corrected Docker
+build. Keep the generated `frontend/vercel.json` in the deployment checkout or
+configure the same rewrites in the deployment's committed environment-specific
+configuration; it is ignored by this generic source repository and must be
+supplied before a Git-based build. Do not import a project with placeholder
+rewrites and call it a working deployment.
+
+Generated configuration proxies `/api`, `/store-api`, `/mcp`, `/ucp`,
+`/.well-known`, `/media` and `/health` to the backend and serves the SPA. It contains
+no credentials. Vercel supports [external rewrites](https://vercel.com/docs/routing/rewrites)
+and [Vite deployments](https://vercel.com/docs/frameworks/frontend/vite). Private
+API responses are marked non-cacheable. Authenticated/personalized results must
+never be shared across tenants by CDN rules. Run the HTTPS check against the
+Vercel preview too, then verify operator sign-in, creation of an isolated shop,
+customer registration/address checkout and own order access before promoting it.
+
+Use `?shop=SHOP_ID` and optionally `&channel=CHANNEL_ID` for storefronts.
+`/#platform` opens the operator console; `?shop=SHOP_ID#merchant` opens a shop's
+merchant studio. Staging previews use the existing private merchant session.
+Custom domains and host-to-tenant provisioning are not implemented by this
 query-parameter prototype.
 
-## Before public SaaS operation
+## Local release checks
 
-The repository prepares the architecture, containers and configuration. It does
-not certify a hardened public service: account recovery/email verification,
-production rate limits/abuse controls, bootstrap-token restrictions, full
-core-wide RLS, per-tenant inference budgets, signed app trust, billing,
-large-catalog staged branches, backup/restore operations and measured failover
-remain deployment work. Use this setup for admitted experimental shops first.
+```sh
+docker build -f deploy/Dockerfile -t rust-ai-commerce:platform .
+# With the existing local Compose PostgreSQL container and private DATABASE_URL:
+python3 scripts/hosting_container.py
+```
 
-No public Vercel project, domain or backend host was selected/deployed as part of
-this preparation. Container and configuration validation is distinct from a
-verified HTTPS/Vercel round trip.
+This creates and removes only a uniquely named synthetic test database/container,
+checks the built frontend, non-root Rust process, personal operator login,
+actual shop creation and closed signup/bootstrap gates. It is distinct from a
+public HTTPS/Vercel deployment. `platform.py` and `platform_setup.py` are mandatory
+HTTP/PostgreSQL CI tests.
+
+Public experimentation still needs a selected host/domain and operator identity.
+Broader production SaaS requires recovery/email verification, rate limits/abuse
+controls, core-wide RLS, per-tenant inference budgets, signed app trust, billing,
+large-catalog staged branches, backups/restores and measured failover. The
+[operator guide](platform.md) describes exactly what the dashboard measures.

@@ -9,12 +9,55 @@ sys.path.insert(
     str(pathlib.Path(__file__).resolve().parents[1] / "extensions/services/connectors"),
 )
 from cryptography.fernet import Fernet
+from server import Connector
+import threading
 from store import Store
 from oauth import OAuth
 from callback_page import render
 
 
 class Contracts(unittest.TestCase):
+    def test_worker_stops_before_private_directory_cleanup(self):
+        with tempfile.TemporaryDirectory() as folder:
+            connector = Connector.__new__(Connector)
+            entered = threading.Event()
+            release = threading.Event()
+            stop = threading.Event()
+            writes = []
+            failure = []
+
+            def once(app):
+                entered.set()
+                release.wait(2)
+                pathlib.Path(folder, "journal").write_text(app)
+                writes.append(app)
+
+            connector.once = once
+
+            def work():
+                try:
+                    connector.loop("slack", stop)
+                except Exception as e:
+                    failure.append(type(e).__name__)
+
+            worker = threading.Thread(target=work, daemon=True)
+            worker.start()
+            try:
+                self.assertTrue(entered.wait(2), failure)
+                stop.set()
+                release.set()
+                worker.join(3)
+                self.assertFalse(
+                    worker.is_alive(),
+                    "Writer must finish before temporary directory removal",
+                )
+                self.assertEqual(writes, ["slack"])
+            finally:
+                stop.set()
+                release.set()
+                worker.join(3)
+        self.assertFalse(pathlib.Path(folder).exists())
+
     def test_settings_tokens_and_cursor_are_atomic(self):
         with tempfile.TemporaryDirectory() as folder:
             s = Store(folder + "/state.sqlite", Fernet.generate_key().decode())

@@ -1,11 +1,11 @@
 # Lean-checked commerce contracts
 
-The prototype now runs Lean 4.29.1 proofs for **16 policies used in production
-Rust paths**. Thirty-eight theorems cover the properties below. This is **not a
+The prototype now runs Lean 4.29.1 proofs for **17 policies used in production
+Rust paths**. Forty theorems cover the properties below. This is **not a
 certificate that the entire commerce core is correct or bug-free**. The current
-inventory contains 154 Rust modules: one extracted policy module, eleven reviewed
-binding modules, one comparison driver and 141 unproved modules. Binding review
-is not a proof of those eleven modules.
+inventory contains 159 Rust modules: one extracted policy module, twelve reviewed
+binding modules, one comparison driver and 145 unproved modules. Binding review
+is not a proof of those twelve modules.
 
 ## Connection to the real application
 
@@ -84,10 +84,10 @@ The existing **Verify prototype / verify** job now also:
 4. Audits all 33 required theorems' transitive axioms. Only Lean's standard
    `propext`, `Quot.sound` and `Classical.choice` foundations are allowed. `sorry`,
    `admit`, custom axioms, `native_decide` and missing theorem audits fail.
-5. Executes compiled Rust and Lean functions on **3,602** identical inputs:
+5. Executes compiled Rust and Lean functions on **3,610** identical inputs:
    exhaustive Boolean assignments plus numeric boundaries/random cases, including
    `u64::MAX`. Their output types and values must match.
-6. Requires Lean to reject **34** deliberately broken policy variants. Also
+6. Requires Lean to reject **37** deliberately broken policy variants. Also
    rejects 14 unsupported grammar examples, three stale/unclassified/disconnected
    inventory cases and nine proof-shortcut/axiom/missing-audit examples.
 7. Runs existing Rust, PHP-reference and real PostgreSQL HTTP regressions.
@@ -163,3 +163,8 @@ surrounding rule AST evaluation remain reviewed/tested Rust, not fully proved mo
 Provider OAuth, encrypted storage, Gmail/GA4 imports, Slack delivery and private graph
 projection remain unproved integration code with real local HTTP/database regression
 coverage. No whole-core or bug-free certification is claimed.
+
+The platform operator grant is also production-bound: personal credential, current
+grant and active status must all hold. The surrounding session lookup, SQL, offline
+bootstrap and provisioning are reviewed/tested adapters, not Lean-proved database
+or deployment correctness.

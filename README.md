@@ -28,6 +28,7 @@ This is also a laboratory for porting selected original Shopware behavior to Rus
 | Rust ecommerce and B2B checkout | SKU variants, quantity prices, tax/shipping configuration and durable demo orders |
 | Shopware behavior in Rust | Bounded ports checked against original Shopware PHP classes |
 | Storyfront shops | Catalog/variant/media import and checkout transfer through a separate [Storyfront app](docs/storyfront.md) |
+| SaaS platform administration | Separate personal operator access, audited shop creation, live-shop statistics and staging visibility |
 | Self-hosted storage | PostgreSQL + Apache AGE + pgvector; no paid database service required |
 
 The interface supports **English, German, French and Spanish**. MIT licensed.
@@ -82,12 +83,31 @@ claim parity with the full original condition catalog or arbitrary FlowSequences
 
 ![Visual order-event flow with nested conditions and a Slack app action](docs/assets/slack-flow-en.jpg)
 
+## Platform administration and hosting
+
+A dedicated **Commerce Platform** console at `/#platform` creates empty or
+sample-catalogue shops and shows global customers, product SKUs, orders, staging,
+teams and API activity. Per-shop details show actual daily orders; totals keep
+currencies, simulated payments and confirmed captures separate. Personal operator
+grants are independent of merchant roles and integration keys. New shops contain
+no known demo customer accounts. The console supports all four interface languages.
+
+![Platform operator overview with synthetic test data](docs/assets/platform-overview-en.png)
+
+[Operator console and API](docs/platform.md) · [Host setup and Vercel deployment](docs/deployment.md)
+
+The public deployment package includes a non-root Rust image, private open-source
+PostgreSQL/AGE/pgvector, HTTPS gateway, one-shot personal operator setup and closed
+merchant signup/bootstrap-token gates. **It is tested locally; a public host/domain
+and verified Vercel/backend deployment are still outstanding.** GitHub Pages is the
+documentation site, not a hosted commerce backend.
+
 ## Lean-checked production policies
 
 The real Rust checkout, order workflow, access, refund and download paths now
-call a small pure kernel with **16 policies and 38 Lean-proved properties**.
+call a small pure kernel with **17 policies and 40 Lean-proved properties**.
 The production functions are extracted through a closed typed grammar; compiled
-Rust/Lean outputs are compared on 3,602 cases. Deliberately broken policies must
+Rust/Lean outputs are compared on 3,610 cases. Deliberately broken policies must
 fail the proof checks. CI also audits transitive axioms and locks every Rust,
 schema, build and proof input to an explicitly reviewed source inventory.
 
@@ -113,8 +133,7 @@ note/AI-proposal flows and scoped sales channels share the real checkout path.
 Product translations/specifications/SEO/cross-selling and behavior-based ranking
 are connected to their storefront consumers.
 
-Read the [workbench guide and exact limits](docs/workbench.md) and the prepared
-[Vercel + self-hosted deployment](docs/deployment.md). The four-language interface
+Read the [workbench guide and exact limits](docs/workbench.md) and the [Vercel + self-hosted deployment](docs/deployment.md). The four-language interface
 extends to the new tabs, forms, native app fields and customer account/checkout
 flow; user-authored sources and earlier conversation messages retain their
 original language. Real model quality and full Shopware Rule/Flow parity remain

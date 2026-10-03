@@ -14,7 +14,8 @@ services:
       retries: 60
     restart: unless-stopped
   commerce:
-    build:
+    image: rust-ai-commerce:${COMMERCE_IMAGE_TAG:-local}
+    build: &commerce-build
       context: ..
       dockerfile: deploy/Dockerfile
     environment:
@@ -22,15 +23,35 @@ services:
       MERCHANT_TOKEN: ${MERCHANT_TOKEN:?required}
       BIND_ADDR: 0.0.0.0:8787
       BOOTSTRAP_MODE: ${BOOTSTRAP_MODE:-auto}
+      SEED_DEMO: "false"
+      ALLOW_PUBLIC_SIGNUP: "false"
+      ALLOW_BOOTSTRAP_AUTH: "false"
       COMMERCE_PUBLIC_ORIGIN: https://${COMMERCE_DOMAIN:?public DNS name required}
       OLLAMA_URL: ${OLLAMA_URL:-http://ollama:11434}
       OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3.6:35b}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       APP_SERVICES: ${APP_SERVICES:-{}}
+
     depends_on:
       postgres: {condition: service_healthy}
     restart: unless-stopped
+  operator:
+    profiles: [operator-setup]
+    image: rust-ai-commerce:${COMMERCE_IMAGE_TAG:-local}
+    build: *commerce-build
+    command: ["/app/rust-ai-commerce", "--bootstrap-operator"]
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?required}
+      MERCHANT_TOKEN: ${MERCHANT_TOKEN:?required}
+      BOOTSTRAP_MODE: migrate
+      SEED_DEMO: "false"
+      PLATFORM_ADMIN_EMAIL: ${PLATFORM_ADMIN_EMAIL:?operator email required}
+      PLATFORM_ADMIN_NAME: ${PLATFORM_ADMIN_NAME:-Platform operator}
+      PLATFORM_ADMIN_PASSWORD: ${PLATFORM_ADMIN_PASSWORD:-}
+    depends_on:
+      postgres: {condition: service_healthy}
+    restart: "no"
   connectors:
     profiles: [connected-apps]
     build:

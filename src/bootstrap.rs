@@ -60,7 +60,9 @@ pub(crate) async fn bootstrap() -> App {
         channel_metrics: Arc::new(channel_metrics::ChannelMetrics::default()),
     };
     if let Some(setup) = setup {
-        migrations::seed_demo(&a, &setup).await;
+        if env::var("SEED_DEMO").as_deref() != Ok("false") {
+            migrations::seed_demo(&a, &setup).await;
+        }
         setup.close().await;
     }
     let seeded: bool = sqlx::query_scalar(
@@ -69,7 +71,10 @@ pub(crate) async fn bootstrap() -> App {
     .fetch_one(&a.db)
     .await
     .expect("completed setup");
-    assert!(seeded, "Setup is incomplete: run BOOTSTRAP_MODE=migrate");
+    assert!(
+        seeded || env::var("SEED_DEMO").as_deref() == Ok("false"),
+        "Setup is incomplete: run BOOTSTRAP_MODE=migrate"
+    );
     // Only the two built-in demo policies are eager. Other tenant policies are
     // validated lazily against their persisted source in the existing checkout path.
     for t in ["atelier", "workshop"] {

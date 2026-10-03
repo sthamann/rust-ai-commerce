@@ -5,6 +5,12 @@ pub(crate) async fn register_user(
     State(a): State<App>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
+    if env::var("ALLOW_PUBLIC_SIGNUP").as_deref() == Ok("false") {
+        return Err(Error(
+            StatusCode::FORBIDDEN,
+            "Public registration is closed; use a merchant invitation".into(),
+        ));
+    }
     let email = email(&v)?;
     let name = name(&v)?;
     let password = hash_password(password(&v)?).await?;

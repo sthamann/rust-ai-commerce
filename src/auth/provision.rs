@@ -7,6 +7,26 @@ pub(super) async fn provision(
     shop_name: &str,
     demo_password: String,
 ) -> Result<Sandbox> {
+    provision_shop(
+        tx,
+        user,
+        slug,
+        shop_name,
+        demo_password,
+        true,
+        env::var("SEED_DEMO").as_deref() != Ok("false"),
+    )
+    .await
+}
+pub(crate) async fn provision_shop(
+    tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
+    user: &str,
+    slug: &str,
+    shop_name: &str,
+    demo_password: String,
+    seed_catalog: bool,
+    demo_customer: bool,
+) -> Result<Sandbox> {
     if sqlx::query("INSERT INTO tenants(id,name) VALUES($1,$2) ON CONFLICT DO NOTHING")
         .bind(slug)
         .bind(shop_name)
@@ -25,10 +45,20 @@ pub(super) async fn provision(
     // Every relation, including variant stock, translations and rules, is copied under the NEW tenant.
     let template: Value =
         serde_json::from_str(include_str!("../../fixtures/demo-catalog.json")).unwrap();
-    for p in template["products"].as_array().unwrap() {
+    for p in template["products"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|_| seed_catalog)
+    {
         sqlx::query("INSERT INTO products(tenant,id,name,category,description,price,tax_rate,stock,revision,list_price,regulation_price,reference_price,advanced_prices,min_purchase,purchase_steps,max_purchase,parent_id,options,media,properties,delivery_days) VALUES($1,$2,$3,$4,$5,$6,$7,$8,1,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)").bind(slug).bind(p["id"].as_str()).bind(p["name"].as_str()).bind(p["category"].as_str()).bind(p["description"].as_str()).bind(p["price"].as_f64()).bind(p["tax_rate"].as_f64()).bind(p["stock"].as_i64().unwrap() as i32).bind(p["list_price"].as_f64()).bind(p["regulation_price"].as_f64()).bind(p["reference_price"].as_object().map(|_|p["reference_price"].clone())).bind(&p["advanced_prices"]).bind(p["min_purchase"].as_i64().unwrap() as i32).bind(p["purchase_steps"].as_i64().unwrap() as i32).bind(p["max_purchase"].as_i64().map(|v|v as i32)).bind(p["parent_id"].as_str()).bind(&p["options"]).bind(&p["media"]).bind(&p["properties"]).bind(p["delivery_days"].as_i64().unwrap() as i32).execute(&mut **tx).await?;
     }
-    for tr in template["translations"].as_array().unwrap() {
+    for tr in template["translations"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|_| seed_catalog)
+    {
         sqlx::query("INSERT INTO product_translations(tenant,product_id,language_id,name,description) VALUES($1,$2,$3,$4,$5)").bind(slug).bind(tr["product_id"].as_str()).bind(tr["language_id"].as_str()).bind(tr["name"].as_str()).bind(tr["description"].as_str()).execute(&mut **tx).await?;
     }
     let settings: Value =
@@ -50,8 +80,10 @@ pub(super) async fn provision(
             .execute(&mut **tx)
             .await?;
     }
-    sqlx::query("INSERT INTO customers(tenant,email,password_hash,company,group_name) VALUES($1,'buyer@example.test',$2,'Example Studio','business')").bind(slug).bind(demo_password).execute(&mut **tx).await?;
-    accounts::seed_demo_address(tx, slug).await?;
+    if demo_customer {
+        sqlx::query("INSERT INTO customers(tenant,email,password_hash,company,group_name) VALUES($1,'buyer@example.test',$2,'Example Studio','business')").bind(slug).bind(demo_password).execute(&mut **tx).await?;
+        accounts::seed_demo_address(tx, slug).await?;
+    }
     let wat = include_str!("../../extensions/company-limit.wat");
     let sandbox = Sandbox::new(wat).map_err(bad)?;
     sqlx::query("INSERT INTO extensions(tenant,wat,digest) VALUES($1,$2,$3)")

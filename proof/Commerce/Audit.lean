@@ -17,6 +17,8 @@ import Commerce.Claims
 #print axioms CommerceKernel.manual_payment_exact
 #print axioms CommerceKernel.manual_payment_safe
 #print axioms CommerceKernel.order_edit_exact
+#print axioms CommerceKernel.platform_exact
+#print axioms CommerceKernel.platform_personal_required
 #print axioms CommerceKernel.receipt_exact
 #print axioms CommerceKernel.receipt_exact_behavior
 #print axioms CommerceKernel.refund_bounded
