@@ -22,7 +22,7 @@ progress independently. There is no unbounded model call in this transaction.
 All writes originate from deterministic operations, not model-generated SQL.
 
 Next production steps: decimal/integer money type with explicit currency scale,
-tenant row-level security, migrations with checksums/version locks, broader
+tenant row-level security on core tables, broader
 inventory reservations and production payment state machines, caches invalidated by
 outbox events, observability, resource admission and tenant quotas. The current
 money implementation deliberately reproduces Shopware float behavior inside
@@ -142,3 +142,20 @@ Swiss German demonstrates parent fallback. Currency stays EUR. Original rule
 priority and calculated-tier selection replace the earlier hardcoded quantity
 branch, and normalized quantities are persisted in real carts. This remains a
 bounded context/product-cart port with its own original-PHP differential gate.
+
+## Current native automation and hands-on setup
+
+`automation_rules/` evaluates reviewed source-named conditions. The marketing
+context builders supply private server-owned facts; referenced rules are fetched
+by tenant/ID and frozen per matching event. `marketing/pipeline_runtime.rs`
+executes an admitted graph using durable node receipts, cursors and scheduled
+continuations. A current membership check precedes each action. Internal product
+metadata is excluded from public serialization. Apps share the existing typed
+action gateway; AI proposals retain merchant review.
+
+This is an executable native subset, not a certified translation of the full
+Shopware interpreter, DAL, trigger set or FlowSequence protocol. See
+[automation.md](automation.md) for source/configuration boundaries. The
+[playground](playground.md) creates a separate shop through personal-owner APIs
+and seeds repeatable provider-free configurations; it does not bypass production
+handlers or add a second business-logic implementation.

@@ -10,13 +10,13 @@ Browser and agent clients share the same pricing, inventory and checkout operati
 This is also a laboratory for porting selected original Shopware behavior to Rust.
 
 [Website & guides](https://sthamann.github.io/rust-ai-commerce/) ·
-[Quickstart](docs/quickstart.md) · [MCP setup](docs/connectors.md) ·
+[Quickstart](docs/quickstart.md) · [Hands-on playground](docs/playground.md) · [MCP setup](docs/connectors.md) ·
 [Feature matrix](docs/shopware-parity.md) · [Contributing](CONTRIBUTING.md)
 
 [![Verify prototype](https://github.com/sthamann/rust-ai-commerce/actions/workflows/verify.yml/badge.svg)](https://github.com/sthamann/rust-ai-commerce/actions/workflows/verify.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[![Merchant reviews a local AI proposal before approving the price change](docs/assets/merchant-proposal-en.png)](https://sthamann.github.io/rust-ai-commerce/#demo)
+[![Current product detail with variants, gallery and server-calculated prices](docs/assets/playground-product-en.jpg)](https://sthamann.github.io/rust-ai-commerce/playground.html)
 
 ## Why try it?
 
@@ -81,7 +81,9 @@ path without external messages or paid model calls; live account authorization r
 your provider clients. Imports are manual in this version. The native builder does not
 claim complete behavior/API parity with the original condition catalog or arbitrary source FlowSequences. The reflected production catalog contains 114 Rule subclasses and 16 Core actions; 108 rule scopes are executable natively, with 432 direct original-PHP comparison cases across 74 classes. Unsupported runtimes remain visibly disabled. Source-name registration is not a claim of complete equivalence.
 
-![Connected flow with source-named condition, order tagging, durable delay and a reviewable AI proposal](docs/assets/automation-flow-en.jpg)
+![Current connected playground flow with a saved rule, tag branches, durable delay and an invoice](docs/assets/playground-flow-en.jpg)
+
+[Recorded separate flow with an optional reviewable AI proposal](docs/assets/automation-flow-en.jpg)
 
 [Slack app action example](docs/assets/slack-flow-en.jpg)
 
@@ -210,6 +212,29 @@ take several minutes. No model is downloaded by this command. Private instance
 credentials are generated in ignored `.env`; the app binds to `127.0.0.1:8787`
 and PostgreSQL to `127.0.0.1:15487`.
 
+## Try the connected playground
+
+After creating your personal merchant account, run:
+
+```sh
+python3 scripts/playground.py --email your-personal-merchant@example.test
+```
+
+Enter your password at the private prompt. This creates a separate **Commerce
+Playground** and prints its Studio, storefront, product and sales-channel links.
+It contains the `TRY10` coupon, engraving app, a saved source rule and an active
+flow: check the €100 threshold → tag the chosen branch → wait on priority orders
+→ create an invoice → stop. Setup needs no model/provider and creates no orders.
+Re-running preserves your edits; credentials are not stored in its state file.
+
+[Follow the ten-minute tour](docs/playground.md): product/SKU/cart → customer and
+address book → simulated checkout → real flow execution → order detail/PDF,
+then explore staging, apps, product knowledge and optional AI.
+
+![Current product detail in the isolated playground](docs/assets/playground-product-en.jpg)
+
+![Current Studio order management with synthetic playground orders](docs/assets/playground-orders-en.jpg)
+
 ## Choose your next step
 
 - **Add local AI:** follow the [Ollama setup](docs/quickstart.md#add-local-ai-optional).
@@ -232,7 +257,9 @@ and PostgreSQL to `127.0.0.1:15487`.
 In the approval clip,
 a local model proposes EUR 69.90 instead of EUR 74.90 for the lamp; the price
 changes only after merchant approval and is then visible in the storefront.
-The recording uses a synthetic shop; waiting time is shortened.
+These feature recordings use a synthetic shop and show the navigation at capture
+time; waiting time is shortened. The three playground screenshots show the current
+product, flow and order workspaces. [Capture notes](docs/assets/README.md).
 
 1. Ask the assistant to propose a catalog change.
 2. Inspect the stored proposal and the exact fields that would change.
@@ -280,9 +307,9 @@ See [implementation and limits](docs/intelligence-apps-payments.md),
 - [Architecture decisions](docs/architecture.md), [security](docs/security.md), [third-party licenses](THIRD_PARTY.md)
 
 The current verification includes **7,000 bounded comparisons** against original
-Shopware 6.7.14.2 PHP classes. These cover selected pricing/context/tax operations and numeric rule comparisons, plus 432 cases against 74 concrete original condition classes;
+Shopware 6.7.14.2 PHP classes. These cover selected pricing/context/tax operations and numeric/string/array/UUID comparison primitives, plus 432 cases against 74 concrete original condition classes;
 they do not establish full Shopware compatibility. The current workbench verification
-now runs 58 Rust unit tests and 65 frontend component/hook tests, plus 22 real HTTP suites,
+now runs 58 Rust unit tests and 67 frontend component/hook tests, plus 22 real HTTP suites,
 three local provider suites, four browser contracts and verification-tool tests.
 These include private releases, customer authority, concurrent checkout and bounded catalog reads.
 

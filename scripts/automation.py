@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Real HTTP/PostgreSQL branching automation, private facts, durable delays and revoked-actor regressions. No providers."""
-import copy,json,os,subprocess,time,uuid,urllib.request,urllib.error
+import copy,json,os,subprocess,time,uuid,urllib.request,urllib.error,sys,pathlib
 BASE=os.environ.get('BASE_URL','http://127.0.0.1:8787');suffix=uuid.uuid4().hex[:10];checks=[]
 def call(path,body=None,h=None,method=None,expected=200):
     req=urllib.request.Request(BASE+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(h or {})},method=method)
@@ -122,6 +122,31 @@ assert order_state['affiliateCode']=='partner'and order_state['campaignCode']=='
 assert json.loads(sql("SELECT data->'automation'->'tags' FROM orders WHERE tenant='"+t+"' AND id='"+mutation_order['id']+"';"))==['kept']
 current=next(x for x in call('/api/automation',h=mh)['flows']if x['id']=='mutations');save('mutations',{**current['data'],'active':False},current['revision'])
 check('Customer/order tag removal, typed fields, attribution, group fields and deactivate/reactivate actions commit real changes and revoke old sessions')
+# The same documented CLI creates a separate playground and preserves edited definitions on restart.
+demo_state=pathlib.Path('.run')/('playground-test-'+suffix+'.json')
+command=[sys.executable,'scripts/playground.py','--base-url',BASE,'--email',a['user']['email'],'--state',str(demo_state)]
+demo_env={**os.environ,'COMMERCE_PASSWORD':'Synthetic-flow-2026!'};demo_env.pop('COMMERCE_SESSION_TOKEN',None)
+demo=json.loads(subprocess.check_output(command,env=demo_env,text=True));dt=demo['workspace']
+assert dt!=t and len(demo['created'])==4 and demo['ordersCreated']==demo['providerCalls']==0
+dh={'x-tenant':dt,'Authorization':'Bearer '+a['token']}
+definitions=call('/api/automation',h=dh);rule=next(r for r in definitions['rules']if r['id']=='demo_high_value')
+call('/api/automation/rules/demo_high_value',{'revision':rule['revision'],'data':{'name':rule['data']['name'],'active':True,'condition':source('cartCartAmount',operator='>=',amount=120)}},dh,'PUT')
+again=json.loads(subprocess.check_output(command,env=demo_env,text=True));assert not again['created']and len(again['retained'])==4
+assert next(r for r in call('/api/automation',h=dh)['rules']if r['id']=='demo_high_value')['data']['condition']['config']['amount']==120
+assert demo_state.stat().st_mode&0o777==0o600 and 'token'not in json.loads(demo_state.read_text())
+for product,quantity,tag in [('mug',1,'playground-standard'),('lamp',2,'playground-priority')]:
+    cart=call('/store-api/checkout/cart',{}, {'x-tenant':dt});ph={'x-tenant':dt,'sw-context-token':cart['token']}
+    cart=call('/store-api/checkout/cart',{'revision':cart['revision'],'items':[{'id':product,'quantity':quantity}]},ph,'PUT')
+    placed=call('/store-api/checkout/order',{}, {**ph,'Idempotency-Key':'playground-'+product+suffix})
+    for _ in range(250):
+        entries=call('/api/automation/executions',h=dh)['jobs']
+        job=next((j for j in entries if j['flow']=='demo_order_routing'and j['state']=='completed'and any(step.get('result',{}).get('orderId')==placed['id']for step in(j.get('result')or{}).get('trace',[]))),None)
+        if job:break
+        time.sleep(.1)
+    assert job,(placed['id'],entries)
+    assert json.loads(sql("SELECT data->'automation'->'tags' FROM orders WHERE tenant='"+dt+"' AND id='"+placed['id']+"';"))==[tag]
+    assert len(call('/api/merchant/orders/'+placed['id']+'/receipts',h=dh)['elements'])==1
+check('Documented playground CLI creates an isolated owner shop, retains edited rules and executes both order branches with real invoices')
 revoked=flow([{'kind':'delay','id':'pause','seconds':60,'next':'effect'},action('effect','action.add.order.tag',{'tags':['must-not-run']})]);save('revoked',revoked)
 c=call('/store-api/checkout/cart',{},public);h={**public,'sw-context-token':c['token']};c=call('/store-api/checkout/cart',{'revision':c['revision'],'items':[{'id':'notebook','quantity':1}]},h,'PUT');second=call('/store-api/checkout/order',{}, {**h,'Idempotency-Key':'revoke-'+suffix})
 queued=wait('revoked','queued')

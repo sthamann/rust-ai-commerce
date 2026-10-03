@@ -9,7 +9,7 @@ export type CustomerSignInProps = {
   run: (fn: () => Promise<void>) => Promise<void>;
   register: boolean;
   cart: import("../../shared/api/shop-api").Cart | undefined;
-  key: string;
+  sessionKey: string;
   onCart: (c: import("../../shared/api/shop-api").Cart) => void;
   setSigned: React.Dispatch<React.SetStateAction<boolean>>;
   w: ReturnType<typeof useWorkbenchText>["w"];
@@ -22,7 +22,7 @@ export default function CustomerSignIn({
   run,
   register,
   cart,
-  key,
+  sessionKey,
   onCart,
   setSigned,
   w,
@@ -52,7 +52,7 @@ export default function CustomerSignIn({
             { email, password },
             cart?.token,
           );
-          localStorage.setItem(key, result.customerToken);
+          localStorage.setItem(sessionKey, result.customerToken);
           onCart(result);
           setSigned(true);
         });

@@ -100,8 +100,11 @@ A committed transition produces one outbox event: `order.state_changed`,
 an immutable event snapshot, so rapid subsequent transitions do not change the
 meaning of an earlier event. Note flows append a visible order activity exactly
 once. AI-proposal flows still produce reviewed proposals rather than auto-applying
-LLM changes. The graphical full Shopware FlowSequence/branch/action pipeline is
-not implemented; current flows have one native note or proposal action.
+LLM changes. The native graphical pipeline now supports conditions, true/false
+branches, consecutive domain/app actions, durable delays and stop nodes. Source
+FlowSequence interchange and every original trigger/configuration remain
+incomplete; [automation.md](automation.md) lists the exact action contracts.
+The [playground](playground.md) exercises both branches and generated invoices.
 
 ## Central settings, apps and documents
 

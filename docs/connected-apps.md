@@ -139,10 +139,15 @@ with `{app,action,arguments}`. The gateway injects only
 schema-declared `requestKey`, `event`, `kind` and translated `template` fields. Current
 team rights, app activation and staging restrictions are checked again at execution.
 
-The original condition inventory is in `reference/rule-catalog.json`. The native visual
-builder and the implemented conditions are real; this is not complete parity with all
-120 original condition classes, arbitrary FlowSequences/delays, all line-item scopes or
-all Shopware app actions. The inventory lists every remaining condition explicitly.
+The current executable production inventory is
+`reference/automation-registry.json`: 114 concrete source rule classes, with 108
+native scope bindings, and 16 Core action names. The graphical builder supports
+branches, sequences, saved references, durable delays and typed domain/app
+nodes. Complete source behavior, original trigger coverage, configuration/UUID
+mapping and FlowSequence interchange remain incomplete. The older
+`reference/rule-catalog.json` is a historical regex inventory, not the current
+production count. [Automation details](automation.md) and the
+[provider-free playground](playground.md) explain what can actually be tried.
 
 ## Delivery semantics and tests
 

@@ -58,6 +58,12 @@ python3 scripts/automation_registry.py
 python3 scripts/automation_differential.py
 ```
 
+The automation suite also executes `scripts/playground.py` as documented: a new
+owner-owned shop, repeat setup after an edited rule, both checkout branches and
+actual invoice records. `tooling_tests.py` has 12 tests, including refusal of
+remote credential destinations and unsafe state-file symlinks. See
+[the manual tour](playground.md) for the corresponding browser steps.
+
 ## Component regressions
 
 `frontend/tests/unit/` uses real components/hooks/transports, synthetic domain
@@ -147,3 +153,9 @@ of the 100% objective.
 
 Lean source review locks and mutation checks continue in CI unchanged in scope;
 see [formal verification](formal-verification.md) for precisely what is proved.
+
+The account composition regression exercises both login and registration through
+`CustomerAccount → CustomerSignIn → shopApi`. The simulated transport rejects
+protected profile/address/order reads unless the form persisted the exact
+tenant session key. This reproduces the former React-reserved `key` prop bug;
+backend address/customer isolation is separately exercised over real HTTP.

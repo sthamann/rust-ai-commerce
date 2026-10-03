@@ -107,5 +107,30 @@ class CoverageGates(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
 
 
+class PlaygroundSafety(unittest.TestCase):
+    def test_setup_refuses_remote_origins_before_credentials_are_used(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+        from playground import Client
+        for origin in ('https://example.com', 'http://127.0.0.1.evil.test', 'http://user:secret@localhost', 'http://localhost/path', 'http://localhost?token=secret'):
+            with self.subTest(origin=origin), self.assertRaises(ValueError):
+                Client(origin)
+        self.assertEqual(Client('http://127.0.0.1:8787/').base, 'http://127.0.0.1:8787')
+
+    def test_private_state_permissions_and_symlink_refusal(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+        from playground import private_write
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory) / 'state.json'
+            target.write_text('old')
+            target.chmod(0o644)
+            private_write(target, {'workspace': 'playground-example'})
+            self.assertEqual(target.stat().st_mode & 0o777, 0o600)
+            link = Path(directory) / 'link.json'
+            link.symlink_to(target)
+            with self.assertRaises(OSError):
+                private_write(link, {'workspace': 'wrong'})
+            self.assertEqual(json.loads(target.read_text())['workspace'], 'playground-example')
+
+
 if __name__ == '__main__':
     unittest.main()

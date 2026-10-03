@@ -306,3 +306,13 @@ manifest fields and generated app tables.
 | `frontend/src/admin/automation/*`, `shared/i18n/automation-*.ts` | Connected graph, typed localized rule/action editors and stable graph transformations | Four-language component tests, source payload round-trips, dangling-edge and JSON draft regressions |
 
 See [automation](automation.md) for the precise supported/disabled catalog and action mappings.
+
+## Reproducible local playground
+
+| Source | Responsibility | Verification |
+|---|---|---|
+| `scripts/playground.py`, `scripts/demo/fixtures.py` | Create a separate personal-owner shop through loopback HTTP; seed translated rules/coupon/channel/flow/app, preserve edits and private resumable state | `scripts/automation.py`: invoke the actual CLI, repeat after a merchant edit, exercise both order branches and real invoice records; `tooling_tests.py`: remote-origin and symlink/permission negative tests |
+
+The merchant walkthrough is [playground.md](playground.md). Its sample flow uses
+no model or external delivery provider. The exact current source inventory is
+[generated separately](module-inventory.md).

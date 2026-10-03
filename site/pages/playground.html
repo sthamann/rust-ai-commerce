@@ -1,0 +1,29 @@
+<article class="article">
+  <p class="eyebrow">Guide / A connected local shop</p>
+  <h1>Try the commerce playground.</h1>
+  <p class="lead">Follow a product through checkout, a branching event flow and a generated invoice. Then explore apps, staging and optional AI.</p>
+  <h2>1. Start and create a personal account</h2>
+  <p>Follow the <a href="quickstart.html">local quickstart</a>. In Commerce Studio, create a personal merchant account under Team &amp; access. Customers have separate accounts.</p>
+  <h2>2. Prepare the separate shop</h2>
+  <pre><code>python3 scripts/playground.py --email your-personal-merchant@example.test</code></pre>
+  <p>Enter your existing account's password privately. The script prints four links and creates Commerce Playground through the same personal-owner HTTP API. Its private ignored state contains no password or session token. Repeating setup preserves edits and existing orders; no model/provider calls or orders are made by setup. Sign in if needed and select Commerce Playground in the workspace picker.</p>
+  <h2>3. Product, coupon and checkout</h2>
+  <p>Open the printed mug link. Switch SKU, gallery and quantity. Try the installed engraving app, add the product to the bag and apply TRY10. Continue as a guest or create your own customer account; shared demo accounts are absent when SEED_DEMO=false. Enter synthetic addresses, apply the delivery/payment selection and place an order with simulated card payment.</p>
+  <img src="assets/playground-product-en.jpg" alt="Actual English product detail with SKU options and gallery" loading="lazy" style="width:100%;height:auto" />
+  <h2>4. Follow both flow branches</h2>
+  <p>In Studio → Rules &amp; flows → Event flows, inspect Order routing playground. An order below €100 follows the standard tag branch and creates an invoice. An order at least €100 follows the priority tag branch, waits 15 seconds, then creates an invoice. Two lamps exercise the priority path in the default sample catalog. Coupons/B2B prices can change the threshold outcome.</p>
+  <img src="assets/playground-flow-en.jpg" alt="Installed six-step playground flow: condition, two tag branches, delay, invoice and stop" loading="lazy" style="width:100%;height:auto" />
+  <p>The installed playground flow has no AI or external-send node. Open Flow executions to inspect persisted decisions and scheduled continuation. In Orders, open the order and download its generated PDF under Documents. Issuer details are centrally managed and visibly synthetic.</p>
+  <img src="assets/playground-orders-en.jpg" alt="Actual order detail after applying TRY10 and completing simulated checkout" loading="lazy" style="width:100%;height:auto" />
+  <h2>5. Explore the remaining workspaces</h2>
+  <ul>
+    <li>Product content: translations, specifications, rich descriptions, assets and cross-selling.</li>
+    <li>Home collection sales channel: the printed collection link filters mug, lamp, chair and their variants.</li>
+    <li>Shop knowledge: import/publish a data sheet; answering product questions additionally needs a configured model.</li>
+    <li>Staging &amp; releases: edit a private environment and publish selected units.</li>
+    <li>Apps, Storyfronts and Developers: use each integration's configuration and reviewed draft/release paths.</li>
+    <li>Team &amp; access: compare permitted reads and rejected writes using a reader or scoped key.</li>
+  </ul>
+  <p>External mail, OAuth apps, Storyfront generation and cloud AI need their own services/credentials. Setup does not invoke them. Read the <a href="https://github.com/sthamann/rust-ai-commerce/blob/main/docs/playground.md">full walkthrough</a> and <a href="https://github.com/sthamann/rust-ai-commerce/blob/main/docs/shopware-parity.md">exact feature boundaries</a>.</p>
+  <div class="notice">This is the implemented prototype, not complete Shopware compatibility or a public hosted SaaS. Payments are simulated/manual/Sandbox; there is no real-money demo charge.</div>
+</article>
