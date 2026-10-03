@@ -57,7 +57,7 @@ conformance. Executable migration units live in `porting/units.json`.
 
 | Shopware area | Implementation | Status / verified scope | Remaining |
 |---|---|---|---|
-| `Framework/Rule/RuleComparison::numeric`, `Framework/Util/FloatComparator` | `rule_comparison.rs`, `marketing/rules.rs` | **Partial port:** 1,280 original-PHP cases, null/empty/unsupported operators and 1e-8 boundaries. JSON float roundtrip parsing preserves boundary inputs. | String/array/date comparisons and complete rule hierarchy |
+| `Framework/Rule/RuleComparison::numeric`, `Framework/Util/FloatComparator` | `rule_comparison.rs`, `marketing/rules.rs` | **Partial port:** 1,280 original-PHP cases, null/empty/unsupported operators and 1e-8 boundaries. JSON float roundtrip parsing preserves boundary inputs. | Complete rule hierarchy and full calendar/validation matrices; current string/array comparisons and source conditions are covered below |
 | Rule Builder conditions | `automation_rules/*`, `marketing/{facts,rule_snapshot,rules}.rs`, Studio rule editor | **Partial port:** 114 reflected production classes, 108 native scopes; 432 actual PHP cases across 74 classes; AND/OR/NOT/XOR, line quantifiers, metadata and saved references | Six disabled runtimes, full original validation/data/UUID/line-scope parity; see [automation](automation.md) |
 | Flow Builder | `marketing/{pipeline,pipeline_runtime,flow_actions,flow_mutations}.rs`, outbox/workers, Studio canvas | **Partial port:** connected true/false graph, multi-action sequence, durable delay/stop, 16 Core action names with bounded native configurations; current-rights checks and per-step receipts | Complete source trigger producers, arbitrary mail templates/document/group configuration, subflows and original FlowSequence interchange; see [automation](automation.md) |
 | Promotions/vouchers/actions | `marketing/promotions.rs`, `discount.rs`, cart/order paths | **Native prototype:** automatic/coded percentage/fixed/free-shipping discounts, priorities/exclusivity/windows/global uses, exact-cent allocation, tax and concurrent usage checks | Shopware set groups/packages/filter calculators, individual coupon redemption, per-customer limits, currency/source processor parity |
@@ -81,7 +81,7 @@ response envelopes and operation paths differ.
 
 | Feature | Native implementation | Evidence | Still missing |
 |---|---|---|---|
-| Customer fields and address book | `accounts/contacts.rs`, `metadata.rs`, `address_store.rs`, `profile.rs`, `operations/customers.rs` | Structured names/contact/company/VAT/birthday; stable identity/number; defaults; first/last login; order metrics; real tenant-owned CRUD and revision conflicts | Full original DAL response/criteria, verification/recovery/MFA, email identity changes, original salutation/country UUID catalogs, guest account records, marketing double opt-in, custom fields/tags and imported historical metrics |
+| Customer fields and address book | `accounts/contacts.rs`, `metadata.rs`, `address_store.rs`, `profile.rs`, `operations/customers.rs` | Structured names/contact/company/VAT/birthday; stable identity/number; defaults; first/last login; order metrics; real tenant-owned CRUD and revision conflicts | Full original DAL response/criteria, verification/recovery/MFA, email identity changes, original salutation/country UUID catalogs, guest account records, marketing double opt-in, full original custom-field/tag definitions and imported historical metrics; native typed metadata and tag flow actions are implemented |
 | Connected buyer checkout | `customer.rs`, `cart_storage.rs`, `commerce/context_routes.rs`, `accounts/order_snapshot.rs`, `order_checkout.rs`, frontend account/address/checkout components | Registration → login → defaults → own selection → order → own history, with independent sessions and immutable billing/shipping copies; guest-email negative test | Complete original Store API route/schema/error parity, production consent/legal flows, saved payment instruments, multi-currency and general channel domains |
 | Order read fields and operational state | `commerce/order_fields.rs`, `order_machine.rs`, `order_workflow.rs`, `fulfillment.rs`, `operations/orders.rs` | Native totals/line items/address/transaction projection, one-click eligible actions, indexed delivery tracking, six repeated concurrent requests produce one state effect and flow note | Original full state machine, multiple partial transactions, split delivery/returns/carrier operations and full DAL conversion |
 | Central issuer and immutable documents | `operations/receipts.rs`, `receipt_pdf.rs`, `receipt_text.rs`, `SettingsWorkspace.tsx` | Four language PDFs, transactional numbers, concurrent receipt idempotency, billing vs delivery address, original bytes retained after account/issuer edits | Full original document generators/templates/number-range semantics, legal/e-invoice certification and general Unicode fonts |
@@ -90,13 +90,15 @@ response envelopes and operation paths differ.
 | App workflow extension | `commerce/order_machine.rs`, `operations/workflow.rs`, `marketing/flows.rs`, app event deliveries | Native app provenance, translated custom states/edges, immutable event conditions, durable app inbox and actual flow notes | Complete upstream app state/FlowSequence signing/registration protocol; native graphical branches, sequences and delays are implemented above |
 | PayPal attribution and durable refunds | `payments/*` | Local Orders v2 wire contract, official PPCP BN header, single capture on lost response, pending refund lookup and restart | Actual Sandbox/Live PSP validation, advanced PayPal features and supported Shopware Payments standalone contract |
 
-None of these additional rows has a new original-PHP differential parity proof.
-They are native end-to-end behaviors. The existing 5,872 original-PHP comparisons
-remain the narrowly specified pricing/context/shipping-tax/rule-comparison ports.
+The customer and operational rows above are native end-to-end behaviors, without
+a new original-PHP entity/state parity proof. The current 7,000 original-PHP
+comparisons cover the narrowly specified pricing, context, shipping-tax,
+comparison primitives and 432 condition cases across 74 original rule classes.
+They do not establish equivalence of whole entities, triggers or flow sequences.
 
 ## Formal safeguards (additional to upstream behavior comparison)
 
-Eighteen selected Rust commerce policies are backed by forty-two Lean theorems and
+Twenty selected Rust commerce policies are backed by forty-five Lean theorems and
 compiled Rust/Lean conformance checks. They preserve native admission/cap rules
 in checkout, permissions, operational transitions, refunds, receipts and downloads.
 This is a bounded new safeguard, **not proof of full Shopware equivalence** or of
