@@ -10,6 +10,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from coverage_report import read_reports, violations
+from source_inventory import responsibility
 
 
 class CoverageGates(unittest.TestCase):
@@ -81,6 +82,18 @@ class CoverageGates(unittest.TestCase):
             (root / 'artifacts/coverage/python.json').write_text(json.dumps({'totals': {'covered_lines': 0, 'num_statements': 0, 'covered_branches': 0, 'num_branches': 0}, 'files': {}}))
             with self.assertRaisesRegex(ValueError, 'missing.py'):
                 read_reports(root)
+
+    def test_inventory_reads_the_actual_style_wasm_and_html_contracts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'fixture'
+            cases = [('/* Ordered Studio layout. */', 'Ordered Studio layout.'),
+                     ('/** Scoped request transport. */', 'Scoped request transport.'),
+                     (';; Quantity guard.\n(module)', 'Quantity guard.'),
+                     ('<html><title>Product Lab</title></html>', 'Isolated app interface: Product Lab'),
+                     ('<!doctype html>', 'Independent app entry; see extensions/README.md for its public contract.')]
+            for source, expected in cases:
+                path.write_text(source)
+                self.assertEqual(responsibility(path), expected)
 
     def test_env_conversion_does_not_execute_shell_text(self):
         helper = Path(__file__).with_name('coverage_env.py')

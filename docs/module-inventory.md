@@ -230,18 +230,18 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/shell/useStudioController.ts](../frontend/src/admin/shell/useStudioController.ts) | Studio session/controller: authentication context, tenant/staging state and chat commands. |
 | [frontend/src/admin/storyfronts/StoryfrontView.tsx](../frontend/src/admin/storyfronts/StoryfrontView.tsx) | Dedicated merchant integration surface for the independently deployed Storyfront service. |
 | [frontend/src/admin/styles/commerce-manager.css](../frontend/src/admin/styles/commerce-manager.css) | commerce manager: Studio visual system and merchant operational layouts. |
-| [frontend/src/admin/styles/operations.css](../frontend/src/admin/styles/operations.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/admin/styles/studio/01-studio.css](../frontend/src/admin/styles/studio/01-studio.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/admin/styles/studio/02-workspace-switch.css](../frontend/src/admin/styles/studio/02-workspace-switch.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/admin/styles/studio/03-welcome-symbol.css](../frontend/src/admin/styles/studio/03-welcome-symbol.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/admin/styles/studio/04-review-product-div.css](../frontend/src/admin/styles/studio/04-review-product-div.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/admin/styles/studio/05-page-intro-p.css](../frontend/src/admin/styles/studio/05-page-intro-p.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/admin/styles/studio/06-knowledge-stats-strong.css](../frontend/src/admin/styles/studio/06-knowledge-stats-strong.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/admin/styles/studio/07-connection-card.css](../frontend/src/admin/styles/studio/07-connection-card.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/admin/styles/studio/08-responsive.css](../frontend/src/admin/styles/studio/08-responsive.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/admin/styles/studio/09-responsive.css](../frontend/src/admin/styles/studio/09-responsive.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/admin/styles/studio/10-studio-mobile-preview-button.css](../frontend/src/admin/styles/studio/10-studio-mobile-preview-button.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/admin/styles/studio.css](../frontend/src/admin/styles/studio.css) | Independent app/fixture entry; contracts are in the parent README. |
+| [frontend/src/admin/styles/operations.css](../frontend/src/admin/styles/operations.css) | Operational screens share the studio's light surface and clear focus states. |
+| [frontend/src/admin/styles/studio/01-studio.css](../frontend/src/admin/styles/studio/01-studio.css) | studio: studio styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/admin/styles/studio/02-workspace-switch.css](../frontend/src/admin/styles/studio/02-workspace-switch.css) | studio: workspace-switch styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/admin/styles/studio/03-welcome-symbol.css](../frontend/src/admin/styles/studio/03-welcome-symbol.css) | studio: welcome-symbol styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/admin/styles/studio/04-review-product-div.css](../frontend/src/admin/styles/studio/04-review-product-div.css) | studio: review-product-div styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/admin/styles/studio/05-page-intro-p.css](../frontend/src/admin/styles/studio/05-page-intro-p.css) | studio: page-intro-p styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/admin/styles/studio/06-knowledge-stats-strong.css](../frontend/src/admin/styles/studio/06-knowledge-stats-strong.css) | studio: knowledge-stats-strong styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/admin/styles/studio/07-connection-card.css](../frontend/src/admin/styles/studio/07-connection-card.css) | studio: connection-card styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/admin/styles/studio/08-responsive.css](../frontend/src/admin/styles/studio/08-responsive.css) | studio: responsive styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/admin/styles/studio/09-responsive.css](../frontend/src/admin/styles/studio/09-responsive.css) | studio: responsive styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/admin/styles/studio/10-studio-mobile-preview-button.css](../frontend/src/admin/styles/studio/10-studio-mobile-preview-button.css) | studio: studio-mobile-preview-button styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/admin/styles/studio.css](../frontend/src/admin/styles/studio.css) | Ordered studio stylesheet entry; domain rules live in the adjacent folder. |
 | [frontend/src/admin/team/AccessManager.tsx](../frontend/src/admin/team/AccessManager.tsx) | Fine-grained team overrides, revocable invitations and personal session inventory. |
 | [frontend/src/admin/team/PersonalAccountForm.tsx](../frontend/src/admin/team/PersonalAccountForm.tsx) | PersonalAccountForm: focused account-form view with explicit typed inputs and callbacks. |
 | [frontend/src/admin/team/UsersManager.tsx](../frontend/src/admin/team/UsersManager.tsx) | Users Manager: Personal accounts, memberships, roles, invitations and scoped developer access.. |
@@ -253,9 +253,9 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/platform/PlatformShops.tsx](../frontend/src/platform/PlatformShops.tsx) | Searchable shop directory and server-validated provisioning form. |
 | [frontend/src/platform/PlatformSignIn.tsx](../frontend/src/platform/PlatformSignIn.tsx) | Personal sign-in verifies the current operator grant before retaining a browser session. |
 | [frontend/src/platform/platform-api.ts](../frontend/src/platform/platform-api.ts) | Tenant-independent operator API; credentials stay in the current browser session. |
-| [frontend/src/platform/styles/platform/01-platform-console.css](../frontend/src/platform/styles/platform/01-platform-console.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/platform/styles/platform/02-platform-shop-stats-span.css](../frontend/src/platform/styles/platform/02-platform-shop-stats-span.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/platform/styles/platform.css](../frontend/src/platform/styles/platform.css) | Independent app/fixture entry; contracts are in the parent README. |
+| [frontend/src/platform/styles/platform/01-platform-console.css](../frontend/src/platform/styles/platform/01-platform-console.css) | platform: platform-console styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/platform/styles/platform/02-platform-shop-stats-span.css](../frontend/src/platform/styles/platform/02-platform-shop-stats-span.css) | platform: platform-shop-stats-span styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/platform/styles/platform.css](../frontend/src/platform/styles/platform.css) | Ordered platform stylesheet entry; domain rules live in the adjacent folder. |
 | [frontend/src/shared/api/download.ts](../frontend/src/shared/api/download.ts) | Authenticated binary download, never placing session credentials in a URL. |
 | [frontend/src/shared/api/shop-api.ts](../frontend/src/shared/api/shop-api.ts) | shop api: Typed commerce contracts, merchant/store transports and binary download helper. |
 | [frontend/src/shared/api/types.ts](../frontend/src/shared/api/types.ts) | Common JSON/multipart request contract for app surfaces and merchant operations. |
@@ -288,8 +288,8 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/workbench-i18n.ts](../frontend/src/shared/i18n/workbench-i18n.ts) | Complete four-language vocabulary for environments, developer tools and knowledge ingestion. |
 | [frontend/src/shared/styles/app-surfaces.css](../frontend/src/shared/styles/app-surfaces.css) | app surfaces: Shared customer, app and workbench styles; application workspaces must not import each other.. |
 | [frontend/src/shared/styles/apps.css](../frontend/src/shared/styles/apps.css) | apps: Shared customer, app and workbench styles; application workspaces must not import each other.. |
-| [frontend/src/shared/styles/customers.css](../frontend/src/shared/styles/customers.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/shared/styles/workbench.css](../frontend/src/shared/styles/workbench.css) | Independent app/fixture entry; contracts are in the parent README. |
+| [frontend/src/shared/styles/customers.css](../frontend/src/shared/styles/customers.css) | Shared light account/address workspace, responsive and keyboard-accessible. |
+| [frontend/src/shared/styles/workbench.css](../frontend/src/shared/styles/workbench.css) | Merchant workbench uses the studio's light-blue design tokens and responsive review panels. |
 | [frontend/src/shared/ui/Icon.tsx](../frontend/src/shared/ui/Icon.tsx) | Icon: Presentational icons and catalogue artwork with explicit inputs.. |
 | [frontend/src/shared/ui/ProductArt.tsx](../frontend/src/shared/ui/ProductArt.tsx) | Product Art: Presentational icons and catalogue artwork with explicit inputs.. |
 | [frontend/src/shared/ui/WorkspaceBoundary.tsx](../frontend/src/shared/ui/WorkspaceBoundary.tsx) | Contain a workspace render failure and let the user retry without losing the application shell. |
@@ -315,27 +315,27 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/shell/useCatalog.ts](../frontend/src/storefront/shell/useCatalog.ts) | Cursor catalogue loading, debounced filters and stale-response protection. |
 | [frontend/src/storefront/shell/usePersonalization.ts](../frontend/src/storefront/shell/usePersonalization.ts) | Opt-in behavior signals and stable product ordering; no authoritative prices are changed. |
 | [frontend/src/storefront/shell/useStorefrontController.ts](../frontend/src/storefront/shell/useStorefrontController.ts) | Cart lifecycle, authoritative checkout commands and storefront coordination. |
-| [frontend/src/storefront/styles/shop/01--root.css](../frontend/src/storefront/styles/shop/01--root.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/storefront/styles/shop/02-shop-product-image.css](../frontend/src/storefront/styles/shop/02-shop-product-image.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/storefront/styles/shop/03-availability-span.css](../frontend/src/storefront/styles/shop/03-availability-span.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/storefront/styles/shop/04-shop-stepper.css](../frontend/src/storefront/styles/shop/04-shop-stepper.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/storefront/styles/shop/05-shop-grid-comparison.css](../frontend/src/storefront/styles/shop/05-shop-grid-comparison.css) | Independent app/fixture entry; contracts are in the parent README. |
-| [frontend/src/storefront/styles/shop.css](../frontend/src/storefront/styles/shop.css) | Independent app/fixture entry; contracts are in the parent README. |
+| [frontend/src/storefront/styles/shop/01--root.css](../frontend/src/storefront/styles/shop/01--root.css) | shop: -root styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/storefront/styles/shop/02-shop-product-image.css](../frontend/src/storefront/styles/shop/02-shop-product-image.css) | shop: shop-product-image styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/storefront/styles/shop/03-availability-span.css](../frontend/src/storefront/styles/shop/03-availability-span.css) | shop: availability-span styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/storefront/styles/shop/04-shop-stepper.css](../frontend/src/storefront/styles/shop/04-shop-stepper.css) | shop: shop-stepper styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/storefront/styles/shop/05-shop-grid-comparison.css](../frontend/src/storefront/styles/shop/05-shop-grid-comparison.css) | shop: shop-grid-comparison styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/storefront/styles/shop.css](../frontend/src/storefront/styles/shop.css) | Ordered shop stylesheet entry; domain rules live in the adjacent folder. |
 
 ## Independent apps, services and SDK
 
 | Module | Responsibility |
 |---|---|
-| [extensions/apps/engraving/configuration.wat](../extensions/apps/engraving/configuration.wat) | Independent app/fixture entry; contracts are in the parent README. |
-| [extensions/apps/gift-message/configuration.wat](../extensions/apps/gift-message/configuration.wat) | Independent app/fixture entry; contracts are in the parent README. |
+| [extensions/apps/engraving/configuration.wat](../extensions/apps/engraving/configuration.wat) | Engraving-owned rules: printable input is checked by the host; app defines length and fee. |
+| [extensions/apps/gift-message/configuration.wat](../extensions/apps/gift-message/configuration.wat) | Gift-message-owned rules: printable input is checked by the host; app defines length and fee. |
 | [extensions/apps/product-lab/app.js](../extensions/apps/product-lab/app.js) | A complete guest surface can use any UI framework; this example needs no build or host imports. |
-| [extensions/apps/product-lab/index.html](../extensions/apps/product-lab/index.html) | Independent app/fixture entry; contracts are in the parent README. |
+| [extensions/apps/product-lab/index.html](../extensions/apps/product-lab/index.html) | Independent app entry; see extensions/README.md for its public contract. |
 | [extensions/apps/product-lab/server.py](../extensions/apps/product-lab/server.py) | App-owned code, SQLite structures and versioned browser UI; no commerce credentials reach the guest. |
 | [extensions/apps/service-example/server.py](../extensions/apps/service-example/server.py) | Standalone app service with its own UI and durable event inbox. Run separately from the core. |
-| [extensions/apps/storyfront/ui.html](../extensions/apps/storyfront/ui.html) | Independent app/fixture entry; contracts are in the parent README. |
-| [extensions/budget-reserve.wat](../extensions/budget-reserve.wat) | Independent app/fixture entry; contracts are in the parent README. |
-| [extensions/company-limit.wat](../extensions/company-limit.wat) | Independent app/fixture entry; contracts are in the parent README. |
-| [extensions/minimum-order.wat](../extensions/minimum-order.wat) | Independent app/fixture entry; contracts are in the parent README. |
+| [extensions/apps/storyfront/ui.html](../extensions/apps/storyfront/ui.html) | Independent app entry; see extensions/README.md for its public contract. |
+| [extensions/budget-reserve.wat](../extensions/budget-reserve.wat) | Keep EUR 100 of the supplied budget unused. Inputs are integer cents. |
+| [extensions/company-limit.wat](../extensions/company-limit.wat) | Independent app entry; see extensions/README.md for its public contract. |
+| [extensions/minimum-order.wat](../extensions/minimum-order.wat) | Business orders must reach EUR 50 and stay inside the supplied budget. |
 | [extensions/sdk/analytics.js](../extensions/sdk/analytics.js) | Consent-bound GA4 adapter for native and headless storefronts. Never send customer identities. |
 | [extensions/sdk/browser.js](../extensions/sdk/browser.js) | Guest SDK: no merchant tokens or raw host API access; the host rechecks every action. |
 | [extensions/services/connectors/callback_page.py](../extensions/services/connectors/callback_page.py) | Localized OAuth completion screen; never render provider codes, tokens or raw errors. |
@@ -348,7 +348,7 @@ This lists every checked-in source module in these roots, including files with n
 | [extensions/services/connectors/server.py](../extensions/services/connectors/server.py) | Separate app process with provider OAuth, encrypted persistence and durable jobs; no core provider code. |
 | [extensions/services/connectors/store.py](../extensions/services/connectors/store.py) | Private, tenant-bound encrypted connector state and durable delivery receipts. |
 | [extensions/services/connectors/transport.py](../extensions/services/connectors/transport.py) | Fixed provider endpoints; bounded requests and sanitized failures, without token logging. |
-| [extensions/single-order-cap.wat](../extensions/single-order-cap.wat) | Independent app/fixture entry; contracts are in the parent README. |
+| [extensions/single-order-cap.wat](../extensions/single-order-cap.wat) | Limit any individual business purchase to EUR 250, within its budget. |
 
 ## Verification tools and fixtures
 
@@ -411,6 +411,6 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/testing/runtime.py](../scripts/testing/runtime.py) | Owned synthetic server lifetime, child checks and loopback readiness for verification. |
 | [scripts/testing/sitecustomize.py](../scripts/testing/sitecustomize.py) | Opt-in subprocess instrumentation for synthetic verification; never loaded by production. |
 | [scripts/testing/source_inventory.py](../scripts/testing/source_inventory.py) | Generate/check exact production and verification module inventory; listings are not coverage. |
-| [scripts/testing/tooling_tests.py](../scripts/testing/tooling_tests.py) | Verification helpers reject coverage gaps and emit literal CI environment values. |
+| [scripts/testing/tooling_tests.py](../scripts/testing/tooling_tests.py) | Ordered Studio layout. |
 | [scripts/users.py](../scripts/users.py) | Real multi-user, workspace isolation and role/revocation regression tests. |
 | [scripts/verify_integration.py](../scripts/verify_integration.py) | Single integration suite registry, isolated DB by default; never alters an existing shop. |

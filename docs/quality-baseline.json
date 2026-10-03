@@ -12,8 +12,8 @@
       "regions": 74.94920973795668
     },
     "python": {
-      "lines": 72.64682220434433,
-      "branches": 48.46774193548387
+      "lines": 72.58323305254713,
+      "branches": 48.07383627608346
     }
   },
   "zero_hit_modules": {
@@ -123,7 +123,7 @@
   "httpSuites": 21,
   "providerSuites": 3,
   "browserContracts": 4,
-  "toolingUnitTests": 9,
+  "toolingUnitTests": 10,
   "rust_not_emitted_by_compiler": [
     "src/apps/mod.rs",
     "src/apps/surface_tests.rs",

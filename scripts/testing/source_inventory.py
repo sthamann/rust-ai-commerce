@@ -19,13 +19,19 @@ def responsibility(path):
     comment = re.search(r'(?m)^//! (.*)', text)
     if comment:
         return comment[1]
-    comment = re.search(r'/\*\*\s*([^\n]*?)(?:\*/|\n)', text)
+    comment = re.search(r'/\*\*?\s*([^\n]*?)(?:\*/|\n)', text)
     if comment:
         return comment[1].strip(' *')
     comment = re.search(r'"""([^\n"]+)', text)
     if comment:
         return comment[1]
-    return 'Independent app/fixture entry; contracts are in the parent README.'
+    comment = re.search(r'(?m)^;;\s*(.+)', text)
+    if comment:
+        return comment[1]
+    title = re.search(r'<title>(.*?)</title>', text, re.S | re.I)
+    if title:
+        return 'Isolated app interface: ' + title[1].strip()
+    return 'Independent app entry; see extensions/README.md for its public contract.'
 
 
 def render():
