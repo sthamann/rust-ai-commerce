@@ -1,0 +1,39 @@
+{
+  "http": [
+    "studio",
+    "integration",
+    "protocols",
+    "intelligence",
+    "commerce",
+    "scalability",
+    "platform_setup",
+    "platform",
+    "users",
+    "providers",
+    "apps",
+    "checkout_handoff",
+    "payments",
+    "services",
+    "app_surfaces",
+    "extensions",
+    "staging",
+    "marketing_accounts",
+    "merchant_operations",
+    "customer_accounts",
+    "developer_documents"
+  ],
+  "providers": [
+    "email_tests",
+    "connector_store_tests",
+    "connected_apps"
+  ],
+  "browser_contracts": [
+    "analytics",
+    "app-sdk",
+    "locales",
+    "architecture"
+  ],
+  "tooling": [
+    "testing/tooling_tests"
+  ]
+}

@@ -1,0 +1,81 @@
+#!/usr/bin/env python3
+"""Single integration suite registry, isolated DB by default; never alters an existing shop.
+
+CI uses --existing-database only for its already-disposable database. Local runs
+create and remove their own database inside the explicitly selected container.
+SIGINT lets the Rust server flush its metrics and optional LLVM coverage profile.
+"""
+import argparse
+import json
+import os
+import socket
+import subprocess
+import sys
+import urllib.parse
+import uuid
+
+from testing.runtime import ROOT, run, serve, stop
+
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--container", default="rust-ai-commerce-postgres-1")
+parser.add_argument("--existing-database", action="store_true")
+args = parser.parse_args()
+env = dict(os.environ)
+if not env.get("DATABASE_URL"):
+    for line in (ROOT / ".env").read_text().splitlines():
+        if line.startswith("DATABASE_URL="):
+            env["DATABASE_URL"] = line.split("=", 1)[1].strip().strip('"\'')
+url = urllib.parse.urlsplit(env["DATABASE_URL"])
+name = url.path[1:] if args.existing_database else "commerce_quality_" + uuid.uuid4().hex
+user = url.username or "commerce"
+
+
+def sql(statement):
+    subprocess.run(
+        ["docker", "exec", "-i", args.container, "psql", "-U", user,
+         "-d", "postgres", "-v", "ON_ERROR_STOP=1"],
+        input=statement, text=True, check=True, stdout=subprocess.DEVNULL,
+    )
+
+
+if not args.existing_database:
+    sql(f'CREATE DATABASE "{name}";')
+with socket.socket() as probe:
+    probe.bind(("127.0.0.1", 0))
+    port = probe.getsockname()[1]
+env.update({
+    "DATABASE_URL": urllib.parse.urlunsplit(url._replace(path="/" + name)),
+    "TEST_DATABASE": name,
+    "BASE_URL": f"http://127.0.0.1:{port}",
+    "BIND_ADDR": f"127.0.0.1:{port}",
+    "MERCHANT_TOKEN": "quality-only-synthetic-bootstrap-credential",
+    "APP_SERVICES": "{}", "SEED_DEMO": "true", "PROCESS_ROLE": "all",
+    "OLLAMA_URL": "http://127.0.0.1:1", "TEST_PERSONAL": "1",
+})
+for key in ("LIVE_STUDIO", "LIVE_MODEL", "OPENAI_API_KEY", "ANTHROPIC_API_KEY"):
+    env.pop(key, None)
+suites = json.loads((ROOT / "scripts/testing/suites.json").read_text())
+logs = ROOT / "artifacts"
+logs.mkdir(exist_ok=True)
+try:
+    with (logs / "integration-server.log").open("w") as log:
+        server = serve(env, env["BASE_URL"], log)
+        try:
+            for suite in suites["http"]:
+                command = [sys.executable, f"scripts/{suite}.py"]
+                if suite == "scalability":
+                    command += ["--container", args.container]
+                run(command, env)
+        finally:
+            stop(server)
+    for suite in suites["providers"]:
+        run([sys.executable, f"scripts/{suite}.py"], env)
+    for suite in suites["browser_contracts"]:
+        run(["node", f"frontend/tests/{suite}.mjs"], env)
+    for suite in suites.get("tooling", []):
+        run([sys.executable, f"scripts/{suite}.py"], env)
+    run([sys.executable, "scripts/structure.py"], env)
+    print("PASS all registered integration and browser-contract suites")
+finally:
+    if not args.existing_database:
+        sql(f'DROP DATABASE "{name}" WITH (FORCE);')

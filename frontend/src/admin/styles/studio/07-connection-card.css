@@ -1,0 +1,247 @@
+/* studio: connection-card styles. Source order is preserved by the entry stylesheet. */
+.connection-card {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 16px;
+  align-content: start;
+}
+.provider-symbol {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--panel);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 500;
+}
+.connection-card > div:nth-child(2) h2 {
+  margin-bottom: 7px;
+  font-size: 17px;
+}
+.connection-card > p {
+  grid-column: 1/-1;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.85;
+  min-height: 86px;
+}
+.connection-card > .studio-secondary {
+  grid-column: 1/-1;
+  font-size: 11px;
+  margin-top: 5px;
+  width: 100%;
+}
+.channel-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding: 15px 0;
+  font-size: 12px;
+}
+.channel-stat > strong {
+  font-size: 22px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.protocol-path {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 11px;
+  margin: 24px 0;
+}
+.studio-card > p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.85;
+}
+.explanation-card {
+  display: flex;
+  gap: 16px;
+}
+.explanation-card > svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.explanation-card p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.85;
+  margin-top: 10px;
+}
+.studio-notice {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--positive);
+  padding: 10px 18px;
+  margin: 16px 20px 0;
+  border-radius: 9px;
+  font-size: 12px;
+}
+.studio-notice.is-error {
+  color: var(--warning);
+}
+.studio-notice details,
+.studio-message details {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+}
+.studio details {
+  margin-top: 5px;
+}
+.studio-notice .icon-button {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+}
+.studio-dialog {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100dvh - 48px);
+  padding: 26px;
+  box-shadow: var(--shadow);
+  color-scheme: inherit;
+}
+.studio-dialog::backdrop {
+  background: #05070a99;
+  backdrop-filter: blur(5px);
+}
+.dialog-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+  gap: 12px;
+}
+.dialog-heading h2 {
+  font-size: 24px;
+  margin: 6px 0 0;
+}
+.studio-dialog section {
+  border-top: 1px solid var(--border);
+  padding: 20px 0 0;
+  margin-top: 20px;
+}
+.studio-dialog h3 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0 0 18px;
+}
+.studio-dialog label {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+  margin-top: 14px;
+}
+.studio-dialog input,
+.studio-dialog select {
+  width: 100%;
+  padding: 12px;
+}
+.studio-dialog p {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.9;
+  margin: 12px 0 18px;
+}
+.studio-dialog .studio-primary,
+.studio-dialog .studio-secondary {
+  font-family: inherit;
+}
+.sidebar-scrim {
+  display: none;
+}
+.studio-preview {
+  transition: background 0.2s;
+}
+@keyframes message-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes think {
+  0%,
+  75%,
+  100% {
+    opacity: 0.35;
+  }
+  35% {
+    opacity: 1;
+  }
+}
+@media (min-width: 1700px) {
+  .studio-main {
+    grid-template-columns: minmax(0, 1fr) 350px;
+  }
+  .studio-messages {
+    padding-left: max(56px, calc((100% - 850px) / 2));
+    padding-right: max(56px, calc((100% - 850px) / 2));
+  }
+  .preview-art svg {
+    height: 190px;
+  }
+}
+@media (max-width: 1300px) {
+  .studio {
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+  .studio-main {
+    grid-template-columns: minmax(0, 1fr) 270px;
+  }
+  .studio-topbar {
+    padding: 0 18px;
+  }
+  .connection-state {
+    display: none;
+  }
+  .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .overview-columns {
+    grid-template-columns: 1fr;
+  }
+  .knowledge-layout {
+    grid-template-columns: 1fr;
+  }
+  .order-row {
+    grid-template-columns: 30px 1fr 90px;
+  }
+  .order-row > span:nth-child(3),
+  .order-row > .channel-label {
+    display: none;
+  }
+  .learning-card {
+    grid-template-columns: 1fr;
+  }
+  .connection-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .connection-card:last-child {
+    grid-column: 1/-1;
+  }
+  .connection-card > p {
+    min-height: 0;
+  }
+}

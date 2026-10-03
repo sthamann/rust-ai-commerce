@@ -32,7 +32,7 @@ flowchart LR
 | Ambient-C `apps/storefront/src/pages/api/v1/commerce.json.ts` | Same-origin intent admission, own-manifest product check, mapping to authoritative commerce SKU |
 | Ambient-C `packages/runtime-api/src/rust-commerce.ts` | Operator-controlled destinations, bounded HTTP requests and checkout transfer |
 | Rust `src/checkout_handoff.rs` | Generic single-use cart transfer, expiry, tenant scope and token rotation |
-| Rust `frontend/src/Storefront.tsx` | Consume transfer and open the existing checkout review dialog |
+| Rust `frontend/src/storefront/shell/Storefront.tsx` | Consume transfer and open the existing checkout review dialog |
 
 The shopper sends only `{ "items": [{ "id": "mug-terracotta-500", "quantity": 1 }] }`
 to the Storyfront endpoint. The merchant scope and destination come from server

@@ -1,0 +1,16 @@
+[run]
+branch = True
+parallel = True
+sigterm = True
+data_file = artifacts/.coverage
+source = extensions/services, extensions/apps, scripts
+
+[report]
+show_missing = True
+include_namespace_packages = True
+
+[html]
+directory = artifacts/coverage/python
+
+[json]
+output = artifacts/coverage/python.json

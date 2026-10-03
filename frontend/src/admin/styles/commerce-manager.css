@@ -1,0 +1,326 @@
+/** commerce manager: Studio visual system and merchant operational layouts. */
+.commerce-manager {
+  padding: 38px 38px 70px;
+  max-width: 1250px;
+  margin: auto;
+}
+.commerce-title {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.commerce-title h1 {
+  font-size: 30px;
+  letter-spacing: -1px;
+  margin: 15px 0;
+}
+.commerce-title p:not(.kicker),
+.commerce-card > p {
+  color: var(--muted, #62758b);
+  font-size: 13px;
+  line-height: 1.7;
+  max-width: 720px;
+}
+.commerce-title > button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.commerce-card {
+  border: 1px solid var(--border, #dfe7ef);
+  border-radius: 10px;
+  padding: 24px;
+  margin-bottom: 20px;
+  background: var(--surface, #fff);
+}
+.commerce-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.commerce-section-heading svg {
+  color: #1768eb;
+}
+.commerce-section-heading h2 {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 600;
+}
+.commerce-manager label {
+  display: grid;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--muted, #62758b);
+}
+.commerce-manager input:not([type="checkbox"]),
+.commerce-manager select {
+  min-height: 44px;
+  width: 100%;
+  border: 1px solid var(--border, #d1dce7);
+  border-radius: 6px;
+  padding: 10px;
+  font: inherit;
+  background: var(--surface, #fff);
+  color: inherit;
+}
+.commerce-table-wrap {
+  overflow-x: auto;
+}
+.commerce-manager table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.commerce-manager th {
+  font-weight: 500;
+  padding: 12px;
+  color: var(--muted, #62758b);
+}
+.commerce-manager td {
+  padding: 8px 12px;
+}
+.commerce-manager td input {
+  max-width: 180px;
+}
+.shipping-methods {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.shipping-methods fieldset {
+  min-width: 0;
+  border: 1px solid var(--border, #dfe7ef);
+  border-radius: 8px;
+  padding: 18px;
+  display: grid;
+  gap: 15px;
+}
+.shipping-methods legend {
+  font-weight: 600;
+  font-size: 13px;
+  padding: 0 7px;
+}
+.commerce-manager .commerce-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  font-size: 12px;
+}
+.commerce-check input {
+  width: 17px;
+  height: 17px;
+  accent-color: #1768eb;
+}
+.commerce-day-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.commerce-countries {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+.payment-methods {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+.payment-methods small {
+  display: block;
+  margin-top: 6px;
+  font-size: 10px;
+}
+.commerce-save {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 20px 0 40px;
+}
+.commerce-save span {
+  font-size: 11px;
+  color: var(--muted, #62758b);
+}
+.commerce-review {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 0;
+  border-top: 1px solid var(--border, #dfe7ef);
+}
+.commerce-review strong {
+  font-size: 13px;
+}
+.commerce-review small,
+.commerce-order > small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted, #62758b);
+  margin-top: 9px;
+}
+.commerce-review p {
+  font-size: 12px;
+  line-height: 1.7;
+  margin-bottom: 0;
+}
+.commerce-review > button {
+  flex-shrink: 0;
+}
+.commerce-order {
+  padding: 20px 0;
+  border-top: 1px solid var(--border, #dfe7ef);
+}
+.commerce-order-heading {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+.commerce-order-state {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--muted, #62758b);
+}
+.commerce-order-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.commerce-order-actions input {
+  max-width: 200px;
+}
+.commerce-manager button {
+  min-height: 44px;
+}
+.commerce-error {
+  padding: 16px;
+  background: #fff0ed;
+  color: #a53526;
+  border-radius: 7px;
+  font-size: 13px;
+}
+.commerce-success {
+  padding: 16px;
+  background: #edf8f2;
+  color: #286243;
+  border-radius: 7px;
+  font-size: 13px;
+}
+.commerce-confirm {
+  position: fixed;
+  z-index: 100;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  width: min(450px, 90vw);
+  padding: 28px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #dfe7ef);
+  border-radius: 10px;
+  box-shadow: 0 0 0 100vmax #12223860;
+}
+.commerce-confirm p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.commerce-confirm button {
+  margin: 15px 8px 0 0;
+}
+@media (max-width: 900px) {
+  .commerce-manager {
+    padding: 25px 20px;
+  }
+  .shipping-methods {
+    grid-template-columns: 1fr;
+  }
+  .commerce-title {
+    flex-wrap: wrap;
+  }
+  .commerce-card {
+    padding: 18px;
+  }
+  .commerce-countries {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.account-tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.account-tabs [aria-pressed="true"] {
+  background: var(--hover, #edf4ff);
+  border-color: var(--accent, #1768eb);
+}
+.account-form {
+  display: grid;
+  gap: 16px;
+  max-width: 460px;
+}
+.account-form label {
+  display: grid;
+  gap: 7px;
+}
+.account-form button {
+  margin-top: 8px;
+}
+.invite-code {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--panel, #f1f5fb);
+  border-radius: 7px;
+  font-size: 12px;
+}
+.member-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 18px 0;
+  border-top: 1px solid var(--border, #dfe7ef);
+}
+.member-row > div {
+  margin-right: auto;
+}
+.member-row strong {
+  font-size: 13px;
+}
+.member-row small {
+  display: block;
+  margin-top: 5px;
+  font-size: 11px;
+  color: var(--muted, #62758b);
+}
+.member-row select {
+  max-width: 150px;
+}
+.member-row button {
+  flex-shrink: 0;
+  font-size: 11px;
+}
+@media (max-width: 700px) {
+  .member-row {
+    flex-wrap: wrap;
+  }
+  .member-row > div {
+    width: 100%;
+  }
+  .member-row select {
+    max-width: none;
+    flex: 1;
+  }
+  .account-tabs button {
+    font-size: 11px;
+  }
+}

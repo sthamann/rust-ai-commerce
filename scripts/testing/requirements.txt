@@ -1,0 +1,2 @@
+# Pinned verification instrumentation; production services do not depend on coverage.
+coverage==7.13.5

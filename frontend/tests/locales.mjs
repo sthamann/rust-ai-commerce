@@ -16,12 +16,12 @@ function module(path) {
   });
   return exports;
 }
-const base = module("../src/locales/en.ts").en;
-const shop = module("../src/locales/shop-de.ts").de;
+const base = module("../src/shared/i18n/locales/en.ts").en;
+const shop = module("../src/shared/i18n/locales/shop-de.ts").de;
 for (const language of ["en", "de", "fr", "es"]) {
   for (const [path, expected] of [
-    [`../src/locales/${language}.ts`, base],
-    [`../src/locales/shop-${language}.ts`, shop],
+    [`../src/shared/i18n/locales/${language}.ts`, base],
+    [`../src/shared/i18n/locales/shop-${language}.ts`, shop],
   ]) {
     const dict = module(path)[language];
     assert.deepEqual(Object.keys(dict).sort(), Object.keys(expected).sort());
@@ -32,7 +32,7 @@ for (const language of ["en", "de", "fr", "es"]) {
     );
   }
 }
-const words = module("../src/workbench-i18n.ts").workbenchWords;
+const words = module("../src/shared/i18n/workbench-i18n.ts").workbenchWords;
 for (const [key, values] of Object.entries(words)) {
   assert.equal(values.length, 4, key);
   assert(
@@ -40,7 +40,7 @@ for (const [key, values] of Object.entries(words)) {
     key,
   );
 }
-const ops = module("../src/operations-i18n.ts").operationWords;
+const ops = module("../src/shared/i18n/operations-i18n.ts").operationWords;
 for (const [key, values] of Object.entries(ops)) {
   assert.equal(values.length, 4, key);
   assert(
@@ -48,7 +48,7 @@ for (const [key, values] of Object.entries(ops)) {
     key,
   );
 }
-const customers = module("../src/customer-i18n.ts").customerWords;
+const customers = module("../src/shared/i18n/customer-i18n.ts").customerWords;
 for (const [key, values] of Object.entries(customers)) {
   assert.equal(values.length, 4, key);
   assert(
@@ -56,7 +56,7 @@ for (const [key, values] of Object.entries(customers)) {
     key,
   );
 }
-const connected = module("../src/connected-i18n.ts").connectedWords;
+const connected = module("../src/shared/i18n/connected-i18n.ts").connectedWords;
 for (const [key, values] of Object.entries(connected)) {
   assert.equal(values.length, 4, key);
   assert(
@@ -64,7 +64,7 @@ for (const [key, values] of Object.entries(connected)) {
     key,
   );
 }
-const email = module("../src/email-i18n.ts").emailWords;
+const email = module("../src/shared/i18n/email-i18n.ts").emailWords;
 for (const [key, values] of Object.entries(email)) {
   assert.equal(values.length, 4, key);
   assert(
@@ -72,7 +72,7 @@ for (const [key, values] of Object.entries(email)) {
     key,
   );
 }
-const { responseError } = module("../src/errors-i18n.ts");
+const { responseError } = module("../src/shared/i18n/errors-i18n.ts");
 const errors = [];
 for (locale of ["en-GB", "de-DE", "fr-FR", "es-ES"]) {
   for (const status of [400, 401, 403, 404, 409, 429, 500, 502]) {

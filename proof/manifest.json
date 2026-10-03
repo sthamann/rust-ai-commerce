@@ -986,8 +986,8 @@
   },
   "inputs": {
     ".github/workflows/verify.yml": {
-      "sha256": "9b554797a0b792decfdde032ee00fecfa1072765db54c81c87aad518a3290e5e",
-      "review": "Reviewed email built-in registration and reserved-ID checks in apps/routes.rs, apps/manifest.rs, developer/builds.rs; existing permission/service gateway preserved. marketing/flows.rs snapshots committed orderCustomer and currency for queue recipient stability. verify.yml adds real SMTP/TLS/Resend/SendGrid and isolated PostgreSQL checkout-flow-MCP-staging regressions. No kernel policy or proof property changed; mail/network code remains unproved."
+      "sha256": "0cdf16f48b7eaef1c6453cb10b6d77e2253bae4b04291519e0357b2d55101bb6",
+      "review": "Reviewed modular UI ownership, complete source coverage manifests, isolated integration suite registry and CI coverage floors. Broken mutation fixtures now write LLVM profiles outside the real-core coverage directory. No Rust policy or domain semantics changed."
     },
     "Cargo.lock": {
       "sha256": "5568d6215c3f896914be87977c1bfb8bdb1f4d746c3af6ad9cf945a4f7da5fe4",

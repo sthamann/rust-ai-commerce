@@ -1,0 +1,6 @@
+/* Ordered shop stylesheet entry; domain rules live in the adjacent folder. */
+@import "./shop/01--root.css";
+@import "./shop/02-shop-product-image.css";
+@import "./shop/03-availability-span.css";
+@import "./shop/04-shop-stepper.css";
+@import "./shop/05-shop-grid-comparison.css";

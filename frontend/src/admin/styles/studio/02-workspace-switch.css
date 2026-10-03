@@ -1,0 +1,265 @@
+/* studio: workspace-switch styles. Source order is preserved by the entry stylesheet. */
+.workspace-switch {
+  border: 1px solid var(--border) !important;
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding: 10px;
+  text-align: left;
+  background: var(--bg) !important;
+  width: 100%;
+}
+.workspace-switch > span:nth-child(2) {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 550;
+}
+.workspace-switch small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+  font-weight: 400;
+  max-width: 136px;
+}
+.shop-monogram {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+.new-conversation {
+  justify-content: flex-start !important;
+  width: 100%;
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+.studio-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.studio-sidebar nav button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 10px;
+  min-height: 44px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: left;
+  width: 100%;
+}
+.studio-sidebar nav button:hover {
+  background: var(--hover);
+}
+.studio-sidebar nav button.active {
+  background: var(--panel);
+  color: var(--text);
+}
+.studio-sidebar nav button.active svg {
+  color: var(--accent);
+}
+.studio-sidebar nav b {
+  margin-left: auto;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0 5px;
+}
+.sidebar-conversations {
+  min-height: 0;
+  overflow: auto;
+  flex: 1;
+}
+.section-label {
+  font-size: 11px;
+  color: var(--muted);
+  display: block;
+  padding: 8px 10px 12px;
+}
+.sidebar-conversations > p {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 0 10px;
+}
+.sidebar-conversations button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 10px;
+  min-height: 44px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.sidebar-conversations button span {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.sidebar-conversations button:hover,
+.sidebar-conversations button.selected {
+  background: var(--panel);
+  color: var(--text);
+}
+.sidebar-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  display: grid;
+  gap: 4px;
+}
+.sidebar-bottom button {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  text-align: left;
+  padding: 10px;
+  min-height: 44px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.sidebar-bottom button:hover {
+  background: var(--hover);
+}
+.sidebar-bottom a {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.studio-shell {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+}
+.studio-topbar {
+  height: 68px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  gap: 12px;
+}
+.studio-topbar > div {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.breadcrumb {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.breadcrumb > span {
+  margin: 0 12px;
+  color: var(--border);
+}
+.breadcrumb strong {
+  color: var(--text);
+  font-weight: 500;
+}
+.topbar-actions {
+  gap: 6px !important;
+}
+.topbar-actions select {
+  font-size: 12px;
+  padding: 8px 10px;
+  max-width: 110px;
+  background: transparent;
+  border: 0;
+}
+.connection-state {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  margin-right: 8px;
+}
+.connection-state i,
+.studio-statusbar i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+  display: inline-block;
+}
+.connection-state .on,
+.studio-statusbar .on {
+  background: var(--positive);
+  box-shadow: 0 0 12px #a3d8b929;
+}
+.studio-main {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+}
+.studio-main.view-agents {
+  grid-template-columns: minmax(0, 1fr);
+}
+.studio-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+.studio-conversation {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.conversation-topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 26px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  gap: 12px;
+}
+.conversation-topline > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+}
+.conversation-topline button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 32px;
+  color: var(--muted);
+  font-size: 11px;
+  padding: 4px 8px;
+}
+.conversation-topline button span {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.studio-messages {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  padding: 32px clamp(20px, 4vw, 56px);
+}
+.assistant-welcome {
+  max-width: 740px;
+  margin: clamp(16px, 5vh, 60px) auto 24px;
+}

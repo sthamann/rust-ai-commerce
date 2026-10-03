@@ -1,0 +1,292 @@
+/** AutomationEditor: focused form view with explicit typed inputs and callbacks. */
+import { useConnectedText } from "../../shared/i18n/connected-i18n";
+import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
+import { type Config, type Kind, langs } from "./automation-types";
+
+import FlowBuilder from "./FlowBuilder";
+import RuleBuilder from "./RuleBuilder";
+export type AutomationEditorProps = {
+  run: (fn: () => Promise<void>) => Promise<void>;
+  request: import("../shell/studio-types").RequestFn;
+  kind: Kind;
+  id: string;
+  advanced: string;
+  data: Record<string, any>;
+  setRevision: React.Dispatch<React.SetStateAction<number>>;
+  w: ReturnType<typeof useWorkbenchText>["w"];
+  setId: React.Dispatch<React.SetStateAction<string>>;
+  revision: number;
+  update: (key: string, value: unknown) => void;
+  x: ReturnType<typeof useConnectedText>["x"];
+  imported: string;
+  setImported: React.Dispatch<React.SetStateAction<string>>;
+  busy: boolean;
+  manage: boolean;
+  catalog: import("./RuleBuilder").AutomationCatalog;
+  rows: Record<Kind, Config[]>;
+  locale: ReturnType<typeof useWorkbenchText>["locale"];
+  setAdvanced: React.Dispatch<React.SetStateAction<string>>;
+};
+export default function AutomationEditor({
+  run,
+  request,
+  kind,
+  id,
+  advanced,
+  data,
+  setRevision,
+  w,
+  setId,
+  revision,
+  update,
+  x,
+  imported,
+  setImported,
+  busy,
+  manage,
+  catalog,
+  rows,
+  locale,
+  setAdvanced,
+}: AutomationEditorProps) {
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        void run(async () => {
+          const result = await request(
+            `/api/automation/${kind}/${id}`,
+            {
+              revision,
+              data: advanced.trim() ? JSON.parse(advanced) : data,
+            },
+            "PUT",
+          );
+          setRevision(result.revision);
+        });
+      }}
+    >
+      <label>
+        {w("identifier")}
+        <input
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+          required
+          pattern="[a-z][a-z0-9_]{0,31}"
+          disabled={revision > 0}
+        />
+      </label>
+      <div className="workbench-row">
+        {langs.map((lang) => (
+          <label key={lang}>
+            {w("title")} · {lang.toUpperCase()}
+            <input
+              required
+              value={data.name?.[lang] ?? ""}
+              onChange={(e) =>
+                update("name", { ...data.name, [lang]: e.target.value })
+              }
+            />
+          </label>
+        ))}
+      </div>
+      <label className="checkbox-label">
+        <input
+          type="checkbox"
+          checked={data.active}
+          onChange={(e) => update("active", e.target.checked)}
+        />
+        {w("enabled")}
+      </label>
+      {kind === "rules" && (
+        <details>
+          <summary>{x("import")}</summary>
+          <textarea
+            aria-label={x("import")}
+            value={imported}
+            onChange={(e) => setImported(e.target.value)}
+          />
+          <button
+            type="button"
+            className="studio-secondary"
+            disabled={busy || !manage || !imported.trim()}
+            onClick={() =>
+              void run(async () => {
+                const v = await request(
+                  "/api/automation/import-condition",
+                  JSON.parse(imported),
+                );
+                update("condition", v.condition);
+              })
+            }
+          >
+            {x("import")}
+          </button>
+        </details>
+      )}
+      {kind === "rules" && (
+        <RuleBuilder
+          value={data.condition}
+          onChange={(r) => update("condition", r)}
+          catalog={catalog}
+        />
+      )}
+      {kind === "promotions" && (
+        <>
+          <label>
+            {w("coupon")}
+            <input
+              value={data.code ?? ""}
+              placeholder={w("automatic")}
+              onChange={(e) => update("code", e.target.value || null)}
+            />
+          </label>
+          <label>
+            {w("discountType")}
+            <select
+              value={data.kind}
+              onChange={(e) => update("kind", e.target.value)}
+            >
+              <option value="percentage">{w("percentage")}</option>
+              <option value="absolute">{w("absolute")}</option>
+              <option value="free_shipping">{w("shippingFree")}</option>
+            </select>
+          </label>
+          <label>
+            {w("amount")}
+            <input
+              type="number"
+              min={0}
+              step=".01"
+              value={data.amount}
+              onChange={(e) => update("amount", Number(e.target.value))}
+            />
+          </label>
+          <label>
+            {w("maxUses")}
+            <input
+              type="number"
+              min={1}
+              value={data.maxUses ?? ""}
+              onChange={(e) =>
+                update(
+                  "maxUses",
+                  e.target.value ? Number(e.target.value) : null,
+                )
+              }
+            />
+          </label>
+        </>
+      )}
+      {kind === "promotions" && (
+        <label>
+          {w("condition")}
+          <select
+            value=""
+            onChange={(e) =>
+              update(
+                kind === "promotions" ? "rule" : "condition",
+                rows.rules.find((r) => r.id === e.target.value)?.data
+                  .condition ?? { type: "alwaysValid" },
+              )
+            }
+          >
+            <option value="">{w("chooseRule")}</option>
+            {rows.rules.map((r) => (
+              <option value={r.id} key={r.id}>
+                {r.data.name[locale.slice(0, 2)]}
+              </option>
+            ))}
+          </select>
+          <RuleBuilder
+            value={data.rule}
+            onChange={(r) => update("rule", r)}
+            catalog={catalog}
+          />
+        </label>
+      )}
+      {kind === "flows" && (
+        <>
+          <FlowBuilder data={data} update={update} catalog={catalog} />
+          {langs.map((lang) => (
+            <label key={lang}>
+              {w("instruction")} · {lang}
+              <textarea
+                value={data.instruction?.[lang] ?? ""}
+                onChange={(e) =>
+                  update("instruction", {
+                    ...data.instruction,
+                    [lang]: e.target.value,
+                  })
+                }
+                maxLength={4000}
+              />
+            </label>
+          ))}
+          {data.action === "ai_proposal" && (
+            <label>
+              {w("provider")}
+              <select
+                value={data.inference?.provider ?? "ollama"}
+                onChange={(e) =>
+                  update("inference", { provider: e.target.value })
+                }
+              >
+                <option value="ollama">{w("localModel")}</option>
+                <option value="openai">OpenAI</option>
+                <option value="anthropic">Claude</option>
+              </select>
+            </label>
+          )}
+        </>
+      )}
+      {kind === "channels" && (
+        <>
+          <label>
+            {w("channelType")}
+            <select
+              value={data.kind}
+              onChange={(e) => update("kind", e.target.value)}
+            >
+              <option value="storefront">{w("storefrontType")}</option>
+              <option value="headless">Headless</option>
+            </select>
+          </label>
+          <label>
+            {w("product")}
+            <input
+              value={data.productIds.join(", ")}
+              onChange={(e) =>
+                update(
+                  "productIds",
+                  e.target.value
+                    .split(",")
+                    .map((s) => s.trim())
+                    .filter(Boolean),
+                )
+              }
+            />
+          </label>
+          <a
+            href={`/?shop=${new URLSearchParams(location.search).get("shop") ?? "atelier"}&channel=${id}#`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            {w("preview")} ↗
+          </a>
+        </>
+      )}
+      <details>
+        <summary>{w("details")}</summary>
+        <textarea
+          rows={12}
+          value={advanced || JSON.stringify(data, null, 2)}
+          onChange={(e) => setAdvanced(e.target.value)}
+        />
+      </details>
+      <button className="studio-primary" disabled={busy || !manage}>
+        {w("save")}
+      </button>
+    </form>
+  );
+}

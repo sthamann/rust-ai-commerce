@@ -1,3 +1,4 @@
+import signal
 #!/usr/bin/env python3
 """Real SMTP/TLS and provider HTTP fixtures plus Rust/PostgreSQL/MCP/flow consumers. No external mail."""
 
@@ -486,7 +487,7 @@ class Contracts(unittest.TestCase):
             stdout=log,
             stderr=log,
         )
-        self.addCleanup(lambda: (backend.terminate(), backend.wait(timeout=10)))
+        self.addCleanup(lambda: (backend.send_signal(signal.SIGINT), backend.wait(timeout=10)))
 
         def api(path, body=None, headers=None, method=None, expected=200):
             return http(base + path, body, headers, method, expected)

@@ -1,0 +1,39 @@
+/* studio: responsive styles. Source order is preserved by the entry stylesheet. */
+@media (max-width: 1024px) {
+  .studio {
+    grid-template-columns: 190px minmax(0, 1fr);
+  }
+  .studio-main {
+    grid-template-columns: 1fr;
+  }
+  .studio-preview {
+    display: none;
+  }
+  .studio-sidebar {
+    padding: 20px 12px 12px;
+  }
+  .studio-sidebar nav button {
+    font-size: 12px;
+  }
+  .workspace-switch {
+    padding: 8px;
+  }
+  .workspace-switch small {
+    font-size: 9px;
+  }
+  .studio-prompts {
+    grid-template-columns: 1fr;
+  }
+  .agent-journey {
+    gap: 20px;
+  }
+  .agent-journey h2 {
+    font-size: 14px;
+  }
+  .studio-statusbar > span:last-child {
+    display: none;
+  }
+  .studio-dialog {
+    max-height: calc(100dvh - 32px);
+  }
+}
