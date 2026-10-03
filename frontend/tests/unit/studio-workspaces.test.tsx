@@ -112,7 +112,9 @@ it("navigates every merchant workspace without duplicating registry requests", a
     fetcher.mock.calls.filter(([path]) => path === "/api/apps/surfaces"),
   ).toHaveLength(1);
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-});
+  // Fourteen lazy workspace transitions share this test budget. Each waitFor
+  // retains its short deadline; instrumented shared CI needs more than 5s total.
+}, 20_000);
 it("keeps merchant credentials absent when signed out and shows a login path", async () => {
   const fetcher = vi.fn(async (path: string) => {
     if (path === "/health" || path === "/api/apps/surfaces")

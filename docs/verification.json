@@ -2,9 +2,8 @@
   "date": "2026-10-03",
   "version": "0.5.0",
   "recordKind": "Pinned successful full-CI snapshot; current branch results remain available in GitHub Actions",
-  "sourceCommit": "7a18cb11dfea7c4a933b510ab8d2a3bf804a1b07",
-  "landedMergeCommit": "c3a2098b34dafcbf1a8fabf10f818ff244a760e9",
-  "ci": "https://github.com/sthamann/rust-ai-commerce/actions/runs/37122621131",
+  "sourceCommit": "68c9b28c053204d09bc7346b4684912211678ccf",
+  "ci": "https://github.com/sthamann/rust-ai-commerce/actions/runs/37124865718",
   "reference": {
     "shopware": "6.7.14.2",
     "commit": "de074a584d77d8abb09ddb21d8799f083a61a3da",
@@ -74,7 +73,7 @@
     "httpSuites": 22,
     "localProviderSuites": 3,
     "browserContracts": 4,
-    "toolingUnitTests": 10,
+    "toolingUnitTests": 12,
     "allPassed": true,
     "scope": "Actual PostgreSQL/AGE/HTTP and loopback provider fixtures; not live credentials"
   },
@@ -95,20 +94,35 @@
   "coverage": {
     "frontendLines": 35.12,
     "frontendBranches": 28.65,
-    "rustLines": 78.89604415823366,
-    "pythonLines": 72.16335966095164,
+    "rustLines": 79.04323827046919,
+    "pythonLines": 72.75280898876404,
     "fullSystemCoverage": false,
-    "scope": "Measured in pinned CI above; full artifacts in that run, earlier detailed snapshot in quality-baseline.json"
+    "scope": "Measured in pinned CI above, including the actual playground CLI; complete raw artifacts are available in that run"
   },
   "additionalPlaygroundCheck": {
-    "recordKind": "Additional local check after the pinned CI snapshot",
+    "recordKind": "Playground CLI included in pinned full CI; browser orders additionally exercised locally",
     "suite": "../scripts/automation.py",
     "passedCheckGroups": 10,
     "toolingUnitTests": 12,
     "isolatedDatabase": true,
     "paidProviderCalls": 0,
     "coreSourceChanged": false,
-    "guide": "playground.md"
+    "guide": "playground.md",
+    "browserOrders": [
+      {
+        "product": "mug",
+        "totalEuro": 22.41,
+        "coupon": "TRY10",
+        "branch": "standard"
+      },
+      {
+        "product": "lamp",
+        "quantity": 2,
+        "totalEuro": 149.8,
+        "branch": "priority",
+        "delaySeconds": 15
+      }
+    ]
   },
   "limits": [
     "Not full Shopware Core/DAL/Admin API/Store API equivalence",
@@ -116,5 +130,7 @@
     "No actual PSP Sandbox/Live charge, mail inbox delivery or cloud model quality implied by provider fixtures",
     "No public commerce backend deployed; GitHub Pages hosts documentation only"
   ],
-  "previousRecord": "history/verification-2026-10-02.json"
+  "previousRecord": "history/verification-2026-10-02.json",
+  "ciMergeCommit": "c56f05d5359a2f9c5eb4ee06c5cfcfc037a83d2f",
+  "baseMergeCommit": "c3a2098b34dafcbf1a8fabf10f818ff244a760e9"
 }
