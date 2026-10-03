@@ -16,7 +16,7 @@ This is also a laboratory for porting selected original Shopware behavior to Rus
 [![Verify prototype](https://github.com/sthamann/rust-ai-commerce/actions/workflows/verify.yml/badge.svg)](https://github.com/sthamann/rust-ai-commerce/actions/workflows/verify.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[![Merchant reviews a local AI proposal before approving the price change](docs/assets/merchant-proposal-en.png)](https://sthamann.github.io/rust-ai-commerce/#demo)
+[![Current product detail with variants, gallery and server-calculated prices](docs/assets/playground-product-en.jpg)](https://sthamann.github.io/rust-ai-commerce/playground.html)
 
 ## Why try it?
 
@@ -81,7 +81,9 @@ path without external messages or paid model calls; live account authorization r
 your provider clients. Imports are manual in this version. The native builder does not
 claim complete behavior/API parity with the original condition catalog or arbitrary source FlowSequences. The reflected production catalog contains 114 Rule subclasses and 16 Core actions; 108 rule scopes are executable natively, with 432 direct original-PHP comparison cases across 74 classes. Unsupported runtimes remain visibly disabled. Source-name registration is not a claim of complete equivalence.
 
-![Connected flow with source-named condition, order tagging, durable delay and a reviewable AI proposal](docs/assets/automation-flow-en.jpg)
+![Current connected playground flow with a saved rule, tag branches, durable delay and an invoice](docs/assets/playground-flow-en.jpg)
+
+[Recorded separate flow with an optional reviewable AI proposal](docs/assets/automation-flow-en.jpg)
 
 [Slack app action example](docs/assets/slack-flow-en.jpg)
 
@@ -255,7 +257,9 @@ then explore staging, apps, product knowledge and optional AI.
 In the approval clip,
 a local model proposes EUR 69.90 instead of EUR 74.90 for the lamp; the price
 changes only after merchant approval and is then visible in the storefront.
-The recording uses a synthetic shop; waiting time is shortened.
+These feature recordings use a synthetic shop and show the navigation at capture
+time; waiting time is shortened. The three playground screenshots show the current
+product, flow and order workspaces. [Capture notes](docs/assets/README.md).
 
 1. Ask the assistant to propose a catalog change.
 2. Inspect the stored proposal and the exact fields that would change.
