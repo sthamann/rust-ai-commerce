@@ -98,5 +98,9 @@ mod tests {
         assert_eq!(labels["required"], json!(["es-ES", "it-IT", "en-US"]));
         assert!(labels["properties"].get("en").is_none());
         assert_eq!(labels["additionalProperties"], false);
+        let description = &schema["properties"]["manifest"]["properties"]["presentation"]["properties"]
+            ["description"];
+        assert_eq!(description["required"], json!(["es-ES", "it-IT", "en-US"]));
+        assert!(description["properties"].get("en").is_none());
     }
 }

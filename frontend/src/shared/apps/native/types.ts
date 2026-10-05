@@ -55,6 +55,7 @@ export type Manifest = {
   runtime: string;
   name: Text;
   category?: string;
+  presentation?: { icon?: string; cover?: string; description?: Text };
   permissions: string[];
   entities: Entity[];
   slots: { location: string; component: string; label: Text }[];

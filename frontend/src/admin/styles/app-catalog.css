@@ -1,36 +1,311 @@
-/* Independently loaded, tenant app catalog presentation; no dependency on customer navigation. */
-
+/* App library/detail presentation: bounded cards, passive artwork, accessible filters and theme-aware forms. */
+.studio .app-workspace {
+  max-width: 1480px;
+}
+.studio .app-library-intro h1 {
+  font-size: clamp(28px, 3vw, 42px);
+  letter-spacing: -0.045em;
+}
+.studio .app-library-intro p {
+  max-width: 760px;
+}
+.studio .app-library-summary {
+  display: flex;
+  gap: 32px;
+  padding: 12px 0 28px;
+  border-bottom: 1px solid var(--border);
+}
+.studio .app-library-summary > span {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.studio .app-library-summary strong {
+  font-size: 23px;
+  color: var(--text);
+  font-weight: 650;
+}
+.studio .app-library-toolbar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin: 24px 0 18px;
+  flex-wrap: wrap;
+}
+.studio .app-library-switch {
+  display: flex;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+.studio .app-library-switch button,
+.studio .app-categories button,
+.studio .app-detail-tabs button {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  color: var(--muted);
+  background: transparent;
+  padding: 11px 16px;
+  min-height: 44px;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+.studio .app-library-switch button[aria-pressed="true"] {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+  font-weight: 650;
+}
+.studio .app-library-switch button span {
+  font-size: 11px;
+  background: color-mix(in srgb, var(--muted) 10%, transparent);
+  padding: 2px 6px;
+  border-radius: 5px;
+}
+.studio .app-library-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 180px;
+  max-width: 430px;
+  flex: 1;
+  margin-left: auto;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface);
+  padding: 0 14px;
+  color: var(--muted);
+}
+.studio .app-library-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  padding: 13px 0;
+  outline: none;
+  color: var(--text);
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+}
+.studio .app-library-search:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.studio .app-library-toolbar select {
+  min-height: 46px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  padding: 8px 12px;
+  max-width: 100%;
+}
 .studio .app-categories {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
-  margin: 0;
+  margin: 0 0 24px;
+}
+.studio .app-categories button[aria-pressed="true"] {
+  background: var(--text);
+  color: var(--surface);
+}
+.studio .app-categories button:hover {
+  background: color-mix(in srgb, var(--muted) 12%, transparent);
+}
+.studio .app-categories button[aria-pressed="true"]:hover {
+  background: var(--text);
 }
 .studio .app-catalog {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: 22px;
 }
 .studio .app-catalog-card {
-  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 18px;
+  background: var(--surface);
   text-align: left;
-  padding: 24px;
+  padding: 0;
+  color: var(--text);
+  font: inherit;
+  box-shadow: 0 3px 10px #122c5005;
+}
+.studio button.app-catalog-card {
   cursor: pointer;
+  transition:
+    border-color 0.18s,
+    box-shadow 0.18s;
 }
-.studio .app-catalog-card > span {
-  font-size: 12px;
-  color: var(--accent);
-}
-.studio .app-catalog-card:hover {
+.studio button.app-catalog-card:hover {
   border-color: var(--accent);
-  box-shadow: 0 8px 25px #1985bb12;
+  box-shadow: 0 8px 24px #122c5010;
+}
+.studio .app-card-content {
+  padding: 22px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 13px;
+}
+.studio .app-card-eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 11px;
 }
 .studio .app-catalog-card h2 {
-  margin: 16px 0;
+  margin: 0;
+  font-size: 19px;
+  font-weight: 650;
+  letter-spacing: -0.025em;
 }
-.studio .app-catalog-card strong {
-  color: var(--accent);
+.studio .app-catalog-card p {
+  margin: 0 0 8px;
+  color: var(--muted);
   font-size: 13px;
+  line-height: 1.65;
+}
+.studio .app-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+.studio .app-card-footer small {
+  font-size: 12px;
+  color: var(--muted);
+}
+.studio .app-card-footer strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+}
+.studio .app-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 7px;
+  font-size: 11px;
+  border-radius: 6px;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--muted) 8%, var(--surface));
+}
+.studio .app-status::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.studio .app-status[data-active="true"] {
+  color: #167151;
+  background: #e7f5ed;
+}
+.studio .app-install-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: auto;
+  width: 100%;
+}
+.studio .app-library-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+  padding: 36px 18px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+  margin: 20px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.studio .app-library-empty h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text);
+}
+.studio .app-library-error {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.studio .app-workspace button:focus-visible,
+.studio .app-workspace select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.studio[data-theme="dark"] .app-status[data-active="true"] {
+  color: #a4dec8;
+  background: #1d3b32;
+}
+.studio[data-theme="dark"] .app-artwork {
+  background: color-mix(in srgb, currentColor 15%, var(--surface));
+}
+@media (max-width: 900px) {
+  .studio .app-library-search {
+    margin-left: 0;
+    max-width: none;
+  }
+  .studio .app-detail-heading {
+    flex-wrap: wrap;
+  }
+  .studio .app-capabilities > div {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+@media (max-width: 600px) {
+  .studio .app-library-summary {
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .studio .app-library-summary > span {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .studio .app-library-search {
+    flex-basis: 100%;
+  }
+  .studio .app-detail-heading,
+  .studio .app-detail-body {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .studio .app-detail dl {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .studio button.app-catalog-card {
+    transition: none;
+  }
 }

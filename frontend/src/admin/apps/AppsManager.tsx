@@ -5,9 +5,13 @@ import AppDetails from "./AppDetails";
 import { useEffect, useState } from "react";
 import { useAppText } from "../../shared/i18n/app-i18n";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
-import { useEmailText } from "../../shared/i18n/email-i18n";
+import { useLibraryText } from "../../shared/i18n/app-library-i18n";
+import AppLibrary from "./AppLibrary";
+import { appCategory } from "./library-model";
 import "../../shared/styles/apps.css";
 import "../styles/app-catalog.css";
+import "../styles/app-detail.css";
+import "../styles/app-artwork.css";
 import type { RequestFn } from "../shell/studio-types";
 export default function AppsManager({
   request,
@@ -19,17 +23,11 @@ export default function AppsManager({
 }) {
   const { a, locale, money } = useAppText();
   const { c } = useCustomerText();
-  const { e } = useEmailText();
+  const l = useLibraryText();
+  const [mainLocale, setMainLocale] = useState("en-GB");
+  const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState("");
-  const [category, setCategory] = useState("all");
   const [detailTab, setDetailTab] = useState("appDetails");
-  const appCategory = (p: Package) =>
-    p.manifest.category ??
-    (p.id.includes("paypal") || p.id.includes("payments")
-      ? "payment"
-      : p.id === "storyfront"
-        ? "design"
-        : "commerce");
   const [packages, setPackages] = useState<Package[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -54,28 +52,38 @@ export default function AppsManager({
     }[];
   }>();
   const load = async () => {
-    setPackages((await request("/api/apps")).packages);
+    const data = await request("/api/apps");
+    setPackages(data.packages);
+    setMainLocale(data.mainLocale ?? "en-GB");
     dispatchEvent(new Event("commerce.apps.changed"));
   };
   useEffect(() => {
     let active = true;
+    setLoading(true);
     request("/api/apps")
       .then((v) => {
-        if (active) setPackages(v.packages);
+        if (active) {
+          setPackages(v.packages);
+          setMainLocale(v.mainLocale ?? "en-GB");
+        }
       })
       .catch((e) => {
         if (active) setError(e.message);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
       });
     return () => {
       active = false;
     };
   }, [request]);
-  const run = async (fn: () => Promise<void>) => {
+  const run = async (fn: () => Promise<void>, after?: () => void) => {
     setBusy(true);
     setError("");
     try {
       await fn();
       await load();
+      after?.();
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -85,111 +93,55 @@ export default function AppsManager({
   const manage = ["owner", "admin"].includes(role);
   return (
     <div className="studio-page app-workspace">
-      <div className="page-intro">
-        <span className="kicker">COMMERCE / APPS</span>
-        <h1>{a("apps")}</h1>
-        <p>{a("intro")}</p>
-      </div>
-      <div className="app-install">
-        {[
-          "engraving",
-          "paypal",
-          "shopware_payments",
-          "storyfront",
-          "google_analytics",
-          "gmail",
-          "slack",
-          "email",
-        ]
-          .filter(
-            (id) =>
-              !packages.some((p) => p.id === id) ||
-              (id === "engraving" &&
-                packages.some((p) => p.id === id && p.version === "1.0.0")),
-          )
-          .map((id) => (
-            <button
-              className="studio-secondary"
-              key={id}
-              disabled={!manage || busy}
-              onClick={() =>
-                void run(async () => {
-                  await request("/api/apps", { builtIn: id });
-                })
-              }
-            >
-              {a(packages.some((p) => p.id === id) ? "upgrade" : "install")} ·{" "}
-              {id === "engraving"
-                ? a("engraving")
-                : id === "paypal"
-                  ? "PayPal Sandbox"
-                  : id === "storyfront"
-                    ? "Storyfront"
-                    : id === "shopware_payments"
-                      ? "Shopware Payments"
-                      : id === "google_analytics"
-                        ? "Google Analytics"
-                        : id === "gmail"
-                          ? "Gmail"
-                          : id === "email"
-                            ? e("title")
-                            : "Slack"}
-            </button>
-          ))}
-      </div>
-      {error && <p role="alert">{error}</p>}
-      {!selected ? (
-        <>
-          <div className="app-categories">
-            {[
-              "all",
-              "commerce",
-              "payment",
-              "api",
-              "ai",
-              "design",
-              "operations",
-            ].map((k) => (
-              <button
-                className={
-                  category === k ? "studio-primary" : "studio-secondary"
-                }
-                key={k}
-                onClick={() => setCategory(k)}
-              >
-                {c(k === "all" ? "allApps" : `${k}Category`)}
-              </button>
-            ))}
-          </div>
-          <div className="app-catalog">
-            {packages
-              .filter((p) => category === "all" || appCategory(p) === category)
-              .map((p) => (
-                <button
-                  className="studio-card app-catalog-card"
-                  key={p.id}
-                  onClick={() => {
-                    setSelected(p.id);
-                    setDetailTab("appDetails");
-                    setResult(undefined);
-                  }}
-                >
-                  <span>{c(`${appCategory(p)}Category`)}</span>
-                  <h2>
-                    {p.manifest.name[locale.slice(0, 2)] ?? p.manifest.name.en}
-                  </h2>
-                  <p>
-                    {p.version} · {a(p.active ? "active" : "inactive")}
-                  </p>
-                  <strong>{c("openApp")} →</strong>
-                </button>
-              ))}
-          </div>
-        </>
-      ) : (
-        <>
+      {!selected && (
+        <div className="page-intro app-library-intro">
+          <span className="kicker">{a("apps")}</span>
+          <h1>{l("heading")}</h1>
+          <p>{l("intro")}</p>
+        </div>
+      )}
+      {error && (
+        <div role="alert" className="app-library-error">
+          <p>{error}</p>
           <button
             className="studio-secondary"
+            disabled={busy}
+            onClick={() => void run(async () => {})}
+          >
+            {l("retry")}
+          </button>
+        </div>
+      )}
+      <div hidden={Boolean(selected)}>
+        <AppLibrary
+          packages={packages}
+          mainLocale={mainLocale}
+          loading={loading}
+          manage={manage}
+          busy={busy}
+          onOpen={(id) => {
+            setSelected(id);
+            setDetailTab("appDetails");
+            setResult(undefined);
+          }}
+          onInstall={(id) =>
+            void run(
+              async () => {
+                await request("/api/apps", { builtIn: id });
+              },
+              () => {
+                setSelected(id);
+                setDetailTab("appDetails");
+                setResult(undefined);
+              },
+            )
+          }
+        />
+      </div>
+      {selected && (
+        <>
+          <button
+            className="studio-secondary app-back"
             onClick={() => {
               setSelected("");
               setResult(undefined);
@@ -197,11 +149,12 @@ export default function AppsManager({
           >
             ← {c("backApps")}
           </button>
-          <div className="app-categories">
+          <div className="app-detail-tabs">
             {["appDetails", "appInterface", "appData", "appVersion"].map(
               (k) => (
                 <button
                   key={k}
+                  aria-pressed={detailTab === k}
                   className={
                     detailTab === k ? "studio-primary" : "studio-secondary"
                   }
@@ -220,6 +173,7 @@ export default function AppsManager({
           <AppDetails
             p={p}
             locale={locale}
+            mainLocale={mainLocale}
             a={a}
             manage={manage}
             busy={busy}

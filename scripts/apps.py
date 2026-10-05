@@ -56,6 +56,20 @@ assert call('/store-api/intelligence/recommendations/mug',h=ch)['elements']==[]
 idea=call('/api/intelligence',h=h)['hypotheses'][0];call('/api/intelligence/hypotheses/'+idea['id'],{'state':'published','revision':idea['revision'],'approve':True},h,'PUT')
 public=call('/store-api/intelligence/recommendations/mug',h=ch);assert public['elements'][0]['id']=='notebook' and 'orders' not in json.dumps(public)
 assert call('/store-api/intelligence/recommendations/mug',h={'x-tenant':other['workspace']})['elements']==[];check('Approved association reaches a real public storefront consumer without leaking order evidence')
+# Presentation is versioned passive metadata, not guest code or a new provider permission.
+art=json.loads((ROOT/'extensions/apps/care-studio/manifest.json').read_text());art['id']='art_'+uuid.uuid4().hex[:12]
+art['presentation']={'icon':'/media/mug-front.svg','cover':'https://example.test/cover.webp','description':{'es':'Guía de cuidado','de':''}}
+call('/api/apps',{'manifest':art},h)
+listing=call('/api/apps',h=h);assert listing['mainLocale']=='en-GB'
+installed=next(p for p in listing['packages']if p['id']==art['id']);assert installed['manifest']['presentation']==art['presentation']
+assert not any(p['id']==art['id']for p in call('/api/apps',h=oh)['packages'])
+changed_art=copy.deepcopy(art);changed_art['presentation']['icon']='/media/mug-detail.svg'
+call('/api/apps',{'manifest':changed_art},h,expected=409)
+for url in ['javascript:alert(1)','data:image/png,x','https://name:password@example.test/logo','//example.test/logo','/media/../secret']:
+    invalid=copy.deepcopy(art);invalid['id']='bad_art';invalid['presentation']['cover']=url
+    call('/api/apps',{'manifest':invalid},h,expected=400)
+check('Versioned app artwork survives the real API, is tenant-isolated and rejects executable/credential URLs')
+
 manifest=json.loads((ROOT/'extensions/apps/service-example/manifest.json').read_text());call('/api/apps',{'manifest':manifest},h)
 call('/api/apps/workshop_notes/entities/notes',{'id':'n1','fields':{'title':'Example note'}},h)
 call('/api/apps/workshop_notes/entities/tickets',{'id':'t1','fields':{'note_id':'n1','title':'Finish order'}},h)

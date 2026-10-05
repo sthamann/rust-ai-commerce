@@ -45,6 +45,23 @@ The assistant preview uses the actual gallery, including an honest empty state.
 
 ![Product media gallery](docs/screenshots/vendune-product-media.jpg)
 
+## App library and management
+
+Browse **Apps → Installed / Discover** with search, category and status filters.
+Every app has an illustrated card and a dedicated page for configuration, real
+admin interfaces, data and immutable versions. Enabling an app is distinct from
+connecting a provider account; connector credentials and readiness remain visible
+in its settings. Deactivation uses the shared confirmation dialog.
+
+Published packages can supply their own icon, cover and localized summary through
+optional `presentation` metadata. Without artwork, Vendune creates deterministic
+category illustrations and functional icons locally, with no model calls. Broken
+images fall back independently. [Guide, manifest contract and tests](docs/app-library.md).
+
+![Discover apps in Vendune Studio](docs/screenshots/vendune-app-discovery.png)
+
+![App details and registered admin interfaces](docs/screenshots/vendune-app-details.png)
+
 ## Visual App Studio
 
 Build native apps visually in **Vendune Studio → Developers**. Compose text, tables, cards and forms, define typed app data, connect HTTP/MCP/AI tools and opt actions into the graphical Flow Builder. Human edits and Codex/Claude agent edits use the **same executable Manifest**. Open saved apps through explicit edit controls, remove development projects to a recoverable trash, save an immutable version, test real records in a private sandbox, then selectively release the package.

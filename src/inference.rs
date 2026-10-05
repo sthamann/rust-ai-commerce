@@ -224,6 +224,20 @@ mod tests {
         );
     }
     #[test]
+    fn app_presentation_schema_supports_strict_provider_generation() {
+        let bundled: Value =
+            serde_json::from_str(include_str!("../fixtures/app-studio-schema.json")).unwrap();
+        let schema = strict_schema(bundled);
+        let p = &schema["properties"]["manifest"]["properties"]["presentation"]["anyOf"][0];
+        assert_eq!(p["required"], json!(["cover", "description", "icon"]));
+        assert_eq!(p["properties"]["description"]["type"], "object");
+        assert!(p["properties"]["description"].get("anyOf").is_none());
+        assert_eq!(
+            p["properties"]["description"]["additionalProperties"],
+            false
+        );
+    }
+    #[test]
     fn optional_nested_schema_is_nullable_and_required() {
         let schema = strict_schema(
             json!({"type":"object","properties":{"change":{"type":"object","properties":{"price":{"type":"number"}},"required":[]}},"required":[]}),

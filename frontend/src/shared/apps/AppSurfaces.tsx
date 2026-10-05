@@ -73,6 +73,9 @@ export function AppSurfaceProvider({
     </Registry.Provider>
   );
 }
+export function useAppSurfaces() {
+  return useContext(Registry).surfaces;
+}
 export function surfaceLabel(s: AppSurface, locale: string) {
   return (
     contentText(s.surface.label, locale, s.mainLocale ?? "en-GB") ||

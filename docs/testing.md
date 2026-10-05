@@ -6,7 +6,7 @@ at 100%, and neither coverage nor the Lean subset proves the entire system bug-f
 
 ## Source architecture
 
-- Rust: 205 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
+- Rust: 223 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
 - Frontend: separate `admin/`, `storefront/`, `platform/` and `shared/` ownership. Views/controllers and styles are limited to 400 lines; locale data has a documented 700-line allowance. Runtime cycles, unresolved local imports, crossing application boundaries, missing folder contracts and undocumented source files fail CI.
 - Independent Python services, app examples and browser SDKs remain under `extensions/`; test tooling lives under `scripts/`. [The generated inventory](module-inventory.md) covers all these sources and is checked for drift.
 - Studio workspaces load lazily. Root application routing is isolated in `frontend/src/application/`; error boundaries keep workspace failures inside the current view and provide reload recovery for rejected cached module imports. The removed `CommerceManager` had no call site and duplicated old operational UI. Order state management remains in `admin/orders/OrderWorkflow.tsx`; product review moderation lives in `admin/catalog/ReviewModeration.tsx`.
@@ -194,3 +194,19 @@ Company profile HTTP/database checks run in the suite registry as `company_setti
 ## Channel settings and media workspaces (2026-10-05)
 
 See [the settings/media guide](settings-media.md) for the current single-language editor, field-level checkout overrides, dependency-safe method removal, gallery and optional private image jobs. These are native prototype extensions; they do not establish additional full Shopware API/DAL parity, current tax law, paid-provider quality or whole-system formal certification.
+
+## App library regression scope (2026-10-05)
+
+Eight component regressions exercise translated search, categories/status/discovery,
+installation followed by the real detail page, cancellation and failed activation,
+viewer restrictions, registered native interfaces, locale inheritance and
+independent artwork failure fallbacks. The isolated PostgreSQL app suite checks
+metadata round trips, tenant separation, immutable same-version digests, unsafe
+artwork refusal and the actual shop main language. Strict model-schema regression
+keeps optional presentation compatible with both provider request formats.
+
+The current clean frontend run passes 137 tests: 50.16% statements, 43.76% branches,
+41.35% functions and 50.98% lines across all included source. These measurements
+are not whole-system 100% coverage. Actual browser checks supplement component
+tests with desktop and 375px layouts. The affected apps, app surfaces, App Studio
+and developer-document HTTP suites pass using local fixtures, without paid calls.
