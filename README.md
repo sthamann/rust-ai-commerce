@@ -283,6 +283,22 @@ merchant signup/bootstrap-token gates. **It is tested locally; a public host/dom
 and verified Vercel/backend deployment are still outstanding.** GitHub Pages is the
 documentation site, not a hosted commerce backend.
 
+## Tenant and SaaS isolation
+
+Personal sessions resolve current workspace membership on every request. Object
+APIs and MCP bind tenant scope and customer/cart ownership; sales channels share
+one merchant workspace and are not independent business isolation boundaries.
+Migration 038 adds **22 composite tenant foreign keys** across orders, payments,
+events, files and staging. The CI `tenant_isolation` suite probes ID/header swaps,
+unchanged victim state, same-ID app data, integration revocation, each new
+constraint and forced app RLS under a restricted database identity.
+
+**Core-wide RLS is still missing; the local database identity is a superuser.**
+The tested application checks and relationship constraints do not establish
+containment against an unscoped core query or a compromised runtime credential.
+See [the concrete guarantees, reproduced gap, tests and remaining hardening](docs/tenant-isolation.md)
+and [security boundaries](docs/security.md).
+
 ## Lean-checked production policies
 
 The real Rust checkout, order workflow, access, refund and download paths now

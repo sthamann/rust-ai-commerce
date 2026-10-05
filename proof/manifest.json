@@ -1169,8 +1169,8 @@
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "99fcdd6c6a22a6f51902a21c6d56b4ec444ac5473d8cffe5e6a32cacc732d8ae",
-      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
+      "sha256": "d5416168cde9fe1e01871e2dd850bd1974ea14cc5f475741e211a33a3d403d90",
+      "review": "Reviewed migration 038 and its sole registry binding: 22 indexed composite tenant foreign keys validate existing relationships atomically; exact own/foreign SQL controls and personal API/MCP/UCP probes pass; no pure kernel or SQL proof claim changed."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -1674,6 +1674,10 @@
     "migrations/037-read-context-cache.sql": {
       "sha256": "f3c07e88cc774d3a9a6cd29b75f16d1023aa00ac207f977ce431471c3f3abe6a",
       "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
+    },
+    "migrations/038-tenant-references.sql": {
+      "sha256": "d775a4d9c442450757ce6b47539857ffd247bd3600c94ce0d9e3c9be9f561355",
+      "review": "Reviewed migration 038 and its sole registry binding: 22 indexed composite tenant foreign keys validate existing relationships atomically; exact own/foreign SQL controls and personal API/MCP/UCP probes pass; no pure kernel or SQL proof claim changed."
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "97c7e3708fbf7ef622461cae6e23dbea29872a07994197e5cdfccfc3eb9ef35b",

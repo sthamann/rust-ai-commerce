@@ -186,7 +186,9 @@ Derive a trusted tenant context from verified membership or domain routing.
 Enforce it in queries, caches, search, jobs and storage. Add core-table RLS with
 a least-privileged database role as defense in depth; test transaction-scoped
 context for leakage under pooling. Existing tenant checks and managed-app RLS
-do not yet provide core-wide RLS.
+do not yet provide core-wide RLS. Migration 038 adds 22 composite tenant
+foreign keys and CI adversarial tests; these prevent wrong-shop relationships
+but do not replace database read/write containment. See [tenant isolation](tenant-isolation.md).
 
 Implement idempotent provisioning, domain lifecycle, secret management, plan
 limits, durable usage accounting, audit/export/offboarding and per-tenant restore.

@@ -53,3 +53,19 @@ The exact proof boundary and extension procedure are documented in
   structure; validate content, tenant permissions and expected revisions on apply.
   Bulk operations must persist progress and process bounded batches. Test inheritance,
   a non-English main language, tenant isolation, stale versions and provider failures.
+
+## Tenant isolation contract
+
+- Treat unrelated merchants as separate tenants; sales channels within a tenant
+  are shared commerce contexts, not independent tenant security boundaries.
+- Derive identity/membership in authentication middleware. Never trust caller
+  principal/tenant fields, model output or app arguments as authorization.
+- Scope object reads/writes/deletes by tenant and ID, plus customer ownership
+  where applicable. MCP, jobs and extension entry points use the same checks.
+- Relations between tenant tables need composite tenant-aware foreign keys.
+  New ID-only references must have a scoped counterpart; the schema guard in
+  `scripts/security/tenant_schema.py` rejects missing containment.
+- Add real own/foreign-shop regressions for new object entry points. Confirm
+  denied mutations leave victim state unchanged; UUIDs are not authorization.
+- Run the registered `tenant_isolation` suite. Do not describe foreign keys,
+  app-only RLS or selected Lean policies as complete core/SaaS isolation.
