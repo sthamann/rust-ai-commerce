@@ -98,7 +98,8 @@ def measure(args, db, fixture):
         for concurrency in args.concurrency:
             before = database_state(db)
             for r in range(1, args.rounds + 1):
-                result = sample(fixture['label'] + '/' + name, operation, concurrency, args.requests, r)
+                request_count = min(args.requests, 64) if name == 'broad-search' else args.requests
+                result = sample(fixture['label'] + '/' + name, operation, concurrency, request_count, r)
                 result.pop('latenciesMs')
                 result['failures'] = result['failures'][:5]
                 result.update({'shops': len(tenants), 'productsPerShop': size})
@@ -177,7 +178,8 @@ def main():
         metadata = {'recordedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     'sourceCommit': os.getenv('BENCHMARK_SOURCE_COMMIT', 'unknown'),
                     'scriptSha256': hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),
-                    'environment': 'Northflank private network; service/PG each 0.5 shared vCPU, 1 GiB',
+                    'environment': os.getenv('BENCHMARK_DEPLOYMENT_DESCRIPTION',
+                        'Northflank private network; service/PG each 0.5 shared vCPU, 1 GiB'),
                     'transport': 'HTTP/1.1 fresh connection; complete JSON validation; warm caches',
                     'scope': 'Synthetic tenant catalog distribution; no SaaS signup, vector/LLM inference, external TLS/CDN or real payment load',
                     'fixturePrefix': fixtures[0]['tenants'][0].rsplit('-', 2)[0],
