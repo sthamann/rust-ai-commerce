@@ -7,8 +7,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DEST = ROOT / '.site'
-BASE = 'https://sthamann.github.io/rust-ai-commerce/'
-REPO = 'https://github.com/sthamann/rust-ai-commerce'
+BASE = 'https://sthamann.github.io/vendune/'
+REPO = 'https://github.com/sthamann/vendune'
 
 
 def evidence_fields():
@@ -98,7 +98,7 @@ def build():
             'title': html.escape(page['title']),
             'description': html.escape(page['description'], quote=True),
             'canonical': url,
-            'image': BASE + 'assets/hero-workspace.webp',
+            'image': BASE + 'assets/vendune-studio-en.jpg',
             'schema': json.dumps(schema, ensure_ascii=False).replace('<', '\\u003c'),
             'content': (ROOT / 'site/pages' / page['file']).read_text(),
             **evidence,

@@ -1,4 +1,5 @@
 /** Independent platform control plane: personal operator access, bounded statistics and audited shop creation. */
+import Brand from "../shared/ui/Brand";
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "../shared/i18n/i18n";
 import { usePlatformText } from "../shared/i18n/platform-i18n";
@@ -152,7 +153,9 @@ export default function PlatformConsole() {
   return (
     <div className="platform-console">
       <aside>
-        <div className="platform-brand">C</div>
+        <div className="platform-brand">
+          <Brand markOnly />
+        </div>
         <strong>{t("title")}</strong>
         <nav>
           {(["overview", "shops", "activity"] as const).map((v) => (

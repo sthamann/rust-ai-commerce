@@ -17,7 +17,7 @@ call(path+'/complete',{}, {**h,'Idempotency-Key':'missing-'+uuid.uuid4().hex},ex
 u=call(path,{'line_items':[{'item':{'id':'mug'},'quantity':1}],'buyer':{'email':'demo@example.test'}},h,'PUT');assert u['status']=='ready_for_complete'
 u=call(path+'/complete',{}, {**h,'Idempotency-Key':'ucp-'+uuid.uuid4().hex});assert u['status']=='completed' and u['order']['id'];ok('UCP completes same durable checkout')
 call(path+'/cancel',{},h,expected=409);ok('UCP cannot cancel completed order')
-v=call('/mcp',{'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-11-25'}});assert v['result']['protocolVersion']=='2025-11-25';ok('MCP compatibility handshake')
+v=call('/mcp',{'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-11-25'}});assert v['result']['protocolVersion']=='2025-11-25' and v['result']['serverInfo']['name']=='vendune';ok('MCP compatibility handshake')
 call('/mcp',{'jsonrpc':'2.0','id':2,'method':'ping'},{'Origin':'https://evil.example'},expected=403);ok('MCP rejects foreign browser origins')
 if token:
     ah={'Authorization':'Bearer '+token}

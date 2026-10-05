@@ -429,9 +429,11 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/styles/customers.css](../frontend/src/shared/styles/customers.css) | Shared light account/address workspace, responsive and keyboard-accessible. |
 | [frontend/src/shared/styles/native-app.css](../frontend/src/shared/styles/native-app.css) | Native app layouts share commerce design tokens; tables/forms remain bounded and responsive. |
 | [frontend/src/shared/styles/workbench.css](../frontend/src/shared/styles/workbench.css) | Merchant workbench uses the studio's light-blue design tokens and responsive review panels. |
+| [frontend/src/shared/ui/Brand.tsx](../frontend/src/shared/ui/Brand.tsx) | Shared Vendune identity; product branding is independent of tenant-owned company logos and session keys. |
 | [frontend/src/shared/ui/Icon.tsx](../frontend/src/shared/ui/Icon.tsx) | Icon: Presentational icons and catalogue artwork with explicit inputs.. |
 | [frontend/src/shared/ui/ProductArt.tsx](../frontend/src/shared/ui/ProductArt.tsx) | Product Art: Presentational icons and catalogue artwork with explicit inputs.. |
 | [frontend/src/shared/ui/WorkspaceBoundary.tsx](../frontend/src/shared/ui/WorkspaceBoundary.tsx) | Contain a workspace render failure and let the user retry without losing the application shell. |
+| [frontend/src/shared/ui/brand.css](../frontend/src/shared/ui/brand.css) | Shared vector brand sizing and typography for Studio and the operator console. |
 | [frontend/src/storefront/account/CustomerAccount.tsx](../frontend/src/storefront/account/CustomerAccount.tsx) | Shopper account overlay uses its own scoped session; merchant credentials never authenticate a customer. |
 | [frontend/src/storefront/account/CustomerSignIn.tsx](../frontend/src/storefront/account/CustomerSignIn.tsx) | CustomerSignIn: focused form view with explicit typed inputs and callbacks. |
 | [frontend/src/storefront/analytics/ShopAnalytics.tsx](../frontend/src/storefront/analytics/ShopAnalytics.tsx) | Customer consent and real GA4 ecommerce events; absent apps produce no external script. |
@@ -507,6 +509,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/automation_differential.py](../scripts/automation_differential.py) | Compare actual original Shopware rule classes with native scopes using independent synthetic entities. |
 | [scripts/automation_registry.py](../scripts/automation_registry.py) | Rebuild the native rule catalog from pinned PHP reflection and explicitly reviewed scope bindings. |
 | [scripts/benchmark.py](../scripts/benchmark.py) | Reproducible local HTTP + PostgreSQL benchmark, with response validation. |
+| [scripts/branding.py](../scripts/branding.py) | Keep the public Vendune identity, shared vector assets and executable package/deployment paths consistent. |
 | [scripts/build_site.py](../scripts/build_site.py) | Build the public documentation site using Python's standard library only. |
 | [scripts/catalog_management.py](../scripts/catalog_management.py) | Real HTTP/PostgreSQL catalog creation, categories, multilingual editor, visibility and staging regressions. Synthetic isolated shops only. |
 | [scripts/check_site.py](../scripts/check_site.py) | Check the generated documentation's links and discovery metadata. |

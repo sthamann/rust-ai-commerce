@@ -13,7 +13,12 @@ with open('.env','w') as f:
 PY
 fi
 set -a; source .env; set +a
-docker compose -p "${COMPOSE_PROJECT_NAME:-rust-ai-commerce}" up -d --build --wait postgres
+project="${COMPOSE_PROJECT_NAME:-vendune}"
+# Reuse an existing pre-Vendune database volume unless a project was explicitly selected.
+if [ -z "${COMPOSE_PROJECT_NAME:-}" ] && [ -n "$(docker ps -a --filter label=com.docker.compose.project=rust-ai-commerce --filter label=com.docker.compose.service=postgres --format '{{.ID}}')" ]; then
+  project="rust-ai-commerce"
+fi
+docker compose -p "$project" up -d --build --wait postgres
 (cd frontend && npm ci && npm run build)
 cargo build --locked
 if [ "${CONNECTED_APPS:-0}" = "1" ]; then
@@ -29,4 +34,4 @@ services=json.loads(os.getenv('APP_SERVICES','{}'));services.update(json.loads(p
 PYMERGE
 )"
 fi
-exec target/debug/rust-ai-commerce
+exec target/debug/vendune

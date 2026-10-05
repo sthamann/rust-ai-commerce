@@ -1,6 +1,6 @@
 # Email delivery: SMTP, Resend and SendGrid
 
-Install **Email Delivery** in **Commerce Studio → Apps**, open its detail page,
+Install **Email Delivery** in **Vendune Studio → Apps**, open its detail page,
 and choose SMTP, Resend or SendGrid. The workspace and order-confirmation templates
 support English, German, French and Spanish. Gmail remains a separate read-only
 support-mail import app. Email Delivery is a new transactional service; it is not

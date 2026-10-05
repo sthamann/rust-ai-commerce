@@ -136,7 +136,7 @@ impl Condition {
                 return Err(bad("Invalid referenced rule ID"));
             }
             Self::Source { name, config } => {
-                rust_ai_commerce::automation_rules::validate(name, config, depth).map_err(bad)?
+                vendune::automation_rules::validate(name, config, depth).map_err(bad)?
             }
             Self::And { children } | Self::Or { children } => {
                 if children.len() > 20 {

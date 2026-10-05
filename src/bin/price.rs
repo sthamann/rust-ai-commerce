@@ -1,6 +1,6 @@
 //! Batch price fixture transport for the original-PHP differential comparator.
-use rust_ai_commerce::pricing::{PriceInput, calculate};
 use std::io::{self, Read};
+use vendune::pricing::{PriceInput, calculate};
 fn main() {
     let mut input = String::new();
     io::stdin().read_to_string(&mut input).unwrap();

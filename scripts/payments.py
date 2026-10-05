@@ -47,7 +47,7 @@ def call(path,body=None,h=None,method=None,expected=200):
     assert code==expected,(path,code,v,expected);return v
 def start():
     global process
-    process=subprocess.Popen([str(ROOT/'target/debug/rust-ai-commerce')],cwd=ROOT,env=env,stdout=log,stderr=log)
+    process=subprocess.Popen([str(ROOT/'target/debug/vendune')],cwd=ROOT,env=env,stdout=log,stderr=log)
     for _ in range(60):
         if process.poll() is not None:raise RuntimeError('Payment test app failed; inspect .run/payments-contract.log')
         try:call('/health');return

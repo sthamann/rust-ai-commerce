@@ -97,7 +97,7 @@ def run():
 
         def start(overrides=None):
             log = open(ROOT / ".run/app-surfaces-test.log", "ab")
-            p = subprocess.Popen([str(ROOT / "target/debug/rust-ai-commerce")], cwd=ROOT, env={**env, **(overrides or {})}, stdout=log, stderr=log)
+            p = subprocess.Popen([str(ROOT / "target/debug/vendune")], cwd=ROOT, env={**env, **(overrides or {})}, stdout=log, stderr=log)
             log.close()
             processes.append(p)
             return p

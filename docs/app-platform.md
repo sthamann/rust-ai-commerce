@@ -17,7 +17,7 @@ managed guide titles and example answers support English, German, French and Spa
 Its answer engine deliberately retrieves example facts; it does not run an LLM.
 An app service can instead call its own model, vector database or external system.
 
-![App-owned module in Commerce Studio](assets/app-admin-en.jpg)
+![App-owned module in Vendune Studio](assets/app-admin-en.jpg)
 
 ![App-owned storefront page using the same action](assets/app-page-en.jpg)
 

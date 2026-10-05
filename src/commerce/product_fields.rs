@@ -14,8 +14,8 @@ pub(crate) struct ProductFields {
     #[serde(default)]
     pub regulation_price: Option<f64>,
     #[serde(default)]
-    pub reference_price: Option<rust_ai_commerce::pricing::ReferenceDefinition>,
-    pub advanced_prices: Vec<rust_ai_commerce::context::Tier>,
+    pub reference_price: Option<vendune::pricing::ReferenceDefinition>,
+    pub advanced_prices: Vec<vendune::context::Tier>,
     pub media: Value,
     pub properties: HashMap<String, String>,
 }

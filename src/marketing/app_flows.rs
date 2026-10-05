@@ -126,7 +126,7 @@ pub(crate) async fn execute_app_flow(
 }
 
 fn eligible(action: &apps::Action) -> Result<()> {
-    if !rust_ai_commerce::verified_kernel::app_flow_admissible(
+    if !vendune::verified_kernel::app_flow_admissible(
         action.flow_allowed,
         action.read_only,
         action.public,

@@ -1,4 +1,5 @@
 /** Users Manager: Personal accounts, memberships, roles, invitations and scoped developer access.. */
+import { BRAND } from "../../shared/ui/Brand";
 import { useCallback, useEffect, useState } from "react";
 import { shopApi } from "../../shared/api/shop-api";
 import { useShopText } from "../../shared/i18n/shop-i18n";
@@ -91,7 +92,9 @@ export default function UsersManager({
     <section className="commerce-manager users-manager">
       <div className="commerce-title">
         <div>
-          <p className="kicker">COMMERCE / {s("workspace")}</p>
+          <p className="kicker">
+            {BRAND.name} / {s("workspace")}
+          </p>
           <h1>{s("users")}</h1>
           <p>{s("workspaceHint")}</p>
         </div>

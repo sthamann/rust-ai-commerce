@@ -1,4 +1,9 @@
-# Rust AI Commerce — Agentic commerce with merchant control
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/brand/vendune-logo-dark.svg">
+  <img src="docs/brand/vendune-logo.svg" alt="Vendune" width="320">
+</picture>
+
+# Vendune — Agentic commerce with merchant control
 
 An **open-source ecommerce prototype in Rust** for developers exploring AI-assisted
 B2C and B2B commerce. Run a storefront and merchant workspace on your own machine,
@@ -9,14 +14,15 @@ through **Model Context Protocol (MCP)** and **Universal Commerce Protocol (UCP)
 Browser and agent clients share the same pricing, inventory and checkout operations.
 This is also a laboratory for porting selected original Shopware behavior to Rust.
 
-[Website & guides](https://sthamann.github.io/rust-ai-commerce/) ·
+[Brand assets & naming](docs/branding.md) ·
+[Website & guides](https://sthamann.github.io/vendune/) ·
 [Quickstart](docs/quickstart.md) · [Hands-on playground](docs/playground.md) · [MCP setup](docs/connectors.md) ·
 [Feature matrix](docs/shopware-parity.md) · [Contributing](CONTRIBUTING.md)
 
-[![Verify prototype](https://github.com/sthamann/rust-ai-commerce/actions/workflows/verify.yml/badge.svg)](https://github.com/sthamann/rust-ai-commerce/actions/workflows/verify.yml)
+[![Verify prototype](https://github.com/sthamann/vendune/actions/workflows/verify.yml/badge.svg)](https://github.com/sthamann/vendune/actions/workflows/verify.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[![Current product detail with variants, gallery and server-calculated prices](docs/assets/playground-product-en.jpg)](https://sthamann.github.io/rust-ai-commerce/playground.html)
+[![Vendune Studio — searchable product management](docs/assets/vendune-studio-en.jpg)](https://sthamann.github.io/vendune/playground.html)
 
 Company settings now include structured addresses, statutory/register and content-responsibility metadata, safe logo uploads, one-language brand/legal text editing and explicit per-sales-channel inheritance. Storefront identity and receipt issuers consume the resolved values; company/channel changes can be released selectively from staging. [Guide and contracts](docs/company-settings.md).
 
@@ -24,15 +30,15 @@ Company settings now include structured addresses, statutory/register and conten
 
 ## Visual App Studio
 
-Build native apps visually in **Commerce Studio → Developers**. Compose text, tables, cards and forms, define typed app data, connect HTTP/MCP/AI tools and opt actions into the graphical Flow Builder. Human edits and Codex/Claude agent edits use the **same executable Manifest**. Open saved apps through explicit edit controls, remove development projects to a recoverable trash, save an immutable version, test real records in a private sandbox, then selectively release the package.
+Build native apps visually in **Vendune Studio → Developers**. Compose text, tables, cards and forms, define typed app data, connect HTTP/MCP/AI tools and opt actions into the graphical Flow Builder. Human edits and Codex/Claude agent edits use the **same executable Manifest**. Open saved apps through explicit edit controls, remove development projects to a recoverable trash, save an immutable version, test real records in a private sandbox, then selectively release the package.
 
 The modern builder uses one inherited content-language editor and supports the shop’s enabled languages. Native admin modules and storefront surfaces share the exact same renderer as their sandbox preview. Arbitrary service code keeps the existing isolated app-service path.
 
 [App Studio guide, schema and limitations](docs/app-studio.md) · [Working care-guide example](extensions/apps/care-studio/manifest.json)
 
-![Saved app library with explicit edit and recoverable delete controls](docs/screenshots/app-studio-library.jpg)
+![Saved app library with explicit edit and recoverable delete controls](docs/screenshots/vendune-app-library.jpg)
 
-![Visual App Studio with palette, canvas and properties](docs/screenshots/app-studio.jpg)
+![Visual App Studio with palette, canvas and properties](docs/screenshots/vendune-app-studio.jpg)
 
 ## Why try it?
 
@@ -49,7 +55,7 @@ The modern builder uses one inherited content-language editor and supports the s
 
 The interface supports **English, German, French and Spanish**. MIT licensed.
 
-## Commerce Studio interface
+## Vendune Studio interface
 
 The light Studio uses a blue accent, compact grouped navigation and independent
 workspace styles. **Settings** has a dedicated secondary navigation for company
@@ -59,7 +65,7 @@ read-only access. Countries, taxes, methods and languages share one revisioned
 draft across settings navigation; leaving that workspace protects unsaved changes.
 English, German, French and Spanish use the same controls and behavior.
 
-![Company settings and grouped Studio navigation](docs/assets/studio-settings-en.png)
+![Company settings and grouped Studio navigation](docs/screenshots/company-settings.jpg)
 
 See [interface ownership, verification and limitations](docs/studio-interface.md).
 
@@ -79,7 +85,7 @@ use visible inheritance. Catalogue-wide AI translations produce durable reviewab
 drafts with progress, resume, stale-edit protection and bounded apply through HTTP
 and MCP. UI vocabulary remains EN/DE/ES/FR; content can use additional locales.
 
-![International country picker in Commerce Studio](docs/assets/studio-countries-en.png)
+![International country picker in Vendune Studio](docs/screenshots/vendune-countries.jpg)
 
 [Configuration, API/MCP, datasets and verification boundaries](docs/international-commerce.md).
 No current worldwide tax law or real model translation quality is inferred from fixtures.
@@ -92,17 +98,17 @@ translations. Simple and graphical flow execution, attachment uploads and
 storefront file labels apply the same contract through the real API.
 See [the shared editor contract](frontend/src/shared/i18n/README.md).
 
-![Shared content-language editing in a graphical flow](docs/screenshots/studio-flow-translations-en.png)
+![Shared content-language editing in a graphical flow](docs/screenshots/vendune-flow.jpg)
 
 ## Customers, checkout and order operations
 
-The storefront now shares a full **customer address book** with Commerce Studio:
+The storefront now shares a full **customer address book** with Vendune Studio:
 registration/sign-in, separate default billing/shipping addresses, structured
 contacts, payment preferences and own order history. Checkout copies the selected
 customer/address records into the order, so later account edits do not rewrite it.
 Guest email entry never grants an existing account's identity or order access.
 
-Commerce Studio provides **Customers** and **Orders** with direct server-owned
+Vendune Studio provides **Customers** and **Orders** with direct server-owned
 workflow actions, payment-job progress, tracking, activity and four-language
 numbered PDF documents. Company/document issuer data is centrally stored under
 **Settings → Company details**. Apps have a category catalog and individual
@@ -117,9 +123,7 @@ This remains a bounded prototype: full Shopware entity/DAL/API parity, productio
 identity/account recovery, complete original FlowSequence interchange and a supported
 Shopware Payments connector are still missing.
 
-![Customer address book with separate billing and shipping defaults](docs/assets/customer-address-book-en.png)
 
-![Actual isolated demo order completed through the storefront](docs/assets/storefront-order-complete-en.png)
 
 ## Connected apps and graphical automation
 
@@ -142,11 +146,11 @@ path without external messages or paid model calls; live account authorization r
 your provider clients. Imports are manual in this version. The native builder does not
 claim complete behavior/API parity with the original condition catalog or arbitrary source FlowSequences. The reflected production catalog contains 114 Rule subclasses and 16 Core actions; 108 rule scopes are executable natively, with 432 direct original-PHP comparison cases across 74 classes. Unsupported runtimes remain visibly disabled. Source-name registration is not a claim of complete equivalence.
 
-![Current connected playground flow with a saved rule, tag branches, durable delay and an invoice](docs/assets/playground-flow-en.jpg)
+![Current connected playground flow with a saved rule, tag branches, durable delay and an invoice](docs/screenshots/vendune-flow.jpg)
 
-[Recorded separate flow with an optional reviewable AI proposal](docs/assets/automation-flow-en.jpg)
+[Historical flow evidence with an optional reviewable AI proposal](docs/assets/automation-flow-en.jpg)
 
-[Slack app action example](docs/assets/slack-flow-en.jpg)
+[Historical Slack app action example](docs/assets/slack-flow-en.jpg)
 
 ## Transactional email delivery
 
@@ -176,7 +180,6 @@ admin, product detail, storefront, HTTP and MCP, in four languages. Run
 The example retrieves sample care facts; it does not claim LLM-generated advice.
 [Contract, SDK, setup, isolation/performance evidence and precise limits](docs/app-platform.md).
 
-![App-owned Product Lab module in Commerce Studio](docs/assets/app-admin-en.jpg)
 
 Slow remote services have non-queuing per-app/tenant admission limits, timeouts and
 bounded payloads. Studio/storefront code loads separately. External code runs in
@@ -186,14 +189,13 @@ microVM isolation remain separate work.
 
 ## Platform administration and hosting
 
-A dedicated **Commerce Platform** console at `/#platform` creates empty or
+A dedicated **Vendune Platform** console at `/#platform` creates empty or
 sample-catalogue shops and shows global customers, product SKUs, orders, staging,
 teams and API activity. Per-shop details show actual daily orders; totals keep
 currencies, simulated payments and confirmed captures separate. Personal operator
 grants are independent of merchant roles and integration keys. New shops contain
 no known demo customer accounts. The console supports all four interface languages.
 
-![Platform operator overview with synthetic test data](docs/assets/platform-overview-en.png)
 
 [Operator console and API](docs/platform.md) · [Host setup and Vercel deployment](docs/deployment.md)
 
@@ -220,7 +222,7 @@ Lean is needed for verification; the running commerce server does not depend on 
 
 ## Products and categories
 
-Commerce Studio has one **Products** workspace with searchable/filterable product
+Vendune Studio has one **Products** workspace with searchable/filterable product
 lists, creation and a complete native product detail editor. Manage configured content-language
 names and visual rich descriptions, prices/tax/stock/quantity rules, galleries and
 uploads, native variant SKUs, categories and channel visibility, properties,
@@ -233,8 +235,8 @@ page/folder/link types, nested listing control and a navigation root per sales
 channel. The storefront consumes that tree and its category-filtered product API.
 Products and category changes can be staged and published selectively.
 
-![Searchable product workspace](docs/assets/catalog-products-en.png)
-![Product detail with visual description editor](docs/assets/catalog-editor-en.png)
+![Searchable product workspace](docs/assets/vendune-studio-en.jpg)
+![Product detail with visual description editor](docs/screenshots/vendune-product-editor.jpg)
 
 See the [product management guide](docs/product-management.md) for routes, file
 ownership, original Shopware source references, tests and explicit remaining gaps.
@@ -262,7 +264,6 @@ flow; user-authored sources and earlier conversation messages retain their
 original language. Real model quality and full Shopware Rule/Flow parity remain
 separate verification work.
 
-![Versioned local-model app draft in the merchant developer tab](docs/assets/merchant-developer-en.jpg)
 
 A local Qwen run generated **Product Care** with translated app labels, a typed
 `guides` entity, API actions and a product-detail slot. The reviewed package and
@@ -270,20 +271,19 @@ its four-language care record were installed in a private sandbox and selectivel
 published; the live parent product and 500 ml variant render that same app record.
 This is one verified declarative app, not a claim of arbitrary app-generation quality.
 
-![Selected app and record release with a durable receipt](docs/assets/merchant-release-en.jpg)
 
 ## Try the commerce app first — no model download
 
 Requirements: **Rust stable (1.96+), Node 22+, Docker Compose and Python 3**.
 
 ```sh
-git clone https://github.com/sthamann/rust-ai-commerce.git
-cd rust-ai-commerce
+git clone https://github.com/sthamann/vendune.git
+cd vendune
 ./scripts/dev.sh
 ```
 
 Open [Storefront](http://127.0.0.1:8787/),
-[Commerce Studio](http://127.0.0.1:8787/#merchant), or the
+[Vendune Studio](http://127.0.0.1:8787/#merchant), or the
 [example product](http://127.0.0.1:8787/#product/mug).
 In Studio, select **Team & access → Create shop** to create a personal owner
 account and a separate synthetic shop. Then explore products, quantity prices,
@@ -314,9 +314,8 @@ Re-running preserves your edits; credentials are not stored in its state file.
 address book → simulated checkout → real flow execution → order detail/PDF,
 then explore staging, apps, product knowledge and optional AI.
 
-![Current product detail in the isolated playground](docs/assets/playground-product-en.jpg)
 
-![Current Studio order management with synthetic playground orders](docs/assets/playground-orders-en.jpg)
+![Current Studio order management with synthetic playground orders](docs/screenshots/vendune-orders.jpg)
 
 ## Choose your next step
 
@@ -331,7 +330,7 @@ then explore staging, apps, product knowledge and optional AI.
 
 ## See three short feature demos
 
-[Watch the feature clips](https://sthamann.github.io/rust-ai-commerce/#demo):
+[Watch the feature clips](https://sthamann.github.io/vendune/#demo):
 
 - Switch an actual SKU, select six units and carry the quantity tier into the cart.
 - Personalize a product through an installed Wasm app; its fee enters the real cart.
@@ -341,7 +340,7 @@ In the approval clip,
 a local model proposes EUR 69.90 instead of EUR 74.90 for the lamp; the price
 changes only after merchant approval and is then visible in the storefront.
 These feature recordings use a synthetic shop and show the navigation at capture
-time; waiting time is shortened. The three playground screenshots show the current
+time, before the Vendune rebrand; waiting time is shortened. The current screenshots show the current
 product, flow and order workspaces. [Capture notes](docs/assets/README.md).
 
 1. Ask the assistant to propose a catalog change.
@@ -354,7 +353,7 @@ revisions before applying an approved proposal. See the [security scope](docs/se
 
 ## Inspect measured performance
 
-The [local benchmark page](https://sthamann.github.io/rust-ai-commerce/benchmarks.html)
+The [local benchmark page](https://sthamann.github.io/vendune/benchmarks.html)
 reports a physical **1,000,000-product catalog with 1,000,000 translations**,
 product pages, search, a 20-line cart and fresh durable checkouts at fixed arrivals
 of 100 and 500 requests/s. It retains the historical 1,000-product comparison,
@@ -385,7 +384,7 @@ See [implementation and limits](docs/intelligence-apps-payments.md),
 
 - [Features, extension examples and verification commands](docs/features.md)
 - [Source files and their tests](docs/source-map.md)
-- [Recorded verification results](docs/verification.json) and [current CI runs](https://github.com/sthamann/rust-ai-commerce/actions)
+- [Recorded verification results](docs/verification.json) and [current CI runs](https://github.com/sthamann/vendune/actions)
 - [Original Shopware migration units](porting/units.json) and [migration workflow](docs/migration.md)
 - [Architecture decisions](docs/architecture.md), [security](docs/security.md), [third-party licenses](THIRD_PARTY.md)
 
@@ -400,7 +399,7 @@ These include private releases, customer authority, concurrent checkout and boun
 
 The Studio, storefront and operator console live in dedicated feature folders; shared API, app, form and locale code has enforced ownership boundaries. Studio workspaces load lazily. Views and controllers are bounded, documented modules; ordered CSS fragments preserve the visual cascade. See the [frontend architecture](frontend/README.md), [complete source inventory](docs/module-inventory.md) and [testing guide](docs/testing.md).
 
-CI runs source-boundary/cycle/size checks, real integration, component regressions, original Shopware comparisons and existing Lean/mutation checks. It uploads full V8, LLVM and Python coverage reports and enforces reviewed regression floors. Untested source files remain in the reports. **Full-system 100% coverage is not achieved**; the strict audit fails until the remaining branches and unmeasured runtime scopes are covered. The [5 October 2026 CI run](https://github.com/sthamann/rust-ai-commerce/actions/runs/37285967720) measures line coverage at **81.00% Rust, 42.28% frontend and 74.11% Python** in their separate documented source scopes. Current measured evidence, untouched modules and limitations are in [quality-baseline.json](docs/quality-baseline.json).
+CI runs source-boundary/cycle/size checks, real integration, component regressions, original Shopware comparisons and existing Lean/mutation checks. It uploads full V8, LLVM and Python coverage reports and enforces reviewed regression floors. Untested source files remain in the reports. **Full-system 100% coverage is not achieved**; the strict audit fails until the remaining branches and unmeasured runtime scopes are covered. The [5 October 2026 CI run](https://github.com/sthamann/vendune/actions/runs/37285967720) measures line coverage at **81.00% Rust, 42.28% frontend and 74.11% Python** in their separate documented source scopes. Current measured evidence, untouched modules and limitations are in [quality-baseline.json](docs/quality-baseline.json).
 
 ## Contribute
 

@@ -1,4 +1,5 @@
 /** Personal sign-in verifies the current operator grant before retaining a browser session. */
+import Brand from "../shared/ui/Brand";
 import { useState } from "react";
 import { usePlatformText } from "../shared/i18n/platform-i18n";
 import {
@@ -51,7 +52,9 @@ export default function PlatformSignIn({
   return (
     <div className="platform-console platform-login">
       <div className="platform-welcome">
-        <span className="platform-brand">C</span>
+        <span className="platform-brand">
+          <Brand markOnly />
+        </span>
         <h1>{t("title")}</h1>
         <p>{t("subtitle")}</p>
       </div>

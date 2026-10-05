@@ -50,7 +50,7 @@ pub(crate) fn enrich(
     } else {
         shipping.price
     };
-    let mut taxes: Vec<rust_ai_commerce::pricing::CalculatedTax> = vec![];
+    let mut taxes: Vec<vendune::pricing::CalculatedTax> = vec![];
     for line in q["lineItems"].as_array().unwrap() {
         for v in line["price"]["calculatedTaxes"].as_array().unwrap() {
             let rate = v["taxRate"].as_f64().unwrap();
@@ -58,7 +58,7 @@ pub(crate) fn enrich(
                 t.price += v["price"].as_f64().unwrap();
                 t.tax += v["tax"].as_f64().unwrap();
             } else {
-                taxes.push(rust_ai_commerce::pricing::CalculatedTax {
+                taxes.push(vendune::pricing::CalculatedTax {
                     tax_rate: rate,
                     tax: v["tax"].as_f64().unwrap(),
                     price: v["price"].as_f64().unwrap(),

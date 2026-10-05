@@ -62,7 +62,7 @@ This is a working application boundary with real isolation tests, not proof
 of a production SaaS deployment. SSO/MFA/recovery, quotas, verified email,
 billing, tenant lifecycle, core-wide RLS, physical separation and failover remain open.
 
-## Commerce Studio · v0.5
+## Vendune Studio · v0.5
 
 The light workspace uses Shopware-inspired blue accents and a large assistant.
 An optional slate-blue theme remains available. Seven integrated views provide:
@@ -81,7 +81,7 @@ An optional slate-blue theme remains available. Seven integrated views provide:
 | Team & access | Personal sign-in, workspace creation, invitations, roles and shop switching |
 | Apps | Categories and separate app detail/settings pages, managed records and app-owned UI |
 
-![Current order workspace in Commerce Studio](assets/playground-orders-en.jpg)
+![Current order workspace in Vendune Studio](assets/vendune-orders.jpg)
 
 The interactive preview uses the real server calculator; it creates no order
 or stock change. Numbers/dates, product text and model replies follow the
@@ -173,7 +173,7 @@ million-product capacity is claimed.
 [Implementation and limits](intelligence-apps-payments.md) ·
 [App manifests, SDK and runnable examples](../extensions/README.md)
 
-![Connected native event flow](assets/automation-flow-en.jpg)
+[Historical connected event-flow capture](assets/automation-flow-en.jpg)
 
 ## Executable extensions
 

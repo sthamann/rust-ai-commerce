@@ -9,7 +9,7 @@ export const en = {
     "Read-only access: an editor or administrator must approve this change.",
   users: "Team & access",
   commerce: "Sales & delivery",
-  studio: "Commerce Studio",
+  studio: "Vendune Studio",
   overview: "Shop today",
   assistant: "Assistant",
   knowledge: "Shop intelligence",

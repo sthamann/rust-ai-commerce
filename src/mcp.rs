@@ -148,7 +148,7 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
     }
     let result = match method {
         "initialize" => Ok(
-            json!({"protocolVersion":if v["params"]["protocolVersion"]=="2025-11-25"{"2025-11-25"}else{"2026-07-28"},"capabilities":{"tools":{},"resources":{}},"serverInfo":{"name":"rust-ai-commerce","version":env!("CARGO_PKG_VERSION")}}),
+            json!({"protocolVersion":if v["params"]["protocolVersion"]=="2025-11-25"{"2025-11-25"}else{"2026-07-28"},"capabilities":{"tools":{},"resources":{}},"serverInfo":{"name":"vendune","version":env!("CARGO_PKG_VERSION")}}),
         ),
         "ping" => Ok(json!({})),
         "tools/list" => {

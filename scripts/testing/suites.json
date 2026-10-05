@@ -40,6 +40,7 @@
     "architecture"
   ],
   "tooling": [
-    "testing/tooling_tests"
+    "testing/tooling_tests",
+    "branding"
   ]
 }

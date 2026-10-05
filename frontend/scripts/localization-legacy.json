@@ -101,10 +101,6 @@
   },
   {
     "file": "admin/shell/StudioSidebar.tsx",
-    "text": "commerce"
-  },
-  {
-    "file": "admin/shell/StudioSidebar.tsx",
     "text": "v0.5"
   },
   {
@@ -112,20 +108,8 @@
     "text": "my-shop"
   },
   {
-    "file": "admin/team/UsersManager.tsx",
-    "text": "COMMERCE /"
-  },
-  {
-    "file": "platform/PlatformConsole.tsx",
-    "text": "C"
-  },
-  {
     "file": "platform/PlatformShops.tsx",
     "text": "my-shop"
-  },
-  {
-    "file": "platform/PlatformSignIn.tsx",
-    "text": "C"
   },
   {
     "file": "shared/ui/ProductArt.tsx",
@@ -136,35 +120,11 @@
     "text": "NOTES"
   },
   {
-    "file": "storefront/catalog/ProductPage.tsx",
-    "text": "· atelier /"
-  },
-  {
-    "file": "storefront/catalog/ProductPurchase.tsx",
-    "text": "ATELIER /"
-  },
-  {
     "file": "storefront/catalog/ProductPurchase.tsx",
     "text": "SKU"
   },
   {
-    "file": "storefront/shell/CollectionView.tsx",
-    "text": "ATELIER /"
-  },
-  {
-    "file": "storefront/shell/Storefront.tsx",
-    "text": "atelier /"
-  },
-  {
     "file": "storefront/shell/Storefront.tsx",
     "text": "GitHub ↗"
-  },
-  {
-    "file": "storefront/shell/StorefrontHeader.tsx",
-    "text": "atelier"
-  },
-  {
-    "file": "storefront/shell/StorefrontHome.tsx",
-    "text": "ATELIER /"
   }
 ]

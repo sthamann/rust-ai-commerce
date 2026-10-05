@@ -24,8 +24,7 @@ impl Condition {
                 rule.checked_at(c, q, depth + 1)
             }
             Self::Source { name, config } => {
-                rust_ai_commerce::automation_rules::evaluate(name, config, &q["ruleFacts"])
-                    .map_err(bad)
+                vendune::automation_rules::evaluate(name, config, &q["ruleFacts"]).map_err(bad)
             }
             Self::And { children } | Self::Or { children } => {
                 let values = children
@@ -156,7 +155,7 @@ impl Condition {
                     return operator == "!=";
                 }
                 let matched = wildcard(c.data.email.as_deref().unwrap_or(""), email);
-                rust_ai_commerce::verified_kernel::rule_boolean_comparison(
+                vendune::verified_kernel::rule_boolean_comparison(
                     matched,
                     false,
                     operator == "=",
@@ -164,12 +163,10 @@ impl Condition {
                     false,
                 )
             }
-            Self::LoggedIn { is_logged_in } => {
-                rust_ai_commerce::verified_kernel::rule_authenticated(
-                    c.data.customer_id.is_some(),
-                    *is_logged_in,
-                )
-            }
+            Self::LoggedIn { is_logged_in } => vendune::verified_kernel::rule_authenticated(
+                c.data.customer_id.is_some(),
+                *is_logged_in,
+            ),
             Self::Field {
                 field,
                 operator,
@@ -190,10 +187,10 @@ impl Condition {
     }
 }
 fn numeric(a: f64, b: f64, op: &str) -> bool {
-    rust_ai_commerce::rule_comparison::numeric(Some(a), Some(b), op).unwrap_or(false)
+    vendune::rule_comparison::numeric(Some(a), Some(b), op).unwrap_or(false)
 }
 fn set_matches(actual: &[String], rule: &[String], operator: &str) -> bool {
-    rust_ai_commerce::rule_comparison::uuids(
+    vendune::rule_comparison::uuids(
         Some(&actual.iter().cloned().map(Some).collect::<Vec<_>>()),
         Some(&rule.iter().cloned().map(Some).collect::<Vec<_>>()),
         operator,

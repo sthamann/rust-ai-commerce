@@ -1,5 +1,5 @@
 /* studio: studio styles. Source order is preserved by the entry stylesheet. */
-/* Commerce Studio: scoped design tokens, no storefront styles in admin flows. */
+/* Vendune Studio: scoped design tokens, no storefront styles in admin flows. */
 .studio {
   --bg: #f5f8fc;
   --surface: #ffffff;

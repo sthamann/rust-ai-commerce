@@ -1,4 +1,5 @@
 /** CollectionView: storefront view composed from the scoped cart/controller. */
+import { BRAND } from "../../shared/ui/Brand";
 import ImagePlaceholder from "../catalog/ImagePlaceholder";
 import CatalogNavigation from "./CatalogNavigation";
 import "../../shared/styles/apps.css";
@@ -29,7 +30,9 @@ export default function CollectionView() {
     <section className="shop-collection" id="collection">
       <div className="collection-title">
         <div>
-          <p className="shop-kicker">ATELIER / {s("collection")}</p>
+          <p className="shop-kicker">
+            {BRAND.name} / {s("collection")}
+          </p>
           <h2>{s("collection")}</h2>
         </div>
         <span>

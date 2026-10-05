@@ -78,10 +78,8 @@
 .studio[data-theme="light"] .studio-sidebar {
   background: linear-gradient(180deg, #ffffff 0%, #f6f9ff 100%);
 }
-.studio[data-theme="light"] .studio-brand > span:first-child {
-  background: #1768eb;
-  color: #fff;
-  border: 0;
+.studio[data-theme="light"] .studio-brand .vendune-mark {
+  border-radius: 11px;
   box-shadow: 0 4px 16px #1768eb26;
 }
 .studio[data-theme="light"] .studio-sidebar nav button.active {

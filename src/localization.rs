@@ -1,6 +1,6 @@
 //! Shop locale resolution, translated catalog hydration and non-mutating merchant quote.
 use super::*;
-use rust_ai_commerce::context::{Language, language_chain};
+use vendune::context::{Language, language_chain};
 
 pub(super) async fn language_context(a: &App, h: &HeaderMap) -> Result<(String, Vec<String>)> {
     let (settings, _) = commerce::config(a, &tenant(h)?).await?;
@@ -34,7 +34,7 @@ pub(super) async fn language_context(a: &App, h: &HeaderMap) -> Result<(String, 
             .ok_or(bad("Main language unavailable"))?
             .get::<String, _>("id");
         let current = selected.get::<String, _>("id");
-        chain.retain(|id| id != rust_ai_commerce::context::SYSTEM_LANGUAGE || id == &current);
+        chain.retain(|id| id != vendune::context::SYSTEM_LANGUAGE || id == &current);
         if !chain.contains(&main) {
             chain.push(main);
         }

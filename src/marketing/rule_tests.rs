@@ -1,7 +1,7 @@
 //! Regression cases for native rule facts and original container boundaries.
 use super::*;
 fn numeric(a: f64, b: f64, op: &str) -> bool {
-    rust_ai_commerce::rule_comparison::numeric(Some(a), Some(b), op).unwrap_or(false)
+    vendune::rule_comparison::numeric(Some(a), Some(b), op).unwrap_or(false)
 }
 #[test]
 fn rejects_unknown_and_unbounded_conditions() {

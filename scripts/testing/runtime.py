@@ -24,7 +24,7 @@ def stop(process):
 
 def serve(env, url, log):
     process = subprocess.Popen(
-        [str(ROOT / "target/debug/rust-ai-commerce")],
+        [str(ROOT / "target/debug/vendune")],
         cwd=ROOT,
         env=env,
         stdout=log,

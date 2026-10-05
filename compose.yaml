@@ -1,7 +1,7 @@
 services:
   postgres:
     build: ./database
-    image: rust-ai-commerce-db:local
+    image: vendune-db:local
     environment:
       POSTGRES_USER: commerce
       POSTGRES_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}

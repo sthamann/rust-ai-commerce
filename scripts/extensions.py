@@ -16,7 +16,7 @@ def req(path,body=None,h=None,expected=200,backend=None):
     assert status==expected,(path,status,expected,data)
     return data
 # Read the exact prior policy privately from our local DB, so custom policies are preserved.
-r=subprocess.run(['docker','exec',os.getenv('DB_CONTAINER','rust-ai-commerce-postgres-1'),'psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-At','-c',"SELECT to_json(wat)::text FROM public.extensions WHERE tenant='"+tenant+"'"],check=True,capture_output=True,text=True)
+r=subprocess.run(['docker','exec',os.getenv('DB_CONTAINER','vendune-postgres-1'),'psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-At','-c',"SELECT to_json(wat)::text FROM public.extensions WHERE tenant='"+tenant+"'"],check=True,capture_output=True,text=True)
 previous=json.loads(r.stdout.strip()) if r.stdout.strip() else (root/'extensions/company-limit.wat').read_text()
 previous_digest=hashlib.sha256(previous.encode()).hexdigest()
 def check(name):checks.append(name);print('PASS',name)
@@ -29,7 +29,7 @@ log=open(root/'.run/extension-replica.log','w')
 with socket.socket() as sock:
     sock.bind(('127.0.0.1',0));replica_port=sock.getsockname()[1]
 replica_url=f'http://127.0.0.1:{replica_port}'
-replica=subprocess.Popen([str(root/'target/debug/rust-ai-commerce')],cwd=root,env={**os.environ,'BIND_ADDR':f'127.0.0.1:{replica_port}'},stdout=log,stderr=log)
+replica=subprocess.Popen([str(root/'target/debug/vendune')],cwd=root,env={**os.environ,'BIND_ADDR':f'127.0.0.1:{replica_port}'},stdout=log,stderr=log)
 try:
     for _ in range(80):
         if replica.poll() is not None:raise RuntimeError('Test replica failed; inspect private .run/extension-replica.log')

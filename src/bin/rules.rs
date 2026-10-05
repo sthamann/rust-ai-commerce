@@ -17,12 +17,12 @@ fn main() {
                 })
             };
             let result = match v["kind"].as_str().unwrap_or("numeric") {
-                "string" => rust_ai_commerce::rule_comparison::string(
+                "string" => vendune::rule_comparison::string(
                     v["item"].as_str(),
                     v["rule"].as_str().unwrap_or(""),
                     op,
                 ),
-                "stringArray" => rust_ai_commerce::rule_comparison::string_array(
+                "stringArray" => vendune::rule_comparison::string_array(
                     v["item"].as_str(),
                     &v["rule"]
                         .as_array()
@@ -32,16 +32,12 @@ fn main() {
                         .collect::<Vec<_>>(),
                     op,
                 ),
-                "uuids" => rust_ai_commerce::rule_comparison::uuids(
+                "uuids" => vendune::rule_comparison::uuids(
                     strings(&v["item"]).as_deref(),
                     strings(&v["rule"]).as_deref(),
                     op,
                 ),
-                _ => rust_ai_commerce::rule_comparison::numeric(
-                    v["item"].as_f64(),
-                    v["rule"].as_f64(),
-                    op,
-                ),
+                _ => vendune::rule_comparison::numeric(v["item"].as_f64(), v["rule"].as_f64(), op),
             };
             match result {
                 Ok(b) => json!(b),

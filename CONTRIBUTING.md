@@ -1,4 +1,4 @@
-# Contributing to Rust AI Commerce
+# Contributing to Vendune
 
 This is an experimental commerce and migration laboratory. Changes should keep
 merchant authority, tenant isolation and deterministic commerce operations explicit.

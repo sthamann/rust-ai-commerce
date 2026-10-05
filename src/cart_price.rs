@@ -21,8 +21,7 @@ pub(crate) fn quote(c: &StoredCart, ps: &[Product]) -> Result<Value> {
         } else {
             vec!["consumer".into()]
         };
-        let tier =
-            rust_ai_commerce::context::select_tier(&p.advanced_prices, &rule_ids, i.quantity);
+        let tier = vendune::context::select_tier(&p.advanced_prices, &rule_ids, i.quantity);
         let discount = 1. - tier.map(|t| t.discount).unwrap_or(0.);
         let base = if b2b {
             p.price / (1. + p.tax_rate / 100.)
@@ -104,7 +103,7 @@ pub(crate) fn normalized_quantity(p: &Product, q: u32) -> Result<u32> {
     if available < p.min_purchase {
         return Err(bad("Product cannot be purchased in an allowed quantity"));
     }
-    Ok(rust_ai_commerce::context::fix_quantity(
+    Ok(vendune::context::fix_quantity(
         p.min_purchase as i64,
         q.max(p.min_purchase).min(available) as i64,
         p.purchase_steps as i64,

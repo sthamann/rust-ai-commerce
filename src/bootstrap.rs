@@ -110,7 +110,7 @@ pub(crate) async fn run() {
     let app = router(a.clone());
     let addr = env::var("BIND_ADDR").unwrap_or("127.0.0.1:8787".into());
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
-    println!("rust-ai-commerce listening on http://{addr}");
+    println!("vendune listening on http://{addr}");
     axum::serve(listener, app)
         .with_graceful_shutdown(async {
             let _ = tokio::signal::ctrl_c().await;

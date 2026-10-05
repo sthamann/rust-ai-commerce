@@ -135,10 +135,8 @@ pub(crate) async fn promote(
                 .iter()
                 .map(|l| (l["price"]["totalPrice"].as_f64().unwrap() * 100.).round() as i64)
                 .collect::<Vec<_>>();
-            let allocated = rust_ai_commerce::discount::allocate(
-                &totals,
-                (total * ratio * 100.).round() as i64,
-            );
+            let allocated =
+                vendune::discount::allocate(&totals, (total * ratio * 100.).round() as i64);
             let mut after = 0.;
             let mut tax = 0.;
             for (index, line) in q["lineItems"]

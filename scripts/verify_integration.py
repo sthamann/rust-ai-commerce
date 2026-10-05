@@ -17,7 +17,7 @@ import uuid
 from testing.runtime import ROOT, run, serve, stop
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument("--container", default="rust-ai-commerce-postgres-1")
+parser.add_argument("--container", default="vendune-postgres-1")
 parser.add_argument("--existing-database", action="store_true")
 parser.add_argument("--only", nargs="+", help="Run selected registered HTTP suites in an isolated database")
 args = parser.parse_args()
@@ -46,6 +46,7 @@ with socket.socket() as probe:
     port = probe.getsockname()[1]
 env.update({
     "DATABASE_URL": urllib.parse.urlunsplit(url._replace(path="/" + name)),
+    "DB_CONTAINER": args.container, "TEST_DB_CONTAINER": args.container,
     "TEST_DATABASE": name,
     "BASE_URL": f"http://127.0.0.1:{port}",
     "BIND_ADDR": f"127.0.0.1:{port}",

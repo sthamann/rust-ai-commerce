@@ -11,7 +11,7 @@ fn main() {
             cases
                 .iter()
                 .map(|c| {
-                    match rust_ai_commerce::automation_rules::evaluate(
+                    match vendune::automation_rules::evaluate(
                         c["name"].as_str().unwrap(),
                         &c["config"],
                         &c["facts"],
