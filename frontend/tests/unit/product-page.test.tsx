@@ -86,7 +86,9 @@ it("switches gallery/variants, applies normalized quantity and displays authorit
     { wrapper: LocaleProvider },
   );
   await screen.findByRole("heading", { name: "Unit lamp", level: 1 });
-  expect(document.title).toBe("Fixture SEO title");
+  // SEO is applied by a post-render effect; heading presence alone is not a
+  // synchronization point on slower CI runners.
+  await waitFor(() => expect(document.title).toBe("Fixture SEO title"));
   expect(screen.getByText("15 W")).toBeInTheDocument();
   expect(await screen.findByText("Fixture recommendation")).toBeInTheDocument();
   const user = userEvent.setup();
