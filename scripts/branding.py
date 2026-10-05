@@ -17,6 +17,8 @@ for path in current:
         assert not STALE.search(path.read_text()), f'Stale current branding: {path.relative_to(ROOT)}'
 
 assert re.search(r'^name = "vendune"$', (ROOT / 'Cargo.toml').read_text(), re.M)
+lock_names = re.findall(r'^name = "([^"]+)"$', (ROOT / 'Cargo.lock').read_text(), re.M)
+assert lock_names == sorted(lock_names), 'Normalize Cargo.lock with full cargo metadata after a crate rename'
 for file in ('frontend/package.json', 'frontend/package-lock.json'):
     assert json.loads((ROOT / file).read_text())['name'] == 'vendune-experience'
 mark = (ROOT / 'docs/brand/vendune-mark.svg').read_bytes()

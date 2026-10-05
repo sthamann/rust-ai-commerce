@@ -1287,8 +1287,8 @@
       "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "Cargo.lock": {
-      "sha256": "950a8a7ea340595650ccf5c6868667743ebb460d1ea1a29d1e677dcbfe79e3c8",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "5cc87059fea83b2f8c93670e7c50e8d9542e007d949bf904ffc8338fcc7b147a",
+      "review": "Full cargo metadata normalized the renamed vendune package into canonical Cargo.lock ordering. Reviewed the actual diff: only the same root package and unchanged dependency list moved alphabetically; no dependency versions, checksums or business decisions changed. Full Rust/UI/integration/differential suites passed. This explicit review updates the canonical lockfile input hash; the new branding check rejects noncanonical package ordering."
     },
     "Cargo.toml": {
       "sha256": "42c7b675a7de95306eb99ee9fcb56a62096370d8946ee0ae989207750f872a6e",
