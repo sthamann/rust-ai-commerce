@@ -173,7 +173,7 @@ export default function ProductPurchase({
       <div className={`availability ${p.stock ? "in-stock" : "out-of-stock"}`}>
         <i />
         {p.stock ? `${p.stock} ${s("available")}` : s("sold")}{" "}
-        <span>SKU {p.id}</span>
+        <span>SKU {p.product_number || p.id}</span>
       </div>
       {!p.stock && <small>{s("soldHint")}</small>}
       <AppSurfaceSlot location="product.detail" context={{ productId: p.id }} />

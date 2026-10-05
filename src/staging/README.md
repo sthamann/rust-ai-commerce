@@ -3,6 +3,7 @@
 This folder owns the Rust modules listed below. Each source begins with its responsibility contract. The crate currently shares internal types/imports through a facade; APIs, MCP and UCP delegate to shared domain operations.
 
 - [`assets.rs](assets.rs): Binary assets are immutable, staged independently through metadata/digest units; paid entitlements never clone.
+- [`categories.rs`](categories.rs): category snapshot units and dependency-ordered selective publication.
 - [`clone.rs](clone.rs): Clone only catalog/configuration into a private tenant; customer/order/payment state is excluded.
 - [`documents.rs](documents.rs): Knowledge documents/chunks clone and publish with their source provenance; publication visibility is a reviewed unit.
 - [`mod.rs](mod.rs): Private cloned shops, scope admission and selective atomic release of reviewed changes.

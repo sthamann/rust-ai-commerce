@@ -3,6 +3,26 @@ use crate::*;
 
 pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
     (
+        "merchant.products",
+        "Search/filter own products before cursor pagination",
+    ),
+    (
+        "merchant.product.create",
+        "Create a native product or variant with localized content and category/channel associations",
+    ),
+    (
+        "merchant.categories",
+        "Read own category tree and translations",
+    ),
+    (
+        "merchant.category.create",
+        "Create a localized inactive or active category",
+    ),
+    (
+        "merchant.category.save",
+        "Revision-bound category content and cycle-safe parent edit",
+    ),
+    (
         "automation.catalog",
         "Read original rule scopes and executable native action contracts",
     ),

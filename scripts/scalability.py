@@ -20,7 +20,7 @@ def call(path,body=None,headers=None,expected=200,method=None):
     return data
 
 def sql(source):
-    return subprocess.check_output(['docker','exec','-i',args.container,'psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-At','-v','ON_ERROR_STOP=1'],input=source,text=True).strip()
+    return subprocess.check_output(['docker','exec','-i',args.container,'psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-qAt','-v','ON_ERROR_STOP=1'],input='SET search_path=public;\n'+source,text=True).strip()
 
 def ok(name):checks.append(name);print('PASS',name,flush=True)
 

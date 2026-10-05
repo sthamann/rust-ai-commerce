@@ -2,6 +2,7 @@
 use crate::*;
 
 const SCHEMA: &[(&str, &str)] = &[
+    // Product/category management is append-only; earlier migration hashes stay intact.
     // Append-only entries are applied in dependency order below.
     ("001", include_str!("../migrations/001.sql")),
     ("002", include_str!("../migrations/002.sql")),
@@ -81,6 +82,14 @@ const SCHEMA: &[(&str, &str)] = &[
     (
         "025-automation-pipelines",
         include_str!("../migrations/025-automation-pipelines.sql"),
+    ),
+    (
+        "026-product-catalog",
+        include_str!("../migrations/026-product-catalog.sql"),
+    ),
+    (
+        "027-product-search",
+        include_str!("../migrations/027-product-search.sql"),
     ),
 ];
 

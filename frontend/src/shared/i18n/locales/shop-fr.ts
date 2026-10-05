@@ -1,6 +1,7 @@
 /** Storefront and operational interface strings: fr. */
 import type { Key } from "./shop-de";
 export const fr: Record<Key, string> = {
+  noImage: "Aucune image pour le moment",
   firstPage: "Première page",
   nextPage: "Page suivante",
   moreVariants: "Charger plus de variantes",

@@ -1,5 +1,6 @@
 //! Sales channels share a merchant tenant but bind independent catalog visibility, locale and cart identity.
 use super::*;
+use std::collections::HashSet;
 #[derive(Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub(crate) struct Channel {
@@ -8,6 +9,8 @@ pub(crate) struct Channel {
     pub active: bool,
     pub locales: Vec<String>,
     pub product_ids: Vec<String>,
+    #[serde(default)]
+    pub navigation_category_id: Option<String>,
 }
 pub(crate) async fn channel(a: &App, t: &str, id: &str, locale: &str) -> Result<Option<Channel>> {
     if id == "default" {
@@ -36,6 +39,17 @@ pub(crate) fn channel_id(h: &HeaderMap) -> &str {
     header(h, "sw-sales-channel-id").unwrap_or("default")
 }
 pub(crate) async fn admit_product(a: &App, h: &HeaderMap, id: &str) -> Result<()> {
+    let available:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM products p WHERE p.tenant=$1 AND p.id=$2 AND p.active AND (p.parent_id IS NULL OR EXISTS(SELECT 1 FROM products parent WHERE parent.tenant=p.tenant AND parent.id=p.parent_id AND parent.active)))").bind(tenant(h)?).bind(id).fetch_one(&a.db).await?;
+    if !available {
+        return Err(Error(StatusCode::NOT_FOUND, "Product unavailable".into()));
+    }
+    let hidden:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM product_channel_visibility v WHERE v.tenant=$1 AND v.channel_id=$2 AND NOT v.visible AND (v.product_id=$3 OR v.product_id=(SELECT parent_id FROM products WHERE tenant=$1 AND id=$3)))").bind(tenant(h)?).bind(channel_id(h)).bind(id).fetch_one(&a.db).await?;
+    if hidden {
+        return Err(Error(
+            StatusCode::NOT_FOUND,
+            "Product hidden in this sales channel".into(),
+        ));
+    }
     if let Some(c) = channel(
         a,
         &tenant(h)?,
@@ -74,8 +88,13 @@ pub(crate) async fn filter_channel(
         &language_context(a, h).await?.0,
     )
     .await?;
+    let ids = ps.iter().map(|p| p.id.clone()).collect::<Vec<_>>();
+    let admitted: Vec<String> = sqlx::query_scalar("SELECT p.id FROM products p WHERE p.tenant=$1 AND p.id=ANY($2) AND p.active AND (p.parent_id IS NULL OR EXISTS(SELECT 1 FROM products parent WHERE parent.tenant=p.tenant AND parent.id=p.parent_id AND parent.active)) AND NOT EXISTS(SELECT 1 FROM product_channel_visibility v WHERE v.tenant=p.tenant AND v.channel_id=$3 AND NOT v.visible AND (v.product_id=p.id OR v.product_id=p.parent_id))")
+        .bind(tenant(h)?).bind(ids).bind(channel_id(h)).fetch_all(&a.db).await?;
+    let admitted = admitted.into_iter().collect::<HashSet<_>>();
     Ok(ps
         .into_iter()
+        .filter(|p| admitted.contains(&p.id))
         .filter(|p| {
             config.as_ref().is_none_or(|c| {
                 c.product_ids.is_empty()

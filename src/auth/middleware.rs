@@ -19,7 +19,9 @@ pub(crate) fn permit(h: &HeaderMap, kind: &str) -> Result<()> {
 }
 fn action(path: &str, method: &str) -> &'static str {
     if path == "/api/search/product"
-        || path.starts_with("/api/merchant/products/") && method == "GET"
+        || (path.starts_with("/api/merchant/products")
+            || path.starts_with("/api/merchant/categories"))
+            && method == "GET"
     {
         return "catalog.read";
     }
@@ -131,6 +133,20 @@ pub(crate) async fn authenticate(
     }
     let path = request.uri().path().to_string();
     let method = request.method().to_string();
+    // Public image subrequests cannot carry frontend custom headers. Resolve only the scoped asset URL
+    // before sandbox/session admission; private shops still require the same merchant credential.
+    if path.starts_with("/store-api/assets/")
+        && header(request.headers(), "x-tenant").is_none()
+        && let Ok(url) = reqwest::Url::parse(&format!("http://local{}", request.uri()))
+        && let Some((_, shop)) = url.query_pairs().find(|(k, _)| k == "shop")
+    {
+        match shop.parse() {
+            Ok(value) => {
+                request.headers_mut().insert("x-tenant", value);
+            }
+            Err(_) => return bad("Invalid asset shop scope").into_response(),
+        }
+    }
     // Global administration has its own personal-session grant; tenant/admin/bootstrap roles cannot inherit it.
     if path.starts_with("/api/platform/") {
         match crate::platform::authenticate(&a, request.headers()).await {

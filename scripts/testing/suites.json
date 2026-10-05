@@ -21,7 +21,8 @@
     "merchant_operations",
     "customer_accounts",
     "developer_documents",
-    "automation"
+    "automation",
+    "catalog_management"
   ],
   "providers": [
     "email_tests",

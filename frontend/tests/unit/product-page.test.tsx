@@ -86,7 +86,9 @@ it("switches gallery/variants, applies normalized quantity and displays authorit
     { wrapper: LocaleProvider },
   );
   await screen.findByRole("heading", { name: "Unit lamp", level: 1 });
-  expect(document.title).toBe("Fixture SEO title");
+  // SEO is applied by a post-render effect; heading presence alone is not a
+  // synchronization point on slower CI runners.
+  await waitFor(() => expect(document.title).toBe("Fixture SEO title"));
   expect(screen.getByText("15 W")).toBeInTheDocument();
   expect(await screen.findByText("Fixture recommendation")).toBeInTheDocument();
   const user = userEvent.setup();
@@ -160,4 +162,32 @@ it("reports a failed detail load instead of rendering purchase controls", async 
     "Product unavailable",
   );
   expect(screen.queryByRole("spinbutton")).not.toBeInTheDocument();
+});
+
+it("renders an honest empty gallery and merchant product number for a new product", async () => {
+  vi.stubGlobal(
+    "fetch",
+    fixture({
+      ...detail,
+      product: { ...product, media: [], product_number: "STUDIO-001" },
+    }),
+  );
+  const { container } = render(
+    <ProductPage
+      id="lamp"
+      cart={cart}
+      busy={false}
+      onAdd={() => {}}
+      onCart={() => {}}
+    />,
+    { wrapper: LocaleProvider },
+  );
+  expect(
+    await screen.findByRole("img", { name: "No image yet" }),
+  ).toBeInTheDocument();
+  expect(container.querySelector(".gallery-main img")).toBeNull();
+  expect(screen.getByText("SKU STUDIO-001")).toBeInTheDocument();
+  expect(container.querySelector(".gallery-main")).not.toHaveTextContent(
+    "1 / 0",
+  );
 });

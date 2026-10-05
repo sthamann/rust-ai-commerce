@@ -62,6 +62,20 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
             .bind(locks)
             .fetch_all(&mut *tx)
             .await?;
+    // Recheck the new catalog admission under product locks: edits cannot deactivate/hide a SKU
+    // between the initial request check and the authoritative inventory/price snapshot.
+    if rows.iter().any(|r| !r.get::<bool, _>("active")) {
+        return Err(Error(StatusCode::NOT_FOUND, "Product unavailable".into()));
+    }
+    let hidden: bool = sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM product_channel_visibility WHERE tenant=$1 AND product_id=ANY($2) AND channel_id=$3 AND NOT visible)")
+        .bind(&c.tenant).bind(rows.iter().map(|r|r.get::<String,_>("id")).collect::<Vec<_>>())
+        .bind(marketing::channel_id(h)).fetch_one(&mut *tx).await?;
+    if hidden {
+        return Err(Error(
+            StatusCode::NOT_FOUND,
+            "Product hidden in this sales channel".into(),
+        ));
+    }
     let locked: Vec<_> = rows.iter().map(product).collect();
     let ps = locked
         .iter()

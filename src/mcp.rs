@@ -3,6 +3,13 @@ use crate::*;
 
 pub(crate) fn tool_schema(name: &str) -> Value {
     let props = match name {
+        "merchant.products" => {
+            json!({"search":{"type":"string","maxLength":200},"after":{"type":"string"},"limit":{"type":"integer","minimum":1,"maximum":100},"active":{"type":"boolean"},"categoryId":{"type":"string"},"parentId":{"type":"string"},"lowStock":{"type":"boolean"}})
+        }
+        "merchant.categories" => json!({}),
+        "merchant.product.create" => json!({"product":{"type":"object"}}),
+        "merchant.category.create" => json!({"category":{"type":"object"}}),
+        "merchant.category.save" => json!({"id":{"type":"string"},"category":{"type":"object"}}),
         "automation.save" => {
             json!({"kind":{"type":"string","enum":["rules","flows","promotions","channels"]},"id":{"type":"string"},"revision":{"type":"integer","minimum":0},"data":{"type":"object"}})
         }
@@ -68,6 +75,9 @@ pub(crate) fn tool_schema(name: &str) -> Value {
         _ => json!({}),
     };
     let required = match name {
+        "merchant.product.create" => vec!["product"],
+        "merchant.category.create" => vec!["category"],
+        "merchant.category.save" => vec!["id", "category"],
         "automation.save" => vec!["kind", "id", "revision", "data"],
         "automation.preview" | "automation.import" => vec!["condition"],
         "merchant.customer.addresses" => vec!["id"],

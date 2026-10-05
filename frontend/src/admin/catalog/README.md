@@ -6,11 +6,18 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `DocumentsManager.tsx`
-- `ProductAssets.tsx`
-- `ProductDataView.tsx`
-- `ReviewModeration.tsx`
-- `RichEditor.tsx`
+- `ProductDataView.tsx`: server-filtered list, cursor pages and integrated product/category navigation.
+- `ProductEditor.tsx`, `catalog-model.ts`: aggregate defaults, revision-bound creation/editing, language selection and unsaved-draft guards.
+- `ProductPanels.tsx`, `ReferencePriceFields.tsx`, `PairFields.tsx`: names, pricing, inventory, specifications, metadata, categories and channel controls.
+- `RichEditor.tsx`, `rich-conversion.ts`: safe TipTap JSON editing and legacy-content conversion.
+- `ProductMedia.tsx`, `GalleryUpload.tsx`: ordered cover/gallery and digest-published byte uploads.
+- `ProductVariants.tsx`, `RelatedProducts.tsx`: native SKU management and searchable cross-selling selection.
+- `CategoriesWorkspace.tsx`: translated hierarchical category administration.
+- `catalog-i18n.ts`: English, German, French and Spanish UI labels.
+- `ProductAssets.tsx`, `ReviewModeration.tsx`: product-scoped assets/downloads and review moderation.
+- `DocumentsManager.tsx`: knowledge-source document management, independently available through Shop knowledge.
+
+[Feature contracts and remaining upstream gaps](../../../../docs/product-management.md).
 
 ## Verification
 

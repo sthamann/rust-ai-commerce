@@ -121,3 +121,13 @@ CLI, edits a rule, repeats setup to prove that the edit survives, and places bot
 orders. It checks their actual tags and generated invoice records. It also checks
 that the state file contains no session token and has private permissions.
 The suite uses no paid provider, mail delivery or live payment account.
+
+## Manage the catalog
+
+Open **Products** in Studio. Search by name or product number, filter status,
+category or low stock, then select a row. Use **Create product**, enter a unique
+number/name, price/stock and category, and save. New products start inactive;
+activate deliberately to expose them in the Store API. Edit four content languages
+and rich descriptions in the same detail view. Under **Categories**, manage the
+translated tree; the storefront category bar uses those real assignments.
+[Full product guide and scope](product-management.md).

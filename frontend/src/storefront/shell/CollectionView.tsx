@@ -1,4 +1,6 @@
 /** CollectionView: storefront view composed from the scoped cart/controller. */
+import ImagePlaceholder from "../catalog/ImagePlaceholder";
+import CatalogNavigation from "./CatalogNavigation";
 import "../../shared/styles/apps.css";
 import "../../shared/styles/workbench.css";
 import Icon from "../../shared/ui/Icon";
@@ -10,8 +12,6 @@ export default function CollectionView() {
     s,
     adapted,
     experience,
-    category,
-    setCategory,
     query,
     setQuery,
     catalogLoading,
@@ -43,17 +43,7 @@ export default function CollectionView() {
         </span>
       </div>
       <div className="shop-filters">
-        <div>
-          {["all", "furniture", "lighting", "objects"].map((c) => (
-            <button
-              key={c}
-              aria-pressed={category === c}
-              onClick={() => setCategory(c)}
-            >
-              {s(c)}
-            </button>
-          ))}
-        </div>
+        <CatalogNavigation />
         <input
           aria-label={s("search")}
           placeholder={s("search")}
@@ -81,13 +71,17 @@ export default function CollectionView() {
               href={`#product/${p.id}`}
               aria-label={`${s("details")}: ${p.name}`}
             >
-              <img
-                src={p.media[0]?.url ?? `/media/${p.id}-front.svg`}
-                alt={p.name}
-                loading="lazy"
-                width="400"
-                height="320"
-              />
+              {p.media[0]?.url ? (
+                <img
+                  src={p.media[0].url}
+                  alt={p.name}
+                  loading="lazy"
+                  width="400"
+                  height="320"
+                />
+              ) : (
+                <ImagePlaceholder label={s("noImage")} />
+              )}
               <span>
                 {p.stock ? `${p.stock} ${s("available")}` : s("sold")}
               </span>

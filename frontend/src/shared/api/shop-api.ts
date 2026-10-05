@@ -3,6 +3,7 @@ import { responseError } from "../i18n/errors-i18n";
 import { getLocale } from "../i18n/i18n";
 export type Product = {
   id: string;
+  product_number?: string;
   parent_id?: string;
   name: string;
   description: string;

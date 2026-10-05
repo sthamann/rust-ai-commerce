@@ -1,6 +1,8 @@
 /** Safe rich blocks with native image/video rendering; no HTML interpretation or script execution. */
+import { renderRichNode, safeRichUrl, type RichNode } from "./rich-document";
 export type RichBlock = {
-  type: "paragraph" | "heading" | "list" | "image" | "video";
+  type: "paragraph" | "heading" | "list" | "image" | "video" | "document";
+  doc?: RichNode;
   text?: string;
   url?: string;
 };
@@ -21,7 +23,9 @@ export default function RichDescription({ blocks }: { blocks: RichBlock[] }) {
   return (
     <div className="rich-description">
       {blocks.map((b, i) =>
-        b.type === "heading" ? (
+        b.type === "document" && b.doc ? (
+          renderRichNode(b.doc, i)
+        ) : b.type === "heading" ? (
           <h3 key={i}>{inline(b.text ?? "")}</h3>
         ) : b.type === "list" ? (
           <ul key={i}>
@@ -29,12 +33,12 @@ export default function RichDescription({ blocks }: { blocks: RichBlock[] }) {
               <li key={j}>{inline(t)}</li>
             ))}
           </ul>
-        ) : b.type === "image" && b.url?.startsWith("https://") ? (
+        ) : b.type === "image" && safeRichUrl(b.url) ? (
           <figure key={i}>
             <img src={b.url} alt={b.text ?? ""} loading="lazy" />
             {b.text && <figcaption>{b.text}</figcaption>}
           </figure>
-        ) : b.type === "video" && b.url?.startsWith("https://") ? (
+        ) : b.type === "video" && safeRichUrl(b.url) ? (
           <figure key={i}>
             <video
               controls

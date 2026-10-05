@@ -29,6 +29,10 @@ pub(crate) async fn catalog_page(
 ) -> Result<Json<Value>> {
     let (locale, chain) = language_context(&a, &h).await?;
     let t = tenant(&h)?;
+    if let Some(id) = &criteria.category_id {
+        categories::admit(&a, &h, id).await?;
+    }
+    criteria.channel_id = marketing::channel_id(&h).into();
     criteria.product_ids = marketing::catalog_scope(&a, &h).await?;
     let page = product_page(&a, &t, &chain, &criteria).await?;
     let ps = &page.products;

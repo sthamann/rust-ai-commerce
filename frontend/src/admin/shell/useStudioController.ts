@@ -44,6 +44,7 @@ export function useStudioController({
   }, [token, workspace]);
   const [workspaceName, setWorkspaceName] = useState(workspace);
   const [connected, setConnected] = useState(false);
+  const connectionScope = useRef("");
   const [role, setRole] = useState("viewer");
   const [providers, setProviders] = useState<Provider[]>([]);
   const [provider, setProvider] = useState("ollama");
@@ -123,10 +124,15 @@ export function useStudioController({
   useEffect(() => {
     let active = true;
     if (!token) {
+      connectionScope.current = "";
       setConnected(false);
       return;
     }
-    setConnected(false);
+    // Refresh translated context without unmounting open editors. Auth and
+    // tenant/environment changes still require a newly verified connection.
+    const scope = JSON.stringify([token, workspace, environment]);
+    if (connectionScope.current !== scope) setConnected(false);
+    connectionScope.current = scope;
     Promise.all([
       request("/api/agent/providers"),
       request("/api/merchant/overview"),
@@ -156,6 +162,7 @@ export function useStudioController({
       })
       .catch((e) => {
         if (active) {
+          setConnected(false);
           setError(String(e));
           setData(undefined);
         }
@@ -163,7 +170,7 @@ export function useStudioController({
     return () => {
       active = false;
     };
-  }, [request, token, workspace]);
+  }, [request, token, workspace, environment]);
   useEffect(() => {
     if (tab === "assistant")
       bottom.current?.scrollIntoView({ block: "nearest" });

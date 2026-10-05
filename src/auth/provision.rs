@@ -92,6 +92,7 @@ pub(crate) async fn provision_shop(
         .bind(hash(wat))
         .execute(&mut **tx)
         .await?;
+    categories::seed(tx, slug).await?;
     Ok(sandbox)
 }
 pub(crate) async fn create_workspace(

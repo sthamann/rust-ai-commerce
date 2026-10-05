@@ -22,3 +22,9 @@ proposal examples are separate from the provider-free playground flow.
 
 Benchmark JSON files are evidence from the described isolated measurements, not
 live-shop statistics. See [benchmarks.md](../benchmarks.md) for scope.
+
+The `catalog-*-en.png` captures were recorded on 2026-10-05 in the same
+synthetic Commerce Playground: server-filtered Products, the actual product
+editor/WYSIWYG and translated category tree. The Studio Vase and Studio Objects
+category were created and saved through the actual UI. No product data, server
+responses or layout were mocked for these captures.

@@ -6,6 +6,8 @@ pub(crate) struct Product {
     #[serde(default, serialize_with = "public_extra")]
     pub(crate) extra: Value,
     pub(crate) id: String,
+    #[serde(default)]
+    pub(crate) product_number: String,
     pub(crate) name: String,
     pub(crate) category: String,
     pub(crate) description: String,
@@ -35,6 +37,9 @@ pub(crate) fn product(r: &sqlx::postgres::PgRow) -> Product {
         properties: r.get("properties"),
         delivery_days: r.get("delivery_days"),
         id: r.get("id"),
+        product_number: r
+            .get::<Option<String>, _>("product_number")
+            .unwrap_or_else(|| r.get("id")),
         name: r.get("name"),
         category: r.get("category"),
         description: r.get("description"),
@@ -56,7 +61,7 @@ pub(crate) fn product(r: &sqlx::postgres::PgRow) -> Product {
 }
 pub(crate) async fn prototype_products(a: &App, t: &str) -> Result<Vec<Product>> {
     Ok(sqlx::query(
-        "SELECT * FROM products WHERE tenant=$1 AND parent_id IS NULL ORDER BY id LIMIT 101",
+        "SELECT * FROM products WHERE tenant=$1 AND parent_id IS NULL AND active ORDER BY id LIMIT 101",
     )
     .bind(t)
     .fetch_all(&a.db)

@@ -88,7 +88,16 @@ export default function StudioRoutes() {
   ) : tab === "automation" ? (
     <AutomationView request={request} role={role} />
   ) : tab === "productData" ? (
-    <ProductDataView request={request} />
+    connected ? (
+      <ProductDataView request={request} />
+    ) : (
+      <div className="studio-empty">
+        <p>{t("connectFirst")}</p>
+        <button className="studio-primary" onClick={() => selectTab("users")}>
+          {t("users")}
+        </button>
+      </div>
+    )
   ) : tab === "storyfronts" ? (
     <StoryfrontView request={request} role={role} />
   ) : tab === "developers" ? (

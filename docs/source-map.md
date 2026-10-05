@@ -316,3 +316,16 @@ See [automation](automation.md) for the precise supported/disabled catalog and a
 The merchant walkthrough is [playground.md](playground.md). Its sample flow uses
 no model or external delivery provider. The exact current source inventory is
 [generated separately](module-inventory.md).
+
+## Integrated catalog and category management (2026-10-05)
+
+| File/group | Responsibility | Regression evidence |
+|---|---|---|
+| `commerce/product_admin.rs`, `product_admin.sql`, `product_channels.rs`, `product_edit.rs`, `product_fields.rs` | Bounded merchant queries, product/variant creation, atomic revision saves, inventory/pricing and category/channel assignments | `catalog_management.py`, `commerce.py`, `merchant_operations.py`, frontend catalog-management tests |
+| `categories/{mod,admin,navigation}.rs`, `listing.sql`, migrations 026/027 | Tenant-safe translated tree, navigation roots, membership, nested product listings, indexed search | Rust validation tests; real category/cycle/visibility/locale/channel HTTP tests |
+| `assets/rich_document.rs`, shared `rich-document.tsx`, admin `RichEditor.tsx` | Safe structured WYSIWYG admission and storefront rendering | Rust unsafe-content negatives, actual React renderer tests, browser save/reload |
+| `admin/catalog/{ProductDataView,ProductEditor,ProductPanels,ProductMedia,GalleryUpload,ProductVariants,RelatedProducts,CategoriesWorkspace}.tsx` | One list/create/detail workspace, gallery/SKU/category workflows | Strict build, architecture constraints, unit tests and real synthetic browser creation |
+| `staging/categories.rs`, `snapshot.rs`, `release.rs` | Dependency-ordered category/product release, preserved live stock and rebound live asset scope | `catalog_management.py`, `staging.py`, Rust URL-scope regression |
+| `operations/mod.rs`, `mcp.rs`, `marketing/flows.rs` | HTTP/MCP shared operations and product-event durable consumers | Actual MCP creation followed by completed product-created flow |
+
+[Original Shopware mapping, supported features and remaining gaps](product-management.md).

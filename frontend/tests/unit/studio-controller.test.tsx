@@ -128,3 +128,27 @@ it("does not install a late session after unmount", async () => {
     pending.forEach((resolve) => resolve({ ok: true, json: async () => ({}) })),
   );
 });
+it("keeps an authenticated editor mounted while changing UI language and disconnects if revalidation fails", async () => {
+  sessionStorage.setItem("rac-user-token", "unit-token");
+  const { fetcher } = network();
+  const { result } = renderHook(
+    () => useStudioController({ onChanged: vi.fn(), onExit: vi.fn() }),
+    { wrapper: LocaleProvider },
+  );
+  await waitFor(() => expect(result.current.connected).toBe(true));
+  const original = fetcher.getMockImplementation()!;
+  let reject!: (error: Error) => void;
+  fetcher.mockImplementation((path, options) =>
+    String(path) === "/api/auth/session"
+      ? new Promise((_resolve, fail) => {
+          reject = fail;
+        })
+      : original(path, options),
+  );
+  act(() => result.current.setLocale("de-DE"));
+  await waitFor(() => expect(reject).toBeDefined());
+  expect(result.current.connected).toBe(true);
+  await act(async () => reject(new Error("Session expired")));
+  expect(result.current.connected).toBe(false);
+  expect(result.current.data).toBeUndefined();
+});

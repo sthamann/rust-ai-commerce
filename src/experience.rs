@@ -116,7 +116,6 @@ pub(crate) async fn personalization(
         .as_str()
         .filter(|s| ["view", "cart_add"].contains(s))
         .ok_or(bad("Unsupported behavior signal"))?;
-    marketing::admit_product(&a, &h, id).await?;
     let exists: bool =
         sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM products WHERE tenant=$1 AND id=$2)")
             .bind(&c.tenant)
@@ -126,6 +125,7 @@ pub(crate) async fn personalization(
     if !exists {
         return Err(bad("Unknown product"));
     }
+    marketing::admit_product(&a, &h, id).await?;
 
     if kind == "cart_add" && !c.data.items.iter().any(|i| i.id == id) {
         return Err(bad("Cart signal must refer to an actual cart item"));

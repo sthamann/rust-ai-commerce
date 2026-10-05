@@ -29,6 +29,7 @@ mod accounts;
 mod agent;
 mod apps;
 mod assets;
+mod categories;
 mod chat_lease;
 mod cognition;
 mod developer;

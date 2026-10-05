@@ -79,8 +79,15 @@ pub(crate) fn permission(name: &str) -> Option<&'static str> {
         "merchant.receipts" => "documents.read",
         "merchant.receipt.create" => "documents.create",
         "merchant.payment" => "payments.manage",
-        "merchant.product.assets" | "merchant.product.content" => "catalog.read",
-        "merchant.asset.publish" | "merchant.product.save" => "catalog.write",
+        "merchant.products"
+        | "merchant.categories"
+        | "merchant.product.assets"
+        | "merchant.product.content" => "catalog.read",
+        "merchant.product.create"
+        | "merchant.category.create"
+        | "merchant.category.save"
+        | "merchant.asset.publish"
+        | "merchant.product.save" => "catalog.write",
         _ => return None,
     })
 }
@@ -117,6 +124,41 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
         "merchant.workflow" => workflow::get(State(a.clone()), h.clone()).await?,
         "merchant.workflow.save" => {
             workflow::save(State(a.clone()), h.clone(), Json(v.clone())).await?
+        }
+        "merchant.products" => {
+            commerce::list_products(
+                State(a.clone()),
+                h.clone(),
+                axum::extract::Query(
+                    serde_json::from_value(v.clone())
+                        .map_err(|_| bad("Invalid catalog criteria"))?,
+                ),
+            )
+            .await?
+        }
+        "merchant.categories" => {
+            crate::categories::list_categories(State(a.clone()), h.clone()).await?
+        }
+        "merchant.product.create" => {
+            commerce::create_product(State(a.clone()), h.clone(), Json(v["product"].clone()))
+                .await?
+        }
+        "merchant.category.create" => {
+            crate::categories::create_category(
+                State(a.clone()),
+                h.clone(),
+                Json(v["category"].clone()),
+            )
+            .await?
+        }
+        "merchant.category.save" => {
+            crate::categories::save_category(
+                State(a.clone()),
+                h.clone(),
+                Path(id()?),
+                Json(v["category"].clone()),
+            )
+            .await?
         }
         "merchant.product.content" => {
             commerce::product_editor(State(a.clone()), h.clone(), Path(id()?)).await?

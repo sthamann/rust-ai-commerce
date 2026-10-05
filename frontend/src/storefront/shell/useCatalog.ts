@@ -26,7 +26,7 @@ export function useCatalog(
           limit: 50,
           after,
           search: query.trim() || undefined,
-          category: category === "all" ? undefined : category,
+          categoryId: category === "all" ? undefined : category,
         },
         token,
       );

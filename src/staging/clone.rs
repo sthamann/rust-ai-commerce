@@ -43,6 +43,8 @@ pub(crate) async fn create(
     sqlx::query("INSERT INTO products SELECT (jsonb_populate_record(NULL::products,to_jsonb(p)||jsonb_build_object('tenant',$2::text))).* FROM products p WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     sqlx::query("INSERT INTO product_translations SELECT $2,product_id,language_id,name,description FROM product_translations WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     sqlx::query("INSERT INTO product_assets SELECT (jsonb_populate_record(NULL::product_assets,to_jsonb(a)||jsonb_build_object('tenant',$2::text))).* FROM product_assets a WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
+    sqlx::query("INSERT INTO categories SELECT $2,id,parent_id,position,data,revision FROM categories WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
+    sqlx::query("INSERT INTO product_categories SELECT $2,product_id,category_id FROM product_categories WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     for table in ["commerce_settings", "experiences"] {
         let sql =
             format!("INSERT INTO {table}(tenant,data) SELECT $2,data FROM {table} WHERE tenant=$1");
@@ -126,6 +128,7 @@ pub(crate) async fn create(
             .await?;
     }
     sqlx::query("INSERT INTO commerce_rules(tenant,id,name,condition,active) SELECT $2,id,name,condition,active FROM commerce_rules WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
+    sqlx::query("INSERT INTO product_channel_visibility SELECT $2,product_id,channel_id,visible FROM product_channel_visibility WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     documents::clone_sources(&mut tx, &t, &id).await?;
     // Sandbox baseline is the actual sanitized clone, so disabled integrations aren't release changes.
     let stagebase = snapshot(&mut tx, &id).await?;

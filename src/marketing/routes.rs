@@ -124,6 +124,18 @@ pub(super) async fn save(
             {
                 return Err(bad("Invalid channel membership"));
             }
+            if let Some(root) = &c.navigation_category_id {
+                let exists: bool = sqlx::query_scalar(
+                    "SELECT EXISTS(SELECT 1 FROM categories WHERE tenant=$1 AND id=$2)",
+                )
+                .bind(&t)
+                .bind(root)
+                .fetch_one(&a.db)
+                .await?;
+                if !exists {
+                    return Err(bad("Unknown channel navigation category"));
+                }
+            }
             for product in &c.product_ids {
                 let exists: bool = sqlx::query_scalar(
                     "SELECT EXISTS(SELECT 1 FROM products WHERE tenant=$1 AND id=$2)",
