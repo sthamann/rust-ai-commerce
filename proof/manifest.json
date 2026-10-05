@@ -282,18 +282,18 @@
     },
     "src/apps/manifest.rs": {
       "status": "unproved",
-      "sha256": "7faa5621e3c4971e7708a76085bccf1c81612c95e44e2465e9678517927dda70",
-      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+      "sha256": "3e34e6095c8595467c39170a4ec1430f9902b8c16857900d85a05590a89c1a7c",
+      "review": "Reviewed optional passive app presentation validation, additive omission preserving legacy version digests, and shop main-language app metadata. No commerce decision or extracted policy changes; URL/JSON/SQL and UI adapters remain unproved. Covered safe/unsafe artwork, immutable versions, tenant isolation and native registry surfaces."
     },
     "src/apps/manifest_validation.rs": {
       "status": "unproved",
-      "sha256": "84355419ac5b56724cee1396a6890105b48cf500befe8c47803e1f6f1423206e",
-      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+      "sha256": "522d985d0c5d6cbcba24f7333340c0f99f38c887ad487997f51149ed837d7e58",
+      "review": "Reviewed optional passive app presentation validation, additive omission preserving legacy version digests, and shop main-language app metadata. No commerce decision or extracted policy changes; URL/JSON/SQL and UI adapters remain unproved. Covered safe/unsafe artwork, immutable versions, tenant isolation and native registry surfaces."
     },
     "src/apps/mod.rs": {
       "status": "unproved",
-      "sha256": "d52d83b48ced21144427d55766fded4d712d237f38809ed4508b3f0d83be41ad",
-      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+      "sha256": "ffbeee2f53fea39676c77279c643b569cb867f8069f48e24c26ade68848df566",
+      "review": "Reviewed optional passive app presentation validation, additive omission preserving legacy version digests, and shop main-language app metadata. No commerce decision or extracted policy changes; URL/JSON/SQL and UI adapters remain unproved. Covered safe/unsafe artwork, immutable versions, tenant isolation and native registry surfaces."
     },
     "src/apps/native_data.rs": {
       "status": "unproved",
@@ -315,6 +315,11 @@
       "sha256": "90c4670f867f7de808f335797ee33aae7805846c8cba782df2186fc0dbb52d9a",
       "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
+    "src/apps/presentation.rs": {
+      "status": "unproved",
+      "sha256": "5ae1a39695c7ff4cb7910c9cd77e0f0a73f27deeb8d530367ef6005ade4e6982",
+      "review": "Reviewed optional passive app presentation validation, additive omission preserving legacy version digests, and shop main-language app metadata. No commerce decision or extracted policy changes; URL/JSON/SQL and UI adapters remain unproved. Covered safe/unsafe artwork, immutable versions, tenant isolation and native registry surfaces."
+    },
     "src/apps/registry.rs": {
       "status": "unproved",
       "sha256": "ae223630acc3b5f1140eff4babb03b204345e6eb7a57170bafa80ed00170b57a",
@@ -322,8 +327,8 @@
     },
     "src/apps/routes.rs": {
       "status": "unproved",
-      "sha256": "21972ba9a50245a11b105d6200aa89577ccd267e61bcaa1f6f0483fe3ccc41c4",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "a8d6a9c45c27514aa82680d72ebbfbd64ca2e1076cbba0bac53a66cb287ab663",
+      "review": "Reviewed optional passive app presentation validation, additive omission preserving legacy version digests, and shop main-language app metadata. No commerce decision or extracted policy changes; URL/JSON/SQL and UI adapters remain unproved. Covered safe/unsafe artwork, immutable versions, tenant isolation and native registry surfaces."
     },
     "src/apps/runtime.rs": {
       "status": "unproved",
@@ -807,8 +812,8 @@
     },
     "src/developer/generation.rs": {
       "status": "unproved",
-      "sha256": "7f7c969abbaa6e76fb6b2a6d426c557399f72d819ac6b8a9b06bcd7a4e945274",
-      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+      "sha256": "3974fdcb23f956732f4db025f3a4812967308c1e1ec8aabba0c57a06e3ea5895",
+      "review": "Reviewed optional app artwork as a passive, bounded HTTPS/media presentation adapter; omission preserves legacy digests. Checked dynamic presentation-description schema specialization and strict provider conversion regression. Native registry UI, version immutability and tenant-isolated metadata covered by integration tests; commerce policy/proof logic unchanged."
     },
     "src/developer/mod.rs": {
       "status": "unproved",
@@ -872,8 +877,8 @@
     },
     "src/inference.rs": {
       "status": "unproved",
-      "sha256": "0eecf3050bac722425608ea3649517119288b3367ce28c43befa1b10fd7d6b9a",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "78edeaaaa888e5b54f8b560541c73abc27177ba7b575ebe2d1df308a1977ebf3",
+      "review": "Reviewed optional app artwork as a passive, bounded HTTPS/media presentation adapter; omission preserves legacy digests. Checked dynamic presentation-description schema specialization and strict provider conversion regression. Native registry UI, version immutability and tenant-isolated metadata covered by integration tests; commerce policy/proof logic unchanged."
     },
     "src/knowledge.rs": {
       "status": "unproved",
@@ -1325,8 +1330,8 @@
       "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "fixtures/app-studio-schema.json": {
-      "sha256": "7511608ce3bad039ba883206e6e1762aa672572b1ddb13594cdd40d28f3af205",
-      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+      "sha256": "d93691fd90f1e8cfc7a70345fbe0c3b34b47acb221ca2738e09e5c591fe32d1d",
+      "review": "Reviewed optional app artwork as a passive, bounded HTTPS/media presentation adapter; omission preserves legacy digests. Checked dynamic presentation-description schema specialization and strict provider conversion regression. Native registry UI, version immutability and tenant-isolated metadata covered by integration tests; commerce policy/proof logic unchanged."
     },
     "fixtures/demo-catalog.json": {
       "sha256": "e5d5eea04a7693b3f92fa58be66ad36b7ad01d5920029c29f303693aa0032ba2",

@@ -1,0 +1,124 @@
+/* Scoped app detail hierarchy, permission disclosure, data and integration forms. */
+.studio .app-detail-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0;
+}
+.studio .app-detail-tabs button[aria-pressed="true"] {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, var(--surface));
+}
+.studio .app-detail {
+  padding: 0;
+  overflow: hidden;
+  margin-top: 0;
+}
+.studio .app-detail > .app-artwork {
+  height: 175px;
+}
+.studio .app-detail > .app-artwork .app-logo {
+  width: 88px;
+  height: 88px;
+  inset: auto auto 30px 32px;
+  border-radius: 22px;
+}
+.studio .app-detail-heading {
+  padding: 28px 32px;
+  align-items: flex-start;
+}
+.studio .app-detail-heading h1 {
+  font-size: clamp(24px, 3vw, 32px);
+  margin: 8px 0 10px;
+  letter-spacing: -0.04em;
+}
+.studio .app-detail-heading p {
+  max-width: 740px;
+  margin: 0 0 14px;
+}
+.studio .app-detail-body {
+  padding: 0 32px 32px;
+}
+.studio .app-capabilities {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding-bottom: 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.studio .app-capabilities > div {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+}
+.studio .app-capabilities strong {
+  font-size: 22px;
+  font-weight: 650;
+}
+.studio .app-capabilities span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.studio .app-contract-summary {
+  display: grid;
+  gap: 14px;
+  margin-top: 24px;
+}
+.studio .app-contract-summary details {
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.studio .app-contract-summary summary {
+  cursor: pointer;
+  font-size: 14px;
+}
+.studio .app-contract-summary small {
+  color: var(--muted);
+}
+.studio .app-detail dl {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 14px;
+  line-height: 1.6;
+  font-size: 14px;
+}
+.studio .app-detail dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.studio .app-detail dt {
+  color: var(--muted);
+}
+.studio .app-detail .connector-panel {
+  background: color-mix(in srgb, var(--accent) 3%, var(--surface));
+  color: var(--text);
+  border-radius: 14px;
+  padding: 24px;
+}
+.studio .app-detail input,
+.studio .app-detail textarea,
+.studio .app-detail select {
+  min-height: 44px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--text);
+  background: var(--surface);
+  padding: 10px 12px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.studio .app-detail .app-entity form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+}
+.studio .app-detail .app-entity label {
+  min-width: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.studio .app-workspace > .app-back {
+  width: fit-content;
+}

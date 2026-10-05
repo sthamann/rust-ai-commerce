@@ -6,6 +6,10 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
+- `AppLibrary.tsx` — installed/discover search, filters and actionable cards
+- `AppArtwork.tsx` — provided assets, independent fallbacks and generated vector covers
+- `AppInterfaces.tsx` — permission-filtered registered native/external admin surfaces
+- `library-model.ts` — builtin catalog, categories and localized content resolution
 - `AppDetails.tsx`
 - `AppEntity.tsx`
 - `AppsManager.tsx`

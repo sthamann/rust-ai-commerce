@@ -231,3 +231,11 @@ plugin host or a production SaaS certification.
 ## Native visual apps
 
 The optional `views` contract adds bounded native text/table/cards/form layouts. Declarative surfaces use `uiPath: native/VIEW_ID` and explicit action allowlists. App Studio and coding agents edit the same Manifest; the sandbox and released surfaces use the same host renderer. Native public forms are rejected. Legacy packages omit empty `views`, retaining their serialized version digest. See [App Studio](app-studio.md) for workflows, code ownership, dynamic content languages and limitations. The care-studio example needs no operator-deployed app server.
+
+## App presentation and library
+
+Optional `presentation` metadata supplies a passive icon, cover and localized
+summary. The Apps library and individual details share the same content fallback
+and artwork renderer. Registered `admin.*` surfaces can be opened directly from
+**Apps → an installed app → App workspace**, through the existing permission-filtered
+host. [Manifest contract, lifecycle and source ownership](app-library.md).
