@@ -10,7 +10,15 @@ export function changes(
     return out;
   const object = (v: unknown): v is Record<string, unknown> =>
     !!v && typeof v === "object" && !Array.isArray(v);
-  if (object(before) && object(after)) {
+  if (Array.isArray(before) && Array.isArray(after)) {
+    for (
+      let i = 0;
+      i < Math.max(before.length, after.length) && out.length < 300;
+      i++
+    ) {
+      changes(before[i], after[i], `${path}[${i}]`, out);
+    }
+  } else if (object(before) && object(after)) {
     for (const key of new Set([
       ...Object.keys(before),
       ...Object.keys(after),

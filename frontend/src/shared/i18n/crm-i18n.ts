@@ -1,7 +1,6 @@
 /** Complete CRM/history vocabulary shared by settings, customer account and entity editors. */
 import { useLocale } from "./i18n";
 export const crmWords = {
-  back: ["Back", "Zurück", "Retour", "Volver"],
   addressPending: [
     "Save or discard profile edits before changing addresses.",
     "Speichere oder verwerfe die Profiländerungen, bevor du Adressen änderst.",

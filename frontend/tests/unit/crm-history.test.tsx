@@ -408,3 +408,30 @@ it("links legacy product positions and registered customers, while promotions an
     screen.queryByRole("button", { name: "buyer@example.test" }),
   ).toBeNull();
 });
+
+it("shows individual translated fields inside collections and preserves order changes and bounded additions", () => {
+  const before = {
+    customerGroups: [
+      {
+        id: "consumer",
+        translations: { "de-DE": { name: "Original", description: null } },
+      },
+    ],
+  };
+  const after = structuredClone(before);
+  after.customerGroups[0].translations["de-DE"].name = "Changed";
+  expect(changes(before, after)).toEqual([
+    {
+      path: "customerGroups[0].translations.de-DE.name",
+      before: "Original",
+      after: "Changed",
+    },
+  ]);
+  expect(changes(["a", "b"], ["b", "a"])).toHaveLength(2);
+  expect(
+    changes(
+      [],
+      Array.from({ length: 500 }, (_, i) => i),
+    ),
+  ).toHaveLength(300);
+});
