@@ -37,7 +37,8 @@
     "connected_apps",
     "image_jobs",
     "managed_search",
-    "app_assistants"
+    "app_assistants",
+    "read_performance"
   ],
   "browser_contracts": [
     "analytics",

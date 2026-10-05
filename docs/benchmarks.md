@@ -6,6 +6,11 @@ baseline comparison. Raw JSON includes every measured latency, errors, source an
 binary metadata. These are local synthetic HTTP/PostgreSQL measurements, not
 production capacity or an LLM speed claim. The browser clips are separate feature demonstrations.
 
+The later [read-context optimization](read-performance.md) has its own matched
+debug-build comparison and raw report. It does not replace this release-build
+million-product measurement; its six-product improvement percentages have not
+been demonstrated at that scale.
+
 ## Isolate the database
 
 Use a separate checkout and database. The fixture command deletes products and

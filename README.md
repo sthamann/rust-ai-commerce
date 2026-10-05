@@ -431,6 +431,13 @@ revisions before applying an approved proposal. See the [security scope](docs/se
 
 ## Inspect measured performance
 
+API, MCP and Studio now reuse **version-checked decoded settings and languages**
+and one context per read request. Pure configuration previews avoid unnecessary
+transactions; checkout keeps its authoritative locked reads. Browser transports
+coalesce simultaneous identical reads, and fingerprinted JS/CSS is browser-cacheable.
+SQL pool budgets and overload deadlines are configurable per process.
+[Implementation, matched local comparison, reproduction and the next scale stages](docs/read-performance.md).
+
 The [local benchmark page](https://sthamann.github.io/vendune/benchmarks.html)
 reports a physical **1,000,000-product catalog with 1,000,000 translations**,
 product pages, search, a 20-line cart and fresh durable checkouts at fixed arrivals

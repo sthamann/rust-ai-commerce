@@ -5,41 +5,36 @@ use vendune::context::{Language, language_chain};
 pub(super) async fn language_context(a: &App, h: &HeaderMap) -> Result<(String, Vec<String>)> {
     let (settings, _) = commerce::config(a, &tenant(h)?).await?;
     let locale = header(h, "x-commerce-locale").unwrap_or(&settings.main_locale);
-    let rows = sqlx::query("SELECT id,locale,parent_id FROM languages ORDER BY locale")
-        .fetch_all(&a.db)
-        .await?;
+    let rows = performance::languages(a).await?;
     let selected = if let Some(id) = header(h, "sw-language-id") {
-        rows.iter().find(|r| r.get::<String, _>("id") == id)
+        rows.iter().find(|r| r.id == id)
     } else {
-        rows.iter().find(|r| r.get::<String, _>("locale") == locale)
+        rows.iter().find(|r| r.locale == locale)
     }
     .ok_or(bad("Language unavailable"))?;
-    let available = rows
-        .iter()
-        .map(|r| r.get::<String, _>("id"))
-        .collect::<Vec<_>>();
+    let available = rows.iter().map(|r| r.id.clone()).collect::<Vec<_>>();
     let languages = rows
         .iter()
         .map(|r| Language {
-            id: r.get("id"),
-            parent_id: r.get("parent_id"),
+            id: r.id.clone(),
+            parent_id: r.parent_id.clone(),
         })
         .collect::<Vec<_>>();
-    let mut chain =
-        language_chain(&selected.get::<String, _>("id"), &available, &languages).map_err(bad)?;
+    let mut chain = language_chain(&selected.id, &available, &languages).map_err(bad)?;
     if settings.main_locale != "en-GB" {
         let main = rows
             .iter()
-            .find(|r| r.get::<String, _>("locale") == settings.main_locale)
+            .find(|r| r.locale == settings.main_locale)
             .ok_or(bad("Main language unavailable"))?
-            .get::<String, _>("id");
-        let current = selected.get::<String, _>("id");
+            .id
+            .clone();
+        let current = selected.id.clone();
         chain.retain(|id| id != vendune::context::SYSTEM_LANGUAGE || id == &current);
         if !chain.contains(&main) {
             chain.push(main);
         }
     }
-    Ok((selected.get("locale"), chain))
+    Ok((selected.locale.clone(), chain))
 }
 pub(super) async fn localize_products(
     a: &App,
@@ -47,6 +42,9 @@ pub(super) async fn localize_products(
     chain: &[String],
     mut ps: Vec<Product>,
 ) -> Result<Vec<Product>> {
+    if ps.is_empty() {
+        return Ok(ps);
+    }
     let ids = ps.iter().map(|p| p.id.clone()).collect::<Vec<_>>();
     let rows=sqlx::query("SELECT product_id,language_id,name,description FROM product_translations WHERE tenant=$1 AND language_id=ANY($2) AND product_id=ANY($3)").bind(t).bind(chain).bind(&ids).fetch_all(&a.db).await?;
     let mut translations: HashMap<String, ProductTranslations> = HashMap::new();
@@ -59,17 +57,14 @@ pub(super) async fn localize_products(
                 (row.get("name"), row.get("description")),
             );
     }
-    let languages = sqlx::query("SELECT id,locale FROM languages WHERE id=ANY($1)")
-        .bind(chain)
-        .fetch_all(&a.db)
-        .await?;
+    let languages = performance::languages(a).await?;
     let locale_chain = chain
         .iter()
         .filter_map(|id| {
             languages
                 .iter()
-                .find(|l| l.get::<String, _>("id") == *id)
-                .map(|l| l.get::<String, _>("locale"))
+                .find(|l| l.id == *id)
+                .map(|l| l.locale.clone())
         })
         .collect::<Vec<_>>();
     for p in &mut ps {

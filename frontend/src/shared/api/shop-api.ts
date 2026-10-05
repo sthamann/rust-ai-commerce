@@ -1,4 +1,5 @@
 /** shop api: Typed commerce contracts, merchant/store transports and binary download helper. */
+import { requestJson } from "./request-json";
 import { shopScope } from "./shop-scope";
 import { responseError } from "../i18n/errors-i18n";
 import { getLocale } from "../i18n/i18n";
@@ -185,7 +186,7 @@ export async function shopApi<T = unknown>(
   method?: string,
   merchant?: string,
 ): Promise<T> {
-  const r = await fetch(path, {
+  const r = await requestJson(path, {
     method: method ?? (body === undefined ? "GET" : "POST"),
     headers: {
       "Content-Type": "application/json",
@@ -212,7 +213,7 @@ export async function shopApi<T = unknown>(
     },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
-  const v = await r.json();
+  const v = r.value;
   if (
     r.status === 401 &&
     path.startsWith("/store-api/") &&

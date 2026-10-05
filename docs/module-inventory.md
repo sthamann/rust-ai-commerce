@@ -221,6 +221,11 @@ This lists every checked-in source module in these roots, including files with n
 | [src/payments/storage.rs](../src/payments/storage.rs) | Transactional provider receipts and order state updates; external responses cannot invent amounts or tenants. |
 | [src/payments/webhooks.rs](../src/payments/webhooks.rs) | PayPal verifies webhook signatures before inbox insertion; provider reconciliation confirms monetary state. |
 | [src/payments/worker.rs](../src/payments/worker.rs) | Leased payment jobs; network runs after claim commit, fenced receipts prevent duplicate local effects. |
+| [src/performance/cache.rs](../src/performance/cache.rs) | Bounded weighted LRU for immutable decoded read models; no network I/O under its mutex. |
+| [src/performance/languages.rs](../src/performance/languages.rs) | Global language registry is versioned in the same transaction as every registry mutation. |
+| [src/performance/mod.rs](../src/performance/mod.rs) | Shared read-context caching with authoritative versions; mutations and checkout locks stay outside memoization. |
+| [src/performance/pool.rs](../src/performance/pool.rs) | Explicit per-process database budgets and bounded queue waits; invalid deployment values fail fast. |
+| [src/performance/settings.rs](../src/performance/settings.rs) | One MVCC snapshot validates base/override UUIDs; warm reads avoid transmitting or decoding JSON. |
 | [src/planner.rs](../src/planner.rs) | Grounded model planning, recorded inputs and proposed changes. |
 | [src/platform/auth.rs](../src/platform/auth.rs) | Independent platform authorization: live personal sessions, current grants, no integration/bootstrap escalation. |
 | [src/platform/bootstrap.rs](../src/platform/bootstrap.rs) | Offline first-operator setup: migration-only process, supplied strong credentials, password proof for existing accounts. |
@@ -433,6 +438,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/platform/styles/platform/02-platform-shop-stats-span.css](../frontend/src/platform/styles/platform/02-platform-shop-stats-span.css) | platform: platform-shop-stats-span styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/platform/styles/platform.css](../frontend/src/platform/styles/platform.css) | Ordered platform stylesheet entry; domain rules live in the adjacent folder. |
 | [frontend/src/shared/api/download.ts](../frontend/src/shared/api/download.ts) | Authenticated binary download, never placing session credentials in a URL. |
+| [frontend/src/shared/api/request-json.ts](../frontend/src/shared/api/request-json.ts) | Coalesce simultaneous identical core reads with complete identity; no persisted response cache. |
 | [frontend/src/shared/api/shop-api.ts](../frontend/src/shared/api/shop-api.ts) | shop api: Typed commerce contracts, merchant/store transports and binary download helper. |
 | [frontend/src/shared/api/shop-scope.ts](../frontend/src/shared/api/shop-scope.ts) | Canonical browser shop scope for storefront URLs and tenant-isolated customer storage. |
 | [frontend/src/shared/api/types.ts](../frontend/src/shared/api/types.ts) | Common JSON/multipart request contract for app surfaces and merchant operations. |
@@ -632,6 +638,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/product_lab.py](../scripts/product_lab.py) | Local full-app example lifecycle; private keys and independent code/data, no automatic installation. |
 | [scripts/protocols.py](../scripts/protocols.py) | Protocol flows exercise the same commerce core; model smoke test is opt-in. |
 | [scripts/providers.py](../scripts/providers.py) | Cloud wire-contract tests using local HTTP servers, NOT live cloud inference. |
+| [scripts/read_performance.py](../scripts/read_performance.py) | Two real Rust replicas test coherent read caches; optional matched local HTTP baseline probe. |
 | [scripts/restart.py](../scripts/restart.py) | Persist an API snapshot, restart server+DB externally, verify exact state. |
 | [scripts/rule_catalog.py](../scripts/rule_catalog.py) | Inventory original Shopware conditions without claiming unsupported scopes are implemented. |
 | [scripts/rule_differential.py](../scripts/rule_differential.py) | Execute original Shopware numeric comparisons, including epsilon, null and unsupported operator semantics. |

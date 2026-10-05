@@ -101,6 +101,7 @@ pub(crate) use seed::*;
 mod bootstrap;
 mod channel_metrics;
 mod migrations;
+mod performance;
 mod platform;
 mod routes;
 mod shop_domains;

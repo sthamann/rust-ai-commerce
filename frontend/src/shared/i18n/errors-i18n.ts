@@ -1,6 +1,12 @@
 /** Localized request guidance across all transports; original diagnostics remain available to developer tools. */
 import { getLocale } from "./i18n";
 const messages: Record<string, readonly string[]> = {
+  "Database capacity busy; retry later": [
+    "The shop is busy. Please try again shortly.",
+    "Der Shop ist gerade ausgelastet. Bitte versuche es gleich erneut.",
+    "La boutique est occupée. Veuillez réessayer dans un instant.",
+    "La tienda está ocupada. Inténtalo de nuevo en un momento.",
+  ],
   "Customer group is assigned to customers": [
     "Assign the customers to another group before removing this group.",
     "Ordne die Kunden einer anderen Gruppe zu, bevor du diese Gruppe entfernst.",

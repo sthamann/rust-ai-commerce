@@ -559,8 +559,8 @@
     },
     "src/bootstrap.rs": {
       "status": "unproved",
-      "sha256": "6c42d84db2878b1bbfb1f473ea862e369ccc443acedc1bc6b9b759b48ed7cafd",
-      "review": "Reviewed standalone migration run: one private connection, unchanged ledger lock/apply/ready, no auth, seed or workers; fresh DB repeatability and platform creation passed. Ordered translated catalog preserves full fallback and tenant/channel/category/cursor filters; affected real HTTP/PostgreSQL suite passed. SQL remains outside extracted pure-policy proof."
+      "sha256": "ea1f390b15e65457283f255294e4d24270344f56770e6bede91996c8cfdd27ae",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
@@ -674,8 +674,8 @@
     },
     "src/commerce/configuration.rs": {
       "status": "unproved",
-      "sha256": "ffb1bc092768a934b60c1095e8907335aba1350c44afc330d1c6e1408aa6e04e",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "672008425bf3322a5f5fac9e8efb53aaab39acf7fecbc1f982c9aa527f93603e",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
     },
     "src/commerce/content_text.rs": {
       "status": "unproved",
@@ -819,8 +819,8 @@
     },
     "src/commerce/settings_scope.rs": {
       "status": "unproved",
-      "sha256": "09c1f79361ba56a02ca63c1e41be5f01312ffe36032290decbf151757f1df5bc",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "dbcdc1cf3ec1a870432cea71775fec3d091b95225e43cea81103fbe108070338",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
     },
     "src/commerce/settings_validation.rs": {
       "status": "unproved",
@@ -959,8 +959,8 @@
     },
     "src/foundation.rs": {
       "status": "unproved",
-      "sha256": "0cbf3c571a8c3713bcc7a494f31644ba4aa780e4ca76d980392e413fa5e8fb19",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "e416de7ccef30c9daf699c7326595af566237009f5dbb133cd6d32ca329e923b",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
     },
     "src/history/capability.rs": {
       "status": "unproved",
@@ -1024,13 +1024,13 @@
     },
     "src/localization.rs": {
       "status": "unproved",
-      "sha256": "745427dfea21932d53d760309f3f71b5acc52a1edad7f199c858a7406df9347a",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "70a606bc250d3f9880b30e1f08b7da3b9f728630a84e154f40c995a8555dec36",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
     },
     "src/main.rs": {
       "status": "unproved",
-      "sha256": "89aec5c28d8b8f45c68cdd214b0e3d5b12f0265077aaf469d6ea05a11bb2afee",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "f117af69af4b65f470f82ceeebc19f753ec95efd3f8f829e06512e52eb12290c",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
     },
     "src/marketing/app_flows.rs": {
       "status": "reviewed-binding",
@@ -1164,13 +1164,13 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "ddb4af91392e29b8a67bbfb6dcb3ac52b401d2338a10a3ef0cdedffcb62d6850",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "e140ce3540f31ae69ce40a16634556537987cad0b5a21938449d6d3649e821d0",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "2b89832b3fe9ffe32197be022768312943b74e6998793769ae109da948b3db13",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "99fcdd6c6a22a6f51902a21c6d56b4ec444ac5473d8cffe5e6a32cacc732d8ae",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -1244,8 +1244,8 @@
     },
     "src/outbox.rs": {
       "status": "unproved",
-      "sha256": "5be76a18e1516229a8dc4365fdc95b3dad56fe1405edc845295695cc209ddfff",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "5b8fbdf4ed3862af3cb24da7d444c06cabbf752ac8617a1cd6f00cddf4a746e1",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
     },
     "src/payments/mod.rs": {
       "status": "unproved",
@@ -1291,6 +1291,31 @@
       "status": "unproved",
       "sha256": "257ac8ff0302b84526c653f580478f2372d7eb8cbc3d8413ba6fb246c6ce9fd6",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/performance/cache.rs": {
+      "status": "unproved",
+      "sha256": "40c57852b827ec3adb8f59ad34f690c6626d1b97d62aa4aef7143e272f7b1327",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
+    },
+    "src/performance/languages.rs": {
+      "status": "unproved",
+      "sha256": "01714c5db1d133c5f9fa45b5969f582a618f2bae7fa3cf629ad0c611a4a49b0c",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
+    },
+    "src/performance/mod.rs": {
+      "status": "unproved",
+      "sha256": "a4a8a3ba43afedf7acd6aa4f8091de7b9d2f8f497c86b3e6bee5a67af54f2c8a",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
+    },
+    "src/performance/pool.rs": {
+      "status": "unproved",
+      "sha256": "08b532f35a3c1a7a6647b7af311ff107f84390bfdd31916869592e2cceb1df2a",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
+    },
+    "src/performance/settings.rs": {
+      "status": "unproved",
+      "sha256": "d6a413592fe2ecc5829a4a09019e0ce9ba24f64d76a4cdcd65cba9636cf0160d",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
     },
     "src/planner.rs": {
       "status": "unproved",
@@ -1344,8 +1369,8 @@
     },
     "src/routes.rs": {
       "status": "unproved",
-      "sha256": "c3b82fc5c7120915644af588706ba5ec314589db54370c4305c4e20c73ce801a",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "32bf43d6dcd831f80779624620ead4bc0e0a4cf8c3f43919c3e0ae25c73168f0",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
     },
     "src/rule_comparison.rs": {
       "status": "reviewed-binding",
@@ -1645,6 +1670,10 @@
     "migrations/036-app-assistants.sql": {
       "sha256": "46130e80715648ba78b63e297c39f84eec37ec25e56d45c8ee4c0429dbdf48d8",
       "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+    },
+    "migrations/037-read-context-cache.sql": {
+      "sha256": "f3c07e88cc774d3a9a6cd29b75f16d1023aa00ac207f977ce431471c3f3abe6a",
+      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "97c7e3708fbf7ef622461cae6e23dbea29872a07994197e5cdfccfc3eb9ef35b",

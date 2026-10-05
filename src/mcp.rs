@@ -262,5 +262,16 @@ async fn invoke_transport(a: &App, h: &HeaderMap, name: &str, input: &Value) -> 
             .ok_or(bad("Invalid app capability name"))?;
         return apps::invoke_mcp(a, h, id, action, input).await;
     }
-    invoke(a, h, name, input).await
+    if [
+        "catalog.search",
+        "catalog.detail",
+        "checkout.options",
+        "cart.quote",
+    ]
+    .contains(&name)
+    {
+        performance::read_scope(invoke(a, h, name, input)).await
+    } else {
+        invoke(a, h, name, input).await
+    }
 }

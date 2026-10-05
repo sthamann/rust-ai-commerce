@@ -10,6 +10,14 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 - `shop-scope.ts`
 - `shop-api.ts`
 - `types.ts`
+- `request-json.ts`: shares only simultaneous identical core reads. The complete
+  shop/channel/locale/cart/customer/merchant headers are part of the key. Entries
+  disappear after completion or failure; writes clear admission before and after
+  execution. Custom app gateway calls and aborted requests are not shared.
+
+Both Studio and storefront transports use this helper. Each caller gets a separate
+parsed object, so editing one response cannot corrupt another component's state.
+There is no time-based frontend cache or persisted merchant/customer response.
 
 ## Verification
 

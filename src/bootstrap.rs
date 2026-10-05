@@ -22,18 +22,7 @@ pub(crate) async fn bootstrap() -> App {
         migrations::apply(&pool).await;
         Some(pool)
     };
-    let db = PgPoolOptions::new()
-        .max_connections(20)
-        .after_connect(|conn, _| {
-            Box::pin(async move {
-                // Short, indexed OLTP reads spend more time compiling a JIT plan
-                // than executing it. This setting is local to application sessions.
-                sqlx::raw_sql("SET search_path = public; SET jit = off")
-                    .execute(conn)
-                    .await?;
-                Ok(())
-            })
-        })
+    let db = performance::pool_options()
         .connect(&database_url)
         .await
         .expect("commerce connection");
@@ -65,6 +54,7 @@ pub(crate) async fn bootstrap() -> App {
         sandboxes: Arc::new(RwLock::new(HashMap::new())),
         channel_metrics: Arc::new(channel_metrics::ChannelMetrics::default()),
         app_limits: Arc::new(apps::ServiceLimits::default()),
+        reads: Arc::new(performance::Reads::default()),
     };
     if let Some(setup) = setup {
         if env::var("SEED_DEMO").as_deref() != Ok("false") {
