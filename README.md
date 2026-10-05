@@ -33,6 +33,19 @@ This is also a laboratory for porting selected original Shopware behavior to Rus
 
 The interface supports **English, German, French and Spanish**. MIT licensed.
 
+## Commerce Studio interface
+
+The light Studio uses a blue accent, compact grouped navigation and independent
+workspace styles. **Settings** has a dedicated secondary navigation for company
+details, taxes, countries, shipping and payments. Company identity, contact and
+bank fields are grouped; the save bar shows unsaved changes, progress, success and
+read-only access. Changing a settings area asks before discarding a draft.
+English, German, French and Spanish use the same controls and behavior.
+
+![Company settings and grouped Studio navigation](docs/assets/studio-settings-en.png)
+
+See [interface ownership, verification and limitations](docs/studio-interface.md).
+
 ## Customers, checkout and order operations
 
 The storefront now shares a full **customer address book** with Commerce Studio:

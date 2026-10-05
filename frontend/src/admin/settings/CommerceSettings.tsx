@@ -4,68 +4,49 @@ import type { Config } from "../../shared/api/shop-api";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
 import { useShopText } from "../../shared/i18n/shop-i18n";
 import type { RequestFn } from "../shell/studio-types";
+import { useSettingsDraft } from "./useSettingsDraft";
+import SettingsSaveBar from "./SettingsSaveBar";
 export default function CommerceSettings({
   request,
   area,
   canWrite,
+  onDirty,
 }: {
   request: RequestFn;
   area: "taxes" | "countries" | "shipping" | "payment";
   canWrite: boolean;
+  onDirty?: (dirty: boolean) => void;
 }) {
   const { s } = useShopText(),
     { c, locale } = useCustomerText();
-  const [config, setConfig] = useState<Config>(),
-    [original, setOriginal] = useState<Config>(),
-    [revision, setRevision] = useState(0),
-    [country, setCountry] = useState(""),
-    [error, setError] = useState(""),
-    [busy, setBusy] = useState(false),
-    [saved, setSaved] = useState(false);
+  const state = useSettingsDraft<Config>(request, "/api/merchant/commerce");
+  const { value, dirty, busy, error } = state;
+  const [country, setCountry] = useState("");
   useEffect(() => {
-    request("/api/merchant/commerce")
-      .then((v) => {
-        setConfig(v.data);
-        setOriginal(v.data);
-        setRevision(v.revision);
-      })
-      .catch((e) => setError(e.message));
-  }, [request]);
-  const dirty = JSON.stringify(config) !== JSON.stringify(original);
-  if (!config) return <p role="status">{error || s("loading")}</p>;
-  const patch = (data: Partial<Config>) => {
-    setConfig({ ...config, ...data });
-    setSaved(false);
-  };
+    onDirty?.(dirty);
+  }, [dirty, onDirty]);
+  const config = value?.data;
+  const revision = value?.revision;
+  if (!config)
+    return <p role={error ? "alert" : "status"}>{error || s("loading")}</p>;
+  const patch = (data: Partial<Config>) => state.change({ ...config, ...data });
   return (
-    <section className="studio-card">
-      <div className="section-heading">
+    <section className="studio-card settings-panel">
+      <div className="settings-panel-header">
         <h2>{area === "countries" ? c(area) : s(area)}</h2>
         <span>
           {c("revision")} {revision}
         </span>
       </div>
-      {error && <p role="alert">{error}</p>}
-      {saved && <p role="status">{s("saved")}</p>}
+      {error && (
+        <p role="alert" className="settings-error">
+          {error}
+        </p>
+      )}
       <form
-        onSubmit={async (e) => {
+        onSubmit={(e) => {
           e.preventDefault();
-          setBusy(true);
-          setError("");
-          try {
-            const result = await request(
-              "/api/merchant/commerce",
-              { data: config, revision },
-              "PUT",
-            );
-            setRevision(result.revision);
-            setOriginal(structuredClone(config));
-            setSaved(true);
-          } catch (e) {
-            setError((e as Error).message);
-          } finally {
-            setBusy(false);
-          }
+          if (canWrite) void state.save();
         }}
       >
         <fieldset disabled={!canWrite || busy} className="settings-fields">
@@ -299,11 +280,7 @@ export default function CommerceSettings({
               </article>
             ))}
         </fieldset>
-        {canWrite && (
-          <button className="studio-primary" disabled={busy || !dirty}>
-            {s("save")}
-          </button>
-        )}
+        <SettingsSaveBar {...state} canWrite={canWrite} />
       </form>
     </section>
   );

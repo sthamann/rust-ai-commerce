@@ -12,7 +12,7 @@ Files and their individual responsibilities are listed in [the generated source 
 - `StudioConversation.tsx`
 - `StudioHeader.tsx`
 - `StudioRoutes.tsx`
-- `StudioSidebar.tsx`
+- `StudioSidebar.tsx`: permission-filtered navigation in Intelligence, Commerce, Experiences and Workspace groups, with independent scrolling.
 - `navigation.ts`
 - `requests.ts`
 - `studio-types.ts`

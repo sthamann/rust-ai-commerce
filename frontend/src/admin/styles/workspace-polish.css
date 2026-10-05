@@ -1,0 +1,209 @@
+/* Consistent Studio density, readable hierarchy and independently scrollable navigation across workspaces. */
+body:has(.studio) {
+  margin: 0;
+  overflow: hidden;
+}
+.studio {
+  --bg: #f6f7fb;
+  --panel: #f6f8fc;
+  --hover: #edf2ff;
+  --border: #e3e8f0;
+  --text: #1c2940;
+  --muted: #65738a;
+  --accent: #3067e8;
+  --danger: #b32942;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  grid-template-columns: 228px minmax(0, 1fr);
+}
+.studio[data-theme="dark"] {
+  --bg: #172338;
+  --surface: #21314b;
+  --panel: #273a56;
+  --hover: #314b70;
+  --border: #425573;
+  --text: #f0f5ff;
+  --muted: #bdcbe0;
+  --accent: #8bb6ff;
+  --danger: #ffa0ae;
+}
+.studio .studio-sidebar {
+  padding: 22px 14px 14px;
+  gap: 16px;
+}
+.studio .studio-brand {
+  font-size: 22px;
+  letter-spacing: -0.8px;
+}
+.studio .brand-mark {
+  background: var(--accent);
+  color: var(--accent-text);
+  border: 0;
+  border-radius: 11px;
+  box-shadow: 0 4px 14px #3067e830;
+}
+.studio .workspace-switch {
+  border-radius: 10px;
+  background: var(--panel) !important;
+  padding: 10px;
+}
+.studio .workspace-switch > span:nth-child(2) {
+  font-size: 12px;
+  line-height: 1.5;
+}
+.studio .workspace-switch small {
+  font-size: 10px;
+}
+.studio .new-conversation {
+  background: var(--surface) !important;
+  box-shadow: 0 2px 6px #14274408;
+}
+.studio .studio-sidebar nav {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding-right: 2px;
+  gap: 16px;
+}
+.studio .sidebar-nav-group {
+  display: grid;
+  gap: 3px;
+}
+.studio .sidebar-group-label {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  padding: 0 10px 6px;
+}
+.studio .studio-sidebar nav button {
+  min-height: 42px;
+  padding: 10px;
+  font-size: 12px;
+  gap: 10px;
+  border-radius: 9px;
+}
+.studio .studio-sidebar nav button svg {
+  width: 18px;
+  height: 18px;
+}
+.studio .studio-sidebar nav button.active {
+  background: var(--hover);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.studio .sidebar-conversations {
+  flex: 0 1 auto;
+  max-height: 160px;
+}
+.studio .sidebar-conversations:has(> p) {
+  display: none;
+}
+.studio .sidebar-bottom {
+  gap: 2px;
+  padding-top: 10px;
+}
+.studio .sidebar-bottom button {
+  min-height: 40px;
+}
+.studio .studio-topbar {
+  height: 68px;
+  flex-shrink: 0;
+  padding: 0 26px;
+}
+.studio .studio-topbar > div:first-child {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.studio .topbar-actions {
+  flex-shrink: 0;
+}
+.studio .breadcrumb {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+.studio .studio-main.is-workspace .studio-page {
+  padding: 30px clamp(20px, 3vw, 44px) 44px;
+  max-width: 1320px;
+  gap: 24px;
+}
+.studio .page-intro h1 {
+  font-size: clamp(26px, 2.5vw, 34px);
+  letter-spacing: -1px;
+  font-weight: 600;
+  margin: 8px 0 10px;
+}
+.studio .page-intro > p {
+  font-size: 13px;
+  line-height: 1.65;
+  max-width: 700px;
+}
+.studio .studio-card {
+  border-radius: 14px;
+}
+.studio input:not([type="checkbox"]),
+.studio select {
+  border-radius: 9px;
+}
+.studio :is(input, textarea, select):focus-visible {
+  box-shadow: 0 0 0 4px #3067e812;
+  outline-offset: 0;
+}
+.studio .operation-row {
+  padding: 18px 12px;
+  border-radius: 8px;
+}
+.studio .operation-row:hover {
+  background: var(--panel);
+}
+.studio .operation-status {
+  background: var(--hover);
+  color: var(--accent);
+}
+.studio .studio-statusbar {
+  border-top-color: var(--border);
+}
+@media (max-width: 1024px) {
+  .studio {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+  .studio .studio-topbar {
+    padding: 0 16px;
+  }
+}
+@media (max-width: 700px) {
+  .studio {
+    display: block;
+  }
+  .studio .studio-topbar {
+    height: 60px;
+    padding: 0 10px;
+  }
+  .studio .studio-main.is-workspace .studio-page {
+    padding: 24px 16px 32px;
+  }
+  .studio .studio-sidebar nav button {
+    min-height: 44px;
+  }
+  .studio .studio-sidebar {
+    gap: 14px;
+  }
+  .studio .topbar-actions .connection-state {
+    display: none;
+  }
+  .studio .breadcrumb {
+    font-size: 10px;
+    max-width: 130px;
+  }
+}

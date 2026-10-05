@@ -19,8 +19,29 @@ export type IconName =
   | "search"
   | "copy"
   | "menu"
-  | "spark";
+  | "spark"
+  | "building"
+  | "globe"
+  | "truck"
+  | "card"
+  | "percent"
+  | "people"
+  | "code"
+  | "layers";
 const paths: Record<IconName, string> = {
+  building: "M4 21h16M6 21V3h12v18M9 7h1M14 7h1M9 11h1M14 11h1M10 21v-5h4v5",
+  globe:
+    "M3 12h18M12 3c-6 6-6 12 0 18M12 3c6 6 6 12 0 18M3 12a9 9 0 1 0 18 0 9 9 0 1 0-18 0",
+  truck:
+    "M2 5h12v12H2ZM14 9h4l4 5v3h-8M4 18a2 2 0 1 0 4 0 2 2 0 1 0-4 0M16 18a2 2 0 1 0 4 0 2 2 0 1 0-4 0",
+  card: "M3 5h18v14H3ZM3 10h18M7 15h3",
+  percent:
+    "M5 19 19 5M4 6a2 2 0 1 0 4 0 2 2 0 1 0-4 0M16 18a2 2 0 1 0 4 0 2 2 0 1 0-4 0",
+  people:
+    "M4 21v-3a5 5 0 0 1 10 0v3M5 6a4 4 0 1 0 8 0 4 4 0 1 0-8 0M17 3a4 4 0 0 1 0 8M18 14a5 5 0 0 1 3 5v2",
+  code: "m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18",
+  layers: "m3 7 9-4 9 4-9 4-9-4ZM3 12l9 4 9-4M3 17l9 4 9-4",
+
   chat: "M21 11a8 8 0 0 1-8 8H7l-5 3V11a8 8 0 0 1 8-8h3a8 8 0 0 1 8 8Z",
   pulse: "M3 12h4l3-8 4 16 3-8h4",
   graph:

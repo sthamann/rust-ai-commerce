@@ -61,7 +61,10 @@ pub(super) async fn save_settings_value(a: &App, h: &HeaderMap, v: Value) -> Res
     }
     let revision = v["revision"].as_i64().ok_or(bad("revision required"))?;
     let mut tx = a.db.begin().await?;
-    let n=sqlx::query("INSERT INTO receipt_settings(tenant,data) SELECT $1,$2 WHERE $3=0 ON CONFLICT(tenant) DO UPDATE SET data=EXCLUDED.data,revision=receipt_settings.revision+1 WHERE receipt_settings.revision=$3").bind(&t).bind(&v["data"]).bind(revision).execute(&mut *tx).await?.rows_affected();
+    // An INSERT source restricted to revision zero never reaches ON CONFLICT
+    // for existing records. Admit an existing revision into the source while
+    // retaining the authoritative conflict check under PostgreSQL's row lock.
+    let n=sqlx::query("INSERT INTO receipt_settings(tenant,data) SELECT $1,$2 WHERE $3=0 OR EXISTS(SELECT 1 FROM receipt_settings WHERE tenant=$1 AND revision=$3) ON CONFLICT(tenant) DO UPDATE SET data=EXCLUDED.data,revision=receipt_settings.revision+1 WHERE receipt_settings.revision=$3").bind(&t).bind(&v["data"]).bind(revision).execute(&mut *tx).await?.rows_affected();
     if n != 1 {
         return Err(conflict("Receipt settings changed"));
     }

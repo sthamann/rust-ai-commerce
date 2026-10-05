@@ -19,6 +19,27 @@ req('/api/merchant/customers',expected=401);req('/api/merchant/customers',h=head
 req('/api/merchant/customers',h={**headers(foreign),'x-tenant':owner['workspace']},expected=403)
 req('/api/merchant/orders?limit=1000',h=h,expected=400)
 check('bounded CRM and orders are personal-login and workspace scoped')
+# Both document and central settings routes share revision-bound master data.
+master={'name':'Settings Test Seller','address':'Synthetic Street','taxId':'TEST-ONLY'}
+saved=req('/api/settings/master-data',{'revision':0,'data':master},h,'PUT');assert saved['revision']==1
+updated={**master,'email':'support@example.test'}
+saved=req('/api/settings/master-data',{'revision':1,'data':updated},h,'PUT');assert saved['revision']==2
+req('/api/settings/master-data',{'revision':1,'data':master},h,'PUT',409)
+assert req('/api/settings/master-data',h=h)['data']==updated
+# Simultaneous saves with the same revision must admit exactly one write.
+def issuer_race(i):
+    try:
+        return req('/api/settings/master-data',{'revision':2,'data':{**updated,'phoneNumber':str(i)}},h,'PUT')['revision']
+    except AssertionError as e:
+        assert e.args[0][1]==409
+        return 'conflict'
+with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:issuer_results=list(ex.map(issuer_race,range(2)))
+assert sorted(map(str,issuer_results))==['3','conflict']
+current=req('/api/settings/master-data',h=h)
+assert req('/api/merchant/receipts/settings',h=h)==current
+req('/api/settings/master-data',{'revision':3,'data':master},headers(foreign),'PUT',409)
+check('central issuer updates advance revisions, reject stale/foreign writes and serialize concurrent saves')
+
 inv=req('/api/workspace/invitations',{'email':'support'+suffix+'@example.test','role':'viewer'},h);support=req('/api/auth/accept',{'name':'Support','password':password,'invitationToken':inv['token']});sh=headers(support)
 req('/api/workspace/members/'+support['user']['id'],{'role':'viewer','active':True,'permissions':['orders.read','orders.write']},h,'PUT')
 assert req('/api/auth/access',h=sh)['permissions']==['orders.read','orders.write']
@@ -71,7 +92,7 @@ req('/api/merchant/orders/'+id+'/transition',{'revision':order['revision'],'kind
 order=req('/api/merchant/orders/'+id,h=h);order=req('/api/merchant/orders/'+id+'/transition',{'revision':order['revision'],'kind':'order','state':'in_progress'},sh)
 assert req('/api/merchant/orders/'+id,h=h)['activity'][0]['kind']=='transition'
 check('revision-bound notes/status mutations are audited and stale changes fail')
-req('/api/merchant/receipts/settings',{'revision':0,'data':{'name':'Synthetic Seller GmbH','address':'Teststrasse 1, Berlin','taxId':'TEST-ONLY'}},h,'PUT')
+req('/api/merchant/receipts/settings',{'revision':3,'data':{'name':'Synthetic Seller GmbH','address':'Teststrasse 1, Berlin','taxId':'TEST-ONLY'}},h,'PUT')
 body={'revision':order['revision'],'kind':'invoice','locale':'de','requestKey':'receipt-'+suffix}
 with concurrent.futures.ThreadPoolExecutor(max_workers=2) as ex:receipts=list(ex.map(lambda _:req('/api/merchant/orders/'+id+'/receipts',body,h),range(2)))
 assert receipts[0]['id']==receipts[1]['id'];receipt=receipts[0]
