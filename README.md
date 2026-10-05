@@ -366,7 +366,7 @@ See [implementation and limits](docs/intelligence-apps-payments.md),
 The current verification includes **7,000 bounded comparisons** against original
 Shopware 6.7.14.2 PHP classes. These cover selected pricing/context/tax operations and numeric/string/array/UUID comparison primitives, plus 432 cases against 74 concrete original condition classes;
 they do not establish full Shopware compatibility. The current workbench verification
-now runs 67 Rust unit tests and 90 frontend component/hook tests, plus 25 real HTTP suites,
+now runs 68 Rust unit tests and 90 frontend component/hook tests, plus 25 real HTTP suites,
 three local provider suites, four browser contracts and verification-tool tests.
 These include private releases, customer authority, concurrent checkout and bounded catalog reads.
 

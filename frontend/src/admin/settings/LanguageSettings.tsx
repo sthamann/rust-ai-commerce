@@ -12,6 +12,15 @@ export default function LanguageSettings({
 }: InternationalProps & { dirty: boolean; canWrite: boolean }) {
   const { i, locale } = useInternationalText();
   const [next, setNext] = useState("");
+  let canonical: string | undefined;
+  try {
+    canonical = /^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,2}$/.test(next)
+      ? Intl.getCanonicalLocales(next)[0]
+      : undefined;
+  } catch {
+    // Invalid subtags must never reach the shared translation editors.
+    canonical = undefined;
+  }
   const label = (l: string) => {
     try {
       return new Intl.DisplayNames([locale], { type: "language" }).of(l) ?? l;
@@ -62,12 +71,10 @@ export default function LanguageSettings({
         <button
           type="button"
           className="studio-secondary"
-          disabled={
-            !/^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,2}$/.test(next) ||
-            config.locales.includes(next)
-          }
+          disabled={!canonical || config.locales.includes(canonical)}
           onClick={() => {
-            patch({ locales: [...config.locales, next] });
+            if (!canonical) return;
+            patch({ locales: [...config.locales, canonical] });
             setNext("");
           }}
         >

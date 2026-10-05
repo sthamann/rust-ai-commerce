@@ -671,8 +671,8 @@
     },
     "src/commerce/product_languages.rs": {
       "status": "unproved",
-      "sha256": "9b626d3e83770282518e0c67ba79ba4688a07e2babb25f2f50c9b1e4f10dcda8",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "c17f4193844d415296531953ddfbbd75d8cc1eb05fcfb7cdf0889e26869c031c",
+      "review": "Reviewed canonical locale grammar: invalid region subtags and duplicate variants fail before persistence; configured language/script/region/variant subset is browser-compatible. API and UI regression coverage retained."
     },
     "src/commerce/review_moderation.rs": {
       "status": "unproved",
