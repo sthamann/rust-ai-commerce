@@ -120,6 +120,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/concierge.rs](../src/concierge.rs) | Read-only storefront shopping advisor. |
 | [src/context.rs](../src/context.rs) | Bounded behavioral ports of Shopware 6.7.14.2 context and product-cart selection. |
 | [src/customer.rs](../src/customer.rs) | Customer credential verification and context rotation. |
+| [src/developer/archive.rs](../src/developer/archive.rs) | Recoverable App Studio project deletion; installed packages and app records retain their independent lifecycle. |
 | [src/developer/builds.rs](../src/developer/builds.rs) | Immutable development versions are validated before storage; installation targets only private environments. |
 | [src/developer/generation.rs](../src/developer/generation.rs) | Structured provider output becomes a reviewable immutable manifest; it cannot write files or call shell tools. |
 | [src/developer/mod.rs](../src/developer/mod.rs) | Prompt-generated declarative apps and native coding-agent handoff, never unsandboxed model code. |
@@ -277,7 +278,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/developer/AppConnections.tsx](../frontend/src/admin/developer/AppConnections.tsx) | Route, tool, grounding and Flow Builder switches modify the shared executable manifest directly. |
 | [frontend/src/admin/developer/AppDataEditor.tsx](../frontend/src/admin/developer/AppDataEditor.tsx) | Managed app models expose typed fields and opt-in public reads; removal cleans dependent bindings. |
 | [frontend/src/admin/developer/AppInspector.tsx](../frontend/src/admin/developer/AppInspector.tsx) | One content language edits app/view/block metadata; changing bindings updates the actual manifest. |
-| [frontend/src/admin/developer/AppLibrary.tsx](../frontend/src/admin/developer/AppLibrary.tsx) | Clickable saved app library: each card opens its latest immutable build as a new editable version. |
+| [frontend/src/admin/developer/AppLibrary.tsx](../frontend/src/admin/developer/AppLibrary.tsx) | Saved app cards with explicit editing and recoverable project removal, independent of installed package/data lifecycle. |
 | [frontend/src/admin/developer/AppVersions.tsx](../frontend/src/admin/developer/AppVersions.tsx) | Saved version inspection, digest-approved stage install and conflict-aware package-only live release. |
 | [frontend/src/admin/developer/DeveloperView.tsx](../frontend/src/admin/developer/DeveloperView.tsx) | Visual App Studio orchestrates modular editors over the same executable schema used by coding agents. |
 | [frontend/src/admin/developer/SandboxPreview.tsx](../frontend/src/admin/developer/SandboxPreview.tsx) | Preview resolves the installed registry first; a newer staged package cannot masquerade as an older build. |

@@ -8,6 +8,11 @@ pub(crate) fn router() -> Router<App> {
         .route("/api/developer/import", post(import))
         .route("/api/developer/builds/{id}/stage", post(stage))
         .route("/api/developer/task", post(task))
+        .route(
+            "/api/developer/apps/{id}",
+            axum::routing::delete(archive::remove),
+        )
+        .route("/api/developer/apps/{id}/restore", post(archive::restore))
 }
 async fn schema(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     auth::permit(&h, "users")?;
@@ -16,11 +21,13 @@ async fn schema(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     Ok(Json(generation::schema_for(&settings.locales)))
 }
 pub(crate) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+    auth::permit(&h, "users")?;
     let t = staging::live(&a, &h).await?;
     let (settings, _) = commerce::config(&a, &t).await?;
-    let rows=sqlx::query("SELECT id,environment,app,version,digest,manifest,summary,state,provider,model,created_at FROM developer_builds WHERE tenant=$1 ORDER BY created_at DESC LIMIT 100").bind(&t).fetch_all(&a.db).await?;
+    let rows=sqlx::query("SELECT id,environment,app,version,digest,manifest,summary,state,provider,model,created_at FROM developer_builds WHERE tenant=$1 AND archived=false ORDER BY created_at DESC LIMIT 100").bind(&t).fetch_all(&a.db).await?;
+    let trash=sqlx::query("SELECT id,environment,app,version,digest,manifest,summary,state,provider,model,created_at FROM developer_builds WHERE tenant=$1 AND archived=true ORDER BY archived_at DESC,created_at DESC LIMIT 100").bind(&t).fetch_all(&a.db).await?;
     Ok(Json(
-        json!({"builds":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"environment":r.get::<String,_>("environment"),"app":r.get::<String,_>("app"),"version":r.get::<String,_>("version"),"digest":r.get::<String,_>("digest"),"manifest":r.get::<Value,_>("manifest"),"summary":r.get::<Value,_>("summary"),"state":r.get::<String,_>("state"),"provider":r.get::<String,_>("provider"),"model":r.get::<Option<String>,_>("model")})).collect::<Vec<_>>(),"mainLocale":settings.main_locale,"locales":settings.locales,"providers":a.inference.providers(),"codingAgents":[{"id":"codex","transport":"mcp + task export"},{"id":"claude_code","transport":"mcp + task export"}],"runtime":"declarative native data/API/UI; arbitrary service code requires an external build"}),
+        json!({"builds":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"environment":r.get::<String,_>("environment"),"app":r.get::<String,_>("app"),"version":r.get::<String,_>("version"),"digest":r.get::<String,_>("digest"),"manifest":r.get::<Value,_>("manifest"),"summary":r.get::<Value,_>("summary"),"state":r.get::<String,_>("state"),"provider":r.get::<String,_>("provider"),"model":r.get::<Option<String>,_>("model")})).collect::<Vec<_>>(),"archivedBuilds":trash.iter().map(|r|json!({"id":r.get::<String,_>("id"),"environment":r.get::<String,_>("environment"),"app":r.get::<String,_>("app"),"version":r.get::<String,_>("version"),"digest":r.get::<String,_>("digest"),"manifest":r.get::<Value,_>("manifest"),"summary":r.get::<Value,_>("summary"),"state":r.get::<String,_>("state"),"provider":r.get::<String,_>("provider"),"model":r.get::<Option<String>,_>("model")})).collect::<Vec<_>>(),"mainLocale":settings.main_locale,"locales":settings.locales,"providers":a.inference.providers(),"codingAgents":[{"id":"codex","transport":"mcp + task export"},{"id":"claude_code","transport":"mcp + task export"}],"runtime":"declarative native data/API/UI; arbitrary service code requires an external build"}),
     ))
 }
 async fn generate(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Result<Json<Value>> {
@@ -66,7 +73,7 @@ pub(crate) async fn stage(
         return Err(bad("Approve the reviewed build first"));
     }
     let mut tx = a.db.begin().await?;
-    let row=sqlx::query("SELECT environment,manifest,digest FROM developer_builds WHERE tenant=$1 AND id=$2 FOR UPDATE").bind(&t).bind(&id).fetch_optional(&mut *tx).await?.ok_or(Error(StatusCode::NOT_FOUND,"Build unavailable".into()))?;
+    let row=sqlx::query("SELECT environment,manifest,digest FROM developer_builds WHERE tenant=$1 AND id=$2 AND archived=false FOR UPDATE").bind(&t).bind(&id).fetch_optional(&mut *tx).await?.ok_or(Error(StatusCode::NOT_FOUND,"Build unavailable".into()))?;
     if v["digest"] != row.get::<String, _>("digest") {
         return Err(conflict("Build digest changed"));
     }

@@ -35,7 +35,8 @@ export function useAppStudio(
   }));
   const [env, setEnv] = useState(initialEnvironment),
     [builds, setBuilds] = useState<Build[]>([]),
-    [providers, setProviders] = useState<Provider[]>([]);
+    [providers, setProviders] = useState<Provider[]>([]),
+    [archivedBuilds, setArchivedBuilds] = useState<Build[]>([]);
   const [locales, setLocales] = useState(["en-GB", "de-DE", "fr-FR", "es-ES"]),
     [mainLocale, setMainLocale] = useState("en-GB");
   const [busy, setBusy] = useState(false),
@@ -50,6 +51,7 @@ export function useAppStudio(
   const load = async () => {
     const v = await request("/api/developer");
     setBuilds(v.builds);
+    setArchivedBuilds(v.archivedBuilds ?? []);
     setProviders(v.providers.providers);
     setLocales(v.locales);
     setMainLocale(v.mainLocale);
@@ -60,6 +62,7 @@ export function useAppStudio(
       .then((v) => {
         if (active) {
           setBuilds(v.builds);
+          setArchivedBuilds(v.archivedBuilds ?? []);
           setProviders(v.providers.providers);
           setLocales(v.locales);
           setMainLocale(v.mainLocale);
@@ -169,6 +172,21 @@ export function useAppStudio(
       setReviewed(false);
     },
     builds,
+    archivedBuilds,
+    archiveApp: async (app: string, archived: boolean) => {
+      await request(
+        `/api/developer/apps/${app}${archived ? "" : "/restore"}`,
+        { approve: true },
+        archived ? "DELETE" : "POST",
+      );
+      if (archived && manifest.id === app) {
+        dispatch("reset");
+        setSaved(null);
+        setBaseline("");
+        setChange(null);
+        setReviewed(false);
+      }
+    },
     providers,
     locales,
     mainLocale,

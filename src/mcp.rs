@@ -59,6 +59,9 @@ pub(crate) fn tool_schema(name: &str) -> Value {
         "merchant.payment" => {
             json!({"id":{"type":"string"},"operation":{"type":"string","enum":["capture","refund","reconcile","cancel"]},"amountMinor":{"type":"integer","minimum":1},"requestKey":{"type":"string"},"approve":{"type":"boolean"}})
         }
+        "developer.archive" => {
+            json!({"app":{"type":"string"},"archived":{"type":"boolean"},"approve":{"type":"boolean"}})
+        }
         "developer.import" => {
             json!({"environment":{"type":"string"},"prompt":{"type":"string"},"summary":{"type":"object"},"manifest":{"type":"object"}})
         }
@@ -110,6 +113,7 @@ pub(crate) fn tool_schema(name: &str) -> Value {
         "merchant.order.note" => vec!["id", "revision", "text"],
         "merchant.receipt.create" => vec!["id", "revision", "kind", "locale", "requestKey"],
         "merchant.payment" => vec!["id", "operation", "requestKey", "approve"],
+        "developer.archive" => vec!["app", "archived", "approve"],
         "developer.import" => vec!["environment", "prompt", "summary", "manifest"],
         "developer.stage" => vec!["buildId", "digest", "approve"],
         "developer.task" => vec!["environment", "prompt", "agent"],

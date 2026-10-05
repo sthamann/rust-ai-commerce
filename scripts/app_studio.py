@@ -80,4 +80,16 @@ for _ in range(100):
 else:raise AssertionError(('Native flow failed',jobs))
 assert next(r for r in call('/api/apps/'+m['id']+'/actions/list_guides',{},a)['elements'] if r['id']=='from_flow')['title']['es']=='Creado por evento'
 passed('Committed core order event executes a permitted native app save through the existing durable Flow Builder')
+call('/api/developer/apps/'+m['id'],{},a,expected=400,method='DELETE')
+call('/api/developer/apps/'+m['id'],{'approve':True},other,expected=404,method='DELETE')
+call('/api/developer/apps/'+m['id'],{'approve':True},a,method='DELETE')
+library=call('/api/developer',session=a)
+assert not any(v['app']==m['id'] for v in library['builds']) and any(v['app']==m['id'] for v in library['archivedBuilds'])
+call('/api/developer/builds/'+b['id']+'/stage',{'approve':True,'digest':b['digest']},a,expected=404)
+assert next(v for v in call('/store-api/apps/surfaces',tenant=a['workspace'])['surfaces'] if v['app']==m['id'])['native']
+assert call('/api/apps/'+m['id']+'/actions/list_guides',{},a)['elements']
+reply=call('/mcp',{'jsonrpc':'2.0','id':3,'method':'tools/call','params':{'name':'developer.archive','arguments':{'app':m['id'],'archived':False,'approve':True}}},a)
+assert reply['result']['isError'] is False and reply['result']['structuredContent']['archived'] is False
+assert any(v['id']==b['id'] and v['digest']==b['digest'] for v in call('/api/developer',session=a)['builds'])
+passed('Recoverable app-project deletion/restore uses HTTP and MCP, protects tenant ownership/approval and archived staging, and retains installed packages/data/immutable digests')
 print(json.dumps({'passed':len(checks),'checks':checks,'paidInference':False},indent=2))

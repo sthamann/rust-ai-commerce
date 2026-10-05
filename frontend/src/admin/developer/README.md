@@ -17,4 +17,4 @@ The actual renderer is in `shared/apps/native/`, shared by the sandbox preview a
 
 Run frontend build, tests, coverage, localization and architecture checks. See [App Studio guide](../../../../docs/app-studio.md) and [testing boundaries](../../../../docs/testing.md). Test presence is not 100% whole-codebase coverage.
 
-- `AppLibrary.tsx`: clickable saved app cards; opens the latest build as a new editable version. Both library and version-list editing return to the design workspace.
+- `AppLibrary.tsx`: clickable saved app cards with explicit edit/delete, confirmation and restore; opens the latest build as a new editable version. Both library and version-list editing return to the design workspace.

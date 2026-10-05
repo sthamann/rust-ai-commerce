@@ -14,6 +14,22 @@ export const appStudioWords = {
     "Votre app visuelle et votre agent utilisent la même définition versionnée.",
     "Tu app visual y tu agente usan la misma definición versionada.",
   ],
+  deleteApp: ["Delete", "Löschen", "Supprimer", "Eliminar"],
+  confirmDelete: [
+    "Move app to trash",
+    "App in den Papierkorb verschieben",
+    "Mettre l’app à la corbeille",
+    "Mover app a la papelera",
+  ],
+  deleteHint: [
+    "All saved versions move to the recoverable App Studio trash. Installed packages and app records remain available; deactivate an installed app separately under Apps.",
+    "Alle gespeicherten Versionen kommen in den wiederherstellbaren App-Studio-Papierkorb. Installierte Pakete und App-Daten bleiben erhalten; eine installierte App kannst du unter Apps separat deaktivieren.",
+    "Toutes les versions sont placées dans la corbeille récupérable. Les paquets installés et données sont conservés ; désactivez l’app installée séparément dans Apps.",
+    "Todas las versiones van a la papelera recuperable. Los paquetes instalados y datos se conservan; desactiva la app instalada por separado en Apps.",
+  ],
+  trash: ["Trash", "Papierkorb", "Corbeille", "Papelera"],
+  restoreApp: ["Restore", "Wiederherstellen", "Restaurer", "Restaurar"],
+  cancel: ["Cancel", "Abbrechen", "Annuler", "Cancelar"],
   library: ["My apps", "Meine Apps", "Mes apps", "Mis apps"],
   editApp: ["Edit app", "App bearbeiten", "Modifier l’app", "Editar app"],
   openApp: [

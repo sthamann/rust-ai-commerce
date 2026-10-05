@@ -20,11 +20,13 @@ This is also a laboratory for porting selected original Shopware behavior to Rus
 
 ## Visual App Studio
 
-Build native apps visually in **Commerce Studio → Developers**. Compose text, tables, cards and forms, define typed app data, connect HTTP/MCP/AI tools and opt actions into the graphical Flow Builder. Human edits and Codex/Claude agent edits use the **same executable Manifest**. Save an immutable version, test real records in a private sandbox, then selectively release the package.
+Build native apps visually in **Commerce Studio → Developers**. Compose text, tables, cards and forms, define typed app data, connect HTTP/MCP/AI tools and opt actions into the graphical Flow Builder. Human edits and Codex/Claude agent edits use the **same executable Manifest**. Open saved apps through explicit edit controls, remove development projects to a recoverable trash, save an immutable version, test real records in a private sandbox, then selectively release the package.
 
 The modern builder uses one inherited content-language editor and supports the shop’s enabled languages. Native admin modules and storefront surfaces share the exact same renderer as their sandbox preview. Arbitrary service code keeps the existing isolated app-service path.
 
 [App Studio guide, schema and limitations](docs/app-studio.md) · [Working care-guide example](extensions/apps/care-studio/manifest.json)
+
+![Saved app library with explicit edit and recoverable delete controls](docs/screenshots/app-studio-library.jpg)
 
 ![Visual App Studio with palette, canvas and properties](docs/screenshots/app-studio.jpg)
 

@@ -99,6 +99,10 @@ export default function DeveloperView({
       </div>
       <AppLibrary
         builds={studio.builds}
+        archived={studio.archivedBuilds}
+        onArchive={(app, archived) =>
+          void studio.run(() => studio.archiveApp(app, archived))
+        }
         mainLocale={studio.mainLocale}
         busy={studio.busy || !manage}
         onOpen={openForEditing}

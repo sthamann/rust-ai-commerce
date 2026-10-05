@@ -194,7 +194,7 @@
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr));
   gap: 12px;
 }
-.app-library-card {
+.app-library-open {
   display: flex;
   gap: 12px;
   text-align: left;
@@ -205,25 +205,71 @@
   background: var(--surface);
   color: var(--text);
 }
-.app-library-card:hover {
+.app-library-open:hover {
   border-color: var(--accent);
   background: var(--surface-2, #f4f7ff);
 }
-.app-library-card > span {
+.app-library-open > span {
   display: grid;
   gap: 5px;
   min-width: 0;
   flex: 1;
 }
-.app-library-card strong {
+.app-library-open strong {
   font-size: 14px;
 }
-.app-library-card small {
+.app-library-open small {
   font-size: 11px;
   color: var(--muted);
   overflow-wrap: anywhere;
 }
-.app-library-card span > span {
+.app-library-open span > span {
   font-size: 12px;
   color: var(--accent);
+}
+
+.app-library-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.app-library-open {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+}
+.app-library-card footer {
+  padding: 0 16px 14px;
+  display: flex;
+  gap: 8px;
+}
+.app-library-confirm {
+  margin-top: 14px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+.app-library-confirm p {
+  color: var(--muted);
+  font-size: 13px;
+}
+.app-library-confirm button {
+  margin: 12px 8px 0 0;
+}
+.app-library-trash {
+  margin-top: 16px;
+}
+.app-library-trash summary {
+  cursor: pointer;
+  padding: 10px 0;
+}
+.app-library-trash > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-top: 1px solid var(--border);
 }

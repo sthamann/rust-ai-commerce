@@ -7,10 +7,12 @@ import { LocaleProvider } from "../../src/shared/i18n/i18n";
 import { template } from "../../src/admin/developer/app-model";
 function setup() {
   let build: any;
+  let archived = false;
   const request = vi.fn(async (path: string, body?: any) => {
     if (path === "/api/developer")
       return {
-        builds: build ? [build] : [],
+        builds: build && !archived ? [build] : [],
+        archivedBuilds: build && archived ? [build] : [],
         providers: {
           providers: [{ id: "ollama", model: "fixture", configured: false }],
         },
@@ -48,6 +50,10 @@ function setup() {
         ],
       };
     if (path.endsWith("/release")) return {};
+    if (path.startsWith("/api/developer/apps/")) {
+      archived = !path.endsWith("/restore");
+      return {};
+    }
     throw Error(path);
   });
   render(
@@ -130,9 +136,10 @@ it("opens a saved app card directly on the editable canvas and saves a new versi
       name: /Product care guide.*Open for editing/,
     }),
   );
-  expect(
-    screen.getByRole("button", { name: "Design", exact: true }),
-  ).toHaveAttribute("aria-current", "page");
+  expect(screen.getByRole("button", { name: "Design" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
   expect(screen.getByLabelText("Version")).toHaveValue("0.1.1");
   await user.clear(screen.getByLabelText("App name"));
   await user.type(screen.getByLabelText("App name"), "Updated guide");
@@ -161,15 +168,17 @@ it("returns from version editing and the explicit edit button to the design work
     screen.getByRole("button", { name: "Edit as next version" }),
   );
   expect(screen.getByLabelText("Version")).toHaveValue("0.1.1");
-  expect(
-    screen.getByRole("button", { name: "Design", exact: true }),
-  ).toHaveAttribute("aria-current", "page");
+  expect(screen.getByRole("button", { name: "Design" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
   await user.click(screen.getByRole("button", { name: "Data models" }));
   await user.click(screen.getByRole("button", { name: "Edit app" }));
   expect(screen.getByLabelText("Version")).toHaveValue("0.1.1");
-  expect(
-    screen.getByRole("button", { name: "Design", exact: true }),
-  ).toHaveAttribute("aria-current", "page");
+  expect(screen.getByRole("button", { name: "Design" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
 });
 
 it("automatically starts a new version when an already-saved canvas is edited directly", async () => {
@@ -189,4 +198,36 @@ it("automatically starts a new version when an already-saved canvas is edited di
   expect(
     screen.getByRole("button", { name: "Save new version" }),
   ).toBeEnabled();
+});
+
+it("offers explicit edit/delete controls, confirms recoverable removal and restores saved versions", async () => {
+  const { request } = setup(),
+    user = userEvent.setup();
+  await user.click(
+    await screen.findByRole("button", { name: "Save new version" }),
+  );
+  expect(
+    await screen.findByRole("button", { name: /^Edit app:/ }),
+  ).toBeVisible();
+  await user.click(screen.getByRole("button", { name: /^Delete:/ }));
+  expect(screen.getByRole("alertdialog")).toBeVisible();
+  await user.click(screen.getByRole("button", { name: "Cancel" }));
+  expect(
+    request.mock.calls.some((c) => c[0].startsWith("/api/developer/apps/")),
+  ).toBe(false);
+  await user.click(screen.getByRole("button", { name: /^Delete:/ }));
+  await user.click(screen.getByRole("button", { name: "Move app to trash" }));
+  await waitFor(() =>
+    expect(
+      screen.queryByRole("button", { name: /^Delete:/ }),
+    ).not.toBeInTheDocument(),
+  );
+  expect(request).toHaveBeenCalledWith(
+    expect.stringMatching(/^\/api\/developer\/apps\//),
+    { approve: true },
+    "DELETE",
+  );
+  await user.click(screen.getByText(/^Trash/));
+  await user.click(screen.getByRole("button", { name: /^Restore:/ }));
+  expect(await screen.findByRole("button", { name: /^Delete:/ })).toBeVisible();
 });

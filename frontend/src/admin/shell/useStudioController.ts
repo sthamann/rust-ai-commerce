@@ -64,7 +64,10 @@ export function useStudioController({
   }>();
   const [settings, setSettings] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [tab, setTab] = useState<Tab>("assistant");
+  const [tab, setTab] = useState<Tab>(() => {
+    const target = new URLSearchParams(location.search).get("studio");
+    return nav.find((item) => item.id === target)?.id ?? "assistant";
+  });
   const [appSurface, setAppSurface] = useState<AppSurface | null>(null);
   const selectTab = (id: Tab) => {
     setAppSurface(null);
