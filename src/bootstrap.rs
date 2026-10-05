@@ -110,10 +110,20 @@ pub(crate) async fn bootstrap() -> App {
 }
 
 pub(crate) async fn run() {
-    let a = bootstrap().await;
     if env::var("BOOTSTRAP_MODE").is_ok_and(|s| s == "migrate") {
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL required");
+        let db = PgPoolOptions::new()
+            .max_connections(1)
+            .connect(&database_url)
+            .await
+            .expect("PostgreSQL migration connection");
+        migrations::apply(&db).await;
+        migrations::ready(&db).await;
+        db.close().await;
+        println!("Migration-only setup complete");
         return;
     }
+    let a = bootstrap().await;
     if env::var("PROCESS_ROLE").is_ok_and(|s| s.ends_with("-worker")) {
         shutdown().await;
         return;

@@ -29,7 +29,9 @@ No authentication secrets, customer sessions or connection strings are logged.
 `scripts/cloud_benchmark.py` reuses the validated sampler from `benchmark.py`.
 It tests 1 shop × 1,000 products, 1 × 100,000, 100 × 1,000 and 1,000 × 100.
 Each case measures localized catalog pages, product details, selective and broad
-keyword search, at concurrency 1/8/32, twice. A fixed-arrival catalog sample
+keyword search, at concurrency 1/8/32, twice. Broad search is capped at 64 requests
+per sample to bound expensive common-term cases; other samples default to 300.
+A fixed-arrival catalog sample
 includes client queue time. Cart reads and one simulated persisted checkout are
 also validated. Output uses `RESULT_JSON`, `DATABASE_JSON`, `METADATA_JSON` and
 `COMPLETE_JSON` lines for result extraction from Northflank job logs.
@@ -40,3 +42,8 @@ index capacity, paid embeddings/LLM calls or real payment traffic. Shared CPU an
 short samples vary; report per-round values and errors, not an extrapolated shop
 limit. The tenant fixtures exercise distribution in the current single island;
 no automatic island allocator or shop relocation controller is implemented yet.
+
+Common translated terms use ordered, deduplicated candidate IDs before loading
+full product rows. Effective field fallback, channel/category filters and cursor
+boundaries still apply before the page limit. Candidate scans can still grow with
+the number of matching translations; this is not a constant-work search claim.
