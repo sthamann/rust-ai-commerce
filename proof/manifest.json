@@ -1480,8 +1480,8 @@
   },
   "inputs": {
     ".github/workflows/verify.yml": {
-      "sha256": "953b237a00a6eff3d127fff96ac7de127254d8dfb2a347e9f5cd2eae710f7ff7",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "ce14eaca901e70bf1a050299325a0814125612a7b85bb9f4a5c791f8f1d58bb2",
+      "review": "Reviewed the CI OS-label retry after GitHub cancelled queued jobs because no hosted runner acquired them: verify.yml pins supported ubuntu-24.04 instead of the changing ubuntu-latest alias. All test commands, coverage floors, permissions, dependency/proof setup and required verify check remain unchanged. The documentation workflow uses the same fixed image; no successful GitHub run or capacity fix is claimed from this metadata change."
     },
     "Cargo.lock": {
       "sha256": "1654201807ccbe44f5dd55507de8a84f90adebd8f81b94172f8a222a112b25f3",
