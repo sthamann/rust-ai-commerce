@@ -467,8 +467,8 @@
     },
     "src/automation_rules/validation.rs": {
       "status": "unproved",
-      "sha256": "fc8bf8b3bbfd7af6945f6d0a447c921a7e78ed11756849cbab0a7bd0d0c8778a",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "97531aa986bded1655213c57e29d4e655b818f4b6df4110949255308f53e3bd8",
+      "review": "Reviewed equivalent date/datetime rejection and product price range expressions required by Rust 1.96 Clippy; accepted date/string shapes and finite 0 through 1000000 prices stay unchanged. Rust formatting, lint and unit tests passed. Complete Docker image builds and the existing AGE PostgreSQL image smoke test passes personal operator/shop provisioning and auth gates. No business guarantee or Lean property changed."
     },
     "src/bin/automation_rules.rs": {
       "status": "unproved",
@@ -702,8 +702,8 @@
     },
     "src/commerce/product_fields.rs": {
       "status": "unproved",
-      "sha256": "9a3e55f1d0b3460c8efc46c3c5149b6fad66ba7d3dc3af7fca15eb90b3ec47ae",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "71c1e6e3304a8d6fa05c56f51bd8f42cac8d4e9a67d0a3351bba52a979e3f81d",
+      "review": "Reviewed equivalent date/datetime rejection and product price range expressions required by Rust 1.96 Clippy; accepted date/string shapes and finite 0 through 1000000 prices stay unchanged. Rust formatting, lint and unit tests passed. Complete Docker image builds and the existing AGE PostgreSQL image smoke test passes personal operator/shop provisioning and auth gates. No business guarantee or Lean property changed."
     },
     "src/commerce/product_languages.rs": {
       "status": "unproved",

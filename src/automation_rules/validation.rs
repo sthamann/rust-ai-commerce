@@ -104,9 +104,7 @@ pub fn validate(name: &str, config: &Value, depth: usize) -> Result<(), String> 
                 "set" | "zip" | "string_array" | "string_array_lower" => {
                     !value.is_array() && !value.is_string()
                 }
-                "date" | "datetime" => {
-                    !value.is_string() && !(op == "between" && value.is_object())
-                }
+                "date" | "datetime" => !(value.is_string() || op == "between" && value.is_object()),
                 _ => !value.is_string(),
             }
         {
