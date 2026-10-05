@@ -171,3 +171,20 @@ drafts, cold restart, stale apply, repeated apply and permission/tenant denial.
 They perform no paid model calls. React tests exercise keyboard/group country
 selection, missing-field inheritance and a shared settings draft across navigation.
 UI screenshots supplement these tests; neither replaces whole-source coverage.
+
+## Recorded international-commerce verification
+
+[CI run 37285967720](https://github.com/sthamann/rust-ai-commerce/actions/runs/37285967720)
+verified the international-commerce tree merged as `852f3d1` on 5 October 2026:
+67 Rust unit tests, 90 frontend tests and the registered 25 HTTP / 3 provider /
+4 browser-contract suites. The complete measured report, including untouched
+modules and unmeasured scopes, is checked into [quality-baseline.json](quality-baseline.json).
+
+| Scope | Lines | Other measured metrics |
+|---|---|---|
+| Rust | 81.00% | Functions 78.41%; regions 77.84% |
+| Frontend | 42.28% | Branches 36.34%; functions 32.49% |
+| Python | 74.11% | Branches 52.78% |
+
+These percentages retain the separate source scopes above and do not establish
+100% coverage or whole-system correctness. Regression floors were preserved.

@@ -67,7 +67,11 @@ resolution remain outside this implementation.
 ## Content languages and inheritance
 
 **Settings → Languages** controls the shop's main content language and enabled
-BCP-style locale keys, including new languages such as `it-IT`. Product and category
+canonical language/script/region/variant locale keys, including `it-IT`,
+`zh-Hans-CN`, `es-419` and `de-1901`. The bounded subset allows at most three
+subtags and excludes extensions/private-use tags. Studio canonicalizes input
+(e.g. `it-it` → `it-IT`); the API rejects malformed regions, noncanonical case
+and duplicate variants before persistence. Product and category
 editors use that list, rather than a fixed four-language catalog. The storefront
 language selector exposes configured content languages; `?language=it-IT` selects
 Italian content. Interface vocabulary is English/German/Spanish/French; custom

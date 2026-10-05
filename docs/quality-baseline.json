@@ -1,19 +1,19 @@
 {
   "metrics": {
     "frontend": {
-      "lines": 35.12,
-      "branches": 28.64,
-      "functions": 26.59,
-      "statements": 34.82
+      "lines": 42.28,
+      "branches": 36.34,
+      "functions": 32.49,
+      "statements": 41.63
     },
     "rust": {
-      "lines": 78.89604415823366,
-      "functions": 75.21222410865875,
-      "regions": 75.65823516878216
+      "lines": 80.99870298313878,
+      "functions": 78.41409691629956,
+      "regions": 77.84033027719694
     },
     "python": {
-      "lines": 72.16335966095164,
-      "branches": 50.75301204819277
+      "lines": 74.10698418340147,
+      "branches": 52.77777777777778
     }
   },
   "zero_hit_modules": {
@@ -29,13 +29,18 @@
       "frontend/src/admin/automation/CustomFieldCondition.tsx",
       "frontend/src/admin/automation/FlowBuilder.tsx",
       "frontend/src/admin/automation/FlowInputs.tsx",
+      "frontend/src/admin/catalog/GalleryUpload.tsx",
       "frontend/src/admin/catalog/ProductAssets.tsx",
+      "frontend/src/admin/catalog/ProductMedia.tsx",
+      "frontend/src/admin/catalog/ProductVariants.tsx",
+      "frontend/src/admin/catalog/RelatedProducts.tsx",
       "frontend/src/admin/orders/OrderDetail.tsx",
       "frontend/src/admin/orders/OrderPaymentDelivery.tsx",
       "frontend/src/admin/orders/OrderWorkflow.tsx",
       "frontend/src/admin/orders/ReceiptPanel.tsx",
       "frontend/src/admin/preview/PreviewDialog.tsx",
-      "frontend/src/admin/settings/CommerceSettings.tsx",
+      "frontend/src/admin/settings/DestinationRuleEditor.tsx",
+      "frontend/src/admin/settings/LanguageSettings.tsx",
       "frontend/src/platform/PlatformConsole.tsx",
       "frontend/src/platform/PlatformDashboard.tsx",
       "frontend/src/platform/PlatformLanguage.tsx",
@@ -44,24 +49,22 @@
       "frontend/src/platform/platform-api.ts",
       "frontend/src/shared/api/download.ts",
       "frontend/src/shared/apps/AppFrame.tsx",
-      "frontend/src/shared/customer/AddressBook.tsx",
-      "frontend/src/shared/customer/AddressCard.tsx",
       "frontend/src/shared/customer/AddressFields.tsx",
-      "frontend/src/shared/customer/CustomerFields.tsx",
       "frontend/src/shared/customer/customer-types.ts",
+      "frontend/src/shared/geography/useCountryCatalogue.ts",
       "frontend/src/shared/i18n/platform-i18n.ts",
       "frontend/src/shared/ui/ProductArt.tsx",
-      "frontend/src/storefront/account/CustomerAccount.tsx",
-      "frontend/src/storefront/account/CustomerSignIn.tsx",
       "frontend/src/storefront/checkout/CheckoutDetails.tsx",
       "frontend/src/storefront/checkout/CheckoutIdentity.tsx",
       "frontend/src/storefront/checkout/CheckoutPanel.tsx",
       "frontend/src/storefront/checkout/PaymentSession.tsx",
+      "frontend/src/storefront/shell/CatalogNavigation.tsx",
       "frontend/src/storefront/shell/CollectionView.tsx",
       "frontend/src/storefront/shell/ConciergeView.tsx",
       "frontend/src/storefront/shell/Storefront.tsx",
       "frontend/src/storefront/shell/StorefrontHeader.tsx",
       "frontend/src/storefront/shell/StorefrontHome.tsx",
+      "frontend/src/storefront/shell/StorefrontLanguage.tsx",
       "frontend/src/storefront/shell/useStorefrontController.ts"
     ],
     "rust": [
@@ -131,14 +134,16 @@
     "src/marketing/rule_tests.rs",
     "src/payments/mod.rs"
   ],
-  "date": "2026-10-03",
-  "baseCommit": "ca9080650b5b393f2eb89dc06bb2f8926f83e7c6",
-  "verifiedMergeCommit": "c78910206cc7ba26077ce5562f82b06d374b8860",
-  "verificationUrl": "https://github.com/sthamann/rust-ai-commerce/actions/runs/37121567597",
-  "frontendTests": 65,
-  "rustUnitTests": 58,
-  "httpSuites": 22,
+  "date": "2026-10-05",
+  "baseCommit": "efc9b73",
+  "sourceCommit": "cfe1b085b3294c0b78f80290e6725be0f92b70d8",
+  "verificationCommit": "7050f80b5120b8989f6a868782bc6e20ba0dfb41",
+  "verifiedMergeCommit": "852f3d1f430470a3af1a98fdb5df9bdf2c2166cb",
+  "verificationUrl": "https://github.com/sthamann/rust-ai-commerce/actions/runs/37285967720",
+  "frontendTests": 90,
+  "rustUnitTests": 67,
+  "httpSuites": 25,
   "providerSuites": 3,
   "browserContracts": 4,
-  "toolingUnitTests": 10
+  "toolingUnitTests": 12
 }

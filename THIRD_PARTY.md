@@ -57,3 +57,13 @@ required. Model-provider APIs remain optional external services.
 provides CPU limits and Linux address-space limits for its child process.
 Dependencies remain external registry packages and retain their bundled license files.
 No OCR, parser microVM, or arbitrary customer-code execution is implied.
+
+## Bundled geography
+
+`fixtures/geography.json` derives country codes/continents and localized names
+from countries-list 3.4.1 and i18n-iso-countries 7.14.0 (MIT). Their copyright and
+license notices are preserved in [countries-list.txt](fixtures/licenses/countries-list.txt)
+and [i18n-iso-countries.txt](fixtures/licenses/i18n-iso-countries.txt). US subdivision
+codes use the [US Census state reference](https://www2.census.gov/geo/docs/reference/state.txt).
+Dataset versions, the explicit non-ISO XK entry and limits are documented in
+[international-commerce.md](docs/international-commerce.md#sources-licensing-and-verification).

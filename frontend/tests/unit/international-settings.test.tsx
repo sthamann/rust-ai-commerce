@@ -150,6 +150,16 @@ it("keeps one international draft while configuring countries, taxes and shippin
   );
   const user = userEvent.setup();
   await screen.findByLabelText("Name", { exact: true });
+  await user.click(screen.getByRole("button", { name: /^Languages/ }));
+  const localeInput = screen.getByLabelText("Add locale (e.g. it-IT)");
+  await user.type(localeInput, "en-12");
+  expect(screen.getByRole("button", { name: "+ Add" })).toBeDisabled();
+  await user.clear(localeInput);
+  await user.type(localeInput, "it-it");
+  await user.click(screen.getByRole("button", { name: "+ Add" }));
+  expect(
+    screen.getByText("it-IT", { exact: true, selector: "small" }),
+  ).toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: /Countries/ }));
   const input = await screen.findByRole("combobox", {
     name: "Delivery countries",
@@ -174,4 +184,5 @@ it("keeps one international draft while configuring countries, taxes and shippin
   expect(payload.revision).toBe(7);
   expect(payload.data.countries).toContain("US");
   expect(payload.data.taxes[0].defaultRate).toBe(19);
+  expect(payload.data.locales).toContain("it-IT");
 });

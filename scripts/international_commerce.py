@@ -18,6 +18,8 @@ assert len(next(c for c in countries if c['code']=='US')['states'])==57
 assert all(c['alpha3'] and c['numeric'] and all(c['name'][l] for l in ['en','de','es']) for c in countries)
 check('complete continent-grouped world catalogue and 57 US states/territories have ISO metadata and EN/DE/ES names')
 conf=req('/api/merchant/commerce',h=merchant);data=conf['data'];data['countries']=list(dict.fromkeys(data['countries']+[c['code'] for c in countries[:30]]+['US']))
+for invalid_locale in ['en-12','en-USA','en-US-US','en-abcde-abcde','en-us']:
+ invalid=copy.deepcopy(data);invalid['locales'].append(invalid_locale);req('/api/merchant/commerce',{'data':invalid,'revision':conf['revision']},merchant,'PUT',400)
 for tax in data['taxes']:tax['defaultRate']=19 if tax['id']=='standard' else 7
 for method in data['shipping']:method['countries']=data['countries'].copy()
 data['mainLocale']='es-ES';data['locales'].append('it-IT');data['shipping'][1]['translations']['de']={'name':None,'description':None};data['shipping'][1]['translations']['es']['description']='Entrega heredada'

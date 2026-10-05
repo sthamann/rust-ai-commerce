@@ -366,7 +366,7 @@ See [implementation and limits](docs/intelligence-apps-payments.md),
 The current verification includes **7,000 bounded comparisons** against original
 Shopware 6.7.14.2 PHP classes. These cover selected pricing/context/tax operations and numeric/string/array/UUID comparison primitives, plus 432 cases against 74 concrete original condition classes;
 they do not establish full Shopware compatibility. The current workbench verification
-now runs 58 Rust unit tests and 67 frontend component/hook tests, plus 22 real HTTP suites,
+now runs 68 Rust unit tests and 90 frontend component/hook tests, plus 25 real HTTP suites,
 three local provider suites, four browser contracts and verification-tool tests.
 These include private releases, customer authority, concurrent checkout and bounded catalog reads.
 
@@ -374,7 +374,7 @@ These include private releases, customer authority, concurrent checkout and boun
 
 The Studio, storefront and operator console live in dedicated feature folders; shared API, app, form and locale code has enforced ownership boundaries. Studio workspaces load lazily. Views and controllers are bounded, documented modules; ordered CSS fragments preserve the visual cascade. See the [frontend architecture](frontend/README.md), [complete source inventory](docs/module-inventory.md) and [testing guide](docs/testing.md).
 
-CI runs source-boundary/cycle/size checks, real integration, component regressions, original Shopware comparisons and existing Lean/mutation checks. It uploads full V8, LLVM and Python coverage reports and enforces reviewed regression floors. Untested source files remain in the reports. **Full-system 100% coverage is not achieved**; the strict audit fails until the remaining branches and unmeasured runtime scopes are covered. Current measured evidence and limitations are in [quality-baseline.json](docs/quality-baseline.json).
+CI runs source-boundary/cycle/size checks, real integration, component regressions, original Shopware comparisons and existing Lean/mutation checks. It uploads full V8, LLVM and Python coverage reports and enforces reviewed regression floors. Untested source files remain in the reports. **Full-system 100% coverage is not achieved**; the strict audit fails until the remaining branches and unmeasured runtime scopes are covered. The [5 October 2026 CI run](https://github.com/sthamann/rust-ai-commerce/actions/runs/37285967720) measures line coverage at **81.00% Rust, 42.28% frontend and 74.11% Python** in their separate documented source scopes. Current measured evidence, untouched modules and limitations are in [quality-baseline.json](docs/quality-baseline.json).
 
 ## Contribute
 
