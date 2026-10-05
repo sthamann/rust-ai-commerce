@@ -74,7 +74,7 @@ An optional slate-blue theme remains available. Seven integrated views provide:
 | Shop intelligence | AGE product/need graph, complementary products, semantic retrieval and observed learning counts |
 | Agent commerce | Customer journey, actual adapter call counters and separate ChatGPT/Claude connection status |
 | Orders / Customers | Order detail, guarded workflow actions, customer fields/address books and immutable PDFs |
-| Settings | Central company data, countries, taxes, shipping and payment methods |
+| Settings | Structured company/address/legal metadata, safe logos, per-channel inheritance and selective releases; countries, taxes, shipping and payment methods |
 | Product content | One product workspace for translations, descriptions, specifications, assets and reviews |
 | Rules & flows | Source-named conditions, connected branches/actions/delays, campaigns and sales channels |
 | Storyfronts / Developers / Staging | Catalog/checkout integration, reviewed app drafts and selected private releases |
@@ -325,3 +325,5 @@ API/MCP actions, order-event subscriptions and graphical app flows are implement
 service abstraction, not full Shopware mail-template/message-queue parity. Attachments,
 provider delivery/bounce webhooks, per-customer/channel sender/language policy and
 automatic invitation emails remain missing.
+
+Company identity and its exact inheritance/API/verification boundary: [company settings](company-settings.md).

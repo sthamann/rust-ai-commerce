@@ -1,0 +1,42 @@
+/** Public company branding and readable legal identity across storefront channels. */
+.company-brand-logo {
+  display: inline-block;
+  max-width: 100px;
+  max-height: 34px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 12px;
+}
+.company-legal-page {
+  max-width: 900px;
+  padding: 64px 28px;
+}
+.company-legal-page dl {
+  display: grid;
+  gap: 14px;
+  margin: 28px 0;
+}
+.company-legal-page dl > div {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) 2fr;
+  gap: 24px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+.company-legal-page dt {
+  color: var(--muted);
+}
+.company-legal-page dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.company-legal-text {
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+@media (max-width: 600px) {
+  .company-legal-page dl > div {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}

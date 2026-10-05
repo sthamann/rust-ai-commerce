@@ -14,6 +14,8 @@ export default function LocalizedField({
   multiline = false,
   maxLength,
   required = false,
+  externalFallback,
+  externalLabel,
 }: {
   label: string;
   value: LocalizedText;
@@ -21,21 +23,25 @@ export default function LocalizedField({
   multiline?: boolean;
   maxLength?: number;
   required?: boolean;
+  externalFallback?: string;
+  externalLabel?: string;
 }) {
   const id = useId(),
     { language, locales, mainLocale } = useContentLanguage(),
     { i, locale } = useInternationalText();
   const key = contentKey(value, language, locales),
     main = language === mainLocale;
-  const inherited = !main && value[key] == null;
-  const fallback = contentText(value, mainLocale, mainLocale);
+  const inherited =
+    (!main || externalFallback !== undefined) && value[key] == null;
+  const fallback =
+    externalFallback ?? contentText(value, mainLocale, mainLocale);
   const set = (text: string) => onChange({ ...value, [key]: text });
   const props = {
     id,
     value: value[key] ?? "",
     placeholder: inherited ? fallback : undefined,
     maxLength,
-    required: required && main,
+    required: required && main && externalFallback === undefined,
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       set(e.target.value),
   };
@@ -43,7 +49,7 @@ export default function LocalizedField({
     <div className="intl-translated-field">
       <div className="intl-field-heading">
         <label htmlFor={id}>{label}</label>
-        {!main && (
+        {(!main || externalFallback !== undefined) && (
           <button
             type="button"
             className="intl-inherit"
@@ -65,8 +71,10 @@ export default function LocalizedField({
               }
             }}
           >
-            {i(inherited ? "inheritedFrom" : "customText")}
-            {inherited
+            {inherited && externalLabel
+              ? externalLabel
+              : i(inherited ? "inheritedFrom" : "customText")}
+            {inherited && !externalLabel
               ? ` ${new Intl.DisplayNames([locale], { type: "language" }).of(mainLocale) ?? mainLocale}`
               : ""}{" "}
             ↗

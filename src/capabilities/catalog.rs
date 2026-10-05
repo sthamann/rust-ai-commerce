@@ -1,0 +1,197 @@
+//! Public HTTP/MCP capability catalogue, separate from authorization and dispatch.
+pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
+    (
+        "merchant.company",
+        "Read company basis or one sales channel and its inheritance",
+    ),
+    (
+        "merchant.company.save",
+        "Revision-bound structured company identity, legal fields, logo and channel overrides",
+    ),
+    (
+        "merchant.commerce.read",
+        "Read countries, tax rules, shipping, payment and content languages",
+    ),
+    (
+        "merchant.commerce.save",
+        "Revision-bound international commerce settings update",
+    ),
+    (
+        "merchant.translations.list",
+        "Read catalogue translation jobs",
+    ),
+    (
+        "merchant.translations.create",
+        "Start an AI catalogue translation draft job",
+    ),
+    (
+        "merchant.translations.detail",
+        "Read paginated source and translated product drafts",
+    ),
+    (
+        "merchant.translations.control",
+        "Resume or cancel a translation job",
+    ),
+    (
+        "merchant.translations.apply",
+        "Apply at most 50 revision-checked translation drafts",
+    ),
+    (
+        "merchant.products",
+        "Search/filter own products before cursor pagination",
+    ),
+    (
+        "merchant.product.create",
+        "Create a native product or variant with localized content and category/channel associations",
+    ),
+    (
+        "merchant.categories",
+        "Read own category tree and translations",
+    ),
+    (
+        "merchant.category.create",
+        "Create a localized inactive or active category",
+    ),
+    (
+        "merchant.category.save",
+        "Revision-bound category content and cycle-safe parent edit",
+    ),
+    (
+        "automation.catalog",
+        "Read original rule scopes and executable native action contracts",
+    ),
+    (
+        "automation.list",
+        "Read own rule, promotion and flow definitions and jobs",
+    ),
+    (
+        "automation.save",
+        "Revision-bound rule, promotion, channel or flow graph write",
+    ),
+    (
+        "automation.preview",
+        "Evaluate a rule against an authoritative cart without effects",
+    ),
+    (
+        "automation.import",
+        "Validate and normalize an original Shopware condition without saving",
+    ),
+    (
+        "merchant.workflow",
+        "Read multilingual state machine and transitions",
+    ),
+    (
+        "merchant.workflow.save",
+        "Revision-bound declarative workflow extension",
+    ),
+    (
+        "merchant.product.content",
+        "Read enabled-language product content",
+    ),
+    (
+        "merchant.product.save",
+        "Revision-bound product content update",
+    ),
+    (
+        "merchant.product.assets",
+        "Read asset metadata without binary secrets",
+    ),
+    ("merchant.asset.publish", "Digest-bound file publication"),
+    (
+        "merchant.customer.addresses",
+        "List owning customer address book",
+    ),
+    (
+        "merchant.customer.address.save",
+        "Create/update customer address and defaults with revision",
+    ),
+    (
+        "merchant.customer.address.delete",
+        "Delete customer address with revision",
+    ),
+    ("merchant.customers", "Search tenant customers"),
+    ("merchant.customer", "Read customer details"),
+    ("merchant.customer.save", "Revision-checked customer update"),
+    ("merchant.order", "Read order detail and activity"),
+    (
+        "merchant.order.transition",
+        "Revision-checked order payment or delivery transition",
+    ),
+    ("merchant.order.note", "Append an operational note"),
+    ("merchant.receipts", "Read immutable order receipts"),
+    (
+        "merchant.receipt.create",
+        "Generate a numbered immutable receipt and PDF",
+    ),
+    (
+        "merchant.payment",
+        "Explicitly approved idempotent provider command",
+    ),
+    (
+        "developer.archive",
+        "Explicit recoverable App Studio project removal or restore",
+    ),
+    (
+        "developer.builds",
+        "Read own immutable app development versions",
+    ),
+    (
+        "developer.import",
+        "Import a reviewed declarative package as a draft in a private environment",
+    ),
+    (
+        "developer.stage",
+        "Explicitly install a digest-bound app build in a private sandbox",
+    ),
+    (
+        "developer.task",
+        "Export an environment-scoped coding-agent task",
+    ),
+    ("catalog.search", "Read catalog"),
+    (
+        "catalog.detail",
+        "Read SKU family, media, properties, approved reviews and context prices",
+    ),
+    (
+        "checkout.options",
+        "Read available shipping and payment methods",
+    ),
+    (
+        "checkout.select",
+        "Update country, delivery address, shipping and payment with cart revision",
+    ),
+    (
+        "knowledge.graph",
+        "Read tenant product needs and complementary relationships",
+    ),
+    (
+        "knowledge.search",
+        "Semantic product retrieval with live price/stock and graph evidence",
+    ),
+    (
+        "knowledge.external",
+        "Read merchant-private Gmail/Analytics sources with provenance",
+    ),
+    ("cart.create", "Create customer cart"),
+    (
+        "cart.replace",
+        "Replace cart items using optimistic revision",
+    ),
+    ("cart.quote", "Calculate authoritative cart"),
+    (
+        "checkout.complete",
+        "Place order with simulated/manual payment and Idempotency-Key",
+    ),
+    (
+        "merchant.plan",
+        "Create real LLM change preview; merchant authorization required",
+    ),
+    (
+        "merchant.apply",
+        "Approve stored change; merchant authorization required",
+    ),
+    (
+        "merchant.orders",
+        "Read orders; merchant authorization required",
+    ),
+];

@@ -12,3 +12,5 @@ This folder owns the Rust modules listed below. Each source begins with its resp
 - [`workflow.rs](workflow.rs): Revision-bound workflow configuration used by installed apps and selective sandbox releases.
 
 The [source inventory](../../docs/module-inventory.md) is checked in CI. [The behavioral map](../../docs/source-map.md) identifies integration suites, and [testing](../../docs/testing.md) describes actual coverage and limits. Every file is limited to 320 lines; `main.rs` to 120.
+
+Company profiles live in `company_model.rs` (admission/inheritance), `master_data.rs` (transactional scopes), `company_logo.rs` (immutable validated bytes) and `company_public.rs` (explicit public projection). `receipts.rs` consumes the same channel resolver. See [company settings](../../docs/company-settings.md).

@@ -18,6 +18,10 @@ This is also a laboratory for porting selected original Shopware behavior to Rus
 
 [![Current product detail with variants, gallery and server-calculated prices](docs/assets/playground-product-en.jpg)](https://sthamann.github.io/rust-ai-commerce/playground.html)
 
+Company settings now include structured addresses, statutory/register and content-responsibility metadata, safe logo uploads, one-language brand/legal text editing and explicit per-sales-channel inheritance. Storefront identity and receipt issuers consume the resolved values; company/channel changes can be released selectively from staging. [Guide and contracts](docs/company-settings.md).
+
+![Company settings](docs/screenshots/company-settings.jpg)
+
 ## Visual App Studio
 
 Build native apps visually in **Commerce Studio → Developers**. Compose text, tables, cards and forms, define typed app data, connect HTTP/MCP/AI tools and opt actions into the graphical Flow Builder. Human edits and Codex/Claude agent edits use the **same executable Manifest**. Open saved apps through explicit edit controls, remove development projects to a recoverable trash, save an immutable version, test real records in a private sandbox, then selectively release the package.

@@ -16,12 +16,17 @@ import PaymentSession from "../checkout/PaymentSession";
 import "../styles/shop.css";
 
 import { StorefrontContext } from "./StorefrontContext";
+import CompanyLegalPage from "./CompanyLegalPage";
+import { useCompanyText } from "../../shared/i18n/company-i18n";
+import "../styles/company-identity.css";
 import StorefrontHeader from "./StorefrontHeader";
 import StorefrontHome from "./StorefrontHome";
 import { useStorefrontController } from "./useStorefrontController";
 export default function Storefront(props: { onMerchant: () => void }) {
+  const { co } = useCompanyText();
   const c = useStorefrontController(props);
   const {
+    company,
     cart,
     shopTenant,
     salesChannel,
@@ -92,6 +97,8 @@ export default function Storefront(props: { onMerchant: () => void }) {
             </main>
           ) : appPath.startsWith("#app/") ? (
             <StorefrontAppPage path={appPath} />
+          ) : appPath === "#legal" ? (
+            <CompanyLegalPage />
           ) : id ? (
             <ProductPage
               id={id}
@@ -104,7 +111,8 @@ export default function Storefront(props: { onMerchant: () => void }) {
             <StorefrontHome />
           )}
           <footer className="shop-footer">
-            <strong>atelier /</strong>
+            <strong>{company.brandName || company.name || shopTenant} /</strong>
+            <a href="#legal">{co("legalPage")}</a>
             <p>{s("simulation")}</p>
             <a href="https://github.com/sthamann/rust-ai-commerce">GitHub ↗</a>
           </footer>

@@ -28,3 +28,5 @@ polls, reviews and applies persistent catalogue jobs. `CommerceSettings` owns on
 revisioned aggregate across all those panels. Shared pickers/inheritance live under
 `shared/geography`; scoped catalogues must not leak between shops or staging.
 The mandatory localization check and international component tests run in CI.
+
+The structured company editor uses `CompanyField`, `CompanyLogo`, `CompanyTranslations`, `company-types` and `useCompanyContext`. Scope changes have a dirty-draft guard; factual fields show/reset basis inheritance. Translated texts use the shared content language, including channel-main-language fallback. See [company settings](../../../../docs/company-settings.md).

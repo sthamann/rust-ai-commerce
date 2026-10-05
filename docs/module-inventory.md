@@ -67,6 +67,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/bin/rules.rs](../src/bin/rules.rs) | Batch original-PHP numeric-rule comparison transport. |
 | [src/bin/verified_kernel.rs](../src/bin/verified_kernel.rs) | Generated conformance driver; invokes the same production policy functions as the commerce server. |
 | [src/bootstrap.rs](../src/bootstrap.rs) | Startup, additive migrations, persisted extensions and outbox worker. |
+| [src/capabilities/catalog.rs](../src/capabilities/catalog.rs) | Public HTTP/MCP capability catalogue, separate from authorization and dispatch. |
 | [src/capabilities.rs](../src/capabilities.rs) | Shared HTTP/MCP capability dispatch and tool authorization. |
 | [src/cart_model.rs](../src/cart_model.rs) | Persisted cart, item and customer-context types. |
 | [src/cart_mutation.rs](../src/cart_mutation.rs) | Optimistic cart mutations and quantity normalization. |
@@ -169,7 +170,11 @@ This lists every checked-in source module in these roots, including files with n
 | [src/mcp.rs](../src/mcp.rs) | Typed MCP schemas and JSON-RPC transport. |
 | [src/migrations.rs](../src/migrations.rs) | Versioned setup is separate from serving; no catalog-wide startup repair. |
 | [src/operations/addresses.rs](../src/operations/addresses.rs) | Merchant/MCP address operations use identical customer ownership and revision checks to the Store API. |
+| [src/operations/company_logo.rs](../src/operations/company_logo.rs) | Tenant-owned logo uploads: bounded decoding, metadata stripping, immutable PNG storage and linked public delivery. |
+| [src/operations/company_model.rs](../src/operations/company_model.rs) | Company profile admission, sparse channel inheritance and structured-address print projection. |
+| [src/operations/company_public.rs](../src/operations/company_public.rs) | Explicit public legal/brand projection; bank account, domestic tax ID and unlinked uploads remain private. |
 | [src/operations/customers.rs](../src/operations/customers.rs) | Tenant-scoped paged CRM and revision-checked merchant changes; credentials never leave storage. |
+| [src/operations/master_data.rs](../src/operations/master_data.rs) | Revisioned tenant company basis and sparse channel overrides, serialized with receipt issuance. |
 | [src/operations/mod.rs](../src/operations/mod.rs) | Merchant CRM and fulfillment APIs, shared verbatim with MCP operations capabilities. |
 | [src/operations/orders.rs](../src/operations/orders.rs) | Bounded order search, token-redacted detail and append-only operational notes. |
 | [src/operations/receipt_pdf.rs](../src/operations/receipt_pdf.rs) | Minimal paginated PDF serializer with WinAnsi Helvetica; snapshot retains complete Unicode originals. |
@@ -205,6 +210,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/staging/assets.rs](../src/staging/assets.rs) | Binary assets are immutable, staged independently through metadata/digest units; paid entitlements never clone. |
 | [src/staging/categories.rs](../src/staging/categories.rs) | Category release units and dependency-ordered tree publication; stock is never part of a catalog release. |
 | [src/staging/clone.rs](../src/staging/clone.rs) | Clone only catalog/configuration into a private tenant; customer/order/payment state is excluded. |
+| [src/staging/company.rs](../src/staging/company.rs) | Selective company identity release copies only linked immutable logo bytes and validates the final company aggregate. |
 | [src/staging/documents.rs](../src/staging/documents.rs) | Knowledge documents/chunks clone and publish with their source provenance; publication visibility is a reviewed unit. |
 | [src/staging/mod.rs](../src/staging/mod.rs) | Private cloned shops, scope admission and selective atomic release of reviewed changes. |
 | [src/staging/release.rs](../src/staging/release.rs) | Selected units publish in one transaction with staged digests and live baseline conflict checks. |
@@ -296,16 +302,21 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/preview/PreviewDialog.tsx](../frontend/src/admin/preview/PreviewDialog.tsx) | PreviewDialog keeps merchant interaction separate from workspace orchestration. |
 | [frontend/src/admin/preview/PreviewPanel.tsx](../frontend/src/admin/preview/PreviewPanel.tsx) | PreviewPanel renders verified shop state and typed user actions. |
 | [frontend/src/admin/settings/CommerceSettings.tsx](../frontend/src/admin/settings/CommerceSettings.tsx) | One revisioned international settings aggregate: drafts survive navigation between countries, taxes, methods and languages. |
+| [frontend/src/admin/settings/CompanyField.tsx](../frontend/src/admin/settings/CompanyField.tsx) | One factual field with visible channel inheritance, an explicit reset and searchable geographic selection. |
+| [frontend/src/admin/settings/CompanyLogo.tsx](../frontend/src/admin/settings/CompanyLogo.tsx) | Private logo preview and bounded upload; attaching/removing is a draft change until the profile is saved. |
+| [frontend/src/admin/settings/CompanyTranslations.tsx](../frontend/src/admin/settings/CompanyTranslations.tsx) | Brand and legal text use one content-language selector and independent language/channel inheritance. |
 | [frontend/src/admin/settings/CountriesSettings.tsx](../frontend/src/admin/settings/CountriesSettings.tsx) | Delivery-country selection and editable catalogue definitions, including tenant-owned subdivisions. |
 | [frontend/src/admin/settings/CountryDefinition.tsx](../frontend/src/admin/settings/CountryDefinition.tsx) | Country metadata and subdivision editing with multilingual names; custom definitions cannot invent ISO assignment. |
 | [frontend/src/admin/settings/DestinationRuleEditor.tsx](../frontend/src/admin/settings/DestinationRuleEditor.tsx) | Geographical tax rule editor: country, subdivisions, postcode constraints, date window and persisted Rule Builder condition. |
 | [frontend/src/admin/settings/LanguageSettings.tsx](../frontend/src/admin/settings/LanguageSettings.tsx) | Shop main language and enabled locales with resumable provider-backed bulk product translation drafts. |
-| [frontend/src/admin/settings/MasterDataSettings.tsx](../frontend/src/admin/settings/MasterDataSettings.tsx) | Shared company record with grouped fields, revision-aware saves and localized draft feedback. |
+| [frontend/src/admin/settings/MasterDataSettings.tsx](../frontend/src/admin/settings/MasterDataSettings.tsx) | Structured company profile with single-language content, inherited channel scopes, logo drafts and revision-bound saves. |
 | [frontend/src/admin/settings/MethodSettings.tsx](../frontend/src/admin/settings/MethodSettings.tsx) | Master/detail shipping and payment configuration, translated content and searchable country availability. |
 | [frontend/src/admin/settings/SettingsSaveBar.tsx](../frontend/src/admin/settings/SettingsSaveBar.tsx) | Consistent settings save feedback, dirty state and permission-aware controls. |
 | [frontend/src/admin/settings/SettingsWorkspace.tsx](../frontend/src/admin/settings/SettingsWorkspace.tsx) | Independent settings workspace: grouped navigation, explicit dirty-draft guards and native API forms. |
 | [frontend/src/admin/settings/TaxSettings.tsx](../frontend/src/admin/settings/TaxSettings.tsx) | Editable tax classes and explicit fallback/country rates with destination rules using native Rule Builder references. |
 | [frontend/src/admin/settings/TranslationJobs.tsx](../frontend/src/admin/settings/TranslationJobs.tsx) | Start catalogue translations, poll durable progress, review paginated drafts and apply bounded revision-checked batches. |
+| [frontend/src/admin/settings/company-types.ts](../frontend/src/admin/settings/company-types.ts) | Typed company metadata and sparse per-channel inheritance contract; statutory facts are never auto-translated. |
+| [frontend/src/admin/settings/useCompanyContext.ts](../frontend/src/admin/settings/useCompanyContext.ts) | Load enabled content languages, countries and channel choices without overwriting an edited draft on locale refresh. |
 | [frontend/src/admin/settings/useSettingsDraft.ts](../frontend/src/admin/settings/useSettingsDraft.ts) | Revisioned settings drafts survive locale refreshes, reject late loads and keep failed saves editable. |
 | [frontend/src/admin/shell/Merchant.tsx](../frontend/src/admin/shell/Merchant.tsx) | Studio composition root: layout, scoped controller and modular workspace views. |
 | [frontend/src/admin/shell/StudioComposer.tsx](../frontend/src/admin/shell/StudioComposer.tsx) | StudioComposer: focused Studio view; state and commands come from the session-scoped controller. |
@@ -329,6 +340,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/catalog-editor.css](../frontend/src/admin/styles/catalog-editor.css) | Visual editor and category workspace responsive styles. |
 | [frontend/src/admin/styles/catalog.css](../frontend/src/admin/styles/catalog.css) | Light, precise catalog workspace with accessible tables, focused detail panels and visual authoring. |
 | [frontend/src/admin/styles/commerce-manager.css](../frontend/src/admin/styles/commerce-manager.css) | commerce manager: Studio visual system and merchant operational layouts. |
+| [frontend/src/admin/styles/company-settings.css](../frontend/src/admin/styles/company-settings.css) | Company editor: structured addresses, visible scope inheritance and compact upload controls. |
 | [frontend/src/admin/styles/forms.css](../frontend/src/admin/styles/forms.css) | Studio-owned form primitives load at the composition root, independent of lazy workspace history. |
 | [frontend/src/admin/styles/international-details.css](../frontend/src/admin/styles/international-details.css) | Destination rates, translation jobs and responsive international workbench layout. |
 | [frontend/src/admin/styles/international.css](../frontend/src/admin/styles/international.css) | International commerce workbench: compact master/detail records, calm colour and clear field hierarchy. |
@@ -391,6 +403,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/automation-fields.ts](../frontend/src/shared/i18n/automation-fields.ts) | Localized labels for original rule and native flow parameter fields. |
 | [frontend/src/shared/i18n/automation-i18n.ts](../frontend/src/shared/i18n/automation-i18n.ts) | Four-language automation editor vocabulary keeps source identifiers stable and user labels readable. |
 | [frontend/src/shared/i18n/automation-labels.ts](../frontend/src/shared/i18n/automation-labels.ts) | Source-named rule labels are localized independently from their stable integration identifiers. |
+| [frontend/src/shared/i18n/company-i18n.ts](../frontend/src/shared/i18n/company-i18n.ts) | Company identity, field inheritance and legal storefront vocabulary in four interface languages. |
 | [frontend/src/shared/i18n/connected-i18n.ts](../frontend/src/shared/i18n/connected-i18n.ts) | Four-language vocabulary for connected apps, consent and visual automation. |
 | [frontend/src/shared/i18n/content-language.ts](../frontend/src/shared/i18n/content-language.ts) | Resolve editable translation keys without merging distinct regional locales or fabricating inherited values. |
 | [frontend/src/shared/i18n/customer-i18n.ts](../frontend/src/shared/i18n/customer-i18n.ts) | Account and address labels share four complete locales across storefront and studio. |
@@ -435,6 +448,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/checkout/PaymentSession.tsx](../frontend/src/storefront/checkout/PaymentSession.tsx) | Customer payment handoff; browser navigation never marks a payment as captured. |
 | [frontend/src/storefront/shell/CatalogNavigation.tsx](../frontend/src/storefront/shell/CatalogNavigation.tsx) | Public category navigation uses the same tenant/channel tree as the listing API, with translated names. |
 | [frontend/src/storefront/shell/CollectionView.tsx](../frontend/src/storefront/shell/CollectionView.tsx) | CollectionView: storefront view composed from the scoped cart/controller. |
+| [frontend/src/storefront/shell/CompanyLegalPage.tsx](../frontend/src/storefront/shell/CompanyLegalPage.tsx) | Directly reachable channel legal page; renders only the server's explicit public projection as text. |
 | [frontend/src/storefront/shell/ConciergeView.tsx](../frontend/src/storefront/shell/ConciergeView.tsx) | ConciergeView: storefront view composed from the scoped cart/controller. |
 | [frontend/src/storefront/shell/Storefront.tsx](../frontend/src/storefront/shell/Storefront.tsx) | Storefront composition root: cart context, routes, customer account and checkout. |
 | [frontend/src/storefront/shell/StorefrontContext.ts](../frontend/src/storefront/shell/StorefrontContext.ts) | Local storefront context, scoped to the mounted tenant and sales channel. |
@@ -442,8 +456,10 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/shell/StorefrontHome.tsx](../frontend/src/storefront/shell/StorefrontHome.tsx) | StorefrontHome: storefront view composed from the scoped cart/controller. |
 | [frontend/src/storefront/shell/StorefrontLanguage.tsx](../frontend/src/storefront/shell/StorefrontLanguage.tsx) | Shop-configured content languages, including custom locales; the interface keeps its supported language vocabulary. |
 | [frontend/src/storefront/shell/useCatalog.ts](../frontend/src/storefront/shell/useCatalog.ts) | Cursor catalogue loading, debounced filters and stale-response protection. |
+| [frontend/src/storefront/shell/useCompanyIdentity.ts](../frontend/src/storefront/shell/useCompanyIdentity.ts) | Channel-scoped public brand/legal identity; stale responses cannot leak across tenants or languages. |
 | [frontend/src/storefront/shell/usePersonalization.ts](../frontend/src/storefront/shell/usePersonalization.ts) | Opt-in behavior signals and stable product ordering; no authoritative prices are changed. |
 | [frontend/src/storefront/shell/useStorefrontController.ts](../frontend/src/storefront/shell/useStorefrontController.ts) | Cart lifecycle, authoritative checkout commands and storefront coordination. |
+| [frontend/src/storefront/styles/company-identity.css](../frontend/src/storefront/styles/company-identity.css) | Public company branding and readable legal identity across storefront channels. |
 | [frontend/src/storefront/styles/shop/01--root.css](../frontend/src/storefront/styles/shop/01--root.css) | shop: -root styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/storefront/styles/shop/02-shop-product-image.css](../frontend/src/storefront/styles/shop/02-shop-product-image.css) | shop: shop-product-image styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/storefront/styles/shop/03-availability-span.css](../frontend/src/storefront/styles/shop/03-availability-span.css) | shop: availability-span styles. Source order is preserved by the entry stylesheet. |
@@ -496,6 +512,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/check_site.py](../scripts/check_site.py) | Check the generated documentation's links and discovery metadata. |
 | [scripts/checkout_handoff.py](../scripts/checkout_handoff.py) | Exercise actual PostgreSQL checkout transfer, isolation, replay and durable ordering. |
 | [scripts/commerce.py](../scripts/commerce.py) | Real HTTP/PG tests for SKUs, moderated reviews, tax/shipping/payment and deliveries. |
+| [scripts/company_settings.py](../scripts/company_settings.py) | Real HTTP company basis/channel inheritance, immutable issuer snapshots, bounded logos and private staging. No external services. |
 | [scripts/connected_apps.py](../scripts/connected_apps.py) | Real local OAuth/provider HTTP protocols, private-source PostgreSQL/AGE consumers and durable Slack flows. |
 | [scripts/connector_store_tests.py](../scripts/connector_store_tests.py) | Concurrent private state, settings/import fences and encrypted mailbox persistence. |
 | [scripts/connectors.py](../scripts/connectors.py) | Start the local connector apps with private generated keys; preserve all existing app services. |

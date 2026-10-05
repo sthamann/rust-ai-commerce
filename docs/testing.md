@@ -188,3 +188,5 @@ modules and unmeasured scopes, is checked into [quality-baseline.json](quality-b
 
 These percentages retain the separate source scopes above and do not establish
 100% coverage or whole-system correctness. Regression floors were preserved.
+
+Company profile HTTP/database checks run in the suite registry as `company_settings`; the scope, decoder/ACL, issuer snapshot, translation and selective release cases are detailed in [company settings](company-settings.md). They use synthetic tenants and local image bytes, with no external payment/model/OAuth traffic.

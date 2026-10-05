@@ -10,6 +10,7 @@ import "../styles/shop.css";
 import { useStorefront } from "./StorefrontContext";
 export default function StorefrontHeader() {
   const {
+    company,
     s,
     busy,
     cart,
@@ -29,7 +30,15 @@ export default function StorefrontHeader() {
   return (
     <header className="shop-nav">
       <a href="#" className="shop-brand">
-        atelier<span> / </span>
+        {company.logoUrl && (
+          <img
+            src={company.logoUrl}
+            alt={company.brandName || company.name || shopTenant}
+            className="company-brand-logo"
+          />
+        )}
+        {company.brandName || company.name || shopTenant}
+        <span> / </span>
       </a>
       <nav>
         <a href="#">{s("collection")}</a>

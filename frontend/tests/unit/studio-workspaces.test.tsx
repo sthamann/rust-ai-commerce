@@ -42,6 +42,12 @@ function api(path: string) {
     "/api/apps": { packages: [] },
     "/api/developer": { builds: [], providers },
     "/api/workspace/members": { members: [], invitations: [] },
+    "/store-api/countries": {
+      countries: [],
+      enabled: ["DE"],
+      locales: ["en-GB", "de-DE", "es-ES", "fr-FR"],
+      mainLocale: "en-GB",
+    },
     "/api/settings/master-data": {
       revision: 1,
       data: {

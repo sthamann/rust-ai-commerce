@@ -392,8 +392,8 @@
     },
     "src/auth/middleware.rs": {
       "status": "unproved",
-      "sha256": "96f791f53d3498245f3d14d7c6f6e76d74287d860582a5d81f04f626d59e7b02",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "adb1a932880512850e0f92de88b41182f8afe55d649f935bf5f8944f38ca13ef",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "src/auth/mod.rs": {
       "status": "unproved",
@@ -495,10 +495,15 @@
       "sha256": "8da89b90aa75262364d2f9fe23cd0e56872ad2bade6c329a2a0b94a8b757e297",
       "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
+    "src/capabilities/catalog.rs": {
+      "status": "unproved",
+      "sha256": "4d71862e0c1f00cc32d1a42f2483c73ae7d5d67960e16cd6bc651674693c0ba9",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+    },
     "src/capabilities.rs": {
       "status": "unproved",
-      "sha256": "23853fd542ea0d6c35194ec6bebd9a8af1fbf79bf3ab802040126a592b1938eb",
-      "review": "Reviewed native App Studio runtime and source/schema changes with existing extracted public-read guard; added tenant-owned approval-checked recoverable project archive/restore over HTTP and MCP, preserving immutable digests and installed app data, rejecting archived staging. Rust fmt/lint/unit checks and frontend shared-schema, edit/open/version/confirm-delete/restore tests; affected real PostgreSQL suites validate ownership, archive, restored digest and installed-data retention. SQL/UI/async adapters remain unproved."
+      "sha256": "a04750f7d99515bc7b6f2d82a1f01afc2d11d87026c1d06828433473329ed6dd",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "src/cart_model.rs": {
       "status": "unproved",
@@ -647,8 +652,8 @@
     },
     "src/commerce/mod.rs": {
       "status": "unproved",
-      "sha256": "aaa7efe788c94bb355c0c818d6978a4a30319a5eca3ce0ad8ea1a400a39e2ca3",
-      "review": "Reviewed shared content-language validation, regional key preservation, shop-main flow fallback and asset labels; existing state/price/permission contracts remain intact."
+      "sha256": "f71aa49e9ebd6bb9e910a653bc32a6e28757fbf172767edbd0993667f81fe1db",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "src/commerce/order_fields.rs": {
       "status": "unproved",
@@ -687,8 +692,8 @@
     },
     "src/commerce/product_languages.rs": {
       "status": "unproved",
-      "sha256": "c17f4193844d415296531953ddfbbd75d8cc1eb05fcfb7cdf0889e26869c031c",
-      "review": "Reviewed canonical locale grammar: invalid region subtags and duplicate variants fail before persistence; configured language/script/region/variant subset is browser-compatible. API and UI regression coverage retained."
+      "sha256": "bafdb5f5ff9d30da116f4ed4c324a5309cb193da9a5a922a91749e6a56efb808",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "src/commerce/review_moderation.rs": {
       "status": "unproved",
@@ -992,28 +997,48 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "a382bd3f63ac23aa52d46ee16e85c5a7242c831e5b4d07f1dbd485272755ab0b",
-      "review": "Reviewed native App Studio runtime and source/schema changes with existing extracted public-read guard; added tenant-owned approval-checked recoverable project archive/restore over HTTP and MCP, preserving immutable digests and installed app data, rejecting archived staging. Rust fmt/lint/unit checks and frontend shared-schema, edit/open/version/confirm-delete/restore tests; affected real PostgreSQL suites validate ownership, archive, restored digest and installed-data retention. SQL/UI/async adapters remain unproved."
+      "sha256": "7b2c7453f1e523564e906bdc523c15bf3535abe32764af384d1651323ab7ead7",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "a7f213741685ac72406eab7a6eeb8171d2bb4db6890c4ab1f4864a1276b24640",
-      "review": "Reviewed App Studio native views, scoped translation validation, canonical agent schema and recoverable project trash. Registered migration 029 in the actual startup migration registry; real PostgreSQL native suite passes approval/cross-tenant rejection, archive hiding, archived-stage rejection, retained installed records and exact digest restore via MCP. Frontend open/edit/next-version/confirm-delete/restore regression tests pass. Public native writes reuse app_read_admissible; SQL/browser/async code remains unproved."
+      "sha256": "335aea9474f13d79bd59e011498f31c23382c595342a89214c8235ceee9cd15f",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
       "sha256": "e683658ad9fbf79799a08e766ee491809a53f4d75a8f3c099401ed5a6d3ce824",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/operations/company_logo.rs": {
+      "status": "unproved",
+      "sha256": "a6aaf6752fd3387874c1339311b357008c1cee5029012fd25488d73e425d3d27",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+    },
+    "src/operations/company_model.rs": {
+      "status": "unproved",
+      "sha256": "d8ba973f47e068ac8e362e34a9fd3d1eca01c5512c7191b0ec4129300558b067",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+    },
+    "src/operations/company_public.rs": {
+      "status": "unproved",
+      "sha256": "ca4a29dcf0042201e88c4f3f4f437c6ea0ec8eede23eb0ce3ce90152b7d882e1",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+    },
     "src/operations/customers.rs": {
       "status": "unproved",
       "sha256": "47783552b96b762aa5b2731e2ab460c53bbdc78f43a904f2568a8f8a865bdc09",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/operations/master_data.rs": {
+      "status": "unproved",
+      "sha256": "a2bf5670c01fba008abb9ccd104dd5d8134a115ddcc1ec8296a47ce0edbdb8d5",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+    },
     "src/operations/mod.rs": {
       "status": "unproved",
-      "sha256": "7500a660fee0773495d066e8d901595877f658e3d5e2f2ddecba7a9de59e1e2a",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "b8a35183c195741d6281ccdbcda1f54c13fa54376c3f2af94ccaa0d95608b67c",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "src/operations/orders.rs": {
       "status": "unproved",
@@ -1027,13 +1052,13 @@
     },
     "src/operations/receipt_text.rs": {
       "status": "unproved",
-      "sha256": "a751ddd51e2b8754e276476ed77afed74e7aa5e3bdbd0894ebd6be43b34417a8",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "c3535bbedfad8a5e08624e447561052a8eebe947ebe59764410b778d5d46fc82",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "src/operations/receipts.rs": {
       "status": "unproved",
-      "sha256": "57a1fdfb5dd9df6328016c9b910bba18249fd814288ee59bd265db2fd5b952de",
-      "review": "Issuer updates admit matching existing revisions into the UPSERT source while preserving the row-lock conflict fence. The real HTTP suite verifies sequential saves, stale revisions, concurrent saves, tenant isolation and immutable issued receipts."
+      "sha256": "bade9ad0afa3e8cb7ee7ca45717c3e2c24718367beddb4d6f443f137e7997626",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "src/operations/workflow.rs": {
       "status": "unproved",
@@ -1182,8 +1207,13 @@
     },
     "src/staging/clone.rs": {
       "status": "unproved",
-      "sha256": "8ff20488e55c89fbce4a83943a0042052353338ae78cd42a636c5d5ba07320ae",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "5d248a2509b409736cbab95d5f606a95594f22b7f855be19c007dee30aadaead",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+    },
+    "src/staging/company.rs": {
+      "status": "unproved",
+      "sha256": "5d69c3a3d02a3cb4d32dd410488288b6e1984e34354cb2e16661858263d52a1a",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "src/staging/documents.rs": {
       "status": "unproved",
@@ -1192,18 +1222,18 @@
     },
     "src/staging/mod.rs": {
       "status": "unproved",
-      "sha256": "efcfa894e59b5572b29790e48eb21b3a42e12e4b883900b6478f00dc096af5d3",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "8916e02564efbd73dcf64efddc4f66dc57cc6de86ef1ce6cd1d7eed025b2a437",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "src/staging/release.rs": {
       "status": "unproved",
-      "sha256": "ca6505d0d8298b76d8a0dde73628279fb4bb931a329ba58f4d896fcc2298f1b9",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "427c26c18482d0f8013b2c09e72d602f78a3a4a071903be54d1dce9a2bc3a798",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "src/staging/snapshot.rs": {
       "status": "unproved",
-      "sha256": "1f7c788caeecb4d72e2589cb1b72168bb1ffa057bf38873db01075f92f635231",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "bb597b1b07c80f3e35f481d4add05f03901cb945d036260f86ec3b9cfd92f662",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "src/studio.rs": {
       "status": "unproved",
@@ -1257,12 +1287,12 @@
       "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "Cargo.lock": {
-      "sha256": "36240fbb9fcfda3ccd2ff73f5e001450f5de1fb00caa7191b364860a6f57adea",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "eef925fec1a064bbe0dd7a25a88c3eea555fe674a5d7a762ca7e4812e7c8c299",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "Cargo.toml": {
-      "sha256": "94eca2d307777d529d7f7014d31453786088b89fb25cecc2e6cb113d2d7eef32",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "240753b2dec36e130b9f05f1339be5b93ad7cb20e1de1c1853b3008c1f97e0c1",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "fixtures/app-studio-schema.json": {
       "sha256": "7511608ce3bad039ba883206e6e1762aa672572b1ddb13594cdd40d28f3af205",
@@ -1403,6 +1433,10 @@
     "migrations/029-developer-trash.sql": {
       "sha256": "00315c964f26452c7c99682f2577d53b49c562765e5cf65cccf6dae0b2744fd5",
       "review": "Reviewed native App Studio runtime and source/schema changes with existing extracted public-read guard; added tenant-owned approval-checked recoverable project archive/restore over HTTP and MCP, preserving immutable digests and installed app data, rejecting archived staging. Rust fmt/lint/unit checks and frontend shared-schema, edit/open/version/confirm-delete/restore tests; affected real PostgreSQL suites validate ownership, archive, restored digest and installed-data retention. SQL/UI/async adapters remain unproved."
+    },
+    "migrations/030-company-settings.sql": {
+      "sha256": "ec687424c7d2e76a526b6e2ed0500be9ef9abdf944812e331f68930e762ab7b4",
+      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "c9b984225b556b954c3147500a907788ae4436a16f787d44ccdc493282df5a73",

@@ -1,4 +1,5 @@
 /** Cart lifecycle, authoritative checkout commands and storefront coordination. */
+import { useCompanyIdentity } from "./useCompanyIdentity";
 import { useCatalog } from "./useCatalog";
 import { usePersonalization } from "./usePersonalization";
 
@@ -40,6 +41,7 @@ export function useStorefrontController({
     new URLSearchParams(location.search).get("shop") ?? "atelier";
   const salesChannel =
     new URLSearchParams(location.search).get("channel") ?? "default";
+  const company = useCompanyIdentity(shopTenant, salesChannel, locale);
   const cartKey =
     salesChannel === "default"
       ? `rac-cart:${shopTenant}`
@@ -271,6 +273,7 @@ export function useStorefrontController({
     });
 
   return {
+    company,
     onMerchant,
     s,
     t,

@@ -1,7 +1,12 @@
 //! Merchant CRM and fulfillment APIs, shared verbatim with MCP operations capabilities.
 use crate::*;
 mod addresses;
+mod company_logo;
+mod company_model;
+mod company_public;
 mod customers;
+mod master_data;
+pub(crate) use master_data::{lock as lock_company, validate_release as validate_company_release};
 mod orders;
 mod receipt_pdf;
 mod receipt_text;
@@ -11,8 +16,19 @@ pub(crate) fn router() -> Router<App> {
     Router::new()
         .route(
             "/api/settings/master-data",
-            get(master_data).put(save_master_data),
+            get(master_data::get).put(master_data::put),
         )
+        .route(
+            "/api/settings/master-data/channels/{id}",
+            get(master_data::get_channel).put(master_data::put_channel),
+        )
+        .route("/api/settings/company-logo", post(company_logo::upload))
+        .route(
+            "/api/settings/company-logo/{id}",
+            get(company_logo::preview),
+        )
+        .route("/store-api/company", get(company_public::get))
+        .route("/store-api/company-logo/{id}", get(company_logo::public))
         .route(
             "/api/merchant/order-state-machine",
             get(workflow::get).put(workflow::save),
@@ -42,6 +58,9 @@ pub(crate) fn router() -> Router<App> {
             get(receipts::settings).put(receipts::save_settings),
         )
         .route("/api/merchant/receipts/{id}/pdf", get(receipts::pdf))
+        .layer(axum::extract::DefaultBodyLimit::max(
+            2 * 1024 * 1024 + 65536,
+        ))
 }
 #[derive(Deserialize, Default)]
 pub(crate) struct Criteria {
@@ -67,6 +86,8 @@ impl Criteria {
 }
 pub(crate) fn permission(name: &str) -> Option<&'static str> {
     Some(match name {
+        "merchant.company" => "settings.read",
+        "merchant.company.save" => "settings.write",
         "merchant.workflow" => "orders.read",
         "merchant.workflow.save" => "settings.write",
         "merchant.customers" | "merchant.customer" => "customers.read",
@@ -121,6 +142,10 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
             )
             .await?,
         ),
+        "merchant.company" => master_data::read(a, h, v["channelId"].as_str()).await?,
+        "merchant.company.save" => {
+            master_data::save(a, h, v.clone(), v["channelId"].as_str()).await?
+        }
         "merchant.workflow" => workflow::get(State(a.clone()), h.clone()).await?,
         "merchant.workflow.save" => {
             workflow::save(State(a.clone()), h.clone(), Json(v.clone())).await?
@@ -238,20 +263,4 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
         _ => return Err(bad("Unknown operation")),
     };
     Ok(result)
-}
-
-/// Shared company identity is stored once and snapshotted into every issued document.
-async fn master_data(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
-    merchant(&a, &h)?;
-    auth::permit(&h, "settings.read")?;
-    receipts::settings_value(&a, &h).await
-}
-async fn save_master_data(
-    State(a): State<App>,
-    h: HeaderMap,
-    Json(v): Json<Value>,
-) -> Result<Json<Value>> {
-    merchant(&a, &h)?;
-    auth::permit(&h, "settings.write")?;
-    receipts::save_settings_value(&a, &h, v).await
 }

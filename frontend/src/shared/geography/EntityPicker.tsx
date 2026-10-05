@@ -19,6 +19,7 @@ export default function EntityPicker({
   label,
   single = false,
   disabled = false,
+  inputId,
 }: {
   options: PickerOption[];
   value: string[];
@@ -26,9 +27,11 @@ export default function EntityPicker({
   label: string;
   single?: boolean;
   disabled?: boolean;
+  inputId?: string;
 }) {
   const { i } = useInternationalText();
-  const id = useId();
+  const generatedId = useId();
+  const id = inputId ?? generatedId;
   const root = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false),
     [search, setSearch] = useState(""),
@@ -73,7 +76,7 @@ export default function EntityPicker({
     group ? i(group as InternationalWord) : "";
   return (
     <div className="geo-picker" ref={root}>
-      <label htmlFor={id}>{label}</label>
+      {!inputId && <label htmlFor={id}>{label}</label>}
       <div className="geo-selection">
         {value.slice(0, single ? 1 : 8).map((code) => (
           <span className="geo-chip" key={code}>

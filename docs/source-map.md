@@ -342,3 +342,5 @@ no model or external delivery provider. The exact current source inventory is
 | `operations/mod.rs`, `mcp.rs`, `marketing/flows.rs` | HTTP/MCP shared operations and product-event durable consumers | Actual MCP creation followed by completed product-created flow |
 
 [Original Shopware mapping, supported features and remaining gaps](product-management.md).
+
+Company identity, per-channel inheritance, logos and legal storefront/issuer consumers: [company settings module map](company-settings.md). Real integration suite: `scripts/company_settings.py`; UI regressions: `frontend/tests/unit/company-settings.test.tsx`.

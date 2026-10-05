@@ -3,6 +3,10 @@ use crate::*;
 
 pub(crate) fn tool_schema(name: &str) -> Value {
     let props = match name {
+        "merchant.company" => json!({"channelId":{"type":"string"}}),
+        "merchant.company.save" => {
+            json!({"channelId":{"type":"string"},"revision":{"type":"integer","minimum":0},"baseRevision":{"type":"integer","minimum":0},"data":{"type":"object"}})
+        }
         "merchant.commerce.save" => json!({"revision":{"type":"integer"},"data":{"type":"object"}}),
         "merchant.translations.create" => {
             json!({"targetLocale":{"type":"string"},"overwrite":{"type":"boolean"},"inference":{"type":"object","properties":{"provider":{"type":"string","enum":["ollama","openai","anthropic"]},"model":{"type":["string","null"]}},"additionalProperties":false}})
@@ -91,6 +95,7 @@ pub(crate) fn tool_schema(name: &str) -> Value {
         _ => json!({}),
     };
     let required = match name {
+        "merchant.company.save" => vec!["revision", "data"],
         "merchant.commerce.save" => vec!["revision", "data"],
         "merchant.translations.create" => vec!["targetLocale"],
         "merchant.translations.control" => vec!["id", "action"],

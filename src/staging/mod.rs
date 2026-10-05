@@ -3,6 +3,7 @@ use crate::*;
 mod assets;
 mod categories;
 mod clone;
+mod company;
 mod documents;
 mod release;
 mod snapshot;
@@ -52,6 +53,8 @@ async fn diff(State(a): State<App>, h: HeaderMap, Path(id): Path<String>) -> Res
     let t = live(&a, &h).await?;
     let base = owned(&a, &t, &id).await?;
     let mut tx = a.db.begin().await?;
+    operations::lock_company(&mut tx, &t).await?;
+    operations::lock_company(&mut tx, &id).await?;
     let current = snapshot(&mut tx, &id).await?;
     let actual = snapshot(&mut tx, &t).await?;
     let mut changes = vec![];

@@ -11,3 +11,5 @@ This folder owns the Rust modules listed below. Each source begins with its resp
 - [`snapshot.rs](snapshot.rs): Fixed publishable units: product content/translations, settings, experience and app packages.
 
 The [source inventory](../../docs/module-inventory.md) is checked in CI. [The behavioral map](../../docs/source-map.md) identifies integration suites, and [testing](../../docs/testing.md) describes actual coverage and limits. Every file is limited to 320 lines; `main.rs` to 120.
+
+`company.rs` adds independent `company` / `company-channel:{id}` release units with linked logo copying, digest deduplication, validation and a canonical live baseline.

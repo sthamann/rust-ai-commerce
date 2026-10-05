@@ -14,6 +14,7 @@ export default function CountryPicker({
   label: string;
   single?: boolean;
   disabled?: boolean;
+  inputId?: string;
 }) {
   const { locale } = useInternationalText();
   return (

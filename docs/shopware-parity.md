@@ -166,3 +166,16 @@ original-PHP tax-detection comparison or full Shopware DAL/API parity.
 revision-protected apply, covered by the restart/provider/permissions fixture suite.
 See [the full international contract](international-commerce.md) for remaining
 compound tax/currency, worldwide subdivision, full UI-language and model-quality gaps.
+
+## Company identity and sales-channel configuration
+
+The native `operations/company_model.rs`, `master_data.rs`, `company_logo.rs` and
+`company_public.rs` replace this prototype's flat issuer settings with structured
+address/company/legal metadata, revisioned sparse per-channel inheritance,
+localized brand/legal text, validated tenant logo uploads and Store API identity.
+`staging/company.rs` publishes basis/channel units selectively; receipts resolve
+the order's channel and freeze the effective issuer. This is native functional
+coverage inspired by Shopware's sales-channel settings, not a claim of identical
+SystemConfig/DAL wire compatibility. Other commerce settings remain shop-wide,
+full upstream settings/import formats are not equivalent, and the minimal PDF
+renderer does not embed a logo. See [contracts and tests](company-settings.md).
