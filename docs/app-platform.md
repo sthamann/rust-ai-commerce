@@ -227,3 +227,7 @@ builds/Git IDE; automatic service rollout/rollback; distributed admission quotas
 full Shopware Rule/Flow parity; hostile-code microVM runners; production scale tests
 with many real extensions. This is a connected full-app prototype, not an unlimited
 plugin host or a production SaaS certification.
+
+## Native visual apps
+
+The optional `views` contract adds bounded native text/table/cards/form layouts. Declarative surfaces use `uiPath: native/VIEW_ID` and explicit action allowlists. App Studio and coding agents edit the same Manifest; the sandbox and released surfaces use the same host renderer. Native public forms are rejected. Legacy packages omit empty `views`, retaining their serialized version digest. See [App Studio](app-studio.md) for workflows, code ownership, dynamic content languages and limitations. The care-studio example needs no operator-deployed app server.

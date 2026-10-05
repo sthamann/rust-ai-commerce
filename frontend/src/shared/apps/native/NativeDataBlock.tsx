@@ -1,0 +1,176 @@
+/** One bounded keyset page per mounted data block; action requests remain tenant- and permission-scoped. */
+import { useEffect, useRef, useState } from "react";
+import type { RequestFn } from "../../api/types";
+import { useAppStudioText } from "../../i18n/app-studio-i18n";
+import { contentText } from "../../i18n/content-language";
+import NativeRecordForm from "./NativeRecordForm";
+import type { AppRecord, Block, Entity, Text } from "./types";
+export default function NativeDataBlock({
+  app,
+  block,
+  entity,
+  request,
+  mainLocale,
+  dataEpoch = 0,
+  onSaved,
+}: {
+  app: string;
+  block: Block;
+  entity: Entity;
+  request: RequestFn;
+  mainLocale: string;
+  dataEpoch?: number;
+  onSaved?: () => void;
+}) {
+  const { a, locale } = useAppStudioText();
+  const [records, setRecords] = useState<AppRecord[]>([]);
+  const [cursor, setCursor] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [epoch, setEpoch] = useState(0);
+  const current = useRef(request);
+  current.current = request;
+  useEffect(() => {
+    let active = true;
+    setBusy(true);
+    setError("");
+    setRecords([]);
+    setCursor(null);
+    current
+      .current(`/api/apps/${app}/actions/${block.readAction}`, { limit: 50 })
+      .then((v) => {
+        if (active) {
+          setRecords(v.elements);
+          setCursor(v.nextCursor ?? null);
+        }
+      })
+      .catch((e) => {
+        if (active) setError(e.message);
+      })
+      .finally(() => {
+        if (active) setBusy(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [app, block.readAction, epoch, dataEpoch]);
+  const cell = (r: AppRecord, name: string) => {
+    const f = entity.fields.find((f) => f.name === name)!;
+    const v = r[name];
+    return f.translatable
+      ? contentText((v ?? {}) as Text, locale, mainLocale)
+      : typeof v === "boolean"
+        ? a(v ? "yes" : "no")
+        : v == null
+          ? "—"
+          : typeof v === "object"
+            ? JSON.stringify(v)
+            : String(v);
+  };
+  return (
+    <div className="native-data">
+      <div className="native-data-status">
+        <span>
+          {busy
+            ? a("loading")
+            : `${records.length} · ${contentText(entity.label, locale, mainLocale)}`}
+        </span>
+        <button
+          type="button"
+          className="studio-secondary"
+          disabled={busy}
+          onClick={() => setEpoch((x) => x + 1)}
+        >
+          {a("refresh")}
+        </button>
+      </div>
+      {error && <p role="alert">{error}</p>}
+      {block.kind === "form" ? (
+        <NativeRecordForm
+          key={`${app}:${entity.name}`}
+          entity={entity}
+          records={records}
+          saved={() => {
+            setEpoch((x) => x + 1);
+            onSaved?.();
+          }}
+          save={async (value) => {
+            const fields = { ...value.fields };
+            for (const f of entity.fields.filter((f) => f.kind === "json"))
+              if (typeof fields[f.name] === "string")
+                fields[f.name] = JSON.parse(fields[f.name] as string);
+            await current.current(
+              `/api/apps/${app}/actions/${block.writeAction}`,
+              { ...value, fields },
+            );
+          }}
+        />
+      ) : block.kind === "table" ? (
+        <div className="native-table-scroll">
+          <table>
+            <thead>
+              <tr>
+                {entity.fields.map((f) => (
+                  <th key={f.name}>
+                    {contentText(f.label, locale, mainLocale) || f.name}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {records.map((r) => (
+                <tr key={r.id}>
+                  {entity.fields.map((f) => (
+                    <td key={f.name}>{cell(r, f.name)}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="native-cards">
+          {records.map((r) => (
+            <article key={r.id}>
+              {entity.fields.map((f) => (
+                <div key={f.name}>
+                  <small>
+                    {contentText(f.label, locale, mainLocale) || f.name}
+                  </small>
+                  <p>{cell(r, f.name)}</p>
+                </div>
+              ))}
+            </article>
+          ))}
+        </div>
+      )}
+      {!busy && !records.length && block.kind !== "form" && (
+        <p className="muted">{a("empty")}</p>
+      )}
+      {cursor && (
+        <button
+          className="studio-secondary"
+          disabled={busy}
+          onClick={async () => {
+            setBusy(true);
+            setError("");
+            try {
+              const v = await current.current(
+                `/api/apps/${app}/actions/${block.readAction}`,
+                { limit: 50, after: cursor },
+              );
+              setRecords(v.elements);
+              setCursor(v.nextCursor ?? null);
+            } catch (e) {
+              setError((e as Error).message);
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          {a("more")}
+        </button>
+      )}
+    </div>
+  );
+}

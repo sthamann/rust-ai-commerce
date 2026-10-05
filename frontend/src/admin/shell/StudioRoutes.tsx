@@ -1,5 +1,7 @@
 /** StudioRoutes: focused Studio view; state and commands come from the session-scoped controller. */
-import { lazy } from "react";
+import { lazy, useCallback } from "react";
+import { createStudioRequest } from "./requests";
+import { useLocale } from "../../shared/i18n/i18n";
 import StudioConversation from "./StudioConversation";
 
 import { AppSurfaceView } from "../../shared/apps/AppSurfaces";
@@ -73,6 +75,11 @@ export default function StudioRoutes() {
     t,
     x,
   } = useStudio();
+  const { locale } = useLocale();
+  const sandboxRequest = useCallback(
+    (id: string) => createStudioRequest(token, id, locale),
+    [token, locale],
+  );
   return appSurface ? (
     <AppSurfaceView selected={appSurface} />
   ) : tab === "orders" ? (
@@ -102,6 +109,10 @@ export default function StudioRoutes() {
     <StoryfrontView request={request} role={role} />
   ) : tab === "developers" ? (
     <DeveloperView
+      key={workspace}
+      sandboxRequest={sandboxRequest}
+      onRefresh={refreshEnvironments}
+      onFlows={() => selectTab("automation")}
       request={liveRequest}
       environments={environments}
       role={role}

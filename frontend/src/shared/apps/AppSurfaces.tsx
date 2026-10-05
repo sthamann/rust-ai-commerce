@@ -12,10 +12,16 @@ import { useLocale } from "../i18n/i18n";
 import "../styles/app-surfaces.css";
 import Icon from "../ui/Icon";
 import AppFrame from "./AppFrame";
+import NativeAppView from "./native/NativeAppView";
+import type { NativePayload } from "./native/types";
+import { contentText } from "../i18n/content-language";
 export type AppSurface = {
   app: string;
   version: string;
-  url: string;
+  url?: string;
+  native?: NativePayload;
+  mainLocale?: string;
+  locales?: string[];
   surface: {
     id: string;
     location: string;
@@ -69,7 +75,8 @@ export function AppSurfaceProvider({
 }
 export function surfaceLabel(s: AppSurface, locale: string) {
   return (
-    s.surface.label[locale.slice(0, 2)] ?? s.surface.label.en ?? s.surface.id
+    contentText(s.surface.label, locale, s.mainLocale ?? "en-GB") ||
+    s.surface.id
   );
 }
 export function AdminAppNavigation({
@@ -134,17 +141,29 @@ export function AppSurfaceView({
           {s.app} · {s.version}
         </span>
       </div>
-      <AppFrame
-        app={s.app}
-        url={s.url}
-        request={scoped}
-        allowedActions={s.surface.actions}
-        context={{
-          ...context,
-          surface: s.surface.id,
-          location: s.surface.location,
-        }}
-      />
+      {s.native ? (
+        <NativeAppView
+          app={s.app}
+          native={s.native}
+          request={scoped}
+          allowedActions={s.surface.actions}
+          mainLocale={s.mainLocale}
+          locales={s.locales}
+          public={isPublic}
+        />
+      ) : (
+        <AppFrame
+          app={s.app}
+          url={s.url!}
+          request={scoped}
+          allowedActions={s.surface.actions}
+          context={{
+            ...context,
+            surface: s.surface.id,
+            location: s.surface.location,
+          }}
+        />
+      )}
     </section>
   );
 }

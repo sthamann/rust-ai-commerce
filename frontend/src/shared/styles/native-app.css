@@ -1,0 +1,109 @@
+/** Native app layouts share commerce design tokens; tables/forms remain bounded and responsive. */
+.native-app {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+.native-app-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.native-block {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #dce5ef);
+  border-radius: 16px;
+  padding: 22px;
+  min-width: 0;
+}
+.native-block h3 {
+  font-size: 17px;
+  margin: 0 0 18px;
+  letter-spacing: -0.02em;
+}
+.native-text {
+  white-space: pre-wrap;
+  line-height: 1.75;
+  color: var(--muted, #65758c);
+  margin: 0;
+}
+.native-data-status {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0 14px;
+  font-size: 12px;
+  color: var(--muted, #65758c);
+}
+.native-form {
+  display: grid;
+  gap: 16px;
+}
+.native-form label {
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+}
+.native-form input,
+.native-form textarea,
+.native-form select {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid var(--border, #dce5ef);
+  border-radius: 9px;
+  padding: 10px;
+  background: var(--surface, #fff);
+  color: var(--text, #162943);
+  box-sizing: border-box;
+}
+.native-table-scroll {
+  overflow: auto;
+  max-height: 460px;
+}
+.native-data table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.native-data th {
+  text-align: left;
+  color: var(--muted, #65758c);
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--surface-alt, #f5f8fc);
+}
+.native-data th,
+.native-data td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border, #dce5ef);
+  max-width: 300px;
+  overflow-wrap: anywhere;
+}
+.native-cards {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+.native-cards article {
+  padding: 18px;
+  border: 1px solid var(--border, #dce5ef);
+  border-radius: 12px;
+  background: var(--surface-alt, #f5f8fc);
+}
+.native-cards small {
+  color: var(--muted, #65758c);
+  font-size: 11px;
+}
+.native-cards p {
+  margin: 4px 0 12px;
+  font-size: 14px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 700px) {
+  .native-app-grid {
+    grid-template-columns: 1fr;
+  }
+  .native-block {
+    padding: 16px;
+  }
+}

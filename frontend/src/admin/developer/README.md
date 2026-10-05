@@ -1,13 +1,18 @@
-# admin/developer
+# App Studio
 
-Prompt-based app builds, provider selection, version history and staged rollout requests.
+A visual workbench over the **same versioned Manifest** consumed by the Rust runtime, HTTP APIs and coding-agent imports. The browser compiles data bindings into existing authorized actions; the Rust server validates every installed package independently.
 
-Files and their individual responsibilities are listed in [the generated source inventory](../../../../docs/module-inventory.md). Each file starts with its contract summary.
+- `DeveloperView.tsx`: workspace, tab navigation, one content-language scope and sandbox selection.
+- `app-model.ts`: pure schema edits, action binding, dependency cleanup and bounded undo/redo.
+- `AppCanvas.tsx`: accessible click-to-add/select/order/remove components.
+- `AppInspector.tsx`: app/view/block properties with inherited translations.
+- `AppDataEditor.tsx`: typed managed data fields and public-read settings.
+- `AppConnections.tsx`: HTTP routes, AI grounding/tools and Flow Builder opt-in.
+- `AppAgentPanel.tsx`: current-manifest prompting, Codex/Claude task export, authoritative schema download and agent JSON round-trip.
+- `useAppStudio.ts`: immutable build lifecycle and exact saved-snapshot checks.
+- `AppVersions.tsx`: version inspection, digest-approved staging and selective package release.
+- `SandboxPreview.tsx`: authoritative installed-registry resolution, including rejection of a stale preview version.
 
-## Modules
+The actual renderer is in `shared/apps/native/`, shared by the sandbox preview and released admin/storefront views. Freely executable app services retain the isolated iframe/service path; the native builder does not execute scripts or start a shell.
 
-- `DeveloperView.tsx`
-
-## Verification
-
-Run `npm run build`, `npm test`, `npm run test:coverage` and `npm run architecture` from `frontend/`. Coverage includes untested source files; a module in this folder is not automatically fully tested. See the root [testing guide](../../../../docs/testing.md) for backend integration and coverage limits.
+Run frontend build, tests, coverage, localization and architecture checks. See [App Studio guide](../../../../docs/app-studio.md) and [testing boundaries](../../../../docs/testing.md). Test presence is not 100% whole-codebase coverage.

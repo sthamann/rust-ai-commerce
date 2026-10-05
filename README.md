@@ -18,6 +18,16 @@ This is also a laboratory for porting selected original Shopware behavior to Rus
 
 [![Current product detail with variants, gallery and server-calculated prices](docs/assets/playground-product-en.jpg)](https://sthamann.github.io/rust-ai-commerce/playground.html)
 
+## Visual App Studio
+
+Build native apps visually in **Commerce Studio → Developers**. Compose text, tables, cards and forms, define typed app data, connect HTTP/MCP/AI tools and opt actions into the graphical Flow Builder. Human edits and Codex/Claude agent edits use the **same executable Manifest**. Save an immutable version, test real records in a private sandbox, then selectively release the package.
+
+The modern builder uses one inherited content-language editor and supports the shop’s enabled languages. Native admin modules and storefront surfaces share the exact same renderer as their sandbox preview. Arbitrary service code keeps the existing isolated app-service path.
+
+[App Studio guide, schema and limitations](docs/app-studio.md) · [Working care-guide example](extensions/apps/care-studio/manifest.json)
+
+![Visual App Studio with palette, canvas and properties](docs/screenshots/app-studio.jpg)
+
 ## Why try it?
 
 | You want to explore… | What this prototype provides |
