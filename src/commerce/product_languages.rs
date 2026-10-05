@@ -57,7 +57,7 @@ pub(super) fn locale<'a>(key: &str, s: &'a Settings) -> Option<&'a str> {
         .find(|v| *v == key || self::key(v, s) == key)
         .map(String::as_str)
 }
-pub(super) fn allowed(key: &str, s: &Settings) -> bool {
+pub(crate) fn allowed(key: &str, s: &Settings) -> bool {
     locale(key, s).is_some()
 }
 pub(super) fn validate(map: &HashMap<String, Translation>, s: &Settings) -> Result<()> {

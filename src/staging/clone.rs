@@ -25,6 +25,7 @@ pub(crate) async fn create(
     if count >= 10 {
         return Err(bad("Maximum 10 private environments per shop"));
     }
+    operations::lock_company(&mut tx, &t).await?;
     let base = snapshot(&mut tx, &t).await?;
     sqlx::query("INSERT INTO tenants(id,name) VALUES($1,$2)")
         .bind(&id)
@@ -45,7 +46,7 @@ pub(crate) async fn create(
     sqlx::query("INSERT INTO product_assets SELECT (jsonb_populate_record(NULL::product_assets,to_jsonb(a)||jsonb_build_object('tenant',$2::text))).* FROM product_assets a WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     sqlx::query("INSERT INTO categories SELECT $2,id,parent_id,position,data,revision FROM categories WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     sqlx::query("INSERT INTO product_categories SELECT $2,product_id,category_id FROM product_categories WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
-    for table in ["commerce_settings", "experiences"] {
+    for table in ["commerce_settings", "experiences", "receipt_settings"] {
         let sql =
             format!("INSERT INTO {table}(tenant,data) SELECT $2,data FROM {table} WHERE tenant=$1");
         sqlx::query(sqlx::AssertSqlSafe(sql.as_str()))
@@ -129,6 +130,8 @@ pub(crate) async fn create(
     }
     sqlx::query("INSERT INTO commerce_rules(tenant,id,name,condition,active) SELECT $2,id,name,condition,active FROM commerce_rules WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     sqlx::query("INSERT INTO product_channel_visibility SELECT $2,product_id,channel_id,visible FROM product_channel_visibility WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
+    sqlx::query("INSERT INTO company_logos(tenant,id,content,digest,mime,width,height) SELECT $2,id,content,digest,mime,width,height FROM company_logos WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
+    sqlx::query("INSERT INTO company_overrides(tenant,channel_id,data) SELECT $2,channel_id,data FROM company_overrides WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     documents::clone_sources(&mut tx, &t, &id).await?;
     // Sandbox baseline is the actual sanitized clone, so disabled integrations aren't release changes.
     let stagebase = snapshot(&mut tx, &id).await?;

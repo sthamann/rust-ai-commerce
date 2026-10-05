@@ -52,6 +52,7 @@ mod product_channels;
 pub(crate) use product_channels::*;
 
 mod geography;
+pub(crate) use geography::catalogue as company_countries;
 pub(crate) use geography::{country_catalogue, validate_address_geography};
 mod method_text;
 mod tax_context;
@@ -61,6 +62,7 @@ pub(crate) use tax_context::*;
 mod settings_defaults;
 
 mod product_languages;
+pub(crate) use product_languages::allowed as company_locale_allowed;
 pub(crate) use product_languages::valid_locale_key;
 
 mod content_text;

@@ -36,6 +36,8 @@ pub(crate) async fn release(
         return Err(bad("Duplicate selection"));
     }
     let mut tx = a.db.begin().await?;
+    operations::lock_company(&mut tx, &t).await?;
+    operations::lock_company(&mut tx, &id).await?;
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,16))")
         .bind(&t)
         .execute(&mut *tx)
@@ -89,7 +91,9 @@ pub(crate) async fn release(
     for key in &keys {
         let s = req.selections.iter().find(|s| s.key == *key).unwrap();
         let value = &current[&s.key];
-        if s.key.starts_with("category:") {
+        if s.key == "company" || s.key.starts_with("company-channel:") {
+            company::publish(&mut tx, &t, &id, &s.key, value).await?;
+        } else if s.key.starts_with("category:") {
             // Category units were published above in parent-first dependency order.
         } else if s.key == "order-workflow" {
             auth::permit(&h, "settings.write")?;
@@ -191,7 +195,11 @@ pub(crate) async fn release(
                 .await?;
         }
         base["stage"][&s.key] = value.clone();
-        base["live"][&s.key] = value.clone();
+        base["live"][&s.key] = if s.key == "company" || s.key.starts_with("company-channel:") {
+            company::live_value(&mut tx, &t, &s.key).await?
+        } else {
+            value.clone()
+        };
     }
     let release = uid();
     let selected = json!(keys);
@@ -206,6 +214,7 @@ pub(crate) async fn release(
         .bind(json!({"releaseId":release,"selections":selected}))
         .execute(&mut *tx)
         .await?;
+    operations::validate_company_release(&mut tx, &t).await?;
     tx.commit().await?;
     Ok(Json(json!({"id":release,"published":selected})))
 }

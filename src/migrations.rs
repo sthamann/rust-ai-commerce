@@ -100,6 +100,10 @@ const SCHEMA: &[(&str, &str)] = &[
         "029-developer-trash",
         include_str!("../migrations/029-developer-trash.sql"),
     ),
+    (
+        "030-company-settings",
+        include_str!("../migrations/030-company-settings.sql"),
+    ),
 ];
 
 pub(crate) async fn apply(pool: &PgPool) {

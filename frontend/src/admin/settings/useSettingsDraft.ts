@@ -1,10 +1,13 @@
 /** Revisioned settings drafts survive locale refreshes, reject late loads and keep failed saves editable. */
 import { useEffect, useRef, useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
-export function useSettingsDraft<T>(request: RequestFn, path: string) {
+export function useSettingsDraft<T, M extends object = object>(
+  request: RequestFn,
+  path: string,
+) {
   const currentRequest = useRef(request);
   currentRequest.current = request;
-  const [value, setValue] = useState<{ data: T; revision: number }>();
+  const [value, setValue] = useState<{ data: T; revision: number } & M>();
   const [baseline, setBaseline] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -12,6 +15,8 @@ export function useSettingsDraft<T>(request: RequestFn, path: string) {
   useEffect(() => {
     let active = true;
     setValue(undefined);
+    setError("");
+    setSaved(false);
     currentRequest
       .current(path)
       .then((v) => {
@@ -53,7 +58,7 @@ export function useSettingsDraft<T>(request: RequestFn, path: string) {
       // Keep the acknowledged revision; use canonical data when the endpoint returns it.
       const next = result.data
         ? result
-        : { data: value.data, revision: result.revision };
+        : { ...value, data: value.data, revision: result.revision };
       setValue(next);
       setBaseline(JSON.stringify(next.data));
       setSaved(true);

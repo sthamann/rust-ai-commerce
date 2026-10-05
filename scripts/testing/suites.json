@@ -25,7 +25,8 @@
     "catalog_management",
     "international_commerce",
     "translations",
-    "app_studio"
+    "app_studio",
+    "company_settings"
   ],
   "providers": [
     "email_tests",

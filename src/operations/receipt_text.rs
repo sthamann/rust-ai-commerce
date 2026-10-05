@@ -51,6 +51,53 @@ pub(super) fn lines(v: &Value) -> Vec<String> {
             text(&o["orderNumber"])
         ),
     ];
+    for (key, labels) in [
+        (
+            "vatId",
+            ["VAT ID", "Umsatzsteuer-ID", "Numéro TVA", "Número IVA"],
+        ),
+        (
+            "registrationNumber",
+            [
+                "Register number",
+                "Registernummer",
+                "Numéro registre",
+                "Número registro",
+            ],
+        ),
+        (
+            "registerCourt",
+            [
+                "Register court",
+                "Registergericht",
+                "Tribunal registre",
+                "Tribunal registro",
+            ],
+        ),
+        (
+            "managingDirectors",
+            [
+                "Managing directors",
+                "Geschäftsführer",
+                "Gérants",
+                "Administradores",
+            ],
+        ),
+        (
+            "legalRepresentatives",
+            [
+                "Representatives",
+                "Vertretungsberechtigte",
+                "Représentants",
+                "Representantes",
+            ],
+        ),
+    ] {
+        let value = text(&v["seller"][key]);
+        if !value.is_empty() {
+            lines.push(format!("{}: {value}", word(labels)));
+        }
+    }
     if let Some(reference) = v["referenceNumber"].as_str() {
         lines.push(format!(
             "{}: {reference}",
