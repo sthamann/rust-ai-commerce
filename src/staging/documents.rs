@@ -46,7 +46,7 @@ pub(super) async fn publish(
     id: &str,
     v: &Value,
 ) -> Result<()> {
-    sqlx::query("INSERT INTO knowledge_documents(tenant,id,product_id,title,content_hash,content,visibility,source_type) VALUES($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT(tenant,id) DO UPDATE SET product_id=EXCLUDED.product_id,title=EXCLUDED.title,content_hash=EXCLUDED.content_hash,content=EXCLUDED.content,visibility=EXCLUDED.visibility,source_type=EXCLUDED.source_type,revision=knowledge_documents.revision+1").bind(live).bind(id).bind(v["product_id"].as_str()).bind(v["title"].as_str()).bind(v["content_hash"].as_str()).bind(v["content"].as_str()).bind(v["visibility"].as_str()).bind(v["source_type"].as_str()).execute(&mut **tx).await?;
+    sqlx::query("INSERT INTO knowledge_documents(tenant,id,product_id,title,content_hash,content,visibility,source_type,kind,locale,translations,archived) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) ON CONFLICT(tenant,id) DO UPDATE SET product_id=EXCLUDED.product_id,title=EXCLUDED.title,content_hash=EXCLUDED.content_hash,content=EXCLUDED.content,visibility=EXCLUDED.visibility,source_type=EXCLUDED.source_type,kind=EXCLUDED.kind,locale=EXCLUDED.locale,translations=EXCLUDED.translations,archived=EXCLUDED.archived,revision=knowledge_documents.revision+1").bind(live).bind(id).bind(v["product_id"].as_str()).bind(v["title"].as_str()).bind(v["content_hash"].as_str()).bind(v["content"].as_str()).bind(v["visibility"].as_str()).bind(v["source_type"].as_str()).bind(v["kind"].as_str()).bind(v["locale"].as_str()).bind(&v["translations"]).bind(v["archived"].as_bool().unwrap_or(false)).execute(&mut **tx).await?;
     sqlx::query("DELETE FROM knowledge_chunks WHERE tenant=$1 AND document_id=$2")
         .bind(live)
         .bind(id)

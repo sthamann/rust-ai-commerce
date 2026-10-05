@@ -1,5 +1,25 @@
 //! Durable order-event flows: conditions, shop notes and AI proposals; no unapproved model mutations.
 use super::*;
+pub(super) const EVENTS: &[&str] = &[
+    "product.created",
+    "product.updated",
+    "order.placed",
+    "payment.captured",
+    "order.state_changed",
+    "payment.state_changed",
+    "delivery.state_changed",
+    "payment.updated",
+    "knowledge.document.ingested",
+    "knowledge.document.updated",
+    "knowledge.document.visibility",
+    "knowledge.document.archived",
+    "knowledge.document.restored",
+    "intelligence.decision",
+];
+fn knowledge_event(kind: &str) -> bool {
+    EVENTS.contains(&kind) && (kind.starts_with("knowledge.") || kind == "intelligence.decision")
+}
+
 #[derive(Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub(crate) struct Flow {
@@ -46,18 +66,7 @@ impl Flow {
         {
             return Err(bad("Invalid flow app action"));
         }
-        if ![
-            "product.created",
-            "product.updated",
-            "order.placed",
-            "payment.captured",
-            "order.state_changed",
-            "payment.state_changed",
-            "delivery.state_changed",
-            "payment.updated",
-        ]
-        .contains(&self.event.as_str())
-            && !valid_app_event(&self.event)
+        if !EVENTS.contains(&self.event.as_str()) && !valid_app_event(&self.event)
             || !["note", "ai_proposal", "app_action", "pipeline"].contains(&self.action.as_str())
             || !commerce::valid_locale_key(&self.locale)
         {
@@ -76,19 +85,7 @@ pub(crate) async fn project_flows(
     kind: &str,
     data: &Value,
 ) -> Result<()> {
-    if ![
-        "product.created",
-        "product.updated",
-        "order.placed",
-        "payment.captured",
-        "order.state_changed",
-        "payment.state_changed",
-        "delivery.state_changed",
-        "payment.updated",
-    ]
-    .contains(&kind)
-        && !valid_app_event(kind)
-    {
+    if !EVENTS.contains(&kind) && !valid_app_event(kind) {
         return Ok(());
     }
     let rows = sqlx::query("SELECT id,data FROM commerce_flows WHERE tenant=$1 AND data->>'event'=$2 AND data->>'active'='true' ORDER BY id")
@@ -109,7 +106,10 @@ pub(crate) async fn project_flows(
                 .unwrap_or_else(|| order.get("order_data")),
         )
     } else {
-        if !valid_app_event(kind) && !["product.created", "product.updated"].contains(&kind) {
+        if !valid_app_event(kind)
+            && !knowledge_event(kind)
+            && !["product.created", "product.updated"].contains(&kind)
+        {
             return Ok(());
         }
         (StoredCart{id:String::new(),tenant:t.into(),token:String::new(),data:serde_json::from_value(json!({"items":[],"group":"consumer","email":null,"company":null,"session":"app-event","buyer":null,"order":null})).map_err(|_|bad("Invalid event context"))?,revision:0,status:"event".into()},json!({"cart":{}}))

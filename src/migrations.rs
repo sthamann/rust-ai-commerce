@@ -113,6 +113,10 @@ const SCHEMA: &[(&str, &str)] = &[
         include_str!("../migrations/032-image-jobs.sql"),
     ),
     (
+        "033-knowledge-workspace",
+        include_str!("../migrations/033-knowledge-workspace.sql"),
+    ),
+    (
         "033-managed-knowledge",
         include_str!("../migrations/033-managed-knowledge.sql"),
     ),

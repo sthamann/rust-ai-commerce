@@ -105,6 +105,18 @@ try:
  assert pdf_upload(pdf)['sourceType']=='pdf';pdf_upload(b'not a PDF',400)
  call('/api/knowledge/documents',{'title':'bad','content':'x','visibility':'public'},a,expected=400)
  passed('Real PDF is extracted in isolated bounded child process; malformed PDF and implicit public ingestion are rejected')
+ # A private document must actually reach the real merchant planner, never the storefront.
+ behavior['mode']='flow'
+ instruction='Propose setting only lamp price to 69.90 EUR.'
+ private=call('/api/knowledge/documents',{'title':'Merchant service policy','kind':'faq','content':instruction+' FIXTURE-PRIVATE-KNOWLEDGE'},a)
+ plan=call('/api/agent/plan',{'instruction':instruction,'inference':{'provider':'openai','model':'local-fixture'}},a)
+ assert any(s['documentId']==private['id'] for s in plan['preview']['documentSources']),plan
+ assert 'FIXTURE-PRIVATE-KNOWLEDGE' in captured[-1][1]['input']
+ call('/api/knowledge/documents/'+private['id']+'/lifecycle',{'approve':True,'archived':True,'revision':1},a)
+ plan=call('/api/agent/plan',{'instruction':instruction,'inference':{'provider':'openai','model':'local-fixture'}},a)
+ assert all(s['documentId']!=private['id'] for s in plan['preview']['documentSources'])
+ assert 'FIXTURE-PRIVATE-KNOWLEDGE' not in captured[-1][1]['input']
+ passed('Private document text/hash is consumed by the actual merchant provider prompt; archive removes it on the next call')
  behavior['mode']='flow';flow={'name':labels,'active':True,'event':'order.placed','condition':{'type':'alwaysValid'},'action':'ai_proposal','instruction':{l:'Propose setting only lamp price to 69.90 EUR.' for l in labels},'locale':'de-DE','inference':{'provider':'openai','model':'local-fixture'}}
  call('/api/automation/flows/price_draft',{'revision':0,'data':flow},a,method='PUT')
  c=call('/store-api/checkout/cart',{},tenant=slug)

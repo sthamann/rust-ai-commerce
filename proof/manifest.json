@@ -512,13 +512,13 @@
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
-      "sha256": "85eb4d84f49126dc1bfee725299a8fe49fa3f85d3e8945b18dc4975730687b2d",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "db0e048a74e0f0db5662c5834f4188575c3db5e8380c722b26bfaf3fd10ee899",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
     "src/capabilities.rs": {
       "status": "unproved",
-      "sha256": "958d70f0f0335bb73b61c7959e85a30006fe2c2d5fc6e0385fc5119125461cdc",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "e8b320c8bbe753a4a469b8982885c8f4cf60dc14f8ceee41de5905a3f7651a2a",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
     "src/cart_model.rs": {
       "status": "unproved",
@@ -612,8 +612,8 @@
     },
     "src/cognition/routes.rs": {
       "status": "unproved",
-      "sha256": "c68a5d65014140989e28290628b209f36d9e0d6da3138d5cdb3c903e5b67183d",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "2cda02458189131ba7a3d79ac9526fbab5814577216df71cde99188a816d5299",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
     "src/commerce/catalog.rs": {
       "status": "unproved",
@@ -830,30 +830,60 @@
       "sha256": "82f4e3a3e0255a333eccbe9eff470513cf06bd2fd0c88b12a0f092ea69a83a26",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/documents/content.rs": {
+      "status": "unproved",
+      "sha256": "949eef17083f86d519c0eccfc801088355542f7f94b8357572fc45216c30a4c8",
+      "review": "Reviewed tenant-scoped knowledge lifecycle, enabled-language chunks, optimistic private re-review, transactional graph reassignment, archived/public retrieval fences, actual planner consumption and MCP dispatch; real PostgreSQL/privacy/staging and local-provider regressions cover these paths. No money or Lean pure decision changed."
+    },
     "src/documents/ingestion.rs": {
       "status": "unproved",
-      "sha256": "f3efaf4e8b8305e95c4aa923d2506d462deabe100556defe429fdc4d9a567c40",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "c4676c46fa3d42e4609084fda5eae00cf8e979ecd9109a6f3a0f228c5bcb039e",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+    },
+    "src/documents/lifecycle.rs": {
+      "status": "unproved",
+      "sha256": "642dd8a5428a2f00d82792bb6a9a0e478b9702ed7e8d6443d0fab200cc725164",
+      "review": "Reviewed tenant-scoped knowledge lifecycle, enabled-language chunks, optimistic private re-review, transactional graph reassignment, archived/public retrieval fences, actual planner consumption and MCP dispatch; real PostgreSQL/privacy/staging and local-provider regressions cover these paths. No money or Lean pure decision changed."
     },
     "src/documents/mod.rs": {
       "status": "unproved",
-      "sha256": "fe0a13c602d62a884e1b4f488a1c9fc6ccd302fea4076b08a298ec6806ef3bc9",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "98b1a3ccdb2b3ef27b3e3a74fe4f8d0639814fe63722d443aa6818fc69960fd6",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
     "src/documents/parser.rs": {
       "status": "unproved",
       "sha256": "468daf9fde14fd59a7782b07bf12d216dacb0ab16f6c9b5a386df21c804865ad",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/documents/preview.rs": {
+      "status": "unproved",
+      "sha256": "7469ade8d348b1f54b21660112369baae8a6aa921d22801449198c627ca7b928",
+      "review": "Reviewed tenant-scoped knowledge lifecycle, enabled-language chunks, optimistic private re-review, transactional graph reassignment, archived/public retrieval fences, actual planner consumption and MCP dispatch; real PostgreSQL/privacy/staging and local-provider regressions cover these paths. No money or Lean pure decision changed."
+    },
+    "src/documents/product_knowledge.rs": {
+      "status": "unproved",
+      "sha256": "742ebfead1a018392229b71da345e895bcdc4ff93667528102845faace64d39f",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+    },
     "src/documents/questions.rs": {
       "status": "unproved",
-      "sha256": "4c581b6c1b3c9c028eac2f2725c5b79872e972bce9ecb21bce4164ea379711d0",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "7ccfdd21a38111928146eca3a714ab3894d3082e1515e2a01588879acebfd52b",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
     "src/documents/retrieval.rs": {
       "status": "unproved",
-      "sha256": "4cefea6cbb64602356f144d5a9bceb84cd67865de9c5810f4a5b7588a119b12e",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "a4ca472967969b18978e0f57bd3f9b94d033324ec26ff6d4572923b4c9c68be0",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+    },
+    "src/documents/tools.rs": {
+      "status": "unproved",
+      "sha256": "4386d778efee8eef647a42a17cd607e81310550f461cb9bbdb5957c1d7dfa9ab",
+      "review": "Reviewed tenant-scoped knowledge lifecycle, enabled-language chunks, optimistic private re-review, transactional graph reassignment, archived/public retrieval fences, actual planner consumption and MCP dispatch; real PostgreSQL/privacy/staging and local-provider regressions cover these paths. No money or Lean pure decision changed."
+    },
+    "src/documents/workspace.rs": {
+      "status": "unproved",
+      "sha256": "72cce5e39c673449573e417ac0e64f72ef3433a81c2464b2c25a39f922710422",
+      "review": "Reviewed tenant-scoped knowledge lifecycle, enabled-language chunks, optimistic private re-review, transactional graph reassignment, archived/public retrieval fences, actual planner consumption and MCP dispatch; real PostgreSQL/privacy/staging and local-provider regressions cover these paths. No money or Lean pure decision changed."
     },
     "src/experience.rs": {
       "status": "unproved",
@@ -882,8 +912,8 @@
     },
     "src/knowledge/relations.rs": {
       "status": "unproved",
-      "sha256": "1e80b94d5e8f41da0ffb13d67c69be12872892b9f6cb35ff2fbb3e6804bef033",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "8288c4e6dff67acfedab586edf82886a7f092c9383ea33e0414c77802d247be9",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
     "src/knowledge/search.rs": {
       "status": "unproved",
@@ -922,8 +952,8 @@
     },
     "src/marketing/catalog.rs": {
       "status": "unproved",
-      "sha256": "cc8227b488487380f037f3f24e9c67605f371d7c321cab1b52c7da20bf51c881",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "b2ce70e12049a4430b9f6438b11f147c93fefe16dc868f1f7381f9a4d54b61e2",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
     "src/marketing/channels.rs": {
       "status": "unproved",
@@ -967,8 +997,8 @@
     },
     "src/marketing/flows.rs": {
       "status": "unproved",
-      "sha256": "27eb1d45de8c18f88d9ec6b45075e6a8e67e9e6780ce470330fd501aadc45d65",
-      "review": "Reviewed shared content-language validation, regional key preservation, shop-main flow fallback and asset labels; existing state/price/permission contracts remain intact."
+      "sha256": "7d15b006776edf3a06ac94640bdbed3267652bc44afc4f7c77b2536cae4b0d7f",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
     "src/marketing/gateway.rs": {
       "status": "unproved",
@@ -1047,13 +1077,13 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "8735c48040c78f0b6d4e7a1072fd39ced80798c95ddf5491869fcf7735578d5a",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "3f97811c5c1ce1f1d20d7b2200d05c8460c8df6da0c40891f3e8c3d4fec1076c",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "706b61417a0dababc09034743cacb532f361b57ab8194b0a624af203da92feeb",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "a0a42df9c24f32e3fadd9d405d7ea8d523d2f67abba83f82d9746d66e8698498",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -1177,8 +1207,8 @@
     },
     "src/planner.rs": {
       "status": "unproved",
-      "sha256": "841bc0436c7d7f7ba30a5d2c0d733b9c0f550d2d073af00d11c79383776416ce",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "008a4c0e834c9283ac2175370d665e6f156998e4e6dbf1510a823c2e81375b5e",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
     "src/platform/auth.rs": {
       "status": "reviewed-binding",
@@ -1222,8 +1252,8 @@
     },
     "src/proposal_routes.rs": {
       "status": "unproved",
-      "sha256": "e9192d297ea76bb952ca552ce6e93e04bef43df5b17d789a9355d1b56bec61e2",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "e6ba3803cec434907ce00f6c6f2710a547064179c54b64d987475c1851fe6d96",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
     "src/routes.rs": {
       "status": "unproved",
@@ -1272,8 +1302,8 @@
     },
     "src/staging/documents.rs": {
       "status": "unproved",
-      "sha256": "3779958aea5942f3a6a4a853c4703465e317aecb294c49b664b13d3b4fbac165",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "d34534083d6ef59cf11e2791b58582a56728fa632b4f51a8021d92990896eabb",
+      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
     "src/staging/mod.rs": {
       "status": "unproved",
@@ -1508,6 +1538,10 @@
     "migrations/032-image-jobs.sql": {
       "sha256": "8b43858529f9217cbbf85d4ab3bbbc82ef21facaae8a1fcb94c8d2974ee88798",
       "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+    },
+    "migrations/033-knowledge-workspace.sql": {
+      "sha256": "0bd31e0be62abe0220e9a7dc1a60c67f7739d31168de3fa4860795caa9a9014e",
+      "review": "Reviewed tenant-scoped knowledge lifecycle, enabled-language chunks, optimistic private re-review, transactional graph reassignment, archived/public retrieval fences, actual planner consumption and MCP dispatch; real PostgreSQL/privacy/staging and local-provider regressions cover these paths. No money or Lean pure decision changed."
     },
     "migrations/033-managed-knowledge.sql": {
       "sha256": "2f15dc9a330abce6aa7122c9f72d7c4bb38d7f523757be2916d65dd37f9722f3",

@@ -29,3 +29,5 @@ Ownership, executable contracts and explicit migration boundaries are described 
 - [rules.rs](rules.rs): Bounded Shopware-style boolean/numeric rule AST. Unknown operators/conditions fail closed.
 
 [Full source inventory](../../docs/module-inventory.md) lists every module. Listings are not a claim of complete test coverage.
+
+Knowledge source lifecycle and approval events share `flows::EVENTS` for admission, catalogue discovery and non-order event projection. Their translated Flow Builder labels come from the knowledge vocabulary. `knowledge_workspace.py` follows real ingestion through an event-field rule into a completed durable flow.

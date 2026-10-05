@@ -6,7 +6,7 @@ at 100%, and neither coverage nor the Lean subset proves the entire system bug-f
 
 ## Source architecture
 
-- Rust: 223 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
+- Rust: 229 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
 - Frontend: separate `admin/`, `storefront/`, `platform/` and `shared/` ownership. Views/controllers and styles are limited to 400 lines; locale data has a documented 700-line allowance. Runtime cycles, unresolved local imports, crossing application boundaries, missing folder contracts and undocumented source files fail CI.
 - Independent Python services, app examples and browser SDKs remain under `extensions/`; test tooling lives under `scripts/`. [The generated inventory](module-inventory.md) covers all these sources and is checked for drift.
 - Studio workspaces load lazily. Root application routing is isolated in `frontend/src/application/`; error boundaries keep workspace failures inside the current view and provide reload recovery for rejected cached module imports. The removed `CommerceManager` had no call site and duplicated old operational UI. Order state management remains in `admin/orders/OrderWorkflow.tsx`; product review moderation lives in `admin/catalog/ReviewModeration.tsx`.
@@ -42,7 +42,7 @@ from the process or the local `.env`. CI alone passes `--existing-database` for 
 already-disposable database. Failures remain failures, and child processes stop
 before database cleanup. SIGINT flushes optional Rust coverage profiles.
 
-`testing/suites.json` is the single registry for 25 HTTP suites, three local
+`testing/suites.json` is the single registry for 29 HTTP suites, four local
 provider/connector suites, four browser contracts and verification-tool tests.
 The local server uses an offline model URL; live model checks are separate, opt-in
 checks. Credentials, payments, mail and Slack are exercised against loopback
@@ -205,8 +205,35 @@ metadata round trips, tenant separation, immutable same-version digests, unsafe
 artwork refusal and the actual shop main language. Strict model-schema regression
 keeps optional presentation compatible with both provider request formats.
 
-The current clean frontend run passes 137 tests: 50.16% statements, 43.76% branches,
+The app-library clean frontend run passed 137 tests: 50.16% statements, 43.76% branches,
 41.35% functions and 50.98% lines across all included source. These measurements
 are not whole-system 100% coverage. Actual browser checks supplement component
 tests with desktop and 375px layouts. The affected apps, app surfaces, App Studio
 and developer-document HTTP suites pass using local fixtures, without paid calls.
+
+## Connected knowledge workspace (2026-10-05)
+
+The current clean frontend run passes 151 tests across 26 test files, including
+ten knowledge regressions: whole-shop census, a single inherited-language editor,
+explicit empty values, non-English main language, guarded publication, viewers,
+retrieval scope, failed edits, actual product navigation and recommendation review.
+Across all included source the run measures 52.16% statements, 45.88% branches,
+43.10% functions and 52.99% lines. This is a measured frontend scope, not a
+whole-system coverage update or a 100% claim.
+
+84 Rust unit tests, strict lint/format, the extraction/Lean gates and negative
+mutations pass. The affected isolated PostgreSQL/AGE suites (`knowledge_workspace`,
+`developer_documents`, `apps`, `staging`, `connected_apps`, `automation`) exercise source hashes,
+public/private/archive fences, enabled-language retrieval, >50-source pagination,
+optimistic revisions, graph reassignment, granular HTTP/MCP access and selective
+release. Local provider fixtures prove private document passages reach the actual
+merchant model prompt and disappear after archive. No paid provider calls are used.
+
+The knowledge suite also follows source ingestion through a product-scoped event
+rule into a durable completed flow without an order. Four UI regressions retain
+the stable trigger IDs while translating their labels EN/DE/FR/ES.
+
+Browser checks cover inherited source creation in App Studio Lab, private customer
+exclusion versus merchant retrieval, the real product preview, desktop and 375px
+layouts. See [the knowledge guide](knowledge-workspace.md) for source ownership,
+HTTP/MCP contracts, screenshots and the fixed-model/causality boundaries.

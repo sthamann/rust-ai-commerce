@@ -19,8 +19,8 @@ pub(crate) async fn question(
     )
     .await?
     .0;
-    let sources = search(&a, &t, Some(&id), request, true).await?;
     let locale = language_context(&a, &h).await?.0;
+    let sources = retrieval::search_in(&a, &t, Some(&id), request, true, &locale, true).await?;
     let schema = json!({"type":"object","properties":{"answer":{"type":"string"},"source_ids":{"type":"array","items":{"type":"string"}},"missing_information":{"type":"boolean"}},"required":["answer","source_ids","missing_information"],"additionalProperties":false});
     let _slot = a.inference_slots.clone().try_acquire_owned().map_err(|_| {
         Error(

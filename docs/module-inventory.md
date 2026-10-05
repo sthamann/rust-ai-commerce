@@ -134,11 +134,17 @@ This lists every checked-in source module in these roots, including files with n
 | [src/developer/mod.rs](../src/developer/mod.rs) | Prompt-generated declarative apps and native coding-agent handoff, never unsandboxed model code. |
 | [src/developer/routes.rs](../src/developer/routes.rs) | Developer HTTP transport and coding-agent task export; explicit staging precedes live release. |
 | [src/discount.rs](../src/discount.rs) | Integer-cent proportional discount allocation; cumulative rounding conserves the exact basket discount. |
+| [src/documents/content.rs](../src/documents/content.rs) | Validate enabled-language source content and rebuild hash-bound chunks without inherited fabricated translations. |
 | [src/documents/ingestion.rs](../src/documents/ingestion.rs) | Typed API and bounded upload write source hashes, chunks and graph relations atomically. |
+| [src/documents/lifecycle.rs](../src/documents/lifecycle.rs) | Revision-bound source detail, editing, archive/restore and publication; edits require a new public review. |
 | [src/documents/mod.rs](../src/documents/mod.rs) | Source-bound knowledge ingestion, retrieval and product questions share tenant/product visibility. |
 | [src/documents/parser.rs](../src/documents/parser.rs) | PDF extraction executes in a killable child process without inherited commerce credentials. |
+| [src/documents/preview.rs](../src/documents/preview.rs) | No-provider retrieval preview shares product-question scope and locale rules; merchant sources never enter customer previews. |
+| [src/documents/product_knowledge.rs](../src/documents/product_knowledge.rs) | Product-centred canonical facts and tenant-filtered graph evidence, independent of the overview's truncated sample. |
 | [src/documents/questions.rs](../src/documents/questions.rs) | Product-specific read-only advice with authoritative price/specification snapshot and validated source citations. |
 | [src/documents/retrieval.rs](../src/documents/retrieval.rs) | Bounded lexical/vector source retrieval; public questions use only explicitly published documents. |
+| [src/documents/tools.rs](../src/documents/tools.rs) | Knowledge workspace/source MCP tools delegate to the same authorized HTTP operations and schemas. |
+| [src/documents/workspace.rs](../src/documents/workspace.rs) | Permission-filtered knowledge census, cursor source inventory and activity; totals never masquerade as sampled graph counts. |
 | [src/experience.rs](../src/experience.rs) | Persisted storefront layout policy and observed synthetic rewards. |
 | [src/extensions.rs](../src/extensions.rs) | Merchant catalogue and Wasm extension activation/state. |
 | [src/foundation.rs](../src/foundation.rs) | Application dependencies, error responses and request context helpers. |
@@ -274,7 +280,6 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/automation/source-rules.ts](../frontend/src/admin/automation/source-rules.ts) | Convert source condition nodes for the graphical editor without losing original payload fields. |
 | [frontend/src/admin/catalog/AiImageStudio.tsx](../frontend/src/admin/catalog/AiImageStudio.tsx) | Optional image-provider jobs create private previews; applying a reviewed image is explicit and revision checked. |
 | [frontend/src/admin/catalog/CategoriesWorkspace.tsx](../frontend/src/admin/catalog/CategoriesWorkspace.tsx) | Localized category tree editor; parent moves and revisions are validated in the API. |
-| [frontend/src/admin/catalog/DocumentsManager.tsx](../frontend/src/admin/catalog/DocumentsManager.tsx) | Private source ingestion and explicit publication from the merchant knowledge view. |
 | [frontend/src/admin/catalog/MediaDropzone.tsx](../frontend/src/admin/catalog/MediaDropzone.tsx) | Accessible multi-file upload with drag/drop, visible progress and the same validated asset API as attachments. |
 | [frontend/src/admin/catalog/PairFields.tsx](../frontend/src/admin/catalog/PairFields.tsx) | Accessible key/value rows for product properties, specifications and variant options. |
 | [frontend/src/admin/catalog/ProductAssets.tsx](../frontend/src/admin/catalog/ProductAssets.tsx) | Bounded upload and explicit digest-bound publication of attachments and paid files. |
@@ -308,9 +313,16 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/developer/app-model.ts](../frontend/src/admin/developer/app-model.ts) | Pure schema edits preserve unsupported extension properties; compilation binds native UI to real actions. |
 | [frontend/src/admin/developer/useAppStudio.ts](../frontend/src/admin/developer/useAppStudio.ts) | Tenant-scoped build lifecycle; immutable saved snapshots gate sandbox previews and selected app-only releases. |
 | [frontend/src/admin/environments/EnvironmentManager.tsx](../frontend/src/admin/environments/EnvironmentManager.tsx) | Private environment creation and digest-bound selective release. |
-| [frontend/src/admin/intelligence/KnowledgeGraph.tsx](../frontend/src/admin/intelligence/KnowledgeGraph.tsx) | KnowledgeGraph: focused studio-card graph-card view with explicit typed inputs and callbacks. |
-| [frontend/src/admin/intelligence/KnowledgeView.tsx](../frontend/src/admin/intelligence/KnowledgeView.tsx) | KnowledgeView renders verified shop state and typed user actions. |
-| [frontend/src/admin/intelligence/MemoryView.tsx](../frontend/src/admin/intelligence/MemoryView.tsx) | Evidence, hypotheses and explicit merchant decisions are read from the durable intelligence API. |
+| [frontend/src/admin/intelligence/ExternalKnowledge.tsx](../frontend/src/admin/intelligence/ExternalKnowledge.tsx) | Private connected-app evidence browser shows active-source provenance without exposing it to shoppers. |
+| [frontend/src/admin/intelligence/KnowledgeExplorer.tsx](../frontend/src/admin/intelligence/KnowledgeExplorer.tsx) | Product-centred evidence inspector reads canonical facts and graph relationships beyond overview sampling. |
+| [frontend/src/admin/intelligence/KnowledgeFacts.tsx](../frontend/src/admin/intelligence/KnowledgeFacts.tsx) | Canonical catalogue facts shown alongside graph evidence; prices and inventory come from current product state. |
+| [frontend/src/admin/intelligence/KnowledgeOverview.tsx](../frontend/src/admin/intelligence/KnowledgeOverview.tsx) | Whole-shop knowledge census, operational next steps and provenance activity; examples never masquerade as learned facts. |
+| [frontend/src/admin/intelligence/KnowledgePreview.tsx](../frontend/src/admin/intelligence/KnowledgePreview.tsx) | No-model evidence preview makes customer/private retrieval boundaries and missing facts inspectable. |
+| [frontend/src/admin/intelligence/KnowledgeSources.tsx](../frontend/src/admin/intelligence/KnowledgeSources.tsx) | Searchable cursor source library, guarded lifecycle decisions and single-language source editing. |
+| [frontend/src/admin/intelligence/KnowledgeView.tsx](../frontend/src/admin/intelligence/KnowledgeView.tsx) | Unified knowledge workspace connects sources, product evidence, observations and no-model retrieval previews. |
+| [frontend/src/admin/intelligence/MemoryView.tsx](../frontend/src/admin/intelligence/MemoryView.tsx) | Durable co-purchase evidence and revision-bound merchant decisions, with simulation labels and explicit confirmation. |
+| [frontend/src/admin/intelligence/SourceEditor.tsx](../frontend/src/admin/intelligence/SourceEditor.tsx) | Single-language source editor with inherited fields, product lookup and private-first API/file ingestion. |
+| [frontend/src/admin/intelligence/knowledge-types.ts](../frontend/src/admin/intelligence/knowledge-types.ts) | Typed knowledge read models preserve source ownership, revisions, sampling and privacy boundaries. |
 | [frontend/src/admin/orders/OrderDetail.tsx](../frontend/src/admin/orders/OrderDetail.tsx) | Order workspace: server actions, exact-once commands, provider progress and visible event history. |
 | [frontend/src/admin/orders/OrderPaymentDelivery.tsx](../frontend/src/admin/orders/OrderPaymentDelivery.tsx) | Payment jobs are observed until confirmation. Delivery actions share the server state machine. |
 | [frontend/src/admin/orders/OrderWorkflow.tsx](../frontend/src/admin/orders/OrderWorkflow.tsx) | Server-owned transitions: one source for permitted actions, labels and business guards. |
@@ -364,6 +376,9 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/forms.css](../frontend/src/admin/styles/forms.css) | Studio-owned form primitives load at the composition root, independent of lazy workspace history. |
 | [frontend/src/admin/styles/international-details.css](../frontend/src/admin/styles/international-details.css) | Destination rates, translation jobs and responsive international workbench layout. |
 | [frontend/src/admin/styles/international.css](../frontend/src/admin/styles/international.css) | International commerce workbench: compact master/detail records, calm colour and clear field hierarchy. |
+| [frontend/src/admin/styles/knowledge-evidence.css](../frontend/src/admin/styles/knowledge-evidence.css) | Product evidence, retrieval excerpts, observed pairs and responsive knowledge layouts. |
+| [frontend/src/admin/styles/knowledge-sources.css](../frontend/src/admin/styles/knowledge-sources.css) | Knowledge source library/editor layouts: single-language forms and lifecycle controls. |
+| [frontend/src/admin/styles/knowledge.css](../frontend/src/admin/styles/knowledge.css) | Unified knowledge workspace: evidence-first hierarchy, accessible cards and theme-aware responsive layouts. |
 | [frontend/src/admin/styles/media-workspace.css](../frontend/src/admin/styles/media-workspace.css) | Gallery workspace: airy tiles, focused image inspector and accessible upload surfaces using Studio theme tokens. |
 | [frontend/src/admin/styles/operations.css](../frontend/src/admin/styles/operations.css) | Operational screens share the studio's light surface and clear focus states. |
 | [frontend/src/admin/styles/settings.css](../frontend/src/admin/styles/settings.css) | Independent settings navigation, grouped native forms and save feedback in Studio theme tokens. |
@@ -434,6 +449,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/errors-i18n.ts](../frontend/src/shared/i18n/errors-i18n.ts) | Localized request guidance across all transports; original diagnostics remain available to developer tools. |
 | [frontend/src/shared/i18n/i18n.tsx](../frontend/src/shared/i18n/i18n.tsx) | i18n: Four-language locale context, UI dictionaries and translated API errors. |
 | [frontend/src/shared/i18n/international-i18n.ts](../frontend/src/shared/i18n/international-i18n.ts) | International settings vocabulary. Every key requires English, German, French and Spanish. |
+| [frontend/src/shared/i18n/knowledge-i18n.ts](../frontend/src/shared/i18n/knowledge-i18n.ts) | Knowledge workspace vocabulary: sources, evidence and capabilities without fabricated learning claims. |
 | [frontend/src/shared/i18n/locales/de.ts](../frontend/src/shared/i18n/locales/de.ts) | Merchant interface strings: de. |
 | [frontend/src/shared/i18n/locales/en.ts](../frontend/src/shared/i18n/locales/en.ts) | Merchant interface strings: en. |
 | [frontend/src/shared/i18n/locales/es.ts](../frontend/src/shared/i18n/locales/es.ts) | Merchant interface strings: es. |
@@ -567,6 +583,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/integration.py](../scripts/integration.py) | Exercise the real HTTP -> Rust -> PostgreSQL path. Never contacts a PSP. |
 | [scripts/intelligence.py](../scripts/intelligence.py) | Actual SQL knowledge persistence and optional live local inference integration. |
 | [scripts/international_commerce.py](../scripts/international_commerce.py) | International configuration at the real HTTP/PostgreSQL path; all rates and addresses are synthetic fixtures, not tax advice. |
+| [scripts/knowledge_workspace.py](../scripts/knowledge_workspace.py) | Actual tenant-scoped knowledge lifecycle, multilingual retrieval, cursor census and selective staging; no model calls. |
 | [scripts/load.py](../scripts/load.py) | Local HTTP latency sample. Does not claim production or Shopware speedup. |
 | [scripts/managed_search.py](../scripts/managed_search.py) | Real PostgreSQL/Qdrant synchronization; synthetic embeddings test transport, not AI quality. |
 | [scripts/marketing_accounts.py](../scripts/marketing_accounts.py) | Real isolated shops: customer authority, limited coupons, event flows, channels and selected releases. No paid models. |

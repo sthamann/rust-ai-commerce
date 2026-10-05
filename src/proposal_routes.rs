@@ -7,6 +7,7 @@ pub(crate) async fn agent_plan(
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
+    auth::permit(&h, "knowledge.read")?;
     Ok(Json(
         plan_with(
             &a,

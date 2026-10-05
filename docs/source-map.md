@@ -206,7 +206,7 @@ Shopware compatibility claim is made.
 | `src/commerce/product_edit.rs` | Revision-bound translations and advanced metadata; own product/reference validation | `marketing_accounts.py` and selected release |
 | `src/experience.rs` | Persisted layout policy plus owned-session signal ranking/clearing | `intelligence.py`, `marketing_accounts.py` |
 | `frontend/src/admin/{developer,environments,storyfronts,automation,catalog}/` | Dedicated merchant workbench forms and review surfaces | Strict frontend build, actual browser review |
-| `frontend/src/storefront/account/CustomerAccount.tsx`, `admin/catalog/DocumentsManager.tsx`, `storefront/catalog/ProductQuestion.tsx` | Customer account editing/history and private upload/cited shopper questions | Native HTTP suites and browser forms |
+| `frontend/src/storefront/account/CustomerAccount.tsx`, `admin/intelligence/KnowledgeSources.tsx`, `admin/intelligence/SourceEditor.tsx`, `storefront/catalog/ProductQuestion.tsx` | Customer account editing/history and private upload/cited shopper questions | Native HTTP suites and browser forms |
 | `frontend/src/shared/i18n/{workbench-i18n,errors-i18n}.ts`, `frontend/tests/locales.mjs` | Four-language typed vocabulary and exact/fallback errors | Locale parity/nonempty/error tests |
 | `deploy/*`, `scripts/prepare_vercel.py` | Self-hosted image/TLS network and credential-free Vercel API rewrite generation | Container build/start and Compose/static checks |
 
@@ -346,5 +346,7 @@ no model or external delivery provider. The exact current source inventory is
 Company identity, per-channel inheritance, logos and legal storefront/issuer consumers: [company settings module map](company-settings.md). Real integration suite: `scripts/company_settings.py`; UI regressions: `frontend/tests/unit/company-settings.test.tsx`.
 
 Scoped checkout settings, method dependency guards, selective staging and product media jobs: [module map and verification](settings-media.md#source-ownership-and-regression-evidence).
+
+Knowledge sources, product graph evidence, observed decisions and retrieval preview: [domain ownership and verification](knowledge-workspace.md#source-ownership-and-verification). Real suites: `knowledge_workspace.py`, `developer_documents.py`, `apps.py`, `connected_apps.py`; component regressions: `knowledge-workspace.test.tsx`.
 
 Managed storage/search integration: `managed_search.py` verifies ordinary PostgreSQL, real Qdrant, hostname scope, durable deletion/retry and lexical fallback with synthetic embeddings. It does not measure AI quality.

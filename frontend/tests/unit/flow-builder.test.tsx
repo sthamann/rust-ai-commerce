@@ -4,6 +4,8 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import FlowExecution from "../../src/admin/automation/FlowExecution";
 import RuleBuilder from "../../src/admin/automation/RuleBuilder";
+import FlowBuilder from "../../src/admin/automation/FlowBuilder";
+import { knowledgeWords } from "../../src/shared/i18n/knowledge-i18n";
 import FlowCanvas from "../../src/admin/automation/FlowCanvas";
 import JsonField from "../../src/admin/automation/JsonField";
 import {
@@ -185,5 +187,52 @@ describe.each(["en-GB", "de-DE", "fr-FR", "es-ES"])(
         }),
       );
     });
+  },
+);
+
+it.each(["en-GB", "de-DE", "fr-FR", "es-ES"])(
+  "knowledge lifecycle trigger is selectable with a translated label in %s",
+  (locale) => {
+    localStorage.setItem("rac-locale", locale);
+    const changed = vi.fn();
+    const index = ["en-GB", "de-DE", "fr-FR", "es-ES"].indexOf(locale);
+    render(
+      <FlowBuilder
+        data={{
+          event: "order.placed",
+          condition: { type: "alwaysValid" },
+          action: "note",
+          instruction: { en: "Review source" },
+        }}
+        update={changed}
+        catalog={{
+          ...catalog,
+          events: [
+            ...catalog.events,
+            "knowledge.document.ingested",
+            "knowledge.document.archived",
+            "intelligence.decision",
+          ],
+        }}
+      />,
+      { wrapper: LocaleProvider },
+    );
+    expect(
+      screen.getByRole("option", {
+        name: knowledgeWords.event_ingested[index],
+      }),
+    ).toHaveValue("knowledge.document.ingested");
+    expect(
+      screen.getByRole("option", {
+        name: knowledgeWords.event_archived[index],
+      }),
+    ).toHaveValue("knowledge.document.archived");
+    fireEvent.change(screen.getAllByRole("combobox")[0], {
+      target: { value: "knowledge.document.ingested" },
+    });
+    expect(changed).toHaveBeenLastCalledWith(
+      "event",
+      "knowledge.document.ingested",
+    );
   },
 );

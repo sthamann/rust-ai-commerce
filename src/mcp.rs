@@ -2,6 +2,9 @@
 use crate::*;
 
 pub(crate) fn tool_schema(name: &str) -> Value {
+    if let Some(schema) = documents::knowledge_schema(name) {
+        return schema;
+    }
     let props = match name {
         "merchant.company" => json!({"channelId":{"type":"string"}}),
         "merchant.company.save" => {
@@ -188,7 +191,14 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
                     }
                     if n.starts_with("knowledge.") {
                         return merchant(&a, &h).is_ok()
-                            && auth::permit(&h, "knowledge.read").is_ok();
+                            && auth::permit(&h, "knowledge.read").is_ok()
+                            && (!matches!(
+                                *n,
+                                "knowledge.source.create"
+                                    | "knowledge.source.edit"
+                                    | "knowledge.source.visibility"
+                                    | "knowledge.source.archive"
+                            ) || auth::permit(&h, "catalog").is_ok());
                     }
                     if let Some(permission) = operations::permission(n) {
                         return merchant(&a, &h).is_ok() && auth::permit(&h, permission).is_ok();

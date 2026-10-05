@@ -196,6 +196,38 @@ pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
         "knowledge.external",
         "Read merchant-private Gmail/Analytics sources with provenance",
     ),
+    (
+        "knowledge.product",
+        "Read product facts and graph evidence with source scope",
+    ),
+    (
+        "knowledge.workspace",
+        "Read tenant-wide knowledge totals, cursor sources, activity and permissions",
+    ),
+    (
+        "knowledge.preview",
+        "Preview scoped lexical evidence without provider calls or mutations",
+    ),
+    (
+        "knowledge.source.detail",
+        "Read own source content and translations",
+    ),
+    (
+        "knowledge.source.create",
+        "Create private enabled-language knowledge source",
+    ),
+    (
+        "knowledge.source.edit",
+        "Revision-bound source edit, invalidating embeddings and public review",
+    ),
+    (
+        "knowledge.source.visibility",
+        "Explicit revision-bound source publication decision",
+    ),
+    (
+        "knowledge.source.archive",
+        "Explicit recoverable source archive or restore",
+    ),
     ("cart.create", "Create customer cart"),
     (
         "cart.replace",
