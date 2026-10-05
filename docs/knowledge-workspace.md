@@ -92,8 +92,8 @@ archived source is blocked until restore. Exact source content duplicates are re
 on ingestion; editing into another source's same content/ownership is rejected.
 
 Outbox events: `knowledge.document.ingested`, `.updated`, `.visibility`, `.archived`,
-`.restored` and existing `intelligence.decision`. These reach the existing durable
-app-event/flow path. The workspace reports event IDs/timestamps rather than claiming
+`.restored` and existing `intelligence.decision`. These appear as translated triggers in the Flow Builder and reach the existing
+durable app-event/flow path, including events without an order. The workspace reports event IDs/timestamps rather than claiming
 that every installed app has subscribed or that an automation has completed.
 
 ## What learns and what does not
@@ -119,6 +119,7 @@ content-review decision, not a mechanism for sharing an entire mailbox.
   deterministic evidence preview and cited real product answers.
 - `tools.rs`, `capabilities/catalog.rs`, `mcp.rs`: HTTP/MCP parity and permission filtering.
 - `src/knowledge.rs`: transactional AGE document reassignment and public graph filtering.
+- `src/marketing/flows.rs`, `catalog.rs`: shared native trigger registry, non-order source event admission and durable execution.
 - `src/planner.rs`: document passages actually feed and persist with merchant proposals.
 - `src/staging/documents.rs`: clone/diff/release metadata and chunks as one unit.
 - `frontend/src/admin/intelligence/`: small workspace, source editor/library, product
@@ -127,7 +128,8 @@ content-review decision, not a mechanism for sharing an entire mailbox.
 `scripts/knowledge_workspace.py` checks real PostgreSQL/AGE APIs: privacy, hashes,
 translation and non-English fallback, explicit empty values, tenant/role isolation,
 revision conflicts, graph reassignment, archive/restore, >50-source pagination,
-multilingual upload, selective staging release and MCP parity. `developer_documents.py`
+multilingual upload, selective staging release, MCP parity and an actual
+source-ingestion → event rule → completed durable flow without an order. `developer_documents.py`
 uses local provider fixtures to prove private document input reaches the merchant
 model call, archive removes it, and public product responses validate citations.
 The existing `apps` and `connected_apps` suites exercise order evidence and private

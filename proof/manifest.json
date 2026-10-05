@@ -937,8 +937,8 @@
     },
     "src/marketing/catalog.rs": {
       "status": "unproved",
-      "sha256": "cc8227b488487380f037f3f24e9c67605f371d7c321cab1b52c7da20bf51c881",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "b2ce70e12049a4430b9f6438b11f147c93fefe16dc868f1f7381f9a4d54b61e2",
+      "review": "Reviewed shared native knowledge trigger admission/catalog, order-free event projection and unchanged revoked-actor enforcement. Real source ingestion -> product-scoped event rule -> completed durable flow and existing automation regressions pass with local fixtures; event/SQL adapters remain unproved, extracted decision claims unchanged."
     },
     "src/marketing/channels.rs": {
       "status": "unproved",
@@ -982,8 +982,8 @@
     },
     "src/marketing/flows.rs": {
       "status": "unproved",
-      "sha256": "27eb1d45de8c18f88d9ec6b45075e6a8e67e9e6780ce470330fd501aadc45d65",
-      "review": "Reviewed shared content-language validation, regional key preservation, shop-main flow fallback and asset labels; existing state/price/permission contracts remain intact."
+      "sha256": "7d15b006776edf3a06ac94640bdbed3267652bc44afc4f7c77b2536cae4b0d7f",
+      "review": "Reviewed shared native knowledge trigger admission/catalog, order-free event projection and unchanged revoked-actor enforcement. Real source ingestion -> product-scoped event rule -> completed durable flow and existing automation regressions pass with local fixtures; event/SQL adapters remain unproved, extracted decision claims unchanged."
     },
     "src/marketing/gateway.rs": {
       "status": "unproved",

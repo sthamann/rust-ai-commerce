@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Actual tenant-scoped knowledge lifecycle, multilingual retrieval, cursor census and selective staging; no model calls."""
-import json, os, urllib.request, urllib.error, uuid
+import json, os, urllib.request, urllib.error, uuid, time
 base=os.getenv('BASE_URL','http://127.0.0.1:8787')
 def call(path,body=None,session=None,tenant=None,expected=200,method=None,locale='en-GB',raw=None,contenttype='application/json'):
  h={'Content-Type':contenttype,'x-commerce-locale':locale}
@@ -114,3 +114,20 @@ call('/api/knowledge/workspace',session=viewer,expected=403)
 call('/api/agent/plan',{'instruction':'Read private knowledge'},viewer,expected=403)
 call('/api/agent/chat',{'message':'Read private knowledge'},viewer,expected=403)
 print('PASS HTTP/MCP parity, read-only viewer controls and cross-shop source isolation; paid provider calls: 0')
+
+# Knowledge lifecycle events are selectable and actually reach the durable rule/flow consumer without an order.
+events=['knowledge.document.ingested','knowledge.document.updated','knowledge.document.visibility','knowledge.document.archived','knowledge.document.restored','intelligence.decision']
+assert set(events)<=set(call('/api/automation/catalog',session=a)['events'])
+names={l:'Knowledge event fixture' for l in ['en','de','fr','es']}
+flow={'name':names,'active':True,'event':events[0],'condition':{'type':'eventField','path':'productId','operator':'=','value':'notebook'},'action':'note','instruction':names,'locale':'en-GB'}
+call('/api/automation/flows/source_added',{'data':flow,'revision':0},a,method='PUT')
+source=call('/api/knowledge/documents',{'title':'Flow care fixture','content':'Only this source triggers the knowledge fixture.','productId':'notebook'},a)
+for _ in range(100):
+ jobs=call('/api/automation',session=a)['jobs'];found=[j for j in jobs if j['flow']=='source_added' and j['state']=='completed']
+ if found:break
+ time.sleep(.1)
+assert found, jobs
+assert found[0]['result']['note']==names['en']
+assert found[0]['result']['orderId']==''
+assert not any(j['flow']=='source_added' for j in call('/api/automation',session=other)['jobs'])
+print('PASS real source event -> rule -> durable completed flow without order; cross-shop exclusion and provider calls: 0')

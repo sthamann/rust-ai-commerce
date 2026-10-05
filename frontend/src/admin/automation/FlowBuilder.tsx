@@ -1,6 +1,10 @@
 /** Graphical event → condition tree → action pipeline, including installed app actions. */
 import { useConnectedText } from "../../shared/i18n/connected-i18n";
 import { useContentLanguage } from "../../shared/i18n/ContentLanguage";
+import {
+  useKnowledgeText,
+  type KnowledgeWord,
+} from "../../shared/i18n/knowledge-i18n";
 import FlowCanvas from "./FlowCanvas";
 import { useAutomationText } from "../../shared/i18n/automation-i18n";
 import FlowInputs from "./FlowInputs";
@@ -16,6 +20,15 @@ export default function FlowBuilder({
 }) {
   const { mainLocale } = useContentLanguage();
   const { a } = useAutomationText();
+  const k = useKnowledgeText();
+  const knowledgeEvents: Record<string, KnowledgeWord> = {
+    "knowledge.document.ingested": "event_ingested",
+    "knowledge.document.updated": "event_updated",
+    "knowledge.document.visibility": "event_visibility",
+    "knowledge.document.archived": "event_archived",
+    "knowledge.document.restored": "event_restored",
+    "intelligence.decision": "event_decision",
+  };
   const { x, locale } = useConnectedText();
   const app = catalog.apps.find((a) => a.id === data.appAction?.app);
   const events = [
@@ -53,7 +66,9 @@ export default function FlowBuilder({
             <option key={v} value={v}>
               {v.startsWith("app.")
                 ? `${catalog.apps.find((a) => a.id === v.split(".")[1])?.manifest.name[locale.slice(0, 2)] ?? v.split(".")[1]} · ${v.endsWith(".source_imported") ? x("sourceImported") : v.split(".")[2]}`
-                : x(v)}
+                : knowledgeEvents[v]
+                  ? k(knowledgeEvents[v])
+                  : x(v)}
             </option>
           ))}
         </select>

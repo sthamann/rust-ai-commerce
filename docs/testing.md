@@ -213,21 +213,25 @@ and developer-document HTTP suites pass using local fixtures, without paid calls
 
 ## Connected knowledge workspace (2026-10-05)
 
-The current clean frontend run passes 147 tests across 26 test files, including
+The current clean frontend run passes 151 tests across 26 test files, including
 ten knowledge regressions: whole-shop census, a single inherited-language editor,
 explicit empty values, non-English main language, guarded publication, viewers,
 retrieval scope, failed edits, actual product navigation and recommendation review.
-Across all included source the run measures 51.97% statements, 45.80% branches,
-42.97% functions and 52.79% lines. This is a measured frontend scope, not a
+Across all included source the run measures 52.16% statements, 45.88% branches,
+43.10% functions and 52.99% lines. This is a measured frontend scope, not a
 whole-system coverage update or a 100% claim.
 
 84 Rust unit tests, strict lint/format, the extraction/Lean gates and negative
 mutations pass. The affected isolated PostgreSQL/AGE suites (`knowledge_workspace`,
-`developer_documents`, `apps`, `staging`, `connected_apps`) exercise source hashes,
+`developer_documents`, `apps`, `staging`, `connected_apps`, `automation`) exercise source hashes,
 public/private/archive fences, enabled-language retrieval, >50-source pagination,
 optimistic revisions, graph reassignment, granular HTTP/MCP access and selective
 release. Local provider fixtures prove private document passages reach the actual
 merchant model prompt and disappear after archive. No paid provider calls are used.
+
+The knowledge suite also follows source ingestion through a product-scoped event
+rule into a durable completed flow without an order. Four UI regressions retain
+the stable trigger IDs while translating their labels EN/DE/FR/ES.
 
 Browser checks cover inherited source creation in App Studio Lab, private customer
 exclusion versus merchant retrieval, the real product preview, desktop and 375px
