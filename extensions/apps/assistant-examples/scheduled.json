@@ -1,0 +1,242 @@
+{
+  "id": "example_scheduled",
+  "version": "0.1.0",
+  "coreApi": "1",
+  "runtime": "declarative",
+  "name": {
+    "en": "Extension example",
+    "de": "Erweiterungsbeispiel",
+    "fr": "Exemple d’extension",
+    "es": "Ejemplo de extensión"
+  },
+  "category": "operations",
+  "permissions": [
+    "data.read",
+    "data.write",
+    "admin.slot",
+    "events.publish"
+  ],
+  "entities": [
+    {
+      "name": "entries",
+      "label": {
+        "en": "Extension example",
+        "de": "Erweiterungsbeispiel",
+        "fr": "Exemple d’extension",
+        "es": "Ejemplo de extensión"
+      },
+      "publicRead": false,
+      "fields": [
+        {
+          "name": "title",
+          "label": {
+            "en": "Title",
+            "de": "Titel",
+            "fr": "Titre",
+            "es": "Título"
+          },
+          "kind": "string",
+          "translatable": true,
+          "required": true
+        },
+        {
+          "name": "body",
+          "label": {
+            "en": "Content",
+            "de": "Inhalt",
+            "fr": "Contenu",
+            "es": "Contenido"
+          },
+          "kind": "string",
+          "translatable": true
+        },
+        {
+          "name": "segment",
+          "label": {
+            "en": "Selection",
+            "de": "Auswahlliste",
+            "fr": "Liste de choix",
+            "es": "Lista de selección"
+          },
+          "kind": "string",
+          "choices": [
+            {
+              "value": "standard",
+              "label": {
+                "en": "Standard",
+                "de": "Standard",
+                "fr": "Standard",
+                "es": "Estándar"
+              }
+            },
+            {
+              "value": "priority",
+              "label": {
+                "en": "Priority",
+                "de": "Priorität",
+                "fr": "Priorité",
+                "es": "Prioridad"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "slots": [],
+  "views": [
+    {
+      "id": "workspace",
+      "layout": "stack",
+      "blocks": [
+        {
+          "id": "records",
+          "kind": "table",
+          "title": {
+            "en": "Content",
+            "de": "Inhalt",
+            "fr": "Contenu",
+            "es": "Contenido"
+          },
+          "entity": "entries",
+          "readAction": "list_entries",
+          "writeAction": null
+        },
+        {
+          "id": "editor",
+          "kind": "form",
+          "title": {
+            "en": "Shape your app",
+            "de": "Deine App gestalten",
+            "fr": "Configurez votre app",
+            "es": "Configura tu app"
+          },
+          "entity": "entries",
+          "readAction": "list_entries",
+          "writeAction": "save_entries"
+        }
+      ]
+    }
+  ],
+  "surfaces": [
+    {
+      "id": "workspace",
+      "location": "admin.navigation",
+      "label": {
+        "en": "Extension example",
+        "de": "Erweiterungsbeispiel",
+        "fr": "Exemple d’extension",
+        "es": "Ejemplo de extensión"
+      },
+      "uiPath": "native/workspace",
+      "actions": [
+        "list_entries",
+        "save_entries"
+      ],
+      "permission": "catalog.read"
+    }
+  ],
+  "apiRoutes": [
+    {
+      "path": "list_entries",
+      "method": "GET",
+      "scope": "admin",
+      "action": "list_entries"
+    }
+  ],
+  "intelligence": {
+    "description": {
+      "en": "Extension example",
+      "de": "Erweiterungsbeispiel",
+      "fr": "Exemple d’extension",
+      "es": "Ejemplo de extensión"
+    },
+    "tools": [],
+    "entities": []
+  },
+  "actions": [
+    {
+      "name": "received",
+      "description": "scheduled",
+      "handler": "emit",
+      "public": false,
+      "mcp": false,
+      "permission": "apps.manage",
+      "flowAllowed": false,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "payload": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_entries",
+      "description": "List entries",
+      "handler": "list",
+      "entity": "entries",
+      "public": false,
+      "readOnly": true,
+      "mcp": false,
+      "permission": "catalog.read",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer"
+          },
+          "after": {
+            "type": "string"
+          },
+          "filter": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "save_entries",
+      "description": "Save entries",
+      "handler": "save",
+      "entity": "entries",
+      "public": false,
+      "flowAllowed": true,
+      "permission": "catalog.write",
+      "mcp": false,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "fields": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "fields"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "schedules": [
+    {
+      "id": "recurring",
+      "cron": "0 */15 * * * *",
+      "action": "received",
+      "input": {
+        "payload": {}
+      },
+      "enabled": true
+    }
+  ]
+}

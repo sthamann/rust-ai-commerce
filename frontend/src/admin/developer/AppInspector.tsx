@@ -1,4 +1,7 @@
 /** One content language edits app/view/block metadata; changing bindings updates the actual manifest. */
+import AppContextBinding from "./AppContextBinding";
+import { placements } from "./assistant-model";
+import { useAssistantText } from "../../shared/i18n/app-assistant-i18n";
 import LocalizedField from "../../shared/i18n/LocalizedField";
 import { useAppStudioText } from "../../shared/i18n/app-studio-i18n";
 import type { Manifest, NativeView } from "../../shared/apps/native/types";
@@ -15,6 +18,7 @@ export default function AppInspector({
   onChange: (m: Manifest) => void;
 }) {
   const { a } = useAppStudioText();
+  const { t } = useAssistantText();
   const block = view.blocks.find((b) => b.id === selected),
     surface = manifest.surfaces?.find((s) => s.uiPath === `native/${view.id}`);
   const patch = (v: Partial<NativeView>) =>
@@ -80,11 +84,13 @@ export default function AppInspector({
                 })
               }
             >
-              {Object.entries(locations).map(([value, key]) => (
-                <option value={value} key={value}>
-                  {a(key)}
-                </option>
-              ))}
+              {Object.keys({ ...locations, ...placements })
+                .map((value) => [value, value] as const)
+                .map(([value, key]) => (
+                  <option value={value} key={value}>
+                    {placements[key] ? t(placements[key]) : a(locations[key])}
+                  </option>
+                ))}
             </select>
           </label>
           <LocalizedField
@@ -145,7 +151,11 @@ export default function AppInspector({
                   patch({
                     blocks: view.blocks.map((b) =>
                       b.id === selected
-                        ? { ...b, ...binding(b.kind, e.target.value) }
+                        ? {
+                            ...b,
+                            ...binding(b.kind, e.target.value),
+                            contextBinding: null,
+                          }
                         : b,
                     ),
                   })
@@ -158,6 +168,19 @@ export default function AppInspector({
                 ))}
               </select>
             </label>
+          )}
+          {block.kind !== "text" && (
+            <AppContextBinding
+              manifest={manifest}
+              block={block}
+              onChange={(next) =>
+                patch({
+                  blocks: view.blocks.map((b) =>
+                    b.id === block.id ? next : b,
+                  ),
+                })
+              }
+            />
           )}
         </>
       ) : (

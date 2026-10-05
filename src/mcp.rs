@@ -226,7 +226,7 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
                 Err(e) => Err(e),
             }
         }
-        "tools/call" => match invoke(
+        "tools/call" => match invoke_transport(
             &a,
             &h,
             v["params"]["name"].as_str().unwrap_or(""),
@@ -252,4 +252,15 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
         Err(e) => json!({"jsonrpc":"2.0","id":id,"error":{"code":-32601,"message":e.1}}),
     })
     .into_response()
+}
+
+/// MCP opt-out is independent of a merchant's selected internal planning tools.
+async fn invoke_transport(a: &App, h: &HeaderMap, name: &str, input: &Value) -> Result<Value> {
+    if let Some(app) = name.strip_prefix("app.") {
+        let (id, action) = app
+            .split_once('.')
+            .ok_or(bad("Invalid app capability name"))?;
+        return apps::invoke_mcp(a, h, id, action, input).await;
+    }
+    invoke(a, h, name, input).await
 }

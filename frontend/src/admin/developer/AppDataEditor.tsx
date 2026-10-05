@@ -1,4 +1,5 @@
 /** Managed app models expose typed fields and opt-in public reads; removal cleans dependent bindings. */
+import AppFieldOptions from "./AppFieldOptions";
 import LocalizedField from "../../shared/i18n/LocalizedField";
 import { useAppStudioText, appText } from "../../shared/i18n/app-studio-i18n";
 import type { Entity, Field, Manifest } from "../../shared/apps/native/types";
@@ -142,6 +143,9 @@ export default function AppDataEditor({
                           kind: e.target.value as Field["kind"],
                           translatable: false,
                           indexed: false,
+                          coreReference: null,
+                          choices: [],
+                          references: null,
                         })
                       }
                     >
@@ -171,7 +175,11 @@ export default function AppDataEditor({
                               set({
                                 [key]: e.target.checked,
                                 ...(key === "translatable" && e.target.checked
-                                  ? { indexed: false }
+                                  ? {
+                                      indexed: false,
+                                      coreReference: null,
+                                      choices: [],
+                                    }
                                   : {}),
                               })
                             }
@@ -181,6 +189,7 @@ export default function AppDataEditor({
                       ),
                     )}
                   </div>
+                  <AppFieldOptions field={field} onChange={set} />
                   <button
                     className="app-icon-button"
                     aria-label={a("delete")}

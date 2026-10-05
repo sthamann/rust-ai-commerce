@@ -1,4 +1,5 @@
 /** CRM list and editable customer profile with linked order history. */
+import { AppSurfaceSlot } from "../../shared/apps/AppSurfaces";
 import AddressBook from "../../shared/customer/AddressBook";
 import CustomerFields from "../../shared/customer/CustomerFields";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
@@ -235,6 +236,10 @@ export default function CustomersManager({
                 ))}
               </>
             )}
+            <AppSurfaceSlot
+              location="admin.customer"
+              context={{ customerId: customer.id }}
+            />
             <EntityHistory
               request={request}
               entity="customer"

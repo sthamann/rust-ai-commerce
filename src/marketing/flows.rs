@@ -202,7 +202,10 @@ pub(crate) async fn flow_once(a: &App) -> Result<()> {
             "Flow event order {} total {}. {}. Create a reviewable proposal only.",
             definition["orderNumber"], definition["totalPrice"], instruction
         );
-        plan_with(a, &t, &context, f.inference.as_ref(), "", &f.locale).await
+        match super::flow_access::headers(a, &t, f.actor.as_deref()).await {
+            Ok(h) => plan_with(a, &t, &context, f.inference.as_ref(), "", &f.locale, &h).await,
+            Err(e) => Err(e),
+        }
     };
     let (state, value, error) = match result {
         Ok(v) => ("completed", Some(v), None),

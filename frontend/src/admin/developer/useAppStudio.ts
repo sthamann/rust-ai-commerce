@@ -224,6 +224,13 @@ export function useAppStudio(
       });
       adopt(b);
     },
+    startDraft: (m: Manifest) => {
+      dispatch(m);
+      setSaved(null);
+      setBaseline("");
+      setChange(null);
+      setReviewed(false);
+    },
     reset: () => {
       dispatch("reset");
       setSaved(null);

@@ -156,6 +156,7 @@ pub(crate) async fn execute(
             f.inference.as_ref(),
             "",
             &f.locale,
+            &h,
         )
         .await;
     }

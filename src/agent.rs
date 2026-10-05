@@ -198,6 +198,7 @@ pub(super) async fn merchant_chat(
             selection.as_ref(),
             &history,
             &language_context(&a, &h).await?.0,
+            &h,
         ),
     )
     .await

@@ -16,6 +16,7 @@ pub(crate) async fn agent_plan(
             choice(&v)?.as_ref(),
             "",
             &language_context(&a, &h).await?.0,
+            &h,
         )
         .await?,
     ))
@@ -30,7 +31,7 @@ pub(crate) async fn agent_apply(
     if v["approve"] != true {
         return Err(bad("Explicit approve=true required"));
     }
-    Ok(Json(apply(&a, &t, &id).await?))
+    Ok(Json(apply(&a, &t, &id, &h).await?))
 }
 pub(crate) async fn tasks(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;

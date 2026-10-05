@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "22 extracted production policies; surrounding modules remain unproved",
+  "claim": "24 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -206,6 +206,24 @@
         "customer_group_unknown_denied",
         "customer_group_net_exact"
       ]
+    },
+    "app_tool_admissible": {
+      "bindings": [
+        "src/apps/gateway.rs"
+      ],
+      "theorems": [
+        "app_tool_exact",
+        "app_tool_disabled"
+      ]
+    },
+    "app_core_reference_admissible": {
+      "bindings": [
+        "src/apps/editor_contract.rs"
+      ],
+      "theorems": [
+        "app_core_reference_private",
+        "app_core_reference_exact"
+      ]
     }
   },
   "sources": {
@@ -256,8 +274,8 @@
     },
     "src/agent.rs": {
       "status": "unproved",
-      "sha256": "0c24ea1dad7610e5c38e2cfcbf3f4879a8c8423a7d5f3ee6da75a8169322f492",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "65a1a452c56c8d2f551486d09ce1e3e7782a5385d3a7ba03c4b135a3e6d965e8",
+      "review": "Reviewed assistant contracts, required tenant references, additive choices, MCP-only ingress and authorized grounding/selected app proposals. Merchant/chat/flow authority reaches both bind and approval; local model fixtures reject scope bypass and private grounding. Async adapters remain unproved."
     },
     "src/apps/cart_contributions.rs": {
       "status": "unproved",
@@ -271,8 +289,18 @@
     },
     "src/apps/data.rs": {
       "status": "unproved",
-      "sha256": "79bc14a6708e55ebfe14af900a78baa64aabc8d7425e1a4f341a6db00137c190",
-      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+      "sha256": "9dcb1c755f0bab9995cfad80fea48235d6f20895bd87de8b4983dae4405a2fbd",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+    },
+    "src/apps/editor_contract.rs": {
+      "status": "reviewed-binding",
+      "sha256": "bef64db3a67f7dee32434318f9129777f32b612818e56aa1fe4fd5f14db0038f",
+      "review": "Reviewed app MCP-only ingress and exact exposure/private-reference production policies. Required indexed owned references and additive enum upgrades reviewed; asynchronous scheduler/webhook behavior is integration-tested, not Lean proved."
+    },
+    "src/apps/editor_tests.rs": {
+      "status": "unproved",
+      "sha256": "b39c499a802b9b59b4035711064a57350edc106453076a20262716c05d35a968",
+      "review": "Reviewed app MCP ingress, private ownership and bounded durable ingress/clock adapters; added rejection of optional editor reference fields. Local PostgreSQL/HTTP provider and restart tests validate async effects, which remain unproved."
     },
     "src/apps/events.rs": {
       "status": "unproved",
@@ -290,24 +318,24 @@
       "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
     },
     "src/apps/gateway.rs": {
-      "status": "unproved",
-      "sha256": "af5a8064c0a8b9c5e6cc8b4ed9a48358c737ff5b9d6c04287b1b63219ff9dd54",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "status": "reviewed-binding",
+      "sha256": "db680cdd776ba16a520ec3f5e04ec488584c639054ea0c4b6e12f18b95334ed0",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "src/apps/manifest.rs": {
       "status": "unproved",
-      "sha256": "3e34e6095c8595467c39170a4ec1430f9902b8c16857900d85a05590a89c1a7c",
-      "review": "Reviewed optional passive app presentation validation, additive omission preserving legacy version digests, and shop main-language app metadata. No commerce decision or extracted policy changes; URL/JSON/SQL and UI adapters remain unproved. Covered safe/unsafe artwork, immutable versions, tenant isolation and native registry surfaces."
+      "sha256": "954e00c3d9de2d3b9c0c4bb4ec839d2af81e0fa107007931e847cf4e2e47e74e",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "src/apps/manifest_validation.rs": {
       "status": "unproved",
-      "sha256": "522d985d0c5d6cbcba24f7333340c0f99f38c887ad487997f51149ed837d7e58",
-      "review": "Reviewed optional passive app presentation validation, additive omission preserving legacy version digests, and shop main-language app metadata. No commerce decision or extracted policy changes; URL/JSON/SQL and UI adapters remain unproved. Covered safe/unsafe artwork, immutable versions, tenant isolation and native registry surfaces."
+      "sha256": "1d7e4c0f685b044f6f3832e8d4d08bf970d228064f2c04a77688b3df5c4f2fe4",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "src/apps/mod.rs": {
       "status": "unproved",
-      "sha256": "ffbeee2f53fea39676c77279c643b569cb867f8069f48e24c26ade68848df566",
-      "review": "Reviewed optional passive app presentation validation, additive omission preserving legacy version digests, and shop main-language app metadata. No commerce decision or extracted policy changes; URL/JSON/SQL and UI adapters remain unproved. Covered safe/unsafe artwork, immutable versions, tenant isolation and native registry surfaces."
+      "sha256": "d22288573482088076ad2247d4654d46c12a19a5c62584a99bc7ac83a3a6ace7",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "src/apps/native_data.rs": {
       "status": "unproved",
@@ -321,13 +349,13 @@
     },
     "src/apps/native_views.rs": {
       "status": "reviewed-binding",
-      "sha256": "1a9a55447efd69857fe8b1c111cdfb0da9159ab348cf74f76e1b01ed55f9f360",
-      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+      "sha256": "516d2b5ff6b412fca235e3d47243f3c2852dd517f6d923aa254313282ce4f1f1",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "src/apps/planning.rs": {
       "status": "unproved",
-      "sha256": "90c4670f867f7de808f335797ee33aae7805846c8cba782df2186fc0dbb52d9a",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "ead3bb81551fb365228d01fa3adcd2ca36cb196bc14a2cf91a27df79848912e5",
+      "review": "Reviewed assistant contracts, required tenant references, additive choices, MCP-only ingress and authorized grounding/selected app proposals. Merchant/chat/flow authority reaches both bind and approval; local model fixtures reject scope bypass and private grounding. Async adapters remain unproved."
     },
     "src/apps/presentation.rs": {
       "status": "unproved",
@@ -336,18 +364,23 @@
     },
     "src/apps/registry.rs": {
       "status": "unproved",
-      "sha256": "ae223630acc3b5f1140eff4babb03b204345e6eb7a57170bafa80ed00170b57a",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "bd701dd00d338da39fbfc6eeb15fcb5d8cce84d64ca7e61a14e4b8374a43e3f4",
+      "review": "Reviewed app MCP-only ingress and exact exposure/private-reference production policies. Required indexed owned references and additive enum upgrades reviewed; asynchronous scheduler/webhook behavior is integration-tested, not Lean proved."
     },
     "src/apps/routes.rs": {
       "status": "unproved",
-      "sha256": "a8d6a9c45c27514aa82680d72ebbfbd64ca2e1076cbba0bac53a66cb287ab663",
-      "review": "Reviewed optional passive app presentation validation, additive omission preserving legacy version digests, and shop main-language app metadata. No commerce decision or extracted policy changes; URL/JSON/SQL and UI adapters remain unproved. Covered safe/unsafe artwork, immutable versions, tenant isolation and native registry surfaces."
+      "sha256": "e898c94efea57d41708aa61ec7b930a2f41c1b7d882c42ca0ce8f6a56e82ef22",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "src/apps/runtime.rs": {
       "status": "unproved",
       "sha256": "5ac06c331ea566a7d3d0220a45bd2d747736b8fdf555f5114d358f617cfd768a",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/apps/schedules.rs": {
+      "status": "unproved",
+      "sha256": "05aed1be296e006200e2dc06e94b471610ee7e1bc51ae97444ab2ef836beb06f",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "src/apps/service_limits.rs": {
       "status": "unproved",
@@ -361,8 +394,13 @@
     },
     "src/apps/surfaces.rs": {
       "status": "reviewed-binding",
-      "sha256": "a3fef6ee395b3a49889097eb60cbd6ba7d1faa4983162cf27fda6ca00df81cf5",
-      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+      "sha256": "4a1fe55a1a288a9debf69bdcdb41b97a4a64a07e98807e4f98e1d6f8e1c101bb",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+    },
+    "src/apps/webhooks.rs": {
+      "status": "unproved",
+      "sha256": "bd7d9205cc143dd369b3f0344a11d9f826e4fa5c8adba4f604601b635e314d9b",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "src/assets/download.rs": {
       "status": "reviewed-binding",
@@ -516,8 +554,8 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "edfaa1034e6cff4847a838959c22c6d8f148d4ea06beba2e129ae87101767375",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "36634fbd117046cbe92a157df3e2b885a5017f1b35f681a48fb20c9468974923",
+      "review": "Reviewed app MCP-only ingress and exact exposure/private-reference production policies. Required indexed owned references and additive enum upgrades reviewed; asynchronous scheduler/webhook behavior is integration-tested, not Lean proved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
@@ -531,8 +569,8 @@
     },
     "src/capabilities.rs": {
       "status": "unproved",
-      "sha256": "6f0312b7662538d425cd2e37832e371f1694643d8a7e7dcee31eeb126af07d87",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "220277b20e1159ab3dc29ff5ddf83c59a92d86d4e08c10911b860bf1c6046984",
+      "review": "Reviewed assistant contracts, required tenant references, additive choices, MCP-only ingress and authorized grounding/selected app proposals. Merchant/chat/flow authority reaches both bind and approval; local model fixtures reject scope bypass and private grounding. Async adapters remain unproved."
     },
     "src/cart_model.rs": {
       "status": "unproved",
@@ -836,8 +874,8 @@
     },
     "src/developer/generation.rs": {
       "status": "unproved",
-      "sha256": "3974fdcb23f956732f4db025f3a4812967308c1e1ec8aabba0c57a06e3ea5895",
-      "review": "Reviewed optional app artwork as a passive, bounded HTTPS/media presentation adapter; omission preserves legacy digests. Checked dynamic presentation-description schema specialization and strict provider conversion regression. Native registry UI, version immutability and tenant-isolated metadata covered by integration tests; commerce policy/proof logic unchanged."
+      "sha256": "9fcb40f4009a51c3e425f2f6ca35a0024f777f2ebdf66681736b542a8d75ce96",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "src/developer/mod.rs": {
       "status": "unproved",
@@ -846,8 +884,8 @@
     },
     "src/developer/routes.rs": {
       "status": "unproved",
-      "sha256": "c753d721577faad6d92fd6d700f18eab2547952739527f395de62720273300c7",
-      "review": "Reviewed native App Studio runtime and source/schema changes with existing extracted public-read guard; added tenant-owned approval-checked recoverable project archive/restore over HTTP and MCP, preserving immutable digests and installed app data, rejecting archived staging. Rust fmt/lint/unit checks and frontend shared-schema, edit/open/version/confirm-delete/restore tests; affected real PostgreSQL suites validate ownership, archive, restored digest and installed-data retention. SQL/UI/async adapters remain unproved."
+      "sha256": "67e4414b2dc25249c54e260b13631de2838377040e15c18e7eccd4eb0b6690bf",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "src/discount.rs": {
       "status": "reviewed-binding",
@@ -1031,8 +1069,8 @@
     },
     "src/marketing/flow_actions.rs": {
       "status": "unproved",
-      "sha256": "66d6b0a6b94ed499550c99dffdc4cdab10af69cada05186afa6be8896c897db6",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "c1826d93b91b07ab8c3ccc4a7a00fa14a616e5de7478d654af142126a3cec1cf",
+      "review": "Reviewed assistant contracts, required tenant references, additive choices, MCP-only ingress and authorized grounding/selected app proposals. Merchant/chat/flow authority reaches both bind and approval; local model fixtures reject scope bypass and private grounding. Async adapters remain unproved."
     },
     "src/marketing/flow_mutations.rs": {
       "status": "unproved",
@@ -1046,8 +1084,8 @@
     },
     "src/marketing/flows.rs": {
       "status": "unproved",
-      "sha256": "7d15b006776edf3a06ac94640bdbed3267652bc44afc4f7c77b2536cae4b0d7f",
-      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+      "sha256": "013c9230b147fa7fee24c3c7f6e0eaf39e263b9df4654e2f18d42d5497e73f54",
+      "review": "Reviewed assistant contracts, required tenant references, additive choices, MCP-only ingress and authorized grounding/selected app proposals. Merchant/chat/flow authority reaches both bind and approval; local model fixtures reject scope bypass and private grounding. Async adapters remain unproved."
     },
     "src/marketing/gateway.rs": {
       "status": "unproved",
@@ -1126,13 +1164,13 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "d5a735e0b5be116f049464ea2dd888ea9b4af372bebf01cc8c4a796296619118",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "ddb4af91392e29b8a67bbfb6dcb3ac52b401d2338a10a3ef0cdedffcb62d6850",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "25d41feca7008899674ba7ec369f00c49ced6b10b2e48d0d5e67545e5bdbd868",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "2b89832b3fe9ffe32197be022768312943b74e6998793769ae109da948b3db13",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -1256,8 +1294,8 @@
     },
     "src/planner.rs": {
       "status": "unproved",
-      "sha256": "008a4c0e834c9283ac2175370d665e6f156998e4e6dbf1510a823c2e81375b5e",
-      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+      "sha256": "108d52285f2d11d5c3b4f39976114d35dd64f933e8829881340f2a00d5904094",
+      "review": "Reviewed assistant contracts, required tenant references, additive choices, MCP-only ingress and authorized grounding/selected app proposals. Merchant/chat/flow authority reaches both bind and approval; local model fixtures reject scope bypass and private grounding. Async adapters remain unproved."
     },
     "src/platform/auth.rs": {
       "status": "reviewed-binding",
@@ -1291,8 +1329,8 @@
     },
     "src/proposal_apply.rs": {
       "status": "unproved",
-      "sha256": "f8da12a20fff0398ad206e52f93c54ea5ad060522f266c11562e935058776e0a",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "62c9e64b70309ef1954b2b552def3e62f76b2d7c48e45a36aa69b9b404842971",
+      "review": "Reviewed assistant contracts, required tenant references, additive choices, MCP-only ingress and authorized grounding/selected app proposals. Merchant/chat/flow authority reaches both bind and approval; local model fixtures reject scope bypass and private grounding. Async adapters remain unproved."
     },
     "src/proposal_model.rs": {
       "status": "unproved",
@@ -1301,8 +1339,8 @@
     },
     "src/proposal_routes.rs": {
       "status": "unproved",
-      "sha256": "e6ba3803cec434907ce00f6c6f2710a547064179c54b64d987475c1851fe6d96",
-      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+      "sha256": "d1257d72bc37bc5fdc6667fe28065f5f23ea3c11dc08a20100dac8b165a91d30",
+      "review": "Reviewed assistant contracts, required tenant references, additive choices, MCP-only ingress and authorized grounding/selected app proposals. Merchant/chat/flow authority reaches both bind and approval; local model fixtures reject scope bypass and private grounding. Async adapters remain unproved."
     },
     "src/routes.rs": {
       "status": "unproved",
@@ -1406,13 +1444,13 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "59a2d6cc0741a806aa3c0704d125512009d25fe941c7fd601d1830da143ee982",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "1ce9a9de18a4dc0661b7ffb7ddbb34235365329c96e5dbfc890a2c41dc81fcbb",
+      "review": "Reviewed app MCP-only ingress and exact exposure/private-reference production policies. Required indexed owned references and additive enum upgrades reviewed; asynchronous scheduler/webhook behavior is integration-tested, not Lean proved."
     },
     "src/workers.rs": {
       "status": "unproved",
-      "sha256": "cbe77d0e9f24abdd723ed6a866388eef058c59dc015bc17db0e791ac49974cbd",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "9ac6d706c684a2d313e4c65d13c986657bc492c06d4b8fa475c8c9a7a4d69357",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     }
   },
   "inputs": {
@@ -1421,16 +1459,16 @@
       "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "Cargo.lock": {
-      "sha256": "55c0900ccc155c21bba344f826e79f609a6db0f939e496e3b14e3c1fc9f93b56",
-      "review": "Reviewed SQLx TLS feature and lockfile: enables existing Rustls and WebPKI dependencies for encrypted managed PostgreSQL connections; no schema, query, permission, or verified-kernel changes."
+      "sha256": "1654201807ccbe44f5dd55507de8a84f90adebd8f81b94172f8a222a112b25f3",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "Cargo.toml": {
-      "sha256": "93f8eeadd0625ac5e1b56bfc8c3b7255939fe56c6ef2b10764818cfca3ed1fd7",
-      "review": "Reviewed SQLx TLS feature and lockfile: enables existing Rustls and WebPKI dependencies for encrypted managed PostgreSQL connections; no schema, query, permission, or verified-kernel changes."
+      "sha256": "8bfb79532959113d3056f20df4d9b23bbff51edbe713ed558c17137e257012b8",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "fixtures/app-studio-schema.json": {
-      "sha256": "82bbe13cbdced9b719e54eff764a3825564148a1f32bae216a6f52c96c4990df",
-      "review": "Reviewed optional passive app presentation bounds and legacy digest preservation, main-locale list metadata, configured-locale generation schema, and strict provider compatibility: summaries are required objects within optional presentation while icon/cover accept nullable provider output. 84 Rust tests and real app/developer PostgreSQL suites exercise parsing, unsafe assets, immutable versions and tenant isolation."
+      "sha256": "fe7909b926f092266e58cb822dab36a41a86b4d77f31b9a54af55195ee850200",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "fixtures/demo-catalog.json": {
       "sha256": "e5d5eea04a7693b3f92fa58be66ad36b7ad01d5920029c29f303693aa0032ba2",
@@ -1604,9 +1642,13 @@
       "sha256": "570844745676f6c08e66dc980123c742546c2b75779438efc17a59a6932a49c2",
       "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
+    "migrations/036-app-assistants.sql": {
+      "sha256": "46130e80715648ba78b63e297c39f84eec37ec25e56d45c8ee4c0429dbdf48d8",
+      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+    },
     "proof/Commerce/Claims.lean": {
-      "sha256": "9a858dc3abe6bf685f86583ab1500c913a93b91e044cee682f9420ceca27ebf5",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "97c7e3708fbf7ef622461cae6e23dbea29872a07994197e5cdfccfc3eb9ef35b",
+      "review": "Reviewed app MCP-only ingress and exact exposure/private-reference production policies. Required indexed owned references and additive enum upgrades reviewed; asynchronous scheduler/webhook behavior is integration-tested, not Lean proved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -1641,8 +1683,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "c58c44bb34f594b06df3d2b69d1f53dc815a26a10e89fb8387777ec05af8ed3c",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "8faeb278a610682de7add8f52f49f95f53c5b39639413117765286835de822e2",
+      "review": "Reviewed app MCP-only ingress and exact exposure/private-reference production policies. Required indexed owned references and additive enum upgrades reviewed; asynchronous scheduler/webhook behavior is integration-tested, not Lean proved."
     },
     "scripts/formal/registry.py": {
       "sha256": "3b554637854314cffd45018b3e5adc568d24e0ab145d7d6fa75350d2f80f5900",

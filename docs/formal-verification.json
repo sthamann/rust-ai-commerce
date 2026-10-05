@@ -1,12 +1,12 @@
 {
   "status": "passed",
   "scope": "Extracted production policies; NOT full Rust/server correctness",
-  "sourceCommit": "a98fa346323ba9ffc339aae5554dab9b74e2c92a",
-  "workingTreeChanged": false,
+  "sourceCommit": "36e315844337041a40fc6568a49d767f1602d431",
+  "workingTreeChanged": true,
   "leanToolchain": "leanprover/lean4:v4.29.1",
-  "policies": 22,
+  "policies": 24,
   "axiomAudit": {
-    "theorems": 48,
+    "theorems": 52,
     "sorry": 0,
     "customAxioms": 0,
     "nativeDecisionAxioms": 0,
@@ -18,18 +18,18 @@
   },
   "compiledEnvironmentRechecked": true,
   "conformance": {
-    "cases": 4172,
+    "cases": 4180,
     "mismatches": 0,
     "allBooleanAssignments": true,
     "numericBoundaryIncludesU64Max": true,
     "seed": 20261002
   },
   "inventory": {
-    "rustModules": 241,
+    "rustModules": 245,
     "extractedPolicyModules": 1,
-    "reviewedBindingModules": 19,
-    "unprovedModules": 220,
-    "reviewedSchemaBuildProofInputs": 60,
+    "reviewedBindingModules": 21,
+    "unprovedModules": 222,
+    "reviewedSchemaBuildProofInputs": 61,
     "entireCoreProved": false
   },
   "trustedBoundary": [
@@ -39,8 +39,8 @@
     "PostgreSQL transactions/constraints",
     "Operating system and provider protocols"
   ],
-  "negativeControls": {
-    "brokenPoliciesRejectedByLean": 52,
+  "mutations": {
+    "brokenPoliciesRejectedByLean": 57,
     "unsupportedSyntaxRejected": 14,
     "staleUnclassifiedDisconnectedBindingsRejected": 3,
     "proofShortcutsUnexpectedAxiomsMissingAuditsRejected": 9,

@@ -28,6 +28,8 @@ def evalRequest (j : Json) : Except String Json := do
   | "flow_delay_admissible" => pure (toJson (flow_delay_admissible ((← (args.getObjVal? "seconds") >>= Json.getNat?))))
   | "destination_tax_admissible" => pure (toJson (destination_tax_admissible ((← (args.getObjVal? "condition") >>= Json.getBool?)) ((← (args.getObjVal? "country") >>= Json.getBool?)) ((← (args.getObjVal? "state") >>= Json.getBool?)) ((← (args.getObjVal? "postal") >>= Json.getBool?)) ((← (args.getObjVal? "date") >>= Json.getBool?))))
   | "customer_group_net" => pure (toJson (customer_group_net ((← (args.getObjVal? "configured") >>= Json.getBool?)) ((← (args.getObjVal? "business") >>= Json.getBool?))))
+  | "app_tool_admissible" => pure (toJson (app_tool_admissible ((← (args.getObjVal? "enabled") >>= Json.getBool?)) ((← (args.getObjVal? "authorized") >>= Json.getBool?))))
+  | "app_core_reference_admissible" => pure (toJson (app_core_reference_admissible ((← (args.getObjVal? "product") >>= Json.getBool?)) ((← (args.getObjVal? "private_data") >>= Json.getBool?))))
   | _ => throw "Unknown policy"
 
 def main : IO Unit := do

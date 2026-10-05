@@ -2,7 +2,10 @@
 import { useState } from "react";
 import type { RequestFn } from "../../api/types";
 import { useAppStudioText } from "../../i18n/app-studio-i18n";
-import { ContentLanguage } from "../../i18n/ContentLanguage";
+import {
+  ContentLanguage,
+  useOptionalContentLanguage,
+} from "../../i18n/ContentLanguage";
 import ContentLanguagePicker from "../../i18n/ContentLanguagePicker";
 import { contentText } from "../../i18n/content-language";
 import NativeDataBlock from "./NativeDataBlock";
@@ -17,6 +20,7 @@ export default function NativeAppView({
   locales = ["en-GB"],
   public: isPublic = false,
   inheritContentLanguage = false,
+  context = {},
 }: {
   app: string;
   native: NativePayload;
@@ -26,7 +30,20 @@ export default function NativeAppView({
   locales?: string[];
   public?: boolean;
   inheritContentLanguage?: boolean;
+  context?: Record<string, unknown>;
 }) {
+  const parentLanguage = useOptionalContentLanguage();
+  // Core product editors may expose unique base-language keys; app records retain configured regional keys.
+  const parentKey = parentLanguage?.language;
+  const matches = locales.filter(
+    (l) => l.split("-")[0] === parentKey?.split("-")[0],
+  );
+  const inheritedKey =
+    parentKey && locales.includes(parentKey)
+      ? parentKey
+      : matches.length === 1
+        ? matches[0]
+        : mainLocale;
   const [dataEpoch, setDataEpoch] = useState(0);
   const { locale, a } = useAppStudioText();
   const scoped: RequestFn = (path, body) => {
@@ -64,7 +81,8 @@ export default function NativeAppView({
                   entity={entity!}
                   request={scoped}
                   mainLocale={mainLocale}
-                  dataEpoch={dataEpoch}
+                  dataEpoch={b.kind === "form" ? 0 : dataEpoch}
+                  context={context}
                   onSaved={() => setDataEpoch((n) => n + 1)}
                 />
               )}
@@ -74,10 +92,12 @@ export default function NativeAppView({
       </div>
     </>
   );
-  return inheritContentLanguage ? (
-    content
-  ) : (
-    <ContentLanguage locales={locales} mainLocale={mainLocale}>
+  return (
+    <ContentLanguage
+      locales={locales}
+      mainLocale={mainLocale}
+      language={inheritContentLanguage ? inheritedKey : undefined}
+    >
       {content}
     </ContentLanguage>
   );

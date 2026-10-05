@@ -2,9 +2,13 @@
 import { useCrmText } from "../../shared/i18n/crm-i18n";
 import EntityHistory from "../../shared/history/EntityHistory";
 import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
-import ContentLanguagePicker from "../../shared/i18n/ContentLanguagePicker";
+import ProductEditorNav from "./ProductEditorNav";
 import { useEffect, useRef, useState } from "react";
-import { AppSurfaceSlot } from "../../shared/apps/AppSurfaces";
+import {
+  AppSurfaceSlot,
+  AppSurfaceView,
+  useAppSurfaces,
+} from "../../shared/apps/AppSurfaces";
 import type { RequestFn } from "../shell/studio-types";
 import { useCatalogText } from "./catalog-i18n";
 import {
@@ -34,12 +38,18 @@ export default function ProductEditor({
   onCreated: (id: string) => void;
 }) {
   const { c, locale } = useCatalogText();
+  const appTabs = useAppSurfaces().filter(
+    (s) => s.surface.location === "admin.product.tab",
+  );
   const { r } = useCrmText();
   const [draft, setDraft] = useState<ProductDraft>(newDraft);
   const [reloadIndex, setReloadIndex] = useState(0);
   const [baseline, setBaseline] = useState("");
   const [lang, setLang] = useState(locale.slice(0, 2));
   const [tab, setTab] = useState("general");
+  const selectedApp = appTabs.find(
+    (s) => tab === `app:${s.app}:${s.surface.id}`,
+  );
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(!!id);
   const [busy, setBusy] = useState(false);
@@ -263,24 +273,15 @@ export default function ProductEditor({
           </p>
         )}
         <div className="catalog-detail-layout">
-          <aside className="catalog-detail-nav">
-            <ContentLanguagePicker />
-            <div role="tablist" aria-orientation="vertical">
-              {tabs.map((t) => (
-                <button
-                  key={t}
-                  role="tab"
-                  aria-selected={tab === t}
-                  onClick={() => setTab(t)}
-                >
-                  {c(t)}
-                </button>
-              ))}
-            </div>
-          </aside>
+          <ProductEditorNav tabs={tabs} tab={tab} id={id} onSelect={setTab} />
           <section className="studio-card catalog-detail-panel" role="tabpanel">
-            <h2>{c(tab as (typeof tabs)[number])}</h2>
-            {tab === "media" ? (
+            {!selectedApp && <h2>{c(tab as (typeof tabs)[number])}</h2>}
+            {selectedApp ? (
+              <AppSurfaceView
+                selected={selectedApp}
+                context={{ productId: id }}
+              />
+            ) : tab === "media" ? (
               <ProductMediaWorkspace
                 unsaved={JSON.stringify(draft) !== baseline}
                 draft={draft}
@@ -341,10 +342,18 @@ export default function ProductEditor({
                 }
               />
             )}
-            <AppSurfaceSlot
-              location="admin.product"
-              context={{ productId: id }}
-            />
+            {id && tab === "general" && (
+              <AppSurfaceSlot
+                location="admin.product.general"
+                context={{ productId: id }}
+              />
+            )}
+            {id && !selectedApp && (
+              <AppSurfaceSlot
+                location="admin.product"
+                context={{ productId: id }}
+              />
+            )}
           </section>
         </div>
         {id && (

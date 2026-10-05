@@ -8,6 +8,8 @@ export type Field = {
   required?: boolean;
   indexed?: boolean;
   references?: string | null;
+  coreReference?: "product" | "customer" | "order" | null;
+  choices?: { value: string; label: Text }[];
 };
 export type Entity = {
   name: string;
@@ -23,6 +25,10 @@ export type Block = {
   entity?: string | null;
   readAction?: string | null;
   writeAction?: string | null;
+  contextBinding?: {
+    field: string;
+    key: "productId" | "customerId" | "orderId";
+  } | null;
 };
 export type NativeView = {
   id: string;
@@ -45,6 +51,7 @@ export type Action = {
   public: boolean;
   inputSchema: Record<string, unknown>;
   flowAllowed?: boolean;
+  mcp?: boolean | null;
   readOnly?: boolean;
   permission?: string;
 };
@@ -57,6 +64,15 @@ export type Manifest = {
   category?: string;
   presentation?: { icon?: string; cover?: string; description?: Text };
   permissions: string[];
+  events?: string[];
+  schedules?: {
+    id: string;
+    cron: string;
+    action: string;
+    input: Record<string, unknown>;
+    enabled: boolean;
+  }[];
+  webhooks?: { id: string; action: string }[];
   entities: Entity[];
   slots: { location: string; component: string; label: Text }[];
   actions?: Action[];

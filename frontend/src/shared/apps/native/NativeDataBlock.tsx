@@ -13,6 +13,7 @@ export default function NativeDataBlock({
   mainLocale,
   dataEpoch = 0,
   onSaved,
+  context = {},
 }: {
   app: string;
   block: Block;
@@ -21,7 +22,15 @@ export default function NativeDataBlock({
   mainLocale: string;
   dataEpoch?: number;
   onSaved?: () => void;
+  context?: Record<string, unknown>;
 }) {
+  const bound = block.contextBinding;
+  const reference = bound ? context[bound.key] : undefined;
+  const filter =
+    bound && typeof reference === "string" && reference
+      ? { [bound.field]: reference }
+      : undefined;
+  const missingContext = !!bound && !filter;
   const { a, locale } = useAppStudioText();
   const [records, setRecords] = useState<AppRecord[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
@@ -32,12 +41,21 @@ export default function NativeDataBlock({
   current.current = request;
   useEffect(() => {
     let active = true;
+    if (missingContext) {
+      setRecords([]);
+      setCursor(null);
+      setBusy(false);
+      return;
+    }
     setBusy(true);
     setError("");
     setRecords([]);
     setCursor(null);
     current
-      .current(`/api/apps/${app}/actions/${block.readAction}`, { limit: 50 })
+      .current(`/api/apps/${app}/actions/${block.readAction}`, {
+        limit: 50,
+        ...(filter ? { filter } : {}),
+      })
       .then((v) => {
         if (active) {
           setRecords(v.elements);
@@ -53,7 +71,14 @@ export default function NativeDataBlock({
     return () => {
       active = false;
     };
-  }, [app, block.readAction, epoch, dataEpoch]);
+  }, [
+    app,
+    block.readAction,
+    epoch,
+    dataEpoch,
+    JSON.stringify(filter),
+    missingContext,
+  ]);
   const cell = (r: AppRecord, name: string) => {
     const f = entity.fields.find((f) => f.name === name)!;
     const v = r[name];
@@ -67,6 +92,7 @@ export default function NativeDataBlock({
             ? JSON.stringify(v)
             : String(v);
   };
+  if (missingContext) return <p role="status">{a("contextRequired")}</p>;
   return (
     <div className="native-data">
       <div className="native-data-status">
@@ -86,25 +112,29 @@ export default function NativeDataBlock({
       </div>
       {error && <p role="alert">{error}</p>}
       {block.kind === "form" ? (
-        <NativeRecordForm
-          key={`${app}:${entity.name}`}
-          entity={entity}
-          records={records}
-          saved={() => {
-            setEpoch((x) => x + 1);
-            onSaved?.();
-          }}
-          save={async (value) => {
-            const fields = { ...value.fields };
-            for (const f of entity.fields.filter((f) => f.kind === "json"))
-              if (typeof fields[f.name] === "string")
-                fields[f.name] = JSON.parse(fields[f.name] as string);
-            await current.current(
-              `/api/apps/${app}/actions/${block.writeAction}`,
-              { ...value, fields },
-            );
-          }}
-        />
+        !busy &&
+        !error && (
+          <NativeRecordForm
+            key={`${app}:${entity.name}:${epoch}:${dataEpoch}`}
+            entity={entity}
+            records={records}
+            boundFields={filter}
+            saved={() => {
+              setEpoch((x) => x + 1);
+              onSaved?.();
+            }}
+            save={async (value) => {
+              const fields = { ...value.fields };
+              for (const f of entity.fields.filter((f) => f.kind === "json"))
+                if (typeof fields[f.name] === "string")
+                  fields[f.name] = JSON.parse(fields[f.name] as string);
+              await current.current(
+                `/api/apps/${app}/actions/${block.writeAction}`,
+                { ...value, fields },
+              );
+            }}
+          />
+        )
       ) : block.kind === "table" ? (
         <div className="native-table-scroll">
           <table>
@@ -157,7 +187,7 @@ export default function NativeDataBlock({
             try {
               const v = await current.current(
                 `/api/apps/${app}/actions/${block.readAction}`,
-                { limit: 50, after: cursor },
+                { limit: 50, after: cursor, ...(filter ? { filter } : {}) },
               );
               setRecords(v.elements);
               setCursor(v.nextCursor ?? null);

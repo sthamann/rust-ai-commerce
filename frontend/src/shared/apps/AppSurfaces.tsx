@@ -146,6 +146,7 @@ export function AppSurfaceView({
       </div>
       {s.native ? (
         <NativeAppView
+          key={`${s.app}:${s.surface.id}:${JSON.stringify(context)}`}
           app={s.app}
           native={s.native}
           request={scoped}
@@ -153,6 +154,10 @@ export function AppSurfaceView({
           mainLocale={s.mainLocale}
           locales={s.locales}
           public={isPublic}
+          context={context}
+          inheritContentLanguage={s.surface.location.startsWith(
+            "admin.product",
+          )}
         />
       ) : (
         <AppFrame

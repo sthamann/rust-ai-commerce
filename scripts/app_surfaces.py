@@ -118,6 +118,15 @@ def run():
             public = {"x-tenant": u["workspace"]}
             m = json.loads((ROOT / "extensions/apps/product-lab/manifest.json").read_text())
             m["id"] = app_id
+            # Internal planning is independent of MCP, but never independent of action rights.
+            save_action = next(a for a in m["actions"] if a["name"] == "save_entry")
+            save_action.update(permission="orders.write", mcp=False)
+            m["entities"].append({"name":"private_notes","label":m["name"],"publicRead":False,"fields":[{"name":"text","label":m["name"],"kind":"string","required":True}]})
+            for name,handler,scope in [("list_notes","list","orders.read"),("save_notes","save","orders.write")]:
+                note_action = copy.deepcopy(next(a for a in m["actions"] if a["handler"] == handler))
+                note_action.update(name=name, description="Private scoped notes", entity="private_notes", public=False, permission=scope, mcp=False)
+                m["actions"].append(note_action)
+            m["intelligence"]["entities"].append("private_notes")
             call("/api/apps", {"manifest": m}, h)
             private = call("/api/apps/surfaces", headers=h)["surfaces"]
             exposed = call("/store-api/apps/surfaces", headers=public)["surfaces"]
@@ -161,6 +170,18 @@ def run():
             call("/api/agent/tasks/" + task_id + "/apply", {"approve":True}, h)
             assert call(path + "?after=zz&limit=1", headers=public)["elements"][0]["revision"] == 2
             passed("Actual model wire receives only selected bounded app context; approval updates a record beyond the first page")
+            call(f"/api/apps/{app_id}/actions/save_notes", {"id":"private","fields":{"text":"ONLY-ORDER-READ-SENTINEL"}}, h)
+            owner_plan = call("/api/agent/plan", {"instruction":"Update zz-last only", "inference":{"provider":"openai","model":"local-fixture"}}, h)
+            key = call("/api/workspace/integrations", {"name":"Restricted planner","permissions":["catalog.read","catalog.write","knowledge.read"],"expiresInDays":1}, h)
+            restricted = {"x-tenant":u["workspace"],"Authorization":"Bearer "+key["key"]}
+            call("/api/agent/tasks/"+owner_plan["taskId"]+"/apply", {"approve":True}, restricted, expected=403)
+            call("/api/agent/plan", {"instruction":"Update zz-last only","inference":{"provider":"openai","model":"local-fixture"}}, restricted, expected=403)
+            assert "ONLY-ORDER-READ-SENTINEL" not in model_requests[-1]["input"]
+            assert "save_entry" not in model_requests[-1]["input"]
+            denied = call("/mcp", {"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":f"app.{app_id}.save_entry","arguments":{"id":"x","fields":fields}}}, h)
+            assert denied["result"]["isError"]
+            passed("MCP-disabled internal planning works; restricted model grounding/proposals and approval cannot bypass current app scopes")
+
             call("/api/apps", {"manifest": m}, oh)
             assert call(path, headers={"x-tenant": other["workspace"]})["elements"] == []
             tools = call("/mcp", {"jsonrpc": "2.0", "id": 1, "method": "tools/list"}, h)["result"]["tools"]

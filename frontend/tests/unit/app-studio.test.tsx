@@ -67,6 +67,7 @@ function setup() {
     />,
     { wrapper: LocaleProvider },
   );
+  fireEvent.click(screen.getByRole("button", { name: "Close assistant" }));
   return { request };
 }
 it("adds and reorders real schema blocks, then saves, stages and releases only the app package", async () => {
