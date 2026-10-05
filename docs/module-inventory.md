@@ -570,6 +570,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/catalog_management.py](../scripts/catalog_management.py) | Real HTTP/PostgreSQL catalog creation, categories, multilingual editor, visibility and staging regressions. Synthetic isolated shops only. |
 | [scripts/check_site.py](../scripts/check_site.py) | Check the generated documentation's links and discovery metadata. |
 | [scripts/checkout_handoff.py](../scripts/checkout_handoff.py) | Exercise actual PostgreSQL checkout transfer, isolation, replay and durable ordering. |
+| [scripts/cloud_benchmark.py](../scripts/cloud_benchmark.py) | Bounded private-cloud HTTP load using the existing validated benchmark sampler. |
 | [scripts/commerce.py](../scripts/commerce.py) | Real HTTP/PG tests for SKUs, moderated reviews, tax/shipping/payment and deliveries. |
 | [scripts/company_settings.py](../scripts/company_settings.py) | Real HTTP company basis/channel inheritance, immutable issuer snapshots, bounded logos and private staging. No external services. |
 | [scripts/connected_apps.py](../scripts/connected_apps.py) | Real local OAuth/provider HTTP protocols, private-source PostgreSQL/AGE consumers and durable Slack flows. |

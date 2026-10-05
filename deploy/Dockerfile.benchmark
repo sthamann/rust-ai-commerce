@@ -1,0 +1,10 @@
+# Short-lived private load generator; no credentials in the image or build.
+FROM python:3.13-slim-bookworm
+RUN pip install --no-cache-dir 'psycopg[binary]==3.2.9' && useradd -u 10001 -m benchmark
+WORKDIR /bench
+COPY scripts/benchmark.py scripts/cloud_benchmark.py ./scripts/
+COPY fixtures/demo-settings.json ./fixtures/demo-settings.json
+ARG SOURCE_COMMIT=unknown
+ENV BENCHMARK_SOURCE_COMMIT=$SOURCE_COMMIT PYTHONUNBUFFERED=1
+USER benchmark
+CMD ["python", "scripts/cloud_benchmark.py"]
