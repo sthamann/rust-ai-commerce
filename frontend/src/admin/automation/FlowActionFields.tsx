@@ -1,5 +1,6 @@
 /** Focused source action forms expose only supported native parameters; app service dispatch stays in the app gateway. */
 import JsonField from "./JsonField";
+import LocalizedField from "../../shared/i18n/LocalizedField";
 import FlowInputs from "./FlowInputs";
 import type { AutomationCatalog } from "./RuleBuilder";
 import { useAutomationText } from "../../shared/i18n/automation-i18n";
@@ -65,24 +66,16 @@ export default function FlowActionFields({
           field(k)
         ),
       )}
-      {["note", "ai_proposal"].includes(action) &&
-        ["en", "de", "fr", "es"].map((lang) => (
-          <label key={lang}>
-            {a("instruction")} · {lang.toUpperCase()}
-            <textarea
-              value={config.instruction?.[lang] ?? ""}
-              onChange={(e) =>
-                onChange({
-                  ...config,
-                  instruction: {
-                    ...config.instruction,
-                    [lang]: e.target.value,
-                  },
-                })
-              }
-            />
-          </label>
-        ))}
+      {["note", "ai_proposal"].includes(action) && (
+        <LocalizedField
+          label={a("instruction")}
+          value={config.instruction ?? {}}
+          multiline
+          required
+          maxLength={3200}
+          onChange={(instruction) => onChange({ ...config, instruction })}
+        />
+      )}
       {action.includes("custom.field") && (
         <JsonField
           label={a("value")}

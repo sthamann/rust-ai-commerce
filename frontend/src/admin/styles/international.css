@@ -262,3 +262,52 @@
 .studio .catalog-translated-field > .intl-inherit {
   justify-self: start;
 }
+
+/* Compact language context shared by all content editors. */
+.studio .intl-language-switcher {
+  position: sticky;
+  top: 12px;
+  z-index: 5;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 4px 18px #112b4810;
+}
+.studio .intl-language-switcher label {
+  display: grid;
+  gap: 7px;
+  min-width: 160px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.studio .intl-language-switcher select {
+  width: 100%;
+  min-width: 0;
+}
+.studio .intl-language-switcher small {
+  color: var(--muted);
+  font-size: 10px;
+  padding-bottom: 10px;
+}
+.studio .intl-translated-field > input,
+.studio .intl-translated-field > textarea {
+  width: 100%;
+  min-width: 0;
+}
+.studio .intl-translated-field:has(.intl-inherit[aria-pressed="true"]) > input,
+.studio
+  .intl-translated-field:has(.intl-inherit[aria-pressed="true"])
+  > textarea {
+  background: var(--hover);
+  border-style: dashed;
+}
+.studio .catalog-detail-nav .intl-language-switcher {
+  padding: 12px;
+}

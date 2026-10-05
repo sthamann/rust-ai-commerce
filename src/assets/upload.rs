@@ -55,7 +55,7 @@ pub(super) async fn upload(
             "kind" => kind = field.text().await.map_err(|_| bad("Invalid kind"))?,
             "title" => {
                 title = serde_json::from_str(&field.text().await.map_err(|_| bad("Invalid title"))?)
-                    .map_err(|_| bad("Four-language title required"))?
+                    .map_err(|_| bad("Translated title required"))?
             }
             _ => return Err(bad("Unknown upload field")),
         }
@@ -67,14 +67,8 @@ pub(super) async fn upload(
     {
         return Err(bad("Invalid asset filename or kind"));
     }
-    for lang in ["en", "de", "fr", "es"] {
-        if title[lang]
-            .as_str()
-            .is_none_or(|s| s.is_empty() || s.len() > 200)
-        {
-            return Err(bad("Four-language asset title required"));
-        }
-    }
+    let (settings, _) = commerce::config(&a, &t).await?;
+    commerce::validate_names(&title, &settings, 200)?;
     let content = bytes.ok_or(bad("File required"))?;
     validate_bytes(&mime, &content)?;
     let id = uid();

@@ -1,6 +1,12 @@
 /** International settings vocabulary. Every key requires English, German, French and Spanish. */
 import { useLocale } from "./i18n";
 export const internationalWords = {
+  contentLanguage: [
+    "Content language",
+    "Inhaltssprache",
+    "Langue du contenu",
+    "Idioma del contenido",
+  ],
   loadCountriesError: [
     "Country catalogue could not be loaded",
     "Länderkatalog konnte nicht geladen werden",

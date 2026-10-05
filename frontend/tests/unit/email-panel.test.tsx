@@ -108,10 +108,10 @@ it("retains unsaved settings when a new locale request function arrives", async 
 });
 it("supports editing each language template and disallows testing unsaved data", async () => {
   setup();
-  await screen.findByRole("combobox", { name: "Template language" });
+  await screen.findByRole("combobox", { name: "Content language" });
   for (const language of ["en", "de", "fr", "es"]) {
     fireEvent.change(
-      screen.getByRole("combobox", { name: "Template language" }),
+      screen.getByRole("combobox", { name: "Content language" }),
       { target: { value: language } },
     );
     fireEvent.change(screen.getByRole("textbox", { name: "Subject" }), {

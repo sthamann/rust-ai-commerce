@@ -137,7 +137,8 @@ pub(crate) async fn execute(
             .execute(&mut *tx)
             .await?;
     }
-    let result = json!({"flowKey":key,"action":action,"orderId":id,"text":config["instruction"][&f.locale[..2]],"config":config});
+    let (settings, _) = commerce::config(a, t).await?;
+    let result = json!({"flowKey":key,"action":action,"orderId":id,"text":super::flow_text::effective(&config["instruction"], &f.locale, &settings.main_locale),"config":config});
     sqlx::query(
         "INSERT INTO order_activity(tenant,order_id,actor,kind,data) VALUES($1,$2,$3,'flow',$4)",
     )

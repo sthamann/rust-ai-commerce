@@ -56,14 +56,8 @@ pub(crate) fn validate(action: &str, config: &Value) -> Result<()> {
     if !ACTIONS.contains(&action) || !config.is_object() || config.to_string().len() > 8000 {
         return Err(bad("Unknown flow action or invalid configuration"));
     }
-    if matches!(action, "note" | "ai_proposal")
-        && ["en", "de", "fr", "es"].iter().any(|lang| {
-            config["instruction"][lang]
-                .as_str()
-                .is_none_or(|s| s.trim().is_empty() || s.len() > 3200)
-        })
-    {
-        return Err(bad("Flow instruction requires four bounded translations"));
+    if matches!(action, "note" | "ai_proposal") {
+        super::flow_text::shape(&config["instruction"])?;
     }
     let require = |key: &str| {
         config[key]
@@ -149,10 +143,9 @@ pub(crate) async fn execute(
     auth::permit(&h, permission(action))?;
     if action == "ai_proposal" {
         auth::permit(&h, "knowledge.read")?;
-        let instruction = config["instruction"][&f.locale[..2]]
-            .as_str()
-            .or(config["instruction"]["en"].as_str())
-            .unwrap_or("");
+        let (settings, _) = commerce::config(a, t).await?;
+        let instruction =
+            super::flow_text::effective(&config["instruction"], &f.locale, &settings.main_locale);
         return plan_with(
             a,
             t,

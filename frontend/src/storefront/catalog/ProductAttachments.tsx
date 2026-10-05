@@ -38,7 +38,7 @@ export default function ProductAttachments({ id }: { id: string }) {
             }).catch((e) => setError(e.message))
           }
         >
-          {f.title[locale.slice(0, 2)] ?? f.title.en} · {f.filename}
+          {f.name ?? f.title[locale.slice(0, 2)] ?? f.title.en} · {f.filename}
         </button>
       ))}
       {error && <p role="alert">{error}</p>}

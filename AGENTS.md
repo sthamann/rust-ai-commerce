@@ -32,6 +32,11 @@ The exact proof boundary and extension procedure are documented in
 - Every customer/merchant-facing field (including shipping/payment names and descriptions,
   tax labels, country/region names, product names, SEO, rich descriptions and category content)
   must accept enabled shop content languages. Do not hard-code four product languages.
+- Content editors must use `shared/i18n/ContentLanguage`, `ContentLanguagePicker` and
+  `LocalizedField` (or `shared/geography/TranslationFields` for object maps). One
+  selected content language applies to the entire editor, including nested flow
+  nodes. Do not render separate text inputs/areas for every language. The localization
+  gate rejects stacked language value fields; keep its negative controls passing.
 - Use the shop's `mainLocale` as the per-field fallback. `null`/missing means inherit;
   an explicitly empty description must remain empty. Never save inherited values as
   fabricated translations or silently copy names into every language.

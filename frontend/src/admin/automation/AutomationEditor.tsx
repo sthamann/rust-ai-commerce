@@ -1,9 +1,13 @@
 /** AutomationEditor: focused form view with explicit typed inputs and callbacks. */
 import { useConnectedText } from "../../shared/i18n/connected-i18n";
 import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
-import { type Config, type Kind, langs } from "./automation-types";
+import { type Config, type Kind } from "./automation-types";
 
 import { useEffect, useState } from "react";
+import { useContentLanguage } from "../../shared/i18n/ContentLanguage";
+import { contentText } from "../../shared/i18n/content-language";
+import LocalizedField from "../../shared/i18n/LocalizedField";
+import ContentLanguagePicker from "../../shared/i18n/ContentLanguagePicker";
 import FlowBuilder from "./FlowBuilder";
 import RuleBuilder from "./RuleBuilder";
 export type AutomationEditorProps = {
@@ -50,6 +54,7 @@ export default function AutomationEditor({
   locale,
   setAdvanced,
 }: AutomationEditorProps) {
+  const { mainLocale } = useContentLanguage();
   const [categories, setCategories] = useState<any[]>([]);
   useEffect(() => {
     let active = true;
@@ -90,20 +95,14 @@ export default function AutomationEditor({
           disabled={revision > 0}
         />
       </label>
-      <div className="workbench-row">
-        {langs.map((lang) => (
-          <label key={lang}>
-            {w("title")} · {lang.toUpperCase()}
-            <input
-              required
-              value={data.name?.[lang] ?? ""}
-              onChange={(e) =>
-                update("name", { ...data.name, [lang]: e.target.value })
-              }
-            />
-          </label>
-        ))}
-      </div>
+      <ContentLanguagePicker />
+      <LocalizedField
+        label={w("title")}
+        value={data.name ?? {}}
+        required
+        maxLength={100}
+        onChange={(name) => update("name", name)}
+      />
       <label className="checkbox-label">
         <input
           type="checkbox"
@@ -208,7 +207,7 @@ export default function AutomationEditor({
             <option value="">{w("chooseRule")}</option>
             {rows.rules.map((r) => (
               <option value={r.id} key={r.id}>
-                {r.data.name[locale.slice(0, 2)]}
+                {contentText(r.data.name ?? {}, locale, mainLocale) || r.id}
               </option>
             ))}
           </select>
@@ -222,22 +221,16 @@ export default function AutomationEditor({
       {kind === "flows" && (
         <>
           <FlowBuilder data={data} update={update} catalog={catalog} />
-          {data.action !== "pipeline" &&
-            langs.map((lang) => (
-              <label key={lang}>
-                {w("instruction")} · {lang}
-                <textarea
-                  value={data.instruction?.[lang] ?? ""}
-                  onChange={(e) =>
-                    update("instruction", {
-                      ...data.instruction,
-                      [lang]: e.target.value,
-                    })
-                  }
-                  maxLength={4000}
-                />
-              </label>
-            ))}
+          {data.action !== "pipeline" && (
+            <LocalizedField
+              label={w("instruction")}
+              value={data.instruction ?? {}}
+              multiline
+              required
+              maxLength={3200}
+              onChange={(instruction) => update("instruction", instruction)}
+            />
+          )}
           {(data.action === "ai_proposal" ||
             data.pipeline?.nodes?.some(
               (n: any) => n.action === "ai_proposal",

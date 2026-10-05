@@ -37,3 +37,22 @@ it("rejects raw new module text and missing vocabulary translations without reco
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+it("rejects stacked per-language value fields in future modules", () => {
+  const root = mkdtempSync(join(tmpdir(), "commerce-localization-"));
+  try {
+    writeFileSync(
+      join(root, "Stacked.tsx"),
+      "export const Bad = ({value, locales}) => <div>{locales.map((lang) => <textarea value={value[lang]} />)}</div>;",
+    );
+    const result = spawnSync(
+      process.execPath,
+      [resolve("scripts/localization.mjs"), "--source", root],
+      { encoding: "utf8" },
+    );
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("stacked language fields prohibited");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});

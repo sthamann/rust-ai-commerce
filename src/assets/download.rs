@@ -7,9 +7,11 @@ pub(super) async fn attachments(
 ) -> Result<Json<Value>> {
     marketing::admit_product(&a, &h, &id).await?;
     let t = tenant(&h)?;
+    let (settings, _) = commerce::config(&a, &t).await?;
+    let locale = header(&h, "x-commerce-locale").unwrap_or(&settings.main_locale);
     let rows=sqlx::query("SELECT id,title,filename,mime,octet_length(content) AS bytes FROM product_assets WHERE tenant=$1 AND public AND kind='attachment' AND (product_id=$2 OR product_id=(SELECT parent_id FROM products WHERE tenant=$1 AND id=$2)) ORDER BY created_at LIMIT 50").bind(t).bind(id).fetch_all(&a.db).await?;
     Ok(Json(
-        json!({"elements":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"title":r.get::<Value,_>("title"),"filename":r.get::<String,_>("filename"),"mime":r.get::<String,_>("mime"),"bytes":r.get::<i32,_>("bytes")})).collect::<Vec<_>>()}),
+        json!({"elements":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"title":r.get::<Value,_>("title"),"name":commerce::translated_string(&r.get::<Value,_>("title"),locale,&settings.main_locale),"filename":r.get::<String,_>("filename"),"mime":r.get::<String,_>("mime"),"bytes":r.get::<i32,_>("bytes")})).collect::<Vec<_>>()}),
     ))
 }
 fn response(r: &sqlx::postgres::PgRow) -> Response {
@@ -51,9 +53,11 @@ fn paid(o: &Value) -> bool {
 }
 pub(super) async fn owned(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let (t, email) = accounts::identity(&a, &h).await?;
+    let (settings, _) = commerce::config(&a, &t).await?;
+    let locale = header(&h, "x-commerce-locale").unwrap_or(&settings.main_locale);
     let rows=sqlx::query("SELECT a.id,a.title,a.filename,o.id AS order_id,o.data FROM order_downloads d JOIN product_assets a ON a.tenant=d.tenant AND a.id=d.asset_id JOIN orders o ON o.tenant=d.tenant AND o.id=d.order_id JOIN carts c ON c.id=o.cart_id WHERE d.tenant=$1 AND ((o.data->'orderCustomer'->>'customerId')=(SELECT id FROM customers WHERE tenant=o.tenant AND email=$2) OR (NOT o.data ? 'orderCustomer' AND c.data->>'email'=$2)) ORDER BY o.created_at DESC LIMIT 200").bind(t).bind(email).fetch_all(&a.db).await?;
     Ok(Json(
-        json!({"elements":rows.iter().filter(|r|paid(&r.get::<Value,_>("data"))).map(|r|json!({"id":r.get::<String,_>("id"),"title":r.get::<Value,_>("title"),"filename":r.get::<String,_>("filename"),"orderId":r.get::<String,_>("order_id")})).collect::<Vec<_>>()}),
+        json!({"elements":rows.iter().filter(|r|paid(&r.get::<Value,_>("data"))).map(|r|json!({"id":r.get::<String,_>("id"),"title":r.get::<Value,_>("title"),"name":commerce::translated_string(&r.get::<Value,_>("title"),locale,&settings.main_locale),"filename":r.get::<String,_>("filename"),"orderId":r.get::<String,_>("order_id")})).collect::<Vec<_>>()}),
     ))
 }
 pub(super) async fn file(

@@ -1,5 +1,16 @@
 //! Shared field-level content fallback for metadata and configurable object names.
 use super::*;
+pub(crate) fn translated_string<'a>(values: &'a Value, locale: &str, main: &str) -> &'a str {
+    [
+        locale,
+        locale.split('-').next().unwrap_or(locale),
+        main,
+        main.split('-').next().unwrap_or(main),
+    ]
+    .into_iter()
+    .find_map(|key| values[key].as_str())
+    .unwrap_or("")
+}
 pub(crate) fn translated_object(values: &Value, locale: &str, main: &str) -> Value {
     let mut result = json!({});
     for key in [

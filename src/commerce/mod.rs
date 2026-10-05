@@ -64,6 +64,7 @@ mod product_languages;
 pub(crate) use product_languages::valid_locale_key;
 
 mod content_text;
+pub(crate) use content_text::translated_string;
 pub(crate) use content_text::*;
 
 mod international_capabilities;

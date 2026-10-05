@@ -79,4 +79,38 @@ w2=req('/api/auth/register',{'workspaceId':'intl-other-'+suffix,'workspaceName':
 req('/api/merchant/commerce',h={**merchant,'x-tenant':w2['workspace']},expected=403)
 m=req('/mcp',{'jsonrpc':'2.0','id':1,'method':'tools/call','params':{'name':'merchant.commerce.read','arguments':{}}},merchant);assert not m['result']['isError'] and m['result']['structuredContent']['data']['mainLocale']=='es-ES'
 check('international commerce configuration is tenant-isolated and native MCP reads the same persisted aggregate')
+# The shared editor submits only a main-language instruction; both execution paths must use it.
+base_flow={'name':{'es':'Flujo principal'},'active':True,'event':'order.placed','condition':{'type':'alwaysValid'},'action':'note','instruction':{'es':'Mensaje principal','de':None},'locale':'it-IT'}
+req('/api/automation/flows/translated_note',{'revision':0,'data':base_flow},merchant,'PUT')
+pipe={**base_flow,'action':'pipeline','instruction':{},'locale':'de-DE','pipeline':{'entry':'first','nodes':[{'kind':'action','id':'first','action':'note','config':{'instruction':{'es':'Nota de paso'}},'next':None}]}}
+req('/api/automation/flows/translated_pipeline',{'revision':0,'data':pipe},merchant,'PUT')
+for invalid in [{**base_flow,'instruction':{'en':'No main'}},{**base_flow,'instruction':{'es':'Main','ja':'Not enabled'}},{**base_flow,'locale':'ja-JP'}]:
+ req('/api/automation/flows/invalid_locale',{'revision':0,'data':invalid},merchant,'PUT',400)
+req('/api/automation/flows/translated_note',{'revision':0,'data':base_flow},merchant,'PUT',409)
+req('/api/automation/flows/cross_tenant',{'revision':0,'data':base_flow},{**merchant,'x-tenant':w2['workspace']},'PUT',403)
+cart=req('/store-api/checkout/cart',{});flow_headers={'sw-context-token':cart['token']}
+req('/store-api/checkout/cart',{'revision':cart['revision'],'items':[{'id':'mug','quantity':1}]},flow_headers,'PUT')
+req('/store-api/checkout/order',{}, {**flow_headers,'Idempotency-Key':'translations-'+suffix})
+for _ in range(60):
+ jobs=req('/api/automation/executions',h=merchant)['jobs'];done={j['flow']:j for j in jobs if j['state']=='completed'}
+ if {'translated_note','translated_pipeline'}<=set(done):break
+ time.sleep(.2)
+assert done['translated_note']['result']['note']=='Mensaje principal',jobs
+assert done['translated_pipeline']['result']['trace'][0]['result']['text']=='Nota de paso',jobs
+check('simple and graphical flows save one main-language text, accept Italian and execute Spanish inheritance; stale, disabled-language and foreign-tenant writes fail')
+# Product uploads use the same main-language contract, and storefront read resolves the label.
+def upload_title(title, expected=200):
+ boundary='SyntheticBoundary'+uuid.uuid4().hex
+ payload=(f'--{boundary}\r\nContent-Disposition: form-data; name="title"\r\n\r\n'+json.dumps(title)+f'\r\n--{boundary}\r\nContent-Disposition: form-data; name="kind"\r\n\r\nattachment\r\n--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="fixture.txt"\r\nContent-Type: text/plain\r\n\r\nSynthetic datasheet\r\n--{boundary}--\r\n').encode()
+ request=urllib.request.Request(BASE+'/api/merchant/products/mug/assets',data=payload,headers={**merchant,'Content-Type':'multipart/form-data; boundary='+boundary})
+ try:
+  with urllib.request.urlopen(request)as response:code=response.status;v=json.load(response)
+ except urllib.error.HTTPError as e:code=e.code;v=json.load(e)
+ assert code==expected,(code,v)
+ return v
+asset=upload_title({'es':'Ficha principal'})
+req('/api/merchant/assets/'+asset['id'],{'digest':asset['digest'],'public':True},merchant,'PUT')
+attachments=req('/store-api/product/mug/attachments',h={'x-commerce-locale':'de-DE'})['elements'];assert next(a for a in attachments if a['id']==asset['id'])['name']=='Ficha principal'
+upload_title({'de':'Missing main'},400);upload_title({'es':'Main','ja':'Disabled'},400)
+check('one-language attachment upload persists and German storefront inherits Spanish title; missing main and disabled languages are rejected')
 print(json.dumps({'passed':len(checks),'liveTaxLaw':False,'checks':checks}))

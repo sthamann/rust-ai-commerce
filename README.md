@@ -68,6 +68,16 @@ and MCP. UI vocabulary remains EN/DE/ES/FR; content can use additional locales.
 [Configuration, API/MCP, datasets and verification boundaries](docs/international-commerce.md).
 No current worldwide tax law or real model translation quality is inferred from fixtures.
 
+Native content editors use **one selected content language**, including nested Flow
+Builder steps. Products, SEO, categories, attachment titles, rules, campaigns,
+channels, taxes and methods share the same field controls. Missing translations
+inherit the shop main language; switching languages never fabricates stored
+translations. Simple and graphical flow execution, attachment uploads and
+storefront file labels apply the same contract through the real API.
+See [the shared editor contract](frontend/src/shared/i18n/README.md).
+
+![Shared content-language editing in a graphical flow](docs/screenshots/studio-flow-translations-en.png)
+
 ## Customers, checkout and order operations
 
 The storefront now shares a full **customer address book** with Commerce Studio:

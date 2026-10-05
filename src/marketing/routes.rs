@@ -85,6 +85,7 @@ pub(super) async fn save(
             let f: flows::Flow =
                 serde_json::from_value(data.clone()).map_err(|_| bad("Invalid flow"))?;
             f.validate()?;
+            super::flow_text::validate(&f, &settings)?;
             validate_app_flow(&a, &t, &h, &f).await?;
             if let Some(p) = &f.pipeline {
                 for node in &p.nodes {

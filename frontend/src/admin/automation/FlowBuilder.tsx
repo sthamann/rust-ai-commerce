@@ -1,5 +1,6 @@
 /** Graphical event → condition tree → action pipeline, including installed app actions. */
 import { useConnectedText } from "../../shared/i18n/connected-i18n";
+import { useContentLanguage } from "../../shared/i18n/ContentLanguage";
 import FlowCanvas from "./FlowCanvas";
 import { useAutomationText } from "../../shared/i18n/automation-i18n";
 import FlowInputs from "./FlowInputs";
@@ -13,6 +14,7 @@ export default function FlowBuilder({
   update: (key: string, value: any) => void;
   catalog: AutomationCatalog;
 }) {
+  const { mainLocale } = useContentLanguage();
   const { a } = useAutomationText();
   const { x, locale } = useConnectedText();
   const app = catalog.apps.find((a) => a.id === data.appAction?.app);
@@ -32,10 +34,7 @@ export default function FlowBuilder({
     const action = a?.manifest.actions.find((v: any) => v.flowAllowed);
     if (Object.values(data.instruction ?? {}).every((v) => !v)) {
       update("instruction", {
-        en: "Event {event} · Order {orderNumber} · {totalPrice} EUR",
-        de: "Ereignis {event} · Bestellung {orderNumber} · {totalPrice} EUR",
-        fr: "Événement {event} · Commande {orderNumber} · {totalPrice} EUR",
-        es: "Evento {event} · Pedido {orderNumber} · {totalPrice} EUR",
+        [mainLocale]: "{event} · {orderNumber} · {totalPrice} EUR",
       });
     }
     update("appAction", { app: id, action: action?.name ?? "", arguments: {} });

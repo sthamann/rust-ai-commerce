@@ -251,7 +251,8 @@ export default function CustomerAccount({
                   )
                 }
               >
-                {d.title[locale.slice(0, 2)] ?? d.title.en} · {d.filename}
+                {d.name ?? d.title[locale.slice(0, 2)] ?? d.title.en} ·{" "}
+                {d.filename}
               </button>
             ))}
             <h3>{w("customerOrders")}</h3>

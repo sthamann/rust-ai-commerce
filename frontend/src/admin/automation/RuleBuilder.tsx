@@ -1,4 +1,6 @@
 /** Visual recursive rule tree: AND/OR/NOT groups, typed facts and editable leaf conditions. */
+import { useContentLanguage } from "../../shared/i18n/ContentLanguage";
+import { contentText } from "../../shared/i18n/content-language";
 import SourceRuleFields from "./SourceRuleFields";
 import {
   fromSource,
@@ -56,6 +58,7 @@ export default function RuleBuilder({
   depth?: number;
 }) {
   const { x } = useConnectedText();
+  const { mainLocale } = useContentLanguage();
   const { a, locale } = useAutomationText();
   const source = catalog.sourceConditions?.find((d) => d.type === value.name);
   const [input, setInput] = useState("");
@@ -107,7 +110,7 @@ export default function RuleBuilder({
             <option value="">—</option>
             {catalog.rules?.map((r) => (
               <option key={r.id} value={r.id}>
-                {r.name[locale.slice(0, 2)] ?? r.id}
+                {contentText(r.name, locale, mainLocale) || r.id}
               </option>
             ))}
           </select>
