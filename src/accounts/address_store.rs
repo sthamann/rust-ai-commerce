@@ -18,6 +18,7 @@ pub(crate) async fn address_save(
         serde_json::from_value(v["address"].clone()).map_err(|_| bad("Invalid address"))?;
     address.validate()?;
     let (s, _) = commerce::config(a, t).await?;
+    commerce::validate_address_geography(&address, &s)?;
     if !s.countries.contains(&address.country) {
         return Err(bad("Address country unavailable"));
     }

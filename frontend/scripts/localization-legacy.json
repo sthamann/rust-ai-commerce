@@ -1,0 +1,170 @@
+[
+  {
+    "file": "admin/agents/AgentsView.tsx",
+    "text": "MCP / UCP"
+  },
+  {
+    "file": "admin/agents/AgentsView.tsx",
+    "text": "Claude Desktop / MCP"
+  },
+  {
+    "file": "admin/apps/AppDetails.tsx",
+    "text": "API/MCP"
+  },
+  {
+    "file": "admin/apps/AppsManager.tsx",
+    "text": "COMMERCE / APPS"
+  },
+  {
+    "file": "admin/apps/EmailPanel.tsx",
+    "text": "SMTP · Resend · SendGrid"
+  },
+  {
+    "file": "admin/apps/EmailProviderFields.tsx",
+    "text": "SMTP"
+  },
+  {
+    "file": "admin/apps/EmailProviderFields.tsx",
+    "text": "Resend"
+  },
+  {
+    "file": "admin/apps/EmailProviderFields.tsx",
+    "text": "SendGrid"
+  },
+  {
+    "file": "admin/apps/EmailProviderFields.tsx",
+    "text": "STARTTLS · 587"
+  },
+  {
+    "file": "admin/apps/EmailProviderFields.tsx",
+    "text": "TLS · 465"
+  },
+  {
+    "file": "admin/assistant/SettingsDialog.tsx",
+    "text": "MERCHANT_TOKEN"
+  },
+  {
+    "file": "admin/automation/AutomationEditor.tsx",
+    "text": "OpenAI"
+  },
+  {
+    "file": "admin/automation/AutomationEditor.tsx",
+    "text": "Claude"
+  },
+  {
+    "file": "admin/automation/AutomationEditor.tsx",
+    "text": "Headless"
+  },
+  {
+    "file": "admin/automation/AutomationView.tsx",
+    "text": "v"
+  },
+  {
+    "file": "admin/catalog/ProductAssets.tsx",
+    "text": "KB"
+  },
+  {
+    "file": "admin/catalog/ProductDataView.tsx",
+    "text": "COMMERCE /"
+  },
+  {
+    "file": "admin/catalog/RichEditor.tsx",
+    "text": "B"
+  },
+  {
+    "file": "admin/catalog/RichEditor.tsx",
+    "text": "I"
+  },
+  {
+    "file": "admin/catalog/RichEditor.tsx",
+    "text": "U"
+  },
+  {
+    "file": "admin/developer/DeveloperView.tsx",
+    "text": "v"
+  },
+  {
+    "file": "admin/developer/DeveloperView.tsx",
+    "text": "SHA-256:"
+  },
+  {
+    "file": "admin/developer/DeveloperView.tsx",
+    "text": "Codex"
+  },
+  {
+    "file": "admin/developer/DeveloperView.tsx",
+    "text": "Claude Code"
+  },
+  {
+    "file": "admin/intelligence/KnowledgeGraph.tsx",
+    "text": "Apache AGE"
+  },
+  {
+    "file": "admin/shell/StudioSidebar.tsx",
+    "text": "commerce"
+  },
+  {
+    "file": "admin/shell/StudioSidebar.tsx",
+    "text": "v0.5"
+  },
+  {
+    "file": "admin/team/PersonalAccountForm.tsx",
+    "text": "my-shop"
+  },
+  {
+    "file": "admin/team/UsersManager.tsx",
+    "text": "COMMERCE /"
+  },
+  {
+    "file": "platform/PlatformConsole.tsx",
+    "text": "C"
+  },
+  {
+    "file": "platform/PlatformShops.tsx",
+    "text": "my-shop"
+  },
+  {
+    "file": "platform/PlatformSignIn.tsx",
+    "text": "C"
+  },
+  {
+    "file": "shared/ui/ProductArt.tsx",
+    "text": "FIELD"
+  },
+  {
+    "file": "shared/ui/ProductArt.tsx",
+    "text": "NOTES"
+  },
+  {
+    "file": "storefront/catalog/ProductPage.tsx",
+    "text": "· atelier /"
+  },
+  {
+    "file": "storefront/catalog/ProductPurchase.tsx",
+    "text": "ATELIER /"
+  },
+  {
+    "file": "storefront/catalog/ProductPurchase.tsx",
+    "text": "SKU"
+  },
+  {
+    "file": "storefront/shell/CollectionView.tsx",
+    "text": "ATELIER /"
+  },
+  {
+    "file": "storefront/shell/Storefront.tsx",
+    "text": "atelier /"
+  },
+  {
+    "file": "storefront/shell/Storefront.tsx",
+    "text": "GitHub ↗"
+  },
+  {
+    "file": "storefront/shell/StorefrontHeader.tsx",
+    "text": "atelier"
+  },
+  {
+    "file": "storefront/shell/StorefrontHome.tsx",
+    "text": "ATELIER /"
+  }
+]

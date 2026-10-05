@@ -66,12 +66,16 @@ try:
         server = serve(env, env["BASE_URL"], log)
         try:
             for suite in suites["http"]:
+                if suite == "translations":
+                    continue
                 command = [sys.executable, f"scripts/{suite}.py"]
                 if suite == "scalability":
                     command += ["--container", args.container]
                 run(command, env)
         finally:
             stop(server)
+    if "translations" in suites["http"]:
+        run([sys.executable, "scripts/translations.py"], env)
     for suite in suites["providers"]:
         run([sys.executable, f"scripts/{suite}.py"], env)
     for suite in suites["browser_contracts"]:

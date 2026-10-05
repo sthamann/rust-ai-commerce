@@ -30,6 +30,7 @@ pub(crate) fn enrich(
             v.id == selected.payment_method_id
                 && v.active
                 && (!v.business_only || c.data.group == "business")
+                && v.available_in(&selected.country)
         })
         .ok_or(bad("Payment method is unavailable for this customer"))?;
     let position = q["price"]["positionPrice"].as_f64().unwrap();
@@ -102,12 +103,20 @@ pub(crate) fn enrich(
     q["checkout"] = json!(selected);
     q["configurationRevision"] = json!(revision);
     q["availableCountries"] = json!(s.countries);
-    q["availableShippingMethods"] =
-        json!(s.shipping.iter().filter(|v| v.active).collect::<Vec<_>>());
+    q["availableShippingMethods"] = json!(
+        s.shipping
+            .iter()
+            .filter(|v| v.active && v.countries.contains(&selected.country))
+            .map(|v| super::method_text::localized_shipping(v, &c.data.locale, s))
+            .collect::<Vec<_>>()
+    );
     q["availablePaymentMethods"] = json!(
         s.payments
             .iter()
-            .filter(|v| v.active && (!v.business_only || c.data.group == "business"))
+            .filter(|v| v.active
+                && (!v.business_only || c.data.group == "business")
+                && v.available_in(&selected.country))
+            .map(|v| super::method_text::localized_payment(v, &c.data.locale, s))
             .collect::<Vec<_>>()
     );
     let lead = c
@@ -130,9 +139,9 @@ pub(crate) fn enrich(
         }) {
         json!([])
     } else {
-        json!([{"shippingMethod":shipping,"shippingCosts":cost,"shippingLocation":{"country":selected.country,"address":selected.address},"positions":c.data.items.iter().filter(|i|!ps.iter().any(|p|p.id==i.id&&p.extra["digital"]==true)).collect::<Vec<_>>(),"state":"open","deliveryTime":{"minDays":min,"maxDays":max}}])
+        json!([{"shippingMethod":super::method_text::localized_shipping(shipping,&c.data.locale,s),"shippingCosts":cost,"shippingLocation":{"country":selected.country,"address":selected.address},"positions":c.data.items.iter().filter(|i|!ps.iter().any(|p|p.id==i.id&&p.extra["digital"]==true)).collect::<Vec<_>>(),"state":"open","deliveryTime":{"minDays":min,"maxDays":max}}])
     };
-    q["paymentMethod"] = json!(payment);
+    q["paymentMethod"] = super::method_text::localized_payment(payment, &c.data.locale, s);
     Ok(q)
 }
 pub(crate) async fn dates(a: &App, q: &mut Value) -> Result<()> {

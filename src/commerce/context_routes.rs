@@ -9,8 +9,9 @@ pub(crate) async fn options(State(a): State<App>, h: HeaderMap) -> Result<Json<V
     } else {
         false
     };
+    let locale = header(&h, "x-commerce-locale").unwrap_or(&s.main_locale);
     Ok(Json(
-        json!({"countries":s.countries,"shipping":s.shipping.into_iter().filter(|v|v.active).collect::<Vec<_>>(),"payments":s.payments.into_iter().filter(|v|v.active&&(!v.business_only||business)).collect::<Vec<_>>(),"revision":revision}),
+        json!({"mainLocale":s.main_locale,"locales":s.locales,"countries":s.countries,"shipping":s.shipping.iter().filter(|v|v.active).map(|v|super::method_text::localized_shipping(v,locale,&s)).collect::<Vec<_>>(),"payments":s.payments.iter().filter(|v|v.active&&(!v.business_only||business)).map(|v|super::method_text::localized_payment(v,locale,&s)).collect::<Vec<_>>(),"revision":revision}),
     ))
 }
 pub(crate) async fn select_checkout(
@@ -64,11 +65,13 @@ pub(crate) async fn select_checkout(
         }
         c.data.email = Some(email);
     }
+    let (settings, _) = config(&a, &c.tenant).await?;
     for ad in [&mut requested.address, &mut requested.billing_address]
         .into_iter()
         .flatten()
     {
         ad.validate()?;
+        validate_address_geography(ad, &settings)?;
     }
     if requested
         .address

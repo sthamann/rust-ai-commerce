@@ -63,4 +63,7 @@ def rule_xor_count (hits : Nat) : Bool :=
 def flow_delay_admissible (seconds : Nat) : Bool :=
   (decide (seconds ≤ 2592000))
 
+def destination_tax_admissible (condition : Bool) (country : Bool) (state : Bool) (postal : Bool) (date : Bool) : Bool :=
+  ((((condition && country) && state) && postal) && date)
+
 end CommerceKernel

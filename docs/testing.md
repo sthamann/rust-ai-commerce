@@ -6,7 +6,7 @@ at 100%, and neither coverage nor the Lean subset proves the entire system bug-f
 
 ## Source architecture
 
-- Rust: 184 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
+- Rust: 205 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
 - Frontend: separate `admin/`, `storefront/`, `platform/` and `shared/` ownership. Views/controllers and styles are limited to 400 lines; locale data has a documented 700-line allowance. Runtime cycles, unresolved local imports, crossing application boundaries, missing folder contracts and undocumented source files fail CI.
 - Independent Python services, app examples and browser SDKs remain under `extensions/`; test tooling lives under `scripts/`. [The generated inventory](module-inventory.md) covers all these sources and is checked for drift.
 - Studio workspaces load lazily. Root application routing is isolated in `frontend/src/application/`; error boundaries keep workspace failures inside the current view and provide reload recovery for rejected cached module imports. The removed `CommerceManager` had no call site and duplicated old operational UI. Order state management remains in `admin/orders/OrderWorkflow.tsx`; product review moderation lives in `admin/catalog/ReviewModeration.tsx`.
@@ -28,6 +28,7 @@ npm --prefix frontend ci
 npm --prefix frontend run format:check
 npm --prefix frontend run build
 npm --prefix frontend run architecture
+npm --prefix frontend run localization
 npm --prefix frontend run test:coverage
 python3 scripts/formal.py
 python3 scripts/formal/mutations.py
@@ -41,7 +42,7 @@ from the process or the local `.env`. CI alone passes `--existing-database` for 
 already-disposable database. Failures remain failures, and child processes stop
 before database cleanup. SIGINT flushes optional Rust coverage profiles.
 
-`testing/suites.json` is the single registry for 22 HTTP suites, three local
+`testing/suites.json` is the single registry for 25 HTTP suites, three local
 provider/connector suites, four browser contracts and verification-tool tests.
 The local server uses an offline model URL; live model checks are separate, opt-in
 checks. Credentials, payments, mail and Slack are exercised against loopback
@@ -159,3 +160,14 @@ The account composition regression exercises both login and registration through
 protected profile/address/order reads unless the form persisted the exact
 tenant session key. This reproduces the former React-reserved `key` prop bug;
 backend address/customer isolation is separately exercised over real HTTP.
+
+## International configuration regression scope (2026-10-05)
+
+New PostgreSQL suites cover complete bundled geography, custom countries/regions,
+US destination taxes in actual product/cart/order paths, saved-rule conditions,
+non-English main-language inheritance and stale/foreign configuration rejection.
+Translation fixtures cover Ollama/OpenAI/Claude wire formats, durable full-catalogue
+drafts, cold restart, stale apply, repeated apply and permission/tenant denial.
+They perform no paid model calls. React tests exercise keyboard/group country
+selection, missing-field inheritance and a shared settings draft across navigation.
+UI screenshots supplement these tests; neither replaces whole-source coverage.

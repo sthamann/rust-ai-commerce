@@ -23,17 +23,21 @@ fn validate(v: &Edit) -> Result<()> {
     {
         return Err(bad("Invalid nested category listing flag"));
     }
-    for lang in ["en", "de", "fr", "es"] {
-        let tr = &d["translations"][lang];
-        if tr["name"]
-            .as_str()
-            .is_none_or(|s| s.trim().is_empty() || s.len() > 200)
+    let translations = d["translations"]
+        .as_object()
+        .filter(|m| !m.is_empty() && m.len() <= 100)
+        .ok_or(bad("Category translations required"))?;
+    for (lang, tr) in translations {
+        if !commerce::valid_locale_key(lang)
+            || tr["name"]
+                .as_str()
+                .is_some_and(|s| s.is_empty() || s.len() > 200)
             || tr["description"].as_str().is_some_and(|s| s.len() > 4000)
             || tr["slug"]
                 .as_str()
                 .is_some_and(|s| s.len() > 200 || s.contains(['?', '#', '/']))
         {
-            return Err(bad("Four bounded category translations required"));
+            return Err(bad("Invalid category translation"));
         }
     }
     if d["type"] == "link"
@@ -82,6 +86,14 @@ async fn write(a: App, h: HeaderMap, id: String, v: Value, create: bool) -> Resu
     let t = merchant(&a, &h)?;
     let v: Edit = serde_json::from_value(v).map_err(|_| bad("Invalid category edit"))?;
     validate(&v)?;
+    let (settings, _) = commerce::config(&a, &t).await?;
+    let names: Value = v.data["translations"]
+        .as_object()
+        .unwrap()
+        .iter()
+        .map(|(key, tr)| (key.clone(), tr["name"].clone()))
+        .collect();
+    commerce::validate_names(&names, &settings, 200)?;
     let mut tx = a.db.begin().await?;
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,726))")
         .bind(&t)

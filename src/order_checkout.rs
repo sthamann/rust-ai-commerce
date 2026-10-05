@@ -97,9 +97,14 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
             .bind(&c.tenant)
             .fetch_one(&mut *tx)
             .await?;
-    let config: commerce::Settings = serde_json::from_value(settings.get("data"))
-        .map_err(|_| bad("Invalid commerce configuration"))?;
+    let config = commerce::decode_config(settings.get("data"))?;
     let selected = commerce::selection(&c.data);
+    for address in [&selected.address, &selected.billing_address]
+        .into_iter()
+        .flatten()
+    {
+        commerce::validate_address_geography(address, &config)?;
+    }
     apps::validate_configurations(&mut tx, &c).await?;
     if selected.shipping_method_id != "pickup"
         && selected.address.is_none()
@@ -107,7 +112,8 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     {
         return Err(bad("Delivery address required"));
     }
-    let priced = commerce::tax_products(&ps, &selected, &config)?;
+    let taxes = commerce::tax_settings_for_cart(&mut tx, &c, &ps, &config).await?;
+    let priced = commerce::tax_products(&ps, &selected, &taxes)?;
     let mut q = commerce::enrich(
         marketing::promote(
             &mut tx,

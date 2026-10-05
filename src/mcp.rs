@@ -3,6 +3,19 @@ use crate::*;
 
 pub(crate) fn tool_schema(name: &str) -> Value {
     let props = match name {
+        "merchant.commerce.save" => json!({"revision":{"type":"integer"},"data":{"type":"object"}}),
+        "merchant.translations.create" => {
+            json!({"targetLocale":{"type":"string"},"overwrite":{"type":"boolean"},"inference":{"type":"object","properties":{"provider":{"type":"string","enum":["ollama","openai","anthropic"]},"model":{"type":["string","null"]}},"additionalProperties":false}})
+        }
+        "merchant.translations.detail" => {
+            json!({"id":{"type":"string"},"cursor":{"type":"string"}})
+        }
+        "merchant.translations.control" => {
+            json!({"id":{"type":"string"},"action":{"type":"string","enum":["resume","cancel"]}})
+        }
+        "merchant.translations.apply" => {
+            json!({"id":{"type":"string"},"productId":{"type":"string"}})
+        }
         "merchant.products" => {
             json!({"search":{"type":"string","maxLength":200},"after":{"type":"string"},"limit":{"type":"integer","minimum":1,"maximum":100},"active":{"type":"boolean"},"categoryId":{"type":"string"},"parentId":{"type":"string"},"lowStock":{"type":"boolean"}})
         }
@@ -75,6 +88,10 @@ pub(crate) fn tool_schema(name: &str) -> Value {
         _ => json!({}),
     };
     let required = match name {
+        "merchant.commerce.save" => vec!["revision", "data"],
+        "merchant.translations.create" => vec!["targetLocale"],
+        "merchant.translations.control" => vec!["id", "action"],
+        "merchant.translations.apply" | "merchant.translations.detail" => vec!["id"],
         "merchant.product.create" => vec!["product"],
         "merchant.category.create" => vec!["category"],
         "merchant.category.save" => vec!["id", "category"],
@@ -129,6 +146,9 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
             let mut tools = CAPABILITIES
                 .iter()
                 .filter(|(n, _)| {
+                    if let Some(permission) = commerce::international_permission(n) {
+                        return merchant(&a, &h).is_ok() && auth::permit(&h, permission).is_ok();
+                    }
                     if n.starts_with("automation.") {
                         return merchant(&a, &h).is_ok()
                             && auth::permit(&h, "settings.read").is_ok()

@@ -7,7 +7,12 @@ import ProductPurchase from "./ProductPurchase";
 import ProductReviews from "./ProductReviews";
 
 import { useEffect, useRef, useState } from "react";
-import { shopApi, type Cart, type Detail } from "../../shared/api/shop-api";
+import {
+  getContentLocale,
+  shopApi,
+  type Cart,
+  type Detail,
+} from "../../shared/api/shop-api";
 import { useShopText } from "../../shared/i18n/shop-i18n";
 import MemoryRecommendations from "./MemoryRecommendations";
 import ProductQuestion from "./ProductQuestion";
@@ -25,6 +30,7 @@ export default function ProductPage({
   onCart: (c: Cart) => void;
 }) {
   const { s, money, locale } = useShopText();
+  const contentLanguage = getContentLocale().split("-")[0];
   const [data, setData] = useState<Detail>();
   const [error, setError] = useState("");
   const [image, setImage] = useState(0);
@@ -58,7 +64,14 @@ export default function ProductPage({
       active = false;
       ++detailRequest.current;
     };
-  }, [id, locale, cart?.token, cart?.customerGroup, cart?.checkout.country]);
+  }, [
+    id,
+    locale,
+    cart?.token,
+    cart?.customerGroup,
+    cart?.revision,
+    cart?.checkout.country,
+  ]);
   const tracked = useRef("");
   useEffect(() => {
     const emit = () => {
@@ -76,7 +89,7 @@ export default function ProductPage({
     return () => window.removeEventListener("commerce:analytics-ready", emit);
   }, [data]);
   useEffect(() => {
-    const seo = data?.product.extra?.seo?.[locale.slice(0, 2)];
+    const seo = data?.product.extra?.seo?.[contentLanguage];
     if (seo) {
       document.title = seo.title;
       let meta = document.querySelector<HTMLMetaElement>(
@@ -99,7 +112,7 @@ export default function ProductPage({
     );
   const p = data.product;
   const specs =
-    p.extra?.specifications?.[locale.slice(0, 2)] ??
+    p.extra?.specifications?.[contentLanguage] ??
     p.extra?.specifications?.en ??
     {};
   const effective = Math.max(
@@ -181,9 +194,9 @@ export default function ProductPage({
         <section>
           <p className="shop-kicker">01 / {s("description")}</p>
           <h2>{s("description")}</h2>
-          {p.extra?.richDescription?.[locale.slice(0, 2)]?.length ? (
+          {p.extra?.richDescription?.[contentLanguage]?.length ? (
             <RichDescription
-              blocks={p.extra.richDescription[locale.slice(0, 2)]}
+              blocks={p.extra.richDescription[contentLanguage]}
             />
           ) : (
             <p>{p.description}</p>

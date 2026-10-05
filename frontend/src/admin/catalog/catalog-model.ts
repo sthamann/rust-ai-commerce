@@ -2,9 +2,14 @@
 export const languages = ["en", "de", "fr", "es"] as const;
 export type ProductDraft = {
   id?: string;
+  mainLocale?: string;
+  availableLocales?: string[];
   channels?: { id: string; data: any; visible: boolean }[];
   revision: number;
-  translations: Record<string, { name: string; description: string }>;
+  translations: Record<
+    string,
+    { name: string | null; description: string | null }
+  >;
   extra: any;
   commerce: any;
   catalog: {
@@ -29,15 +34,20 @@ export type Category = {
     url?: string;
     translations: Record<
       string,
-      { name: string; description?: string; slug?: string }
+      { name: string | null; description?: string | null; slug?: string | null }
     >;
   };
 };
 export function newDraft(): ProductDraft {
   return {
     revision: 0,
+    mainLocale: "en-GB",
+    availableLocales: ["en-GB", "de-DE", "fr-FR", "es-ES"],
     translations: Object.fromEntries(
-      languages.map((l) => [l, { name: "", description: "" }]),
+      languages.map((l) => [
+        l,
+        { name: l === "en" ? "" : null, description: l === "en" ? "" : null },
+      ]),
     ),
     extra: {
       seo: {},
@@ -78,6 +88,21 @@ export function hydrateDraft(v: any): ProductDraft {
   return {
     ...defaults,
     ...v,
+    translations: Object.fromEntries(
+      (v.availableLocales ?? defaults.availableLocales!).map((l: string) => {
+        const base = l.split("-")[0];
+        const key =
+          (v.availableLocales ?? defaults.availableLocales!).filter(
+            (x: string) => x.split("-")[0] === base,
+          ).length === 1
+            ? base
+            : l;
+        return [
+          key,
+          v.translations?.[key] ?? { name: null, description: null },
+        ];
+      }),
+    ),
     extra: { ...defaults.extra, ...v.extra },
     catalog: { ...defaults.catalog, ...v.catalog },
     commerce: { ...defaults.commerce, ...v.commerce },

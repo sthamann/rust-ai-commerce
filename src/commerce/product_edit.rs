@@ -7,6 +7,10 @@ struct Edit {
     _id: Option<String>,
     #[serde(default, rename = "channels")]
     _channels: Value,
+    #[serde(default, rename = "mainLocale")]
+    _main_locale: Value,
+    #[serde(default, rename = "availableLocales")]
+    _available_locales: Value,
     revision: i64,
     translations: HashMap<String, Translation>,
     extra: Extra,
@@ -17,15 +21,19 @@ struct Edit {
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
-struct Translation {
-    name: String,
-    description: String,
+pub(super) struct Translation {
+    #[serde(default)]
+    pub(super) name: Option<String>,
+    #[serde(default)]
+    pub(super) description: Option<String>,
 }
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct Extra {
     #[serde(default)]
     automation: Value,
+    #[serde(default)]
+    tax_class_id: Option<String>,
     #[serde(default)]
     seo: HashMap<String, Seo>,
     #[serde(default)]
@@ -44,9 +52,12 @@ struct Extra {
 #[derive(Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 struct Seo {
-    title: String,
-    description: String,
-    slug: String,
+    #[serde(default)]
+    title: Option<String>,
+    #[serde(default)]
+    description: Option<String>,
+    #[serde(default)]
+    slug: Option<String>,
 }
 pub(crate) async fn edit_product(
     State(a): State<App>,
@@ -73,36 +84,49 @@ async fn save_product(
     auth::permit(&h, "catalog")?;
     let t = merchant(&a, &h)?;
     let mut edit: Edit = serde_json::from_value(v).map_err(|_| bad("Invalid product metadata"))?;
+    let mut tx = a.db.begin().await?;
+    let data: Value =
+        sqlx::query_scalar("SELECT data FROM commerce_settings WHERE tenant=$1 FOR SHARE")
+            .bind(&t)
+            .fetch_one(&mut *tx)
+            .await?;
+    let settings = decode_config(data)?;
+    super::product_languages::validate(&edit.translations, &settings)?;
+    let main_key = super::product_languages::key(&settings.main_locale, &settings);
+    let main = edit
+        .translations
+        .get(&main_key)
+        .ok_or(bad("Main product language required"))?;
+    let main_name = main.name.clone().ok_or(bad("Main product name required"))?;
+    let main_description = main.description.clone().unwrap_or_default();
     if edit.extra.cross_selling.len() > 20
-        || edit.extra.seo.len() > 4
-        || edit.extra.specifications.len() > 4
-        || edit.translations.len() != 4
+        || edit.extra.seo.len() > 100
+        || edit.extra.specifications.len() > 100
     {
-        return Err(bad(
-            "Four product translations and bounded metadata required",
-        ));
+        return Err(bad("Product metadata exceeds limits"));
     }
-    for lang in ["en", "de", "fr", "es"] {
-        let tr = edit
-            .translations
-            .get(lang)
-            .ok_or(bad("Missing product translation"))?;
-        if tr.name.is_empty() || tr.name.len() > 200 || tr.description.len() > 4000 {
-            return Err(bad("Invalid translated product text"));
-        }
+    if edit
+        .extra
+        .tax_class_id
+        .as_ref()
+        .is_some_and(|id| !settings.taxes.iter().any(|tax| &tax.id == id))
+    {
+        return Err(bad("Unknown product tax class"));
     }
     for (lang, seo) in &edit.extra.seo {
-        if !["en", "de", "fr", "es"].contains(&lang.as_str())
-            || seo.title.len() > 200
-            || seo.description.len() > 500
-            || seo.slug.len() > 200
-            || seo.slug.contains(['?', '#', '/'])
+        if !super::product_languages::allowed(lang, &settings)
+            || seo.title.as_ref().is_some_and(|v| v.len() > 200)
+            || seo.description.as_ref().is_some_and(|v| v.len() > 500)
+            || seo
+                .slug
+                .as_ref()
+                .is_some_and(|v| v.len() > 200 || v.contains(['?', '#', '/']))
         {
             return Err(bad("Invalid SEO metadata"));
         }
     }
     for (lang, specs) in &edit.extra.specifications {
-        if !["en", "de", "fr", "es"].contains(&lang.as_str())
+        if !super::product_languages::allowed(lang, &settings)
             || specs.len() > 40
             || specs
                 .iter()
@@ -113,6 +137,16 @@ async fn save_product(
     }
     if !edit.extra.rich_description.is_null() {
         assets::validate_rich(&edit.extra.rich_description)?;
+        if edit
+            .extra
+            .rich_description
+            .as_object()
+            .unwrap()
+            .keys()
+            .any(|lang| !super::product_languages::allowed(lang, &settings))
+        {
+            return Err(bad("Rich description language is not enabled"));
+        }
     }
     marketing::validate_metadata("products", &edit.extra.automation)?;
     if let Some(fields) = &edit.commerce {
@@ -132,7 +166,6 @@ async fn save_product(
         }
         edit.extra.automation["categoryIds"] = json!(c.category_ids);
     }
-    let mut tx = a.db.begin().await?;
     // Serialize product number allocation for this merchant, not globally.
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,727))")
         .bind(&t)
@@ -152,7 +185,7 @@ async fn save_product(
                 return Err(bad("Variant parent and options required"));
             }
         }
-        sqlx::query("INSERT INTO products(tenant,id,name,description,category,price,tax_rate,stock,revision,parent_id) VALUES($1,$2,$3,$4,'objects',0,19,0,0,$5)").bind(&t).bind(&id).bind(&edit.translations["en"].name).bind(&edit.translations["en"].description).bind(&fields.parent_id).execute(&mut *tx).await?;
+        sqlx::query("INSERT INTO products(tenant,id,name,description,category,price,tax_rate,stock,revision,parent_id) VALUES($1,$2,$3,$4,'objects',0,19,0,0,$5)").bind(&t).bind(&id).bind(&main_name).bind(&main_description).bind(&fields.parent_id).execute(&mut *tx).await?;
     }
     if !create {
         let row = sqlx::query(
@@ -189,7 +222,7 @@ async fn save_product(
             return Err(bad("Invalid cross-selling product"));
         }
     }
-    let n=sqlx::query("UPDATE products SET extra=$1,name=$2,description=$3,revision=revision+1 WHERE tenant=$4 AND id=$5 AND revision=$6").bind(json!(edit.extra)).bind(&edit.translations["en"].name).bind(&edit.translations["en"].description).bind(&t).bind(&id).bind(edit.revision).execute(&mut *tx).await?.rows_affected();
+    let n=sqlx::query("UPDATE products SET extra=$1,name=$2,description=$3,revision=revision+1 WHERE tenant=$4 AND id=$5 AND revision=$6").bind(json!(edit.extra)).bind(&main_name).bind(&main_description).bind(&t).bind(&id).bind(edit.revision).execute(&mut *tx).await?.rows_affected();
     if n != 1 {
         return Err(conflict("Product changed"));
     }
@@ -197,13 +230,8 @@ async fn save_product(
         fields.save(&mut tx, &t, &id).await?;
     }
     for (lang, tr) in edit.translations {
-        let locale = match lang.as_str() {
-            "en" => "en-GB",
-            "de" => "de-DE",
-            "fr" => "fr-FR",
-            "es" => "es-ES",
-            _ => return Err(bad("Unsupported locale")),
-        };
+        let locale =
+            super::product_languages::locale(&lang, &settings).ok_or(bad("Unsupported locale"))?;
         sqlx::query("INSERT INTO product_translations(tenant,product_id,language_id,name,description) SELECT $1,$2,id,$3,$4 FROM languages WHERE locale=$5 ON CONFLICT(tenant,product_id,language_id) DO UPDATE SET name=EXCLUDED.name,description=EXCLUDED.description").bind(&t).bind(&id).bind(tr.name).bind(tr.description).bind(locale).execute(&mut *tx).await?;
     }
     let row = sqlx::query("SELECT * FROM products WHERE tenant=$1 AND id=$2")
@@ -240,11 +268,22 @@ pub(crate) async fn product_editor(
         .fetch_optional(&a.db)
         .await?
         .ok_or(Error(StatusCode::NOT_FOUND, "Product unavailable".into()))?;
-    let rows=sqlx::query("SELECT l.locale,p.name,p.description FROM languages l LEFT JOIN product_translations p ON p.language_id=l.id AND p.tenant=$1 AND p.product_id=$2 WHERE l.locale IN ('en-GB','de-DE','fr-FR','es-ES')").bind(&t).bind(&id).fetch_all(&a.db).await?;
+    let (settings, _) = config(&a, &t).await?;
+    let rows=sqlx::query("SELECT l.locale,p.name,p.description FROM languages l LEFT JOIN product_translations p ON p.language_id=l.id AND p.tenant=$1 AND p.product_id=$2 WHERE l.locale=ANY($3)").bind(&t).bind(&id).bind(&settings.locales).fetch_all(&a.db).await?;
     let mut translations = json!({});
     for tr in rows {
         let locale: String = tr.get("locale");
-        translations[&locale[..2]] = json!({"name":tr.get::<Option<String>,_>("name").unwrap_or_else(||r.get("name")),"description":tr.get::<Option<String>,_>("description").unwrap_or_else(||r.get("description"))});
+        let key = super::product_languages::key(&locale, &settings);
+        translations[&key] = json!({"name":tr.get::<Option<String>,_>("name"),"description":tr.get::<Option<String>,_>("description")});
+    }
+    // Old catalogs may have only the canonical source columns. Seed only the main
+    // field in the editable response; other languages remain NULL (inherit).
+    let main = super::product_languages::key(&settings.main_locale, &settings);
+    if translations[&main]["name"].is_null() {
+        translations[&main]["name"] = json!(r.get::<String, _>("name"));
+    }
+    if translations[&main]["description"].is_null() {
+        translations[&main]["description"] = json!(r.get::<String, _>("description"));
     }
     let channels = product_channels(&a, &t, &id).await?;
     let selected_channels = channels
@@ -256,6 +295,6 @@ pub(crate) async fn product_editor(
         .collect::<Vec<_>>();
     let category_ids:Vec<String>=sqlx::query_scalar("SELECT category_id FROM product_categories WHERE tenant=$1 AND product_id=$2 ORDER BY category_id").bind(&t).bind(&id).fetch_all(&a.db).await?;
     Ok(Json(
-        json!({"id":id,"channels":channels,"catalog":{"salesChannelIds":selected_channels,"active":r.get::<bool,_>("active"),"productNumber":r.get::<Option<String>,_>("product_number").unwrap_or_else(||id.clone()),"categoryIds":category_ids,"parentId":r.get::<Option<String>,_>("parent_id"),"options":r.get::<Value,_>("options")},"revision":r.get::<i64,_>("revision"),"translations":translations,"extra":r.get::<Value,_>("extra"),"commerce":editable_fields(&r)}),
+        json!({"id":id,"mainLocale":settings.main_locale,"availableLocales":settings.locales,"channels":channels,"catalog":{"salesChannelIds":selected_channels,"active":r.get::<bool,_>("active"),"productNumber":r.get::<Option<String>,_>("product_number").unwrap_or_else(||id.clone()),"categoryIds":category_ids,"parentId":r.get::<Option<String>,_>("parent_id"),"options":r.get::<Value,_>("options")},"revision":r.get::<i64,_>("revision"),"translations":translations,"extra":r.get::<Value,_>("extra"),"commerce":editable_fields(&r)}),
     ))
 }

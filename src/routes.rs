@@ -4,6 +4,7 @@ use crate::*;
 pub(crate) fn router(a: App) -> Router {
     Router::new()
         .merge(platform::router())
+        .merge(translations::router())
         .merge(apps::app_router())
         .merge(checkout_handoff::router())
         .merge(documents::router())
@@ -49,6 +50,7 @@ pub(crate) fn router(a: App) -> Router {
         )
         .route("/api/workspace/invitations", post(auth::invite_user))
         .route("/store-api/context", get(context_info))
+        .route("/store-api/countries", get(commerce::country_catalogue))
         .route("/api/merchant/overview", get(merchant_overview))
         .route("/api/merchant/quote", post(preview_quote))
         .route("/api/capabilities", get(capabilities))

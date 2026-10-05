@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "20 extracted production policies; surrounding modules remain unproved",
+  "claim": "21 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -35,7 +35,8 @@
     },
     "revision_admissible": {
       "bindings": [
-        "src/commerce/fulfillment.rs"
+        "src/commerce/fulfillment.rs",
+        "src/translations/apply.rs"
       ],
       "theorems": [
         "revision_exact",
@@ -187,13 +188,21 @@
       "theorems": [
         "flow_delay_exact"
       ]
+    },
+    "destination_tax_admissible": {
+      "bindings": [
+        "src/commerce/tax_rules.rs"
+      ],
+      "theorems": [
+        "destination_tax_exact"
+      ]
     }
   },
   "sources": {
     "src/accounts/address_store.rs": {
       "status": "unproved",
-      "sha256": "6a7af4f2b1d28b910536a6bdd6be4f8e6a93cf090e87e15d8dfd8aa3705f7610",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "e9219738f94d55c2dc42fc09bd09c9f26c753dd7bfd4a8d91d2d0d10b79e26df",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/accounts/addresses.rs": {
       "status": "unproved",
@@ -217,8 +226,8 @@
     },
     "src/accounts/mod.rs": {
       "status": "unproved",
-      "sha256": "a2a32f4611fceb56282fca9a4dea37a3fe5135d942e7c417ac0bbfa83b9f9e1c",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "b0c4332379ff755843274a6fa97c79d32dd1e0332a552a131a502d9b50cd9526",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/accounts/order_snapshot.rs": {
       "status": "unproved",
@@ -297,8 +306,8 @@
     },
     "src/apps/routes.rs": {
       "status": "unproved",
-      "sha256": "404530ea99e579299b90f4998028da2097824aa6a182f09051c8329db521c974",
-      "review": "Reviewed email built-in registration and reserved-ID checks in apps/routes.rs, apps/manifest.rs, developer/builds.rs; existing permission/service gateway preserved. marketing/flows.rs snapshots committed orderCustomer and currency for queue recipient stability. verify.yml adds real SMTP/TLS/Resend/SendGrid and isolated PostgreSQL checkout-flow-MCP-staging regressions. No kernel policy or proof property changed; mail/network code remains unproved."
+      "sha256": "21972ba9a50245a11b105d6200aa89577ccd267e61bcaa1f6f0483fe3ccc41c4",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/apps/runtime.rs": {
       "status": "unproved",
@@ -332,8 +341,8 @@
     },
     "src/assets/rich.rs": {
       "status": "unproved",
-      "sha256": "1309fb9659b0cad0c83b94c6b9375a23c2a42f2fb9fb48bc9807dbb0d1258f47",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "78c5dde03b0eb03f60d4d6ea406d5726df549314769c65b3d6f2843de5620afd",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/assets/rich_document.rs": {
       "status": "unproved",
@@ -462,8 +471,8 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "ca48018420e6a75c13e978732f0b2e4ec36610335c0229c551ec309b66aa29da",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "bf1bf9bd69ca939f15147812a6d12c44ee6570e469d2d53764a41165bad99ad8",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
@@ -472,8 +481,8 @@
     },
     "src/capabilities.rs": {
       "status": "unproved",
-      "sha256": "71a8d98afef87a1e0b088d28e655e7c79d6d9f66b69161d711d63437d04c8d33",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "1bbb876efdc84b75a2aca19c441a872d386556481d97cc2672bfc6e6f5f9684e",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/cart_model.rs": {
       "status": "unproved",
@@ -487,8 +496,8 @@
     },
     "src/cart_price.rs": {
       "status": "unproved",
-      "sha256": "f84dd254905278c66c709a6635875504d8d91b7840f9ecba8289fb9f4e2ee9b8",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "0908dfe4f5080e693bbd50215763918f92afb4080b2944a1ad5e8605da410452",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/cart_routes.rs": {
       "status": "unproved",
@@ -512,13 +521,13 @@
     },
     "src/catalog_routes.rs": {
       "status": "unproved",
-      "sha256": "aa42e1e3864a335124fb49adff879629f53435576a5f261c04fe8accbe3196df",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "8478c2fe82c41bc058961f8a88025f849eff11802b8b4376e5d0b23f2b26ee8e",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/categories/admin.rs": {
       "status": "unproved",
-      "sha256": "e4d81946a66fa4cdc6fa2989154ea6df9125b0f23a8c352dbdb273d2999b4d90",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "428d9ef346785128db655afaa368dcc6cca5bee290bda8d198e5993014047b30",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/categories/mod.rs": {
       "status": "unproved",
@@ -527,8 +536,8 @@
     },
     "src/categories/navigation.rs": {
       "status": "unproved",
-      "sha256": "9ed416cb984515f83ca711a17df159d407b5f5c7e1808c6f0897a7723e39cd23",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "5250ec137cdac457e7c5f8169aedec6f82446f84e416ab741c39c063578b2bbd",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/channel_metrics.rs": {
       "status": "unproved",
@@ -577,33 +586,53 @@
     },
     "src/commerce/configuration.rs": {
       "status": "unproved",
-      "sha256": "d242b5b924a3b66bf989c170f73e30f91db3b3290bf58356f4db7f7969d69f3f",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "ffb1bc092768a934b60c1095e8907335aba1350c44afc330d1c6e1408aa6e04e",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "src/commerce/content_text.rs": {
+      "status": "unproved",
+      "sha256": "688c9afa2b626afaca6120b54a316363b1346254d472b00616cb24b001c4f5be",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/commerce/context_routes.rs": {
       "status": "unproved",
-      "sha256": "ddb18ac746fde7aa045ef063fad540dc96f9164fa66ce552ecda052efb5eae7b",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "b08ab60de5d7093303c7f9b3d9524f2307c09cd25f9cd950f8fdbfaf838af277",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/commerce/delivery.rs": {
       "status": "unproved",
-      "sha256": "bb0ac63bd189665e2034fb5e03955c5b21d1b2dbb59aeee125528aaf742ea032",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "6002bf38d546a8a5a6a6e558b3ffcc84f08b58af29408203a1ef0039691a36b6",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/commerce/detail.rs": {
       "status": "unproved",
-      "sha256": "6e45345a34af066703a398fc0134a108e3fe90bb2e9f8f96aa0ab066dc4b7dfe",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "a183db1f02818db3af1f9bc8367bf9cad7e95e98f52abd8ff653457d01696a78",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/commerce/fulfillment.rs": {
       "status": "reviewed-binding",
       "sha256": "89188a401d48a5bd3a02cf3d74085165bd27c0d40820940138f93e455c86569c",
       "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
     },
+    "src/commerce/geography.rs": {
+      "status": "unproved",
+      "sha256": "2d8ff4e49e9037644f2c1028799a0cf3d59af4a7f68f80ec59348cd3b8b24f61",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "src/commerce/international_capabilities.rs": {
+      "status": "unproved",
+      "sha256": "aea839d3106d43e2ce24f427c31f0802cee060d8998fae5ff0b1d8f88abee8a6",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "src/commerce/method_text.rs": {
+      "status": "unproved",
+      "sha256": "7025fd754ed13efe31fde517af1c0821f7a2a60c3797ad009f0afe018a6bbd91",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
     "src/commerce/mod.rs": {
       "status": "unproved",
-      "sha256": "2a8e56fd39a3125cbc92c4096298f50db2bbd2ec7bfe1f7b69833bd9d6a330b7",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "6649321a2d3a6dce91f2f70bf66475e17e7788d3add2d515be904dd29dc20a0a",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/commerce/order_fields.rs": {
       "status": "unproved",
@@ -632,13 +661,18 @@
     },
     "src/commerce/product_edit.rs": {
       "status": "unproved",
-      "sha256": "85a248bde6489e31a70026e53ef83e99c3523678cbf9024e57143f8fc9e8f8b1",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "fa737fbf766f3af91f6946de813aec8f4e15af6930ee7ded408adf068633b016",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/commerce/product_fields.rs": {
       "status": "unproved",
       "sha256": "5e55ecd95c580761a947be4a0c11c8cedb71432190fead1e8381667dba862271",
       "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+    },
+    "src/commerce/product_languages.rs": {
+      "status": "unproved",
+      "sha256": "9b626d3e83770282518e0c67ba79ba4688a07e2babb25f2f50c9b1e4f10dcda8",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/commerce/review_moderation.rs": {
       "status": "unproved",
@@ -652,13 +686,18 @@
     },
     "src/commerce/selection.rs": {
       "status": "unproved",
-      "sha256": "994db2c9881faf6ca27eac5110f555474530c958d69a30463a47d3600a9b8640",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "9ec8c4ceba6bc193359e2a9d46bfac88c11ff1ad54faa37aeb68a17f2ce33521",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "src/commerce/settings_defaults.rs": {
+      "status": "unproved",
+      "sha256": "a77b5453efb0fab1ec3395d598c54be70e3adc32bd92cc5407dc712fb327b9d5",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/commerce/settings_mutation.rs": {
       "status": "unproved",
-      "sha256": "f80a39a1b462a4ea6d63a3fadb06444e8ec5fda9b21d0a7ed3f2adaa7bbbbb42",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "8b9cf1834c3b0e18956934386e3baf6e9674d5395d3cf5c751c1a77390064b50",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/commerce/settings_routes.rs": {
       "status": "unproved",
@@ -667,18 +706,28 @@
     },
     "src/commerce/settings_validation.rs": {
       "status": "unproved",
-      "sha256": "59e2cba20f458d569f6b588f93909538e6b9e57127563342a2065a749b3be6dc",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "52e06b31ae491c298f3f51430194779fdbdc4873a541a1a33c5469a5e9e5fc01",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/commerce/tax.rs": {
       "status": "unproved",
-      "sha256": "cea028bcc213b70b6a48305022df26e98c2a6e8c1ff64c3a9ad60513ead683f5",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "95f5ffd526cbf3f2bd79173ce5c91f07b646476908bc7a1fa3cb6bc7e407003a",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "src/commerce/tax_context.rs": {
+      "status": "unproved",
+      "sha256": "28aec57ab7e377a3791d20350b37c2c137e41211285d92e1b281f5af0cf99871",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "src/commerce/tax_rules.rs": {
+      "status": "reviewed-binding",
+      "sha256": "7450f7c1120ea79d4302e6f9d451c246a9d9c4142acdd1ddf3e0fcbf93cf687f",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/commerce/types.rs": {
       "status": "unproved",
-      "sha256": "6f60840bb5203ee5c87db09219f39cf8a9367fb6cd05147b44083a82ad623aab",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "92e69e73bdc492d904c4e1dc6cbadda92a3999cc4f78595854307bc99ce07f2c",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/concierge.rs": {
       "status": "unproved",
@@ -772,8 +821,8 @@
     },
     "src/knowledge.rs": {
       "status": "unproved",
-      "sha256": "1ea55aa62d64d06fc3610eae5da35216025356add45fda0ea0b3f12bafcfbf29",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "eaaa10844d6cedecbb8a0566d9b1181f1eb72856d06eee60ef7c30102cdd098a",
+      "review": "Reviewed canonical Product row locking before AGE synchronization, preventing order projection/manual-edit races and stale graph metadata. International, translations and full customer lifecycle PostgreSQL suites pass on the changed binary; Rust units/lint pass. Destination guard remains exactly five conjunctive predicates; schema, fixtures and all changed adapters reviewed. Surrounding SQL/AI remain unproved."
     },
     "src/lib.rs": {
       "status": "unproved",
@@ -782,13 +831,13 @@
     },
     "src/localization.rs": {
       "status": "unproved",
-      "sha256": "483ce92fa4bff5e11a29d5525b675c636e69542402e51ffb924ac41d691ea4e6",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "2179cc40397b0a83eb2b91bf171ef246bcdd986c5958b63e397bfe8bff9bba9b",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/main.rs": {
       "status": "unproved",
-      "sha256": "ee3c6bf0dd7ffceb1809356c678038d6a1d69e50688f3d7192ede85ea5a571f4",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "96129fa9a4fa48c2203ae5eccee7afe0551ed7d615e6bb3bc8be43f40cea1ae2",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/marketing/app_flows.rs": {
       "status": "reviewed-binding",
@@ -804,6 +853,11 @@
       "status": "unproved",
       "sha256": "ddbc1b98e55f7d2a953c7e9617e2142337d192f026d8776b83eab2ed200f29f9",
       "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+    },
+    "src/marketing/condition_gateway.rs": {
+      "status": "unproved",
+      "sha256": "1ce279b617599594c57814388efe3a114fa2152522ceaa2c675d2d5ac58b2522",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/marketing/customer_facts.rs": {
       "status": "unproved",
@@ -857,8 +911,8 @@
     },
     "src/marketing/mod.rs": {
       "status": "unproved",
-      "sha256": "cc6d664b601298f8f058493fb096a34607080f393ca841d98fc329904c5e0b1a",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "131a54ad7520ecd4936224db823df088c0a9a9434daa3256bc971016ebe96b38",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/marketing/pipeline.rs": {
       "status": "reviewed-binding",
@@ -882,8 +936,8 @@
     },
     "src/marketing/routes.rs": {
       "status": "unproved",
-      "sha256": "6b384b767c4f6a10a9eb1269fcbc8d10dc470bf03fe111ff4d062f8b59bb68ac",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "986aef685df9c58259cab0d2a2c8616f31c7324a4fb8118f2d73d9c53def1d66",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/marketing/rule_fields.rs": {
       "status": "unproved",
@@ -912,13 +966,13 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "198565c5ff593e65fb4ff1781b901c2e6dab4e88e5590370d8f6243d1ce10d7f",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "de736861fdfd4e8afa0a954b33d7155e637a2adf7f05ef9d54ebe31f3a1372b6",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "8ac0b0ba95210a7c96634d77cb112385cb4dcd2926e7ccc737a2909856d9ba18",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "71c576cbec226935e02553e896875f1b755778ef661569171da62b924ddddafa",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -962,8 +1016,8 @@
     },
     "src/order_checkout.rs": {
       "status": "reviewed-binding",
-      "sha256": "578bbf654b3264f53d08a8290d53d1bd5477dbfd17ae04955b43bff403e224dd",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "ab0403d83e06e0e27f915d3e30013286f4d4129d5066434f06593ee270d68c49",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/order_routes.rs": {
       "status": "unproved",
@@ -1072,8 +1126,8 @@
     },
     "src/routes.rs": {
       "status": "unproved",
-      "sha256": "9c380cdec08b25ba8c224fa8253631bb0bdd7df373a971fef9006472859823b8",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "d28a6a969e1bf99ac6b98485932f5ed4ac6cdfb448a6cde82bd86d9c878b85bb",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/rule_comparison.rs": {
       "status": "reviewed-binding",
@@ -1130,6 +1184,31 @@
       "sha256": "68e82dfa7a2cf1564db97930a82bdcc977a5d6050cc6db7fba62ad99604b9d01",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/translations/apply.rs": {
+      "status": "reviewed-binding",
+      "sha256": "0d154ce1bd93790536bf924b64718a093278359ea17b4c381ead326c917c0695",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "src/translations/fields.rs": {
+      "status": "unproved",
+      "sha256": "ce4506eb38bb90ec8e4812d8b432a7b86b313905283381f06f1dc89c4f575cfe",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "src/translations/mod.rs": {
+      "status": "unproved",
+      "sha256": "049c9b875d96d25bff0c65597e8f2fd0a98bacc8cb29b5d4929bf8ea14fe3a31",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "src/translations/routes.rs": {
+      "status": "unproved",
+      "sha256": "7bf344699a8b18b00aadb98b79c9b172f063f315ba84aacbc5d81676853d5307",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "src/translations/worker.rs": {
+      "status": "unproved",
+      "sha256": "13195d1904a32e7463fe19e63380b33b8bd5f3fa8685a32fdc4355a2a4d238e9",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
     "src/ucp.rs": {
       "status": "unproved",
       "sha256": "2d948ffa3a456cf18660ec1c209b57f96d6dc30b3f5fa7d01a8cbd8cb03533bc",
@@ -1137,19 +1216,19 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "4851559056dabb31acf52649496f532d561b6be4d9cdc9659b38ba75fb65f3c9",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "f79a31abe1f7e214438753bf4248829bf6d7acfa6c12aa9b517a5f5a223152d7",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "src/workers.rs": {
       "status": "unproved",
-      "sha256": "749a0ca49dd71333d6f98159e0589fbee6a25210b8c1a9148897244e7608d73e",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "5f777e0653861075f6e0666553aa4ddc2d0ec075320c0ebdaf7df1d3734b6243",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     }
   },
   "inputs": {
     ".github/workflows/verify.yml": {
-      "sha256": "0db0d5098d235f0a3bbb49bc50ed70ed0519cf04d563d76a31bd25cf7a5caa2b",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "c984de06ef08e8a674417e3a58869c28391f2e4f7db1e28507e204e458892820",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "Cargo.lock": {
       "sha256": "36240fbb9fcfda3ccd2ff73f5e001450f5de1fb00caa7191b364860a6f57adea",
@@ -1158,6 +1237,22 @@
     "Cargo.toml": {
       "sha256": "94eca2d307777d529d7f7014d31453786088b89fb25cecc2e6cb113d2d7eef32",
       "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "fixtures/demo-catalog.json": {
+      "sha256": "e5d5eea04a7693b3f92fa58be66ad36b7ad01d5920029c29f303693aa0032ba2",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "fixtures/demo-customer.json": {
+      "sha256": "913ff65a27571c8aea2aac1fa6c136f3a4ab74c21cb35fe91c266a1f1c27c091",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "fixtures/demo-settings.json": {
+      "sha256": "5643d788382735e13ea732da3e0fc9d732feecf0835e92df2d41b0b271304167",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "fixtures/geography.json": {
+      "sha256": "8b882d4e9ff3e8ce14f091d7d9a824d692754b8a9771949c9ae60873f3aacd85",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "migrations/001.sql": {
       "sha256": "89fd780bf3d991bf3c056f4145e064e4aa030ef5e33a0fff1e5fc7330604a2a7",
@@ -1271,9 +1366,13 @@
       "sha256": "186280185b4d7f8233fcab4525a68a551518e562f60d6a55e2c50d0ba3ecebc5",
       "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
+    "migrations/028-translations.sql": {
+      "sha256": "03ac466bb6f8cd7361a1fede97b59e6191549691659217735c5e0ca3a99d68f1",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
     "proof/Commerce/Claims.lean": {
-      "sha256": "5f8e07e5914ed4f3616143abf8983c6a4bb99045a5958ec6346771895bfbe841",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "c9b984225b556b954c3147500a907788ae4436a16f787d44ccdc493282df5a73",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -1308,12 +1407,12 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "76f836bd92fbd8863c346707022138f39d7ca5c79f93f7f1b89cb69a59313780",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "938681602c8cbc2532a899c545493bb4fad13ef03d22aa7bdcb855bd69ef113f",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "scripts/formal/registry.py": {
-      "sha256": "7866a81790c3ee51bfd12c1d3ec69006d3aee19116ff0dc37197c231c4eeaabf",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "3b554637854314cffd45018b3e5adc568d24e0ab145d7d6fa75350d2f80f5900",
+      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "scripts/formal/runners.py": {
       "sha256": "a009732dcf573aa10b33f02eef9c4bf57a3a44d34d1d4e8bb0b09868d0543a23",

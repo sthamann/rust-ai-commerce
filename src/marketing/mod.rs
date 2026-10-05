@@ -31,3 +31,6 @@ pub(crate) use routes::router;
 
 #[cfg(test)]
 mod pipeline_tests;
+
+mod condition_gateway;
+pub(crate) use condition_gateway::*;

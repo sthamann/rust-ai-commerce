@@ -1,11 +1,31 @@
-/** Country/tax/shipping/payment configuration uses the active workspace request and one revision. */
-import { useEffect, useState } from "react";
+/** One revisioned international settings aggregate: drafts survive navigation between countries, taxes, methods and languages. */
+import { useEffect, useRef, useState } from "react";
 import type { Config } from "../../shared/api/shop-api";
-import { useCustomerText } from "../../shared/i18n/customer-i18n";
-import { useShopText } from "../../shared/i18n/shop-i18n";
+import type {
+  Country,
+  CountryCatalogue,
+} from "../../shared/geography/geography-types";
+import { useInternationalText } from "../../shared/i18n/international-i18n";
 import type { RequestFn } from "../shell/studio-types";
 import { useSettingsDraft } from "./useSettingsDraft";
 import SettingsSaveBar from "./SettingsSaveBar";
+import CountriesSettings from "./CountriesSettings";
+import TaxSettings from "./TaxSettings";
+import MethodSettings from "./MethodSettings";
+import LanguageSettings from "./LanguageSettings";
+import "../styles/international.css";
+import "../styles/international-details.css";
+export type InternationalConfig = Config & {
+  mainLocale: string;
+  locales: string[];
+  countryDefinitions: Country[];
+};
+export type InternationalProps = {
+  config: InternationalConfig;
+  patch: (data: Partial<InternationalConfig>) => void;
+  countries: Country[];
+  request: RequestFn;
+};
 export default function CommerceSettings({
   request,
   area,
@@ -13,35 +33,102 @@ export default function CommerceSettings({
   onDirty,
 }: {
   request: RequestFn;
-  area: "taxes" | "countries" | "shipping" | "payment";
+  area: "taxes" | "countries" | "shipping" | "payment" | "languages";
   canWrite: boolean;
   onDirty?: (dirty: boolean) => void;
 }) {
-  const { s } = useShopText(),
-    { c, locale } = useCustomerText();
+  const { i } = useInternationalText();
   const state = useSettingsDraft<Config>(request, "/api/merchant/commerce");
-  const { value, dirty, busy, error } = state;
-  const [country, setCountry] = useState("");
+  const [world, setWorld] = useState<Country[]>([]);
+  const [loadError, setLoadError] = useState("");
+  const current = useRef(request);
+  current.current = request;
   useEffect(() => {
-    onDirty?.(dirty);
-  }, [dirty, onDirty]);
-  const config = value?.data;
-  const revision = value?.revision;
-  if (!config)
-    return <p role={error ? "alert" : "status"}>{error || s("loading")}</p>;
-  const patch = (data: Partial<Config>) => state.change({ ...config, ...data });
+    onDirty?.(state.dirty);
+  }, [state.dirty, onDirty]);
+  useEffect(() => {
+    let active = true;
+    current
+      .current("/store-api/countries")
+      .then((v: CountryCatalogue) => {
+        if (!Array.isArray(v.countries))
+          throw new Error(i("loadCountriesError"));
+        if (active) setWorld(v.countries);
+      })
+      .catch((e) => {
+        if (active) setLoadError(e.message);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+  if (!state.value)
+    return (
+      <p role={state.error ? "alert" : "status"}>
+        {state.error || i("loading")}
+      </p>
+    );
+  const config: InternationalConfig = {
+    mainLocale: "en-GB",
+    locales: ["en-GB", "de-DE", "es-ES", "fr-FR"],
+    countryDefinitions: [],
+    ...state.value.data,
+  };
+  const countries = [
+    ...world.filter(
+      (c) => !config.countryDefinitions.some((v) => v.code === c.code),
+    ),
+    ...config.countryDefinitions,
+  ].sort((a, b) => a.code.localeCompare(b.code));
+  const patch = (v: Partial<InternationalConfig>) =>
+    state.change({ ...config, ...v });
+  const props = { config, patch, countries, request };
+  const missing = config.countries.filter(
+    (code) =>
+      config.taxes.some(
+        (t) => t.rates[code] == null && t.defaultRate == null,
+      ) ||
+      !config.shipping.some((s) => s.active && s.countries.includes(code)) ||
+      !config.payments.some(
+        (p) =>
+          p.active &&
+          !p.businessOnly &&
+          ((!p.restrictedCountries && !p.countries?.length) ||
+            p.countries?.includes(code)),
+      ),
+  );
   return (
-    <section className="studio-card settings-panel">
-      <div className="settings-panel-header">
-        <h2>{area === "countries" ? c(area) : s(area)}</h2>
-        <span>
-          {c("revision")} {revision}
+    <section className="studio-card settings-panel intl-panel">
+      <header className="settings-panel-header">
+        <div>
+          <h2>{i(area)}</h2>
+          <p>
+            {i(
+              area === "countries"
+                ? "countriesHint"
+                : area === "taxes"
+                  ? "ruleHint"
+                  : area === "languages"
+                    ? "languageHint"
+                    : "methodHint",
+            )}
+          </p>
+        </div>
+        <span className="soft-tag">
+          {i("revision")} {state.value.revision}
         </span>
-      </div>
-      {error && (
+      </header>
+      {(state.error || loadError) && (
         <p role="alert" className="settings-error">
-          {error}
+          {state.error || loadError}
         </p>
+      )}
+      {!!missing.length && (
+        <div role="status" className="intl-coverage">
+          <strong>{i("requiredCoverage")}</strong>
+          <span>{missing.join(" · ")}</span>
+          <p>{i("countryHint")}</p>
+        </div>
       )}
       <form
         onSubmit={(e) => {
@@ -49,236 +136,20 @@ export default function CommerceSettings({
           if (canWrite) void state.save();
         }}
       >
-        <fieldset disabled={!canWrite || busy} className="settings-fields">
-          {area === "taxes" &&
-            config.taxes.map((t) => (
-              <article key={t.id}>
-                <h3>{s(t.id === "standard" ? "standardTax" : "reducedTax")}</h3>
-                <div className="customer-field-grid">
-                  {config.countries.map((code) => (
-                    <label key={code}>
-                      {new Intl.DisplayNames([locale], { type: "region" }).of(
-                        code,
-                      )}{" "}
-                      · %
-                      <input
-                        type="number"
-                        min={0}
-                        max={50}
-                        step="0.01"
-                        required
-                        value={t.rates[code]}
-                        onChange={(e) =>
-                          patch({
-                            taxes: config.taxes.map((v) =>
-                              v.id === t.id
-                                ? {
-                                    ...v,
-                                    rates: {
-                                      ...v.rates,
-                                      [code]: Number(e.target.value),
-                                    },
-                                  }
-                                : v,
-                            ),
-                          })
-                        }
-                      />
-                    </label>
-                  ))}
-                </div>
-              </article>
-            ))}
-          {area === "countries" && (
-            <>
-              <div className="settings-country-list">
-                {config.countries.map((code) => (
-                  <span key={code}>
-                    {new Intl.DisplayNames([locale], { type: "region" }).of(
-                      code,
-                    )}{" "}
-                    · {code}
-                  </span>
-                ))}
-              </div>
-              <label>
-                {c("country")}
-                <input
-                  maxLength={2}
-                  value={country}
-                  pattern="[A-Z]{2}"
-                  onChange={(e) => setCountry(e.target.value.toUpperCase())}
-                />
-              </label>
-              <button
-                type="button"
-                className="studio-secondary"
-                disabled={
-                  !/^[A-Z]{2}$/.test(country) ||
-                  config.countries.includes(country)
-                }
-                onClick={() => {
-                  patch({
-                    countries: [...config.countries, country],
-                    taxes: config.taxes.map((t) => ({
-                      ...t,
-                      rates: { ...t.rates, [country]: 0 },
-                    })),
-                  });
-                  setCountry("");
-                }}
-              >
-                {c("add")}
-              </button>
-            </>
+        <fieldset className="intl-fields" disabled={!canWrite || state.busy}>
+          {area === "countries" ? (
+            <CountriesSettings {...props} />
+          ) : area === "taxes" ? (
+            <TaxSettings {...props} />
+          ) : area === "languages" ? (
+            <LanguageSettings
+              {...props}
+              dirty={state.dirty}
+              canWrite={canWrite}
+            />
+          ) : (
+            <MethodSettings {...props} area={area} />
           )}
-          {area === "shipping" &&
-            config.shipping.map((v, i) => (
-              <article className="settings-method" key={v.id}>
-                <h3>
-                  {s(v.name)} <small>{v.id}</small>
-                </h3>
-                <div className="customer-field-grid">
-                  {(
-                    [
-                      "name",
-                      "price",
-                      "freeAbove",
-                      "minDays",
-                      "maxDays",
-                    ] as const
-                  ).map((k) => (
-                    <label key={k}>
-                      {k === "minDays" || k === "maxDays"
-                        ? c(k)
-                        : s(k === "price" ? "fee" : k)}
-                      <input
-                        type={k === "name" ? "text" : "number"}
-                        min={0}
-                        step={k === "price" || k === "freeAbove" ? "0.01" : "1"}
-                        value={v[k] ?? ""}
-                        onChange={(e) =>
-                          patch({
-                            shipping: config.shipping.map((x, j) =>
-                              j === i
-                                ? {
-                                    ...x,
-                                    [k]:
-                                      k === "name"
-                                        ? e.target.value
-                                        : e.target.value === "" &&
-                                            k === "freeAbove"
-                                          ? null
-                                          : Number(e.target.value),
-                                  }
-                                : x,
-                            ),
-                          })
-                        }
-                      />
-                    </label>
-                  ))}
-                  <label>
-                    {s("taxType")}
-                    <select
-                      value={v.taxType}
-                      onChange={(e) =>
-                        patch({
-                          shipping: config.shipping.map((x, j) =>
-                            j === i ? { ...x, taxType: e.target.value } : x,
-                          ),
-                        })
-                      }
-                    >
-                      <option value="highest">{s("highest")}</option>
-                      <option value="proportional">{s("proportional")}</option>
-                    </select>
-                  </label>
-                </div>
-                <div className="customer-defaults">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={v.active}
-                      onChange={(e) =>
-                        patch({
-                          shipping: config.shipping.map((x, j) =>
-                            j === i ? { ...x, active: e.target.checked } : x,
-                          ),
-                        })
-                      }
-                    />
-                    {s("active")}
-                  </label>
-                  {config.countries.map((code) => (
-                    <label key={code}>
-                      <input
-                        type="checkbox"
-                        checked={v.countries.includes(code)}
-                        onChange={(e) =>
-                          patch({
-                            shipping: config.shipping.map((x, j) =>
-                              j === i
-                                ? {
-                                    ...x,
-                                    countries: e.target.checked
-                                      ? [...x.countries, code]
-                                      : x.countries.filter((c) => c !== code),
-                                  }
-                                : x,
-                            ),
-                          })
-                        }
-                      />
-                      {code}
-                    </label>
-                  ))}
-                </div>
-              </article>
-            ))}
-          {area === "payment" &&
-            config.payments.map((v, i) => (
-              <article className="settings-method" key={v.id}>
-                <h3>
-                  {s(v.name)}{" "}
-                  <small>
-                    {v.mode} · {v.id}
-                  </small>
-                </h3>
-                <div className="customer-defaults">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={v.active}
-                      onChange={(e) =>
-                        patch({
-                          payments: config.payments.map((x, j) =>
-                            j === i ? { ...x, active: e.target.checked } : x,
-                          ),
-                        })
-                      }
-                    />
-                    {s("active")}
-                  </label>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={v.businessOnly}
-                      onChange={(e) =>
-                        patch({
-                          payments: config.payments.map((x, j) =>
-                            j === i
-                              ? { ...x, businessOnly: e.target.checked }
-                              : x,
-                          ),
-                        })
-                      }
-                    />
-                    {c("businessOnly")}
-                  </label>
-                </div>
-              </article>
-            ))}
         </fieldset>
         <SettingsSaveBar {...state} canWrite={canWrite} />
       </form>

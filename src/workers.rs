@@ -8,11 +8,24 @@ pub(crate) fn start(a: &App) {
             "http",
             "memory-worker",
             "payment-worker",
-            "app-worker"
+            "app-worker",
+            "translation-worker"
         ]
         .contains(&role.as_str()),
         "Unsupported PROCESS_ROLE"
     );
+    if ["all", "translation-worker"].contains(&role.as_str()) {
+        let worker = a.clone();
+        tokio::spawn(async move {
+            let mut ticks = tokio::time::interval(std::time::Duration::from_secs(1));
+            loop {
+                ticks.tick().await;
+                if let Err(e) = translations::once(&worker).await {
+                    eprintln!("translation worker: {}", e.1);
+                }
+            }
+        });
+    }
     if ["all", "http"].contains(&role.as_str()) {
         let worker = a.clone();
         tokio::spawn(async move {

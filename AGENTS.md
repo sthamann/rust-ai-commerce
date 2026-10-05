@@ -26,3 +26,25 @@ structure check is mandatory.
 
 The exact proof boundary and extension procedure are documented in
 `docs/formal-verification.md`. Required GitHub verification checks must stay active.
+
+## Internationalization contract (mandatory for every new module)
+
+- Every customer/merchant-facing field (including shipping/payment names and descriptions,
+  tax labels, country/region names, product names, SEO, rich descriptions and category content)
+  must accept enabled shop content languages. Do not hard-code four product languages.
+- Use the shop's `mainLocale` as the per-field fallback. `null`/missing means inherit;
+  an explicitly empty description must remain empty. Never save inherited values as
+  fabricated translations or silently copy names into every language.
+- All new interface text and bundled content ships in English, German and Spanish;
+  preserve French where supported. Use typed shared vocabulary modules, never raw JSX
+  text/labels. `npm run localization` is required in CI. The legacy literal inventory
+  records existing debt; do not grow it to bypass this rule.
+- Reuse `shared/geography` search/group pickers for country or region selection.
+  Country checkbox walls and unvalidated free-text subdivision IDs are prohibited.
+- Newly enabled delivery countries require explicit tax configuration and valid shipping
+  and consumer payment coverage. Do not invent tax law or automatically set new countries
+  to a zero tax rate. Destination conditions run through the existing native Rule Builder.
+- Translation/model output is untrusted. Preserve URLs, IDs, units, media and document
+  structure; validate content, tenant permissions and expected revisions on apply.
+  Bulk operations must persist progress and process bounded batches. Test inheritance,
+  a non-English main language, tenant isolation, stale versions and provider failures.

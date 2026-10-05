@@ -3,7 +3,8 @@ use super::*;
 use rust_ai_commerce::context::{Language, language_chain};
 
 pub(super) async fn language_context(a: &App, h: &HeaderMap) -> Result<(String, Vec<String>)> {
-    let locale = header(h, "x-commerce-locale").unwrap_or("en-GB");
+    let (settings, _) = commerce::config(a, &tenant(h)?).await?;
+    let locale = header(h, "x-commerce-locale").unwrap_or(&settings.main_locale);
     let rows = sqlx::query("SELECT id,locale,parent_id FROM languages ORDER BY locale")
         .fetch_all(&a.db)
         .await?;
@@ -24,8 +25,20 @@ pub(super) async fn language_context(a: &App, h: &HeaderMap) -> Result<(String, 
             parent_id: r.get("parent_id"),
         })
         .collect::<Vec<_>>();
-    let chain =
+    let mut chain =
         language_chain(&selected.get::<String, _>("id"), &available, &languages).map_err(bad)?;
+    if settings.main_locale != "en-GB" {
+        let main = rows
+            .iter()
+            .find(|r| r.get::<String, _>("locale") == settings.main_locale)
+            .ok_or(bad("Main language unavailable"))?
+            .get::<String, _>("id");
+        let current = selected.get::<String, _>("id");
+        chain.retain(|id| id != rust_ai_commerce::context::SYSTEM_LANGUAGE || id == &current);
+        if !chain.contains(&main) {
+            chain.push(main);
+        }
+    }
     Ok((selected.get("locale"), chain))
 }
 pub(super) async fn localize_products(
@@ -46,7 +59,21 @@ pub(super) async fn localize_products(
                 (row.get("name"), row.get("description")),
             );
     }
+    let languages = sqlx::query("SELECT id,locale FROM languages WHERE id=ANY($1)")
+        .bind(chain)
+        .fetch_all(&a.db)
+        .await?;
+    let locale_chain = chain
+        .iter()
+        .filter_map(|id| {
+            languages
+                .iter()
+                .find(|l| l.get::<String, _>("id") == *id)
+                .map(|l| l.get::<String, _>("locale"))
+        })
+        .collect::<Vec<_>>();
     for p in &mut ps {
+        super::commerce::localize_extra(&mut p.extra, &locale_chain);
         if let Some(values) = translations.get(&p.id) {
             if let Some(name) = translated_field(values, chain, false) {
                 p.name = name.to_owned();
@@ -79,8 +106,9 @@ fn translated_field<'a>(
 
 pub(super) async fn context_info(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let (locale, chain) = language_context(&a, &h).await?;
+    let (settings, _) = commerce::config(&a, &tenant(&h)?).await?;
     Ok(Json(
-        json!({"locale":locale,"languageIdChain":chain,"availableLocales":["de-DE","en-GB","fr-FR","es-ES","de-CH"],"currency":"EUR","taxStates":["gross","net"],"rules":"demo customer-group membership; not the full Rule Builder"}),
+        json!({"locale":locale,"mainLocale":settings.main_locale,"languageIdChain":chain,"availableLocales":settings.locales,"currency":"EUR","taxStates":["gross","net"]}),
     ))
 }
 pub(super) async fn preview_quote(

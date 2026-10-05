@@ -7,9 +7,11 @@ import { useStudioText } from "../../shared/i18n/studio-ui-i18n";
 import Icon, { type IconName } from "../../shared/ui/Icon";
 import type { RequestFn } from "../shell/studio-types";
 import "../styles/settings.css";
+import { useInternationalText } from "../../shared/i18n/international-i18n";
 import CommerceSettings from "./CommerceSettings";
 import MasterDataSettings from "./MasterDataSettings";
-type Area = "masterData" | "taxes" | "countries" | "shipping" | "payment";
+type Area =
+  "masterData" | "taxes" | "countries" | "shipping" | "payment" | "languages";
 export default function SettingsWorkspace({
   request,
   rights,
@@ -26,7 +28,8 @@ export default function SettingsWorkspace({
   const { c } = useCustomerText(),
     { s, t } = useShopText(),
     { w } = useWorkbenchText(),
-    { u } = useStudioText();
+    { u } = useStudioText(),
+    { i } = useInternationalText();
   const [area, setArea] = useState<Area>("masterData");
   const [dirty, setDirty] = useState(false);
   const [pending, setPending] = useState<(() => void) | null>(null);
@@ -41,7 +44,18 @@ export default function SettingsWorkspace({
       hint: u("companyHint"),
       icon: "building",
     },
-    { id: "taxes", label: s("taxes"), hint: u("taxesHint"), icon: "percent" },
+    {
+      id: "taxes",
+      label: s("taxes"),
+      hint: i("destinationRules"),
+      icon: "percent",
+    },
+    {
+      id: "languages",
+      label: i("languages"),
+      hint: i("languageHint"),
+      icon: "globe",
+    },
     {
       id: "countries",
       label: c("countries"),
@@ -99,7 +113,11 @@ export default function SettingsWorkspace({
               key={item.id}
               aria-current={area === item.id ? "page" : undefined}
               onClick={() => {
-                if (area !== item.id) navigate(() => setArea(item.id));
+                if (area !== item.id) {
+                  if (area !== "masterData" && item.id !== "masterData")
+                    setArea(item.id);
+                  else navigate(() => setArea(item.id));
+                }
               }}
             >
               <Icon name={item.icon} size={19} />
@@ -149,7 +167,6 @@ export default function SettingsWorkspace({
             />
           ) : (
             <CommerceSettings
-              key={area}
               request={request}
               area={area}
               canWrite={rights.includes("settings.write")}

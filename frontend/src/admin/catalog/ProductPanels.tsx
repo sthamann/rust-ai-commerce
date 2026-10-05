@@ -4,7 +4,12 @@ import type { Category, ProductDraft } from "./catalog-model";
 import PairFields from "./PairFields";
 import ReferencePriceFields from "./ReferencePriceFields";
 import ProductMedia from "./ProductMedia";
-import RichEditor from "./RichEditor";
+import {
+  ProductRich,
+  ProductSeo,
+  ProductSpecifications,
+} from "./ProductLocalizedContent";
+import ProductTextFields from "./ProductTextFields";
 export default function ProductPanels({
   tab,
   draft,
@@ -51,69 +56,11 @@ export default function ProductPanels({
   if (tab === "general")
     return (
       <>
-        <div className="catalog-form-grid">
-          <label>
-            {c("name")} · {lang.toUpperCase()}
-            <input
-              required
-              maxLength={200}
-              value={d.translations[lang].name}
-              onChange={(e) =>
-                onChange({
-                  ...d,
-                  translations: {
-                    ...d.translations,
-                    [lang]: { ...d.translations[lang], name: e.target.value },
-                  },
-                })
-              }
-            />
-          </label>
-          <label>
-            {c("number")}
-            <input
-              required
-              maxLength={100}
-              value={d.catalog.productNumber}
-              onChange={(e) =>
-                onChange({
-                  ...d,
-                  catalog: { ...d.catalog, productNumber: e.target.value },
-                })
-              }
-            />
-          </label>
-          <label className="catalog-span">
-            {c("description")}
-            <textarea
-              rows={3}
-              maxLength={4000}
-              value={d.translations[lang].description}
-              onChange={(e) =>
-                onChange({
-                  ...d,
-                  translations: {
-                    ...d.translations,
-                    [lang]: {
-                      ...d.translations[lang],
-                      description: e.target.value,
-                    },
-                  },
-                })
-              }
-            />
-          </label>
-        </div>
+        <ProductTextFields draft={d} lang={lang} onChange={onChange} />
         <h2>
           {c("rich")} · {lang.toUpperCase()}
         </h2>
-        <RichEditor
-          key={lang}
-          language={lang}
-          fallback={d.translations[lang].description}
-          value={d.extra.richDescription ?? {}}
-          onChange={(richDescription) => extra({ richDescription })}
-        />
+        <ProductRich draft={d} lang={lang} onChange={onChange} />
         <div className="catalog-form-grid">
           {(["manufacturer", "manufacturerNumber", "ean"] as const).map((k) => (
             <label key={k}>
@@ -310,12 +257,7 @@ export default function ProductPanels({
         <h2>
           {c("specs")} · {lang.toUpperCase()}
         </h2>
-        <PairFields
-          value={d.extra.specifications?.[lang] ?? {}}
-          onChange={(v) =>
-            extra({ specifications: { ...d.extra.specifications, [lang]: v } })
-          }
-        />
+        <ProductSpecifications draft={d} lang={lang} onChange={onChange} />
         <h2>{c("key")}</h2>
         <PairFields
           value={d.commerce.properties}
@@ -344,39 +286,7 @@ export default function ProductPanels({
         </div>
       </>
     );
-  if (tab === "seo") {
-    const seo = {
-      title: "",
-      description: "",
-      slug: "",
-      ...d.extra.seo?.[lang],
-    };
-    return (
-      <div className="catalog-form-grid">
-        {(["title", "description", "slug"] as const).map((k) => (
-          <label key={k}>
-            {c(k === "description" ? "metaDescription" : k)}
-            <input
-              maxLength={k === "description" ? 500 : 200}
-              value={seo[k]}
-              onChange={(e) =>
-                extra({
-                  seo: {
-                    ...d.extra.seo,
-                    [lang]: { ...seo, [k]: e.target.value },
-                  },
-                })
-              }
-            />
-          </label>
-        ))}
-        <div className="catalog-seo-preview">
-          <strong>{seo.title || d.translations[lang].name}</strong>
-          <small>/{seo.slug || d.id}</small>
-          <p>{seo.description || d.translations[lang].description}</p>
-        </div>
-      </div>
-    );
-  }
+  if (tab === "seo")
+    return <ProductSeo draft={d} lang={lang} onChange={onChange} />;
   return null;
 }

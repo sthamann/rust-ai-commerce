@@ -2,6 +2,7 @@
 use crate::*;
 
 const SCHEMA: &[(&str, &str)] = &[
+    // International translation jobs are additive and independent of earlier domain schemas.
     // Product/category management is append-only; earlier migration hashes stay intact.
     // Append-only entries are applied in dependency order below.
     ("001", include_str!("../migrations/001.sql")),
@@ -90,6 +91,10 @@ const SCHEMA: &[(&str, &str)] = &[
     (
         "027-product-search",
         include_str!("../migrations/027-product-search.sql"),
+    ),
+    (
+        "028-translations",
+        include_str!("../migrations/028-translations.sql"),
     ),
 ];
 

@@ -2,7 +2,11 @@
 import { useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
 import { useCatalogText } from "./catalog-i18n";
-import { languages, type Category } from "./catalog-model";
+import { type Category } from "./catalog-model";
+import TranslationFields from "../../shared/geography/TranslationFields";
+import { useCountryCatalogue } from "../../shared/geography/useCountryCatalogue";
+import { inheritedText } from "../../shared/geography/geography-types";
+import "../styles/international.css";
 export function orderedCategories(
   categories: Category[],
   parent: string | null = null,
@@ -28,7 +32,25 @@ export default function CategoriesWorkspace({
   onRefresh: () => void;
 }) {
   const { c, locale } = useCatalogText();
-  const [lang, setLang] = useState(locale.slice(0, 2));
+
+  const geography = useCountryCatalogue(request);
+  const locales = geography?.locales ?? ["en-GB", "de-DE", "fr-FR", "es-ES"];
+  const mainLocale = geography?.mainLocale ?? "en-GB";
+  const [language, setLanguage] = useState<string>(locale);
+  const langLocale = locales.includes(language) ? language : mainLocale;
+  const lang =
+    locales.filter((l) => l.split("-")[0] === langLocale.split("-")[0])
+      .length === 1
+      ? langLocale.split("-")[0]
+      : langLocale;
+  const mainKey =
+    locales.filter((l) => l.split("-")[0] === mainLocale.split("-")[0])
+      .length === 1
+      ? mainLocale.split("-")[0]
+      : mainLocale;
+  const name = (cat: Category, language: string = locale) =>
+    inheritedText(cat.data.translations, language, mainLocale, "name") ||
+    cat.id;
   const [selected, setSelected] = useState<Category | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -62,10 +84,22 @@ export default function CategoriesWorkspace({
                   visible: true,
                   type: "page",
                   translations: Object.fromEntries(
-                    languages.map((l) => [
-                      l,
-                      { name: "", description: "", slug: "" },
-                    ]),
+                    locales.map((locale) => {
+                      const l =
+                        locales.filter(
+                          (v) => v.split("-")[0] === locale.split("-")[0],
+                        ).length === 1
+                          ? locale.split("-")[0]
+                          : locale;
+                      return [
+                        l,
+                        {
+                          name: l === mainKey ? "" : null,
+                          description: null,
+                          slug: null,
+                        },
+                      ];
+                    }),
                   ),
                 },
               })
@@ -82,11 +116,7 @@ export default function CategoriesWorkspace({
             style={{ paddingInlineStart: `${16 + depth * 18}px` }}
             onClick={() => edit(structuredClone(category))}
           >
-            <span>
-              ▱{" "}
-              {category.data.translations[locale.slice(0, 2)]?.name ??
-                category.data.translations.en.name}
-            </span>
+            <span>▱ {name(category)}</span>
             <small>{c(category.data.active ? "active" : "inactive")}</small>
           </button>
         ))}
@@ -96,37 +126,34 @@ export default function CategoriesWorkspace({
           <p>{c("categoryHint")}</p>
         ) : (
           <>
-            <h2>{selected.id ? tr.name : c("newCategory")}</h2>
+            <h2>
+              {selected.id ? name(selected, langLocale) : c("newCategory")}
+            </h2>
+            <TranslationFields
+              value={selected.data.translations}
+              mainLocale={mainLocale}
+              locales={locales}
+              language={langLocale}
+              onLanguageChange={setLanguage}
+              onChange={(translations) =>
+                edit({
+                  ...selected,
+                  data: {
+                    ...selected.data,
+                    translations: {
+                      ...selected.data.translations,
+                      ...Object.fromEntries(
+                        Object.entries(translations).map(([key, tr]) => [
+                          key,
+                          { ...selected.data.translations[key], ...tr },
+                        ]),
+                      ),
+                    },
+                  },
+                })
+              }
+            />
             <div className="catalog-form-grid">
-              <label>
-                {c("language")}
-                <select value={lang} onChange={(e) => setLang(e.target.value)}>
-                  {languages.map((l) => (
-                    <option key={l} value={l}>
-                      {l.toUpperCase()}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                {c("name")}
-                <input
-                  value={tr.name}
-                  maxLength={200}
-                  onChange={(e) =>
-                    edit({
-                      ...selected,
-                      data: {
-                        ...selected.data,
-                        translations: {
-                          ...selected.data.translations,
-                          [lang]: { ...tr, name: e.target.value },
-                        },
-                      },
-                    })
-                  }
-                />
-              </label>
               <label>
                 {c("parent")}
                 <select
@@ -140,9 +167,7 @@ export default function CategoriesWorkspace({
                     .filter(({ category }) => category.id !== selected.id)
                     .map(({ category, depth }) => (
                       <option key={category.id} value={category.id}>
-                        {"—".repeat(depth)}{" "}
-                        {category.data.translations[lang]?.name ??
-                          category.data.translations.en.name}
+                        {"—".repeat(depth)} {name(category, langLocale)}
                       </option>
                     ))}
                 </select>
@@ -195,6 +220,11 @@ export default function CategoriesWorkspace({
                 {c("slug")}
                 <input
                   value={tr.slug ?? ""}
+                  placeholder={
+                    lang !== mainKey && tr.slug == null
+                      ? (selected.data.translations[mainKey]?.slug ?? "")
+                      : undefined
+                  }
                   maxLength={200}
                   onChange={(e) =>
                     edit({
@@ -204,26 +234,6 @@ export default function CategoriesWorkspace({
                         translations: {
                           ...selected.data.translations,
                           [lang]: { ...tr, slug: e.target.value },
-                        },
-                      },
-                    })
-                  }
-                />
-              </label>
-              <label className="catalog-span">
-                {c("description")}
-                <textarea
-                  value={tr.description ?? ""}
-                  rows={4}
-                  maxLength={4000}
-                  onChange={(e) =>
-                    edit({
-                      ...selected,
-                      data: {
-                        ...selected.data,
-                        translations: {
-                          ...selected.data.translations,
-                          [lang]: { ...tr, description: e.target.value },
                         },
                       },
                     })
@@ -268,17 +278,14 @@ export default function CategoriesWorkspace({
             {saved && <p role="status">{c("saved")}</p>}
             <button
               className="studio-primary"
-              disabled={busy || !tr.name.trim()}
+              disabled={
+                busy || !selected.data.translations[mainKey]?.name?.trim()
+              }
               onClick={async () => {
                 setBusy(true);
                 setError("");
                 try {
                   const translations = { ...selected.data.translations };
-                  for (const l of languages)
-                    translations[l] = {
-                      ...translations[l],
-                      name: translations[l].name.trim() || tr.name,
-                    };
                   const v = await request(
                     selected.id
                       ? `/api/merchant/categories/${selected.id}`

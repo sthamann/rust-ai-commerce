@@ -39,12 +39,34 @@ The light Studio uses a blue accent, compact grouped navigation and independent
 workspace styles. **Settings** has a dedicated secondary navigation for company
 details, taxes, countries, shipping and payments. Company identity, contact and
 bank fields are grouped; the save bar shows unsaved changes, progress, success and
-read-only access. Changing a settings area asks before discarding a draft.
+read-only access. Countries, taxes, methods and languages share one revisioned
+draft across settings navigation; leaving that workspace protects unsaved changes.
 English, German, French and Spanish use the same controls and behavior.
 
 ![Company settings and grouped Studio navigation](docs/assets/studio-settings-en.png)
 
 See [interface ownership, verification and limitations](docs/studio-interface.md).
+
+## International configuration and AI translation
+
+Choose delivery destinations from a continent-grouped catalogue of **249 ISO
+countries/territories plus explicitly non-ISO Kosovo**, with multilingual names
+and US subdivisions. Searchable country/region controls are shared by methods,
+addresses and checkout. Add tenant country/region definitions and tax classes;
+destination rules combine states, postcodes, date windows, priority and saved
+Rule Builder conditions in actual product/cart/order calculations. New delivery
+countries require explicit tax, shipping and payment coverage.
+
+**Settings → Languages** defines the main content language and additional locales.
+Product/category editors, shipping/payment content, SEO and rich descriptions
+use visible inheritance. Catalogue-wide AI translations produce durable reviewable
+drafts with progress, resume, stale-edit protection and bounded apply through HTTP
+and MCP. UI vocabulary remains EN/DE/ES/FR; content can use additional locales.
+
+![International country picker in Commerce Studio](docs/assets/studio-countries-en.png)
+
+[Configuration, API/MCP, datasets and verification boundaries](docs/international-commerce.md).
+No current worldwide tax law or real model translation quality is inferred from fixtures.
 
 ## Customers, checkout and order operations
 
@@ -158,9 +180,9 @@ documentation site, not a hosted commerce backend.
 ## Lean-checked production policies
 
 The real Rust checkout, order workflow, access, refund and download paths now
-call a small pure kernel with **20 policies and 45 Lean-proved properties**.
+call a small pure kernel with **21 policies and 46 Lean-proved properties**.
 The production functions are extracted through a closed typed grammar; compiled
-Rust/Lean outputs are compared on 4,136 cases. Deliberately broken policies must
+Rust/Lean outputs are compared on 4,168 cases. Deliberately broken policies must
 fail the proof checks. CI also audits transitive axioms and locks every Rust,
 schema, build and proof input to an explicitly reviewed source inventory.
 
@@ -173,7 +195,7 @@ Lean is needed for verification; the running commerce server does not depend on 
 ## Products and categories
 
 Commerce Studio has one **Products** workspace with searchable/filterable product
-lists, creation and a complete native product detail editor. Manage four-language
+lists, creation and a complete native product detail editor. Manage configured content-language
 names and visual rich descriptions, prices/tax/stock/quantity rules, galleries and
 uploads, native variant SKUs, categories and channel visibility, properties,
 specifications, SEO metadata, cross-selling, attachments, downloads and reviews.

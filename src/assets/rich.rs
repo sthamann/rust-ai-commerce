@@ -4,11 +4,11 @@ pub(crate) fn validate_rich(value: &Value) -> Result<()> {
     let Some(languages) = value.as_object() else {
         return Err(bad("Rich descriptions require a language map"));
     };
-    if languages.len() > 4 {
+    if languages.len() > 100 {
         return Err(bad("Too many rich description languages"));
     }
     for (lang, blocks) in languages {
-        if !["en", "de", "fr", "es"].contains(&lang.as_str()) {
+        if !commerce::valid_locale_key(lang) {
             return Err(bad("Unsupported rich description locale"));
         }
         let blocks = blocks
@@ -47,7 +47,7 @@ pub(crate) fn validate_rich(value: &Value) -> Result<()> {
             }
         }
     }
-    if value.to_string().len() > 32000 {
+    if value.to_string().len() > 512000 {
         return Err(bad("Rich content too large"));
     }
     Ok(())

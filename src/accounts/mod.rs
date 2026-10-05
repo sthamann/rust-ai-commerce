@@ -83,6 +83,7 @@ async fn register(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> R
             let mut ad: commerce::Address = serde_json::from_value(v[field].clone())
                 .map_err(|_| bad("Invalid registration address"))?;
             ad.validate()?;
+            commerce::validate_address_geography(&ad, &settings)?;
             if !settings.countries.contains(&ad.country) {
                 return Err(bad("Address country unavailable"));
             }

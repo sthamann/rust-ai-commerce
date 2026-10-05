@@ -105,6 +105,7 @@ export default function AddressBook({
         >
           <h4>{c(editing ? "editAddress" : "addAddress")}</h4>
           <AddressFields
+            request={request}
             value={draft}
             onChange={setDraft}
             countries={countries}

@@ -1,7 +1,7 @@
 /** StorefrontHeader: storefront view composed from the scoped cart/controller. */
 import { shopApi, type Cart } from "../../shared/api/shop-api";
 import { StorefrontAppNavigation } from "../../shared/apps/AppSurfaces";
-import { locales, type Locale } from "../../shared/i18n/i18n";
+import StorefrontLanguage from "./StorefrontLanguage";
 import "../../shared/styles/apps.css";
 import "../../shared/styles/workbench.css";
 import Icon from "../../shared/ui/Icon";
@@ -18,9 +18,6 @@ export default function StorefrontHeader() {
     setAccount,
     w,
     onMerchant,
-    t,
-    locale,
-    setLocale,
     adaptation,
     setAdaptation,
     shopTenant,
@@ -58,17 +55,7 @@ export default function StorefrontHeader() {
         <button onClick={() => setAccount(true)}>{w("account")}</button>
         <button onClick={onMerchant}>{s("studio")} ↗</button>
       </nav>
-      <select
-        aria-label={t("language")}
-        value={locale}
-        onChange={(e) => setLocale(e.target.value as Locale)}
-      >
-        {Object.entries(locales).map(([key, label]) => (
-          <option key={key} value={key}>
-            {label}
-          </option>
-        ))}
-      </select>
+      <StorefrontLanguage />
       <button
         className="shop-text-button"
         aria-pressed={adaptation}

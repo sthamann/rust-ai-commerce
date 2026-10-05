@@ -13,7 +13,27 @@
         "AT": 20,
         "FR": 20,
         "ES": 21
-      }
+      },
+      "translations": {
+        "en": {
+          "name": "Standard tax",
+          "description": null
+        },
+        "de": {
+          "name": "Standardsteuer",
+          "description": null
+        },
+        "es": {
+          "name": "Impuesto general",
+          "description": null
+        },
+        "fr": {
+          "name": "Taxe standard",
+          "description": null
+        }
+      },
+      "rules": [],
+      "defaultRate": null
     },
     {
       "id": "reduced",
@@ -22,7 +42,27 @@
         "AT": 10,
         "FR": 5.5,
         "ES": 4
-      }
+      },
+      "translations": {
+        "en": {
+          "name": "Reduced tax",
+          "description": null
+        },
+        "de": {
+          "name": "Ermäßigte Steuer",
+          "description": null
+        },
+        "es": {
+          "name": "Impuesto reducido",
+          "description": null
+        },
+        "fr": {
+          "name": "Taxe réduite",
+          "description": null
+        }
+      },
+      "rules": [],
+      "defaultRate": null
     }
   ],
   "shipping": [
@@ -40,7 +80,25 @@
         "ES"
       ],
       "active": true,
-      "taxType": "highest"
+      "taxType": "highest",
+      "translations": {
+        "en": {
+          "name": "Pickup",
+          "description": null
+        },
+        "de": {
+          "name": "Abholung",
+          "description": null
+        },
+        "es": {
+          "name": "Recogida",
+          "description": null
+        },
+        "fr": {
+          "name": "Retrait",
+          "description": null
+        }
+      }
     },
     {
       "id": "standard",
@@ -56,7 +114,25 @@
         "ES"
       ],
       "active": true,
-      "taxType": "proportional"
+      "taxType": "proportional",
+      "translations": {
+        "en": {
+          "name": "Standard delivery",
+          "description": null
+        },
+        "de": {
+          "name": "Standardversand",
+          "description": null
+        },
+        "es": {
+          "name": "Envío estándar",
+          "description": null
+        },
+        "fr": {
+          "name": "Livraison standard",
+          "description": null
+        }
+      }
     },
     {
       "id": "express",
@@ -70,7 +146,25 @@
         "AT"
       ],
       "active": true,
-      "taxType": "highest"
+      "taxType": "highest",
+      "translations": {
+        "en": {
+          "name": "Express delivery",
+          "description": null
+        },
+        "de": {
+          "name": "Expressversand",
+          "description": null
+        },
+        "es": {
+          "name": "Envío exprés",
+          "description": null
+        },
+        "fr": {
+          "name": "Livraison express",
+          "description": null
+        }
+      }
     }
   ],
   "payments": [
@@ -79,21 +173,83 @@
       "name": "card",
       "active": true,
       "businessOnly": false,
-      "mode": "simulated"
+      "mode": "simulated",
+      "translations": {
+        "en": {
+          "name": "Demo payment",
+          "description": null
+        },
+        "de": {
+          "name": "Demo-Zahlung",
+          "description": null
+        },
+        "es": {
+          "name": "Pago de demostración",
+          "description": null
+        },
+        "fr": {
+          "name": "Paiement démo",
+          "description": null
+        }
+      }
     },
     {
       "id": "bank-transfer",
       "name": "bank",
       "active": true,
       "businessOnly": false,
-      "mode": "manual"
+      "mode": "manual",
+      "translations": {
+        "en": {
+          "name": "Bank transfer",
+          "description": null
+        },
+        "de": {
+          "name": "Überweisung",
+          "description": null
+        },
+        "es": {
+          "name": "Transferencia bancaria",
+          "description": null
+        },
+        "fr": {
+          "name": "Virement bancaire",
+          "description": null
+        }
+      }
     },
     {
       "id": "invoice",
       "name": "invoice",
       "active": true,
       "businessOnly": true,
-      "mode": "manual"
+      "mode": "manual",
+      "translations": {
+        "en": {
+          "name": "Invoice",
+          "description": null
+        },
+        "de": {
+          "name": "Rechnung",
+          "description": null
+        },
+        "es": {
+          "name": "Factura",
+          "description": null
+        },
+        "fr": {
+          "name": "Facture",
+          "description": null
+        }
+      }
     }
-  ]
+  ],
+  "mainLocale": "en-GB",
+  "locales": [
+    "en-GB",
+    "de-DE",
+    "es-ES",
+    "fr-FR"
+  ],
+  "countryDefinitions": []
 }

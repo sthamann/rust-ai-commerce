@@ -46,6 +46,8 @@ export type Selection = {
 export type Shipping = {
   id: string;
   name: string;
+  translations?: import("../geography/geography-types").TextMap;
+  description?: string;
   price: number;
   freeAbove: number | null;
   minDays: number;
@@ -57,13 +59,20 @@ export type Shipping = {
 export type Payment = {
   id: string;
   name: string;
+  translations?: import("../geography/geography-types").TextMap;
+  description?: string;
+  countries?: string[];
+  restrictedCountries?: boolean;
   active: boolean;
   businessOnly: boolean;
   mode: string;
 };
 export type Config = {
   countries: string[];
-  taxes: { id: string; rates: Record<string, number> }[];
+  mainLocale?: string;
+  locales?: string[];
+  countryDefinitions?: import("../geography/geography-types").Country[];
+  taxes: import("../geography/geography-types").TaxClass[];
   shipping: Shipping[];
   payments: Payment[];
 };
@@ -164,6 +173,9 @@ export type Detail = {
   delivery?: { method: Shipping; minDays: number; maxDays: number };
   reviews: { count: number; average: number; elements: Review[] };
 };
+export function getContentLocale() {
+  return new URLSearchParams(location.search).get("language") ?? getLocale();
+}
 export async function shopApi<T = unknown>(
   path: string,
   body?: unknown,
@@ -175,7 +187,7 @@ export async function shopApi<T = unknown>(
     method: method ?? (body === undefined ? "GET" : "POST"),
     headers: {
       "Content-Type": "application/json",
-      "x-commerce-locale": getLocale(),
+      "x-commerce-locale": getContentLocale(),
       "sw-sales-channel-id":
         new URLSearchParams(location.search).get("channel") ?? "default",
       ...(localStorage.getItem(

@@ -106,3 +106,14 @@ pub fn rule_xor_count(hits: u64) -> bool {
 pub fn flow_delay_admissible(seconds: u64) -> bool {
     seconds <= 2592000
 }
+
+/// Destination tax rules require every configured jurisdiction and validity condition.
+pub fn destination_tax_admissible(
+    condition: bool,
+    country: bool,
+    state: bool,
+    postal: bool,
+    date: bool,
+) -> bool {
+    condition && country && state && postal && date
+}

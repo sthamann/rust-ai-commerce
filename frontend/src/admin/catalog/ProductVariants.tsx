@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
 import { useCatalogText } from "./catalog-i18n";
-import { languages, type ProductDraft } from "./catalog-model";
+import { type ProductDraft } from "./catalog-model";
 import PairFields from "./PairFields";
 export default function ProductVariants({
   draft,
@@ -78,11 +78,14 @@ export default function ProductVariants({
                 ...payload,
                 revision: 0,
                 translations: Object.fromEntries(
-                  languages.map((l) => [
+                  Object.keys(draft.translations).map((l) => [
                     l,
                     {
                       ...draft.translations[l],
-                      name: `${draft.translations[l].name} · ${suffix}`,
+                      name:
+                        draft.translations[l].name == null
+                          ? null
+                          : `${draft.translations[l].name} · ${suffix}`,
                     },
                   ]),
                 ),

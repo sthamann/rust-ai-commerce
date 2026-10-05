@@ -13,4 +13,5 @@ for path in (root/'extensions').glob('*.wat'):assert path.name in (root/'extensi
 print(f'PASS {len(files)} Rust modules: responsibility documented; <=320 lines; main <=120; every WAT example documented')
 
 subprocess.run(["node", "frontend/scripts/architecture.mjs"], cwd=root, check=True)
+subprocess.run(["node", "frontend/scripts/localization.mjs"], cwd=root, check=True)
 subprocess.run(["python3", "scripts/testing/source_inventory.py"], cwd=root, check=True)
