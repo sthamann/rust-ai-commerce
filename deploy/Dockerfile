@@ -5,6 +5,8 @@ COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
 COPY extensions/sdk/ /build/extensions/sdk/
+COPY extensions/apps/ /build/extensions/apps/
+COPY fixtures/ /build/fixtures/
 RUN npm run build
 FROM rust:1.96-bookworm AS rust
 WORKDIR /build
@@ -13,6 +15,7 @@ COPY src/ src/
 COPY migrations/ migrations/
 COPY extensions/ extensions/
 COPY fixtures/ fixtures/
+COPY reference/automation-registry.json reference/automation-registry.json
 RUN cargo build --release --locked --bin vendune
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && rm -rf /var/lib/apt/lists/* && useradd -u 10001 -m commerce
