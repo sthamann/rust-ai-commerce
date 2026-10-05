@@ -1,5 +1,6 @@
 /** Preview resolves the installed registry first; a newer staged package cannot masquerade as an older build. */
 import { useEffect, useState } from "react";
+import SandboxContextPicker from "./SandboxContextPicker";
 import NativeAppView from "../../shared/apps/native/NativeAppView";
 import type { AppSurface } from "../../shared/apps/AppSurfaces";
 import type { RequestFn } from "../shell/studio-types";
@@ -18,11 +19,13 @@ export default function SandboxPreview({
   onLanguages?: (mainLocale: string, locales: string[]) => void;
 }) {
   const { a } = useAppStudioText();
+  const [context, setContext] = useState<Record<string, unknown>>({});
   const [surface, setSurface] = useState<AppSurface | null>(null),
     [error, setError] = useState("");
   useEffect(() => {
     let active = true;
     setSurface(null);
+    setContext({});
     setError("");
     Promise.all([
       request("/api/apps/surfaces"),
@@ -57,26 +60,43 @@ export default function SandboxPreview({
       {error ? (
         <p role="alert">{error}</p>
       ) : surface?.native ? (
-        <NativeAppView
-          app={app}
-          native={surface.native}
-          request={(path, body) =>
-            request(
-              path.replace(
-                "/api/",
-                surface.surface.location.startsWith("admin.")
-                  ? "/api/"
-                  : "/store-api/",
-              ),
-              body,
-            )
-          }
-          allowedActions={surface.surface.actions}
-          mainLocale={surface.mainLocale}
-          locales={surface.locales}
-          inheritContentLanguage
-          public={!surface.surface.location.startsWith("admin.")}
-        />
+        <>
+          {surface.native.view.blocks.find((b) => b.contextBinding)
+            ?.contextBinding && (
+            <SandboxContextPicker
+              key={`${app}:${view}`}
+              binding={
+                surface.native.view.blocks.find((b) => b.contextBinding)!
+                  .contextBinding!
+              }
+              request={request}
+              mainLocale={surface.mainLocale ?? "en-GB"}
+              onSelect={setContext}
+            />
+          )}
+          <NativeAppView
+            key={JSON.stringify(context)}
+            context={context}
+            app={app}
+            native={surface.native}
+            request={(path, body) =>
+              request(
+                path.replace(
+                  "/api/",
+                  surface.surface.location.startsWith("admin.")
+                    ? "/api/"
+                    : "/store-api/",
+                ),
+                body,
+              )
+            }
+            allowedActions={surface.surface.actions}
+            mainLocale={surface.mainLocale}
+            locales={surface.locales}
+            inheritContentLanguage
+            public={!surface.surface.location.startsWith("admin.")}
+          />
+        </>
       ) : (
         <p>{a("loading")}</p>
       )}

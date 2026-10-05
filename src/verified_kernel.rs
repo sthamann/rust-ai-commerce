@@ -122,3 +122,12 @@ pub fn destination_tax_admissible(
 pub fn customer_group_net(configured: bool, business: bool) -> bool {
     configured && business
 }
+
+/// An explicitly disabled agent action cannot be exposed or invoked, even to an authorized actor.
+pub fn app_tool_admissible(enabled: bool, authorized: bool) -> bool {
+    enabled && authorized
+}
+/// Personal core references are private; only product references may be declared public.
+pub fn app_core_reference_admissible(product: bool, private_data: bool) -> bool {
+    product || private_data
+}

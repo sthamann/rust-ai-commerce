@@ -204,4 +204,18 @@ theorem customer_group_unknown_denied (business : Bool) :
 theorem customer_group_net_exact (configured business : Bool) :
     customer_group_net configured business = true ↔ configured = true ∧ business = true := by
   simp [customer_group_net]
+/-- Opt-out and current authorization are both necessary and sufficient. -/
+theorem app_tool_exact (enabled authorized : Bool) :
+    app_tool_admissible enabled authorized = true ↔ enabled = true ∧ authorized = true := by
+  cases enabled <;> cases authorized <;> simp [app_tool_admissible]
+/-- Explicit opt-out rejects even authorized callers. -/
+theorem app_tool_disabled (authorized : Bool) : app_tool_admissible false authorized = false := by
+  cases authorized <;> simp [app_tool_admissible]
+/-- Personal reference data cannot be public. -/
+theorem app_core_reference_private (private_data : Bool) :
+    app_core_reference_admissible false private_data = true ↔ private_data = true := by
+  cases private_data <;> simp [app_core_reference_admissible]
+/-- Exact exposure policy, including legitimate public product content. -/
+theorem app_core_reference_exact (product private_data : Bool) :
+    app_core_reference_admissible product private_data = (product || private_data) := by rfl
 end CommerceKernel

@@ -5,6 +5,9 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("app_tool_admissible","enabled &&","true &&"),
+ ("app_tool_admissible","&& authorized","&& true"),
+ ("app_core_reference_admissible","product || private_data","true"),
  ("customer_group_net","configured &&","true &&"),
  ("customer_group_net","&& business","&& true"),
  ("destination_tax_admissible","condition","true"),

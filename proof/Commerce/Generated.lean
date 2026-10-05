@@ -69,4 +69,10 @@ def destination_tax_admissible (condition : Bool) (country : Bool) (state : Bool
 def customer_group_net (configured : Bool) (business : Bool) : Bool :=
   (configured && business)
 
+def app_tool_admissible (enabled : Bool) (authorized : Bool) : Bool :=
+  (enabled && authorized)
+
+def app_core_reference_admissible (product : Bool) (private_data : Bool) : Bool :=
+  (product || private_data)
+
 end CommerceKernel

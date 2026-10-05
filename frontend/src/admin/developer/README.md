@@ -18,3 +18,12 @@ The actual renderer is in `shared/apps/native/`, shared by the sandbox preview a
 Run frontend build, tests, coverage, localization and architecture checks. See [App Studio guide](../../../../docs/app-studio.md) and [testing boundaries](../../../../docs/testing.md). Test presence is not 100% whole-codebase coverage.
 
 - `AppLibrary.tsx`: clickable saved app cards with explicit edit/delete, confirmation and restore; opens the latest build as a new editable version. Both library and version-list editing return to the design workspace.
+
+- `AppAssistant.tsx`, `assistant-model.ts`: nine guided types compiled into the shared versioned contract.
+- `AppFieldOptions.tsx`, `AppContextBinding.tsx`: owned core references, translated choices and host context.
+- `AppActionAccess.tsx`: independent team scopes and MCP flags.
+- `AppAutomation.tsx`: declared service events, UTC cron and signed ingress.
+- `AppViewTabs.tsx`: view navigation and creation.
+- `SandboxContextPicker.tsx`: bounded selection of real sandbox products/customers/orders.
+
+[Guided apps, provider boundaries and verification](../../../../docs/app-assistants.md).

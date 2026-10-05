@@ -36,7 +36,8 @@
     "connector_store_tests",
     "connected_apps",
     "image_jobs",
-    "managed_search"
+    "managed_search",
+    "app_assistants"
   ],
   "browser_contracts": [
     "analytics",

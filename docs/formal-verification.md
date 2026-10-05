@@ -1,11 +1,11 @@
 # Lean-checked commerce contracts
 
-The prototype now runs Lean 4.29.1 proofs for **22 policies used in production
-Rust paths**. Forty-six theorems cover the properties below. This is **not a
+The prototype now runs Lean 4.29.1 proofs for **24 policies used in production
+Rust paths**. Fifty-two theorems cover the properties below. This is **not a
 certificate that the entire commerce core is correct or bug-free**. The current
-inventory contains 205 Rust modules: one extracted policy module, seventeen reviewed
-binding modules, one comparison driver and 186 unproved modules. Binding review
-is not a proof of those seventeen modules.
+inventory contains 245 Rust modules: one extracted policy module, 21 reviewed
+binding modules, one comparison driver and 222 unproved modules. Binding review
+is not a proof of those modules.
 
 ## Connection to the real application
 
@@ -83,7 +83,7 @@ The existing **Verify prototype / verify** job now also:
    verification workflow also require an explicit recorded review after changes.
 3. Builds proofs with the pinned Lean toolchain and rechecks compiled declarations
    using bundled `leanchecker`.
-4. Audits all 46 required theorems' transitive axioms. Only Lean's standard
+4. Audits all 52 required theorems' transitive axioms. Only Lean's standard
    `propext`, `Quot.sound` and `Classical.choice` foundations are allowed. `sorry`,
    `admit`, custom axioms, `native_decide` and missing theorem audits fail.
 5. Executes compiled Rust and Lean functions on **4,168** identical inputs:
@@ -201,3 +201,7 @@ Entity snapshot triggers, actor attribution, restoration transactions, group
 dependency queries and frontend controls are reviewed **unproved adapters**.
 Their real HTTP/PostgreSQL and component regressions are documented in
 [entity history](entity-history.md). This does not certify whole-core correctness.
+
+## App assistant access policies (2026-10-05)
+
+Two production-bound decisions add four theorems: MCP tool exposure requires both explicit enablement and current action authorization; customer/order core references must be private, while product references may be public. The real MCP ingress and manifest validator consume these functions. The async scheduler, HMAC parser, SQL receipt transactions, native renderer and provider integrations are not proved. Real disposable PostgreSQL/HTTP tests cover owned references, team scopes, MCP opt-out, webhook-to-flow effects and cold-restored cron/replay receipts.

@@ -9,7 +9,8 @@ import RichDescription from "../../src/shared/content/RichDescription";
 import { editorDocument } from "../../src/admin/catalog/rich-conversion";
 import { newDraft } from "../../src/admin/catalog/catalog-model";
 import { orderedCategories } from "../../src/admin/catalog/CategoriesWorkspace";
-vi.mock("../../src/shared/apps/AppSurfaces", () => ({
+vi.mock("../../src/shared/apps/AppSurfaces", async (original) => ({
+  ...(await original<typeof import("../../src/shared/apps/AppSurfaces")>()),
   AppSurfaceSlot: () => null,
 }));
 const row = {

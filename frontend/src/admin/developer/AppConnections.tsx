@@ -1,5 +1,7 @@
 /** Route, tool, grounding and Flow Builder switches modify the shared executable manifest directly. */
 import { useAppStudioText } from "../../shared/i18n/app-studio-i18n";
+import AppAutomation from "./AppAutomation";
+import AppActionAccess from "./AppActionAccess";
 import LocalizedField from "../../shared/i18n/LocalizedField";
 import Icon from "../../shared/ui/Icon";
 import type { Manifest } from "../../shared/apps/native/types";
@@ -21,6 +23,8 @@ export default function AppConnections({
   };
   return (
     <div className="app-connections">
+      <AppActionAccess manifest={manifest} onChange={onChange} />
+      <AppAutomation manifest={manifest} onChange={onChange} />
       <section className="app-model-card">
         <header>
           <Icon name="link" />
@@ -178,7 +182,12 @@ export default function AppConnections({
         </div>
         <p>{a("flowHint")}</p>
         {manifest.actions
-          ?.filter((action) => action.handler === "save")
+          ?.filter(
+            (action) =>
+              ["save", "service", "emit"].includes(action.handler) &&
+              !action.public &&
+              !action.readOnly,
+          )
           .map((action) => (
             <label className="app-check" key={action.name}>
               <input

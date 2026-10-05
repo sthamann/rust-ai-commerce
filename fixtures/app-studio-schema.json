@@ -17,12 +17,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "en",
-        "de",
-        "fr",
-        "es"
-      ],
+      "required": ["en", "de", "fr", "es"],
       "additionalProperties": false
     },
     "manifest": {
@@ -36,15 +31,11 @@
         },
         "coreApi": {
           "type": "string",
-          "enum": [
-            "1"
-          ]
+          "enum": ["1"]
         },
         "runtime": {
           "type": "string",
-          "enum": [
-            "declarative"
-          ]
+          "enum": ["declarative"]
         },
         "name": {
           "type": "object",
@@ -62,24 +53,14 @@
               "type": "string"
             }
           },
-          "required": [
-            "en",
-            "de",
-            "fr",
-            "es"
-          ],
+          "required": ["en", "de", "fr", "es"],
           "additionalProperties": false
         },
         "permissions": {
           "type": "array",
           "items": {
             "type": "string",
-            "enum": [
-              "data.read",
-              "data.write",
-              "admin.slot",
-              "storefront.slot"
-            ]
+            "enum": ["data.read", "data.write", "admin.slot", "storefront.slot"]
           }
         },
         "entities": {
@@ -106,12 +87,7 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "en",
-                  "de",
-                  "fr",
-                  "es"
-                ],
+                "required": ["en", "de", "fr", "es"],
                 "additionalProperties": false
               },
               "fields": {
@@ -138,21 +114,12 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "en",
-                        "de",
-                        "fr",
-                        "es"
-                      ],
+                      "required": ["en", "de", "fr", "es"],
                       "additionalProperties": false
                     },
                     "kind": {
                       "type": "string",
-                      "enum": [
-                        "string",
-                        "integer",
-                        "boolean"
-                      ]
+                      "enum": ["string", "integer", "boolean"]
                     },
                     "translatable": {
                       "type": "boolean"
@@ -162,6 +129,43 @@
                     },
                     "indexed": {
                       "type": "boolean"
+                    },
+                    "coreReference": {
+                      "type": ["string", "null"],
+                      "enum": ["product", "customer", "order", null]
+                    },
+                    "choices": {
+                      "type": "array",
+                      "maxItems": 100,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "object",
+                            "properties": {
+                              "en": {
+                                "type": "string"
+                              },
+                              "de": {
+                                "type": "string"
+                              },
+                              "fr": {
+                                "type": "string"
+                              },
+                              "es": {
+                                "type": "string"
+                              }
+                            },
+                            "required": ["en", "de", "fr", "es"],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": ["value", "label"],
+                        "additionalProperties": false
+                      }
                     }
                   },
                   "required": [
@@ -170,7 +174,9 @@
                     "kind",
                     "translatable",
                     "required",
-                    "indexed"
+                    "indexed",
+                    "coreReference",
+                    "choices"
                   ],
                   "additionalProperties": false
                 }
@@ -179,12 +185,7 @@
                 "type": "boolean"
               }
             },
-            "required": [
-              "name",
-              "label",
-              "fields",
-              "publicRead"
-            ],
+            "required": ["name", "label", "fields", "publicRead"],
             "additionalProperties": false
           }
         },
@@ -195,17 +196,11 @@
             "properties": {
               "location": {
                 "type": "string",
-                "enum": [
-                  "admin.apps",
-                  "product.detail"
-                ]
+                "enum": ["admin.apps", "product.detail"]
               },
               "component": {
                 "type": "string",
-                "enum": [
-                  "entity-form",
-                  "entity-list"
-                ]
+                "enum": ["entity-form", "entity-list"]
               },
               "label": {
                 "type": "object",
@@ -223,20 +218,11 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "en",
-                  "de",
-                  "fr",
-                  "es"
-                ],
+                "required": ["en", "de", "fr", "es"],
                 "additionalProperties": false
               }
             },
-            "required": [
-              "location",
-              "component",
-              "label"
-            ],
+            "required": ["location", "component", "label"],
             "additionalProperties": false
           }
         },
@@ -250,10 +236,7 @@
               },
               "layout": {
                 "type": "string",
-                "enum": [
-                  "stack",
-                  "grid"
-                ]
+                "enum": ["stack", "grid"]
               },
               "blocks": {
                 "type": "array",
@@ -265,12 +248,7 @@
                     },
                     "kind": {
                       "type": "string",
-                      "enum": [
-                        "text",
-                        "table",
-                        "cards",
-                        "form"
-                      ]
+                      "enum": ["text", "table", "cards", "form"]
                     },
                     "title": {
                       "type": "object",
@@ -288,12 +266,7 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "en",
-                        "de",
-                        "fr",
-                        "es"
-                      ],
+                      "required": ["en", "de", "fr", "es"],
                       "additionalProperties": false
                     },
                     "text": {
@@ -312,30 +285,37 @@
                           "type": "string"
                         }
                       },
-                      "required": [
-                        "en",
-                        "de",
-                        "fr",
-                        "es"
-                      ],
+                      "required": ["en", "de", "fr", "es"],
                       "additionalProperties": false
                     },
                     "entity": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": ["string", "null"]
                     },
                     "readAction": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
+                      "type": ["string", "null"]
                     },
                     "writeAction": {
-                      "type": [
-                        "string",
-                        "null"
+                      "type": ["string", "null"]
+                    },
+                    "contextBinding": {
+                      "anyOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "field": {
+                              "type": "string"
+                            },
+                            "key": {
+                              "type": "string",
+                              "enum": ["productId", "customerId", "orderId"]
+                            }
+                          },
+                          "required": ["field", "key"],
+                          "additionalProperties": false
+                        }
                       ]
                     }
                   },
@@ -346,17 +326,14 @@
                     "text",
                     "entity",
                     "readAction",
-                    "writeAction"
+                    "writeAction",
+                    "contextBinding"
                   ],
                   "additionalProperties": false
                 }
               }
             },
-            "required": [
-              "id",
-              "layout",
-              "blocks"
-            ],
+            "required": ["id", "layout", "blocks"],
             "additionalProperties": false
           }
         },
@@ -378,7 +355,11 @@
                   "storefront.home",
                   "product.detail",
                   "cart.summary",
-                  "account.overview"
+                  "account.overview",
+                  "admin.product.general",
+                  "admin.product.tab",
+                  "admin.customer",
+                  "admin.order.general"
                 ]
               },
               "label": {
@@ -397,12 +378,7 @@
                     "type": "string"
                   }
                 },
-                "required": [
-                  "en",
-                  "de",
-                  "fr",
-                  "es"
-                ],
+                "required": ["en", "de", "fr", "es"],
                 "additionalProperties": false
               },
               "uiPath": {
@@ -413,6 +389,19 @@
                 "items": {
                   "type": "string"
                 }
+              },
+              "permission": {
+                "type": ["string", "null"],
+                "enum": [
+                  "catalog.read",
+                  "catalog.write",
+                  "customers.read",
+                  "customers.write",
+                  "orders.read",
+                  "orders.write",
+                  "apps.manage",
+                  null
+                ]
               }
             },
             "required": [
@@ -420,7 +409,8 @@
               "location",
               "label",
               "uiPath",
-              "actions"
+              "actions",
+              "permission"
             ],
             "additionalProperties": false
           }
@@ -435,28 +425,17 @@
               },
               "method": {
                 "type": "string",
-                "enum": [
-                  "GET",
-                  "POST"
-                ]
+                "enum": ["GET", "POST"]
               },
               "scope": {
                 "type": "string",
-                "enum": [
-                  "admin",
-                  "storefront"
-                ]
+                "enum": ["admin", "storefront"]
               },
               "action": {
                 "type": "string"
               }
             },
-            "required": [
-              "path",
-              "method",
-              "scope",
-              "action"
-            ],
+            "required": ["path", "method", "scope", "action"],
             "additionalProperties": false
           }
         },
@@ -479,12 +458,7 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "en",
-                "de",
-                "fr",
-                "es"
-              ],
+              "required": ["en", "de", "fr", "es"],
               "additionalProperties": false
             },
             "tools": {
@@ -500,11 +474,7 @@
               }
             }
           },
-          "required": [
-            "description",
-            "tools",
-            "entities"
-          ],
+          "required": ["description", "tools", "entities"],
           "additionalProperties": false
         },
         "presentation": {
@@ -535,18 +505,11 @@
                   "type": "string"
                 }
               },
-              "required": [
-                "en",
-                "de",
-                "fr",
-                "es"
-              ],
+              "required": ["en", "de", "fr", "es"],
               "additionalProperties": false
             }
           },
-          "required": [
-            "description"
-          ]
+          "required": ["description"]
         }
       },
       "required": [
@@ -566,9 +529,6 @@
       "additionalProperties": false
     }
   },
-  "required": [
-    "summary",
-    "manifest"
-  ],
+  "required": ["summary", "manifest"],
   "additionalProperties": false
 }

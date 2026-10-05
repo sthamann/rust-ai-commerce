@@ -128,6 +128,10 @@ const SCHEMA: &[(&str, &str)] = &[
         "035-history-finalization",
         include_str!("../migrations/035-history-finalization.sql"),
     ),
+    (
+        "036-app-assistants",
+        include_str!("../migrations/036-app-assistants.sql"),
+    ),
 ];
 
 pub(crate) async fn apply(pool: &PgPool) {

@@ -119,7 +119,7 @@ export function template(): Manifest {
 }
 export function compile(input: Manifest): Manifest {
   const m = structuredClone(input);
-  if (m.runtime !== "declarative") return m;
+  if (!m.views?.length) return m;
   const custom = (m.actions ?? []).filter(
     (a) =>
       !m.entities.some(
@@ -132,7 +132,8 @@ export function compile(input: Manifest): Manifest {
     ...custom,
     ...m.entities.flatMap((e) => {
       const suffix = e.name.slice(0, 27),
-        old = m.actions?.find((a) => a.name === `save_${suffix}`);
+        old = m.actions?.find((a) => a.name === `save_${suffix}`),
+        read = m.actions?.find((a) => a.name === `list_${suffix}`);
       return [
         {
           name: `list_${suffix}`,
@@ -141,11 +142,14 @@ export function compile(input: Manifest): Manifest {
           entity: e.name,
           public: e.publicRead,
           readOnly: true,
+          mcp: read?.mcp,
+          permission: e.publicRead ? undefined : read?.permission,
           inputSchema: {
             type: "object",
             properties: {
               limit: { type: "integer" },
               after: { type: "string" },
+              filter: { type: "object" },
             },
             additionalProperties: false,
           },
@@ -157,6 +161,8 @@ export function compile(input: Manifest): Manifest {
           entity: e.name,
           public: false,
           flowAllowed: old?.flowAllowed ?? true,
+          permission: old?.permission,
+          mcp: old?.mcp,
           inputSchema: {
             type: "object",
             properties: {

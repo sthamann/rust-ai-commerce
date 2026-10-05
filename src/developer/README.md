@@ -8,3 +8,5 @@ This folder owns the Rust modules listed below. Each source begins with its resp
 - [`routes.rs](routes.rs): Developer HTTP transport and coding-agent task export; explicit staging precedes live release.
 
 The [source inventory](../../docs/module-inventory.md) is checked in CI. [The behavioral map](../../docs/source-map.md) identifies integration suites, and [testing](../../docs/testing.md) describes actual coverage and limits. Every file is limited to 320 lines; `main.rs` to 120.
+
+Generation keeps existing same-identity action access settings; new synthesized native actions default to MCP off. Task exports include the editor reference, choice, automation and scope contracts documented in [guided apps](../../docs/app-assistants.md).

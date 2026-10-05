@@ -147,6 +147,16 @@ fn eval(j: &Value) -> Result<Value, String> {
             args["configured"].as_bool().ok_or("Invalid configured")?,
             args["business"].as_bool().ok_or("Invalid business")?
         ))),
+        Some("app_tool_admissible") => Ok(json!(app_tool_admissible(
+            args["enabled"].as_bool().ok_or("Invalid enabled")?,
+            args["authorized"].as_bool().ok_or("Invalid authorized")?
+        ))),
+        Some("app_core_reference_admissible") => Ok(json!(app_core_reference_admissible(
+            args["product"].as_bool().ok_or("Invalid product")?,
+            args["private_data"]
+                .as_bool()
+                .ok_or("Invalid private_data")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

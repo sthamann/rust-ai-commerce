@@ -76,6 +76,22 @@ retrieves source passages and hashes; customer answers use only published source
 
 ![Connected knowledge in Vendune Studio](docs/screenshots/vendune-knowledge-overview.png)
 
+## Guided app assistants and embedded editors
+
+Start with frontend, admin, combined, payment, shipping, ERP/integration, event,
+webhook or cron assistants. Add app-owned fields and translated choices directly
+to a product section/tab, customer or order. Configure team scopes, public API reads,
+MCP exposure and merchant-AI tools independently. Save immutable versions, try actual
+records in a private sandbox and release selectively.
+
+Signed incoming webhooks and persistent UTC schedules feed the same durable events
+and graphical Flow Builder. Service assistants generate connector contracts; provider
+implementations and operator service deployment are still required.
+[Guide, Shopware extension comparison and verification](docs/app-assistants.md) ·
+[Twelve installable examples](extensions/apps/assistant-examples/README.md)
+
+![Guided App Studio](docs/screenshots/app-studio-assistants.png)
+
 ## Visual App Studio
 
 Build native apps visually in **Vendune Studio → Developers**. Compose text, tables, cards and forms, define typed app data, connect HTTP/MCP/AI tools and opt actions into the graphical Flow Builder. Human edits and Codex/Claude agent edits use the **same executable Manifest**. Open saved apps through explicit edit controls, remove development projects to a recoverable trash, save an immutable version, test real records in a private sandbox, then selectively release the package.
@@ -270,9 +286,9 @@ documentation site, not a hosted commerce backend.
 ## Lean-checked production policies
 
 The real Rust checkout, order workflow, access, refund and download paths now
-call a small pure kernel with **22 policies and 48 Lean-proved properties**.
+call a small pure kernel with **24 policies and 52 Lean-proved properties**.
 The production functions are extracted through a closed typed grammar; compiled
-Rust/Lean outputs are compared on 4,172 cases. Deliberately broken policies must
+Rust/Lean outputs are compared on 4,180 cases. Deliberately broken policies must
 fail the proof checks. CI also audits transitive axioms and locks every Rust,
 schema, build and proof input to an explicitly reviewed source inventory.
 

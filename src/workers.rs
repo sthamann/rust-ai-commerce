@@ -80,6 +80,9 @@ pub(crate) fn start(a: &App) {
             loop {
                 ticks.tick().await;
                 let _ = apps::collect_sources(&collector).await;
+                if let Err(e) = apps::schedule_once(&collector).await {
+                    eprintln!("app scheduler: {}", e.1);
+                }
             }
         });
         let worker = a.clone();

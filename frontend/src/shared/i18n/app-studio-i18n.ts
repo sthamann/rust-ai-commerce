@@ -335,6 +335,12 @@ export const appStudioWords = {
     "Nettoyez doucement. Conçu pour durer.",
     "Limpia con cuidado. Hecho para durar.",
   ],
+  contextRequired: [
+    "Open a matching product, customer or order to edit this app data.",
+    "Öffne ein passendes Produkt, einen Kunden oder eine Bestellung, um diese App-Daten zu bearbeiten.",
+    "Ouvrez un produit, client ou commande pour modifier ces données.",
+    "Abre un producto, cliente o pedido para editar estos datos.",
+  ],
   yes: ["Yes", "Ja", "Oui", "Sí"],
   no: ["No", "Nein", "Non", "No"],
 } as const;

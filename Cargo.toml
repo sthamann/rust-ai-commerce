@@ -19,6 +19,8 @@ uuid = { version = "1", features = ["v4", "serde"] }
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "multipart"] }
 tower-http = { version = "0.6", features = ["fs", "trace", "limit"] }
 sha2 = "0.10"
+hmac = "0.12"
+cron = "0.17"
 argon2 = "0.5"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 wasmtime = { version = "49.0.1", default-features = false, features = ["cranelift", "runtime", "std", "wat"] }

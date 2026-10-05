@@ -363,3 +363,7 @@ and dependency admission. `shared/history/` is reused by native editors and
 `scripts/crm_history.py` and `frontend/tests/unit/crm-history.test.tsx` cover these
 paths, alongside existing customer, merchant, automation and staging suites.
 See [history boundaries](entity-history.md).
+
+## Guided app extension path
+
+App assistants compile the shared Manifest in `frontend/src/admin/developer/assistant-model.ts`. Product/customer/order mounts reuse the native renderer with explicit object context. `src/apps/editor_contract.rs` owns field/context and direct-route scopes; `src/apps/planning.rs` filters merchant grounding and rechecks app proposal access at bind/apply. `src/apps/schedules.rs` and `webhooks.rs` persist emitted events/receipts via migration 036. `scripts/app_assistants.py` and `app_surfaces.py` exercise actual private stages, public/MCP boundaries, service fixtures, event/Flow writes, restart and scope rejection; frontend assistant tests cover editing and regional language inheritance. See [guide and upstream extension requirements](app-assistants.md).

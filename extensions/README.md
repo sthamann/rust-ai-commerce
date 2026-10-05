@@ -264,3 +264,7 @@ and durable jobs live in four focused `services/connectors/email_*.py` modules.
 Use `order-confirmation-flow.json` after installing/configuring the app; never enable
 the automatic all-order path and an equivalent flow unintentionally. See the
 [complete configuration, template and test guide](../docs/email-delivery.md).
+
+### Guided app examples
+
+[Twelve assistant contracts](apps/assistant-examples/README.md) cover frontend/admin/combined, payment/shipping/ERP services, event subscriptions, signed webhook ingress and persistent UTC schedules, with product/customer/order bindings and independent team/MCP access. Provider contracts require provider service implementations.

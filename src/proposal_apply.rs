@@ -1,7 +1,7 @@
 //! Transactional application of approved, revision-bound proposals.
 use crate::*;
 
-pub(crate) async fn apply(a: &App, t: &str, id: &str) -> Result<Value> {
+pub(crate) async fn apply(a: &App, t: &str, id: &str, h: &HeaderMap) -> Result<Value> {
     let mut tx = a.db.begin().await?;
     let r = sqlx::query("SELECT * FROM tasks WHERE tenant=$1 AND id=$2 FOR UPDATE")
         .bind(t)
@@ -16,7 +16,7 @@ pub(crate) async fn apply(a: &App, t: &str, id: &str) -> Result<Value> {
     let p: Proposal =
         serde_json::from_value(v["proposal"].clone()).map_err(|e| bad(e.to_string()))?;
     if let Some(change) = &p.app_action {
-        apps::apply_change(&mut tx, t, change).await?;
+        apps::apply_change(&mut tx, t, change, h).await?;
     }
     for c in p.changes {
         let product_id = c.product_id.clone();

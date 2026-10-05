@@ -62,6 +62,10 @@ export default function OrdersManager({
             location="admin.order"
             context={{ orderId: selected }}
           />
+          <AppSurfaceSlot
+            location="admin.order.general"
+            context={{ orderId: selected }}
+          />
           <OrderDetail
             id={selected}
             request={request}

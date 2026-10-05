@@ -239,3 +239,7 @@ summary. The Apps library and individual details share the same content fallback
 and artwork renderer. Registered `admin.*` surfaces can be opened directly from
 **Apps → an installed app → App workspace**, through the existing permission-filtered
 host. [Manifest contract, lifecycle and source ownership](app-library.md).
+
+## Guided editor extensions and automation
+
+App Studio assistants construct the same Manifest used by SDK/service apps. See [the complete contracts](app-assistants.md) for coreReference, translated choices, context-bound editor mounts, action mcp flags, service/native mixed views, persistent UTC schedules and signed incoming webhooks. Public customer/order references are forbidden. These declarations do not replace provider-specific code or operator service deployment.

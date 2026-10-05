@@ -118,6 +118,7 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
                 None,
                 "",
                 &locale,
+                h,
             )
             .await
         }
@@ -126,7 +127,13 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
             if v["approve"] != true {
                 return Err(bad("approve=true required"));
             }
-            apply(a, &t, v["task_id"].as_str().ok_or(bad("task_id required"))?).await
+            apply(
+                a,
+                &t,
+                v["task_id"].as_str().ok_or(bad("task_id required"))?,
+                h,
+            )
+            .await
         }
         "merchant.orders" => {
             let Json(v) = orders(State(a.clone()), h.clone()).await?;

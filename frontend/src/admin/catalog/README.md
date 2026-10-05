@@ -27,3 +27,5 @@ Run `npm run build`, `npm test`, `npm run test:coverage` and `npm run architectu
 `ProductLocalizedContent.tsx` owns main-language rich/specification/SEO inheritance;
 `TaxClassSelect.tsx` loads assignable native tax classes. Product/category languages
 come from shop configuration. No inherited text is fabricated on save.
+
+`ProductEditorNav.tsx` joins core editor sections with registered, authorized app-owned product tabs. General settings render registered contextual sections; no arbitrary app code executes in the core renderer.

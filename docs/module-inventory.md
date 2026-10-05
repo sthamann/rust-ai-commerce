@@ -21,6 +21,8 @@ This lists every checked-in source module in these roots, including files with n
 | [src/apps/cart_contributions.rs](../src/apps/cart_contributions.rs) | Generic app contributions: configure a cart, bind package/data revisions and persist audited pricing inputs. |
 | [src/apps/compatibility.rs](../src/apps/compatibility.rs) | Explicit read adapter for persisted v0.5 engraving carts; completed order snapshots remain unchanged. |
 | [src/apps/data.rs](../src/apps/data.rs) | Managed app tables: typed writes, optimistic revisions, bounded reads and local RLS context. |
+| [src/apps/editor_contract.rs](../src/apps/editor_contract.rs) | Editor mounts, enumerated fields and tenant-owned core references; no app alters core tables. |
+| [src/apps/editor_tests.rs](../src/apps/editor_tests.rs) | Assistant fixture contracts exercise real validation, not only the client-side builder. |
 | [src/apps/events.rs](../src/apps/events.rs) | Durable at-least-once app events, retry leases and stable event idempotency keys. |
 | [src/apps/evidence.rs](../src/apps/evidence.rs) | Private provenance-bearing app exports feed merchant retrieval and durable app events; never public PDP answers. |
 | [src/apps/evidence_routes.rs](../src/apps/evidence_routes.rs) | Scoped merchant-only evidence retrieval; sources never enter public product answers. |
@@ -36,9 +38,11 @@ This lists every checked-in source module in these roots, including files with n
 | [src/apps/registry.rs](../src/apps/registry.rs) | Atomic installation and additive schema upgrades; immutable version digests preserve history. |
 | [src/apps/routes.rs](../src/apps/routes.rs) | Tenant-scoped package lifecycle, generated data endpoints and a shared action adapter. |
 | [src/apps/runtime.rs](../src/apps/runtime.rs) | Generic pure-Wasm contribution executor; the installed package supplies all business predicates. |
+| [src/apps/schedules.rs](../src/apps/schedules.rs) | Durable UTC cron ticks emit namespaced outbox events; replicas lock due rows and staging never runs them. |
 | [src/apps/service_limits.rs](../src/apps/service_limits.rs) | Non-queuing per-process bulkheads isolate slow apps without holding database connections. |
 | [src/apps/surface_tests.rs](../src/apps/surface_tests.rs) | Contract counterexamples reject cross-scope UI actions, unsafe URLs and mutating GET routes. |
 | [src/apps/surfaces.rs](../src/apps/surfaces.rs) | App-owned UI surfaces and namespaced HTTP routes reuse the authorized action gateway. |
+| [src/apps/webhooks.rs](../src/apps/webhooks.rs) | Operator-signed incoming events: tenant-bound HMAC, five-minute freshness and atomic replay receipts. |
 | [src/assets/download.rs](../src/assets/download.rs) | Public attachments honor sales-channel visibility; downloads require a paid, owned order snapshot. |
 | [src/assets/image_jobs.rs](../src/assets/image_jobs.rs) | Durable image jobs: tenant admission, revision-bound private previews and explicit publication, without automatic paid retries. |
 | [src/assets/image_provider.rs](../src/assets/image_provider.rs) | Optional OpenAI Images adapter; bounded responses and decoded PNG output, no remote user URLs or leaked provider errors. |
@@ -293,6 +297,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/catalog/ProductAssets.tsx](../frontend/src/admin/catalog/ProductAssets.tsx) | Bounded upload and explicit digest-bound publication of attachments and paid files. |
 | [frontend/src/admin/catalog/ProductDataView.tsx](../frontend/src/admin/catalog/ProductDataView.tsx) | Central catalog workspace: server-filtered cursor list, product details and hierarchical categories. |
 | [frontend/src/admin/catalog/ProductEditor.tsx](../frontend/src/admin/catalog/ProductEditor.tsx) | Revision-aware product aggregate editor: one save, translation tabs and product-scoped linked capabilities. |
+| [frontend/src/admin/catalog/ProductEditorNav.tsx](../frontend/src/admin/catalog/ProductEditorNav.tsx) | Core product tabs and installed app submenus share one accessible navigation. |
 | [frontend/src/admin/catalog/ProductLocalizedContent.tsx](../frontend/src/admin/catalog/ProductLocalizedContent.tsx) | Consistent main-language inheritance for product rich documents, specification groups and individual SEO fields. |
 | [frontend/src/admin/catalog/ProductMediaWorkspace.tsx](../frontend/src/admin/catalog/ProductMediaWorkspace.tsx) | One product-media workspace: cover, ordered gallery, multilingual image metadata, drag/drop and optional reviewed AI drafts. |
 | [frontend/src/admin/catalog/ProductPanels.tsx](../frontend/src/admin/catalog/ProductPanels.tsx) | Native commerce, media, translated SEO/specifications and category panels for one editable product. |
@@ -309,16 +314,24 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/catalog/rich-conversion.ts](../frontend/src/admin/catalog/rich-conversion.ts) | Lossless import of legacy blocks into structured WYSIWYG content, preserving inline emphasis. |
 | [frontend/src/admin/customers/CustomersManager.tsx](../frontend/src/admin/customers/CustomersManager.tsx) | CRM list and editable customer profile with linked order history. |
 | [frontend/src/admin/dashboard/OverviewView.tsx](../frontend/src/admin/dashboard/OverviewView.tsx) | OverviewView renders verified shop state and typed user actions. |
+| [frontend/src/admin/developer/AppActionAccess.tsx](../frontend/src/admin/developer/AppActionAccess.tsx) | Team permissions and MCP visibility are independent from public storefront reads and AI grounding. |
 | [frontend/src/admin/developer/AppAgentPanel.tsx](../frontend/src/admin/developer/AppAgentPanel.tsx) | Coding agents receive the current Manifest IR and authoritative schema; imported edits round-trip to the canvas. |
+| [frontend/src/admin/developer/AppAssistant.tsx](../frontend/src/admin/developer/AppAssistant.tsx) | Guided app kinds create normal editable manifests; all changes follow private-stage versioning. |
+| [frontend/src/admin/developer/AppAutomation.tsx](../frontend/src/admin/developer/AppAutomation.tsx) | Editable triggers are declared alongside UI and actions; secrets remain operator-managed. |
 | [frontend/src/admin/developer/AppCanvas.tsx](../frontend/src/admin/developer/AppCanvas.tsx) | Accessible click-to-add canvas with selectable blocks and keyboard-accessible ordering controls. |
 | [frontend/src/admin/developer/AppConnections.tsx](../frontend/src/admin/developer/AppConnections.tsx) | Route, tool, grounding and Flow Builder switches modify the shared executable manifest directly. |
+| [frontend/src/admin/developer/AppContextBinding.tsx](../frontend/src/admin/developer/AppContextBinding.tsx) | Native UI bindings connect the open host object to an indexed app field, never to a global JS context. |
 | [frontend/src/admin/developer/AppDataEditor.tsx](../frontend/src/admin/developer/AppDataEditor.tsx) | Managed app models expose typed fields and opt-in public reads; removal cleans dependent bindings. |
+| [frontend/src/admin/developer/AppFieldOptions.tsx](../frontend/src/admin/developer/AppFieldOptions.tsx) | Core references and typed choice fields remain owned app data with a single content-language editor. |
 | [frontend/src/admin/developer/AppInspector.tsx](../frontend/src/admin/developer/AppInspector.tsx) | One content language edits app/view/block metadata; changing bindings updates the actual manifest. |
 | [frontend/src/admin/developer/AppLibrary.tsx](../frontend/src/admin/developer/AppLibrary.tsx) | Saved app cards with explicit editing and recoverable project removal, independent of installed package/data lifecycle. |
 | [frontend/src/admin/developer/AppVersions.tsx](../frontend/src/admin/developer/AppVersions.tsx) | Saved version inspection, digest-approved stage install and conflict-aware package-only live release. |
+| [frontend/src/admin/developer/AppViewTabs.tsx](../frontend/src/admin/developer/AppViewTabs.tsx) | Native view navigation and creation are separate from workspace orchestration. |
 | [frontend/src/admin/developer/DeveloperView.tsx](../frontend/src/admin/developer/DeveloperView.tsx) | Visual App Studio orchestrates modular editors over the same executable schema used by coding agents. |
+| [frontend/src/admin/developer/SandboxContextPicker.tsx](../frontend/src/admin/developer/SandboxContextPicker.tsx) | Bounded server search selects an owned object for testing editor-bound apps in a private sandbox. |
 | [frontend/src/admin/developer/SandboxPreview.tsx](../frontend/src/admin/developer/SandboxPreview.tsx) | Preview resolves the installed registry first; a newer staged package cannot masquerade as an older build. |
 | [frontend/src/admin/developer/app-model.ts](../frontend/src/admin/developer/app-model.ts) | Pure schema edits preserve unsupported extension properties; compilation binds native UI to real actions. |
+| [frontend/src/admin/developer/assistant-model.ts](../frontend/src/admin/developer/assistant-model.ts) | Assistants compile to the public manifest contract, with no hidden runtime or provider code. |
 | [frontend/src/admin/developer/useAppStudio.ts](../frontend/src/admin/developer/useAppStudio.ts) | Tenant-scoped build lifecycle; immutable saved snapshots gate sandbox previews and selected app-only releases. |
 | [frontend/src/admin/environments/EnvironmentManager.tsx](../frontend/src/admin/environments/EnvironmentManager.tsx) | Private environment creation and digest-bound selective release. |
 | [frontend/src/admin/intelligence/ExternalKnowledge.tsx](../frontend/src/admin/intelligence/ExternalKnowledge.tsx) | Private connected-app evidence browser shows active-source provenance without exposing it to shoppers. |
@@ -372,6 +385,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/shell/useStudioController.ts](../frontend/src/admin/shell/useStudioController.ts) | Studio session/controller: authentication context, tenant/staging state and chat commands. |
 | [frontend/src/admin/storyfronts/StoryfrontView.tsx](../frontend/src/admin/storyfronts/StoryfrontView.tsx) | Dedicated merchant integration surface for the independently deployed Storyfront service. |
 | [frontend/src/admin/styles/app-artwork.css](../frontend/src/admin/styles/app-artwork.css) | Category cover and app icon artwork, with local deterministic fallbacks. |
+| [frontend/src/admin/styles/app-assistant.css](../frontend/src/admin/styles/app-assistant.css) | Guided extension workspace: restrained colour, clear choices and responsive setup. |
 | [frontend/src/admin/styles/app-catalog.css](../frontend/src/admin/styles/app-catalog.css) | App library/detail presentation: bounded cards, passive artwork, accessible filters and theme-aware forms. |
 | [frontend/src/admin/styles/app-detail.css](../frontend/src/admin/styles/app-detail.css) | Scoped app detail hierarchy, permission disclosure, data and integration forms. |
 | [frontend/src/admin/styles/app-studio-inspector.css](../frontend/src/admin/styles/app-studio-inspector.css) | App Studio binding indicators, empty canvas and properties inspector. |
@@ -448,6 +462,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/ContentLanguage.tsx](../frontend/src/shared/i18n/ContentLanguage.tsx) | One content-language selection per editor, distinct from interface language; no writes on selection or fallback. |
 | [frontend/src/shared/i18n/ContentLanguagePicker.tsx](../frontend/src/shared/i18n/ContentLanguagePicker.tsx) | Compact shared language switcher with explicit main-language context; selection never changes persisted content. |
 | [frontend/src/shared/i18n/LocalizedField.tsx](../frontend/src/shared/i18n/LocalizedField.tsx) | Single visible field for the editor's language, with main-language preview and explicit restore-to-inheritance. |
+| [frontend/src/shared/i18n/app-assistant-i18n.ts](../frontend/src/shared/i18n/app-assistant-i18n.ts) | App assistants and extension permissions use the same EN/DE/FR/ES vocabulary. |
 | [frontend/src/shared/i18n/app-i18n.ts](../frontend/src/shared/i18n/app-i18n.ts) | App and evidence UI vocabulary, shared by store, merchant and payment components. |
 | [frontend/src/shared/i18n/app-library-i18n.ts](../frontend/src/shared/i18n/app-library-i18n.ts) | App library vocabulary and built-in summaries; no inferred connection or payment readiness. |
 | [frontend/src/shared/i18n/app-studio-i18n.ts](../frontend/src/shared/i18n/app-studio-i18n.ts) | App Studio and native runtime vocabulary; every key ships EN/DE/FR/ES. |
@@ -557,6 +572,7 @@ This lists every checked-in source module in these roots, including files with n
 
 | Module | Responsibility |
 |---|---|
+| [scripts/app_assistants.py](../scripts/app_assistants.py) | Real assistant packages: editor context, rights, MCP opt-out, cron, signed webhooks, flows and local service fixtures. |
 | [scripts/app_inference.py](../scripts/app_inference.py) | Opt-in real local model proposes a registered app operation; approval exercises the same managed writer. |
 | [scripts/app_studio.py](../scripts/app_studio.py) | Native App Studio exercised through real HTTP/PostgreSQL: shared IR, version isolation, data, routes, MCP and selective release. |
 | [scripts/app_surfaces.py](../scripts/app_surfaces.py) | Actual app UI registry/API/MCP/data/staging and slow-service isolation against Rust/PostgreSQL. |
