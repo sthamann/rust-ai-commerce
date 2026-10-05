@@ -39,6 +39,7 @@ mod marketing;
 mod operations;
 mod payments;
 mod staging;
+mod translations;
 mod workers;
 use agent::*;
 mod localization;

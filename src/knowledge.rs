@@ -43,6 +43,12 @@ pub async fn sync_product(
     tenant: &str,
     product: &Value,
 ) -> Result<(), sqlx::Error> {
+    // Every transactional graph writer first locks and re-reads the canonical
+    // product. Order projections must not race a manual edit or replace its new
+    // metadata with an earlier observation snapshot. AGE does not retry that race.
+    let current: Value = sqlx::query_scalar("SELECT jsonb_build_object('id',id,'name',name,'category',category,'description',description,'revision',revision) FROM products WHERE tenant=$1 AND id=$2 FOR UPDATE")
+        .bind(tenant).bind(product["id"].as_str()).fetch_one(&mut *conn).await?;
+    let product = &current;
     let sql = "SELECT result::text FROM ag_catalog.cypher('commerce', $graph$MERGE (p:Product {tenant: $tenant, product_id: $id}) SET p.name=$name, p.category=$category, p.description=$description, p.revision=$revision RETURN p.product_id$graph$, $1) AS (result ag_catalog.agtype)";
     sqlx::query(sql).bind(GraphParams(json!({"tenant":tenant,"id":product["id"],"name":product["name"],"category":product["category"],"description":product["description"],"revision":product["revision"]}).to_string())).execute(conn).await?;
     Ok(())

@@ -54,6 +54,7 @@ pub(super) async fn save(
     }
     let table = table(&kind)?;
     let mut data = v["data"].clone();
+    let (settings, _) = commerce::config(&a, &t).await?;
     let expected = v["revision"].as_i64().ok_or(bad("Revision required"))?;
     match kind.as_str() {
         "rules" => {
@@ -117,9 +118,7 @@ pub(super) async fn save(
                 serde_json::from_value(data.clone()).map_err(|_| bad("Invalid channel"))?;
             if !["storefront", "headless"].contains(&c.kind.as_str())
                 || c.locales.is_empty()
-                || c.locales
-                    .iter()
-                    .any(|v| !["de-DE", "en-GB", "fr-FR", "es-ES"].contains(&v.as_str()))
+                || c.locales.iter().any(|v| !settings.locales.contains(v))
                 || c.product_ids.len() > 500
             {
                 return Err(bad("Invalid channel membership"));
@@ -152,13 +151,7 @@ pub(super) async fn save(
         _ => unreachable!(),
     }
     let name = &data["name"];
-    if ["en", "de", "fr", "es"].iter().any(|lang| {
-        name[lang]
-            .as_str()
-            .is_none_or(|s| s.is_empty() || s.len() > 100)
-    }) {
-        return Err(bad("Configuration name needs all four translations"));
-    }
+    commerce::validate_names(name, &settings, 100)?;
     let mut tx = a.db.begin().await?;
     let sql = format!("SELECT revision FROM {table} WHERE tenant=$1 AND id=$2 FOR UPDATE");
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,17))")

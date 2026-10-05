@@ -192,4 +192,9 @@ theorem rule_xor_empty : rule_xor_count 0 = false := by rfl
 /-- Scheduling accepts precisely the documented thirty-day boundary. -/
 theorem flow_delay_exact (seconds : Nat) : flow_delay_admissible seconds = true ↔ seconds ≤ 2592000 := by
   simp [flow_delay_admissible]
+/-- Country, subdivision, postcode, date and authoritative Rule Builder conditions are all necessary and sufficient. -/
+theorem destination_tax_exact (condition country state postal date : Bool) :
+    destination_tax_admissible condition country state postal date = true ↔
+    condition = true ∧ country = true ∧ state = true ∧ postal = true ∧ date = true := by
+  cases condition <;> cases country <;> cases state <;> cases postal <;> cases date <;> simp [destination_tax_admissible]
 end CommerceKernel

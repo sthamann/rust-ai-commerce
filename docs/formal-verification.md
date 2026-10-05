@@ -1,11 +1,11 @@
 # Lean-checked commerce contracts
 
-The prototype now runs Lean 4.29.1 proofs for **20 policies used in production
-Rust paths**. Forty-two theorems cover the properties below. This is **not a
+The prototype now runs Lean 4.29.1 proofs for **21 policies used in production
+Rust paths**. Forty-six theorems cover the properties below. This is **not a
 certificate that the entire commerce core is correct or bug-free**. The current
-inventory contains 162 Rust modules: one extracted policy module, thirteen reviewed
-binding modules, one comparison driver and 147 unproved modules. Binding review
-is not a proof of those thirteen modules.
+inventory contains 205 Rust modules: one extracted policy module, seventeen reviewed
+binding modules, one comparison driver and 186 unproved modules. Binding review
+is not a proof of those seventeen modules.
 
 ## Connection to the real application
 
@@ -83,13 +83,13 @@ The existing **Verify prototype / verify** job now also:
    verification workflow also require an explicit recorded review after changes.
 3. Builds proofs with the pinned Lean toolchain and rechecks compiled declarations
    using bundled `leanchecker`.
-4. Audits all 45 required theorems' transitive axioms. Only Lean's standard
+4. Audits all 46 required theorems' transitive axioms. Only Lean's standard
    `propext`, `Quot.sound` and `Classical.choice` foundations are allowed. `sorry`,
    `admit`, custom axioms, `native_decide` and missing theorem audits fail.
-5. Executes compiled Rust and Lean functions on **3,614** identical inputs:
+5. Executes compiled Rust and Lean functions on **4,168** identical inputs:
    exhaustive Boolean assignments plus numeric boundaries/random cases, including
    `u64::MAX`. Their output types and values must match.
-6. Requires Lean to reject **39** deliberately broken policy variants. Also
+6. Requires Lean to reject **49** deliberately broken policy variants. Also
    rejects 14 unsupported grammar examples, three stale/unclassified/disconnected
    inventory cases and nine proof-shortcut/axiom/missing-audit examples.
 7. Runs existing Rust, PHP-reference and real PostgreSQL HTTP regressions.
@@ -174,3 +174,15 @@ or deployment correctness.
 The app GET policy proves admission from declared metadata; it does not prove an external service is actually side-effect-free. See [the full app boundary](app-platform.md).
 
 The automation increment additionally extracts exact XOR hit-count admission and the thirty-day durable delay bound. Three new properties and negative mutations protect those production decisions. The rule interpreter, calendar parsing and SQL/async flow runtime remain unproved; [automation](automation.md) defines their actual test and migration boundaries.
+
+## Destination tax guard and translation apply (2026-10-05)
+
+The production `destination_tax_admissible` function requires all five condition,
+country, state, postcode and date guards. Its exact Lean theorem accepts precisely
+that conjunction; all 32 Boolean assignments are compared and each individual
+guard bypass is rejected as a mutation. The native tax resolver consumes it.
+This proves the combined Boolean admission, not fact extraction, tax priority,
+rounding, current tax law or correctness of database configuration. Translation
+apply consumes the existing exact `revision_admissible` policy; stale product
+edits conflict. SQL row locks and provider output validation remain reviewed,
+unproved adapters with real PostgreSQL regression tests.

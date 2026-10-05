@@ -37,7 +37,8 @@ pub(crate) async fn product_detail(
         .unwrap_or_else(CheckoutSelection::defaults);
     let (config, _) = config(&a, &t).await?;
     let selection = resolve_selection(selection, group, &config);
-    let priced = tax_products(&ps, &selection, &config)?;
+    let taxes = tax_settings_for_header(&a, c.as_ref(), &chain, &config).await?;
+    let priced = tax_products(&ps, &selection, &taxes)?;
     let mut quantities = vec![p.min_purchase];
     for tier in &p.advanced_prices {
         if tier.rule_id == group {

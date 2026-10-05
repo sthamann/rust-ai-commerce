@@ -112,6 +112,10 @@ pub(crate) fn normalized_quantity(p: &Product, q: u32) -> Result<u32> {
 }
 pub(crate) async fn cart_json(a: &App, c: &StoredCart) -> Result<Value> {
     let mut h = HeaderMap::new();
+    h.insert(
+        "x-tenant",
+        c.tenant.parse().map_err(|_| bad("Invalid tenant"))?,
+    );
     if !c.data.locale.is_empty() {
         h.insert(
             "x-commerce-locale",
@@ -137,7 +141,10 @@ pub(crate) async fn cart_json(a: &App, c: &StoredCart) -> Result<Value> {
     let changed = json!(original) != json!(selected);
     let mut preview = c.clone();
     preview.data.checkout = Some(selected.clone());
-    let ps = commerce::tax_products(&ps, &selected, &config)?;
+    let taxes =
+        commerce::tax_settings_for_cart(&mut *a.db.acquire().await?, &preview, &ps, &config)
+            .await?;
+    let ps = commerce::tax_products(&ps, &selected, &taxes)?;
     let q = marketing::promote(
         &mut *a.db.acquire().await?,
         &preview,

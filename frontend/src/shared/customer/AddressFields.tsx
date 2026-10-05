@@ -1,4 +1,12 @@
 /** Structured accessible address editor; no hidden JSON or storefront-only duplicate model. */
+import CountryPicker from "../geography/CountryPicker";
+import EntityPicker from "../geography/EntityPicker";
+import { displayName } from "../geography/geography-types";
+import {
+  useCountryCatalogue,
+  type GeographyRequest,
+} from "../geography/useCountryCatalogue";
+import { useInternationalText } from "../i18n/international-i18n";
 import { useCustomerText } from "../i18n/customer-i18n";
 import { fullAddress, type Address } from "./customer-types";
 export default function AddressFields({
@@ -6,14 +14,35 @@ export default function AddressFields({
   onChange,
   countries,
   disabled = false,
+  request,
 }: {
   value?: Address | null;
   onChange: (a: Address) => void;
   countries: string[];
   disabled?: boolean;
+  request?: GeographyRequest;
 }) {
   const { c, locale } = useCustomerText();
+  const { i } = useInternationalText();
+  const geography = useCountryCatalogue(request);
   const a = fullAddress(value);
+  const world = countries.map(
+    (code) =>
+      geography?.countries.find((c) => c.code === code) ?? {
+        code,
+        alpha3: "",
+        numeric: "",
+        isoAssigned: false,
+        continent: "",
+        name: {
+          en:
+            new Intl.DisplayNames([locale], { type: "region" }).of(code) ??
+            code,
+        },
+        states: [],
+      },
+  );
+  const regions = world.find((c) => c.code === a.country)?.states ?? [];
   const set = (key: string, val: string) => {
     const next = { ...a, [key]: val };
     if (key === "firstName" || key === "lastName")
@@ -53,19 +82,30 @@ export default function AddressFields({
         {input("street", true)}
         {input("postalCode", true)}
         {input("city", true)}
-        <label>
-          {c("country")}
-          <select
-            value={a.country}
-            onChange={(e) => set("country", e.target.value)}
-          >
-            {countries.map((v) => (
-              <option key={v} value={v}>
-                {new Intl.DisplayNames([locale], { type: "region" }).of(v) ?? v}
-              </option>
-            ))}
-          </select>
-        </label>
+        <CountryPicker
+          countries={world}
+          value={[a.country ?? "DE"]}
+          single
+          label={c("country")}
+          disabled={disabled}
+          mainLocale={geography?.mainLocale}
+          onChange={(codes) =>
+            onChange({ ...a, country: codes[0], countryStateId: "" })
+          }
+        />
+        {!!regions.length && (
+          <EntityPicker
+            single
+            disabled={disabled}
+            label={i("region")}
+            options={regions.map((s) => ({
+              code: s.code,
+              label: displayName(s.name, locale, geography?.mainLocale),
+            }))}
+            value={a.countryStateId ? [a.countryStateId] : []}
+            onChange={(codes) => set("countryStateId", codes[0])}
+          />
+        )}
       </div>
       <details>
         <summary>{c("moreAddressFields")}</summary>
@@ -78,7 +118,6 @@ export default function AddressFields({
               "phoneNumber",
               "additionalAddressLine1",
               "additionalAddressLine2",
-              "countryStateId",
               "title",
               "salutationId",
             ] as const

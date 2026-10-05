@@ -26,3 +26,12 @@ This folder owns the Rust modules listed below. Each source begins with its resp
 - [`types.rs](types.rs): Checkout selection and configuration data contracts.
 
 The [source inventory](../../docs/module-inventory.md) is checked in CI. [The behavioral map](../../docs/source-map.md) identifies integration suites, and [testing](../../docs/testing.md) describes actual coverage and limits. Every file is limited to 320 lines; `main.rs` to 120.
+
+International additions: `geography.rs` catalogue/overlay/address validation;
+`tax_rules.rs` guarded destination resolution; `tax_context.rs` authoritative
+Rule Builder facts; `settings_defaults.rs` compatibility enrichment;
+`method_text.rs` translated methods; `content_text.rs` per-field metadata fallback;
+`product_languages.rs` enabled locales and stable registration;
+`international_capabilities.rs` native configuration/translation MCP operations.
+[The international contract](../../docs/international-commerce.md) names limits
+and real PostgreSQL suites. Translation workers live in their own domain folder.

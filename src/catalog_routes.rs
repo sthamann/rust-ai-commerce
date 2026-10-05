@@ -54,7 +54,8 @@ pub(crate) async fn catalog_page(
             .unwrap_or("consumer"),
         &settings,
     );
-    let priced = commerce::tax_products(ps, &selected, &settings)?;
+    let taxes = commerce::tax_settings_for_header(&a, c.as_ref(), &chain, &settings).await?;
+    let priced = commerce::tax_products(ps, &selected, &taxes)?;
     for p in &priced {
         let mut preview = if let Some(c) = &c {
             c.clone()

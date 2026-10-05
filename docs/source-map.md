@@ -15,6 +15,19 @@ inputs and state effects. A module's presence does not count as a test.
 
 The maintained full inventory, including all newly added Rust files, frontend feature folders, independent services and SDKs, is [module-inventory.md](module-inventory.md). Coverage percentages and explicit remaining gaps are in [testing.md](testing.md). The tables below describe selected behavioral suites and must not be read as 100% coverage.
 
+## International configuration and language boundaries
+
+`commerce/geography.rs` owns catalogue/overlay/address admission; `tax_rules.rs`
+owns guarded destination selection and `tax_context.rs` its private Rule Builder
+facts. `settings_defaults.rs`, `method_text.rs`, `content_text.rs` and
+`product_languages.rs` own compatibility defaults, translations and language
+registration. `international_capabilities.rs` shares native HTTP operations with MCP.
+`translations/{routes,worker,fields,apply}.rs` own durable translation lifecycle,
+text-only inference and locked revision-checked apply. The real PostgreSQL suites
+`international_commerce.py` and `translations.py` plus catalog tests cover these
+paths. `frontend/src/shared/geography` owns controls reused in Studio and checkout.
+See [international commerce](international-commerce.md) for the exact contract.
+
 ## Rust behavioral test map
 
 | File | Responsibility | Coverage |

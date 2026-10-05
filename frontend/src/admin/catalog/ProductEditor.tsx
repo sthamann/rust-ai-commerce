@@ -6,11 +6,11 @@ import { useCatalogText } from "./catalog-i18n";
 import {
   hydrateDraft,
   newDraft,
-  languages,
   type Category,
   type ProductDraft,
 } from "./catalog-model";
 import GalleryUpload from "./GalleryUpload";
+import TaxClassSelect from "./TaxClassSelect";
 import ProductPanels from "./ProductPanels";
 import ProductAssets from "./ProductAssets";
 import ReviewModeration from "./ReviewModeration";
@@ -47,7 +47,36 @@ export default function ProductEditor({
       const d = newDraft();
       setDraft(d);
       setBaseline(JSON.stringify(d));
-      return;
+      currentRequest
+        .current("/api/merchant/commerce")
+        .then((v) => {
+          if (active && v.data?.locales) {
+            setDraft((old) => ({
+              ...old,
+              mainLocale: v.data.mainLocale,
+              availableLocales: v.data.locales,
+              translations: Object.fromEntries(
+                v.data.locales.map((l: string) => {
+                  const base = l.split("-")[0],
+                    key =
+                      v.data.locales.filter(
+                        (x: string) => x.split("-")[0] === base,
+                      ).length === 1
+                        ? base
+                        : l;
+                  return [
+                    key,
+                    old.translations[key] ?? { name: null, description: null },
+                  ];
+                }),
+              ),
+            }));
+          }
+        })
+        .catch(() => {});
+      return () => {
+        active = false;
+      };
     }
     setLoading(true);
     currentRequest
@@ -90,18 +119,11 @@ export default function ProductEditor({
     setError("");
     try {
       const translations = { ...draft.translations };
-      const fallback =
-        translations[lang].name.trim() ||
-        Object.values(translations).find((v) => v.name.trim())?.name ||
-        "";
-      for (const l of languages)
-        translations[l] = {
-          ...translations[l],
-          name: translations[l].name.trim() || fallback,
-        };
       const {
         id: _id,
         channels: _channels,
+        mainLocale: _mainLocale,
+        availableLocales: _availableLocales,
         ...payload
       } = { ...draft, translations };
       const result = await request(
@@ -125,6 +147,22 @@ export default function ProductEditor({
       setBusy(false);
     }
   };
+  const enabledLocales = draft.availableLocales ?? [
+    "en-GB",
+    "de-DE",
+    "fr-FR",
+    "es-ES",
+  ];
+  const languageKeys = enabledLocales.map((l) =>
+    enabledLocales.filter((v) => v.split("-")[0] === l.split("-")[0]).length ===
+    1
+      ? l.split("-")[0]
+      : l,
+  );
+  const safeLang = languageKeys.includes(lang) ? lang : languageKeys[0];
+  useEffect(() => {
+    if (!languageKeys.includes(lang)) setLang(languageKeys[0]);
+  }, [languageKeys.join(","), lang]);
   const tabs = [
     "general",
     "prices",
@@ -196,7 +234,7 @@ export default function ProductEditor({
               busy ||
               (!dirty && !!id) ||
               !draft.catalog.productNumber ||
-              !Object.values(draft.translations).some((t) => t.name.trim())
+              !Object.values(draft.translations).some((t) => t.name?.trim())
             }
             onClick={save}
           >
@@ -214,16 +252,11 @@ export default function ProductEditor({
           <label>
             {c("language")}
             <select value={lang} onChange={(e) => setLang(e.target.value)}>
-              {languages.map((l) => (
+              {languageKeys.map((l) => (
                 <option value={l} key={l}>
-                  {
-                    {
-                      en: "English",
-                      de: "Deutsch",
-                      fr: "Français",
-                      es: "Español",
-                    }[l]
-                  }{" "}
+                  {new Intl.DisplayNames([locale], { type: "language" }).of(
+                    l,
+                  ) ?? l}{" "}
                   {draft.translations[l]?.name ? "✓" : ""}
                 </option>
               ))}
@@ -281,9 +314,21 @@ export default function ProductEditor({
             <ProductPanels
               tab={tab}
               draft={draft}
-              lang={lang}
+              lang={safeLang}
               categories={categories}
               onChange={change}
+            />
+          )}
+          {tab === "prices" && (
+            <TaxClassSelect
+              request={request}
+              value={draft.extra.taxClassId ?? ""}
+              onChange={(taxClassId) =>
+                change({
+                  ...draft,
+                  extra: { ...draft.extra, taxClassId: taxClassId || null },
+                })
+              }
             />
           )}
           {tab === "media" &&

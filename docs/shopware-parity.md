@@ -62,7 +62,7 @@ conformance. Executable migration units live in `porting/units.json`.
 | Flow Builder | `marketing/{pipeline,pipeline_runtime,flow_actions,flow_mutations}.rs`, outbox/workers, Studio canvas | **Partial port:** connected true/false graph, multi-action sequence, durable delay/stop, 16 Core action names with bounded native configurations; current-rights checks and per-step receipts | Complete source trigger producers, arbitrary mail templates/document/group configuration, subflows and original FlowSequence interchange; see [automation](automation.md) |
 | Promotions/vouchers/actions | `marketing/promotions.rs`, `discount.rs`, cart/order paths | **Native prototype:** automatic/coded percentage/fixed/free-shipping discounts, priorities/exclusivity/windows/global uses, exact-cent allocation, tax and concurrent usage checks | Shopware set groups/packages/filter calculators, individual coupon redemption, per-customer limits, currency/source processor parity |
 | Customer account profile/order routes | `accounts/*`, `customer.rs`, `CustomerAccount.tsx` | **Native prototype:** registration/login, trusted group, profile/address/password/logout, own order history without cart secrets | Recovery/verification/email changes, consent/account deletion, full original account schema/route compatibility |
-| Product specification/SEO/cross-selling/free shipping | `commerce/product_edit.rs`, product `extra`, PDP and delivery | **Native prototype:** four translations, names/descriptions, bounded translated specs, SEO title/description/slug metadata, own cross-selling IDs, shipping-free flag consumed in quote | Server-rendered SEO routes, complete custom fields/media/cross-selling groups, arbitrary inherited advanced prices/currency |
+| Product specification/SEO/cross-selling/free shipping | `commerce/product_edit.rs`, product `extra`, PDP and delivery | **Native prototype:** configured content locales with shop-main inheritance, names/descriptions, bounded translated specs, SEO title/description/slug metadata, own cross-selling IDs, shipping-free flag consumed in quote | Server-rendered SEO routes, complete custom fields/media/cross-selling groups, arbitrary inherited advanced prices/currency |
 | Sales channels / multishop | `marketing/channels.rs`, cart binding, catalog/detail/order/handoff, `auth/provision.rs` | **Native prototype:** independent shop tenants and multiple storefront/headless channel catalogs/locales inside a tenant | Full context hydration, domains, currencies, channel-specific payment/tax config and full upstream channel entity semantics |
 | Live/staging/app development | `staging/*`, `developer/*`, migrations 013 | **Native SaaS extension:** immutable declarative app drafts, private tenant preview, typed schema/API/UI, exact selected releases and live conflicts | Full source IDE/Git operations, isolated service compilation/deploy, destructive migrations, rollback/merge and large-catalog branch mechanics |
 | PDP knowledge and session personalization | `documents/*`, AGE/pgvector, `experience.rs` | **Native AI extension:** published cited sources and persisted ranking consumed by actual PDP/catalog, shopper opt-in/clear | Real model answer quality, language correctness for every provider, ANN scale, causal economics and learned LLM weights |
@@ -147,3 +147,22 @@ This supersedes the older “generic catalog editing UI missing” entry; comple
 variant generation, global property/manufacturer entities, CMS/product streams,
 original API/DAL schemas and full SEO URL generation remain missing.
 [Exact source mapping, implemented behaviors and gaps](product-management.md).
+
+## International configuration delta (2026-10-05)
+
+Country and tax concepts follow original `System/Country`, `System/Tax` and
+Shopware Administration settings. The native subset lives in
+`commerce/geography.rs`, `tax_rules.rs`, `tax_context.rs`, `settings_validation.rs`
+and the Settings Studio modules. It adds the world catalogue, US subdivisions,
+tenant overlays, destination/postcode/date/Rule Builder resolution, custom product
+tax classes and localized shipping/payment availability. `international_commerce.py`
+checks actual prices, checkout snapshots, invalid geography and tenant boundaries.
+This is **native prototype equivalence for the documented subset**, not an
+original-PHP tax-detection comparison or full Shopware DAL/API parity.
+
+`localization.rs`, `commerce/content_text.rs`, `product_languages.rs` and
+`product_edit.rs` implement configurable main-language and per-field inheritance.
+`translations/` is a native AI extension with durable drafts, bounded jobs and
+revision-protected apply, covered by the restart/provider/permissions fixture suite.
+See [the full international contract](international-commerce.md) for remaining
+compound tax/currency, worldwide subdivision, full UI-language and model-quality gaps.

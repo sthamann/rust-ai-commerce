@@ -52,7 +52,7 @@ it("searches and filters through the server instead of hiding the current page",
     ),
   );
 });
-it("creates a revision-zero aggregate and fills untranslated fallback names", async () => {
+it("creates a revision-zero aggregate without fabricating translations", async () => {
   const user = userEvent.setup();
   const request = vi.fn(async () => ({ id: "created", revision: 1 }));
   const created = vi.fn();
@@ -74,12 +74,14 @@ it("creates a revision-zero aggregate and fills untranslated fallback names", as
   await user.type(screen.getByLabelText("Price"), "29.95");
   await user.click(screen.getByRole("button", { name: "Save product" }));
   await waitFor(() => expect(created).toHaveBeenCalledWith("created"));
-  const [path, payload, method] = request.mock.calls[0] as any;
+  const [path, payload, method] = request.mock.calls.find(
+    (args: any) => args[2] === "POST",
+  ) as any;
   expect(path).toBe("/api/merchant/products");
   expect(method).toBe("POST");
   expect(payload.revision).toBe(0);
   expect(payload.commerce.price).toBe(29.95);
-  expect(payload.translations.de.name).toBe("New object");
+  expect(payload.translations.de.name).toBeNull();
   expect(payload.catalog.active).toBe(false);
   expect(payload).not.toHaveProperty("id");
 });

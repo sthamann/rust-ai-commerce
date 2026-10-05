@@ -136,6 +136,13 @@ fn eval(j: &Value) -> Result<Value, String> {
         Some("flow_delay_admissible") => Ok(json!(flow_delay_admissible(
             args["seconds"].as_u64().ok_or("Invalid seconds")?
         ))),
+        Some("destination_tax_admissible") => Ok(json!(destination_tax_admissible(
+            args["condition"].as_bool().ok_or("Invalid condition")?,
+            args["country"].as_bool().ok_or("Invalid country")?,
+            args["state"].as_bool().ok_or("Invalid state")?,
+            args["postal"].as_bool().ok_or("Invalid postal")?,
+            args["date"].as_bool().ok_or("Invalid date")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

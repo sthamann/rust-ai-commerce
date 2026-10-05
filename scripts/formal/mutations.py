@@ -5,6 +5,12 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("destination_tax_admissible","condition","true"),
+ ("destination_tax_admissible","country","true"),
+ ("destination_tax_admissible","state","true"),
+ ("destination_tax_admissible","postal","true"),
+ ("destination_tax_admissible","date","true"),
+
  ("rule_xor_count","hits == 1","hits <= 1"),
  ("flow_delay_admissible","seconds <= 2592000","true"),
  ("app_read_admissible","!mutating","true"),

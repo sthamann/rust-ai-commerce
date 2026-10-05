@@ -3,6 +3,34 @@ use crate::*;
 
 pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
     (
+        "merchant.commerce.read",
+        "Read countries, tax rules, shipping, payment and content languages",
+    ),
+    (
+        "merchant.commerce.save",
+        "Revision-bound international commerce settings update",
+    ),
+    (
+        "merchant.translations.list",
+        "Read catalogue translation jobs",
+    ),
+    (
+        "merchant.translations.create",
+        "Start an AI catalogue translation draft job",
+    ),
+    (
+        "merchant.translations.detail",
+        "Read paginated source and translated product drafts",
+    ),
+    (
+        "merchant.translations.control",
+        "Resume or cancel a translation job",
+    ),
+    (
+        "merchant.translations.apply",
+        "Apply at most 50 revision-checked translation drafts",
+    ),
+    (
         "merchant.products",
         "Search/filter own products before cursor pagination",
     ),
@@ -52,7 +80,7 @@ pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
     ),
     (
         "merchant.product.content",
-        "Read four-language product content",
+        "Read enabled-language product content",
     ),
     (
         "merchant.product.save",
@@ -163,6 +191,9 @@ pub(crate) async fn capabilities() -> Json<Value> {
     )
 }
 pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+    if commerce::international_permission(name).is_some() {
+        return commerce::international_invoke(a, h, name, v).await;
+    }
     if name.starts_with("automation.") {
         return marketing::invoke(a, h, name, v).await;
     }

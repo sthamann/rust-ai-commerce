@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:coverage:full": "vitest run --coverage --coverage.thresholds.100",
-    "architecture": "node scripts/architecture.mjs"
+    "architecture": "node scripts/architecture.mjs",
+    "localization": "node scripts/localization.mjs"
   },
   "dependencies": {
     "@tiptap/core": "^3.31.4",
@@ -25,6 +26,7 @@
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.7",
+    "@types/node": "^22.20.5",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.0",

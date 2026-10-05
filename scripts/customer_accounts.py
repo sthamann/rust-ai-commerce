@@ -14,7 +14,13 @@ def shop(label):
     v=call('/api/auth/register',{'workspaceId':label+'-'+suffix,'workspaceName':label,'name':'Owner','email':label+suffix+'@example.test','password':password})
     return v['workspace'],{'x-tenant':v['workspace'],'Authorization':'Bearer '+v['token']}
 t,mh=shop('addresses');foreign,fmh=shop('addressforeign');public={'x-tenant':t,'x-commerce-locale':'de-DE'}
-billing={'firstName':'Ada','lastName':'Lovelace','name':'Ada Lovelace','company':'Example GmbH','department':'Research','vatId':'DE-TEST','title':'Dr.','salutationId':'not_specified','street':'Billingstrasse 1','additionalAddressLine1':'Hof A','additionalAddressLine2':'Etage 3','postalCode':'10115','city':'Berlin','country':'DE','countryStateId':'BE','phoneNumber':'+49 30 12345'}
+# Region fields now admit configured subdivisions rather than arbitrary free text.
+configuration=call('/api/merchant/commerce',h=mh)
+germany=next(c for c in call('/store-api/countries',h=public)['countries'] if c['code']=='DE')
+germany['states']=[{'code':'DE-BE','name':{'en':'Berlin','de':'Berlin','es':'Berlín','fr':'Berlin'}}]
+configuration['data']['countryDefinitions']=[germany]
+call('/api/merchant/commerce',configuration,mh,'PUT')
+billing={'firstName':'Ada','lastName':'Lovelace','name':'Ada Lovelace','company':'Example GmbH','department':'Research','vatId':'DE-TEST','title':'Dr.','salutationId':'not_specified','street':'Billingstrasse 1','additionalAddressLine1':'Hof A','additionalAddressLine2':'Etage 3','postalCode':'10115','city':'Berlin','country':'DE','countryStateId':'DE-BE','phoneNumber':'+49 30 12345'}
 shipping={**billing,'street':'Shippingstrasse 9','company':'','department':'','city':'Potsdam','postalCode':'14467'}
 email='ada'+suffix+'@example.test';reg=call('/store-api/account/register',{'name':'Ada Lovelace','firstName':'Ada','lastName':'Lovelace','company':'Example GmbH','email':email,'password':password,'billingAddress':billing,'shippingAddress':shipping,'group':'business'},public)
 ch={**public,'x-customer-token':reg['customerToken']};p=call('/store-api/account/profile',h=ch);book=p['addresses'];bid=book['defaultBillingAddressId'];sid=book['defaultShippingAddressId'];assert bid!=sid and len(book['elements'])==2 and p['customerGroup']=='consumer' and p['customerNumber'].startswith('C-') and p['languageId']=='de-DE'

@@ -46,3 +46,13 @@ existing module has been redesigned or that the full application has 100% covera
 The discard guard covers settings-area navigation and browser unload; it does not
 intercept every possible Studio navigation. Formal checks cover the documented
 bounded policies and reviewed adapter hashes, not all SQL or all UI behavior.
+
+## International settings (2026-10-05)
+
+Countries, taxes, shipping/payment methods and content languages share a revisioned
+draft across secondary navigation. `shared/geography` owns keyboard/search/group
+selection and field inheritance; tax/method panels use a record list with a
+dedicated detail editor. The country catalogue and US subdivisions feed the same
+controls in account addresses and checkout. Languages include durable translation
+progress/review/apply. [International commerce](international-commerce.md) records
+the native API/MCP contract and remaining tax/language limits.

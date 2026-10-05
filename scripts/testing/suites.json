@@ -22,7 +22,9 @@
     "customer_accounts",
     "developer_documents",
     "automation",
-    "catalog_management"
+    "catalog_management",
+    "international_commerce",
+    "translations"
   ],
   "providers": [
     "email_tests",

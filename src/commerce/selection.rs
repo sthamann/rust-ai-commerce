@@ -14,15 +14,19 @@ pub(crate) fn resolve_selection(
         .filter(|v| v.active && v.countries.contains(&selected.country))
         .collect::<Vec<_>>();
     if !shipping.iter().any(|v| v.id == selected.shipping_method_id) {
-        selected.shipping_method_id = shipping[0].id.clone();
+        selected.shipping_method_id = shipping.first().map(|v| v.id.clone()).unwrap_or_default();
     }
     let payments = settings
         .payments
         .iter()
-        .filter(|v| v.active && (!v.business_only || group == "business"))
+        .filter(|v| {
+            v.active
+                && (!v.business_only || group == "business")
+                && v.available_in(&selected.country)
+        })
         .collect::<Vec<_>>();
     if !payments.iter().any(|v| v.id == selected.payment_method_id) {
-        selected.payment_method_id = payments[0].id.clone();
+        selected.payment_method_id = payments.first().map(|v| v.id.clone()).unwrap_or_default();
     }
     selected
 }

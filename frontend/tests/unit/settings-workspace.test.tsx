@@ -23,6 +23,14 @@ const initial = {
 function api() {
   let record = structuredClone(initial);
   return vi.fn(async (path: string, body?: any, method?: string) => {
+    if (path === "/store-api/countries")
+      return {
+        countries: [],
+        enabled: ["DE"],
+        mainLocale: "en-GB",
+        locales: ["en-GB", "de-DE", "fr-FR", "es-ES"],
+        revision: 2,
+      };
     if (path === "/api/merchant/commerce")
       return {
         revision: 2,
@@ -103,7 +111,7 @@ it("requires explicit discard before switching settings with a dirty draft", asy
     screen.getByRole("button", { name: "Discard and continue" }),
   );
   expect(
-    await screen.findByRole("heading", { name: "Countries" }),
+    await screen.findByRole("heading", { name: "Countries & regions" }),
   ).toBeVisible();
   expect(
     screen.queryByLabelText("Name", { exact: true }),
@@ -162,7 +170,9 @@ it.each([
     await userEvent
       .setup()
       .click(screen.getByRole("button", { name: new RegExp(label) }));
-    expect(await screen.findByRole("heading", { name: label })).toBeVisible();
+    expect(
+      await screen.findByRole("heading", { name: new RegExp(label), level: 2 }),
+    ).toBeVisible();
     expect(
       screen.queryByText("countries", { exact: true }),
     ).not.toBeInTheDocument();

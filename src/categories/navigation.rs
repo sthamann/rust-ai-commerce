@@ -28,7 +28,7 @@ pub(crate) async fn admit(a: &App, h: &HeaderMap, id: &str) -> Result<()> {
 }
 pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let (locale, _) = language_context(&a, &h).await?;
-    let lang = &locale[..2];
+    let (settings, _) = commerce::config(&a, &tenant(&h)?).await?;
     let rows = rows(&a, &h).await?;
     if rows.len() > 2000 {
         return Err(bad("Category navigation exceeds limit"));
@@ -59,7 +59,7 @@ pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Valu
     };
     let entries = rows.iter().filter(|r|visible(&r.get::<String,_>("id"))).map(|r| {
         let d: Value = r.get("data");
-        let tr = d["translations"].get(lang).unwrap_or(&d["translations"]["en"]);
+        let tr = commerce::translated_object(&d["translations"], &locale, &settings.main_locale);
         json!({"id":r.get::<String,_>("id"),"parentId":r.get::<Option<String>,_>("parent_id"),"name":tr["name"],"description":tr["description"],"slug":tr["slug"],"type":d["type"],"url":d["url"],"position":r.get::<i32,_>("position")})
     }).collect::<Vec<_>>();
     Ok(Json(json!({"elements":entries,"locale":locale})))

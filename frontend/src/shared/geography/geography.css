@@ -1,0 +1,134 @@
+/* Shared country and region search: Studio and checkout use the same accessible controls. */
+.geo-picker {
+  position: relative;
+  min-width: 0;
+}
+.geo-picker > label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 550;
+}
+.geo-selection {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px;
+  background: var(--panel, #fff);
+  border: 1px solid var(--border, #dbe3ed);
+  border-radius: 12px;
+}
+.geo-selection:focus-within {
+  border-color: var(--accent, #1768ee);
+  box-shadow: 0 0 0 3px #1768ee15;
+}
+.geo-selection input {
+  flex: 1;
+  min-width: 150px;
+  padding: 6px !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none;
+  background: transparent;
+  width: auto !important;
+  font-size: 12px;
+}
+.geo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--hover, #edf4ff);
+  color: var(--text, #19304b);
+  border-radius: 7px;
+  font-size: 11px;
+  padding: 6px 8px;
+}
+.geo-chip button {
+  padding: 0 2px;
+  border: 0;
+  background: none;
+  color: inherit;
+}
+.geo-count,
+.geo-status {
+  font-size: 11px;
+  color: var(--muted, #62718a);
+}
+.geo-clear {
+  border: 0;
+  background: transparent;
+  padding: 6px;
+  color: var(--accent, #1768ee);
+  font-size: 10px;
+}
+.geo-popover {
+  position: absolute;
+  top: 100%;
+  margin-top: 6px;
+  z-index: 30;
+  width: 100%;
+  min-width: min(330px, 80vw);
+  padding: 10px;
+  background: var(--panel, #fff);
+  color: var(--text, #19304b);
+  border: 1px solid var(--border, #dbe3ed);
+  border-radius: 14px;
+  box-shadow: 0 16px 48px #132e4922;
+}
+.geo-popover [role="listbox"] {
+  max-height: 320px;
+  overflow-y: auto;
+}
+.geo-status {
+  padding: 4px 6px 10px;
+}
+.geo-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 6px 6px;
+  font-size: 11px;
+}
+.geo-group button,
+.geo-more {
+  background: none;
+  color: var(--accent, #1768ee);
+  border: 0;
+  padding: 4px;
+  font-size: 11px;
+}
+.geo-popover [role="option"] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  padding: 10px 8px;
+  border-radius: 7px;
+  font-size: 12px;
+}
+.geo-popover [role="option"] strong {
+  font-weight: 500;
+}
+.geo-popover [role="option"] small {
+  display: block;
+  margin-top: 3px;
+  font-size: 10px;
+  color: var(--muted, #62718a);
+}
+.geo-popover [role="option"] > span:last-child {
+  color: var(--muted, #62718a);
+  font-size: 11px;
+}
+.geo-popover [role="option"]:hover,
+.geo-popover .geo-focused {
+  background: var(--hover, #edf4ff);
+}
+.geo-popover [aria-selected="true"] {
+  background: var(--hover, #edf4ff);
+  color: var(--accent, #1768ee);
+}
