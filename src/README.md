@@ -25,7 +25,7 @@ This folder owns the Rust modules listed below. Each source begins with its resp
 - [`foundation.rs](foundation.rs): Application dependencies, error responses and request context helpers.
 - [`http_limits.rs](http_limits.rs): Bounded streaming responses for extension services and payment providers.
 - [`inference.rs](inference.rs): Provider adapters. Credentials stay on the server; domain validation is separate.
-- [`knowledge.rs](knowledge.rs): Apache AGE graph plus pgvector retrieval. Queries are fixed, parameters are data.
+- [`knowledge.rs](knowledge.rs): Transactional PostgreSQL knowledge relations and separately indexed Qdrant retrieval.
 - [`lib.rs](lib.rs): Reusable pricing, context, sandbox, graph and inference modules.
 - [`localization.rs](localization.rs): Shop locale resolution, translated catalog hydration and non-mutating merchant quote.
 - [`main.rs](main.rs): Process lifetime only. See docs/source-map.md for domain responsibilities.

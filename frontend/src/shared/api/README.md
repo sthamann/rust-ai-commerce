@@ -7,6 +7,7 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 ## Modules
 
 - `download.ts`
+- `shop-scope.ts`
 - `shop-api.ts`
 - `types.ts`
 

@@ -1,4 +1,5 @@
 /** Searchable shop directory and server-validated provisioning form. */
+import { storefrontURL } from "../shared/api/shop-scope";
 import { useState } from "react";
 import { useLocale } from "../shared/i18n/i18n";
 import { usePlatformText } from "../shared/i18n/platform-i18n";
@@ -156,14 +157,14 @@ export default function PlatformShops({
             </div>
             <div className="platform-actions">
               <a
-                href={`/?shop=${encodeURIComponent(s.id)}`}
+                href={storefrontURL(s.id)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 {t("open")} ↗
               </a>
               <a
-                href={`/?shop=${encodeURIComponent(s.id)}#merchant`}
+                href={storefrontURL(s.id, true)}
                 target="_blank"
                 rel="noopener noreferrer"
               >

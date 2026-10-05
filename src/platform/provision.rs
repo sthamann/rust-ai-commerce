@@ -8,6 +8,9 @@ pub(super) async fn create(
     let actor = auth::actor(&h)?;
     let id = v["id"].as_str().ok_or(bad("Shop ID required"))?;
     validate_tenant(id)?;
+    if ["app", "www", "api", "admin", "mail", "platform"].contains(&id) {
+        return Err(bad("Reserved shop ID"));
+    }
     let name = v["name"]
         .as_str()
         .filter(|s| !s.trim().is_empty() && s.len() <= 100)

@@ -8,7 +8,7 @@ GitHub Pages hosts documentation, not the Rust commerce service.
 ## Prepare the private host configuration
 
 Use a Linux host with Docker Compose, a public DNS name pointing to it and
-reachable ports 80/443. PostgreSQL/AGE/pgvector stay on the private Compose
+reachable ports 80/443. PostgreSQL/Qdrant stay on the private Compose
 network. The repository does not purchase a server or reuse unrelated services.
 
 From the repository root:
@@ -31,7 +31,7 @@ demo database for a new public deployment without reviewing its accounts.
 ## Start the backend and your operator account
 
 ```sh
-docker compose --env-file deploy/.env -f deploy/compose.yaml up -d --build postgres commerce gateway
+docker compose --env-file deploy/.env -f deploy/compose.yaml up -d --build postgres qdrant commerce gateway
 docker compose --env-file deploy/.env -f deploy/compose.yaml --profile operator-setup run --rm operator
 ```
 
@@ -118,3 +118,5 @@ Broader production SaaS requires recovery/email verification, rate limits/abuse
 controls, core-wide RLS, per-tenant inference budgets, signed app trust, billing,
 large-catalog staged branches, backups/restores and measured failover. The
 [operator guide](platform.md) describes exactly what the dashboard measures.
+
+The Northflank topology, cost model and migration boundaries are in [managed-hosting.md](managed-hosting.md).

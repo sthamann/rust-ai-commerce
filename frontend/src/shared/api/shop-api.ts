@@ -1,4 +1,5 @@
 /** shop api: Typed commerce contracts, merchant/store transports and binary download helper. */
+import { shopScope } from "./shop-scope";
 import { responseError } from "../i18n/errors-i18n";
 import { getLocale } from "../i18n/i18n";
 export type Product = {
@@ -190,16 +191,14 @@ export async function shopApi<T = unknown>(
       "x-commerce-locale": getContentLocale(),
       "sw-sales-channel-id":
         new URLSearchParams(location.search).get("channel") ?? "default",
-      ...(localStorage.getItem(
-        `rac-customer:${new URLSearchParams(location.search).get("shop") ?? "atelier"}`,
-      )
+      ...(localStorage.getItem(`rac-customer:${shopScope()}`)
         ? {
             "x-customer-token": localStorage.getItem(
-              `rac-customer:${new URLSearchParams(location.search).get("shop") ?? "atelier"}`,
+              `rac-customer:${shopScope()}`,
             )!,
           }
         : {}),
-      "x-tenant": new URLSearchParams(location.search).get("shop") ?? "atelier",
+      "x-tenant": shopScope(),
       ...(token ? { "sw-context-token": token } : {}),
       ...(merchant ||
       (new URLSearchParams(location.search).get("sandbox") === "1"
@@ -218,9 +217,7 @@ export async function shopApi<T = unknown>(
     path.startsWith("/store-api/") &&
     v.errors?.[0]?.detail === "Customer session expired"
   ) {
-    localStorage.removeItem(
-      `rac-customer:${new URLSearchParams(location.search).get("shop") ?? "atelier"}`,
-    );
+    localStorage.removeItem(`rac-customer:${shopScope()}`);
     if (
       path === "/store-api/checkout/cart" &&
       body !== undefined &&

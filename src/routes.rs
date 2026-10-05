@@ -148,5 +148,9 @@ pub(crate) fn router(a: App) -> Router {
             a.clone(),
             auth::authenticate,
         ))
+        .layer(axum::middleware::from_fn_with_state(
+            a.clone(),
+            shop_domains::resolve,
+        ))
         .with_state(a)
 }

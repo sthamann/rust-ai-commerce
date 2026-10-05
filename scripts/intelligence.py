@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Actual AGE/vector persistence and optional live local inference integration."""
+"""Actual SQL knowledge persistence and optional live local inference integration."""
 import json, os, pathlib, subprocess, urllib.request, urllib.error
 
 base=os.environ.get('BASE_URL','http://127.0.0.1:8787'); root=pathlib.Path(__file__).resolve().parents[1]
@@ -12,7 +12,7 @@ def call(path,body=None,h=None,expected=200):
     assert status==expected,(status,value); return value
 def passed(name):checks.append(name);print('PASS',name)
 call('/api/knowledge',expected=401)
-graph=call('/api/knowledge',h=ah); assert graph['engine']=='Apache AGE' and any(n['product_id']=='lamp' and n['need']=='reading' for n in graph['needs']); assert any(p['left']=='chair' and p['right']=='lamp' for p in graph['pairs']); passed('Actual Cypher graph supplies needs and complementary products')
+graph=call('/api/knowledge',h=ah); assert graph['engine']=='PostgreSQL' and any(n['product_id']=='lamp' and n['need']=='reading' for n in graph['needs']); assert any(p['left']=='chair' and p['right']=='lamp' for p in graph['pairs']); passed('Transactional SQL knowledge relations supplies needs and complementary products')
 assert call('/api/knowledge',h={**ah,'x-tenant':'workshop'})['tenant']=='workshop'
 call('/api/knowledge',h={**ah,'x-tenant':"atelier'}) RETURN 1 //"},expected=400); passed('Graph parameters and tenant boundary reject query injection')
 call('/api/knowledge/reindex',{},expected=401); passed('Semantic index mutation requires merchant authority')
@@ -23,10 +23,10 @@ assert next(l for l in cart['lineItems'] if l['id']=='notebook')['price']['refer
 wire=[{'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-11-25'}},{'jsonrpc':'2.0','method':'notifications/initialized'},{'jsonrpc':'2.0','id':2,'method':'tools/call','params':{'name':'knowledge.graph','arguments':{}}}]
 env={**os.environ,'COMMERCE_URL':base}
 reply=subprocess.check_output(['python3',str(root/'scripts/mcp_stdio.py')],input=''.join(json.dumps(v)+'\n' for v in wire).encode(),env=env)
-replies=[json.loads(v) for v in reply.splitlines()]; assert len(replies)==2 and replies[1]['result']['structuredContent']['engine']=='Apache AGE'; passed('Claude Desktop stdio bridge executes real Rust MCP graph tool')
+replies=[json.loads(v) for v in reply.splitlines()]; assert len(replies)==2 and replies[1]['result']['structuredContent']['engine']=='PostgreSQL'; passed('Claude Desktop stdio bridge executes real Rust MCP graph tool')
 if os.environ.get('TEST_EMBEDDING')=='1':
     call('/api/knowledge/reindex',{},ah)
-    found=call('/api/knowledge/search',{'query':'warm reading lamp'},ah); assert found['mode']=='vector' and found['indexedProducts']==6 and any(v['id']=='lamp' for v in found['hits'][:3]); passed('Real embedding inference stored in pgvector and reused for semantic retrieval')
+    found=call('/api/knowledge/search',{'query':'warm reading lamp'},ah); assert found['mode']=='vector' and found['indexedProducts']==6 and any(v['id']=='lamp' for v in found['hits'][:3]); passed('Real embedding inference stored in PostgreSQL and indexed in Qdrant and reused for semantic retrieval')
     result=call('/api/knowledge/reindex',{},ah); assert result['indexed']==0; passed('Unchanged semantic documents reuse persisted embeddings')
 if os.environ.get('TEST_MODEL')=='1':
     before=next(p for p in call('/store-api/product',{})['elements'] if p['id']=='lamp')['price']

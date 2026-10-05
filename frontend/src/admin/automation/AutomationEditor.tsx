@@ -1,4 +1,5 @@
 /** AutomationEditor: focused form view with explicit typed inputs and callbacks. */
+import { shopScope } from "../../shared/api/shop-scope";
 import { useConnectedText } from "../../shared/i18n/connected-i18n";
 import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
 import { type Config, type Kind } from "./automation-types";
@@ -293,7 +294,7 @@ export default function AutomationEditor({
             </select>
           </label>
           <a
-            href={`/?shop=${new URLSearchParams(location.search).get("shop") ?? "atelier"}&channel=${id}#`}
+            href={`/?shop=${shopScope()}&channel=${id}#`}
             target="_blank"
             rel="noreferrer"
           >

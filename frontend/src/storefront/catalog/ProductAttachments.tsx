@@ -1,4 +1,5 @@
 /** Public attachment list follows the active storefront tenant and channel; private downloads are never listed. */
+import { shopScope } from "../../shared/api/shop-scope";
 import { useEffect, useState } from "react";
 import { downloadFile } from "../../shared/api/download";
 import { shopApi } from "../../shared/api/shop-api";
@@ -31,7 +32,7 @@ export default function ProductAttachments({ id }: { id: string }) {
           className="shop-button"
           onClick={() =>
             void downloadFile(`/store-api/assets/${f.id}`, {
-              "x-tenant": query.get("shop") ?? "atelier",
+              "x-tenant": shopScope(),
               ...(query.get("channel")
                 ? { "sw-sales-channel-id": query.get("channel")! }
                 : {}),

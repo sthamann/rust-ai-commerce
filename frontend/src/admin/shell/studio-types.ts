@@ -20,6 +20,7 @@ export type Product = {
   }[];
 };
 export type Graph = {
+  engine?: string;
   documents?: {
     product_id: string;
     document_id: string;

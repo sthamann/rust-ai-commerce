@@ -102,19 +102,8 @@ mod channel_metrics;
 mod migrations;
 mod platform;
 mod routes;
+mod shop_domains;
 pub(crate) use routes::*;
 fn main() {
-    if env::args().nth(1).as_deref() == Some("--extract-pdf") {
-        documents::extract_pdf();
-        return;
-    }
-    if env::args().nth(1).as_deref() == Some("--bootstrap-operator") {
-        tokio::runtime::Runtime::new()
-            .unwrap()
-            .block_on(platform::bootstrap_operator());
-        return;
-    }
-    tokio::runtime::Runtime::new()
-        .unwrap()
-        .block_on(bootstrap::run());
+    bootstrap::entry();
 }

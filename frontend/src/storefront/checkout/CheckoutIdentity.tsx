@@ -1,11 +1,12 @@
 /** Inline guest/login/registration step rotates the cart on authentication and refreshes owning defaults. */
+import { shopScope } from "../../shared/api/shop-scope";
 import { useState } from "react";
 import { shopApi, type Cart } from "../../shared/api/shop-api";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
 import { useShopText } from "../../shared/i18n/shop-i18n";
 import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
 export function customerSessionKey() {
-  return `rac-customer:${new URLSearchParams(location.search).get("shop") ?? "atelier"}`;
+  return `rac-customer:${shopScope()}`;
 }
 export default function CheckoutIdentity({
   cart,

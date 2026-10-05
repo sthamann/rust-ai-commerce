@@ -1,4 +1,5 @@
 /** Payment ledger, adapter readiness and explicit refund approval. */
+import { shopScope } from "../../shared/api/shop-scope";
 import { useEffect, useState } from "react";
 import { useAppText } from "../../shared/i18n/app-i18n";
 import type { RequestFn } from "../shell/studio-types";
@@ -70,9 +71,7 @@ export default function PaymentManager({
                     headers: {
                       "Content-Type": "application/json",
                       Authorization: `Bearer ${token}`,
-                      "x-tenant":
-                        new URLSearchParams(location.search).get("shop") ??
-                        "atelier",
+                      "x-tenant": shopScope(),
                       "Idempotency-Key": `${p.id}:refund:${p.refundedMinor}:${amountMinor}`,
                     },
                     body: JSON.stringify({ amountMinor, approve: true }),

@@ -530,7 +530,7 @@ with tempfile.TemporaryDirectory(prefix="commerce-connectors-") as folder:
             if path == "/v1/responses"
         )
         passed(
-            "Private AGE product provenance and MCP evidence feed the actual merchant model prompt"
+            "Private SQL product provenance and MCP evidence feed the actual merchant model prompt"
         )
         sync("gmail")
         time.sleep(0.3)

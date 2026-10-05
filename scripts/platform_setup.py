@@ -51,6 +51,7 @@ env.update(
     BIND_ADDR="127.0.0.1:8792",
     OLLAMA_URL="http://127.0.0.1:1",
 )
+legacy_token = env.pop("MERCHANT_TOKEN")
 env.pop("PAYPAL_ACCOUNTS", None)
 env.pop("OPENAI_API_KEY", None)
 env.pop("ANTHROPIC_API_KEY", None)
@@ -145,7 +146,7 @@ try:
     else:
         raise RuntimeError("Production test service did not become healthy")
     req("/api/auth/register", {}, expected=403)
-    req("/api/merchant/overview", token=env["MERCHANT_TOKEN"], expected=401)
+    req("/api/merchant/overview", token=legacy_token, expected=401)
     req("/api/platform/overview", expected=401)
     check(
         "public-mode server closes merchant signup and rejects the instance bootstrap token over HTTP"
