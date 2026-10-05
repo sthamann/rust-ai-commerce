@@ -28,7 +28,7 @@ pub(crate) async fn bootstrap() -> App {
             Box::pin(async move {
                 // Short, indexed OLTP reads spend more time compiling a JIT plan
                 // than executing it. This setting is local to application sessions.
-                sqlx::raw_sql("LOAD 'age'; SET search_path = ag_catalog, public; SET jit = off")
+                sqlx::raw_sql("SET search_path = public; SET jit = off")
                     .execute(conn)
                     .await?;
                 Ok(())
@@ -36,13 +36,19 @@ pub(crate) async fn bootstrap() -> App {
         })
         .connect(&database_url)
         .await
-        .expect("graph connection");
+        .expect("commerce connection");
     migrations::ready(&db).await;
-    let auth = env::var("MERCHANT_TOKEN").expect("MERCHANT_TOKEN required");
-    assert!(
-        auth.len() >= 24,
-        "MERCHANT_TOKEN must have at least 24 characters"
-    );
+    // Personal-only hosting has no shared bootstrap credential. Legacy development mode still requires one.
+    let auth = if env::var("ALLOW_BOOTSTRAP_AUTH").as_deref() == Ok("false") {
+        String::new()
+    } else {
+        let token = env::var("MERCHANT_TOKEN").expect("MERCHANT_TOKEN required");
+        assert!(
+            token.len() >= 24,
+            "MERCHANT_TOKEN must have at least 24 characters"
+        );
+        token
+    };
     let http = reqwest::Client::builder()
         .redirect(reqwest::redirect::Policy::none())
         .timeout(std::time::Duration::from_secs(180))
@@ -94,6 +100,11 @@ pub(crate) async fn bootstrap() -> App {
     }
     if mode != "migrate" {
         workers::start(&a);
+        if env::var("PROCESS_ROLE").unwrap_or("all".into()) == "all"
+            || env::var("PROCESS_ROLE").as_deref() == Ok("memory-worker")
+        {
+            knowledge::vectors::start(a.db.clone());
+        }
     }
     a
 }
@@ -104,7 +115,7 @@ pub(crate) async fn run() {
         return;
     }
     if env::var("PROCESS_ROLE").is_ok_and(|s| s.ends_with("-worker")) {
-        let _ = tokio::signal::ctrl_c().await;
+        shutdown().await;
         return;
     }
     let app = router(a.clone());
@@ -113,9 +124,37 @@ pub(crate) async fn run() {
     println!("vendune listening on http://{addr}");
     axum::serve(listener, app)
         .with_graceful_shutdown(async {
-            let _ = tokio::signal::ctrl_c().await;
+            shutdown().await;
         })
         .await
         .unwrap();
     a.channel_metrics.flush(&a.db).await;
+}
+
+async fn shutdown() {
+    #[cfg(unix)]
+    {
+        let mut terminate =
+            tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
+                .expect("termination signal");
+        tokio::select! { _ = tokio::signal::ctrl_c() => {}, _ = terminate.recv() => {} }
+    }
+    #[cfg(not(unix))]
+    {
+        let _ = tokio::signal::ctrl_c().await;
+    }
+}
+
+pub(crate) fn entry() {
+    if env::args().nth(1).as_deref() == Some("--extract-pdf") {
+        documents::extract_pdf();
+        return;
+    }
+    if env::args().nth(1).as_deref() == Some("--bootstrap-operator") {
+        tokio::runtime::Runtime::new()
+            .unwrap()
+            .block_on(platform::bootstrap_operator());
+        return;
+    }
+    tokio::runtime::Runtime::new().unwrap().block_on(run());
 }

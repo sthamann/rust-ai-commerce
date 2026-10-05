@@ -7,11 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: postgres://commerce:ci-only-password@127.0.0.1:15487/commerce
+      QDRANT_URL: http://127.0.0.1:16333
       MERCHANT_TOKEN: ci-only-merchant-credential-not-for-deployment
     steps:
       - uses: actions/checkout@v4
-      - name: Build open-source graph/vector database
-        run: DB_PASSWORD=ci-only-password docker compose -p vendune up -d --build --wait postgres
+      - name: Start standard PostgreSQL and Qdrant
+        run: DB_PASSWORD=ci-only-password docker compose -p vendune up -d --wait postgres qdrant
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - uses: actions/setup-node@v4

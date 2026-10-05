@@ -14,7 +14,7 @@ for locale,needle in [('de-DE','Schreibtischleuchte'),('fr-FR','Lampe'),('es-ES'
  h={**auth,'x-commerce-locale':locale};v=call('/api/merchant/overview',headers=h)
  assert v['locale']==locale and needle in next(p['name'] for p in v['products'] if p['id']=='lamp')
  assert min(100,v['summary']['orders'])==len(call('/api/search/order',{},auth)['data']) # demo <100
- assert len(v['learning']['timeline'])==7 and len(v['timeline'])==7 and v['knowledge']['graph']['engine']=='Apache AGE'
+ assert len(v['learning']['timeline'])==7 and len(v['timeline'])==7 and v['knowledge']['graph']['engine']=='PostgreSQL'
  assert not v['knowledge']['modelWeightsLearn'] and not v['connections']['chatgptAccountLinked']
 ok('Four localized overview responses use actual orders, graph and explicit connection boundaries')
 de=call('/store-api/product',{}, {'x-commerce-locale':'de-DE'})

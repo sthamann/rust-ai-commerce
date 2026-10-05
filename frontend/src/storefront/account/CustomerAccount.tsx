@@ -1,4 +1,5 @@
 /** Shopper account overlay uses its own scoped session; merchant credentials never authenticate a customer. */
+import { shopScope } from "../../shared/api/shop-scope";
 import { useCallback } from "react";
 import { AppSurfaceSlot } from "../../shared/apps/AppSurfaces";
 import AddressBook from "../../shared/customer/AddressBook";
@@ -31,7 +32,7 @@ export default function CustomerAccount({
   const { w } = useWorkbenchText();
   const { o, locale } = useOperationsText();
   const [downloads, setDownloads] = useState<any[]>([]);
-  const key = `rac-customer:${new URLSearchParams(location.search).get("shop") ?? "atelier"}`;
+  const key = `rac-customer:${shopScope()}`;
   const [signed, setSigned] = useState(!!localStorage.getItem(key));
   const [register, setRegister] = useState(false);
   const { c } = useCustomerText();
@@ -242,9 +243,7 @@ export default function CustomerAccount({
                     downloadFile(
                       `/store-api/orders/${d.orderId}/downloads/${d.id}`,
                       {
-                        "x-tenant":
-                          new URLSearchParams(location.search).get("shop") ??
-                          "atelier",
+                        "x-tenant": shopScope(),
                         "x-customer-token": localStorage.getItem(key) ?? "",
                       },
                     ),

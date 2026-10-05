@@ -1,4 +1,5 @@
 /** Studio session/controller: authentication context, tenant/staging state and chat commands. */
+import { hostnameShop } from "../../shared/api/shop-scope";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { type AppSurface } from "../../shared/apps/AppSurfaces";
 import { useConnectedText } from "../../shared/i18n/connected-i18n";
@@ -34,6 +35,7 @@ export function useStudioController({
   );
   const [workspace, setWorkspace] = useState(
     () =>
+      hostnameShop() ??
       new URLSearchParams(location.search).get("shop") ??
       sessionStorage.getItem("rac-user-workspace") ??
       "atelier",

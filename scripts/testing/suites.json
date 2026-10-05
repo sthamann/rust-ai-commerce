@@ -34,7 +34,8 @@
     "email_tests",
     "connector_store_tests",
     "connected_apps",
-    "image_jobs"
+    "image_jobs",
+    "managed_search"
   ],
   "browser_contracts": [
     "analytics",

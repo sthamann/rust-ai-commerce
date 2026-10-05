@@ -150,7 +150,10 @@ This lists every checked-in source module in these roots, including files with n
 | [src/foundation.rs](../src/foundation.rs) | Application dependencies, error responses and request context helpers. |
 | [src/http_limits.rs](../src/http_limits.rs) | Bounded streaming responses for extension services and payment providers. |
 | [src/inference.rs](../src/inference.rs) | Provider adapters. Credentials stay on the server; domain validation is separate. |
-| [src/knowledge.rs](../src/knowledge.rs) | Apache AGE graph plus pgvector retrieval. Queries are fixed, parameters are data. |
+| [src/knowledge/relations.rs](../src/knowledge/relations.rs) | Keep knowledge provenance and relations in the same transaction as canonical commerce data. |
+| [src/knowledge/search.rs](../src/knowledge/search.rs) | Qdrant candidates are rechecked against tenant/model/content revision in authoritative PostgreSQL. |
+| [src/knowledge/vectors.rs](../src/knowledge/vectors.rs) | Private Qdrant adapter: tenant/model filters, deterministic identities and durable PostgreSQL index queue. |
+| [src/knowledge.rs](../src/knowledge.rs) | Transactional PostgreSQL knowledge relations and separately indexed Qdrant retrieval. |
 | [src/lib.rs](../src/lib.rs) | Reusable pricing, context, sandbox, graph and inference modules. |
 | [src/localization.rs](../src/localization.rs) | Shop locale resolution, translated catalog hydration and non-mutating merchant quote. |
 | [src/main.rs](../src/main.rs) | Process lifetime only. See docs/source-map.md for domain responsibilities. |
@@ -220,6 +223,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/rule_comparison.rs](../src/rule_comparison.rs) | Behavioral port of Shopware 6.7.14.2 RuleComparison::numeric and FloatComparator's exact epsilon boundaries. |
 | [src/sandbox.rs](../src/sandbox.rs) | Pure Wasmtime guest execution with bounded resources and no host imports. |
 | [src/seed.rs](../src/seed.rs) | Idempotent synthetic template catalogue initialization. |
+| [src/shop_domains.rs](../src/shop_domains.rs) | Resolve configured shop subdomains before authentication; reject unknown hosts and conflicting scopes. |
 | [src/staging/assets.rs](../src/staging/assets.rs) | Binary assets are immutable, staged independently through metadata/digest units; paid entitlements never clone. |
 | [src/staging/categories.rs](../src/staging/categories.rs) | Category release units and dependency-ordered tree publication; stock is never part of a catalog release. |
 | [src/staging/clone.rs](../src/staging/clone.rs) | Clone only catalog/configuration into a private tenant; customer/order/payment state is excluded. |
@@ -406,6 +410,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/platform/styles/platform.css](../frontend/src/platform/styles/platform.css) | Ordered platform stylesheet entry; domain rules live in the adjacent folder. |
 | [frontend/src/shared/api/download.ts](../frontend/src/shared/api/download.ts) | Authenticated binary download, never placing session credentials in a URL. |
 | [frontend/src/shared/api/shop-api.ts](../frontend/src/shared/api/shop-api.ts) | shop api: Typed commerce contracts, merchant/store transports and binary download helper. |
+| [frontend/src/shared/api/shop-scope.ts](../frontend/src/shared/api/shop-scope.ts) | Canonical browser shop scope for storefront URLs and tenant-isolated customer storage. |
 | [frontend/src/shared/api/types.ts](../frontend/src/shared/api/types.ts) | Common JSON/multipart request contract for app surfaces and merchant operations. |
 | [frontend/src/shared/apps/AppFrame.tsx](../frontend/src/shared/apps/AppFrame.tsx) | Opaque-origin app UI. Its SDK can invoke only this app's declared, server-authorized actions. |
 | [frontend/src/shared/apps/AppSlot.tsx](../frontend/src/shared/apps/AppSlot.tsx) | Generic registered product configuration slot. App packages own labels, input names and business rules. |
@@ -576,10 +581,11 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/hosting_container.py](../scripts/hosting_container.py) | Smoke-test the built deployment image against an isolated database on the local Compose network. |
 | [scripts/image_jobs.py](../scripts/image_jobs.py) | Real image jobs/bytes against a local Images fixture: private review, stale/tenant guards, edit multipart and no paid calls. |
 | [scripts/integration.py](../scripts/integration.py) | Exercise the real HTTP -> Rust -> PostgreSQL path. Never contacts a PSP. |
-| [scripts/intelligence.py](../scripts/intelligence.py) | Actual AGE/vector persistence and optional live local inference integration. |
+| [scripts/intelligence.py](../scripts/intelligence.py) | Actual SQL knowledge persistence and optional live local inference integration. |
 | [scripts/international_commerce.py](../scripts/international_commerce.py) | International configuration at the real HTTP/PostgreSQL path; all rates and addresses are synthetic fixtures, not tax advice. |
 | [scripts/knowledge_workspace.py](../scripts/knowledge_workspace.py) | Actual tenant-scoped knowledge lifecycle, multilingual retrieval, cursor census and selective staging; no model calls. |
 | [scripts/load.py](../scripts/load.py) | Local HTTP latency sample. Does not claim production or Shopware speedup. |
+| [scripts/managed_search.py](../scripts/managed_search.py) | Real PostgreSQL/Qdrant synchronization; synthetic embeddings test transport, not AI quality. |
 | [scripts/marketing_accounts.py](../scripts/marketing_accounts.py) | Real isolated shops: customer authority, limited coupons, event flows, channels and selected releases. No paid models. |
 | [scripts/mcp_stdio.py](../scripts/mcp_stdio.py) | Line-delimited MCP stdio bridge for Claude Desktop and other local clients. |
 | [scripts/merchant_operations.py](../scripts/merchant_operations.py) | Real HTTP/PostgreSQL CRM, receipt, scoped-access and paid-download regressions. No PSP traffic. |

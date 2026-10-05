@@ -1,7 +1,7 @@
 # Run from repository root: docker compose --env-file deploy/.env -f deploy/compose.yaml up -d --build
 services:
   postgres:
-    build: ../database
+    image: postgres:17-bookworm
     environment:
       POSTGRES_USER: commerce
       POSTGRES_PASSWORD: ${DB_PASSWORD:?required}
@@ -13,6 +13,10 @@ services:
       timeout: 3s
       retries: 60
     restart: unless-stopped
+  qdrant:
+    image: qdrant/qdrant:v1.16.3
+    volumes: ["qdrant-data:/qdrant/storage"]
+    restart: unless-stopped
   commerce:
     image: vendune:${COMMERCE_IMAGE_TAG:-local}
     build: &commerce-build
@@ -20,13 +24,13 @@ services:
       dockerfile: deploy/Dockerfile
     environment:
       DATABASE_URL: ${DATABASE_URL:?postgres://commerce:encoded-password@postgres:5432/commerce}
-      MERCHANT_TOKEN: ${MERCHANT_TOKEN:?required}
       BIND_ADDR: 0.0.0.0:8787
       BOOTSTRAP_MODE: ${BOOTSTRAP_MODE:-auto}
       SEED_DEMO: "false"
       ALLOW_PUBLIC_SIGNUP: "false"
       ALLOW_BOOTSTRAP_AUTH: "false"
       COMMERCE_PUBLIC_ORIGIN: https://${COMMERCE_DOMAIN:?public DNS name required}
+      QDRANT_URL: http://qdrant:6333
       OLLAMA_URL: ${OLLAMA_URL:-http://ollama:11434}
       OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3.6:35b}
       IMAGE_GENERATION_ENABLED: ${IMAGE_GENERATION_ENABLED:-false}
@@ -45,8 +49,9 @@ services:
     command: ["/app/vendune", "--bootstrap-operator"]
     environment:
       DATABASE_URL: ${DATABASE_URL:?required}
-      MERCHANT_TOKEN: ${MERCHANT_TOKEN:?required}
       BOOTSTRAP_MODE: migrate
+      ALLOW_BOOTSTRAP_AUTH: "false"
+      ALLOW_PUBLIC_SIGNUP: "false"
       SEED_DEMO: "false"
       PLATFORM_ADMIN_EMAIL: ${PLATFORM_ADMIN_EMAIL:?operator email required}
       PLATFORM_ADMIN_NAME: ${PLATFORM_ADMIN_NAME:-Platform operator}
@@ -82,6 +87,7 @@ services:
     depends_on: [commerce]
     restart: unless-stopped
 volumes:
+  qdrant-data:
   commerce-data:
   caddy-data:
   caddy-config:

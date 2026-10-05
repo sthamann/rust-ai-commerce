@@ -1,4 +1,5 @@
 /** Cart lifecycle, authoritative checkout commands and storefront coordination. */
+import { shopScope } from "../../shared/api/shop-scope";
 import { useCompanyIdentity } from "./useCompanyIdentity";
 import { useCatalog } from "./useCatalog";
 import { usePersonalization } from "./usePersonalization";
@@ -37,8 +38,7 @@ export function useStorefrontController({
 }) {
   const { s, t, money, locale, setLocale } = useShopText();
   const { w } = useWorkbenchText();
-  const shopTenant =
-    new URLSearchParams(location.search).get("shop") ?? "atelier";
+  const shopTenant = shopScope();
   const salesChannel =
     new URLSearchParams(location.search).get("channel") ?? "default";
   const company = useCompanyIdentity(shopTenant, salesChannel, locale);

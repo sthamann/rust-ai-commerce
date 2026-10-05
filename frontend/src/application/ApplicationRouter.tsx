@@ -7,13 +7,27 @@ const Storefront = lazy(() => import("../storefront/shell/Storefront"));
 const PlatformConsole = lazy(() => import("../platform/PlatformConsole"));
 export default function ApplicationRouter() {
   const { t } = useLocale();
-  const [platform, setPlatform] = useState(location.hash === "#platform");
+  const [platform, setPlatform] = useState(
+    location.hash === "#platform" ||
+      (!location.hash &&
+        !location.search &&
+        (location.hostname === "vendune.ai" ||
+          location.hostname === "app.vendune.ai" ||
+          location.hostname.endsWith(".code.run"))),
+  );
   const [admin, setAdmin] = useState(
     ["#merchant", "#studio-content"].includes(location.hash),
   );
   useEffect(() => {
     const change = () => {
-      setPlatform(location.hash === "#platform");
+      setPlatform(
+        location.hash === "#platform" ||
+          (!location.hash &&
+            !location.search &&
+            (location.hostname === "vendune.ai" ||
+              location.hostname === "app.vendune.ai" ||
+              location.hostname.endsWith(".code.run"))),
+      );
       setAdmin(["#merchant", "#studio-content"].includes(location.hash));
       window.scrollTo({ top: 0, behavior: "instant" });
     };

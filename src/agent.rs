@@ -37,16 +37,14 @@ pub(super) async fn retrieve(a: &App, t: &str, q: &str) -> Result<Value> {
     .fetch_one(&a.db)
     .await?;
     let vector = if count > 0 {
-        Some(
-            knowledge::embedding(
-                &a.http,
-                &a.ollama,
-                &model,
-                &format!("Instruct: Retrieve suitable commerce products.\nQuery: {q}"),
-            )
-            .await
-            .map_err(|e| Error(StatusCode::BAD_GATEWAY, e))?,
+        knowledge::embedding(
+            &a.http,
+            &a.ollama,
+            &model,
+            &format!("Instruct: Retrieve suitable commerce products.\nQuery: {q}"),
         )
+        .await
+        .ok()
     } else {
         None
     };
@@ -82,11 +80,17 @@ pub(super) async fn reindex(State(a): State<App>, h: HeaderMap) -> Result<Json<V
         let embedding = knowledge::embedding(&a.http, &a.ollama, &model, &doc)
             .await
             .map_err(|e| Error(StatusCode::BAD_GATEWAY, e))?;
-        sqlx::query("INSERT INTO semantic_products(tenant,product_id,revision,embedding,embedding_model,content_hash) VALUES($1,$2,$3,$4::text::vector,$5,$6) ON CONFLICT(tenant,product_id) DO UPDATE SET revision=EXCLUDED.revision,embedding=EXCLUDED.embedding,embedding_model=EXCLUDED.embedding_model,content_hash=EXCLUDED.content_hash,updated_at=now()").bind(&t).bind(&p.id).bind(p.revision).bind(serde_json::to_string(&embedding).unwrap()).bind(&model).bind(digest).execute(&a.db).await?;
+        sqlx::query("INSERT INTO semantic_products(tenant,product_id,revision,embedding,embedding_model,content_hash) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(tenant,product_id) DO UPDATE SET revision=EXCLUDED.revision,embedding=EXCLUDED.embedding,embedding_model=EXCLUDED.embedding_model,content_hash=EXCLUDED.content_hash,updated_at=now()").bind(&t).bind(&p.id).bind(p.revision).bind(embedding).bind(&model).bind(digest).execute(&a.db).await?;
         count += 1;
     }
+    let synchronized = knowledge::vectors::drain(&a.db).await.is_ok();
+    let pending: i64 =
+        sqlx::query_scalar("SELECT count(*) FROM vector_index_queue WHERE tenant=$1")
+            .bind(&t)
+            .fetch_one(&a.db)
+            .await?;
     Ok(Json(
-        json!({"indexed":count,"model":model,"engine":"pgvector","dimensions":1024}),
+        json!({"indexed":count,"model":model,"engine":"Qdrant","dimensions":1024,"synchronized":synchronized && pending == 0,"pending":pending}),
     ))
 }
 pub(super) async fn conversations(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {

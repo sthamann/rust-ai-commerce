@@ -74,7 +74,7 @@ See [international commerce](international-commerce.md) for the exact contract.
 | [`src/extensions.rs`](../src/extensions.rs) | Merchant catalogue and Wasm extension activation/state. | `integration.py + users.py + extensions.py + restart.py` |
 | [`src/foundation.rs`](../src/foundation.rs) | Application dependencies, error responses and request context helpers. | `protocols.py + integration.py + commerce.py + users.py` |
 | [`src/inference.rs`](../src/inference.rs) | Provider adapters. Credentials stay on the server; domain validation is separate. | `Rust parsing/schema tests + providers.py + live intelligence.py/studio.py` |
-| [`src/knowledge.rs`](../src/knowledge.rs) | Apache AGE graph plus pgvector retrieval. Queries are fixed, parameters are data. | `intelligence.py + studio.py + users.py + restart.py` |
+| [`src/knowledge.rs`](../src/knowledge.rs) | Transactional PostgreSQL relations and private Qdrant retrieval with authoritative tenant/model/digest hydration. | `intelligence.py + studio.py + users.py + restart.py` |
 | [`src/lib.rs`](../src/lib.rs) | Reusable pricing, context, sandbox, graph and inference modules. | `server startup/build + integration.py + structure.py` |
 | [`src/localization.rs`](../src/localization.rs) | Shop locale resolution, translated catalog hydration and non-mutating merchant quote. | `studio.py + context_differential.py + commerce.py` |
 | [`src/main.rs`](../src/main.rs) | Process lifetime only. See docs/source-map.md for domain responsibilities. | `server startup/build + integration.py + structure.py` |
@@ -348,3 +348,5 @@ Company identity, per-channel inheritance, logos and legal storefront/issuer con
 Scoped checkout settings, method dependency guards, selective staging and product media jobs: [module map and verification](settings-media.md#source-ownership-and-regression-evidence).
 
 Knowledge sources, product graph evidence, observed decisions and retrieval preview: [domain ownership and verification](knowledge-workspace.md#source-ownership-and-verification). Real suites: `knowledge_workspace.py`, `developer_documents.py`, `apps.py`, `connected_apps.py`; component regressions: `knowledge-workspace.test.tsx`.
+
+Managed storage/search integration: `managed_search.py` verifies ordinary PostgreSQL, real Qdrant, hostname scope, durable deletion/retry and lexical fallback with synthetic embeddings. It does not measure AI quality.
