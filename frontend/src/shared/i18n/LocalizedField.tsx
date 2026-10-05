@@ -53,6 +53,13 @@ export default function LocalizedField({
               else {
                 const next = { ...value };
                 delete next[key];
+                const base = language.split("-")[0];
+                if (
+                  locales.filter((l) => l.split("-")[0] === base).length === 1
+                ) {
+                  delete next[base];
+                  delete next[language];
+                }
                 onChange(next);
               }
             }}

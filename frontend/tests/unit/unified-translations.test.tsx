@@ -145,3 +145,37 @@ it("uploads a product attachment with one Spanish title and keeps all other enab
     "es-ES": "Ficha técnica",
   });
 });
+it("restores main-language inheritance when legacy and canonical keys coexist", async () => {
+  let latest: LocalizedText = {
+    es: "Principal",
+    de: "Legacy text",
+    "de-DE": "Regional text",
+    "it-IT": "Italiano",
+  };
+  function Harness() {
+    const [map, set] = useState(latest);
+    return (
+      <ContentLanguage locales={languages} mainLocale="es-ES" language="de-DE">
+        <LocalizedField
+          label="Description"
+          value={map}
+          onChange={(next) => {
+            latest = next;
+            set(next);
+          }}
+        />
+      </ContentLanguage>
+    );
+  }
+  render(<Harness />, { wrapper: LocaleProvider });
+  expect(screen.getByLabelText("Description")).toHaveValue("Regional text");
+  await userEvent
+    .setup()
+    .click(screen.getByRole("button", { name: /Own translation/ }));
+  expect(latest).toEqual({ es: "Principal", "it-IT": "Italiano" });
+  expect(screen.getByLabelText("Description")).toHaveValue("");
+  expect(screen.getByLabelText("Description")).toHaveAttribute(
+    "placeholder",
+    "Principal",
+  );
+});
