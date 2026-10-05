@@ -1,6 +1,7 @@
 # Self-hosted Rust service; credentials are supplied at runtime, never copied from .env.
 FROM node:22-bookworm-slim AS frontend
 WORKDIR /build/frontend
+COPY LICENSE /build/LICENSE
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
@@ -10,7 +11,7 @@ COPY fixtures/ /build/fixtures/
 RUN npm run build
 FROM rust:1.96-bookworm AS rust
 WORKDIR /build
-COPY Cargo.toml Cargo.lock ./
+COPY Cargo.toml Cargo.lock LICENSE ./
 COPY src/ src/
 COPY migrations/ migrations/
 COPY extensions/ extensions/
@@ -23,6 +24,8 @@ WORKDIR /app
 COPY --from=rust /build/target/release/vendune /app/vendune
 COPY --from=frontend /build/frontend/dist /app/frontend/dist
 COPY frontend/public /app/frontend/public
+COPY LICENSE THIRD_PARTY.md /app/
+COPY fixtures/licenses/ /app/licenses/
 ENV BIND_ADDR=0.0.0.0:8787
 USER commerce
 EXPOSE 8787

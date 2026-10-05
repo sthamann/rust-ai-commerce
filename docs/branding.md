@@ -12,6 +12,11 @@ and dark variants. [Mark](brand/vendune-mark.svg), [wordmark](brand/vendune-logo
 [dark wordmark](brand/vendune-logo-dark.svg). `shared/ui/Brand.tsx` owns the UI
 identity. Tenant-owned company logos and merchant shop names are independent.
 
+The [repository header](brand/vendune-readme.svg) uses the same mark, blue/cyan
+palette and dune contours. Its connected Storefront/Studio/Apps/Agents diagram
+is authored brand artwork, not a browser screenshot or a performance claim.
+README product images remain unedited captures of the actual English prototype.
+
 ## Package and deployment naming
 
 The Rust crate and HTTP binary are `vendune`; Rust imports use `vendune::`.

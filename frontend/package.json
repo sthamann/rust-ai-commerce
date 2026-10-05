@@ -1,6 +1,7 @@
 {
   "name": "vendune-experience",
   "private": true,
+  "license": "SEE LICENSE IN ../LICENSE",
   "version": "0.5.0",
   "type": "module",
   "scripts": {

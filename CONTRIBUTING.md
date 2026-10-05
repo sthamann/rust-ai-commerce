@@ -63,4 +63,9 @@ Describe the concrete before/after behavior, relevant checks and remaining
 limits. Keep unrelated changes out of the diff. Do not commit `.env`, provider
 keys, session tokens, private data or dependency/build directories.
 
-Contributions are made under the repository's [MIT license](LICENSE).
+Contributions are made under the [Vendune Sustainable Use License](LICENSE).
+Vendune is source available; own-business stores are permitted, while commercial
+shop platforms, managed hosting and SaaS for independent merchants require
+separate written permission. Preserve upstream licenses and copyright notices.
+You retain ownership of your contribution; no copyright transfer or blanket
+relicensing consent is implied. See [the licensing guide](docs/licensing.md).

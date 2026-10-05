@@ -1488,8 +1488,8 @@
       "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
     },
     "Cargo.toml": {
-      "sha256": "8bfb79532959113d3056f20df4d9b23bbff51edbe713ed558c17137e257012b8",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "fc3cf00c733637383ce532494aad5334729ad47c13bf4d77608cc335355ec1f3",
+      "review": "Reviewed Cargo.toml license metadata only: MIT declaration replaced by license-file pointing at the explicit commerce sustainable-use terms. Dependencies, targets, runtime code, schema and kernel contracts are unchanged. Package license paths and current public docs/links validated; original third-party MIT notices preserved."
     },
     "fixtures/app-studio-schema.json": {
       "sha256": "fe7909b926f092266e58cb822dab36a41a86b4d77f31b9a54af55195ee850200",
