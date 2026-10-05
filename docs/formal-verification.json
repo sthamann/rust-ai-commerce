@@ -1,8 +1,8 @@
 {
   "status": "passed",
   "scope": "Extracted production policies; NOT full Rust/server correctness",
-  "sourceCommit": "cc9b114874ca4b443da80fdbf7d9d0fc8ba7baf6",
-  "workingTreeChanged": true,
+  "sourceCommit": "a98fa346323ba9ffc339aae5554dab9b74e2c92a",
+  "workingTreeChanged": false,
   "leanToolchain": "leanprover/lean4:v4.29.1",
   "policies": 22,
   "axiomAudit": {

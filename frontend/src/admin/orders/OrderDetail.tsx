@@ -1,4 +1,5 @@
 /** Order workspace: server actions, exact-once commands, provider progress and visible event history. */
+import { useCrmText } from "../../shared/i18n/crm-i18n";
 import EntityHistory from "../../shared/history/EntityHistory";
 import AddressCard from "../../shared/customer/AddressCard";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
@@ -28,6 +29,7 @@ export default function OrderDetail({
   download: (path: string) => Promise<void>;
 }) {
   const { o, locale } = useOperationsText();
+  const { r } = useCrmText();
   const { c } = useCustomerText();
   const [order, setOrder] = useState<any>(),
     [error, setError] = useState(""),
@@ -143,7 +145,7 @@ export default function OrderDetail({
     <>
       <div className="order-toolbar">
         <button className="studio-secondary" onClick={onBack}>
-          ← {o("back")}
+          ← {r("back")}
         </button>
         <button
           className="studio-secondary"

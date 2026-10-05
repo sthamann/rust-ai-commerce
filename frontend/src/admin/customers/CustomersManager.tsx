@@ -126,7 +126,7 @@ export default function CustomersManager({
               });
             }}
           >
-            {o("back")}
+            {onEntityBack ? r("back") : o("back")}
           </button>
           <section className="studio-card">
             <div className="customer-heading">

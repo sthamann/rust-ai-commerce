@@ -1,4 +1,5 @@
 /** Revision-aware product aggregate editor: one save, translation tabs and product-scoped linked capabilities. */
+import { useCrmText } from "../../shared/i18n/crm-i18n";
 import EntityHistory from "../../shared/history/EntityHistory";
 import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
 import ContentLanguagePicker from "../../shared/i18n/ContentLanguagePicker";
@@ -33,6 +34,7 @@ export default function ProductEditor({
   onCreated: (id: string) => void;
 }) {
   const { c, locale } = useCatalogText();
+  const { r } = useCrmText();
   const [draft, setDraft] = useState<ProductDraft>(newDraft);
   const [reloadIndex, setReloadIndex] = useState(0);
   const [baseline, setBaseline] = useState("");
@@ -195,7 +197,7 @@ export default function ProductEditor({
           className="catalog-back"
           onClick={() => (dirty ? setLeaving(true) : onBack())}
         >
-          ← {c("back")}
+          ← {r("back")}
         </button>
         {leaving && (
           <div className="catalog-unsaved" role="alert">

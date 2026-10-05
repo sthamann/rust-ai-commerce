@@ -168,6 +168,8 @@ orders use workflow actions, and knowledge sources re-enter private review.
 History begins with this update; earlier edits cannot be reconstructed. See
 [recorded entities, API/MCP operations and restore limits](docs/entity-history.md).
 
+![Translated customer group management with a shared history panel](docs/screenshots/customer-groups.png)
+
 Vendune Studio provides **Customers** and **Orders** with direct server-owned
 workflow actions, payment-job progress, tracking, activity and four-language
 numbered PDF documents. Company/document issuer data is centrally stored under
@@ -268,9 +270,9 @@ documentation site, not a hosted commerce backend.
 ## Lean-checked production policies
 
 The real Rust checkout, order workflow, access, refund and download paths now
-call a small pure kernel with **21 policies and 46 Lean-proved properties**.
+call a small pure kernel with **22 policies and 48 Lean-proved properties**.
 The production functions are extracted through a closed typed grammar; compiled
-Rust/Lean outputs are compared on 4,168 cases. Deliberately broken policies must
+Rust/Lean outputs are compared on 4,172 cases. Deliberately broken policies must
 fail the proof checks. CI also audits transitive axioms and locks every Rust,
 schema, build and proof input to an explicitly reviewed source inventory.
 
