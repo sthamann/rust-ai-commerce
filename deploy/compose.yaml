@@ -26,6 +26,10 @@ services:
       DATABASE_URL: ${DATABASE_URL:?postgres://commerce:encoded-password@postgres:5432/commerce}
       BIND_ADDR: 0.0.0.0:8787
       BOOTSTRAP_MODE: ${BOOTSTRAP_MODE:-auto}
+      DB_POOL_MAX: ${DB_POOL_MAX:-20}
+      DB_POOL_MIN: ${DB_POOL_MIN:-0}
+      DB_POOL_WAIT_MS: ${DB_POOL_WAIT_MS:-5000}
+      READ_CONTEXT_CACHE: ${READ_CONTEXT_CACHE:-true}
       SEED_DEMO: "false"
       ALLOW_PUBLIC_SIGNUP: "false"
       ALLOW_BOOTSTRAP_AUTH: "false"

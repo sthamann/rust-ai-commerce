@@ -1,10 +1,7 @@
 //! Scoped checkout configuration: basis row lock orders all override writes and authoritative checkout reads.
 use super::*;
 pub(crate) async fn scoped_config(a: &App, t: &str, channel: &str) -> Result<(Settings, i64)> {
-    let mut tx = a.db.begin().await?;
-    let value = scoped_locked(&mut tx, t, channel).await?;
-    tx.commit().await?;
-    Ok(value)
+    performance::settings(a, t, channel).await
 }
 pub(crate) async fn scoped_locked(
     tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,

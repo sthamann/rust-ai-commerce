@@ -1,4 +1,5 @@
 /** Authenticated Studio transport; staging changes only the tenant, never the principal. */
+import { requestJson } from "../../shared/api/request-json";
 import { useMemo } from "react";
 import { responseError } from "../../shared/i18n/errors-i18n";
 import type { RequestFn } from "./studio-types";
@@ -10,7 +11,7 @@ export function createStudioRequest(
 ): RequestFn {
   return async (path, body, method) => {
     const multipart = body instanceof FormData;
-    const response = await fetch(path, {
+    const response = await requestJson(path, {
       method: method ?? (body === undefined ? "GET" : "POST"),
       headers: {
         ...(multipart ? {} : { "Content-Type": "application/json" }),
@@ -25,7 +26,7 @@ export function createStudioRequest(
             ? body
             : JSON.stringify(body),
     });
-    const value = await response.json();
+    const value = response.value;
     if (!response.ok)
       throw responseError(
         value.errors?.[0]?.detail || response.statusText,

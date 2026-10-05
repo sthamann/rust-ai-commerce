@@ -141,6 +141,7 @@ pub(crate) fn router(a: App) -> Router {
         .route("/ucp/v1/checkout-sessions/{id}/cancel", post(ucp_cancel))
         .fallback_service(ServeDir::new("frontend/dist").append_index_html_on_directories(true))
         .layer(axum::extract::DefaultBodyLimit::max(64 * 1024))
+        .layer(axum::middleware::from_fn(performance::memoize))
         .layer(axum::middleware::from_fn_with_state(
             a.clone(),
             track_channels,

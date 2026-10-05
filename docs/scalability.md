@@ -10,6 +10,13 @@ fleet load targets below remain proposed work.
 
 The following sections distinguish delivered work from the remaining roadmap.
 
+**Read-context update:** [version-checked settings/language caches](read-performance.md)
+now reduce repeated SQL in HTTP, MCP and Studio, preserve cross-replica freshness,
+and expose configurable connection budgets. Browser in-flight request sharing and
+fingerprinted asset caching are also delivered. Public catalog response caches,
+fleet poolers, per-tenant admission and historical dashboard projections remain
+the following stages, with separate capacity measurements required.
+
 The three workloads need different solutions:
 
 | Workload | Main pressure | First architectural response |
@@ -68,8 +75,9 @@ use PostgreSQL, so export them to a dedicated metrics system for production.
 
 **Remaining:** per-tenant admission, connection budgets across replicas, bounded
 versioned tenant-policy caches, resumable catalog/AI projection jobs and resource
-isolation under competing workloads. A 20-connection pool per process is not a
-fleet-wide budget. Validate pooler compatibility with AGE and prepared statements.
+isolation under competing workloads. `DB_POOL_MAX` is now configurable per process;
+its default 20 connections are still not a fleet-wide budget. Validate pooler
+compatibility with AGE and prepared statements.
 The initial 014 migration builds indexes transactionally; plan its upgrade window
 for an existing large database. It is not an online index build.
 
@@ -226,7 +234,8 @@ must use an authorized test setup and disclose what cannot be measured externall
 1. Delivered: bound catalog/detail and overview product rows, batch per-read
    counters, isolate HTTP startup, and measure a synthetic million-product catalog.
    Still needed in this stage: historical dashboard read models and interference tests.
-2. Add correct cache invalidation, short inventory transactions, tenant quotas
+2. Delivered for decoded settings/languages: authoritative version invalidation;
+   next add public projection caches, short inventory transactions, tenant quotas
    and incremental import/search pipelines. Measure cell capacity and economics.
 3. Operate two to four cells, test tenant movement, failures and restoration.
    Only then scale the documented fleet toward the many-shop and surge targets.

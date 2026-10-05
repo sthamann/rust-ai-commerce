@@ -13,6 +13,7 @@ pub(crate) struct App {
     pub(crate) sandboxes: Arc<RwLock<HashMap<String, Arc<Sandbox>>>>,
     pub(crate) channel_metrics: Arc<channel_metrics::ChannelMetrics>,
     pub(crate) app_limits: Arc<apps::ServiceLimits>,
+    pub(crate) reads: Arc<performance::Reads>,
 }
 #[derive(Debug)]
 pub(crate) struct Error(pub(crate) StatusCode, pub(crate) String);
@@ -27,6 +28,12 @@ impl IntoResponse for Error {
 }
 impl From<sqlx::Error> for Error {
     fn from(e: sqlx::Error) -> Self {
+        if matches!(e, sqlx::Error::PoolTimedOut) {
+            return Self(
+                StatusCode::SERVICE_UNAVAILABLE,
+                "Database capacity busy; retry later".into(),
+            );
+        }
         eprintln!("database: {e}");
         Self(
             StatusCode::INTERNAL_SERVER_ERROR,

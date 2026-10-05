@@ -221,6 +221,8 @@ at most 120 lines, each module starts with its responsibility comment.
 |---|---|---|
 | [`src/catalog_page.rs`](../src/catalog_page.rs), [`src/catalog_search.sql`, `src/catalog_channel.sql`](../src/catalog_search.sql) | Tenant cursor pages, literal localized server search and enforced limits. | `scalability.py`: complete traversal, later-page search, mixed-field language fallback, wildcards, tenant boundaries; million-product HTTP benchmark |
 | [`src/channel_metrics.rs`](../src/channel_metrics.rs) | Capped best-effort diagnostic buffer and bounded bulk writes. | Rust buffer-bound test + persisted counters in `scalability.py` |
+| [`src/performance/`](../src/performance/README.md), [`migrations/037-read-context-cache.sql`](../migrations/037-read-context-cache.sql) | Atomic settings/override/registry version probes, bounded decoded LRU, explicit read memoization, pool budgets and cache policies. | `read_performance.py`: two real Rust replicas, direct writes, override/delete/recreate/rollback, languages, revocation, restart, overload/recovery; Rust eviction/policy tests |
+| [`frontend/src/shared/api/request-json.ts`](../frontend/src/shared/api/request-json.ts) | Same in-flight read shared by scoped Studio/storefront transports, immutable per-caller result and mutation barriers. | `request-json.test.ts`: actual transports, tenant/user/locale/channel/cart/customer keys, failures and pre-write-read barriers |
 | [`src/migrations.rs`](../src/migrations.rs) | Serialized checksummed setup and fixed demo seed; no catalog-wide restart scan. | Fresh database full suites; manual serve/migrate/readiness and independent-worker restart checks |
 
 `scalability.py` also checks a 120-variant family, last-page reviews, deep links,
