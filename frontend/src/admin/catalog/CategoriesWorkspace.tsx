@@ -1,4 +1,5 @@
 /** Localized category tree editor; parent moves and revisions are validated in the API. */
+import EntityHistory from "../../shared/history/EntityHistory";
 import { useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
 import { useCatalogText } from "./catalog-i18n";
@@ -315,6 +316,26 @@ export default function CategoriesWorkspace({
             >
               {c(busy ? "saving" : "saveCategory")}
             </button>
+            {selected.id && (
+              <EntityHistory
+                request={request}
+                entity="category"
+                id={selected.id}
+                revision={selected.revision}
+                dirty={
+                  busy ||
+                  JSON.stringify(selected) !==
+                    JSON.stringify(categories.find((c) => c.id === selected.id))
+                }
+                onRestored={async () => {
+                  const v = await request("/api/merchant/categories");
+                  setSelected(
+                    v.elements.find((c: Category) => c.id === selected.id),
+                  );
+                  onRefresh();
+                }}
+              />
+            )}
           </>
         )}
       </section>

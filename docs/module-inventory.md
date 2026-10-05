@@ -8,6 +8,7 @@ This lists every checked-in source module in these roots, including files with n
 
 | Module | Responsibility |
 |---|---|
+| [src/accounts/address_restore.rs](../src/accounts/address_restore.rs) | Atomic restoration of the owning customer's address aggregate; geography, references and immutable order snapshots remain guarded. |
 | [src/accounts/address_store.rs](../src/accounts/address_store.rs) | Tenant-owned address persistence, optimistic revisions and atomic default assignment. |
 | [src/accounts/addresses.rs](../src/accounts/addresses.rs) | Store API address book uses independent customer sessions, never merchant credentials. |
 | [src/accounts/contacts.rs](../src/accounts/contacts.rs) | Customer-editable contact fields; identity, price group and privileges remain server-owned. |
@@ -95,10 +96,12 @@ This lists every checked-in source module in these roots, including files with n
 | [src/commerce/configuration.rs](../src/commerce/configuration.rs) | Tenant checkout configuration loading. |
 | [src/commerce/content_text.rs](../src/commerce/content_text.rs) | Shared field-level content fallback for metadata and configurable object names. |
 | [src/commerce/context_routes.rs](../src/commerce/context_routes.rs) | Public method discovery and revision-checked checkout context changes. |
+| [src/commerce/customer_groups.rs](../src/commerce/customer_groups.rs) | Tenant-owned translated customer groups preserve exact rule IDs and select an explicit existing price/tax presentation basis. |
 | [src/commerce/delivery.rs](../src/commerce/delivery.rs) | Shipping costs, proportional taxes and calendar delivery windows. |
 | [src/commerce/detail.rs](../src/commerce/detail.rs) | Product family, context prices, gallery, properties and review aggregates. |
 | [src/commerce/fulfillment.rs](../src/commerce/fulfillment.rs) | Revision-checked payment and delivery state transitions. |
 | [src/commerce/geography.rs](../src/commerce/geography.rs) | Bundled MIT country catalogue, tenant-owned overrides and typed region admission. |
+| [src/commerce/group_usage.rs](../src/commerce/group_usage.rs) | Removing a customer group rejects live customer, price and native/source-rule dependencies under the settings lock. |
 | [src/commerce/international_capabilities.rs](../src/commerce/international_capabilities.rs) | International configuration and translation MCP tools call the exact same scoped native handlers as HTTP. |
 | [src/commerce/method_text.rs](../src/commerce/method_text.rs) | Shared translated names and descriptions with field-wise shop-main-language inheritance. |
 | [src/commerce/method_usage.rs](../src/commerce/method_usage.rs) | Tenant-scoped dependency preflight and authoritative deletion guards; order snapshots remain immutable. |
@@ -148,6 +151,11 @@ This lists every checked-in source module in these roots, including files with n
 | [src/experience.rs](../src/experience.rs) | Persisted storefront layout policy and observed synthetic rewards. |
 | [src/extensions.rs](../src/extensions.rs) | Merchant catalogue and Wasm extension activation/state. |
 | [src/foundation.rs](../src/foundation.rs) | Application dependencies, error responses and request context helpers. |
+| [src/history/capability.rs](../src/history/capability.rs) | HTTP/MCP parity for history; per-entity read/write scopes are checked again at invocation time. |
+| [src/history/mod.rs](../src/history/mod.rs) | Uniform tenant-scoped history from transactional database snapshots; restoration delegates to existing domain validators. |
+| [src/history/product.rs](../src/history/product.rs) | Rebuild a product edit from an audited snapshot; stock stays current and all associations/media pass normal admission. |
+| [src/history/restore.rs](../src/history/restore.rs) | Restore snapshots by replaying validated entity edits; financial effects and publication are never copied from historical state. |
+| [src/history/routes.rs](../src/history/routes.rs) | History summaries are bounded and permission-filtered; full snapshots and restore targets stay inside the owning shop. |
 | [src/http_limits.rs](../src/http_limits.rs) | Bounded streaming responses for extension services and payment providers. |
 | [src/inference.rs](../src/inference.rs) | Provider adapters. Credentials stay on the server; domain validation is separate. |
 | [src/knowledge/relations.rs](../src/knowledge/relations.rs) | Keep knowledge provenance and relations in the same transaction as canonical commerce data. |
@@ -336,6 +344,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/settings/CompanyTranslations.tsx](../frontend/src/admin/settings/CompanyTranslations.tsx) | Brand and legal text use one content-language selector and independent language/channel inheritance. |
 | [frontend/src/admin/settings/CountriesSettings.tsx](../frontend/src/admin/settings/CountriesSettings.tsx) | Delivery-country selection and editable catalogue definitions, including tenant-owned subdivisions. |
 | [frontend/src/admin/settings/CountryDefinition.tsx](../frontend/src/admin/settings/CountryDefinition.tsx) | Country metadata and subdivision editing with multilingual names; custom definitions cannot invent ISO assignment. |
+| [frontend/src/admin/settings/CustomerGroupsSettings.tsx](../frontend/src/admin/settings/CustomerGroupsSettings.tsx) | Customer groups share the translation/inheritance editor and revisioned settings aggregate. |
 | [frontend/src/admin/settings/DestinationRuleEditor.tsx](../frontend/src/admin/settings/DestinationRuleEditor.tsx) | Geographical tax rule editor: country, subdivisions, postcode constraints, date window and persisted Rule Builder condition. |
 | [frontend/src/admin/settings/LanguageSettings.tsx](../frontend/src/admin/settings/LanguageSettings.tsx) | Shop main language and enabled locales with resumable provider-backed bulk product translation drafts. |
 | [frontend/src/admin/settings/MasterDataSettings.tsx](../frontend/src/admin/settings/MasterDataSettings.tsx) | Structured company profile with single-language content, inherited channel scopes, logo drafts and revision-bound saves. |
@@ -358,6 +367,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/shell/navigation.ts](../frontend/src/admin/shell/navigation.ts) | Typed built-in Studio navigation and locale-specific labels. |
 | [frontend/src/admin/shell/requests.ts](../frontend/src/admin/shell/requests.ts) | Authenticated Studio transport; staging changes only the tenant, never the principal. |
 | [frontend/src/admin/shell/studio-types.ts](../frontend/src/admin/shell/studio-types.ts) | studio types: Studio layout, session/workspace controller, authenticated transport and lazy workspace navigation. |
+| [frontend/src/admin/shell/useEntityNavigation.ts](../frontend/src/admin/shell/useEntityNavigation.ts) | Linked entity navigation keeps native editors, browser deep links and back paths in the same tenant scope. |
 | [frontend/src/admin/shell/useServerHealth.ts](../frontend/src/admin/shell/useServerHealth.ts) | Public server health is independent of the personal Studio session. |
 | [frontend/src/admin/shell/useStudioController.ts](../frontend/src/admin/shell/useStudioController.ts) | Studio session/controller: authentication context, tenant/staging state and chat commands. |
 | [frontend/src/admin/storyfronts/StoryfrontView.tsx](../frontend/src/admin/storyfronts/StoryfrontView.tsx) | Dedicated merchant integration surface for the independently deployed Storyfront service. |
@@ -432,6 +442,9 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/geography/geography-types.ts](../frontend/src/shared/geography/geography-types.ts) | World catalogue and tenant destination tax contracts; no inferred tax law. |
 | [frontend/src/shared/geography/geography.css](../frontend/src/shared/geography/geography.css) | Shared country and region search: Studio and checkout use the same accessible controls. |
 | [frontend/src/shared/geography/useCountryCatalogue.ts](../frontend/src/shared/geography/useCountryCatalogue.ts) | Request-scoped geography loading; stale requests cannot move country definitions across shops or sandboxes. |
+| [frontend/src/shared/history/EntityHistory.tsx](../frontend/src/shared/history/EntityHistory.tsx) | On-demand entity history, field comparisons and explicitly confirmed revision-checked restoration. |
+| [frontend/src/shared/history/history-model.ts](../frontend/src/shared/history/history-model.ts) | Bounded structural changes for database snapshots; no HTML from historical content is executed. |
+| [frontend/src/shared/history/history.css](../frontend/src/shared/history/history.css) | Shared history deliberately stays secondary to editing and loads only when opened. |
 | [frontend/src/shared/i18n/ContentLanguage.tsx](../frontend/src/shared/i18n/ContentLanguage.tsx) | One content-language selection per editor, distinct from interface language; no writes on selection or fallback. |
 | [frontend/src/shared/i18n/ContentLanguagePicker.tsx](../frontend/src/shared/i18n/ContentLanguagePicker.tsx) | Compact shared language switcher with explicit main-language context; selection never changes persisted content. |
 | [frontend/src/shared/i18n/LocalizedField.tsx](../frontend/src/shared/i18n/LocalizedField.tsx) | Single visible field for the editor's language, with main-language preview and explicit restore-to-inheritance. |
@@ -444,6 +457,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/company-i18n.ts](../frontend/src/shared/i18n/company-i18n.ts) | Company identity, field inheritance and legal storefront vocabulary in four interface languages. |
 | [frontend/src/shared/i18n/connected-i18n.ts](../frontend/src/shared/i18n/connected-i18n.ts) | Four-language vocabulary for connected apps, consent and visual automation. |
 | [frontend/src/shared/i18n/content-language.ts](../frontend/src/shared/i18n/content-language.ts) | Resolve editable translation keys without merging distinct regional locales or fabricating inherited values. |
+| [frontend/src/shared/i18n/crm-i18n.ts](../frontend/src/shared/i18n/crm-i18n.ts) | Complete CRM/history vocabulary shared by settings, customer account and entity editors. |
 | [frontend/src/shared/i18n/customer-i18n.ts](../frontend/src/shared/i18n/customer-i18n.ts) | Account and address labels share four complete locales across storefront and studio. |
 | [frontend/src/shared/i18n/email-i18n.ts](../frontend/src/shared/i18n/email-i18n.ts) | Complete mail workspace vocabulary in English, German, French and Spanish. |
 | [frontend/src/shared/i18n/errors-i18n.ts](../frontend/src/shared/i18n/errors-i18n.ts) | Localized request guidance across all transports; original diagnostics remain available to developer tools. |
@@ -564,6 +578,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/connectors.py](../scripts/connectors.py) | Start the local connector apps with private generated keys; preserve all existing app services. |
 | [scripts/contention.py](../scripts/contention.py) | Sell the remaining workshop desks under contention; separate synthetic tenant. |
 | [scripts/context_differential.py](../scripts/context_differential.py) | Compare bounded context/tier/quantity ports with original Shopware methods. |
+| [scripts/crm_history.py](../scripts/crm_history.py) | Real CRM groups/defaults, transaction-coalesced history, validated restore, tenant/role/MCP isolation. |
 | [scripts/customer_accounts.py](../scripts/customer_accounts.py) | Real registration/address/login/checkout lifecycle, ownership, CAS and immutable financial snapshots. |
 | [scripts/delivery_differential.py](../scripts/delivery_differential.py) | Compare the original PercentageTaxRuleBuilder with the live Rust port. |
 | [scripts/demo/fixtures.py](../scripts/demo/fixtures.py) | Four-language, provider-free commerce playground definitions; no credentials or real customer data. |

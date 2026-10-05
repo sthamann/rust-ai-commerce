@@ -28,7 +28,7 @@ mod rules;
 pub(crate) use channels::*;
 pub(crate) use flows::{flow_once, project_flows};
 pub(crate) use promotions::*;
-pub(crate) use routes::router;
+pub(crate) use routes::{router, save as restore_config};
 
 #[cfg(test)]
 mod pipeline_tests;

@@ -1,4 +1,5 @@
 /** One revisioned international settings aggregate: drafts survive navigation between countries, taxes, methods and languages. */
+import EntityHistory from "../../shared/history/EntityHistory";
 import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
 import ContentLanguagePicker from "../../shared/i18n/ContentLanguagePicker";
 import { useWorkspaceText } from "../../shared/i18n/workspace-i18n";
@@ -231,6 +232,14 @@ export default function CommerceSettings({
           </fieldset>
           <SettingsSaveBar {...state} canWrite={canWrite} />
         </form>
+        <EntityHistory
+          request={request}
+          entity={channel ? "checkoutChannel" : "settings"}
+          id={channel || "base"}
+          revision={state.value.revision}
+          dirty={state.dirty || state.busy}
+          onRestored={state.reload}
+        />
       </section>
     </ContentLanguage>
   );

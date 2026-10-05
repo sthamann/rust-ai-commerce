@@ -1,6 +1,22 @@
 //! Public HTTP/MCP capability catalogue, separate from authorization and dispatch.
 pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
     (
+        "merchant.history",
+        "Read scoped entity change summaries; no credential snapshots",
+    ),
+    (
+        "merchant.history.version",
+        "Inspect exact before/after entity changes",
+    ),
+    (
+        "merchant.history.restore",
+        "Restore reviewed content as a new revision through domain validation; orders excluded",
+    ),
+    (
+        "merchant.customer.groups",
+        "Read configured customer groups and their pricing basis",
+    ),
+    (
         "merchant.media.list",
         "Restore pending and reviewable product image drafts",
     ),

@@ -11,6 +11,7 @@ pub(crate) async fn transition_order(
     auth::permit(&h, "orders.write")?;
     let (machine, machine_revision) = machine(&a.db, &t).await?;
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "merchant").await?;
     let request_key = header(&h, "idempotency-key").or_else(|| v["requestKey"].as_str());
     let fingerprint = hash(&json!({"orderId":id,"body":v}).to_string());
     if let Some(key) = request_key {

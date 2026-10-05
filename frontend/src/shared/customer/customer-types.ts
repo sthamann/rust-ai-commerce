@@ -63,3 +63,10 @@ export function addressComplete(a?: Address | null) {
     !!a && [a.name, a.street, a.postalCode, a.city].every((v) => v?.trim())
   );
 }
+
+/** The exact group ID remains distinct from its admitted price/checkout basis. */
+export type CustomerGroup = {
+  id: string;
+  priceBasis: "consumer" | "business";
+  translations: import("../geography/geography-types").TextMap;
+};

@@ -60,6 +60,7 @@ pub(super) async fn records(
 pub(super) async fn read(a: &App, h: &HeaderMap, channel: Option<&str>) -> Result<Json<Value>> {
     let t = merchant(a, h)?;
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, h, "merchant").await?;
     lock(&mut tx, &t).await?;
     let value = records(&mut tx, &t, channel).await?;
     tx.commit().await?;
@@ -98,7 +99,7 @@ pub(super) async fn put_channel(
     auth::permit(&h, "settings.write")?;
     save(&a, &h, v, Some(&channel)).await
 }
-pub(super) async fn save(
+pub(crate) async fn save(
     a: &App,
     h: &HeaderMap,
     v: Value,
@@ -110,6 +111,7 @@ pub(super) async fn save(
         .filter(|n| *n >= 0)
         .ok_or(bad("revision required"))?;
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, h, "merchant").await?;
     lock(&mut tx, &t).await?;
     let raw: Value =
         sqlx::query_scalar("SELECT data FROM commerce_settings WHERE tenant=$1 FOR SHARE")

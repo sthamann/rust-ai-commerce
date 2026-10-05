@@ -1,4 +1,5 @@
 /** Typed merchant rule/campaign/flow/channel forms with exact JSON available for advanced review. */
+import EntityHistory from "../../shared/history/EntityHistory";
 import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
 import { contentText } from "../../shared/i18n/content-language";
 import "../styles/international.css";
@@ -263,6 +264,37 @@ export default function AutomationView({
               locale={locale}
               setAdvanced={setAdvanced}
             />
+            {!!id && revision > 0 && (
+              <EntityHistory
+                request={request}
+                entity={
+                  {
+                    rules: "rule",
+                    flows: "flow",
+                    promotions: "promotion",
+                    channels: "channel",
+                  }[kind]
+                }
+                id={id}
+                revision={revision}
+                dirty={
+                  busy ||
+                  JSON.stringify(data) !==
+                    JSON.stringify(rows[kind].find((r) => r.id === id)?.data)
+                }
+                onRestored={async () => {
+                  const next = await request("/api/automation");
+                  setRows(next);
+                  setJobs(next.jobs);
+                  const record = next[kind].find((r: Config) => r.id === id);
+                  if (record) {
+                    setData(record.data);
+                    setRevision(record.revision);
+                    setAdvanced("");
+                  }
+                }}
+              />
+            )}
           </section>
         </div>
         {error && <p role="alert">{error}</p>}

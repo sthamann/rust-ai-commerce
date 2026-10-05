@@ -183,3 +183,18 @@ renderer does not embed a logo. See [contracts and tests](company-settings.md).
 ## Channel settings and media workspaces (2026-10-05)
 
 See [the settings/media guide](settings-media.md) for the current single-language editor, field-level checkout overrides, dependency-safe method removal, gallery and optional private image jobs. These are native prototype extensions; they do not establish additional full Shopware API/DAL parity, current tax law, paid-provider quality or whole-system formal certification.
+
+## CRM usability and native history delta (2026-10-05)
+
+Independent default address card actions, linked customer/order/product editors
+and configured translated customer groups now run through native API/MCP
+contracts. Exact group IDs drive rules/flows/tier prices; their explicit price
+basis drives gross/net presentation. Shared definitions cannot be overridden
+per channel. This remains a native implementation, not original customer-group
+DAL/UUID or complete criteria compatibility.
+
+Thirteen entity history types (including inspection-only orders) now record
+transactional before/after aggregates; twelve editable types delegate rollback
+to current domain validation. Credentials, immutable identity/login metadata and
+financial events are not rewound. Historical Shopware versions are not imported
+or synthesized. [The history contract](entity-history.md) lists all boundaries.

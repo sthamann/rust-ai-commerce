@@ -125,6 +125,8 @@ pub(crate) struct Settings {
     #[serde(default)]
     pub country_definitions: Vec<super::geography::Country>,
     pub countries: Vec<String>,
+    #[serde(default = "super::customer_groups::defaults")]
+    pub customer_groups: Vec<super::customer_groups::CustomerGroup>,
     pub taxes: Vec<TaxConfig>,
     pub shipping: Vec<Shipping>,
     pub payments: Vec<Payment>,

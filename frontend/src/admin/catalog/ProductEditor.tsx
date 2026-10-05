@@ -1,4 +1,6 @@
 /** Revision-aware product aggregate editor: one save, translation tabs and product-scoped linked capabilities. */
+import { useCrmText } from "../../shared/i18n/crm-i18n";
+import EntityHistory from "../../shared/history/EntityHistory";
 import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
 import ContentLanguagePicker from "../../shared/i18n/ContentLanguagePicker";
 import { useEffect, useRef, useState } from "react";
@@ -32,7 +34,9 @@ export default function ProductEditor({
   onCreated: (id: string) => void;
 }) {
   const { c, locale } = useCatalogText();
+  const { r } = useCrmText();
   const [draft, setDraft] = useState<ProductDraft>(newDraft);
+  const [reloadIndex, setReloadIndex] = useState(0);
   const [baseline, setBaseline] = useState("");
   const [lang, setLang] = useState(locale.slice(0, 2));
   const [tab, setTab] = useState("general");
@@ -101,7 +105,7 @@ export default function ProductEditor({
     };
     // All translations are loaded together; a UI locale change must not
     // overwrite a draft. Merchant's boundary remounts on shop/environment changes.
-  }, [id]);
+  }, [id, reloadIndex]);
   const dirty = JSON.stringify(draft) !== baseline;
   useEffect(() => {
     if (!dirty) return;
@@ -193,7 +197,7 @@ export default function ProductEditor({
           className="catalog-back"
           onClick={() => (dirty ? setLeaving(true) : onBack())}
         >
-          ← {c("back")}
+          ← {r("back")}
         </button>
         {leaving && (
           <div className="catalog-unsaved" role="alert">
@@ -343,6 +347,16 @@ export default function ProductEditor({
             />
           </section>
         </div>
+        {id && (
+          <EntityHistory
+            request={request}
+            entity="product"
+            id={id}
+            revision={draft.revision}
+            dirty={dirty || busy}
+            onRestored={async () => setReloadIndex((v) => v + 1)}
+          />
+        )}
       </div>
     </ContentLanguage>
   );

@@ -12,3 +12,5 @@ This folder owns the Rust modules listed below. Each source begins with its resp
 - [`profile.rs](profile.rs): Typed customer-owned profile updates; price groups, email and merchant roles cannot be self-assigned.
 
 The [source inventory](../../docs/module-inventory.md) is checked in CI. [The behavioral map](../../docs/source-map.md) identifies integration suites, and [testing](../../docs/testing.md) describes actual coverage and limits. Every file is limited to 320 lines; `main.rs` to 120.
+
+`address_restore.rs` rebuilds the owning customer address book through current geography/ownership checks. Account history excludes credentials. See [entity history](../../docs/entity-history.md).

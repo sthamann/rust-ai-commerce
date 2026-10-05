@@ -152,7 +152,8 @@ pub(super) async fn preview_quote(
         .filter(|q| *q > 0 && *q <= 10000)
         .ok_or(bad("Quantity must be 1..10000"))? as u32;
     let group = v["customerGroup"].as_str().unwrap_or("consumer");
-    if !["consumer", "business"].contains(&group) {
+    let (settings, _) = commerce::config(&a, &t).await?;
+    if !settings.customer_groups.iter().any(|g| g.id == group) {
         return Err(bad("Unknown customer group"));
     }
     let quantity = normalized_quantity(product, requested)?;
@@ -183,7 +184,7 @@ pub(super) async fn preview_quote(
         },
     };
     Ok(Json(
-        json!({"locale":locale,"requestedQuantity":requested,"effectiveQuantity":quantity,"quote":quote(&c,&ps)?,"sideEffects":false}),
+        json!({"locale":locale,"requestedQuantity":requested,"effectiveQuantity":quantity,"quote":quote(&c,&ps,&settings)?,"sideEffects":false}),
     ))
 }
 

@@ -69,6 +69,7 @@ export type Payment = {
   mode: string;
 };
 export type Config = {
+  customerGroups?: import("../customer/customer-types").CustomerGroup[];
   countries: string[];
   mainLocale?: string;
   locales?: string[];

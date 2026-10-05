@@ -1,4 +1,5 @@
 /** Structured company profile with single-language content, inherited channel scopes, logo drafts and revision-bound saves. */
+import EntityHistory from "../../shared/history/EntityHistory";
 import { useEffect, useState } from "react";
 import {
   useCompanyText,
@@ -255,6 +256,16 @@ export default function MasterDataSettings({
             />
           </form>
         </ContentLanguage>
+      )}
+      {value && (
+        <EntityHistory
+          request={request}
+          entity={scope ? "companyChannel" : "company"}
+          id={scope || "base"}
+          revision={value.revision}
+          dirty={dirty || uploading || busy}
+          onRestored={state.reload}
+        />
       )}
     </section>
   );

@@ -7,10 +7,19 @@ const ProductEditor = lazy(() => import("./ProductEditor"));
 import CategoriesWorkspace from "./CategoriesWorkspace";
 import "../styles/catalog.css";
 import "../styles/catalog-editor.css";
-export default function ProductDataView({ request }: { request: RequestFn }) {
+export default function ProductDataView({
+  request,
+  initialId,
+  onEntityBack,
+}: {
+  request: RequestFn;
+  initialId?: string;
+  onEntityBack?: () => void;
+}) {
   const { c, money, locale } = useCatalogText();
   const [view, setView] = useState("products");
   const [id, setId] = useState<string | null>(null);
+  useEffect(() => setId(initialId ?? null), [initialId]);
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState("");
@@ -80,6 +89,10 @@ export default function ProductDataView({ request }: { request: RequestFn }) {
         request={request}
         categories={categories}
         onBack={() => {
+          if (onEntityBack) {
+            onEntityBack();
+            return;
+          }
           setId(null);
           setReload((v) => v + 1);
         }}

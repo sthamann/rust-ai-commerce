@@ -8,6 +8,7 @@ export function useSettingsDraft<T, M extends object = object>(
   const currentRequest = useRef(request);
   currentRequest.current = request;
   const [value, setValue] = useState<{ data: T; revision: number } & M>();
+  const [reloadIndex, setReloadIndex] = useState(0);
   const [baseline, setBaseline] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -33,7 +34,7 @@ export function useSettingsDraft<T, M extends object = object>(
     };
     // Merchant's scope boundary remounts on tenant/environment changes. A new
     // locale transport must not overwrite pending edits to the same record.
-  }, [path]);
+  }, [path, reloadIndex]);
   const dirty = !!value && JSON.stringify(value.data) !== baseline;
   useEffect(() => {
     if (!dirty) return;
@@ -68,5 +69,16 @@ export function useSettingsDraft<T, M extends object = object>(
       setBusy(false);
     }
   };
-  return { value, dirty, busy, error, saved, change, save };
+  return {
+    value,
+    dirty,
+    busy,
+    error,
+    saved,
+    change,
+    save,
+    reload: async () => {
+      setReloadIndex((v) => v + 1);
+    },
+  };
 }

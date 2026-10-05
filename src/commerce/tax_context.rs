@@ -14,7 +14,7 @@ pub(crate) async fn tax_settings_for_cart(
     {
         return Ok(resolved);
     }
-    let q = quote(c, ps)?;
+    let q = quote(c, ps, s)?;
     let definitions = json!(s.taxes);
     let context = marketing::condition_context(conn, c, &q, &definitions).await?;
     for t in &mut resolved.taxes {

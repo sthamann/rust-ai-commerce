@@ -1,8 +1,12 @@
 //! Authoritative quantity pricing and localized checkout quote assembly.
 use crate::*;
 
-pub(crate) fn quote(c: &StoredCart, ps: &[Product]) -> Result<Value> {
-    let b2b = c.data.group == "business";
+pub(crate) fn quote(
+    c: &StoredCart,
+    ps: &[Product],
+    settings: &commerce::Settings,
+) -> Result<Value> {
+    let b2b = settings.is_business(&c.data.group);
     let mut lines = vec![];
     let mut total = 0.;
     let mut taxes = 0.;
@@ -16,11 +20,12 @@ pub(crate) fn quote(c: &StoredCart, ps: &[Product]) -> Result<Value> {
                 "Quantity does not match product minimum/steps; update cart",
             ));
         }
-        let rule_ids = if b2b {
+        let mut rule_ids = vec![c.data.group.clone()];
+        rule_ids.extend(if b2b {
             vec!["business".into()]
         } else {
             vec!["consumer".into()]
-        };
+        });
         let tier = vendune::context::select_tier(&p.advanced_prices, &rule_ids, i.quantity);
         let discount = 1. - tier.map(|t| t.discount).unwrap_or(0.);
         let base = if b2b {
@@ -147,7 +152,13 @@ pub(crate) async fn cart_json(a: &App, c: &StoredCart) -> Result<Value> {
     let q = marketing::promote(
         &mut *a.db.acquire().await?,
         &preview,
-        commerce::enrich(quote(&preview, &ps)?, &preview, &ps, &config, revision)?,
+        commerce::enrich(
+            quote(&preview, &ps, &config)?,
+            &preview,
+            &ps,
+            &config,
+            revision,
+        )?,
     )
     .await?;
     let mut result = commerce::enrich(q, &preview, &ps, &config, revision)?;

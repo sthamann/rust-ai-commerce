@@ -47,3 +47,5 @@ pub(crate) fn router() -> Router<App> {
         .route("/api/knowledge/documents/{id}/index", post(index))
         .route("/store-api/product/{id}/questions", post(question))
 }
+
+pub(crate) use lifecycle::edit as restore_edit;

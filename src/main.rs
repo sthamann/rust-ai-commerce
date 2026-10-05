@@ -34,6 +34,7 @@ mod chat_lease;
 mod cognition;
 mod developer;
 mod documents;
+mod history;
 mod http_limits;
 mod marketing;
 mod operations;

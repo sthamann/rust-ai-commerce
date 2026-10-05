@@ -13,6 +13,7 @@ pub(crate) async fn address_save(
     email: &str,
     id: Option<&str>,
     v: &Value,
+    h: &HeaderMap,
 ) -> Result<Value> {
     let mut address: commerce::Address =
         serde_json::from_value(v["address"].clone()).map_err(|_| bad("Invalid address"))?;
@@ -23,6 +24,11 @@ pub(crate) async fn address_save(
         return Err(bad("Address country unavailable"));
     }
     let mut tx = a.db.begin().await?;
+    if header(h, "x-rac-user").is_some() {
+        history::context(&mut tx, h, "merchant").await?;
+    } else {
+        history::customer_context(&mut tx, email).await?;
+    }
     let result = address_save_conn(&mut tx, t, email, id, v, &address).await?;
     tx.commit().await?;
     Ok(result)
@@ -80,8 +86,14 @@ pub(crate) async fn address_delete(
     email: &str,
     id: &str,
     revision: i64,
+    h: &HeaderMap,
 ) -> Result<Value> {
     let mut tx = a.db.begin().await?;
+    if header(h, "x-rac-user").is_some() {
+        history::context(&mut tx, h, "merchant").await?;
+    } else {
+        history::customer_context(&mut tx, email).await?;
+    }
     sqlx::query("SELECT id FROM customers WHERE tenant=$1 AND email=$2 FOR UPDATE")
         .bind(t)
         .bind(email)

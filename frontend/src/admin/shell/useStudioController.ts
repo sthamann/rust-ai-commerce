@@ -11,7 +11,8 @@ import "../styles/operations.css";
 import "../styles/studio.css";
 import type { Message, Overview, Provider } from "./studio-types";
 
-import { useStudioNavigation, type Tab } from "./navigation";
+import { useEntityNavigation } from "./useEntityNavigation";
+import { useStudioNavigation } from "./navigation";
 import { useStudioRequests } from "./requests";
 import { useServerHealth } from "./useServerHealth";
 export function useStudioController({
@@ -66,14 +67,15 @@ export function useStudioController({
   }>();
   const [settings, setSettings] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [tab, setTab] = useState<Tab>(() => {
-    const target = new URLSearchParams(location.search).get("studio");
-    return nav.find((item) => item.id === target)?.id ?? "assistant";
-  });
+  const navigation = useEntityNavigation(
+    JSON.stringify([workspace, environment, token]),
+    nav.map((n) => n.id),
+  );
+  const { tab, setTab, entityTarget, openEntity, entityBack } = navigation;
   const [appSurface, setAppSurface] = useState<AppSurface | null>(null);
-  const selectTab = (id: Tab) => {
+  const selectTab = (id: Parameters<typeof navigation.selectTab>[0]) => {
     setAppSurface(null);
-    setTab(id);
+    navigation.selectTab(id);
   };
   useEffect(() => setAppSurface(null), [workspace, environment, token]);
   const [data, setData] = useState<Overview>();
@@ -302,6 +304,9 @@ export function useStudioController({
     appSurface,
     setAppSurface,
     selectTab,
+    entityTarget,
+    openEntity,
+    entityBack,
     data,
     setData,
     focus,

@@ -2,6 +2,9 @@
 use crate::*;
 
 pub(crate) fn tool_schema(name: &str) -> Value {
+    if let Some(schema) = history::schema(name) {
+        return schema;
+    }
     if let Some(schema) = documents::knowledge_schema(name) {
         return schema;
     }
@@ -177,6 +180,9 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
             let mut tools = CAPABILITIES
                 .iter()
                 .filter(|(n, _)| {
+                    if history::schema(n).is_some() {
+                        return merchant(&a, &h).is_ok() && history::visible(&h, n);
+                    }
                     if let Some(permission) = assets::media_permission(n) {
                         return merchant(&a, &h).is_ok() && auth::permit(&h, permission).is_ok();
                     }

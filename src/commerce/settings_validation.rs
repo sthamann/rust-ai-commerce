@@ -2,6 +2,7 @@
 use super::*;
 
 pub(crate) fn validate_config(s: &Settings) -> Result<()> {
+    super::customer_groups::validate_groups(s)?;
     fn ids<'a>(v: impl Iterator<Item = &'a str>) -> bool {
         let mut seen = std::collections::HashSet::new();
         v.into_iter().all(|v| {

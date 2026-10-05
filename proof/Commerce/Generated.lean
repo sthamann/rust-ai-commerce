@@ -66,4 +66,7 @@ def flow_delay_admissible (seconds : Nat) : Bool :=
 def destination_tax_admissible (condition : Bool) (country : Bool) (state : Bool) (postal : Bool) (date : Bool) : Bool :=
   ((((condition && country) && state) && postal) && date)
 
+def customer_group_net (configured : Bool) (business : Bool) : Bool :=
+  (configured && business)
+
 end CommerceKernel

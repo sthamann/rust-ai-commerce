@@ -18,7 +18,7 @@ pub(super) async fn create(
     let t = merchant(&a, &h)?;
     auth::permit(&h, "customers.write")?;
     Ok(Json(
-        accounts::address_save(&a, &t, &email, None, &v).await?,
+        accounts::address_save(&a, &t, &email, None, &v, &h).await?,
     ))
 }
 pub(super) async fn save(
@@ -30,7 +30,7 @@ pub(super) async fn save(
     let t = merchant(&a, &h)?;
     auth::permit(&h, "customers.write")?;
     Ok(Json(
-        accounts::address_save(&a, &t, &email, Some(&id), &v).await?,
+        accounts::address_save(&a, &t, &email, Some(&id), &v, &h).await?,
     ))
 }
 pub(super) async fn remove(
@@ -48,6 +48,7 @@ pub(super) async fn remove(
             &email,
             &id,
             v["revision"].as_i64().ok_or(bad("revision required"))?,
+            &h,
         )
         .await?,
     ))

@@ -66,17 +66,44 @@ pub(super) async fn save(
     Path(email): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
+    save_domain(a, h, email, v, None).await
+}
+pub(crate) async fn restore_customer(
+    a: App,
+    h: HeaderMap,
+    email: String,
+    state: Value,
+    revision: i64,
+) -> Result<Json<Value>> {
+    let value = json!({"revision":revision,"profile":state["profile"],"company":state["company"],"customerGroup":state["customerGroup"],"active":state["active"]});
+    save_domain(a, h, email, value, Some(state)).await
+}
+async fn save_domain(
+    a: App,
+    h: HeaderMap,
+    email: String,
+    v: Value,
+    book: Option<Value>,
+) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     auth::permit(&h, "customers.write")?;
     let e: Edit = serde_json::from_value(v).map_err(|_| bad("Invalid customer update"))?;
-    if !["consumer", "business"].contains(&e.customer_group.as_str())
-        || e.company.as_ref().is_some_and(|s| s.len() > 200)
+    if e.company.as_ref().is_some_and(|s| s.len() > 200)
         || e.profile.to_string().len() > 4000
         || !e.profile.is_object()
     {
         return Err(bad("Invalid customer profile"));
     }
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "merchant").await?;
+    let (settings, _) = commerce::scoped_locked(&mut tx, &t, "default").await?;
+    if !settings
+        .customer_groups
+        .iter()
+        .any(|g| g.id == e.customer_group)
+    {
+        return Err(bad("Unknown customer group"));
+    }
     let current: i64 = sqlx::query_scalar(
         "SELECT revision FROM customers WHERE tenant=$1 AND email=$2 FOR UPDATE",
     )
@@ -95,6 +122,25 @@ pub(super) async fn save(
     if n != 1 {
         return Err(conflict("Customer changed or unavailable"));
     }
+    if let Some(book) = book {
+        let automation = &book["automation"];
+        if !automation.is_object() || automation.to_string().len() > 32768 {
+            return Err(bad("Invalid customer automation data"));
+        }
+        sqlx::query("UPDATE customers SET automation=$1 WHERE tenant=$2 AND email=$3")
+            .bind(automation)
+            .bind(&t)
+            .bind(&email)
+            .execute(&mut *tx)
+            .await?;
+        accounts::restore_book(&mut tx, &t, &email, &book, &settings).await?;
+    }
+    let saved_revision: i64 =
+        sqlx::query_scalar("SELECT revision FROM customers WHERE tenant=$1 AND email=$2")
+            .bind(&t)
+            .bind(&email)
+            .fetch_one(&mut *tx)
+            .await?;
     // Access and group changes revoke sessions and invalidate all open privileged cart contexts.
     sqlx::query("DELETE FROM customer_sessions WHERE tenant=$1 AND email=$2")
         .bind(&t)
@@ -102,7 +148,7 @@ pub(super) async fn save(
         .execute(&mut *tx)
         .await?;
     sqlx::query("UPDATE carts SET token=md5(id||$1),data=jsonb_set(jsonb_set(jsonb_set(jsonb_set(data,'{email}','null'),'{customer_id}','null'),'{group}','\"consumer\"'),'{company}','null'),revision=revision+1 WHERE tenant=$2 AND data->>'email'=$3 AND status='open'").bind(uid()).bind(&t).bind(&email).execute(&mut *tx).await?;
-    sqlx::query("INSERT INTO outbox(tenant,kind,data) VALUES($1,'customer.updated',$2)").bind(t).bind(json!({"actor":header(&h,"x-rac-user"),"email":email,"revision":e.revision+1,"active":e.active})).execute(&mut *tx).await?;
+    sqlx::query("INSERT INTO outbox(tenant,kind,data) VALUES($1,'customer.updated',$2)").bind(t).bind(json!({"actor":header(&h,"x-rac-user"),"email":email,"revision":saved_revision,"active":e.active})).execute(&mut *tx).await?;
     tx.commit().await?;
-    Ok(Json(json!({"saved":true,"revision":e.revision+1})))
+    Ok(Json(json!({"saved":true,"revision":saved_revision})))
 }

@@ -5,6 +5,8 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("customer_group_net","configured &&","true &&"),
+ ("customer_group_net","&& business","&& true"),
  ("destination_tax_admissible","condition","true"),
  ("destination_tax_admissible","country","true"),
  ("destination_tax_admissible","state","true"),

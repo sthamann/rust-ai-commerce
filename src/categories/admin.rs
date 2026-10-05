@@ -95,6 +95,7 @@ async fn write(a: App, h: HeaderMap, id: String, v: Value, create: bool) -> Resu
         .collect();
     commerce::validate_names(&names, &settings, 200)?;
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "merchant").await?;
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,726))")
         .bind(&t)
         .execute(&mut *tx)

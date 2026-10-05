@@ -40,8 +40,15 @@ pub(crate) async fn product_detail(
     let taxes = tax_settings_for_header(&a, c.as_ref(), &chain, &config).await?;
     let priced = tax_products(&ps, &selection, &taxes)?;
     let mut quantities = vec![p.min_purchase];
+    let tier_group = if p.advanced_prices.iter().any(|tier| tier.rule_id == group) {
+        group
+    } else if config.is_business(group) {
+        "business"
+    } else {
+        "consumer"
+    };
     for tier in &p.advanced_prices {
-        if tier.rule_id == group {
+        if tier.rule_id == tier_group {
             quantities.push(tier.quantity_start);
         }
     }
@@ -76,7 +83,7 @@ pub(crate) async fn product_detail(
                 checkout: None,
             },
         };
-        let q = quote(&preview, &priced)?;
+        let q = quote(&preview, &priced, &config)?;
         price_tiers.push(json!({"quantity":qty,"price":q["lineItems"][0]["price"],"discountPercent":q["lineItems"][0]["discountPercent"]}));
     }
     // Review aggregates cover the whole family, independently of variant pagination.
@@ -101,6 +108,6 @@ pub(crate) async fn product_detail(
         .unwrap_or_default();
     product["variantLabel"] = json!(suffix);
     Ok(Json(
-        json!({"product":product,"familyId":family,"variants":family_ps,"variantsPagination":{"nextCursor":next_cursor,"hasMore":next_cursor.is_some(),"limit":criteria.page_size()?},"calculatedPrices":price_tiers,"delivery":delivery,"taxStatus":if group=="business"{"net"}else{"gross"},"country":selection.country,"reviews":{"count":count,"average":rating,"elements":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"author":r.get::<String,_>("author"),"rating":r.get::<i32,_>("rating"),"title":r.get::<String,_>("title"),"content":r.get::<String,_>("content"),"verifiedPurchase":r.get::<bool,_>("verified"),"demo":r.get::<bool,_>("demo"),"time":r.get::<String,_>("time")})).collect::<Vec<_>>()}}),
+        json!({"product":product,"familyId":family,"variants":family_ps,"variantsPagination":{"nextCursor":next_cursor,"hasMore":next_cursor.is_some(),"limit":criteria.page_size()?},"calculatedPrices":price_tiers,"delivery":delivery,"taxStatus":if config.is_business(group){"net"}else{"gross"},"country":selection.country,"reviews":{"count":count,"average":rating,"elements":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"author":r.get::<String,_>("author"),"rating":r.get::<i32,_>("rating"),"title":r.get::<String,_>("title"),"content":r.get::<String,_>("content"),"verifiedPurchase":r.get::<bool,_>("verified"),"demo":r.get::<bool,_>("demo"),"time":r.get::<String,_>("time")})).collect::<Vec<_>>()}}),
     ))
 }

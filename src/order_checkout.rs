@@ -10,6 +10,7 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         marketing::admit_product(a, h, &i.id).await?;
     }
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, h, "checkout").await?;
     let lock_key = format!("{}:{key}", tenant(h)?);
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,0))")
         .bind(lock_key)
@@ -22,6 +23,11 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         .await?
         .ok_or(bad("Cart not found"))?;
     let mut c = stored(&r)?;
+    if c.data.customer_id.is_some()
+        && let Some(email) = &c.data.email
+    {
+        history::customer_context(&mut tx, email).await?;
+    }
     let mut purchase = json!({"items":c.data.items,"checkout":c.data.checkout,"group":c.data.group,"buyer":c.data.buyer,"coupons":c.data.coupons,"salesChannel":c.data.sales_channel});
     if !c.data.app_configurations.is_empty() {
         purchase["appConfigurations"] = json!(c.data.app_configurations);
@@ -114,7 +120,13 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         marketing::promote(
             &mut tx,
             &c,
-            commerce::enrich(quote(&c, &priced)?, &c, &priced, &config, settings_revision)?,
+            commerce::enrich(
+                quote(&c, &priced, &config)?,
+                &c,
+                &priced,
+                &config,
+                settings_revision,
+            )?,
         )
         .await?,
         &c,
@@ -132,7 +144,7 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         }
     }
     let minor = (q["price"]["totalPrice"].as_f64().unwrap() * 100.).round() as i64;
-    if c.data.group == "business" {
+    if config.is_business(&c.data.group) {
         // A revision change on another replica must never leave this checkout on a stale policy.
         let source: String =
             sqlx::query_scalar("SELECT wat FROM extensions WHERE tenant=$1 FOR SHARE")

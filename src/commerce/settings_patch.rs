@@ -65,7 +65,7 @@ pub(super) fn difference(base: &Settings, next: &Settings) -> Value {
     );
     json!(changes)
 }
-pub(super) fn resolve(base: &Settings, patch: Value) -> Result<Settings> {
+pub(crate) fn resolve(base: &Settings, patch: Value) -> Result<Settings> {
     let changes: Vec<Change> =
         serde_json::from_value(patch).map_err(|_| bad("Invalid settings override"))?;
     if changes.len() > 5000 {

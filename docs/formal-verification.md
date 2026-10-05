@@ -1,6 +1,6 @@
 # Lean-checked commerce contracts
 
-The prototype now runs Lean 4.29.1 proofs for **21 policies used in production
+The prototype now runs Lean 4.29.1 proofs for **22 policies used in production
 Rust paths**. Forty-six theorems cover the properties below. This is **not a
 certificate that the entire commerce core is correct or bug-free**. The current
 inventory contains 205 Rust modules: one extracted policy module, seventeen reviewed
@@ -188,3 +188,16 @@ edits conflict. SQL row locks and provider output validation remain reviewed,
 unproved adapters with real PostgreSQL regression tests.
 
 Channel settings, method dependency guards and image drafts (2026-10-05) add reviewed JSON/SQL/provider/MCP adapters around the existing validated checkout and revision policies. Sparse transport patching and deletion reference queries are not new extracted Lean decision policies. Provider output decoding, publication transactions, queue processing and UI behavior remain unproved; real isolated regressions and the exact source-review inventory document their scope. See [settings/media](settings-media.md).
+
+## Connected CRM and history (2026-10-05)
+
+`customer_group_net` is extracted from production and consumed by
+`commerce/customer_groups.rs`. Its exactness property admits net presentation
+iff a group exists and explicitly selects the business basis; an unknown group
+cannot self-claim business presentation. Both Boolean input guards have negative
+mutations and exhaustive compiled Rust/Lean comparisons.
+
+Entity snapshot triggers, actor attribution, restoration transactions, group
+dependency queries and frontend controls are reviewed **unproved adapters**.
+Their real HTTP/PostgreSQL and component regressions are documented in
+[entity history](entity-history.md). This does not certify whole-core correctness.
