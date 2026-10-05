@@ -9,7 +9,7 @@ from pathlib import Path
 from xml.etree import ElementTree
 
 ROOT = Path(__file__).resolve().parents[1]
-STALE = re.compile(r'Rust AI Commerce|rust-ai-commerce|rust_ai_commerce|Commerce Studio|Commerce Platform|Commerce Plattform|\bATELIER\b|\bAtelier\b')
+STALE = re.compile(r'Rust Commerce|Rust AI Commerce|rust-ai-commerce|rust_ai_commerce|Commerce Studio|Commerce Platform|Commerce Plattform|\bATELIER\b|\bAtelier\b')
 current = [ROOT / 'README.md', ROOT / 'frontend/index.html']
 current += list((ROOT / 'frontend/src').rglob('*')) + list((ROOT / 'site').rglob('*'))
 for path in current:
