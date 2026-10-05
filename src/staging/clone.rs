@@ -132,6 +132,7 @@ pub(crate) async fn create(
     sqlx::query("INSERT INTO product_channel_visibility SELECT $2,product_id,channel_id,visible FROM product_channel_visibility WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     sqlx::query("INSERT INTO company_logos(tenant,id,content,digest,mime,width,height) SELECT $2,id,content,digest,mime,width,height FROM company_logos WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     sqlx::query("INSERT INTO company_overrides(tenant,channel_id,data) SELECT $2,channel_id,data FROM company_overrides WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
+    sqlx::query("INSERT INTO commerce_overrides(tenant,channel_id,data) SELECT $2,channel_id,data FROM commerce_overrides WHERE tenant=$1").bind(&t).bind(&id).execute(&mut *tx).await?;
     documents::clone_sources(&mut tx, &t, &id).await?;
     // Sandbox baseline is the actual sanitized clone, so disabled integrations aren't release changes.
     let stagebase = snapshot(&mut tx, &id).await?;

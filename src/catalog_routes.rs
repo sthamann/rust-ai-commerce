@@ -42,7 +42,7 @@ pub(crate) async fn catalog_page(
     } else {
         None
     };
-    let (settings, _) = commerce::config(&a, &t).await?;
+    let (settings, _) = commerce::scoped_config(&a, &t, marketing::channel_id(&h)).await?;
     let selected = c
         .as_ref()
         .map(|c| commerce::selection(&c.data))

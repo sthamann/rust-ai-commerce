@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "../../shared/i18n/i18n";
 import Icon from "../../shared/ui/Icon";
-import ProductArt from "../../shared/ui/ProductArt";
+import { useWorkspaceText } from "../../shared/i18n/workspace-i18n";
 import type { Product, RequestFn } from "../shell/studio-types";
 export function PreviewPanel({
   product,
@@ -15,6 +15,7 @@ export function PreviewPanel({
   connected: boolean;
   onIntent: (s: string) => void;
 }) {
+  const { w } = useWorkspaceText();
   const { t, money, locale } = useLocale();
   const [quantity, setQuantity] = useState(1);
   const [group, setGroup] = useState("consumer");
@@ -71,7 +72,14 @@ export function PreviewPanel({
       {product ? (
         <>
           <div className="preview-art">
-            <ProductArt id={product.id} />
+            {product.media?.[0]?.url ? (
+              <img src={product.media[0].url} alt={product.name} />
+            ) : (
+              <div className="preview-empty">
+                <span aria-hidden="true">◇</span>
+                <p>{w("noImages")}</p>
+              </div>
+            )}
           </div>
           <div className="preview-product">
             <span className="kicker">{product.id}</span>

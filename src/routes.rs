@@ -18,6 +18,14 @@ pub(crate) fn router(a: App) -> Router {
         .merge(marketing::router())
         .merge(payments::payment_router())
         .merge(cognition::cognition_router())
+        .route(
+            "/api/merchant/commerce/channels/{channel}",
+            get(commerce::get_scope).put(commerce::save_scope),
+        )
+        .route(
+            "/api/merchant/commerce/methods/{area}/{id}/dependencies",
+            get(commerce::method_dependencies),
+        )
         .route("/health", get(health))
         .route("/api/auth/register", post(auth::register_user))
         .route("/api/auth/login", post(auth::user_login))

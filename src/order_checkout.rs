@@ -92,12 +92,8 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         })
         .collect::<Vec<_>>();
     // Configuration cannot change between this price calculation and order commit.
-    let settings =
-        sqlx::query("SELECT data,revision FROM commerce_settings WHERE tenant=$1 FOR SHARE")
-            .bind(&c.tenant)
-            .fetch_one(&mut *tx)
-            .await?;
-    let config = commerce::decode_config(settings.get("data"))?;
+    let (config, settings_revision) =
+        commerce::scoped_locked(&mut tx, &c.tenant, &c.data.sales_channel).await?;
     let selected = commerce::selection(&c.data);
     for address in [&selected.address, &selected.billing_address]
         .into_iter()
@@ -118,19 +114,13 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         marketing::promote(
             &mut tx,
             &c,
-            commerce::enrich(
-                quote(&c, &priced)?,
-                &c,
-                &priced,
-                &config,
-                settings.get("revision"),
-            )?,
+            commerce::enrich(quote(&c, &priced)?, &c, &priced, &config, settings_revision)?,
         )
         .await?,
         &c,
         &priced,
         &config,
-        settings.get("revision"),
+        settings_revision,
     )?;
     commerce::dates_conn(&mut tx, &mut q).await?;
     for i in &c.data.items {

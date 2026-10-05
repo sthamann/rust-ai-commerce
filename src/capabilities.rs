@@ -9,6 +9,9 @@ pub(crate) async fn capabilities() -> Json<Value> {
     )
 }
 pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+    if name.starts_with("merchant.media.") {
+        return assets::media_invoke(a, h, name, v).await;
+    }
     if commerce::international_permission(name).is_some() {
         return commerce::international_invoke(a, h, name, v).await;
     }

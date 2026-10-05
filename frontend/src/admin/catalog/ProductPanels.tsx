@@ -3,7 +3,7 @@ import { useCatalogText, type CatalogWord } from "./catalog-i18n";
 import type { Category, ProductDraft } from "./catalog-model";
 import PairFields from "./PairFields";
 import ReferencePriceFields from "./ReferencePriceFields";
-import ProductMedia from "./ProductMedia";
+
 import {
   ProductRich,
   ProductSeo,
@@ -189,8 +189,6 @@ export default function ProductPanels({
         </button>
       </>
     );
-  if (tab === "media")
-    return <ProductMedia draft={draft} onChange={onChange} />;
   if (tab === "assignments")
     return (
       <>

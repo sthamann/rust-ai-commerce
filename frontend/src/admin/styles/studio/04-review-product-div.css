@@ -77,9 +77,11 @@
   border-radius: 11px;
   padding: 12px;
 }
-.preview-art svg {
+.preview-art svg,
+.preview-art img {
   width: 100%;
   height: 160px;
+  object-fit: contain;
   display: block;
 }
 .preview-product {
@@ -264,4 +266,17 @@
 .page-intro h1 {
   margin: 10px 0 14px;
   font-size: clamp(28px, 3vw, 40px);
+}
+
+.preview-empty {
+  text-align: center;
+  padding: 28px 12px;
+  color: var(--muted);
+}
+.preview-empty > span {
+  font-size: 36px;
+}
+.preview-empty p {
+  font-size: 12px;
+  line-height: 1.6;
 }

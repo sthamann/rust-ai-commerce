@@ -1,18 +1,24 @@
 /** Master/detail shipping and payment configuration, translated content and searchable country availability. */
 import { useState } from "react";
 import type { Payment, Shipping } from "../../shared/api/shop-api";
+import MethodRemoval from "./MethodRemoval";
 import CountryPicker from "../../shared/geography/CountryPicker";
 import TranslationFields from "../../shared/geography/TranslationFields";
 import { inheritedText } from "../../shared/geography/geography-types";
-import { useInternationalText } from "../../shared/i18n/international-i18n";
+import {
+  internationalWords,
+  useInternationalText,
+} from "../../shared/i18n/international-i18n";
 import type { InternationalProps } from "./CommerceSettings";
 export default function MethodSettings({
   config,
   patch,
   countries,
   area,
+  request,
 }: InternationalProps & { area: "shipping" | "payment" }) {
   const { i, locale } = useInternationalText();
+  const [removing, setRemoving] = useState(false);
   const [selected, setSelected] = useState("");
   const methods = area === "shipping" ? config.shipping : config.payments;
   const method = methods.find((m) => m.id === selected) ?? methods[0];
@@ -35,7 +41,12 @@ export default function MethodSettings({
   };
   const add = () => {
     const id = `${area}-${crypto.randomUUID().slice(0, 8)}`,
-      name = i(area === "shipping" ? "newShipping" : "newPayment");
+      name =
+        internationalWords[area === "shipping" ? "newShipping" : "newPayment"][
+          ({ en: 0, de: 1, fr: 2, es: 3 } as Record<string, number>)[
+            config.mainLocale.split("-")[0]
+          ] ?? 0
+        ];
     const base = {
       id,
       name,
@@ -232,20 +243,34 @@ export default function MethodSettings({
             type="button"
             className="studio-secondary"
             disabled={methods.length === 1}
-            onClick={() => {
-              if (area === "shipping")
-                patch({
-                  shipping: config.shipping.filter((m) => m.id !== method.id),
-                });
-              else
-                patch({
-                  payments: config.payments.filter((m) => m.id !== method.id),
-                });
-              setSelected("");
-            }}
+            onClick={() => setRemoving(true)}
           >
             {i("remove")}
           </button>
+          {removing && (
+            <MethodRemoval
+              area={area}
+              id={method.id}
+              request={request}
+              onCancel={() => setRemoving(false)}
+              onDeactivate={() => {
+                update({ active: false });
+                setRemoving(false);
+              }}
+              onRemove={() => {
+                if (area === "shipping")
+                  patch({
+                    shipping: config.shipping.filter((m) => m.id !== method.id),
+                  });
+                else
+                  patch({
+                    payments: config.payments.filter((m) => m.id !== method.id),
+                  });
+                setSelected("");
+                setRemoving(false);
+              }}
+            />
+          )}
         </div>
       )}
     </div>

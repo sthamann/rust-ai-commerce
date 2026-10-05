@@ -140,3 +140,7 @@ address inheritance and decoded image admission.
 The existing Lean policy suite, source review locks and negative mutation checks
 remain mandatory. These new JSON/SQL/image/UI adapters are explicitly unproved;
 green tests and reviewed hashes do not certify legal compliance or the whole core.
+
+## Channel settings and media workspaces (2026-10-05)
+
+See [the settings/media guide](settings-media.md) for the current single-language editor, field-level checkout overrides, dependency-safe method removal, gallery and optional private image jobs. These are native prototype extensions; they do not establish additional full Shopware API/DAL parity, current tax law, paid-provider quality or whole-system formal certification.

@@ -45,6 +45,9 @@ export function ContentLanguage({
     </ContentLanguageContext.Provider>
   );
 }
+export function useOptionalContentLanguage() {
+  return useContext(ContentLanguageContext);
+}
 export function useContentLanguage(): Scope {
   return (
     useContext(ContentLanguageContext) ?? {

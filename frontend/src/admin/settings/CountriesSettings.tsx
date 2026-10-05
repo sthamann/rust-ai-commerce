@@ -12,6 +12,7 @@ export default function CountriesSettings({
   config,
   patch,
   countries,
+  channel,
 }: InternationalProps) {
   const { i, locale } = useInternationalText();
   const [editing, setEditing] = useState<Country | null>(null);
@@ -60,6 +61,7 @@ export default function CountriesSettings({
         <button
           type="button"
           className="studio-secondary"
+          disabled={channel}
           onClick={() =>
             setEditing({
               code: "",

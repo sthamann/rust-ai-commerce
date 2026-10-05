@@ -186,3 +186,5 @@ rounding, current tax law or correctness of database configuration. Translation
 apply consumes the existing exact `revision_admissible` policy; stale product
 edits conflict. SQL row locks and provider output validation remain reviewed,
 unproved adapters with real PostgreSQL regression tests.
+
+Channel settings, method dependency guards and image drafts (2026-10-05) add reviewed JSON/SQL/provider/MCP adapters around the existing validated checkout and revision policies. Sparse transport patching and deletion reference queries are not new extracted Lean decision policies. Provider output decoding, publication transactions, queue processing and UI behavior remain unproved; real isolated regressions and the exact source-review inventory document their scope. See [settings/media](settings-media.md).

@@ -7,7 +7,21 @@ pub(crate) fn tool_schema(name: &str) -> Value {
         "merchant.company.save" => {
             json!({"channelId":{"type":"string"},"revision":{"type":"integer","minimum":0},"baseRevision":{"type":"integer","minimum":0},"data":{"type":"object"}})
         }
-        "merchant.commerce.save" => json!({"revision":{"type":"integer"},"data":{"type":"object"}}),
+        "merchant.commerce.read" => json!({"channelId":{"type":"string"}}),
+        "merchant.commerce.save" => {
+            json!({"channelId":{"type":"string"},"baseRevision":{"type":"integer","minimum":0},"revision":{"type":"integer","minimum":0},"data":{"type":"object"}})
+        }
+        "merchant.commerce.dependencies" => {
+            json!({"area":{"type":"string","enum":["shipping","payments"]},"methodId":{"type":"string"}})
+        }
+        "merchant.media.list" => json!({"productId":{"type":"string"}}),
+        "merchant.media.create" => {
+            json!({"productId":{"type":"string"},"revision":{"type":"integer","minimum":1},"mode":{"type":"string","enum":["generate","optimize"]},"sourceId":{"type":["string","null"]},"prompt":{"type":"string","minLength":1,"maxLength":2000}})
+        }
+        "merchant.media.detail" => json!({"id":{"type":"string"}}),
+        "merchant.media.apply" => {
+            json!({"id":{"type":"string"},"revision":{"type":"integer","minimum":1}})
+        }
         "merchant.translations.create" => {
             json!({"targetLocale":{"type":"string"},"overwrite":{"type":"boolean"},"inference":{"type":"object","properties":{"provider":{"type":"string","enum":["ollama","openai","anthropic"]},"model":{"type":["string","null"]}},"additionalProperties":false}})
         }
@@ -97,6 +111,11 @@ pub(crate) fn tool_schema(name: &str) -> Value {
     let required = match name {
         "merchant.company.save" => vec!["revision", "data"],
         "merchant.commerce.save" => vec!["revision", "data"],
+        "merchant.commerce.dependencies" => vec!["area", "methodId"],
+        "merchant.media.list" => vec!["productId"],
+        "merchant.media.create" => vec!["productId", "revision", "mode", "prompt"],
+        "merchant.media.detail" => vec!["id"],
+        "merchant.media.apply" => vec!["id", "revision"],
         "merchant.translations.create" => vec!["targetLocale"],
         "merchant.translations.control" => vec!["id", "action"],
         "merchant.translations.apply" | "merchant.translations.detail" => vec!["id"],
@@ -155,6 +174,9 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
             let mut tools = CAPABILITIES
                 .iter()
                 .filter(|(n, _)| {
+                    if let Some(permission) = assets::media_permission(n) {
+                        return merchant(&a, &h).is_ok() && auth::permit(&h, permission).is_ok();
+                    }
                     if let Some(permission) = commerce::international_permission(n) {
                         return merchant(&a, &h).is_ok() && auth::permit(&h, permission).is_ok();
                     }

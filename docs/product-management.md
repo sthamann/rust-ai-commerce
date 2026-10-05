@@ -61,3 +61,7 @@ New product pages without uploaded media render an explicit translated empty-ima
 state, rather than a broken image or a fictitious product photo. Public detail and
 purchase views display the merchant's product number; the internal product ID
 continues to identify carts, associations and API routes.
+
+## Channel settings and media workspaces (2026-10-05)
+
+See [the settings/media guide](settings-media.md) for the current single-language editor, field-level checkout overrides, dependency-safe method removal, gallery and optional private image jobs. These are native prototype extensions; they do not establish additional full Shopware API/DAL parity, current tax law, paid-provider quality or whole-system formal certification.
