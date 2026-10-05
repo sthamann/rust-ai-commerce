@@ -241,3 +241,33 @@ it("searches sandbox products with the actual catalog parameter and returns an o
   await user.selectOptions(screen.getByLabelText("Core object"), "mug");
   expect(onSelect).toHaveBeenCalledWith({ productId: "mug" });
 });
+
+it("renders localized choice labels in public product cards without exposing the host reference field", async () => {
+  const m = draft("combined", "product.detail"),
+    request = vi.fn(async () => ({
+      elements: [
+        {
+          id: "care",
+          product_id: "mug",
+          title: { en: "Care" },
+          segment: "priority",
+        },
+      ],
+    }));
+  const s = m.surfaces!.find((s) => s.location === "product.detail")!,
+    view = m.views!.find((v) => s.uiPath === "native/" + v.id)!;
+  render(
+    <NativeAppView
+      app={m.id}
+      native={{ view, entities: m.entities }}
+      request={request}
+      allowedActions={s.actions}
+      context={{ productId: "mug" }}
+      public
+    />,
+    { wrapper: LocaleProvider },
+  );
+  await waitFor(() => expect(screen.getByText("Priority")).toBeVisible());
+  expect(screen.queryByText("mug")).not.toBeInTheDocument();
+  expect(screen.queryByText("priority")).not.toBeInTheDocument();
+});

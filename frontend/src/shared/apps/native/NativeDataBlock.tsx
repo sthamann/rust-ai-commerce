@@ -79,9 +79,13 @@ export default function NativeDataBlock({
     JSON.stringify(filter),
     missingContext,
   ]);
+  const visibleFields = entity.fields.filter((f) => f.name !== bound?.field);
   const cell = (r: AppRecord, name: string) => {
     const f = entity.fields.find((f) => f.name === name)!;
     const v = r[name];
+    const choice = f.choices?.find((c) => c.value === v);
+    if (choice)
+      return contentText(choice.label, locale, mainLocale) || choice.value;
     return f.translatable
       ? contentText((v ?? {}) as Text, locale, mainLocale)
       : typeof v === "boolean"
@@ -140,7 +144,7 @@ export default function NativeDataBlock({
           <table>
             <thead>
               <tr>
-                {entity.fields.map((f) => (
+                {visibleFields.map((f) => (
                   <th key={f.name}>
                     {contentText(f.label, locale, mainLocale) || f.name}
                   </th>
@@ -150,7 +154,7 @@ export default function NativeDataBlock({
             <tbody>
               {records.map((r) => (
                 <tr key={r.id}>
-                  {entity.fields.map((f) => (
+                  {visibleFields.map((f) => (
                     <td key={f.name}>{cell(r, f.name)}</td>
                   ))}
                 </tr>
@@ -162,7 +166,7 @@ export default function NativeDataBlock({
         <div className="native-cards">
           {records.map((r) => (
             <article key={r.id}>
-              {entity.fields.map((f) => (
+              {visibleFields.map((f) => (
                 <div key={f.name}>
                   <small>
                     {contentText(f.label, locale, mainLocale) || f.name}
