@@ -1,5 +1,6 @@
 /** Consistent main-language inheritance for product rich documents, specification groups and individual SEO fields. */
-import { useId } from "react";
+import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
+import LocalizedField from "../../shared/i18n/LocalizedField";
 import RichEditor from "./RichEditor";
 import PairFields from "./PairFields";
 import { useCatalogText } from "./catalog-i18n";
@@ -87,66 +88,64 @@ export function ProductSpecifications({ draft: d, lang, onChange }: Props) {
   );
 }
 export function ProductSeo({ draft: d, lang, onChange }: Props) {
-  const prefix = useId();
-  const { c } = useCatalogText(),
-    { i } = useInternationalText();
+  const { c } = useCatalogText();
   const main = source(d),
     seo = d.extra.seo?.[lang] ?? {},
     fallback = d.extra.seo?.[main] ?? {};
-  const set = (field: string, value: string | null) =>
-    onChange({
-      ...d,
-      extra: {
-        ...d.extra,
-        seo: { ...d.extra.seo, [lang]: { ...seo, [field]: value } },
-      },
-    });
   return (
-    <div className="catalog-form-grid">
-      {(["title", "description", "slug"] as const).map((field) => (
-        <div key={field} className="catalog-translated-field">
-          <label htmlFor={`${prefix}-${field}`}>
-            {c(field === "description" ? "metaDescription" : field)}
-          </label>
-          {lang !== main && (
-            <button
-              type="button"
-              className="intl-inherit"
-              aria-pressed={seo[field] == null}
-              onClick={() =>
-                set(field, seo[field] == null ? (fallback[field] ?? "") : null)
-              }
-            >
-              {i(seo[field] == null ? "inheritedFrom" : "customText")}{" "}
-              {seo[field] == null ? d.mainLocale : ""} ↗
-            </button>
-          )}
-          <input
-            id={`${prefix}-${field}`}
+    <ContentLanguage
+      locales={[...new Set([...Object.keys(d.translations), lang, main])]}
+      mainLocale={main}
+      language={lang}
+    >
+      <div className="catalog-form-grid">
+        {(["title", "description", "slug"] as const).map((field) => (
+          <LocalizedField
+            key={field}
+            label={c(field === "description" ? "metaDescription" : field)}
             maxLength={field === "description" ? 500 : 200}
-            value={seo[field] ?? ""}
-            placeholder={
-              seo[field] == null ? (fallback[field] ?? "") : undefined
+            value={Object.fromEntries(
+              Object.entries(d.extra.seo ?? {}).map(
+                ([key, record]: [string, any]) => [key, record?.[field]],
+              ),
+            )}
+            onChange={(next) =>
+              onChange({
+                ...d,
+                extra: {
+                  ...d.extra,
+                  seo: Object.fromEntries(
+                    [
+                      ...new Set([
+                        ...Object.keys(d.extra.seo ?? {}),
+                        ...Object.keys(next),
+                      ]),
+                    ].map((key) => [
+                      key,
+                      { ...d.extra.seo?.[key], [field]: next[key] ?? null },
+                    ]),
+                  ),
+                },
+              })
             }
-            onChange={(e) => set(field, e.target.value)}
           />
+        ))}
+        <div className="catalog-seo-preview">
+          <strong>
+            {seo.title ??
+              fallback.title ??
+              d.translations[lang]?.name ??
+              d.translations[main]?.name}
+          </strong>
+          <small>/{seo.slug ?? fallback.slug ?? d.id}</small>
+          <p>
+            {seo.description ??
+              fallback.description ??
+              d.translations[lang]?.description ??
+              d.translations[main]?.description}
+          </p>
         </div>
-      ))}
-      <div className="catalog-seo-preview">
-        <strong>
-          {seo.title ??
-            fallback.title ??
-            d.translations[lang]?.name ??
-            d.translations[main]?.name}
-        </strong>
-        <small>/{seo.slug ?? fallback.slug ?? d.id}</small>
-        <p>
-          {seo.description ??
-            fallback.description ??
-            d.translations[lang]?.description ??
-            d.translations[main]?.description}
-        </p>
       </div>
-    </div>
+    </ContentLanguage>
   );
 }

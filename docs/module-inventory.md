@@ -145,6 +145,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/marketing/flow_access.rs](../src/marketing/flow_access.rs) | Every queued flow step rehydrates current membership; stored definitions never preserve revoked privileges. |
 | [src/marketing/flow_actions.rs](../src/marketing/flow_actions.rs) | Native action schema and permissions use original Core names; no arbitrary SQL, shell or unguarded payment transitions. |
 | [src/marketing/flow_mutations.rs](../src/marketing/flow_mutations.rs) | Local flow mutations journal the effect in the same transaction; customer authority changes revoke existing sessions. |
+| [src/marketing/flow_text.rs](../src/marketing/flow_text.rs) | Shop-language validation and main-language fallback for both simple flows and graphical action nodes. |
 | [src/marketing/flows.rs](../src/marketing/flows.rs) | Durable order-event flows: conditions, shop notes and AI proposals; no unapproved model mutations. |
 | [src/marketing/gateway.rs](../src/marketing/gateway.rs) | MCP automation tools call the same tenant-bound handlers and validators as HTTP; no separate mutation semantics. |
 | [src/marketing/jobs.rs](../src/marketing/jobs.rs) | Read bounded tenant flow execution summaries without reloading rule/channel configuration on each Studio refresh. |
@@ -243,7 +244,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/automation/JsonField.tsx](../frontend/src/admin/automation/JsonField.tsx) | JSON editing retains incomplete input and invalidates the actual payload instead of silently saving the last valid value. |
 | [frontend/src/admin/automation/RuleBuilder.tsx](../frontend/src/admin/automation/RuleBuilder.tsx) | Visual recursive rule tree: AND/OR/NOT groups, typed facts and editable leaf conditions. |
 | [frontend/src/admin/automation/SourceRuleFields.tsx](../frontend/src/admin/automation/SourceRuleFields.tsx) | Original metadata drives typed condition inputs, including nested source scopes; unsupported runtimes stay visibly disabled. |
-| [frontend/src/admin/automation/automation-types.ts](../frontend/src/admin/automation/automation-types.ts) | Automation editor contracts and supported language codes. |
+| [frontend/src/admin/automation/automation-types.ts](../frontend/src/admin/automation/automation-types.ts) | Automation editor contracts; content languages come from the selected shop. |
 | [frontend/src/admin/automation/pipeline-types.ts](../frontend/src/admin/automation/pipeline-types.ts) | Stable graph data mirrors the Rust pipeline contract, with explicit true/false edges and persistent node identifiers. |
 | [frontend/src/admin/automation/source-rules.ts](../frontend/src/admin/automation/source-rules.ts) | Convert source condition nodes for the graphical editor without losing original payload fields. |
 | [frontend/src/admin/catalog/CategoriesWorkspace.tsx](../frontend/src/admin/catalog/CategoriesWorkspace.tsx) | Localized category tree editor; parent moves and revisions are validated in the API. |
@@ -256,7 +257,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/catalog/ProductLocalizedContent.tsx](../frontend/src/admin/catalog/ProductLocalizedContent.tsx) | Consistent main-language inheritance for product rich documents, specification groups and individual SEO fields. |
 | [frontend/src/admin/catalog/ProductMedia.tsx](../frontend/src/admin/catalog/ProductMedia.tsx) | Ordered image gallery metadata editing, independent of product pricing and translations. |
 | [frontend/src/admin/catalog/ProductPanels.tsx](../frontend/src/admin/catalog/ProductPanels.tsx) | Native commerce, media, translated SEO/specifications and category panels for one editable product. |
-| [frontend/src/admin/catalog/ProductTextFields.tsx](../frontend/src/admin/catalog/ProductTextFields.tsx) | Product name/description editing with explicit field inheritance; never copy fallback values into every language. |
+| [frontend/src/admin/catalog/ProductTextFields.tsx](../frontend/src/admin/catalog/ProductTextFields.tsx) | Product text uses the shared single-language editor and field inheritance; product number stays language independent. |
 | [frontend/src/admin/catalog/ProductVariants.tsx](../frontend/src/admin/catalog/ProductVariants.tsx) | Variant creation writes real child products through the same validated product aggregate API. |
 | [frontend/src/admin/catalog/ReferencePriceFields.tsx](../frontend/src/admin/catalog/ReferencePriceFields.tsx) | Native reference-unit inputs feed the same server-calculated unit price displayed on product pages. |
 | [frontend/src/admin/catalog/RelatedProducts.tsx](../frontend/src/admin/catalog/RelatedProducts.tsx) | Search-backed related-product selection, avoiding comma-separated opaque IDs. |
@@ -356,15 +357,19 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/customer/customer-types.ts](../frontend/src/shared/customer/customer-types.ts) | Shared customer/address contracts; merchant and customer sessions use distinct request adapters. |
 | [frontend/src/shared/geography/CountryPicker.tsx](../frontend/src/shared/geography/CountryPicker.tsx) | Locale-aware world catalogue adapter for the shared searchable entity picker. |
 | [frontend/src/shared/geography/EntityPicker.tsx](../frontend/src/shared/geography/EntityPicker.tsx) | Accessible searchable country/region combobox; chips and group actions replace checkbox walls. |
-| [frontend/src/shared/geography/TranslationFields.tsx](../frontend/src/shared/geography/TranslationFields.tsx) | Field-wise translation editor: missing values inherit the shop main language; explicit blanks remain explicit. |
+| [frontend/src/shared/geography/TranslationFields.tsx](../frontend/src/shared/geography/TranslationFields.tsx) | Shared single-language fields for configurable object content; per-field null restores main-language inheritance. |
 | [frontend/src/shared/geography/geography-types.ts](../frontend/src/shared/geography/geography-types.ts) | World catalogue and tenant destination tax contracts; no inferred tax law. |
 | [frontend/src/shared/geography/geography.css](../frontend/src/shared/geography/geography.css) | Shared country and region search: Studio and checkout use the same accessible controls. |
 | [frontend/src/shared/geography/useCountryCatalogue.ts](../frontend/src/shared/geography/useCountryCatalogue.ts) | Request-scoped geography loading; stale requests cannot move country definitions across shops or sandboxes. |
+| [frontend/src/shared/i18n/ContentLanguage.tsx](../frontend/src/shared/i18n/ContentLanguage.tsx) | One content-language selection per editor, distinct from interface language; no writes on selection or fallback. |
+| [frontend/src/shared/i18n/ContentLanguagePicker.tsx](../frontend/src/shared/i18n/ContentLanguagePicker.tsx) | Compact shared language switcher with explicit main-language context; selection never changes persisted content. |
+| [frontend/src/shared/i18n/LocalizedField.tsx](../frontend/src/shared/i18n/LocalizedField.tsx) | Single visible field for the editor's language, with main-language preview and explicit restore-to-inheritance. |
 | [frontend/src/shared/i18n/app-i18n.ts](../frontend/src/shared/i18n/app-i18n.ts) | App and evidence UI vocabulary, shared by store, merchant and payment components. |
 | [frontend/src/shared/i18n/automation-fields.ts](../frontend/src/shared/i18n/automation-fields.ts) | Localized labels for original rule and native flow parameter fields. |
 | [frontend/src/shared/i18n/automation-i18n.ts](../frontend/src/shared/i18n/automation-i18n.ts) | Four-language automation editor vocabulary keeps source identifiers stable and user labels readable. |
 | [frontend/src/shared/i18n/automation-labels.ts](../frontend/src/shared/i18n/automation-labels.ts) | Source-named rule labels are localized independently from their stable integration identifiers. |
 | [frontend/src/shared/i18n/connected-i18n.ts](../frontend/src/shared/i18n/connected-i18n.ts) | Four-language vocabulary for connected apps, consent and visual automation. |
+| [frontend/src/shared/i18n/content-language.ts](../frontend/src/shared/i18n/content-language.ts) | Resolve editable translation keys without merging distinct regional locales or fabricating inherited values. |
 | [frontend/src/shared/i18n/customer-i18n.ts](../frontend/src/shared/i18n/customer-i18n.ts) | Account and address labels share four complete locales across storefront and studio. |
 | [frontend/src/shared/i18n/email-i18n.ts](../frontend/src/shared/i18n/email-i18n.ts) | Complete mail workspace vocabulary in English, German, French and Spanish. |
 | [frontend/src/shared/i18n/errors-i18n.ts](../frontend/src/shared/i18n/errors-i18n.ts) | Localized request guidance across all transports; original diagnostics remain available to developer tools. |

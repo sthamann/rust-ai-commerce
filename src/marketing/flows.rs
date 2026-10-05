@@ -10,7 +10,7 @@ pub(crate) struct Flow {
     pub event: String,
     pub condition: rules::Condition,
     pub action: String,
-    pub instruction: HashMap<String, String>,
+    pub instruction: HashMap<String, Option<String>>,
     pub locale: String,
     #[serde(default)]
     pub inference: Option<Choice>,
@@ -59,15 +59,12 @@ impl Flow {
         .contains(&self.event.as_str())
             && !valid_app_event(&self.event)
             || !["note", "ai_proposal", "app_action", "pipeline"].contains(&self.action.as_str())
-            || !["de-DE", "en-GB", "fr-FR", "es-ES"].contains(&self.locale.as_str())
-            || self.action != "pipeline"
-                && ["en", "de", "fr", "es"].iter().any(|l| {
-                    self.instruction
-                        .get(*l)
-                        .is_none_or(|s| s.trim().is_empty() || s.len() > 3200)
-                })
+            || !commerce::valid_locale_key(&self.locale)
         {
             return Err(bad("Unsupported flow action, event or locale"));
+        }
+        if self.action != "pipeline" {
+            super::flow_text::shape(&json!(self.instruction))?;
         }
         Ok(())
     }
@@ -176,13 +173,10 @@ pub(crate) async fn flow_once(a: &App) -> Result<()> {
     tx.commit().await?;
     let f: Flow =
         serde_json::from_value(definition["flow"].clone()).map_err(|_| bad("Invalid flow"))?;
-    let instruction = f
-        .instruction
-        .get(&f.locale[..2])
-        .filter(|s| !s.trim().is_empty())
-        .or_else(|| f.instruction.get("en"))
-        .cloned()
-        .unwrap_or_default();
+    let (settings, _) = commerce::config(a, &t).await?;
+    let instruction =
+        super::flow_text::effective(&json!(f.instruction), &f.locale, &settings.main_locale)
+            .to_string();
     let authorized = if f.actor.as_deref() == Some("bootstrap") {
         true
     } else {

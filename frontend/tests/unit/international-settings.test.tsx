@@ -100,7 +100,10 @@ it("shows main-language placeholders without copying them, overrides one field a
   }
   render(<Harness />, { wrapper: LocaleProvider });
   const user = userEvent.setup();
-  await user.click(screen.getByRole("tab", { name: /German/ }));
+  await user.selectOptions(
+    screen.getByRole("combobox", { name: "Content language" }),
+    "de-DE",
+  );
   const name = screen.getByLabelText("Name");
   expect(name).toHaveValue("");
   expect(name).toHaveAttribute("placeholder", "Entrega");

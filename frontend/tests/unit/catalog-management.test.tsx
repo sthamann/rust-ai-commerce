@@ -67,7 +67,7 @@ it("creates a revision-zero aggregate without fabricating translations", async (
       />
     </LocaleProvider>,
   );
-  await user.type(screen.getByLabelText("Name · EN"), "New object");
+  await user.type(screen.getByLabelText("Name"), "New object");
   await user.type(screen.getByLabelText("Product number"), "NEW-1");
   await user.click(screen.getByRole("tab", { name: "Prices & stock" }));
   await user.clear(screen.getByLabelText("Price"));
@@ -109,10 +109,10 @@ it("retains dirty edits after a conflict and requires an explicit discard when l
     </LocaleProvider>,
   );
   await screen.findByDisplayValue("Oak chair");
-  await user.type(screen.getByLabelText("Name · EN"), " edited");
+  await user.type(screen.getByLabelText("Name"), " edited");
   await user.click(screen.getByRole("button", { name: "Save product" }));
   expect(await screen.findByRole("alert")).toHaveTextContent("Product changed");
-  expect(screen.getByLabelText("Name · EN")).toHaveValue("Oak chair edited");
+  expect(screen.getByLabelText("Name")).toHaveValue("Oak chair edited");
   await user.click(screen.getByRole("button", { name: /Back to products/ }));
   expect(back).not.toHaveBeenCalled();
   await user.click(screen.getByRole("button", { name: "Discard changes" }));
@@ -162,9 +162,9 @@ it("keeps a dirty product draft when the translated transport changes and saves 
   );
   const { rerender } = render(view(initial));
   await screen.findByDisplayValue("Oak chair");
-  await user.type(screen.getByLabelText("Name · EN"), " edited");
+  await user.type(screen.getByLabelText("Name"), " edited");
   rerender(view(translated));
-  expect(screen.getByLabelText("Name · EN")).toHaveValue("Oak chair edited");
+  expect(screen.getByLabelText("Name")).toHaveValue("Oak chair edited");
   expect(translated).not.toHaveBeenCalled();
   await user.click(screen.getByRole("button", { name: "Save product" }));
   await waitFor(() =>

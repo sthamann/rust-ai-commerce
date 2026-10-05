@@ -1,5 +1,6 @@
 /** Native email app settings, localized templates, safe previews and durable delivery receipts. */
-import { languages } from "./email-languages";
+import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
+import ContentLanguagePicker from "../../shared/i18n/ContentLanguagePicker";
 import EmailProviderFields from "./EmailProviderFields";
 
 import { useEffect, useRef, useState } from "react";
@@ -171,22 +172,19 @@ export default function EmailPanel({
           />
           <section>
             <h3>{e("templates")}</h3>
-            <label>
-              {e("language")}
-              <select
-                value={language}
-                onChange={(ev) => {
-                  setLanguage(ev.target.value);
-                  setPreview(undefined);
-                }}
-              >
-                {Object.entries(languages).map(([code, name]) => (
-                  <option key={code} value={code}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <ContentLanguage
+              locales={Object.keys(
+                status.defaultTemplates ?? settings.templates ?? {},
+              )}
+              mainLocale={settings.locale ?? settings.defaultLocale ?? "en"}
+              language={language}
+              onLanguageChange={(next) => {
+                setLanguage(next);
+                setPreview(undefined);
+              }}
+            >
+              <ContentLanguagePicker />
+            </ContentLanguage>
             <p>{e("variables")}</p>
             {["subject", "text", "html"].map((key) => (
               <label key={key}>

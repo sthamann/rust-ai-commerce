@@ -1,5 +1,7 @@
 /** Bounded upload and explicit digest-bound publication of attachments and paid files. */
 import { useCallback, useEffect, useState } from "react";
+import LocalizedField from "../../shared/i18n/LocalizedField";
+import type { LocalizedText } from "../../shared/i18n/content-language";
 import { useOperationsText } from "../../shared/i18n/operations-i18n";
 import type { RequestFn } from "../shell/studio-types";
 export default function ProductAssets({
@@ -10,6 +12,7 @@ export default function ProductAssets({
   request: RequestFn;
 }) {
   const { o } = useOperationsText();
+  const [title, setTitle] = useState<LocalizedText>({});
   const [rows, setRows] = useState<any[]>([]),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
@@ -41,20 +44,17 @@ export default function ProductAssets({
         onSubmit={(e) => {
           e.preventDefault();
           const data = new FormData(e.currentTarget);
-          const title = Object.fromEntries(
-            ["en", "de", "fr", "es"].map((l) => [l, data.get(l)]),
-          );
-          for (const l of ["en", "de", "fr", "es"]) data.delete(l);
           data.set("title", JSON.stringify(title));
           void run(() => request(`/api/merchant/products/${id}/assets`, data));
         }}
       >
-        {["en", "de", "fr", "es"].map((lang) => (
-          <label key={lang}>
-            {o("name")} · {lang.toUpperCase()}
-            <input name={lang} maxLength={200} required />
-          </label>
-        ))}
+        <LocalizedField
+          label={o("name")}
+          value={title}
+          onChange={setTitle}
+          required
+          maxLength={200}
+        />
         <label>
           {o("assets")}
           <input

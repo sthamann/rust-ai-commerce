@@ -10,6 +10,7 @@ Ownership, executable contracts and explicit migration boundaries are described 
 - [flow_access.rs](flow_access.rs): Every queued flow step rehydrates current membership; stored definitions never preserve revoked privileges.
 - [flow_actions.rs](flow_actions.rs): Native action schema and permissions use original Core names; no arbitrary SQL, shell or unguarded payment transitions.
 - [flow_mutations.rs](flow_mutations.rs): Local flow mutations journal the effect in the same transaction; customer authority changes revoke existing sessions.
+- [flow_text.rs](flow_text.rs): Enabled-shop-language admission for simple and graphical flow instructions, bounded text and shop-main-language fallback.
 - [flows.rs](flows.rs): Durable order-event flows: conditions, shop notes and AI proposals; no unapproved model mutations.
 - [gateway.rs](gateway.rs): MCP automation tools call the same tenant-bound handlers and validators as HTTP; no separate mutation semantics.
 - [jobs.rs](jobs.rs): Read bounded tenant flow execution summaries without reloading rule/channel configuration on each Studio refresh.

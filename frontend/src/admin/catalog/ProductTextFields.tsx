@@ -1,7 +1,7 @@
-/** Product name/description editing with explicit field inheritance; never copy fallback values into every language. */
-import { useId } from "react";
+/** Product text uses the shared single-language editor and field inheritance; product number stays language independent. */
+import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
+import LocalizedField from "../../shared/i18n/LocalizedField";
 import { useCatalogText } from "./catalog-i18n";
-import { useInternationalText } from "../../shared/i18n/international-i18n";
 import type { ProductDraft } from "./catalog-model";
 export default function ProductTextFields({
   draft: d,
@@ -12,91 +12,74 @@ export default function ProductTextFields({
   lang: string;
   onChange: (d: ProductDraft) => void;
 }) {
-  const prefix = useId();
   const { c } = useCatalogText();
-  const { i } = useInternationalText();
   const mainLocale = d.mainLocale ?? "en-GB",
     mainKey = d.translations[mainLocale]
       ? mainLocale
       : mainLocale.split("-")[0];
-  const main = lang === mainKey;
-  const tr = d.translations[lang] ?? { name: null, description: null };
-  const set = (field: "name" | "description", v: string | null) =>
-    onChange({
-      ...d,
-      translations: { ...d.translations, [lang]: { ...tr, [field]: v } },
-    });
   return (
-    <div className="catalog-form-grid">
-      {(["name", "description"] as const).map((field) => (
-        <div
-          className={`catalog-translated-field ${field === "description" ? "catalog-span" : ""}`}
-          key={field}
-        >
-          <label htmlFor={`${prefix}-${field}`}>
-            {c(field)} · {lang.toUpperCase()}
-          </label>
-          {!main && (
-            <button
-              type="button"
-              className="intl-inherit"
-              aria-pressed={tr[field] == null}
-              onClick={() =>
-                set(
-                  field,
-                  tr[field] == null
-                    ? (d.translations[mainKey]?.[field] ?? "")
-                    : null,
-                )
+    <ContentLanguage
+      locales={[...new Set([...Object.keys(d.translations), lang, mainKey])]}
+      mainLocale={mainKey}
+      language={lang}
+    >
+      <div className="catalog-form-grid">
+        {(["name", "description"] as const).map((field) => (
+          <div
+            key={field}
+            className={field === "description" ? "catalog-span" : ""}
+          >
+            <LocalizedField
+              label={c(field)}
+              multiline={field === "description"}
+              required={field === "name"}
+              maxLength={field === "name" ? 200 : 4000}
+              value={Object.fromEntries(
+                Object.entries(d.translations).map(([key, record]) => [
+                  key,
+                  record[field],
+                ]),
+              )}
+              onChange={(next) =>
+                onChange({
+                  ...d,
+                  translations: Object.fromEntries(
+                    [
+                      ...new Set([
+                        ...Object.keys(d.translations),
+                        ...Object.keys(next),
+                      ]),
+                    ].map((key) => [
+                      key,
+                      {
+                        ...(d.translations[key] ?? {
+                          name: null,
+                          description: null,
+                        }),
+                        [field]: next[key] ?? null,
+                      },
+                    ]),
+                  ),
+                })
               }
-            >
-              {i(tr[field] == null ? "inheritedFrom" : "customText")}{" "}
-              {tr[field] == null ? mainLocale : ""} ↗
-            </button>
-          )}
-          {field === "name" ? (
-            <input
-              id={`${prefix}-${field}`}
-              required={main}
-              maxLength={200}
-              placeholder={
-                tr[field] == null
-                  ? (d.translations[mainKey]?.[field] ?? "")
-                  : undefined
-              }
-              value={tr[field] ?? ""}
-              onChange={(e) => set(field, e.target.value)}
             />
-          ) : (
-            <textarea
-              id={`${prefix}-${field}`}
-              rows={3}
-              maxLength={4000}
-              placeholder={
-                tr[field] == null
-                  ? (d.translations[mainKey]?.[field] ?? "")
-                  : undefined
-              }
-              value={tr[field] ?? ""}
-              onChange={(e) => set(field, e.target.value)}
-            />
-          )}
-        </div>
-      ))}
-      <label>
-        {c("number")}
-        <input
-          required
-          maxLength={100}
-          value={d.catalog.productNumber}
-          onChange={(e) =>
-            onChange({
-              ...d,
-              catalog: { ...d.catalog, productNumber: e.target.value },
-            })
-          }
-        />
-      </label>
-    </div>
+          </div>
+        ))}
+        <label>
+          {c("number")}
+          <input
+            required
+            maxLength={100}
+            value={d.catalog.productNumber}
+            onChange={(e) =>
+              onChange({
+                ...d,
+                catalog: { ...d.catalog, productNumber: e.target.value },
+              })
+            }
+          />
+        </label>
+      </div>
+    </ContentLanguage>
   );
 }

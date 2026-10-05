@@ -1,4 +1,6 @@
 /** Revision-aware product aggregate editor: one save, translation tabs and product-scoped linked capabilities. */
+import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
+import ContentLanguagePicker from "../../shared/i18n/ContentLanguagePicker";
 import { useEffect, useRef, useState } from "react";
 import { AppSurfaceSlot } from "../../shared/apps/AppSurfaces";
 import type { RequestFn } from "../shell/studio-types";
@@ -177,176 +179,174 @@ export default function ProductEditor({
   ] as const;
   if (loading) return <p role="status">{c("loading")}</p>;
   return (
-    <div className="studio-page catalog-workspace">
-      <button
-        className="catalog-back"
-        onClick={() => (dirty ? setLeaving(true) : onBack())}
-      >
-        ← {c("back")}
-      </button>
-      {leaving && (
-        <div className="catalog-unsaved" role="alert">
-          <strong>{c("unsaved")}</strong>
-          <button
-            className="studio-secondary"
-            onClick={() => setLeaving(false)}
-          >
-            {c("continue")}
-          </button>
-          <button className="studio-secondary" onClick={onBack}>
-            {c("discard")}
-          </button>
-        </div>
-      )}
-      <div className="catalog-heading">
-        <div>
-          <p className="catalog-eyebrow">
-            {id ? draft.catalog.productNumber : c("newProduct")}
-          </p>
-          <h1>{draft.translations[lang]?.name || c("newProduct")}</h1>
-          <span role="status">
-            {saved
-              ? c("saved")
-              : dirty
-                ? c("unsaved")
-                : id
-                  ? `# ${draft.revision}`
-                  : ""}
-          </span>
-        </div>
-        <div className="catalog-editor-actions">
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={draft.catalog.active}
-              onChange={(e) =>
-                change({
-                  ...draft,
-                  catalog: { ...draft.catalog, active: e.target.checked },
-                })
-              }
-            />
-            {c("active")}
-          </label>
-          <button
-            className="studio-primary"
-            disabled={
-              busy ||
-              (!dirty && !!id) ||
-              !draft.catalog.productNumber ||
-              !Object.values(draft.translations).some((t) => t.name?.trim())
-            }
-            onClick={save}
-          >
-            {c(busy ? "saving" : "save")}
-          </button>
-        </div>
-      </div>
-      {error && (
-        <p role="alert" className="catalog-error">
-          {error}
-        </p>
-      )}
-      <div className="catalog-detail-layout">
-        <aside className="catalog-detail-nav">
-          <label>
-            {c("language")}
-            <select value={lang} onChange={(e) => setLang(e.target.value)}>
-              {languageKeys.map((l) => (
-                <option value={l} key={l}>
-                  {new Intl.DisplayNames([locale], { type: "language" }).of(
-                    l,
-                  ) ?? l}{" "}
-                  {draft.translations[l]?.name ? "✓" : ""}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div role="tablist" aria-orientation="vertical">
-            {tabs.map((t) => (
-              <button
-                key={t}
-                role="tab"
-                aria-selected={tab === t}
-                onClick={() => setTab(t)}
-              >
-                {c(t)}
-              </button>
-            ))}
+    <ContentLanguage
+      locales={languageKeys}
+      mainLocale={
+        languageKeys[enabledLocales.indexOf(draft.mainLocale ?? "en-GB")] ??
+        languageKeys[0]
+      }
+      language={safeLang}
+      onLanguageChange={setLang}
+    >
+      <div className="studio-page catalog-workspace">
+        <button
+          className="catalog-back"
+          onClick={() => (dirty ? setLeaving(true) : onBack())}
+        >
+          ← {c("back")}
+        </button>
+        {leaving && (
+          <div className="catalog-unsaved" role="alert">
+            <strong>{c("unsaved")}</strong>
+            <button
+              className="studio-secondary"
+              onClick={() => setLeaving(false)}
+            >
+              {c("continue")}
+            </button>
+            <button className="studio-secondary" onClick={onBack}>
+              {c("discard")}
+            </button>
           </div>
-        </aside>
-        <section className="studio-card catalog-detail-panel" role="tabpanel">
-          <h2>{c(tab as (typeof tabs)[number])}</h2>
-          {tab === "attachments" ? (
-            id ? (
-              <ProductAssets id={id} request={request} />
-            ) : (
-              <p>{c("createFirst")}</p>
-            )
-          ) : tab === "reviews" ? (
-            id ? (
-              <ReviewModeration productId={id} request={request} />
-            ) : (
-              <p>{c("createFirst")}</p>
-            )
-          ) : tab === "variants" ? (
-            id ? (
-              <ProductVariants
-                draft={draft}
+        )}
+        <div className="catalog-heading">
+          <div>
+            <p className="catalog-eyebrow">
+              {id ? draft.catalog.productNumber : c("newProduct")}
+            </p>
+            <h1>{draft.translations[lang]?.name || c("newProduct")}</h1>
+            <span role="status">
+              {saved
+                ? c("saved")
+                : dirty
+                  ? c("unsaved")
+                  : id
+                    ? `# ${draft.revision}`
+                    : ""}
+            </span>
+          </div>
+          <div className="catalog-editor-actions">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={draft.catalog.active}
+                onChange={(e) =>
+                  change({
+                    ...draft,
+                    catalog: { ...draft.catalog, active: e.target.checked },
+                  })
+                }
+              />
+              {c("active")}
+            </label>
+            <button
+              className="studio-primary"
+              disabled={
+                busy ||
+                (!dirty && !!id) ||
+                !draft.catalog.productNumber ||
+                !Object.values(draft.translations).some((t) => t.name?.trim())
+              }
+              onClick={save}
+            >
+              {c(busy ? "saving" : "save")}
+            </button>
+          </div>
+        </div>
+        {error && (
+          <p role="alert" className="catalog-error">
+            {error}
+          </p>
+        )}
+        <div className="catalog-detail-layout">
+          <aside className="catalog-detail-nav">
+            <ContentLanguagePicker />
+            <div role="tablist" aria-orientation="vertical">
+              {tabs.map((t) => (
+                <button
+                  key={t}
+                  role="tab"
+                  aria-selected={tab === t}
+                  onClick={() => setTab(t)}
+                >
+                  {c(t)}
+                </button>
+              ))}
+            </div>
+          </aside>
+          <section className="studio-card catalog-detail-panel" role="tabpanel">
+            <h2>{c(tab as (typeof tabs)[number])}</h2>
+            {tab === "attachments" ? (
+              id ? (
+                <ProductAssets id={id} request={request} />
+              ) : (
+                <p>{c("createFirst")}</p>
+              )
+            ) : tab === "reviews" ? (
+              id ? (
+                <ReviewModeration productId={id} request={request} />
+              ) : (
+                <p>{c("createFirst")}</p>
+              )
+            ) : tab === "variants" ? (
+              id ? (
+                <ProductVariants
+                  draft={draft}
+                  request={request}
+                  onOpen={(child) =>
+                    dirty ? setError(c("unsaved")) : onCreated(child)
+                  }
+                />
+              ) : (
+                <p>{c("createFirst")}</p>
+              )
+            ) : tab === "related" ? (
+              <RelatedProducts
                 request={request}
-                onOpen={(child) =>
-                  dirty ? setError(c("unsaved")) : onCreated(child)
+                id={id}
+                value={draft.extra.crossSelling}
+                onChange={(crossSelling) =>
+                  change({ ...draft, extra: { ...draft.extra, crossSelling } })
                 }
               />
             ) : (
-              <p>{c("createFirst")}</p>
-            )
-          ) : tab === "related" ? (
-            <RelatedProducts
-              request={request}
-              id={id}
-              value={draft.extra.crossSelling}
-              onChange={(crossSelling) =>
-                change({ ...draft, extra: { ...draft.extra, crossSelling } })
-              }
-            />
-          ) : (
-            <ProductPanels
-              tab={tab}
-              draft={draft}
-              lang={safeLang}
-              categories={categories}
-              onChange={change}
-            />
-          )}
-          {tab === "prices" && (
-            <TaxClassSelect
-              request={request}
-              value={draft.extra.taxClassId ?? ""}
-              onChange={(taxClassId) =>
-                change({
-                  ...draft,
-                  extra: { ...draft.extra, taxClassId: taxClassId || null },
-                })
-              }
-            />
-          )}
-          {tab === "media" &&
-            (id ? (
-              <GalleryUpload
+              <ProductPanels
+                tab={tab}
                 draft={draft}
-                request={request}
+                lang={safeLang}
+                categories={categories}
                 onChange={change}
               />
-            ) : (
-              <p>{c("createFirst")}</p>
-            ))}
-          <AppSurfaceSlot
-            location="admin.product"
-            context={{ productId: id }}
-          />
-        </section>
+            )}
+            {tab === "prices" && (
+              <TaxClassSelect
+                request={request}
+                value={draft.extra.taxClassId ?? ""}
+                onChange={(taxClassId) =>
+                  change({
+                    ...draft,
+                    extra: { ...draft.extra, taxClassId: taxClassId || null },
+                  })
+                }
+              />
+            )}
+            {tab === "media" &&
+              (id ? (
+                <GalleryUpload
+                  draft={draft}
+                  request={request}
+                  onChange={change}
+                />
+              ) : (
+                <p>{c("createFirst")}</p>
+              ))}
+            <AppSurfaceSlot
+              location="admin.product"
+              context={{ productId: id }}
+            />
+          </section>
+        </div>
       </div>
-    </div>
+    </ContentLanguage>
   );
 }

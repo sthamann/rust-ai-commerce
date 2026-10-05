@@ -1,5 +1,13 @@
 # Changelog
 
+## Unified content translation editors
+
+- One shared content-language picker and one field per value across product/SEO,
+  attachment, category, tax, method, rule/campaign/channel and graphical flow editing.
+- Main-language inheritance for simple and graphical flow instructions and file
+  titles, dynamic enabled content locales and localized storefront file labels.
+- CI rejects new stacked language fields; regression checks cover preservation,
+  explicit blanks, Spanish inheritance, Italian and regional variants.
 ## 0.5.0 — prototype release
 
 This release packages the current experimental commerce slice. It is not a

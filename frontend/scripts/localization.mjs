@@ -54,6 +54,38 @@ for (const file of walk(source).filter((f) => f.endsWith(".tsx"))) {
       ts.isStringLiteral(node.expression)
     )
       record(node, node.expression.text);
+    if (
+      ts.isCallExpression(node) &&
+      ts.isPropertyAccessExpression(node.expression) &&
+      node.expression.name.text === "map"
+    ) {
+      const callback = node.arguments[0];
+      if (
+        callback &&
+        ts.isArrowFunction(callback) &&
+        callback.parameters[0] &&
+        /^(?:l|lang|locale|language)$/i.test(
+          callback.parameters[0].name.getText(ast),
+        )
+      ) {
+        const parameter = callback.parameters[0].name.getText(ast);
+        let localeField = false;
+        const inspect = (child) => {
+          if (
+            ts.isJsxAttribute(child) &&
+            child.name.text === "value" &&
+            child.initializer?.getText(ast).includes(`[${parameter}]`)
+          )
+            localeField = true;
+          ts.forEachChild(child, inspect);
+        };
+        inspect(callback.body);
+        if (localeField)
+          throw Error(
+            `${path.relative(source, file)}: stacked language fields prohibited; use ContentLanguage and LocalizedField`,
+          );
+      }
+    }
     ts.forEachChild(node, visit);
   };
   visit(ast);

@@ -14,6 +14,7 @@ mod facts;
 mod flow_access;
 mod flow_actions;
 mod flow_mutations;
+mod flow_text;
 mod flows;
 mod line_facts;
 mod pipeline;
