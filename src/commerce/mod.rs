@@ -71,3 +71,12 @@ pub(crate) use content_text::*;
 
 mod international_capabilities;
 pub(crate) use international_capabilities::*;
+
+mod settings_patch;
+mod settings_scope;
+pub(crate) use settings_scope::*;
+mod method_usage;
+pub(crate) use method_usage::method_dependencies;
+
+mod settings_release;
+pub(crate) use settings_release::*;

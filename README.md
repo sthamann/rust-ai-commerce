@@ -28,6 +28,23 @@ Company settings now include structured addresses, statutory/register and conten
 
 ![Company settings](docs/screenshots/company-settings.jpg)
 
+## Settings and product media workspaces
+
+Choose a **shared basis or a sales channel** in tax, country, shipping and payment
+settings. Sparse overrides retain field inheritance, flow through real product/cart/
+order calculations and can be released separately from staging. One **content language**
+applies across each editor. Method removal checks order/cart/channel/rule references
+and offers deactivation when deletion is blocked.
+
+Product media now has a cover/thumbnail gallery, large inspector, localized alt text,
+drag/drop multi-file uploads and optional private, reviewed AI generation/edit drafts.
+The assistant preview uses the actual gallery, including an honest empty state.
+[Workspace guide, HTTP/MCP, provider setup and test boundaries](docs/settings-media.md).
+
+![Shipping settings with shared scope and one content language](docs/screenshots/vendune-shipping.jpg)
+
+![Product media gallery](docs/screenshots/vendune-product-media.jpg)
+
 ## Visual App Studio
 
 Build native apps visually in **Vendune Studio → Developers**. Compose text, tables, cards and forms, define typed app data, connect HTTP/MCP/AI tools and opt actions into the graphical Flow Builder. Human edits and Codex/Claude agent edits use the **same executable Manifest**. Open saved apps through explicit edit controls, remove development projects to a recoverable trash, save an immutable version, test real records in a private sandbox, then selectively release the package.

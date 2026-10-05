@@ -104,6 +104,14 @@ const SCHEMA: &[(&str, &str)] = &[
         "030-company-settings",
         include_str!("../migrations/030-company-settings.sql"),
     ),
+    (
+        "031-channel-commerce",
+        include_str!("../migrations/031-channel-commerce.sql"),
+    ),
+    (
+        "032-image-jobs",
+        include_str!("../migrations/032-image-jobs.sql"),
+    ),
 ];
 
 pub(crate) async fn apply(pool: &PgPool) {

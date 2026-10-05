@@ -1,4 +1,8 @@
 /** One revisioned international settings aggregate: drafts survive navigation between countries, taxes, methods and languages. */
+import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
+import ContentLanguagePicker from "../../shared/i18n/ContentLanguagePicker";
+import { useWorkspaceText } from "../../shared/i18n/workspace-i18n";
+import { useCompanyContext } from "./useCompanyContext";
 import { useEffect, useRef, useState } from "react";
 import type { Config } from "../../shared/api/shop-api";
 import type {
@@ -25,6 +29,7 @@ export type InternationalProps = {
   patch: (data: Partial<InternationalConfig>) => void;
   countries: Country[];
   request: RequestFn;
+  channel?: boolean;
 };
 export default function CommerceSettings({
   request,
@@ -37,8 +42,19 @@ export default function CommerceSettings({
   canWrite: boolean;
   onDirty?: (dirty: boolean) => void;
 }) {
-  const { i } = useInternationalText();
-  const state = useSettingsDraft<Config>(request, "/api/merchant/commerce");
+  const { i, locale } = useInternationalText();
+  const { w } = useWorkspaceText();
+  const [channel, setChannel] = useState("");
+  const [contentLanguage, setContentLanguage] = useState<string>();
+  const [scopeError, setScopeError] = useState("");
+  const context = useCompanyContext(request);
+  const path = channel
+    ? `/api/merchant/commerce/channels/${encodeURIComponent(channel)}`
+    : "/api/merchant/commerce";
+  const state = useSettingsDraft<
+    Config,
+    { inherited?: Config; baseRevision?: number; overrides?: unknown[] }
+  >(request, path);
   const [world, setWorld] = useState<Country[]>([]);
   const [loadError, setLoadError] = useState("");
   const current = useRef(request);
@@ -82,7 +98,7 @@ export default function CommerceSettings({
   ].sort((a, b) => a.code.localeCompare(b.code));
   const patch = (v: Partial<InternationalConfig>) =>
     state.change({ ...config, ...v });
-  const props = { config, patch, countries, request };
+  const props = { config, patch, countries, request, channel: !!channel };
   const missing = config.countries.filter(
     (code) =>
       config.taxes.some(
@@ -98,61 +114,124 @@ export default function CommerceSettings({
       ),
   );
   return (
-    <section className="studio-card settings-panel intl-panel">
-      <header className="settings-panel-header">
-        <div>
-          <h2>{i(area)}</h2>
-          <p>
-            {i(
-              area === "countries"
-                ? "countriesHint"
-                : area === "taxes"
-                  ? "ruleHint"
-                  : area === "languages"
-                    ? "languageHint"
-                    : "methodHint",
-            )}
+    <ContentLanguage
+      locales={config.locales}
+      mainLocale={config.mainLocale}
+      language={contentLanguage}
+      onLanguageChange={setContentLanguage}
+    >
+      <section className="studio-card settings-panel intl-panel">
+        <header className="settings-panel-header">
+          <div>
+            <h2>{i(area)}</h2>
+            <p>
+              {i(
+                area === "countries"
+                  ? "countriesHint"
+                  : area === "taxes"
+                    ? "ruleHint"
+                    : area === "languages"
+                      ? "languageHint"
+                      : "methodHint",
+              )}
+            </p>
+          </div>
+          <span className="soft-tag">
+            {i("revision")} {state.value.revision}
+          </span>
+        </header>
+        <div className="intl-scope-bar">
+          <label>
+            {w("scope")}
+            <select
+              value={channel}
+              disabled={!canWrite || state.busy}
+              onChange={(e) => {
+                if (state.dirty) {
+                  setScopeError(w("pending"));
+                  return;
+                }
+                setScopeError("");
+                setChannel(e.target.value);
+              }}
+            >
+              <option value="">{w("basis")}</option>
+              {context.channels
+                .filter((c) => c.id !== "default")
+                .map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.data.name?.[locale] ??
+                      c.data.name?.[locale.split("-")[0]] ??
+                      c.data.name?.[config.mainLocale] ??
+                      c.data.name?.[config.mainLocale.split("-")[0]] ??
+                      Object.values(c.data.name ?? {})[0] ??
+                      c.id}
+                  </option>
+                ))}
+            </select>
+          </label>
+          <ContentLanguagePicker />
+        </div>
+        {channel && (
+          <div className="intl-scope-note">
+            <p>{w("scopeHint")}</p>
+            <button
+              type="button"
+              className="studio-secondary"
+              disabled={!canWrite || state.busy}
+              onClick={() => {
+                const basis = state.value?.inherited;
+                if (!basis) return;
+                const key = area === "payment" ? "payments" : area;
+                state.change({ ...config, [key]: basis[key as keyof Config] });
+              }}
+            >
+              {w("resetScope")}
+            </button>
+          </div>
+        )}
+        {scopeError && <p role="alert">{scopeError}</p>}
+        {(state.error || loadError) && (
+          <p role="alert" className="settings-error">
+            {state.error || loadError}
           </p>
-        </div>
-        <span className="soft-tag">
-          {i("revision")} {state.value.revision}
-        </span>
-      </header>
-      {(state.error || loadError) && (
-        <p role="alert" className="settings-error">
-          {state.error || loadError}
-        </p>
-      )}
-      {!!missing.length && (
-        <div role="status" className="intl-coverage">
-          <strong>{i("requiredCoverage")}</strong>
-          <span>{missing.join(" · ")}</span>
-          <p>{i("countryHint")}</p>
-        </div>
-      )}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (canWrite) void state.save();
-        }}
-      >
-        <fieldset className="intl-fields" disabled={!canWrite || state.busy}>
-          {area === "countries" ? (
-            <CountriesSettings {...props} />
-          ) : area === "taxes" ? (
-            <TaxSettings {...props} />
-          ) : area === "languages" ? (
-            <LanguageSettings
-              {...props}
-              dirty={state.dirty}
-              canWrite={canWrite}
-            />
-          ) : (
-            <MethodSettings {...props} area={area} />
-          )}
-        </fieldset>
-        <SettingsSaveBar {...state} canWrite={canWrite} />
-      </form>
-    </section>
+        )}
+        {!!missing.length && (
+          <div role="status" className="intl-coverage">
+            <strong>{i("requiredCoverage")}</strong>
+            <span>{missing.join(" · ")}</span>
+            <p>{i("countryHint")}</p>
+          </div>
+        )}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (canWrite) void state.save();
+          }}
+        >
+          <fieldset
+            className="intl-fields"
+            disabled={
+              !canWrite || state.busy || (area === "languages" && !!channel)
+            }
+          >
+            {area === "countries" ? (
+              <CountriesSettings {...props} />
+            ) : area === "taxes" ? (
+              <TaxSettings {...props} />
+            ) : area === "languages" ? (
+              <LanguageSettings
+                {...props}
+                dirty={state.dirty}
+                canWrite={canWrite}
+              />
+            ) : (
+              <MethodSettings {...props} area={area} />
+            )}
+          </fieldset>
+          <SettingsSaveBar {...state} canWrite={canWrite} />
+        </form>
+      </section>
+    </ContentLanguage>
   );
 }

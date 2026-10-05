@@ -5,6 +5,7 @@ pub(crate) async fn snapshot(tx: &mut Tx<'_>, t: &str) -> Result<Value> {
     let mut result = serde_json::Map::new();
     assets::snapshot_assets(tx, t, &mut result).await?;
     company::snapshot(tx, t, &mut result).await?;
+    commerce::snapshot_scopes(tx, t, &mut result).await?;
     let rows=sqlx::query("SELECT to_jsonb(p)-'tenant'-'stock'-'revision' AS data FROM products p WHERE tenant=$1 ORDER BY id FOR UPDATE").bind(t).fetch_all(&mut **tx).await?;
     for r in rows {
         let mut value: Value = r.get("data");

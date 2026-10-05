@@ -3,7 +3,7 @@ use super::*;
 
 pub(crate) async fn options(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let t = tenant(&h)?;
-    let (s, revision) = config(&a, &t).await?;
+    let (s, revision) = scoped_config(&a, &t, marketing::channel_id(&h)).await?;
     let business = if header(&h, "sw-context-token").is_some() {
         load_cart(&a, &h).await?.data.group == "business"
     } else {
@@ -65,7 +65,7 @@ pub(crate) async fn select_checkout(
         }
         c.data.email = Some(email);
     }
-    let (settings, _) = config(&a, &c.tenant).await?;
+    let (settings, _) = scoped_config(&a, &c.tenant, &c.data.sales_channel).await?;
     for ad in [&mut requested.address, &mut requested.billing_address]
         .into_iter()
         .flatten()

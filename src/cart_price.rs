@@ -134,7 +134,7 @@ pub(crate) async fn cart_json(a: &App, c: &StoredCart) -> Result<Value> {
         return Ok(result);
     }
     let ps = commerce::cart_products(a, &c.tenant, &chain, &c.data.items).await?;
-    let (config, revision) = commerce::config(a, &c.tenant).await?;
+    let (config, revision) = commerce::scoped_config(a, &c.tenant, &c.data.sales_channel).await?;
     let original = commerce::selection(&c.data);
     let selected = commerce::resolve_selection(original.clone(), &c.data.group, &config);
     let changed = json!(original) != json!(selected);

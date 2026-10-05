@@ -159,3 +159,7 @@ remains; this gate does not claim that every historic module is fully localized.
 The destination guard is extracted to Lean with every Boolean combination and
 negative guard mutations. Database transactions, tax-law choices, model output
 quality and the surrounding server remain outside that proof boundary.
+
+## Channel settings and media workspaces (2026-10-05)
+
+See [the settings/media guide](settings-media.md) for the current single-language editor, field-level checkout overrides, dependency-safe method removal, gallery and optional private image jobs. These are native prototype extensions; they do not establish additional full Shopware API/DAL parity, current tax law, paid-provider quality or whole-system formal certification.

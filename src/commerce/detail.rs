@@ -35,7 +35,7 @@ pub(crate) async fn product_detail(
         .as_ref()
         .map(|c| selection(&c.data))
         .unwrap_or_else(CheckoutSelection::defaults);
-    let (config, _) = config(&a, &t).await?;
+    let (config, _) = scoped_config(&a, &t, marketing::channel_id(&h)).await?;
     let selection = resolve_selection(selection, group, &config);
     let taxes = tax_settings_for_header(&a, c.as_ref(), &chain, &config).await?;
     let priced = tax_products(&ps, &selection, &taxes)?;

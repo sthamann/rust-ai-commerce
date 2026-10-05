@@ -19,7 +19,7 @@ from testing.runtime import ROOT, run, serve, stop
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--container", default="vendune-postgres-1")
 parser.add_argument("--existing-database", action="store_true")
-parser.add_argument("--only", nargs="+", help="Run selected registered HTTP suites in an isolated database")
+parser.add_argument("--only", nargs="+", help="Run selected registered HTTP/provider/browser/tooling suites in an isolated database")
 args = parser.parse_args()
 env = dict(os.environ)
 if not env.get("DATABASE_URL"):
@@ -58,8 +58,8 @@ for key in ("LIVE_STUDIO", "LIVE_MODEL", "OPENAI_API_KEY", "ANTHROPIC_API_KEY"):
     env.pop(key, None)
 suites = json.loads((ROOT / "scripts/testing/suites.json").read_text())
 if args.only:
-    assert set(args.only) <= set(suites["http"]), "Only registered suites can be selected"
-    suites = {"http": args.only, "providers": [], "browser_contracts": []}
+    assert set(args.only) <= {s for group in suites.values() for s in group}, "Only registered suites can be selected"
+    suites = {group: [s for s in names if s in args.only] for group, names in suites.items()}
 logs = ROOT / "artifacts"
 logs.mkdir(exist_ok=True)
 try:

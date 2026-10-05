@@ -311,3 +311,42 @@
 .studio .catalog-detail-nav .intl-language-switcher {
   padding: 12px;
 }
+
+.intl-scope-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  padding: 22px 28px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.intl-scope-bar > label {
+  display: grid;
+  gap: 8px;
+  flex: 1;
+  min-width: 180px;
+}
+.intl-scope-bar select {
+  width: 100%;
+}
+.intl-scope-note {
+  padding: 16px 28px;
+  background: var(--hover);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.intl-scope-note p {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.intl-scope-note button {
+  white-space: normal;
+}
+@media (max-width: 760px) {
+  .intl-scope-note {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

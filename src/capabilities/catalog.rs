@@ -1,6 +1,30 @@
 //! Public HTTP/MCP capability catalogue, separate from authorization and dispatch.
 pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
     (
+        "merchant.media.list",
+        "Restore pending and reviewable product image drafts",
+    ),
+    (
+        "merchant.commerce.dependencies",
+        "Check method dependencies before removal",
+    ),
+    (
+        "merchant.media.provider",
+        "Read optional image-provider availability",
+    ),
+    (
+        "merchant.media.create",
+        "Create revision-bound private AI image draft",
+    ),
+    (
+        "merchant.media.detail",
+        "Read private image job and review preview",
+    ),
+    (
+        "merchant.media.apply",
+        "Publish reviewed image; product gallery save is separate",
+    ),
+    (
         "merchant.company",
         "Read company basis or one sales channel and its inheritance",
     ),

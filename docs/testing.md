@@ -190,3 +190,7 @@ These percentages retain the separate source scopes above and do not establish
 100% coverage or whole-system correctness. Regression floors were preserved.
 
 Company profile HTTP/database checks run in the suite registry as `company_settings`; the scope, decoder/ACL, issuer snapshot, translation and selective release cases are detailed in [company settings](company-settings.md). They use synthetic tenants and local image bytes, with no external payment/model/OAuth traffic.
+
+## Channel settings and media workspaces (2026-10-05)
+
+See [the settings/media guide](settings-media.md) for the current single-language editor, field-level checkout overrides, dependency-safe method removal, gallery and optional private image jobs. These are native prototype extensions; they do not establish additional full Shopware API/DAL parity, current tax law, paid-provider quality or whole-system formal certification.

@@ -117,6 +117,12 @@ pub(crate) async fn new_cart_context(
     };
     let mut c = new_cart(a, &t, session, &locale, transport).await?;
     c.data.sales_channel = channel.into();
+    let (settings, _) = commerce::scoped_config(a, &t, channel).await?;
+    c.data.checkout = Some(commerce::resolve_selection(
+        commerce::selection(&c.data),
+        &c.data.group,
+        &settings,
+    ));
     if let Some(email) = identity {
         let r = sqlx::query("SELECT * FROM customers WHERE tenant=$1 AND email=$2")
             .bind(&t)
@@ -144,7 +150,7 @@ pub(crate) async fn new_cart_context(
             if let Some(id) = p["defaultPaymentMethodId"].as_str() {
                 checkout.payment_method_id = id.into();
             }
-            let (settings, _) = commerce::config(a, &t).await?;
+            let (settings, _) = commerce::scoped_config(a, &t, channel).await?;
             *checkout = commerce::resolve_selection(checkout.clone(), &c.data.group, &settings);
         }
     }

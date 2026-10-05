@@ -38,6 +38,8 @@ This lists every checked-in source module in these roots, including files with n
 | [src/apps/surface_tests.rs](../src/apps/surface_tests.rs) | Contract counterexamples reject cross-scope UI actions, unsafe URLs and mutating GET routes. |
 | [src/apps/surfaces.rs](../src/apps/surfaces.rs) | App-owned UI surfaces and namespaced HTTP routes reuse the authorized action gateway. |
 | [src/assets/download.rs](../src/assets/download.rs) | Public attachments honor sales-channel visibility; downloads require a paid, owned order snapshot. |
+| [src/assets/image_jobs.rs](../src/assets/image_jobs.rs) | Durable image jobs: tenant admission, revision-bound private previews and explicit publication, without automatic paid retries. |
+| [src/assets/image_provider.rs](../src/assets/image_provider.rs) | Optional OpenAI Images adapter; bounded responses and decoded PNG output, no remote user URLs or leaked provider errors. |
 | [src/assets/mod.rs](../src/assets/mod.rs) | Product attachments and paid digital downloads: bounded binary persistence and tenant/account ACL. |
 | [src/assets/rich.rs](../src/assets/rich.rs) | Safe structured rich content, never executable HTML. Same schema for merchant API and frontend. |
 | [src/assets/rich_document.rs](../src/assets/rich_document.rs) | Allow-listed editor JSON with bounded depth and content; HTML/handlers/styles cannot enter the renderer. |
@@ -98,6 +100,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/commerce/geography.rs](../src/commerce/geography.rs) | Bundled MIT country catalogue, tenant-owned overrides and typed region admission. |
 | [src/commerce/international_capabilities.rs](../src/commerce/international_capabilities.rs) | International configuration and translation MCP tools call the exact same scoped native handlers as HTTP. |
 | [src/commerce/method_text.rs](../src/commerce/method_text.rs) | Shared translated names and descriptions with field-wise shop-main-language inheritance. |
+| [src/commerce/method_usage.rs](../src/commerce/method_usage.rs) | Tenant-scoped dependency preflight and authoritative deletion guards; order snapshots remain immutable. |
 | [src/commerce/mod.rs](../src/commerce/mod.rs) | Native catalogue and checkout domains; pricing ports remain in the library. |
 | [src/commerce/order_fields.rs](../src/commerce/order_fields.rs) | Standard order read fields are projected from the authoritative quote/payment, never maintained twice. |
 | [src/commerce/order_machine.rs](../src/commerce/order_machine.rs) | Declarative order workflow schema. Extensions add states, never executable effects or payment truth. |
@@ -112,7 +115,10 @@ This lists every checked-in source module in these roots, including files with n
 | [src/commerce/selection.rs](../src/commerce/selection.rs) | Recover a quote after configuration changes without losing items or silently committing new choices. |
 | [src/commerce/settings_defaults.rs](../src/commerce/settings_defaults.rs) | Backward-compatible enrichment of existing configuration with bundled translated method labels. |
 | [src/commerce/settings_mutation.rs](../src/commerce/settings_mutation.rs) | Optimistic settings persistence and audit event. |
+| [src/commerce/settings_patch.rs](../src/commerce/settings_patch.rs) | Transport-only sparse JSON differences: stable record IDs, explicit nulls, and deletion distinct from inheritance. |
+| [src/commerce/settings_release.rs](../src/commerce/settings_release.rs) | Selective staging units for channel settings; all final aggregates and method dependencies use native validators. |
 | [src/commerce/settings_routes.rs](../src/commerce/settings_routes.rs) | Tenant configuration and operational read model. |
+| [src/commerce/settings_scope.rs](../src/commerce/settings_scope.rs) | Scoped checkout configuration: basis row lock orders all override writes and authoritative checkout reads. |
 | [src/commerce/settings_validation.rs](../src/commerce/settings_validation.rs) | Configuration validation and required availability invariants. |
 | [src/commerce/tax.rs](../src/commerce/tax.rs) | Destination tax-class resolution and net-preserving price conversion. |
 | [src/commerce/tax_context.rs](../src/commerce/tax_context.rs) | Tax conditions consume private authoritative pre-tax cart facts without a recursive quote. |
@@ -257,15 +263,16 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/automation/automation-types.ts](../frontend/src/admin/automation/automation-types.ts) | Automation editor contracts; content languages come from the selected shop. |
 | [frontend/src/admin/automation/pipeline-types.ts](../frontend/src/admin/automation/pipeline-types.ts) | Stable graph data mirrors the Rust pipeline contract, with explicit true/false edges and persistent node identifiers. |
 | [frontend/src/admin/automation/source-rules.ts](../frontend/src/admin/automation/source-rules.ts) | Convert source condition nodes for the graphical editor without losing original payload fields. |
+| [frontend/src/admin/catalog/AiImageStudio.tsx](../frontend/src/admin/catalog/AiImageStudio.tsx) | Optional image-provider jobs create private previews; applying a reviewed image is explicit and revision checked. |
 | [frontend/src/admin/catalog/CategoriesWorkspace.tsx](../frontend/src/admin/catalog/CategoriesWorkspace.tsx) | Localized category tree editor; parent moves and revisions are validated in the API. |
 | [frontend/src/admin/catalog/DocumentsManager.tsx](../frontend/src/admin/catalog/DocumentsManager.tsx) | Private source ingestion and explicit publication from the merchant knowledge view. |
-| [frontend/src/admin/catalog/GalleryUpload.tsx](../frontend/src/admin/catalog/GalleryUpload.tsx) | Image upload reuses bounded, validated asset storage; published URLs carry an explicit public shop scope. |
+| [frontend/src/admin/catalog/MediaDropzone.tsx](../frontend/src/admin/catalog/MediaDropzone.tsx) | Accessible multi-file upload with drag/drop, visible progress and the same validated asset API as attachments. |
 | [frontend/src/admin/catalog/PairFields.tsx](../frontend/src/admin/catalog/PairFields.tsx) | Accessible key/value rows for product properties, specifications and variant options. |
 | [frontend/src/admin/catalog/ProductAssets.tsx](../frontend/src/admin/catalog/ProductAssets.tsx) | Bounded upload and explicit digest-bound publication of attachments and paid files. |
 | [frontend/src/admin/catalog/ProductDataView.tsx](../frontend/src/admin/catalog/ProductDataView.tsx) | Central catalog workspace: server-filtered cursor list, product details and hierarchical categories. |
 | [frontend/src/admin/catalog/ProductEditor.tsx](../frontend/src/admin/catalog/ProductEditor.tsx) | Revision-aware product aggregate editor: one save, translation tabs and product-scoped linked capabilities. |
 | [frontend/src/admin/catalog/ProductLocalizedContent.tsx](../frontend/src/admin/catalog/ProductLocalizedContent.tsx) | Consistent main-language inheritance for product rich documents, specification groups and individual SEO fields. |
-| [frontend/src/admin/catalog/ProductMedia.tsx](../frontend/src/admin/catalog/ProductMedia.tsx) | Ordered image gallery metadata editing, independent of product pricing and translations. |
+| [frontend/src/admin/catalog/ProductMediaWorkspace.tsx](../frontend/src/admin/catalog/ProductMediaWorkspace.tsx) | One product-media workspace: cover, ordered gallery, multilingual image metadata, drag/drop and optional reviewed AI drafts. |
 | [frontend/src/admin/catalog/ProductPanels.tsx](../frontend/src/admin/catalog/ProductPanels.tsx) | Native commerce, media, translated SEO/specifications and category panels for one editable product. |
 | [frontend/src/admin/catalog/ProductTextFields.tsx](../frontend/src/admin/catalog/ProductTextFields.tsx) | Product text uses the shared single-language editor and field inheritance; product number stays language independent. |
 | [frontend/src/admin/catalog/ProductVariants.tsx](../frontend/src/admin/catalog/ProductVariants.tsx) | Variant creation writes real child products through the same validated product aggregate API. |
@@ -276,6 +283,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/catalog/TaxClassSelect.tsx](../frontend/src/admin/catalog/TaxClassSelect.tsx) | Assign a product to an actual tenant tax class; legacy standard/reduced mapping remains explicit. |
 | [frontend/src/admin/catalog/catalog-i18n.ts](../frontend/src/admin/catalog/catalog-i18n.ts) | Complete four-language catalog workspace vocabulary, separate from commerce data translations. |
 | [frontend/src/admin/catalog/catalog-model.ts](../frontend/src/admin/catalog/catalog-model.ts) | Editable native product aggregate and defaults shared by creation, detail and variant workflows. |
+| [frontend/src/admin/catalog/media-model.ts](../frontend/src/admin/catalog/media-model.ts) | Pure gallery operations preserve order, explicit alt translations and upload bounds without fabricating language values. |
 | [frontend/src/admin/catalog/rich-conversion.ts](../frontend/src/admin/catalog/rich-conversion.ts) | Lossless import of legacy blocks into structured WYSIWYG content, preserving inline emphasis. |
 | [frontend/src/admin/customers/CustomersManager.tsx](../frontend/src/admin/customers/CustomersManager.tsx) | CRM list and editable customer profile with linked order history. |
 | [frontend/src/admin/dashboard/OverviewView.tsx](../frontend/src/admin/dashboard/OverviewView.tsx) | OverviewView renders verified shop state and typed user actions. |
@@ -310,6 +318,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/settings/DestinationRuleEditor.tsx](../frontend/src/admin/settings/DestinationRuleEditor.tsx) | Geographical tax rule editor: country, subdivisions, postcode constraints, date window and persisted Rule Builder condition. |
 | [frontend/src/admin/settings/LanguageSettings.tsx](../frontend/src/admin/settings/LanguageSettings.tsx) | Shop main language and enabled locales with resumable provider-backed bulk product translation drafts. |
 | [frontend/src/admin/settings/MasterDataSettings.tsx](../frontend/src/admin/settings/MasterDataSettings.tsx) | Structured company profile with single-language content, inherited channel scopes, logo drafts and revision-bound saves. |
+| [frontend/src/admin/settings/MethodRemoval.tsx](../frontend/src/admin/settings/MethodRemoval.tsx) | Dependency preflight is advisory; aggregate save repeats it under the checkout configuration lock. |
 | [frontend/src/admin/settings/MethodSettings.tsx](../frontend/src/admin/settings/MethodSettings.tsx) | Master/detail shipping and payment configuration, translated content and searchable country availability. |
 | [frontend/src/admin/settings/SettingsSaveBar.tsx](../frontend/src/admin/settings/SettingsSaveBar.tsx) | Consistent settings save feedback, dirty state and permission-aware controls. |
 | [frontend/src/admin/settings/SettingsWorkspace.tsx](../frontend/src/admin/settings/SettingsWorkspace.tsx) | Independent settings workspace: grouped navigation, explicit dirty-draft guards and native API forms. |
@@ -344,6 +353,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/forms.css](../frontend/src/admin/styles/forms.css) | Studio-owned form primitives load at the composition root, independent of lazy workspace history. |
 | [frontend/src/admin/styles/international-details.css](../frontend/src/admin/styles/international-details.css) | Destination rates, translation jobs and responsive international workbench layout. |
 | [frontend/src/admin/styles/international.css](../frontend/src/admin/styles/international.css) | International commerce workbench: compact master/detail records, calm colour and clear field hierarchy. |
+| [frontend/src/admin/styles/media-workspace.css](../frontend/src/admin/styles/media-workspace.css) | Gallery workspace: airy tiles, focused image inspector and accessible upload surfaces using Studio theme tokens. |
 | [frontend/src/admin/styles/operations.css](../frontend/src/admin/styles/operations.css) | Operational screens share the studio's light surface and clear focus states. |
 | [frontend/src/admin/styles/settings.css](../frontend/src/admin/styles/settings.css) | Independent settings navigation, grouped native forms and save feedback in Studio theme tokens. |
 | [frontend/src/admin/styles/studio/01-studio.css](../frontend/src/admin/styles/studio/01-studio.css) | studio: studio styles. Source order is preserved by the entry stylesheet. |
@@ -424,16 +434,19 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/shop-i18n.ts](../frontend/src/shared/i18n/shop-i18n.ts) | Shared shop text hook; dictionaries live in focused locale files. |
 | [frontend/src/shared/i18n/studio-ui-i18n.ts](../frontend/src/shared/i18n/studio-ui-i18n.ts) | Studio navigation and settings guidance in all four supported interface languages. |
 | [frontend/src/shared/i18n/workbench-i18n.ts](../frontend/src/shared/i18n/workbench-i18n.ts) | Complete four-language vocabulary for environments, developer tools and knowledge ingestion. |
+| [frontend/src/shared/i18n/workspace-i18n.ts](../frontend/src/shared/i18n/workspace-i18n.ts) | Settings scopes, dependency confirmation and media workspace vocabulary in every supported interface language. |
 | [frontend/src/shared/styles/app-surfaces.css](../frontend/src/shared/styles/app-surfaces.css) | app surfaces: Shared customer, app and workbench styles; application workspaces must not import each other.. |
 | [frontend/src/shared/styles/apps.css](../frontend/src/shared/styles/apps.css) | apps: Shared customer, app and workbench styles; application workspaces must not import each other.. |
 | [frontend/src/shared/styles/customers.css](../frontend/src/shared/styles/customers.css) | Shared light account/address workspace, responsive and keyboard-accessible. |
 | [frontend/src/shared/styles/native-app.css](../frontend/src/shared/styles/native-app.css) | Native app layouts share commerce design tokens; tables/forms remain bounded and responsive. |
 | [frontend/src/shared/styles/workbench.css](../frontend/src/shared/styles/workbench.css) | Merchant workbench uses the studio's light-blue design tokens and responsive review panels. |
 | [frontend/src/shared/ui/Brand.tsx](../frontend/src/shared/ui/Brand.tsx) | Shared Vendune identity; product branding is independent of tenant-owned company logos and session keys. |
+| [frontend/src/shared/ui/ConfirmDialog.tsx](../frontend/src/shared/ui/ConfirmDialog.tsx) | Shared modal confirmation with focus containment, Escape, focus restoration and an explicit destructive action. |
 | [frontend/src/shared/ui/Icon.tsx](../frontend/src/shared/ui/Icon.tsx) | Icon: Presentational icons and catalogue artwork with explicit inputs.. |
 | [frontend/src/shared/ui/ProductArt.tsx](../frontend/src/shared/ui/ProductArt.tsx) | Product Art: Presentational icons and catalogue artwork with explicit inputs.. |
 | [frontend/src/shared/ui/WorkspaceBoundary.tsx](../frontend/src/shared/ui/WorkspaceBoundary.tsx) | Contain a workspace render failure and let the user retry without losing the application shell. |
 | [frontend/src/shared/ui/brand.css](../frontend/src/shared/ui/brand.css) | Shared vector brand sizing and typography for Studio and the operator console. |
+| [frontend/src/shared/ui/confirm-dialog.css](../frontend/src/shared/ui/confirm-dialog.css) | Modal surface shared by settings, media and future destructive actions. |
 | [frontend/src/storefront/account/CustomerAccount.tsx](../frontend/src/storefront/account/CustomerAccount.tsx) | Shopper account overlay uses its own scoped session; merchant credentials never authenticate a customer. |
 | [frontend/src/storefront/account/CustomerSignIn.tsx](../frontend/src/storefront/account/CustomerSignIn.tsx) | CustomerSignIn: focused form view with explicit typed inputs and callbacks. |
 | [frontend/src/storefront/analytics/ShopAnalytics.tsx](../frontend/src/storefront/analytics/ShopAnalytics.tsx) | Customer consent and real GA4 ecommerce events; absent apps produce no external script. |
@@ -537,6 +550,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/formal.py](../scripts/formal.py) | Run extraction, Lean proofs/axiom audit, compiled conformance and complete source-inventory checks. |
 | [scripts/hosting_check.py](../scripts/hosting_check.py) | Check a deployed experimental SaaS HTTPS origin without credentials or real orders. |
 | [scripts/hosting_container.py](../scripts/hosting_container.py) | Smoke-test the built deployment image against an isolated database on the local Compose network. |
+| [scripts/image_jobs.py](../scripts/image_jobs.py) | Real image jobs/bytes against a local Images fixture: private review, stale/tenant guards, edit multipart and no paid calls. |
 | [scripts/integration.py](../scripts/integration.py) | Exercise the real HTTP -> Rust -> PostgreSQL path. Never contacts a PSP. |
 | [scripts/intelligence.py](../scripts/intelligence.py) | Actual AGE/vector persistence and optional live local inference integration. |
 | [scripts/international_commerce.py](../scripts/international_commerce.py) | International configuration at the real HTTP/PostgreSQL path; all rates and addresses are synthetic fixtures, not tax advice. |
@@ -560,6 +574,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/rule_differential.py](../scripts/rule_differential.py) | Execute original Shopware numeric comparisons, including epsilon, null and unsupported operator semantics. |
 | [scripts/scalability.py](../scripts/scalability.py) | Real HTTP/PG regression for bounded reads and concurrent cart edits. |
 | [scripts/services.py](../scripts/services.py) | Standalone app process, opaque UI SDK transport, own SQLite inbox and independent durable worker. |
+| [scripts/settings_scopes.py](../scripts/settings_scopes.py) | Real tenant/channel settings, immutable order dependencies, localized gallery and selective staging regressions. |
 | [scripts/staging.py](../scripts/staging.py) | Real PG proof: private sandbox, immutable app versions, selective release and conflicts. No paid inference. |
 | [scripts/structure.py](../scripts/structure.py) | Guard the documented Rust domain split and public extension examples. |
 | [scripts/studio.py](../scripts/studio.py) | Actual Studio API, localization and original-kernel consumer checks. |

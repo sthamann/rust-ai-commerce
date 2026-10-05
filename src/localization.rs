@@ -74,6 +74,20 @@ pub(super) async fn localize_products(
         .collect::<Vec<_>>();
     for p in &mut ps {
         super::commerce::localize_extra(&mut p.extra, &locale_chain);
+        if let Some(media) = p.media.as_array_mut() {
+            for m in media {
+                if m["alt"].is_object() {
+                    let text = locale_chain
+                        .iter()
+                        .flat_map(|l| [l.as_str(), l.split('-').next().unwrap_or(l)])
+                        .find_map(|l| m["alt"][l].as_str())
+                        .map(str::to_owned);
+                    if let Some(text) = text {
+                        m["view"] = json!(text);
+                    }
+                }
+            }
+        }
         if let Some(values) = translations.get(&p.id) {
             if let Some(name) = translated_field(values, chain, false) {
                 p.name = name.to_owned();

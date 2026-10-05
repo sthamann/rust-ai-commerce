@@ -199,7 +199,8 @@
     padding-left: max(56px, calc((100% - 850px) / 2));
     padding-right: max(56px, calc((100% - 850px) / 2));
   }
-  .preview-art svg {
+  .preview-art svg,
+  .preview-art img {
     height: 190px;
   }
 }

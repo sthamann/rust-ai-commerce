@@ -16,10 +16,21 @@ pub(crate) async fn save_config(
     let mut tx = a.db.begin().await?;
     // Serialize configuration with product assignments and translation apply, so
     // a concurrently removed class/language cannot be committed from an older read.
-    sqlx::query("SELECT revision FROM commerce_settings WHERE tenant=$1 FOR UPDATE")
-        .bind(&t)
-        .fetch_one(&mut *tx)
-        .await?;
+    let previous =
+        sqlx::query("SELECT data,revision FROM commerce_settings WHERE tenant=$1 FOR UPDATE")
+            .bind(&t)
+            .fetch_one(&mut *tx)
+            .await?;
+    let previous = decode_config(previous.get("data"))?;
+    super::method_usage::guard(&mut tx, &t, &previous, &s, None).await?;
+    let patches: Vec<Value> =
+        sqlx::query_scalar("SELECT data FROM commerce_overrides WHERE tenant=$1")
+            .bind(&t)
+            .fetch_all(&mut *tx)
+            .await?;
+    for patch in patches {
+        super::settings_patch::resolve(&s, patch)?;
+    }
     super::product_languages::register(&mut tx, &s).await?;
     let tax_ids = s.taxes.iter().map(|t| t.id.clone()).collect::<Vec<_>>();
     let stranded:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM products WHERE tenant=$1 AND extra->>'taxClassId' IS NOT NULL AND NOT(extra->>'taxClassId'=ANY($2)))").bind(&t).bind(tax_ids).fetch_one(&mut *tx).await?;

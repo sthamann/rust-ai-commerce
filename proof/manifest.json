@@ -350,10 +350,20 @@
       "sha256": "31f0cae633e6f7bab4a7ecdf7cada098fa3b44c70a913c3797437f65a6b93498",
       "review": "Reviewed shared content-language validation, regional key preservation, shop-main flow fallback and asset labels; existing state/price/permission contracts remain intact."
     },
+    "src/assets/image_jobs.rs": {
+      "status": "unproved",
+      "sha256": "ffabc03cdd345bbb4dd0ac8d53ded615fb2764689165523544053cbaadb159d8",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+    },
+    "src/assets/image_provider.rs": {
+      "status": "unproved",
+      "sha256": "bf0f9c60f40e2f7154b51f4e39cfcd1378095a3d788ddaa3fff51b75142b09d6",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+    },
     "src/assets/mod.rs": {
       "status": "unproved",
-      "sha256": "e00c49baee70b0baf9d195e5d6cdea82fd6fe994addbe7796f4781251177b195",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "debc44bf6e25520cdb40e09a19e5098d75d9836dc33fef91f8dd2b794160bcf8",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/assets/rich.rs": {
       "status": "unproved",
@@ -497,13 +507,13 @@
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
-      "sha256": "4d71862e0c1f00cc32d1a42f2483c73ae7d5d67960e16cd6bc651674693c0ba9",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "85eb4d84f49126dc1bfee725299a8fe49fa3f85d3e8945b18dc4975730687b2d",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/capabilities.rs": {
       "status": "unproved",
-      "sha256": "a04750f7d99515bc7b6f2d82a1f01afc2d11d87026c1d06828433473329ed6dd",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "958d70f0f0335bb73b61c7959e85a30006fe2c2d5fc6e0385fc5119125461cdc",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/cart_model.rs": {
       "status": "unproved",
@@ -517,8 +527,8 @@
     },
     "src/cart_price.rs": {
       "status": "unproved",
-      "sha256": "11c8e883fd01c9e3da8705904e72ebb1c540bfd1ec123d3e31f81c2abe56b598",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "c966e7491d850ff343678bfc9b4e99b8ea2d994304b703779ca5d7ddab705315",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/cart_routes.rs": {
       "status": "unproved",
@@ -527,8 +537,8 @@
     },
     "src/cart_storage.rs": {
       "status": "unproved",
-      "sha256": "79a75d3e709986190cc6d020fef40f1555376961aafc65bb88369446ab8252c6",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "38195f8f8e8f8d370d59510f894bf35534abc1378827eb3b9d67fbcc47f81691",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/catalog_model.rs": {
       "status": "unproved",
@@ -542,8 +552,8 @@
     },
     "src/catalog_routes.rs": {
       "status": "unproved",
-      "sha256": "8478c2fe82c41bc058961f8a88025f849eff11802b8b4376e5d0b23f2b26ee8e",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "57b2dd0e398ee912a6a782796a4dc438145f610741936b65dfa2fb85024d2d0a",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/categories/admin.rs": {
       "status": "unproved",
@@ -617,8 +627,8 @@
     },
     "src/commerce/context_routes.rs": {
       "status": "unproved",
-      "sha256": "b08ab60de5d7093303c7f9b3d9524f2307c09cd25f9cd950f8fdbfaf838af277",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "4a83e06530fe87de6c03d81fffb22fd11dbeec559aac8564fc9894c8b7dd55bb",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/commerce/delivery.rs": {
       "status": "unproved",
@@ -627,8 +637,8 @@
     },
     "src/commerce/detail.rs": {
       "status": "unproved",
-      "sha256": "a183db1f02818db3af1f9bc8367bf9cad7e95e98f52abd8ff653457d01696a78",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "ecefe81356ab976c49796bc66f390c08f66acf94c681cf33cb4621a8e4657793",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/commerce/fulfillment.rs": {
       "status": "reviewed-binding",
@@ -642,18 +652,23 @@
     },
     "src/commerce/international_capabilities.rs": {
       "status": "unproved",
-      "sha256": "aea839d3106d43e2ce24f427c31f0802cee060d8998fae5ff0b1d8f88abee8a6",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "3ba4c8d7f143cf6e4fa2dd29ff3d1d6f5cf6cd96535fa095bfa085ad12b85cfc",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/commerce/method_text.rs": {
       "status": "unproved",
       "sha256": "7025fd754ed13efe31fde517af1c0821f7a2a60c3797ad009f0afe018a6bbd91",
       "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
+    "src/commerce/method_usage.rs": {
+      "status": "unproved",
+      "sha256": "ad046174a816325365bd383641940f3f6cac115be70e1cbacb853f4dc6a1c3c8",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+    },
     "src/commerce/mod.rs": {
       "status": "unproved",
-      "sha256": "fe8995e21efc9e14382e3a4dbac01aeec9f7d9676b40c1e18a353f2ef94db523",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "99b1ece7b20e39d0b14238402901b681421da60d340849018309ff6336df93b1",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/commerce/order_fields.rs": {
       "status": "unproved",
@@ -682,8 +697,8 @@
     },
     "src/commerce/product_edit.rs": {
       "status": "unproved",
-      "sha256": "fa737fbf766f3af91f6946de813aec8f4e15af6930ee7ded408adf068633b016",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "997b505662540ddaa30ba030a075dde7a79f4f780795e7d42615c50550147d25",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/commerce/product_fields.rs": {
       "status": "unproved",
@@ -717,13 +732,28 @@
     },
     "src/commerce/settings_mutation.rs": {
       "status": "unproved",
-      "sha256": "8b9cf1834c3b0e18956934386e3baf6e9674d5395d3cf5c751c1a77390064b50",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "81cc52829c987ec5f9c362ac719bf367034f2e1decf6215709bb806df4268dc4",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+    },
+    "src/commerce/settings_patch.rs": {
+      "status": "unproved",
+      "sha256": "66870e1b0dd1d033f788fd2263caa32325d4ae3457423815bdc497775d0a7605",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+    },
+    "src/commerce/settings_release.rs": {
+      "status": "unproved",
+      "sha256": "913b7e5054bbbeb8b57c68420ca30c8b835fff498f807753d8b73e69693a404b",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/commerce/settings_routes.rs": {
       "status": "unproved",
       "sha256": "f92d3100638aa1b6a045a0f8a8df624afe383d1decd33c16cecac5b0ce1a35ae",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/commerce/settings_scope.rs": {
+      "status": "unproved",
+      "sha256": "48b8eec3b37e5a9e3e6f608e956c52ab47553535449f0ca38a470566fd8ee9a3",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/commerce/settings_validation.rs": {
       "status": "unproved",
@@ -857,8 +887,8 @@
     },
     "src/localization.rs": {
       "status": "unproved",
-      "sha256": "8ca8554cdec36a1d3b3b268df55f9b5f10fee2d2fce97ae8735c2af6ee492a10",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "e5291a78a387919e39dee027c8e40ae3447a127e40a486272ef2da91f8d30ad7",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/main.rs": {
       "status": "unproved",
@@ -997,13 +1027,13 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "4f48e2d050dd53622ed9730a201d75315a97fcb3abb95760f18df4b3081060f1",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "8735c48040c78f0b6d4e7a1072fd39ced80798c95ddf5491869fcf7735578d5a",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "335aea9474f13d79bd59e011498f31c23382c595342a89214c8235ceee9cd15f",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "fa85a484a4307e989b61c287cfeb3f4adf5aacd83ca157f2289792d6774895b3",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -1067,8 +1097,8 @@
     },
     "src/order_checkout.rs": {
       "status": "reviewed-binding",
-      "sha256": "ab0403d83e06e0e27f915d3e30013286f4d4129d5066434f06593ee270d68c49",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "c5efcd2cb66cb5f69061115a97caccbfb85b373e794920a524a8ffd4dd2af0be",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/order_routes.rs": {
       "status": "unproved",
@@ -1177,8 +1207,8 @@
     },
     "src/routes.rs": {
       "status": "unproved",
-      "sha256": "d28a6a969e1bf99ac6b98485932f5ed4ac6cdfb448a6cde82bd86d9c878b85bb",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "f7a55994db4128e3eddce2634261ff905f45d17ad7b62aef068af6371309e053",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/rule_comparison.rs": {
       "status": "reviewed-binding",
@@ -1207,8 +1237,8 @@
     },
     "src/staging/clone.rs": {
       "status": "unproved",
-      "sha256": "5d248a2509b409736cbab95d5f606a95594f22b7f855be19c007dee30aadaead",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "4eea0f579f90aba2bed17d2919911405454c575b8ecdd8f589db9df9cc069e3a",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/staging/company.rs": {
       "status": "unproved",
@@ -1227,13 +1257,13 @@
     },
     "src/staging/release.rs": {
       "status": "unproved",
-      "sha256": "427c26c18482d0f8013b2c09e72d602f78a3a4a071903be54d1dce9a2bc3a798",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "af6ca3756bac27b5f542941e39d968496902ebdb816abed529c6c72cd76a3b08",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/staging/snapshot.rs": {
       "status": "unproved",
-      "sha256": "bb597b1b07c80f3e35f481d4add05f03901cb945d036260f86ec3b9cfd92f662",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "bfed88d4ba4d09633d85c85c43813f52db8f8a18d88b68e94cca793dc242f000",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "src/studio.rs": {
       "status": "unproved",
@@ -1277,8 +1307,8 @@
     },
     "src/workers.rs": {
       "status": "unproved",
-      "sha256": "5f777e0653861075f6e0666553aa4ddc2d0ec075320c0ebdaf7df1d3734b6243",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "cbe77d0e9f24abdd723ed6a866388eef058c59dc015bc17db0e791ac49974cbd",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     }
   },
   "inputs": {
@@ -1287,12 +1317,12 @@
       "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "Cargo.lock": {
-      "sha256": "5cc87059fea83b2f8c93670e7c50e8d9542e007d949bf904ffc8338fcc7b147a",
-      "review": "Full cargo metadata normalized the renamed vendune package into canonical Cargo.lock ordering. Reviewed the actual diff: only the same root package and unchanged dependency list moved alphabetically; no dependency versions, checksums or business decisions changed. Full Rust/UI/integration/differential suites passed. This explicit review updates the canonical lockfile input hash; the new branding check rejects noncanonical package ordering."
+      "sha256": "ef08069cc1fb76b0db745f339715f2e4417506e57385d1e56137a1fe810e7c3a",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "Cargo.toml": {
-      "sha256": "42c7b675a7de95306eb99ee9fcb56a62096370d8946ee0ae989207750f872a6e",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "e14f2a351d288125b791a9296050c25765fa83c57ee7bb15b7b6932dadf8987f",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "fixtures/app-studio-schema.json": {
       "sha256": "7511608ce3bad039ba883206e6e1762aa672572b1ddb13594cdd40d28f3af205",
@@ -1437,6 +1467,14 @@
     "migrations/030-company-settings.sql": {
       "sha256": "ec687424c7d2e76a526b6e2ed0500be9ef9abdf944812e331f68930e762ab7b4",
       "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+    },
+    "migrations/031-channel-commerce.sql": {
+      "sha256": "bb692c248d74dd8c1cc6c8433346934987819151ce57a82e230614c19feb341a",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+    },
+    "migrations/032-image-jobs.sql": {
+      "sha256": "8b43858529f9217cbbf85d4ab3bbbc82ef21facaae8a1fcb94c8d2974ee88798",
+      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "c9b984225b556b954c3147500a907788ae4436a16f787d44ccdc493282df5a73",

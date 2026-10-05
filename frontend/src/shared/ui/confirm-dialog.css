@@ -1,0 +1,45 @@
+/** Modal surface shared by settings, media and future destructive actions. */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgb(15 23 42 / 0.36);
+  backdrop-filter: blur(5px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+.confirm-dialog {
+  background: var(--surface, #fff);
+  color: var(--text, #17283f);
+  border: 1px solid var(--border, #dce4f0);
+  border-radius: 22px;
+  padding: 28px;
+  max-width: 540px;
+  width: 100%;
+  box-shadow: 0 24px 90px #10234030;
+  max-height: 90dvh;
+  overflow: auto;
+}
+.confirm-dialog h2 {
+  margin: 0 0 16px;
+  font-size: 24px;
+}
+.confirm-content {
+  line-height: 1.6;
+}
+.confirm-dialog footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+.confirm-content dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+}
+.confirm-content dd {
+  margin: 0;
+  font-weight: 700;
+}

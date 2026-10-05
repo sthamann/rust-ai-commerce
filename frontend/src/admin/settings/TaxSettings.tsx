@@ -1,12 +1,17 @@
 /** Editable tax classes and explicit fallback/country rates with destination rules using native Rule Builder references. */
+import { useWorkspaceText } from "../../shared/i18n/workspace-i18n";
 import { useState } from "react";
+import ConfirmDialog from "../../shared/ui/ConfirmDialog";
 import TranslationFields from "../../shared/geography/TranslationFields";
 import {
   inheritedText,
   type DestinationRule,
   type TaxClass,
 } from "../../shared/geography/geography-types";
-import { useInternationalText } from "../../shared/i18n/international-i18n";
+import {
+  internationalWords,
+  useInternationalText,
+} from "../../shared/i18n/international-i18n";
 import type { InternationalProps } from "./CommerceSettings";
 import DestinationRuleEditor from "./DestinationRuleEditor";
 export default function TaxSettings({
@@ -14,10 +19,13 @@ export default function TaxSettings({
   patch,
   countries,
   request,
+  channel,
 }: InternationalProps) {
+  const { w } = useWorkspaceText();
   const { i, locale } = useInternationalText();
   const [selected, setSelected] = useState(config.taxes[0]?.id),
     [rule, setRule] = useState<string | null>(null);
+  const [removing, setRemoving] = useState<"tax" | "rule" | null>(null);
   const tax = config.taxes.find((t) => t.id === selected) ?? config.taxes[0];
   const label = (t: TaxClass) =>
     inheritedText(t.translations ?? {}, locale, config.mainLocale, "name") ||
@@ -68,6 +76,7 @@ export default function TaxSettings({
         <button
           type="button"
           className="studio-secondary"
+          disabled={channel}
           onClick={() => {
             const id = `class-${crypto.randomUUID().slice(0, 8)}`;
             patch({
@@ -77,7 +86,18 @@ export default function TaxSettings({
                   id,
                   rates: {},
                   defaultRate: null,
-                  translations: { [config.mainLocale]: { name: i("newTax") } },
+                  translations: {
+                    [config.mainLocale]: {
+                      name: internationalWords.newTax[
+                        (
+                          { en: 0, de: 1, fr: 2, es: 3 } as Record<
+                            string,
+                            number
+                          >
+                        )[config.mainLocale.split("-")[0]] ?? 0
+                      ],
+                    },
+                  },
                   rules: [],
                 },
               ],
@@ -119,41 +139,8 @@ export default function TaxSettings({
               }
             />
           </label>
-          <h3>{i("countryRates")}</h3>
-          <div className="intl-rates">
-            {config.countries.map((code) => (
-              <label key={code}>
-                <span>
-                  <strong>
-                    {countries.find((c) => c.code === code)?.name[
-                      locale.split("-")[0]
-                    ] ?? code}
-                  </strong>
-                  <small>{code}</small>
-                </span>
-                <input
-                  aria-label={`${code} ${i("rate")}`}
-                  type="number"
-                  min={0}
-                  max={100}
-                  step="0.001"
-                  placeholder={
-                    tax.defaultRate == null ? "—" : `${tax.defaultRate}`
-                  }
-                  value={tax.rates[code] ?? ""}
-                  onChange={(e) => {
-                    const rates = { ...tax.rates };
-                    if (e.target.value === "") delete rates[code];
-                    else rates[code] = Number(e.target.value);
-                    update({ rates });
-                  }}
-                />
-                <span>%</span>
-              </label>
-            ))}
-          </div>
           <div className="intl-section-heading">
-            <h3>{i("destinationRules")}</h3>
+            <h3>{w("specialTax")}</h3>
             <button
               type="button"
               className="studio-secondary"
@@ -162,7 +149,7 @@ export default function TaxSettings({
               + {i("newRule")}
             </button>
           </div>
-          <p className="intl-hint">{i("ruleHint")}</p>
+          <p className="intl-hint">{w("specialHint")}</p>
           <div className="intl-rule-list">
             {(tax.rules ?? []).map((r) => (
               <button
@@ -197,25 +184,71 @@ export default function TaxSettings({
                     rules: tax.rules!.map((v) => (v.id === r.id ? value : v)),
                   })
                 }
-                onRemove={() => {
-                  update({ rules: tax.rules!.filter((v) => v.id !== r.id) });
-                  setRule(null);
-                }}
+                onRemove={() => setRemoving("rule")}
               />
             ))}
+          <h3>{w("baseRates")}</h3>
+          <div className="intl-rates">
+            {config.countries.map((code) => (
+              <label key={code}>
+                <span>
+                  <strong>
+                    {countries.find((c) => c.code === code)?.name[
+                      locale.split("-")[0]
+                    ] ?? code}
+                  </strong>
+                  <small>{code}</small>
+                </span>
+                <input
+                  aria-label={`${code} ${i("rate")}`}
+                  type="number"
+                  min={0}
+                  max={100}
+                  step="0.001"
+                  placeholder={
+                    tax.defaultRate == null ? "—" : `${tax.defaultRate}`
+                  }
+                  value={tax.rates[code] ?? ""}
+                  onChange={(e) => {
+                    const rates = { ...tax.rates };
+                    if (e.target.value === "") delete rates[code];
+                    else rates[code] = Number(e.target.value);
+                    update({ rates });
+                  }}
+                />
+                <span>%</span>
+              </label>
+            ))}
+          </div>
           {!["standard", "reduced"].includes(tax.id) && (
             <button
               type="button"
               className="studio-secondary"
-              onClick={() => {
-                patch({ taxes: config.taxes.filter((t) => t.id !== tax.id) });
-                setSelected(config.taxes[0].id);
-              }}
+              disabled={channel}
+              onClick={() => setRemoving("tax")}
             >
               {i("remove")}
             </button>
           )}
         </div>
+      )}
+      {removing && tax && (
+        <ConfirmDialog
+          title={w("deleteTitle")}
+          onCancel={() => setRemoving(null)}
+          onConfirm={() => {
+            if (removing === "tax") {
+              patch({ taxes: config.taxes.filter((t) => t.id !== tax.id) });
+              setSelected(config.taxes[0].id);
+            } else {
+              update({ rules: tax.rules!.filter((r) => r.id !== rule) });
+              setRule(null);
+            }
+            setRemoving(null);
+          }}
+        >
+          <p>{w("deleteHint")}</p>
+        </ConfirmDialog>
       )}
     </div>
   );

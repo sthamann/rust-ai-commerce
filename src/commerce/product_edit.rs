@@ -151,6 +151,21 @@ async fn save_product(
     marketing::validate_metadata("products", &edit.extra.automation)?;
     if let Some(fields) = &edit.commerce {
         fields.validate()?;
+        for media in fields.media.as_array().unwrap() {
+            if let Some(alt) = media.get("alt") {
+                let alt = alt
+                    .as_object()
+                    .ok_or(bad("Image descriptions must be translations"))?;
+                if alt.len() > 100
+                    || alt.iter().any(|(l, v)| {
+                        !super::product_languages::allowed(l, &settings)
+                            || !(v.is_null() || v.as_str().is_some_and(|s| s.len() <= 400))
+                    })
+                {
+                    return Err(bad("Invalid image description translation"));
+                }
+            }
+        }
     }
     if let Some(c) = &edit.catalog {
         c.validate()?;

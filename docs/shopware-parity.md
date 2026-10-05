@@ -179,3 +179,7 @@ coverage inspired by Shopware's sales-channel settings, not a claim of identical
 SystemConfig/DAL wire compatibility. Other commerce settings remain shop-wide,
 full upstream settings/import formats are not equivalent, and the minimal PDF
 renderer does not embed a logo. See [contracts and tests](company-settings.md).
+
+## Channel settings and media workspaces (2026-10-05)
+
+See [the settings/media guide](settings-media.md) for the current single-language editor, field-level checkout overrides, dependency-safe method removal, gallery and optional private image jobs. These are native prototype extensions; they do not establish additional full Shopware API/DAL parity, current tax law, paid-provider quality or whole-system formal certification.

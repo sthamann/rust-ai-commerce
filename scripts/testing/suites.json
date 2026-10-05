@@ -26,12 +26,14 @@
     "international_commerce",
     "translations",
     "app_studio",
-    "company_settings"
+    "company_settings",
+    "settings_scopes"
   ],
   "providers": [
     "email_tests",
     "connector_store_tests",
-    "connected_apps"
+    "connected_apps",
+    "image_jobs"
   ],
   "browser_contracts": [
     "analytics",

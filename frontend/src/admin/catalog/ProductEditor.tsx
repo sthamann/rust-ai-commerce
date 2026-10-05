@@ -11,7 +11,7 @@ import {
   type Category,
   type ProductDraft,
 } from "./catalog-model";
-import GalleryUpload from "./GalleryUpload";
+import ProductMediaWorkspace from "./ProductMediaWorkspace";
 import TaxClassSelect from "./TaxClassSelect";
 import ProductPanels from "./ProductPanels";
 import ProductAssets from "./ProductAssets";
@@ -276,7 +276,14 @@ export default function ProductEditor({
           </aside>
           <section className="studio-card catalog-detail-panel" role="tabpanel">
             <h2>{c(tab as (typeof tabs)[number])}</h2>
-            {tab === "attachments" ? (
+            {tab === "media" ? (
+              <ProductMediaWorkspace
+                unsaved={JSON.stringify(draft) !== baseline}
+                draft={draft}
+                request={request}
+                onChange={change}
+              />
+            ) : tab === "attachments" ? (
               id ? (
                 <ProductAssets id={id} request={request} />
               ) : (
@@ -330,16 +337,6 @@ export default function ProductEditor({
                 }
               />
             )}
-            {tab === "media" &&
-              (id ? (
-                <GalleryUpload
-                  draft={draft}
-                  request={request}
-                  onChange={change}
-                />
-              ) : (
-                <p>{c("createFirst")}</p>
-              ))}
             <AppSurfaceSlot
               location="admin.product"
               context={{ productId: id }}

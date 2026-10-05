@@ -33,3 +33,5 @@ The `studio-settings-en.png` capture was recorded on 2026-10-05 from the running
 synthetic Commerce Playground. It shows the current grouped shell, dedicated
 settings navigation and native company form. The UI was captured directly,
 without mocked responses, layout editing or image generation.
+
+The `../screenshots/vendune-shipping.jpg` and `vendune-product-media.jpg` captures were recorded on 2026-10-05 from the current Vendune build in the synthetic Commerce Playground. They show the shared settings/content-language controls and the saved three-image mug gallery, without mocked responses or image editing. The gallery uses bundled demo illustrations; these are not generated product photographs or evidence of paid model quality. No live configuration was changed for these captures.

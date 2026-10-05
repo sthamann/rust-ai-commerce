@@ -56,3 +56,7 @@ dedicated detail editor. The country catalogue and US subdivisions feed the same
 controls in account addresses and checkout. Languages include durable translation
 progress/review/apply. [International commerce](international-commerce.md) records
 the native API/MCP contract and remaining tax/language limits.
+
+## Channel settings and media workspaces (2026-10-05)
+
+See [the settings/media guide](settings-media.md) for the current single-language editor, field-level checkout overrides, dependency-safe method removal, gallery and optional private image jobs. These are native prototype extensions; they do not establish additional full Shopware API/DAL parity, current tax law, paid-provider quality or whole-system formal certification.

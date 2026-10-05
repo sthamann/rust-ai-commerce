@@ -10,7 +10,8 @@ Files and their individual responsibilities are listed in [the generated source 
 - `ProductEditor.tsx`, `catalog-model.ts`: aggregate defaults, revision-bound creation/editing, language selection and unsaved-draft guards.
 - `ProductPanels.tsx`, `ReferencePriceFields.tsx`, `PairFields.tsx`: names, pricing, inventory, specifications, metadata, categories and channel controls.
 - `RichEditor.tsx`, `rich-conversion.ts`: safe TipTap JSON editing and legacy-content conversion.
-- `ProductMedia.tsx`, `GalleryUpload.tsx`: ordered cover/gallery and digest-published byte uploads.
+- `ProductMediaWorkspace.tsx`, `MediaDropzone.tsx`, `media-model.ts`: cover/gallery inspector, single-language alt inheritance and drag/drop digest-published byte uploads.
+- `AiImageStudio.tsx`: optional durable private image generation/edit previews with explicit revision-checked apply.
 - `ProductVariants.tsx`, `RelatedProducts.tsx`: native SKU management and searchable cross-selling selection.
 - `CategoriesWorkspace.tsx`: translated hierarchical category administration.
 - `catalog-i18n.ts`: English, German, French and Spanish UI labels.

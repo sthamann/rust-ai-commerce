@@ -91,7 +91,10 @@ pub(crate) async fn release(
     for key in &keys {
         let s = req.selections.iter().find(|s| s.key == *key).unwrap();
         let value = &current[&s.key];
-        if s.key == "company" || s.key.starts_with("company-channel:") {
+        if let Some(channel) = s.key.strip_prefix("settings-channel:") {
+            auth::permit(&h, "settings.write")?;
+            commerce::publish_scope(&mut tx, &t, channel, value).await?;
+        } else if s.key == "company" || s.key.starts_with("company-channel:") {
             company::publish(&mut tx, &t, &id, &s.key, value).await?;
         } else if s.key.starts_with("category:") {
             // Category units were published above in parent-first dependency order.
@@ -214,6 +217,7 @@ pub(crate) async fn release(
         .bind(json!({"releaseId":release,"selections":selected}))
         .execute(&mut *tx)
         .await?;
+    commerce::validate_settings_release(&mut tx, &t, &actual["settings"]).await?;
     operations::validate_company_release(&mut tx, &t).await?;
     tx.commit().await?;
     Ok(Json(json!({"id":release,"published":selected})))

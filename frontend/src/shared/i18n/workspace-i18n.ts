@@ -1,0 +1,240 @@
+/** Settings scopes, dependency confirmation and media workspace vocabulary in every supported interface language. */
+import { useLocale } from "./i18n";
+export const workspaceWords = {
+  imageFailed: [
+    "The image request failed. Review the provider configuration and create a new draft when ready. It was not retried automatically.",
+    "Die Bildanfrage ist fehlgeschlagen. Prüfe die Anbieter-Konfiguration und erstelle bei Bedarf einen neuen Entwurf. Es gab keinen automatischen Wiederholungsversuch.",
+    "La demande d’image a échoué. Vérifiez la configuration et créez un nouveau brouillon. Aucun nouvel essai automatique.",
+    "La solicitud de imagen falló. Revisa la configuración y crea un borrador nuevo. No se reintentó automáticamente.",
+  ],
+  saveBeforeImage: [
+    "Save the product changes before requesting or applying an image draft.",
+    "Speichere Produktänderungen, bevor du einen Bildentwurf erstellst oder übernimmst.",
+    "Enregistrez les modifications du produit avant de créer ou appliquer une image.",
+    "Guarda los cambios del producto antes de crear o aplicar una imagen.",
+  ],
+  generating: [
+    "Creating image draft…",
+    "Bildentwurf wird erstellt …",
+    "Création du brouillon…",
+    "Creando borrador de imagen…",
+  ],
+  scope: [
+    "Settings scope",
+    "Einstellungsbereich",
+    "Portée des réglages",
+    "Ámbito de ajustes",
+  ],
+  basis: [
+    "All sales channels · shared basis",
+    "Alle Verkaufskanäle · gemeinsame Basis",
+    "Tous les canaux · base commune",
+    "Todos los canales · base común",
+  ],
+  scopeHint: [
+    "Only changed fields override the shared basis. Other values follow future basis changes.",
+    "Nur geänderte Felder überschreiben die gemeinsame Basis. Andere Werte übernehmen künftige Änderungen der Basis.",
+    "Seuls les champs modifiés remplacent la base commune. Les autres suivent ses modifications.",
+    "Solo los campos modificados reemplazan la base común. Los demás heredan sus cambios.",
+  ],
+  resetScope: [
+    "Restore inheritance in this section",
+    "Vererbung in diesem Bereich wiederherstellen",
+    "Rétablir l’héritage de cette section",
+    "Restaurar herencia en esta sección",
+  ],
+  pending: [
+    "Save or discard your changes before switching scope.",
+    "Speichere oder verwirf deine Änderungen vor einem Bereichswechsel.",
+    "Enregistrez ou abandonnez les modifications avant de changer de portée.",
+    "Guarda o descarta los cambios antes de cambiar de ámbito.",
+  ],
+  deleteTitle: [
+    "Remove this entry?",
+    "Diesen Eintrag entfernen?",
+    "Supprimer cette entrée ?",
+    "¿Eliminar esta entrada?",
+  ],
+  deleteHint: [
+    "The entry is removed when you save. Existing orders and active dependencies are protected by the API.",
+    "Der Eintrag wird beim Speichern entfernt. Bestehende Bestellungen und aktive Abhängigkeiten werden durch die API geschützt.",
+    "L’entrée sera supprimée à l’enregistrement. L’API protège les commandes et dépendances existantes.",
+    "La entrada se elimina al guardar. La API protege pedidos y dependencias existentes.",
+  ],
+  cancel: ["Cancel", "Abbrechen", "Annuler", "Cancelar"],
+  confirm: ["Remove", "Entfernen", "Supprimer", "Eliminar"],
+  checking: [
+    "Checking dependencies…",
+    "Abhängigkeiten werden geprüft …",
+    "Vérification des dépendances…",
+    "Comprobando dependencias…",
+  ],
+  blocked: [
+    "Referenced entries cannot be removed. Deactivate them to stop new checkouts; existing orders keep their snapshot.",
+    "Verwendete Einträge können nicht entfernt werden. Deaktiviere sie für neue Checkouts; bestehende Bestellungen behalten ihre Daten.",
+    "Une entrée utilisée ne peut pas être supprimée. Désactivez-la pour les nouveaux achats ; les commandes restent intactes.",
+    "Las entradas utilizadas no se pueden eliminar. Desactívalas para nuevos pedidos; los existentes conservan sus datos.",
+  ],
+  orders: ["Orders", "Bestellungen", "Commandes", "Pedidos"],
+  carts: [
+    "Open carts",
+    "Offene Warenkörbe",
+    "Paniers ouverts",
+    "Carritos abiertos",
+  ],
+  overrides: [
+    "Channel overrides",
+    "Kanal-Überschreibungen",
+    "Réglages de canal",
+    "Ajustes de canal",
+  ],
+  rules: [
+    "Rules and flows",
+    "Regeln und Flows",
+    "Règles et flux",
+    "Reglas y flujos",
+  ],
+  deactivate: ["Deactivate", "Deaktivieren", "Désactiver", "Desactivar"],
+  gallery: [
+    "Product gallery",
+    "Produktgalerie",
+    "Galerie produit",
+    "Galería del producto",
+  ],
+  drop: [
+    "Drop product images here",
+    "Produktbilder hier ablegen",
+    "Déposez les images ici",
+    "Arrastra aquí las imágenes",
+  ],
+  choose: [
+    "Choose images",
+    "Bilder auswählen",
+    "Choisir des images",
+    "Elegir imágenes",
+  ],
+  uploadHint: [
+    "PNG, JPEG or WebP · up to 8 MB each · 20 gallery images. Save the product to apply gallery changes.",
+    "PNG, JPEG oder WebP · jeweils bis 8 MB · 20 Galeriebilder. Produkt speichern, um Galerieänderungen zu übernehmen.",
+    "PNG, JPEG ou WebP · 8 Mo par image · 20 images. Enregistrez le produit pour appliquer la galerie.",
+    "PNG, JPEG o WebP · hasta 8 MB · 20 imágenes. Guarda el producto para aplicar la galería.",
+  ],
+  cover: ["Cover image", "Titelbild", "Image principale", "Imagen principal"],
+  makeCover: [
+    "Set as cover",
+    "Als Titelbild verwenden",
+    "Définir comme image principale",
+    "Usar como imagen principal",
+  ],
+  noImages: [
+    "No saved gallery images",
+    "Keine gespeicherten Galeriebilder",
+    "Aucune image enregistrée",
+    "No hay imágenes guardadas",
+  ],
+  placeholder: [
+    "Product previews use the saved gallery. Add images to show this product.",
+    "Produktvorschauen nutzen die gespeicherte Galerie. Füge Bilder für dieses Produkt hinzu.",
+    "Les aperçus utilisent la galerie enregistrée. Ajoutez des images pour ce produit.",
+    "Las vistas previas usan la galería guardada. Añade imágenes para este producto.",
+  ],
+  uploading: ["Uploading", "Wird hochgeladen", "Téléversement", "Subiendo"],
+  invalidImage: [
+    "Choose PNG, JPEG or WebP files up to 8 MB; at most 20 gallery images.",
+    "Wähle PNG, JPEG oder WebP bis 8 MB; maximal 20 Galeriebilder.",
+    "Choisissez des PNG, JPEG ou WebP de 8 Mo maximum ; 20 images au plus.",
+    "Elige PNG, JPEG o WebP de hasta 8 MB; máximo 20 imágenes.",
+  ],
+  url: ["Image URL", "Bild-URL", "URL de l’image", "URL de imagen"],
+  alt: [
+    "Image description",
+    "Bildbeschreibung",
+    "Description de l’image",
+    "Descripción de imagen",
+  ],
+  addUrl: [
+    "Add image by URL",
+    "Bild über URL hinzufügen",
+    "Ajouter une image par URL",
+    "Añadir imagen por URL",
+  ],
+  previous: [
+    "Move earlier",
+    "Nach vorne verschieben",
+    "Déplacer avant",
+    "Mover antes",
+  ],
+  next: [
+    "Move later",
+    "Nach hinten verschieben",
+    "Déplacer après",
+    "Mover después",
+  ],
+  aiImages: [
+    "AI image studio",
+    "KI-Bildstudio",
+    "Studio d’images IA",
+    "Estudio de imágenes IA",
+  ],
+  generate: [
+    "Generate image",
+    "Bild generieren",
+    "Générer une image",
+    "Generar imagen",
+  ],
+  optimize: [
+    "Optimize selected image",
+    "Ausgewähltes Bild optimieren",
+    "Optimiser l’image sélectionnée",
+    "Optimizar imagen seleccionada",
+  ],
+  prompt: [
+    "Image instructions",
+    "Bildanweisung",
+    "Instructions d’image",
+    "Instrucciones de imagen",
+  ],
+  aiHint: [
+    "The configured image provider creates a private draft. Review product accuracy before adding it to the gallery. Provider calls may incur charges.",
+    "Der konfigurierte Bildanbieter erzeugt einen privaten Entwurf. Prüfe die Produkttreue vor dem Hinzufügen zur Galerie. Anbieteraufrufe können Kosten verursachen.",
+    "Le fournisseur configuré crée un brouillon privé. Vérifiez la fidélité au produit avant de l’ajouter. Des frais peuvent s’appliquer.",
+    "El proveedor configurado crea un borrador privado. Comprueba la fidelidad del producto antes de añadirlo. Puede haber cargos.",
+  ],
+  aiDisabled: [
+    "Image generation is not configured on this server.",
+    "Bildgenerierung ist auf diesem Server noch nicht konfiguriert.",
+    "La génération d’images n’est pas configurée sur ce serveur.",
+    "La generación de imágenes no está configurada en este servidor.",
+  ],
+  applyImage: [
+    "Add reviewed image to gallery",
+    "Geprüftes Bild zur Galerie hinzufügen",
+    "Ajouter l’image vérifiée à la galerie",
+    "Añadir imagen revisada a la galería",
+  ],
+  specialTax: [
+    "Destination and special tax rules",
+    "Zielgebiets- und Spezialsteuerregeln",
+    "Règles fiscales de destination et spéciales",
+    "Reglas fiscales regionales y especiales",
+  ],
+  specialHint: [
+    "Country → state → postal code · date windows · priority · Rule Builder condition. Matching rules take precedence over country and default rates.",
+    "Land → Bundesland → Postleitzahl · Zeiträume · Priorität · Rule-Builder-Bedingung. Passende Regeln haben Vorrang vor Länder- und Standardsätzen.",
+    "Pays → région → code postal · dates · priorité · condition. Les règles correspondantes priment sur les taux nationaux.",
+    "País → estado → código postal · fechas · prioridad · condición. Las reglas coincidentes prevalecen sobre las tasas nacionales.",
+  ],
+  baseRates: [
+    "Fallback rates by country",
+    "Rückfallsätze je Land",
+    "Taux nationaux de repli",
+    "Tasas de respaldo por país",
+  ],
+} as const satisfies Record<string, readonly [string, string, string, string]>;
+export function useWorkspaceText() {
+  const { locale } = useLocale();
+  const index = { "en-GB": 0, "de-DE": 1, "fr-FR": 2, "es-ES": 3 }[locale];
+  return {
+    w: (key: keyof typeof workspaceWords) => workspaceWords[key][index],
+  };
+}
