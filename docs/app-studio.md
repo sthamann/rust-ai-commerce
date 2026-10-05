@@ -6,6 +6,8 @@ App Studio is a visual builder for **working native commerce apps**, using the s
 
 Open Commerce Studio → **Developers**. The included care-guide draft has a text block, data table and form. It starts private.
 
+Saved apps appear as clickable cards under **My apps**. Click a card to open its latest saved build on the editable design canvas with a bumped semantic version. The **Edit app** button also returns from the runtime preview to editing. Editing through **Versions & releases** opens the same canvas. Existing versions remain immutable.
+
 1. Select a component to edit its title, text or model binding. Add text, table, cards and form blocks with the palette. Use the ordering buttons and undo/redo to change the layout.
 2. Open **Data models** to add typed fields. Strings can use every enabled shop language; the editor shows one content language at a time. Missing translations inherit the shop main language. Public model access is explicit.
 3. Open **Connections** to enable namespaced HTTP routes, select AI planning tools/grounding entities and opt save actions into the existing Flow Builder. Installed managed actions are also MCP tools.

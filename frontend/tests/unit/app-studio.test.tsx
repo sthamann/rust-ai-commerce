@@ -115,3 +115,78 @@ it("applies an agent manifest to the same canvas, preserving content and custom 
   await user.click(screen.getByRole("button", { name: "Data models" }));
   expect(screen.getByDisplayValue("care_score")).toBeVisible();
 });
+it("opens a saved app card directly on the editable canvas and saves a new version", async () => {
+  const { request } = setup(),
+    user = userEvent.setup();
+  await user.click(
+    await screen.findByRole("button", { name: "Save new version" }),
+  );
+  const original = request.mock.calls.find(
+    (c) => c[0] === "/api/developer/import",
+  )![1];
+  await user.click(screen.getByRole("button", { name: "Coding agent" }));
+  await user.click(
+    screen.getByRole("button", {
+      name: /Product care guide.*Open for editing/,
+    }),
+  );
+  expect(
+    screen.getByRole("button", { name: "Design", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
+  expect(screen.getByLabelText("Version")).toHaveValue("0.1.1");
+  await user.clear(screen.getByLabelText("App name"));
+  await user.type(screen.getByLabelText("App name"), "Updated guide");
+  await user.click(screen.getByRole("button", { name: "Save new version" }));
+  await waitFor(() =>
+    expect(
+      request.mock.calls.filter((c) => c[0] === "/api/developer/import"),
+    ).toHaveLength(2),
+  );
+  const next = request.mock.calls.filter(
+    (c) => c[0] === "/api/developer/import",
+  )[1][1];
+  expect(next.manifest.version).toBe("0.1.1");
+  expect(next.manifest.name.en).toBe("Updated guide");
+  expect(original.manifest.version).toBe("0.1.0");
+  expect(original.manifest.name.en).toBe("Product care guide");
+});
+it("returns from version editing and the explicit edit button to the design workspace", async () => {
+  setup();
+  const user = userEvent.setup();
+  await user.click(
+    await screen.findByRole("button", { name: "Save new version" }),
+  );
+  await user.click(screen.getByRole("button", { name: /Versions & releases/ }));
+  await user.click(
+    screen.getByRole("button", { name: "Edit as next version" }),
+  );
+  expect(screen.getByLabelText("Version")).toHaveValue("0.1.1");
+  expect(
+    screen.getByRole("button", { name: "Design", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
+  await user.click(screen.getByRole("button", { name: "Data models" }));
+  await user.click(screen.getByRole("button", { name: "Edit app" }));
+  expect(screen.getByLabelText("Version")).toHaveValue("0.1.1");
+  expect(
+    screen.getByRole("button", { name: "Design", exact: true }),
+  ).toHaveAttribute("aria-current", "page");
+});
+
+it("automatically starts a new version when an already-saved canvas is edited directly", async () => {
+  setup();
+  const user = userEvent.setup();
+  await user.click(
+    await screen.findByRole("button", { name: "Save new version" }),
+  );
+  await waitFor(() =>
+    expect(
+      screen.getByRole("button", { name: "Save new version" }),
+    ).toBeDisabled(),
+  );
+  await user.clear(screen.getByLabelText("App name"));
+  await user.type(screen.getByLabelText("App name"), "Direct edit");
+  expect(screen.getByLabelText("Version")).toHaveValue("0.1.1");
+  expect(
+    screen.getByRole("button", { name: "Save new version" }),
+  ).toBeEnabled();
+});

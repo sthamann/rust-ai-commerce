@@ -20,6 +20,7 @@ import AppDataEditor from "./AppDataEditor";
 import AppConnections from "./AppConnections";
 import AppAgentPanel from "./AppAgentPanel";
 import AppVersions from "./AppVersions";
+import AppLibrary from "./AppLibrary";
 import SandboxPreview from "./SandboxPreview";
 import "../styles/app-studio.css";
 import "../styles/app-studio-inspector.css";
@@ -64,6 +65,12 @@ export default function DeveloperView({
     studio.saved.state === "staged" &&
     !studio.dirty &&
     studio.env === studio.saved.environment;
+  const openForEditing = (build: Parameters<typeof studio.editVersion>[0]) => {
+    studio.editVersion(build);
+    setPreview(false);
+    setSelected("");
+    setSection("design");
+  };
   const tabs = ["design", "data", "connect", "agent", "versions"] as const;
   return (
     <div className="studio-page app-studio">
@@ -90,6 +97,12 @@ export default function DeveloperView({
           {a("reset")}
         </button>
       </div>
+      <AppLibrary
+        builds={studio.builds}
+        mainLocale={studio.mainLocale}
+        busy={studio.busy || !manage}
+        onOpen={openForEditing}
+      />
       <fieldset
         className="app-studio-fieldset"
         disabled={!manage || studio.busy}
@@ -109,6 +122,19 @@ export default function DeveloperView({
             </div>
           </div>
           <div className="app-toolbar-actions">
+            <button
+              className="studio-secondary"
+              onClick={() => {
+                if (studio.saved) openForEditing(studio.saved);
+                else {
+                  setPreview(false);
+                  setSection("design");
+                }
+              }}
+            >
+              <Icon name="code" size={16} />
+              {a("editApp")}
+            </button>
             <label>
               {a("sandbox")}
               <select
@@ -328,7 +354,9 @@ export default function DeveloperView({
           {section === "agent" && (
             <AppAgentPanel studio={studio} request={request} />
           )}{" "}
-          {section === "versions" && <AppVersions studio={studio} />}
+          {section === "versions" && (
+            <AppVersions studio={studio} onEdit={openForEditing} />
+          )}
         </ContentLanguage>
       </fieldset>
       {studio.busy && (

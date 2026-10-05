@@ -147,7 +147,13 @@ export function useAppStudio(
     dispatchEvent(new Event("commerce.apps.changed"));
   };
   const edit = (m: Manifest) => {
-    dispatch(m);
+    // Editing a persisted snapshot starts a new version; never overwrite its package.
+    dispatch(
+      saved && m.version === saved.version
+        ? { ...m, version: bump(saved.version) }
+        : m,
+    );
+    if (saved) setSaved(null);
     setChange(null);
     setReviewed(false);
   };

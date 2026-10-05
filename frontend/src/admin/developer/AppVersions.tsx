@@ -2,8 +2,14 @@
 import { contentText } from "../../shared/i18n/content-language";
 import { useAppStudioText } from "../../shared/i18n/app-studio-i18n";
 import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
-import type { AppStudio } from "./useAppStudio";
-export default function AppVersions({ studio }: { studio: AppStudio }) {
+import type { AppStudio, Build } from "./useAppStudio";
+export default function AppVersions({
+  studio,
+  onEdit,
+}: {
+  studio: AppStudio;
+  onEdit: (build: Build) => void;
+}) {
   const { a, locale } = useAppStudioText(),
     { w } = useWorkbenchText();
   return (
@@ -25,7 +31,7 @@ export default function AppVersions({ studio }: { studio: AppStudio }) {
               <button
                 className="studio-secondary"
                 disabled={studio.busy}
-                onClick={() => studio.editVersion(b)}
+                onClick={() => onEdit(b)}
               >
                 {a("edit")}
               </button>

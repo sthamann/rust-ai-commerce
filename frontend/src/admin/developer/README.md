@@ -16,3 +16,5 @@ A visual workbench over the **same versioned Manifest** consumed by the Rust run
 The actual renderer is in `shared/apps/native/`, shared by the sandbox preview and released admin/storefront views. Freely executable app services retain the isolated iframe/service path; the native builder does not execute scripts or start a shell.
 
 Run frontend build, tests, coverage, localization and architecture checks. See [App Studio guide](../../../../docs/app-studio.md) and [testing boundaries](../../../../docs/testing.md). Test presence is not 100% whole-codebase coverage.
+
+- `AppLibrary.tsx`: clickable saved app cards; opens the latest build as a new editable version. Both library and version-list editing return to the design workspace.

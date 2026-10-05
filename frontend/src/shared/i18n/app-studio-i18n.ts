@@ -14,6 +14,14 @@ export const appStudioWords = {
     "Votre app visuelle et votre agent utilisent la même définition versionnée.",
     "Tu app visual y tu agente usan la misma definición versionada.",
   ],
+  library: ["My apps", "Meine Apps", "Mes apps", "Mis apps"],
+  editApp: ["Edit app", "App bearbeiten", "Modifier l’app", "Editar app"],
+  openApp: [
+    "Open for editing",
+    "Zum Bearbeiten öffnen",
+    "Ouvrir pour modifier",
+    "Abrir para editar",
+  ],
   design: ["Design", "Gestaltung", "Conception", "Diseño"],
   data: [
     "Data models",
