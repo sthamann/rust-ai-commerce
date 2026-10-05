@@ -2,6 +2,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { RequestFn } from "../api/types";
 import { useCustomerText } from "../i18n/customer-i18n";
+import { useCrmText } from "../i18n/crm-i18n";
+import ConfirmDialog from "../ui/ConfirmDialog";
 import AddressCard from "./AddressCard";
 import AddressFields from "./AddressFields";
 import {
@@ -24,6 +26,8 @@ export default function AddressBook({
   onChange?: () => void;
 }) {
   const { c } = useCustomerText();
+  const { r } = useCrmText();
+  const [deleting, setDeleting] = useState<AddressEntry>();
   const [list, setList] = useState<AddressList>();
   const [editing, setEditing] = useState<AddressEntry>();
   const [draft, setDraft] = useState<Address>();
@@ -171,24 +175,70 @@ export default function AddressBook({
                     type="button"
                     disabled={busy}
                     className="studio-secondary shop-secondary"
-                    onClick={() =>
-                      void run(async () => {
-                        await request(
-                          `${path}/${entry.id}`,
-                          { revision: entry.revision },
-                          "DELETE",
-                        );
-                        setMessage(c("addressDeleted"));
-                      })
-                    }
+                    onClick={() => setDeleting(entry)}
                   >
                     {c("delete")}
                   </button>
+                  {(["billing", "shipping"] as const).map(
+                    (kind) =>
+                      entry.id !==
+                        (kind === "billing"
+                          ? list.defaultBillingAddressId
+                          : list.defaultShippingAddressId) && (
+                        <button
+                          type="button"
+                          key={kind}
+                          disabled={busy}
+                          className="studio-secondary shop-secondary"
+                          onClick={() =>
+                            void run(async () => {
+                              await request(
+                                `${path}/${entry.id}`,
+                                {
+                                  address: entry.address,
+                                  revision: entry.revision,
+                                  defaultBilling: kind === "billing",
+                                  defaultShipping: kind === "shipping",
+                                },
+                                "PUT",
+                              );
+                              setMessage(c("saved"));
+                            })
+                          }
+                        >
+                          {r(kind === "billing" ? "useBilling" : "useShipping")}
+                        </button>
+                      ),
+                  )}
                 </div>
               )}
             </article>
           ))}
         </div>
+      )}
+      {deleting && (
+        <ConfirmDialog
+          title={r("deleteAddress")}
+          confirmLabel={r("delete")}
+          disabled={busy}
+          onCancel={() => {
+            if (!busy) setDeleting(undefined);
+          }}
+          onConfirm={() =>
+            void run(async () => {
+              await request(
+                `${path}/${deleting.id}`,
+                { revision: deleting.revision },
+                "DELETE",
+              );
+              setDeleting(undefined);
+              setMessage(c("addressDeleted"));
+            })
+          }
+        >
+          <AddressCard address={deleting.address} />
+          <p>{r("deleteAddressHint")}</p>
+        </ConfirmDialog>
       )}
     </section>
   );

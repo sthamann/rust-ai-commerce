@@ -36,6 +36,7 @@ pub(crate) async fn promote(
     c: &StoredCart,
     mut q: Value,
 ) -> Result<Value> {
+    let b2b = q["price"]["taxStatus"] == "net";
     let rows = sqlx::query(
         "SELECT id,data FROM commerce_promotions WHERE tenant=$1 ORDER BY id FOR UPDATE",
     )
@@ -95,25 +96,11 @@ pub(crate) async fn promote(
         .flat_map(|l| l["price"]["calculatedTaxes"].as_array().unwrap())
         .map(|t| t["tax"].as_f64().unwrap())
         .sum::<f64>();
-    let original = math_round(
-        if c.data.group == "business" {
-            positions + tax
-        } else {
-            positions
-        },
-        2,
-    );
+    let original = math_round(if b2b { positions + tax } else { positions }, 2);
     q["price"]["positionPrice"] = json!(math_round(positions, 2));
     q["price"]["totalPrice"] = json!(original);
     q["price"]["tax"] = json!(math_round(tax, 2));
-    q["price"]["netPrice"] = json!(math_round(
-        if c.data.group == "business" {
-            positions
-        } else {
-            positions - tax
-        },
-        2
-    ));
+    q["price"]["netPrice"] = json!(math_round(if b2b { positions } else { positions - tax }, 2));
     let mut discounts = vec![];
     for (id, p) in applicable {
         if p.kind == "free_shipping" {
@@ -153,7 +140,7 @@ pub(crate) async fn promote(
                     price: discounted,
                     quantity: 1,
                     tax_rate,
-                    gross: c.data.group != "business",
+                    gross: !b2b,
                     ..PriceInput::default()
                 });
                 let quantity = line["quantity"].as_u64().unwrap_or(1) as f64;
@@ -172,12 +159,12 @@ pub(crate) async fn promote(
             tax = math_round(tax, 2);
             q["price"]["positionPrice"] = json!(after);
             q["price"]["tax"] = json!(tax);
-            q["price"]["netPrice"] = json!(if c.data.group == "business" {
+            q["price"]["netPrice"] = json!(if b2b {
                 after
             } else {
                 math_round(after - tax, 2)
             });
-            q["price"]["totalPrice"] = json!(if c.data.group == "business" {
+            q["price"]["totalPrice"] = json!(if b2b {
                 math_round(after + tax, 2)
             } else {
                 after

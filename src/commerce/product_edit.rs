@@ -85,6 +85,7 @@ async fn save_product(
     let t = merchant(&a, &h)?;
     let mut edit: Edit = serde_json::from_value(v).map_err(|_| bad("Invalid product metadata"))?;
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "merchant").await?;
     let data: Value =
         sqlx::query_scalar("SELECT data FROM commerce_settings WHERE tenant=$1 FOR SHARE")
             .bind(&t)

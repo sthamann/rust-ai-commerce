@@ -3,6 +3,9 @@ use crate::*;
 use vendune::pricing::{TaxRule, proportional_tax_rules};
 mod types;
 pub(crate) use types::*;
+mod customer_groups;
+mod group_usage;
+pub(crate) use customer_groups::*;
 mod configuration;
 pub(crate) use configuration::*;
 mod tax;
@@ -80,3 +83,5 @@ pub(crate) use method_usage::method_dependencies;
 
 mod settings_release;
 pub(crate) use settings_release::*;
+
+pub(crate) use settings_patch::resolve as restore_checkout_data;

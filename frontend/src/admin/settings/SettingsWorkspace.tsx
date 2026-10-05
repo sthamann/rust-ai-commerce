@@ -1,4 +1,6 @@
 /** Independent settings workspace: grouped navigation, explicit dirty-draft guards and native API forms. */
+import { useCrmText } from "../../shared/i18n/crm-i18n";
+import CustomerGroupsSettings from "./CustomerGroupsSettings";
 import { useState } from "react";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
 import { useShopText } from "../../shared/i18n/shop-i18n";
@@ -11,7 +13,13 @@ import { useInternationalText } from "../../shared/i18n/international-i18n";
 import CommerceSettings from "./CommerceSettings";
 import MasterDataSettings from "./MasterDataSettings";
 type Area =
-  "masterData" | "taxes" | "countries" | "shipping" | "payment" | "languages";
+  | "masterData"
+  | "taxes"
+  | "countries"
+  | "shipping"
+  | "payment"
+  | "languages"
+  | "customerGroups";
 export default function SettingsWorkspace({
   request,
   rights,
@@ -30,6 +38,7 @@ export default function SettingsWorkspace({
     { w } = useWorkbenchText(),
     { u } = useStudioText(),
     { i } = useInternationalText();
+  const { r } = useCrmText();
   const [area, setArea] = useState<Area>("masterData");
   const [dirty, setDirty] = useState(false);
   const [pending, setPending] = useState<(() => void) | null>(null);
@@ -67,6 +76,12 @@ export default function SettingsWorkspace({
       label: s("shipping"),
       hint: u("shippingHint"),
       icon: "truck",
+    },
+    {
+      id: "customerGroups",
+      label: r("groups"),
+      hint: r("groupsHint"),
+      icon: "people",
     },
     {
       id: "payment",
@@ -114,7 +129,10 @@ export default function SettingsWorkspace({
               aria-current={area === item.id ? "page" : undefined}
               onClick={() => {
                 if (area !== item.id) {
-                  if (area !== "masterData" && item.id !== "masterData")
+                  if (
+                    !["masterData", "customerGroups"].includes(area) &&
+                    !["masterData", "customerGroups"].includes(item.id)
+                  )
                     setArea(item.id);
                   else navigate(() => setArea(item.id));
                 }
@@ -161,6 +179,12 @@ export default function SettingsWorkspace({
         <div className="settings-body">
           {area === "masterData" ? (
             <MasterDataSettings
+              request={request}
+              canWrite={rights.includes("settings.write")}
+              onDirty={setDirty}
+            />
+          ) : area === "customerGroups" ? (
+            <CustomerGroupsSettings
               request={request}
               canWrite={rights.includes("settings.write")}
               onDirty={setDirty}

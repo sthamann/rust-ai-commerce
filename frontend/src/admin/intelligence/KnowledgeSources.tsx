@@ -1,4 +1,5 @@
 /** Searchable cursor source library, guarded lifecycle decisions and single-language source editing. */
+import EntityHistory from "../../shared/history/EntityHistory";
 import { useEffect, useState } from "react";
 import { useKnowledgeText } from "../../shared/i18n/knowledge-i18n";
 import { useLocale } from "../../shared/i18n/i18n";
@@ -231,6 +232,22 @@ export default function KnowledgeSources({
               </button>
             </div>
           )}
+          <EntityHistory
+            request={request}
+            entity="source"
+            id={selected.id}
+            revision={selected.revision}
+            dirty={busy}
+            onRestored={
+              selected.archived
+                ? undefined
+                : async () => {
+                    await open(selected);
+                    await load();
+                    onChange();
+                  }
+            }
+          />
         </section>
       )}
       <div className="knowledge-source-toolbar">

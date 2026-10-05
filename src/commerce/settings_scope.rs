@@ -51,6 +51,7 @@ pub(crate) async fn get_scope(
     auth::permit(&h, "settings.read")?;
     let t = merchant(&a, &h)?;
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "merchant").await?;
     let (data, base_revision) = scoped_locked(&mut tx, &t, &channel).await?;
     let row = sqlx::query(
         "SELECT data,revision FROM commerce_overrides WHERE tenant=$1 AND channel_id=$2",
@@ -89,6 +90,7 @@ pub(crate) async fn save_scope(
     let next = decode_config(v["data"].clone())?;
     validate_config(&next)?;
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "merchant").await?;
     let row = sqlx::query("SELECT data,revision FROM commerce_settings WHERE tenant=$1 FOR UPDATE")
         .bind(&t)
         .fetch_one(&mut *tx)
@@ -113,6 +115,7 @@ pub(crate) async fn save_scope(
     if next.main_locale != base.main_locale
         || next.locales != base.locales
         || json!(next.country_definitions) != json!(base.country_definitions)
+        || json!(next.customer_groups) != json!(base.customer_groups)
     {
         return Err(bad(
             "Manage languages and country definitions in the shared basis",

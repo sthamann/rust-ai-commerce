@@ -155,6 +155,18 @@ registration/sign-in, separate default billing/shipping addresses, structured
 contacts, payment preferences and own order history. Checkout copies the selected
 customer/address records into the order, so later account edits do not rewrite it.
 Guest email entry never grants an existing account's identity or order access.
+Address cards independently choose billing/delivery defaults. Customer orders,
+registered buyers and product line items open their related native editors with
+back navigation and direct links. **Settings → Customer groups** configures
+translated groups and their gross/net basis; exact group IDs drive rules, flows
+and quantity prices. Public registration cannot grant a privileged group.
+
+**Version history** shows who changed an entity, when, through which path and its
+before/after values. A confirmed restore passes current validation and saves a
+new revision. Product inventory and immutable order snapshots are preserved;
+orders use workflow actions, and knowledge sources re-enter private review.
+History begins with this update; earlier edits cannot be reconstructed. See
+[recorded entities, API/MCP operations and restore limits](docs/entity-history.md).
 
 Vendune Studio provides **Customers** and **Orders** with direct server-owned
 workflow actions, payment-job progress, tracking, activity and four-language

@@ -120,6 +120,14 @@ const SCHEMA: &[(&str, &str)] = &[
         "033-managed-knowledge",
         include_str!("../migrations/033-managed-knowledge.sql"),
     ),
+    (
+        "034-entity-history",
+        include_str!("../migrations/034-entity-history.sql"),
+    ),
+    (
+        "035-history-finalization",
+        include_str!("../migrations/035-history-finalization.sql"),
+    ),
 ];
 
 pub(crate) async fn apply(pool: &PgPool) {

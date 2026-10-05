@@ -8,6 +8,8 @@ import Commerce.Claims
 #print axioms CommerceKernel.checkout_contact_exact
 #print axioms CommerceKernel.completion_exact
 #print axioms CommerceKernel.completion_safe
+#print axioms CommerceKernel.customer_group_net_exact
+#print axioms CommerceKernel.customer_group_unknown_denied
 #print axioms CommerceKernel.destination_tax_exact
 #print axioms CommerceKernel.discount_bounded
 #print axioms CommerceKernel.discount_conservation

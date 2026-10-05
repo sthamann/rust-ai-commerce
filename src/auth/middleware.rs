@@ -128,6 +128,7 @@ pub(crate) async fn authenticate(
         "x-rac-tenant",
         "x-rac-permissions",
         "x-rac-platform-user",
+        "x-rac-history-reason",
     ] {
         request.headers_mut().remove(key);
     }

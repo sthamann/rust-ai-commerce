@@ -10,6 +10,16 @@ pub(crate) async fn execute(
     id: &str,
 ) -> Result<Value> {
     let mut tx = a.db.begin().await?;
+    sqlx::query("SELECT set_config('vendune.actor',$1,true),set_config('vendune.source','flow',true),set_config('vendune.reason',$2,true)").bind(&f.actor).bind(format!("flow:{key}:{action}")).execute(&mut *tx).await?;
+    let (settings, _) = commerce::scoped_locked(&mut tx, t, "default").await?;
+    if action == "action.change.customer.group"
+        && !settings
+            .customer_groups
+            .iter()
+            .any(|g| Some(g.id.as_str()) == config["groupId"].as_str())
+    {
+        return Err(bad("Unknown configured customer group"));
+    }
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,33))")
         .bind(format!("flow-effect:{t}:{key}"))
         .execute(&mut *tx)
@@ -137,7 +147,7 @@ pub(crate) async fn execute(
             .execute(&mut *tx)
             .await?;
     }
-    let (settings, _) = commerce::config(a, t).await?;
+
     let result = json!({"flowKey":key,"action":action,"orderId":id,"text":super::flow_text::effective(&config["instruction"], &f.locale, &settings.main_locale),"config":config});
     sqlx::query(
         "INSERT INTO order_activity(tenant,order_id,actor,kind,data) VALUES($1,$2,$3,'flow',$4)",

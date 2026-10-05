@@ -34,7 +34,7 @@ pub(super) async fn save(
         if !s
             .payments
             .iter()
-            .any(|m| m.id == *id && m.active && (!m.business_only || group == "business"))
+            .any(|m| m.id == *id && m.active && (!m.business_only || s.is_business(&group)))
         {
             return Err(bad("Payment method unavailable for customer"));
         }
@@ -46,6 +46,7 @@ pub(super) async fn save(
         }
     }
     let mut tx = a.db.begin().await?;
+    history::customer_context(&mut tx, &email).await?;
     sqlx::query("UPDATE customers SET profile=$1,company=NULLIF($2,''),revision=revision+1 WHERE tenant=$3 AND email=$4").bind(json!(p)).bind(&p.company).bind(&t).bind(&email).execute(&mut *tx).await?;
     if let Some(ad) = &p.address {
         address_save_conn(
@@ -84,6 +85,7 @@ pub(super) async fn password(
     }
     let new = auth::hash_password(auth::password(&json!({"password":v["newPassword"]}))?).await?;
     let mut tx = a.db.begin().await?;
+    history::customer_context(&mut tx, &email).await?;
     let n = sqlx::query(
         "UPDATE customers SET password_hash=$1 WHERE tenant=$2 AND email=$3 AND password_hash=$4",
     )

@@ -350,3 +350,16 @@ Scoped checkout settings, method dependency guards, selective staging and produc
 Knowledge sources, product graph evidence, observed decisions and retrieval preview: [domain ownership and verification](knowledge-workspace.md#source-ownership-and-verification). Real suites: `knowledge_workspace.py`, `developer_documents.py`, `apps.py`, `connected_apps.py`; component regressions: `knowledge-workspace.test.tsx`.
 
 Managed storage/search integration: `managed_search.py` verifies ordinary PostgreSQL, real Qdrant, hostname scope, durable deletion/retry and lexical fallback with synthetic embeddings. It does not measure AI quality.
+
+## Connected CRM and entity history
+
+`history/{mod,routes,capability,restore,product}.rs` owns trusted attribution,
+scoped paging, MCP parity and restoration through domain handlers. Migrations
+034/035 capture transaction-coalesced aggregate snapshots.
+`accounts/address_restore.rs` owns validated address-book restoration;
+`commerce/{customer_groups,group_usage}.rs` owns group definitions, price basis
+and dependency admission. `shared/history/` is reused by native editors and
+`admin/shell/useEntityNavigation.ts` owns scoped entity/back paths.
+`scripts/crm_history.py` and `frontend/tests/unit/crm-history.test.tsx` cover these
+paths, alongside existing customer, merchant, automation and staging suites.
+See [history boundaries](entity-history.md).

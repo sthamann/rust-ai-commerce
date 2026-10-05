@@ -9,6 +9,9 @@ pub(crate) async fn capabilities() -> Json<Value> {
     )
 }
 pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+    if history::schema(name).is_some() {
+        return history::invoke(a, h, name, v).await;
+    }
     if name.starts_with("merchant.media.") {
         return assets::media_invoke(a, h, name, v).await;
     }

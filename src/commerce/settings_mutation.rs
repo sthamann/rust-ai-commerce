@@ -14,6 +14,7 @@ pub(crate) async fn save_config(
         .as_i64()
         .ok_or(bad("Configuration revision required"))?;
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "merchant").await?;
     // Serialize configuration with product assignments and translation apply, so
     // a concurrently removed class/language cannot be committed from an older read.
     let previous =
@@ -22,6 +23,7 @@ pub(crate) async fn save_config(
             .fetch_one(&mut *tx)
             .await?;
     let previous = decode_config(previous.get("data"))?;
+    super::group_usage::guard(&mut tx, &t, &previous, &s).await?;
     super::method_usage::guard(&mut tx, &t, &previous, &s, None).await?;
     let patches: Vec<Value> =
         sqlx::query_scalar("SELECT data FROM commerce_overrides WHERE tenant=$1")

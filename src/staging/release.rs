@@ -36,6 +36,7 @@ pub(crate) async fn release(
         return Err(bad("Duplicate selection"));
     }
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "staging.release").await?;
     operations::lock_company(&mut tx, &t).await?;
     operations::lock_company(&mut tx, &id).await?;
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,16))")

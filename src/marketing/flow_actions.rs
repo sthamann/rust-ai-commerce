@@ -88,7 +88,7 @@ pub(crate) fn validate(action: &str, config: &Value) -> Result<()> {
     }
     if action == "action.change.customer.group" {
         require("groupId")?;
-        if !["consumer", "business"].contains(&config["groupId"].as_str().unwrap()) {
+        if !apps::identifier(config["groupId"].as_str().unwrap()) {
             return Err(bad("Unknown native customer group"));
         }
     }

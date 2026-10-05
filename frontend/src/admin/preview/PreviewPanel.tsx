@@ -1,6 +1,8 @@
 /** PreviewPanel renders verified shop state and typed user actions. */
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "../../shared/i18n/i18n";
+import { inheritedText } from "../../shared/geography/geography-types";
+import type { CustomerGroup } from "../../shared/customer/customer-types";
 import Icon from "../../shared/ui/Icon";
 import { useWorkspaceText } from "../../shared/i18n/workspace-i18n";
 import type { Product, RequestFn } from "../shell/studio-types";
@@ -19,6 +21,27 @@ export function PreviewPanel({
   const { t, money, locale } = useLocale();
   const [quantity, setQuantity] = useState(1);
   const [group, setGroup] = useState("consumer");
+  const [groups, setGroups] = useState<CustomerGroup[]>([]);
+  const [mainLocale, setMainLocale] = useState("en-GB");
+  useEffect(() => {
+    let active = true;
+    setGroups([]);
+    if (connected)
+      request("/api/merchant/customer-groups")
+        .then((v) => {
+          if (active) {
+            setGroups(v.elements);
+            setMainLocale(v.mainLocale);
+            setGroup("consumer");
+          }
+        })
+        .catch(() => {
+          if (active) setError(true);
+        });
+    return () => {
+      active = false;
+    };
+  }, [request, connected]);
   const [quote, setQuote] = useState<any>();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -101,8 +124,16 @@ export function PreviewPanel({
             <label>
               {t("group")}
               <select value={group} onChange={(e) => setGroup(e.target.value)}>
-                <option value="consumer">{t("consumer")}</option>
-                <option value="business">{t("business")}</option>
+                {groups.map((g) => (
+                  <option key={g.id} value={g.id}>
+                    {inheritedText(
+                      g.translations,
+                      locale,
+                      mainLocale,
+                      "name",
+                    ) || g.id}
+                  </option>
+                ))}
               </select>
             </label>
             <label>
@@ -160,7 +191,11 @@ export function PreviewPanel({
                     <b>{money(line.price.unitPrice)}</b>
                   </div>
                   <div>
-                    <span>{group === "business" ? t("net") : t("gross")}</span>
+                    <span>
+                      {quote.quote.price.taxStatus === "net"
+                        ? t("net")
+                        : t("gross")}
+                    </span>
                     <strong>{money(quote.quote.price.positionPrice)}</strong>
                   </div>
                   <div className="quote-total">

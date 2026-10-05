@@ -29,7 +29,7 @@ pub(crate) fn enrich(
         .find(|v| {
             v.id == selected.payment_method_id
                 && v.active
-                && (!v.business_only || c.data.group == "business")
+                && (!v.business_only || s.is_business(&c.data.group))
                 && v.available_in(&selected.country)
         })
         .ok_or(bad("Payment method is unavailable for this customer"))?;
@@ -89,7 +89,7 @@ pub(crate) fn enrich(
     });
     let shipping_net = math_round(gross - gross_calc.tax, 2);
     // Native method prices are gross amounts; explicit net component for B2B display.
-    let cost = json!({"unitPrice":if c.data.group=="business"{shipping_net}else{gross},"totalPrice":gross,"netPrice":shipping_net,"tax":gross_calc.tax,"calculatedTaxes":gross_calc.calculated_taxes});
+    let cost = json!({"unitPrice":if s.is_business(&c.data.group){shipping_net}else{gross},"totalPrice":gross,"netPrice":shipping_net,"tax":gross_calc.tax,"calculatedTaxes":gross_calc.calculated_taxes});
     q["price"]["totalPrice"] = json!(math_round(gross_items + gross, 2));
     q["price"]["netPrice"] = json!(math_round(
         q["price"]["netPrice"].as_f64().unwrap() + shipping_net,
@@ -114,7 +114,7 @@ pub(crate) fn enrich(
         s.payments
             .iter()
             .filter(|v| v.active
-                && (!v.business_only || c.data.group == "business")
+                && (!v.business_only || s.is_business(&c.data.group))
                 && v.available_in(&selected.country))
             .map(|v| super::method_text::localized_payment(v, &c.data.locale, s))
             .collect::<Vec<_>>()

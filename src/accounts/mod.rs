@@ -1,5 +1,7 @@
 //! Independent customer sessions, profile/password management and owning-account order history.
 use crate::*;
+mod address_restore;
+pub(crate) use address_restore::restore_book;
 mod address_store;
 mod addresses;
 mod contacts;
@@ -91,6 +93,7 @@ async fn register(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> R
         }
     }
     let mut tx = a.db.begin().await?;
+    history::customer_context(&mut tx, &email).await?;
     let n=sqlx::query("INSERT INTO customers(tenant,email,password_hash,profile) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING").bind(&t).bind(&email).bind(password).bind(json!(contact)).execute(&mut *tx).await?.rows_affected();
     if n != 1 {
         return Err(conflict("Account already exists"));

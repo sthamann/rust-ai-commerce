@@ -5,7 +5,7 @@ pub(crate) async fn options(State(a): State<App>, h: HeaderMap) -> Result<Json<V
     let t = tenant(&h)?;
     let (s, revision) = scoped_config(&a, &t, marketing::channel_id(&h)).await?;
     let business = if header(&h, "sw-context-token").is_some() {
-        load_cart(&a, &h).await?.data.group == "business"
+        s.is_business(&load_cart(&a, &h).await?.data.group)
     } else {
         false
     };

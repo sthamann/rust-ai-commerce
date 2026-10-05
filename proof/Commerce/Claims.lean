@@ -197,4 +197,11 @@ theorem destination_tax_exact (condition country state postal date : Bool) :
     destination_tax_admissible condition country state postal date = true ↔
     condition = true ∧ country = true ∧ state = true ∧ postal = true ∧ date = true := by
   cases condition <;> cases country <;> cases state <;> cases postal <;> cases date <;> simp [destination_tax_admissible]
+/-- Unknown groups cannot gain net presentation by claiming a business basis. -/
+theorem customer_group_unknown_denied (business : Bool) :
+    customer_group_net false business = false := by simp [customer_group_net]
+/-- Every configured business basis, and only that basis, selects net presentation. -/
+theorem customer_group_net_exact (configured business : Bool) :
+    customer_group_net configured business = true ↔ configured = true ∧ business = true := by
+  simp [customer_group_net]
 end CommerceKernel

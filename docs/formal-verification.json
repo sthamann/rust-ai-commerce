@@ -1,12 +1,12 @@
 {
   "status": "passed",
   "scope": "Extracted production policies; NOT full Rust/server correctness",
-  "sourceCommit": "ef5a2a9aa1053f80461df6e367e6cbb3e6fe4a1b",
+  "sourceCommit": "cc9b114874ca4b443da80fdbf7d9d0fc8ba7baf6",
   "workingTreeChanged": true,
   "leanToolchain": "leanprover/lean4:v4.29.1",
-  "policies": 16,
+  "policies": 22,
   "axiomAudit": {
-    "theorems": 38,
+    "theorems": 48,
     "sorry": 0,
     "customAxioms": 0,
     "nativeDecisionAxioms": 0,
@@ -18,18 +18,18 @@
   },
   "compiledEnvironmentRechecked": true,
   "conformance": {
-    "cases": 3602,
+    "cases": 4172,
     "mismatches": 0,
     "allBooleanAssignments": true,
     "numericBoundaryIncludesU64Max": true,
     "seed": 20261002
   },
   "inventory": {
-    "rustModules": 154,
+    "rustModules": 241,
     "extractedPolicyModules": 1,
-    "reviewedBindingModules": 11,
-    "unprovedModules": 141,
-    "reviewedSchemaBuildProofInputs": 37,
+    "reviewedBindingModules": 19,
+    "unprovedModules": 220,
+    "reviewedSchemaBuildProofInputs": 60,
     "entireCoreProved": false
   },
   "trustedBoundary": [
@@ -40,115 +40,10 @@
     "Operating system and provider protocols"
   ],
   "negativeControls": {
-    "brokenPoliciesRejectedByLean": 34,
+    "brokenPoliciesRejectedByLean": 52,
     "unsupportedSyntaxRejected": 14,
     "staleUnclassifiedDisconnectedBindingsRejected": 3,
     "proofShortcutsUnexpectedAxiomsMissingAuditsRejected": 9,
     "baselineAccepted": true
-  },
-  "httpRegression": {
-    "suites": [
-      {
-        "suite": "studio",
-        "exitCode": 0,
-        "elapsedSeconds": 0.67
-      },
-      {
-        "suite": "integration",
-        "exitCode": 0,
-        "elapsedSeconds": 0.95
-      },
-      {
-        "suite": "protocols",
-        "exitCode": 0,
-        "elapsedSeconds": 0.61
-      },
-      {
-        "suite": "intelligence",
-        "exitCode": 0,
-        "elapsedSeconds": 0.3
-      },
-      {
-        "suite": "commerce",
-        "exitCode": 0,
-        "elapsedSeconds": 1.64
-      },
-      {
-        "suite": "scalability",
-        "exitCode": 0,
-        "elapsedSeconds": 2.95
-      },
-      {
-        "suite": "users",
-        "exitCode": 0,
-        "elapsedSeconds": 4.69
-      },
-      {
-        "suite": "providers",
-        "exitCode": 0,
-        "elapsedSeconds": 3.37
-      },
-      {
-        "suite": "apps",
-        "exitCode": 0,
-        "elapsedSeconds": 2.88
-      },
-      {
-        "suite": "checkout_handoff",
-        "exitCode": 0,
-        "elapsedSeconds": 1.46
-      },
-      {
-        "suite": "payments",
-        "exitCode": 0,
-        "elapsedSeconds": 15.74
-      },
-      {
-        "suite": "services",
-        "exitCode": 0,
-        "elapsedSeconds": 3.49
-      },
-      {
-        "suite": "extensions",
-        "exitCode": 0,
-        "elapsedSeconds": 2.43
-      },
-      {
-        "suite": "staging",
-        "exitCode": 0,
-        "elapsedSeconds": 2.0
-      },
-      {
-        "suite": "marketing_accounts",
-        "exitCode": 0,
-        "elapsedSeconds": 4.53
-      },
-      {
-        "suite": "merchant_operations",
-        "exitCode": 0,
-        "elapsedSeconds": 4.31
-      },
-      {
-        "suite": "customer_accounts",
-        "exitCode": 0,
-        "elapsedSeconds": 2.46
-      },
-      {
-        "suite": "developer_documents",
-        "exitCode": 0,
-        "elapsedSeconds": 3.51
-      }
-    ],
-    "scope": "Existing real HTTP/PostgreSQL suites run in two batches; no live provider authorization."
-  },
-  "connectedApps": {
-    "groups": 9,
-    "privateStateRegressionTests": 4,
-    "providerScope": "Local protocol fixtures; no real account OAuth or external messages."
-  },
-  "ruleDifferential": {
-    "cases": 1976,
-    "upstream": "shopware/core 6.7.14.2",
-    "scope": "Original numeric/string/stringArray/UUID comparisons; not entire condition catalog."
   }
 }

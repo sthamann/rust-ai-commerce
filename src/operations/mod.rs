@@ -5,6 +5,8 @@ mod company_logo;
 mod company_model;
 mod company_public;
 mod customers;
+pub(crate) use customers::restore_customer;
+pub(crate) use master_data::save as restore_company;
 mod master_data;
 pub(crate) use master_data::{lock as lock_company, validate_release as validate_company_release};
 mod orders;
@@ -33,6 +35,7 @@ pub(crate) fn router() -> Router<App> {
             "/api/merchant/order-state-machine",
             get(workflow::get).put(workflow::save),
         )
+        .route("/api/merchant/customer-groups", get(commerce::groups))
         .route("/api/merchant/customers", get(customers::list))
         .route(
             "/api/merchant/customers/{email}/addresses",
@@ -130,7 +133,8 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
             addresses::list(State(a.clone()), h.clone(), Path(id()?)).await?
         }
         "merchant.customer.address.save" => Json(
-            accounts::address_save(a, &merchant(a, h)?, &id()?, v["addressId"].as_str(), v).await?,
+            accounts::address_save(a, &merchant(a, h)?, &id()?, v["addressId"].as_str(), v, h)
+                .await?,
         ),
         "merchant.customer.address.delete" => Json(
             accounts::address_delete(
@@ -139,6 +143,7 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
                 &id()?,
                 v["addressId"].as_str().ok_or(bad("addressId required"))?,
                 v["revision"].as_i64().ok_or(bad("revision required"))?,
+                h,
             )
             .await?,
         ),

@@ -5,11 +5,31 @@ import { useCustomerText } from "../../shared/i18n/customer-i18n";
 import "../../shared/styles/customers.css";
 
 import { useCallback, useEffect, useState } from "react";
+import EntityHistory from "../../shared/history/EntityHistory";
+import { useCrmText } from "../../shared/i18n/crm-i18n";
+import ConfirmDialog from "../../shared/ui/ConfirmDialog";
+import { inheritedText } from "../../shared/geography/geography-types";
+import type { OpenEntity } from "../shell/useEntityNavigation";
 import { useOperationsText } from "../../shared/i18n/operations-i18n";
 import type { RequestFn } from "../shell/studio-types";
-export default function CustomersManager({ request }: { request: RequestFn }) {
+export default function CustomersManager({
+  request,
+  initialEmail,
+  onEntity,
+  onEntityBack,
+}: {
+  request: RequestFn;
+  initialEmail?: string;
+  onEntity?: OpenEntity;
+  onEntityBack?: () => void;
+}) {
   const { o } = useOperationsText();
   const { c } = useCustomerText();
+  const { r, locale } = useCrmText();
+  const [groups, setGroups] = useState<any[]>([]),
+    [mainLocale, setMainLocale] = useState("en-GB"),
+    [baseline, setBaseline] = useState(""),
+    [pending, setPending] = useState<(() => void) | null>(null);
   const [countries, setCountries] = useState<string[]>(["DE"]);
   const [rows, setRows] = useState<any[]>([]),
     [query, setQuery] = useState(""),
@@ -18,6 +38,18 @@ export default function CustomersManager({ request }: { request: RequestFn }) {
     [canEdit, setCanEdit] = useState(false),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
+  const dirty =
+    !!customer &&
+    JSON.stringify([
+      customer.profile,
+      customer.company,
+      customer.customerGroup,
+      customer.active,
+    ]) !== baseline;
+  const navigate = (action: () => void) => {
+    if (dirty) setPending(() => action);
+    else action();
+  };
   const load = useCallback(
     async (after = "") => {
       const v = await request(
@@ -33,20 +65,46 @@ export default function CustomersManager({ request }: { request: RequestFn }) {
       .then((v) => setCountries(v.countries))
       .catch((e) => setError(e.message));
     void load().catch((e) => setError(e.message));
+    request("/api/merchant/customer-groups")
+      .then((v) => {
+        setGroups(v.elements);
+        setMainLocale(v.mainLocale);
+      })
+      .catch((e) => setError(e.message));
     request("/api/auth/access")
       .then((v) => setCanEdit(v.permissions.includes("customers.write")))
       .catch((e) => setError(e.message));
   }, [load, request]);
   const detail = async (email: string) => {
     try {
-      setCustomer(
-        await request(`/api/merchant/customers/${encodeURIComponent(email)}`),
+      const next = await request(
+        `/api/merchant/customers/${encodeURIComponent(email)}`,
+      );
+      setCustomer(next);
+      setBaseline(
+        JSON.stringify([
+          next.profile,
+          next.company,
+          next.customerGroup,
+          next.active,
+        ]),
       );
       setError("");
     } catch (e) {
       setError((e as Error).message);
     }
   };
+  useEffect(() => {
+    if (initialEmail) void detail(initialEmail);
+    else setCustomer(undefined);
+  }, [initialEmail]);
+  const groupName = (id: string) =>
+    inheritedText(
+      groups.find((g) => g.id === id)?.translations ?? {},
+      locale,
+      mainLocale,
+      "name",
+    ) || id;
   return (
     <div className="studio-page workbench operations">
       <div className="page-intro">
@@ -59,8 +117,13 @@ export default function CustomersManager({ request }: { request: RequestFn }) {
           <button
             className="studio-secondary"
             onClick={() => {
-              setCustomer(undefined);
-              void load();
+              navigate(() => {
+                if (onEntityBack) onEntityBack();
+                else {
+                  setCustomer(undefined);
+                  void load();
+                }
+              });
             }}
           >
             {o("back")}
@@ -118,9 +181,9 @@ export default function CustomersManager({ request }: { request: RequestFn }) {
                     setCustomer({ ...customer, customerGroup: e.target.value })
                   }
                 >
-                  {["consumer", "business"].map((g) => (
-                    <option key={g} value={g}>
-                      {o(g)}
+                  {groups.map((g) => (
+                    <option key={g.id} value={g.id}>
+                      {groupName(g.id)}
                     </option>
                   ))}
                 </select>
@@ -142,25 +205,44 @@ export default function CustomersManager({ request }: { request: RequestFn }) {
                 </button>
               )}
             </form>
+            {dirty && <p className="muted">{r("addressPending")}</p>}
             <AddressBook
               request={request}
               path={`/api/merchant/customers/${encodeURIComponent(customer.email)}/addresses`}
               countries={countries}
-              canEdit={canEdit}
+              canEdit={canEdit && !dirty && !busy}
               onChange={() => void detail(customer.email)}
             />
             {customer.orders && (
               <>
                 <h3>{o("orders")}</h3>
                 {customer.orders.map((r: any) => (
-                  <div className="operation-row" key={r.id}>
+                  <button
+                    type="button"
+                    className="operation-row"
+                    key={r.id}
+                    onClick={() => navigate(() => onEntity?.("orders", r.id))}
+                  >
                     <strong>{r.orderNumber}</strong>
                     <span>{o(r.state)}</span>
-                    <span>{r.cart.price.totalPrice.toFixed(2)} €</span>
-                  </div>
+                    <span>
+                      {new Intl.NumberFormat(locale, {
+                        style: "currency",
+                        currency: r.currency ?? "EUR",
+                      }).format(r.cart.price.totalPrice)}
+                    </span>
+                  </button>
                 ))}
               </>
             )}
+            <EntityHistory
+              request={request}
+              entity="customer"
+              id={customer.email}
+              revision={customer.revision}
+              dirty={dirty || busy}
+              onRestored={() => detail(customer.email)}
+            />
           </section>
         </>
       ) : (
@@ -173,11 +255,13 @@ export default function CustomersManager({ request }: { request: RequestFn }) {
             <button
               className="operation-row"
               key={c.email}
-              onClick={() => detail(c.email)}
+              onClick={() =>
+                onEntity ? onEntity("customers", c.email) : void detail(c.email)
+              }
             >
               <strong>{c.profile.name || c.email}</strong>
               <span>{c.email}</span>
-              <span>{o(c.customerGroup)}</span>
+              <span>{groupName(c.customerGroup)}</span>
             </button>
           ))}
           {!rows.length && <p>{o("empty")}</p>}
@@ -187,6 +271,19 @@ export default function CustomersManager({ request }: { request: RequestFn }) {
             </button>
           )}
         </section>
+      )}
+      {pending && (
+        <ConfirmDialog
+          title={r("pending")}
+          confirmLabel={r("discard")}
+          onCancel={() => setPending(null)}
+          onConfirm={() => {
+            pending();
+            setPending(null);
+          }}
+        >
+          <p>{r("dirty")}</p>
+        </ConfirmDialog>
       )}
     </div>
   );

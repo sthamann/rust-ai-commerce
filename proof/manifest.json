@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "21 extracted production policies; surrounding modules remain unproved",
+  "claim": "22 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -197,18 +197,32 @@
       "theorems": [
         "destination_tax_exact"
       ]
+    },
+    "customer_group_net": {
+      "bindings": [
+        "src/commerce/customer_groups.rs"
+      ],
+      "theorems": [
+        "customer_group_unknown_denied",
+        "customer_group_net_exact"
+      ]
     }
   },
   "sources": {
+    "src/accounts/address_restore.rs": {
+      "status": "unproved",
+      "sha256": "712936ff628c4e4d36457cebddfbe7027621ed4cfadbd3bce9054af4cac8018f",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+    },
     "src/accounts/address_store.rs": {
       "status": "unproved",
-      "sha256": "e9219738f94d55c2dc42fc09bd09c9f26c753dd7bfd4a8d91d2d0d10b79e26df",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "044f06098c0554d662cb2647fa2323757ee87d5394ed1ecb767b86e94369c593",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/accounts/addresses.rs": {
       "status": "unproved",
-      "sha256": "60c8e7c5c48f3951977edbee95fffb405f3aa6d22c29c9181c1215fe69909cb0",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "cbde3b3117835bdc803532f18b7d82fee28aa9aedf1a60eaf5b39467b57d9559",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/accounts/contacts.rs": {
       "status": "unproved",
@@ -227,18 +241,18 @@
     },
     "src/accounts/mod.rs": {
       "status": "unproved",
-      "sha256": "b0c4332379ff755843274a6fa97c79d32dd1e0332a552a131a502d9b50cd9526",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "2abeba2552625dd124ef830bfd7eb644bdf7ddaa5196b09ec314a8a538095d21",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/accounts/order_snapshot.rs": {
       "status": "unproved",
-      "sha256": "bdc413384130655713e0e2d6c92a422143975a81dfd0cdffefee30111d71adf7",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "80217419109b1e8684b7a5cf913660f766ad422917c2c9c5c82f1f25d87b5e8a",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/accounts/profile.rs": {
       "status": "unproved",
-      "sha256": "dd4021527870089e7baed29ad84f67084af98caf847a03131298e91ddea1eabb",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "779a15829fa4137698957732648de7131217387a824ba3a659c82bdae77df00c",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/agent.rs": {
       "status": "unproved",
@@ -407,8 +421,8 @@
     },
     "src/auth/middleware.rs": {
       "status": "unproved",
-      "sha256": "adb1a932880512850e0f92de88b41182f8afe55d649f935bf5f8944f38ca13ef",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "137a5357e50babef6c62e2201494592012607a92ce27b0cf4bbaf9fc5177adc4",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/auth/mod.rs": {
       "status": "unproved",
@@ -502,8 +516,8 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "88bc2b4927c9bc7b0a063715ec7542e09d63703ad203d0e08b820c01f9d5dc68",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "edfaa1034e6cff4847a838959c22c6d8f148d4ea06beba2e129ae87101767375",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
@@ -512,13 +526,13 @@
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
-      "sha256": "db0e048a74e0f0db5662c5834f4188575c3db5e8380c722b26bfaf3fd10ee899",
-      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+      "sha256": "908c7e0282317a38b7b27642291e34a559c94ca3fe1d25671034c2e12a29184d",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/capabilities.rs": {
       "status": "unproved",
-      "sha256": "e8b320c8bbe753a4a469b8982885c8f4cf60dc14f8ceee41de5905a3f7651a2a",
-      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+      "sha256": "6f0312b7662538d425cd2e37832e371f1694643d8a7e7dcee31eeb126af07d87",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/cart_model.rs": {
       "status": "unproved",
@@ -532,8 +546,8 @@
     },
     "src/cart_price.rs": {
       "status": "unproved",
-      "sha256": "c966e7491d850ff343678bfc9b4e99b8ea2d994304b703779ca5d7ddab705315",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "e5a9fd44d681634caa83c7dae8a395bb4bd8daa8a447e50a883dfb17df83dba4",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/cart_routes.rs": {
       "status": "unproved",
@@ -557,13 +571,13 @@
     },
     "src/catalog_routes.rs": {
       "status": "unproved",
-      "sha256": "af74f378556c93594109df8c15c3f5db3cbf9648398666027234808f2552d03c",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "683a5a83ce3a1c810094f2585f5da03b8bd5385c9aa64d5f6a4438f69b764f1b",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/categories/admin.rs": {
       "status": "unproved",
-      "sha256": "428d9ef346785128db655afaa368dcc6cca5bee290bda8d198e5993014047b30",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "9f232067af83cbea09ae65f2d9b4759758d143a247a9deb9122fd853d0f62d2b",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/categories/mod.rs": {
       "status": "unproved",
@@ -632,28 +646,38 @@
     },
     "src/commerce/context_routes.rs": {
       "status": "unproved",
-      "sha256": "4a83e06530fe87de6c03d81fffb22fd11dbeec559aac8564fc9894c8b7dd55bb",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "d4aca82be0702fdde88312f30a811bda322ce5db26d6e10b5bfb12482a79b124",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+    },
+    "src/commerce/customer_groups.rs": {
+      "status": "reviewed-binding",
+      "sha256": "3851eb2af8116aa3cf9b1b575398835886cd666fa24c59439df4874cf9713f88",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/commerce/delivery.rs": {
       "status": "unproved",
-      "sha256": "2d8a36a070437c7395be3fb71a4032b8553b29fb321787f3a2381affa907a0d2",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "42761e6f7af5923a5238f6e70fb903e6d11fa6d9e382aefda7a2244d682aa4c3",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/commerce/detail.rs": {
       "status": "unproved",
-      "sha256": "ecefe81356ab976c49796bc66f390c08f66acf94c681cf33cb4621a8e4657793",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "b051ded0bb24a3b90eea52868ea67cb7755dd9911270d874733e0a22ee60e600",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/commerce/fulfillment.rs": {
       "status": "reviewed-binding",
-      "sha256": "89188a401d48a5bd3a02cf3d74085165bd27c0d40820940138f93e455c86569c",
-      "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+      "sha256": "f6f2ec3659f61a6767261c1ff0e67a91ce7608d913cb393b6419523f85f5b44b",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/commerce/geography.rs": {
       "status": "unproved",
       "sha256": "2d8ff4e49e9037644f2c1028799a0cf3d59af4a7f68f80ec59348cd3b8b24f61",
       "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "src/commerce/group_usage.rs": {
+      "status": "unproved",
+      "sha256": "b90d4e00f3f9dc096f3aaee1ecf0940a2f56960751e4b78b6aaeb4acc2dcdb33",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/commerce/international_capabilities.rs": {
       "status": "unproved",
@@ -672,8 +696,8 @@
     },
     "src/commerce/mod.rs": {
       "status": "unproved",
-      "sha256": "99b1ece7b20e39d0b14238402901b681421da60d340849018309ff6336df93b1",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "4c2239311917384554253dd7fc068897805183da7584f01e673d27fb85b6a1d8",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/commerce/order_fields.rs": {
       "status": "unproved",
@@ -702,8 +726,8 @@
     },
     "src/commerce/product_edit.rs": {
       "status": "unproved",
-      "sha256": "997b505662540ddaa30ba030a075dde7a79f4f780795e7d42615c50550147d25",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "117de0f26d6f0c175e8596ac8ce1268147791371a90cbd144f49564d5243b43f",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/commerce/product_fields.rs": {
       "status": "unproved",
@@ -727,8 +751,8 @@
     },
     "src/commerce/selection.rs": {
       "status": "unproved",
-      "sha256": "9ec8c4ceba6bc193359e2a9d46bfac88c11ff1ad54faa37aeb68a17f2ce33521",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "cf9c88d0506861120c57343f081fc1b0d6d57cee71c7e47b9b6cafaa78e20088",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/commerce/settings_defaults.rs": {
       "status": "unproved",
@@ -737,13 +761,13 @@
     },
     "src/commerce/settings_mutation.rs": {
       "status": "unproved",
-      "sha256": "81cc52829c987ec5f9c362ac719bf367034f2e1decf6215709bb806df4268dc4",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "7c993857fd26bcc9ec3020c67331bc5bf106654e6391cba2c51d8650081fec00",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/commerce/settings_patch.rs": {
       "status": "unproved",
-      "sha256": "66870e1b0dd1d033f788fd2263caa32325d4ae3457423815bdc497775d0a7605",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "71b6d82299b0a59746c0a214be84ea27ac6e7194e2e185337a843425da7d21eb",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/commerce/settings_release.rs": {
       "status": "unproved",
@@ -757,13 +781,13 @@
     },
     "src/commerce/settings_scope.rs": {
       "status": "unproved",
-      "sha256": "48b8eec3b37e5a9e3e6f608e956c52ab47553535449f0ca38a470566fd8ee9a3",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "09c1f79361ba56a02ca63c1e41be5f01312ffe36032290decbf151757f1df5bc",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/commerce/settings_validation.rs": {
       "status": "unproved",
-      "sha256": "52e06b31ae491c298f3f51430194779fdbdc4873a541a1a33c5469a5e9e5fc01",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "ddf5fc217a5d4d26e61da1c347740d9f97c637d78c706d315d946caf2fb5bdae",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/commerce/tax.rs": {
       "status": "unproved",
@@ -772,8 +796,8 @@
     },
     "src/commerce/tax_context.rs": {
       "status": "unproved",
-      "sha256": "28aec57ab7e377a3791d20350b37c2c137e41211285d92e1b281f5af0cf99871",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "04ccb3aadf2870663acdf59f39baf6efdacb83960f3c21f7ac63988340a8ad15",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/commerce/tax_rules.rs": {
       "status": "reviewed-binding",
@@ -782,8 +806,8 @@
     },
     "src/commerce/types.rs": {
       "status": "unproved",
-      "sha256": "92e69e73bdc492d904c4e1dc6cbadda92a3999cc4f78595854307bc99ce07f2c",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "5b3cf14085c53c1b7acb46e6f3d619dfc5eb77f6ed18dbd68c4dc290570dcf3a",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/concierge.rs": {
       "status": "unproved",
@@ -837,18 +861,18 @@
     },
     "src/documents/ingestion.rs": {
       "status": "unproved",
-      "sha256": "c4676c46fa3d42e4609084fda5eae00cf8e979ecd9109a6f3a0f228c5bcb039e",
-      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+      "sha256": "a531857c0d4b2940c0389b6bb48ef1104b42602ea32f870e72b22c1f418f8b0f",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/documents/lifecycle.rs": {
       "status": "unproved",
-      "sha256": "642dd8a5428a2f00d82792bb6a9a0e478b9702ed7e8d6443d0fab200cc725164",
-      "review": "Reviewed tenant-scoped knowledge lifecycle, enabled-language chunks, optimistic private re-review, transactional graph reassignment, archived/public retrieval fences, actual planner consumption and MCP dispatch; real PostgreSQL/privacy/staging and local-provider regressions cover these paths. No money or Lean pure decision changed."
+      "sha256": "d3e418e98c3c7be015ffd16d5d1ac0ff204ffb2587761e0bcad48ddce2854f90",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/documents/mod.rs": {
       "status": "unproved",
-      "sha256": "98b1a3ccdb2b3ef27b3e3a74fe4f8d0639814fe63722d443aa6818fc69960fd6",
-      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+      "sha256": "887369d82793f5378463981650925258beee6c0e2df9c2e38be65c0de0ab9344",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/documents/parser.rs": {
       "status": "unproved",
@@ -900,6 +924,31 @@
       "sha256": "0cbf3c571a8c3713bcc7a494f31644ba4aa780e4ca76d980392e413fa5e8fb19",
       "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
     },
+    "src/history/capability.rs": {
+      "status": "unproved",
+      "sha256": "63959a23b48b4d4ed5bc47fb12bc0090984ba91ae468fd0ef91933a1a68e87d1",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+    },
+    "src/history/mod.rs": {
+      "status": "unproved",
+      "sha256": "3a979b490b822bfc0b481849a4a063484525fffc6a9cd72596b47306da9907cc",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+    },
+    "src/history/product.rs": {
+      "status": "unproved",
+      "sha256": "3b5bfa096e718a4f95e9a48320aa6cc3fdc28ed3a37e838cf426ac69b95e3bb1",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+    },
+    "src/history/restore.rs": {
+      "status": "unproved",
+      "sha256": "ab0c9c713b9b3b0a2f274a94477ba6b13f35618f1f1ca5b84b2563aced2c7c5b",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+    },
+    "src/history/routes.rs": {
+      "status": "unproved",
+      "sha256": "155f351c03e59902f6551d890c9d27d3a1c1e471eb5fb3bf314be659e2e77a26",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+    },
     "src/http_limits.rs": {
       "status": "unproved",
       "sha256": "6085e1f3f2e6cb7b8dadc039c99dc925dd061a2e74c1ce55e363fa9db3bc12d2",
@@ -937,13 +986,13 @@
     },
     "src/localization.rs": {
       "status": "unproved",
-      "sha256": "e5291a78a387919e39dee027c8e40ae3447a127e40a486272ef2da91f8d30ad7",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "745427dfea21932d53d760309f3f71b5acc52a1edad7f199c858a7406df9347a",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/main.rs": {
       "status": "unproved",
-      "sha256": "c3007f2465d09c91e25fb1c3e9cbc81a7b1cdef0a4ad8c45f36ca761a8585722",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "89aec5c28d8b8f45c68cdd214b0e3d5b12f0265077aaf469d6ea05a11bb2afee",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/marketing/app_flows.rs": {
       "status": "reviewed-binding",
@@ -982,13 +1031,13 @@
     },
     "src/marketing/flow_actions.rs": {
       "status": "unproved",
-      "sha256": "e159fcd0478931cf4576a19c3f865a18c2dc561738d4fc0fd20a320ded290ce7",
-      "review": "Reviewed shared content-language validation, regional key preservation, shop-main flow fallback and asset labels; existing state/price/permission contracts remain intact."
+      "sha256": "66d6b0a6b94ed499550c99dffdc4cdab10af69cada05186afa6be8896c897db6",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/marketing/flow_mutations.rs": {
       "status": "unproved",
-      "sha256": "19ddc060ad91b436aa2ce443540b2ddb788b4a2b861d2530660412c5b7989151",
-      "review": "Reviewed shared content-language validation, regional key preservation, shop-main flow fallback and asset labels; existing state/price/permission contracts remain intact."
+      "sha256": "37ea2c3f89e3bc66813da41a825dac68e3cde69d3e12808f7c3565f3413dcae6",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/marketing/flow_text.rs": {
       "status": "unproved",
@@ -1022,8 +1071,8 @@
     },
     "src/marketing/mod.rs": {
       "status": "unproved",
-      "sha256": "4dd227a8945e7fe5409378eb43bef14b13b77ed9e0097b6a213d31039076aab7",
-      "review": "Reviewed shared content-language validation, regional key preservation, shop-main flow fallback and asset labels; existing state/price/permission contracts remain intact."
+      "sha256": "1454f627e69e930004fd8a3e76ee078f13daffcb0f18f0b59771f86be18dd15c",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/marketing/pipeline.rs": {
       "status": "reviewed-binding",
@@ -1042,13 +1091,13 @@
     },
     "src/marketing/promotions.rs": {
       "status": "unproved",
-      "sha256": "50c852f08280a215a8ce893d6e5ea7e6371a52563448c6d35150c166d68200dc",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "0241b335066aff8488940b3da92a32622afb55b8f0e2f7ab62113de47822bc22",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/marketing/routes.rs": {
       "status": "unproved",
-      "sha256": "66cd05985fe7248c16ba53b5a62ca2e566ef419a644bcc3962f5f8835dbe0152",
-      "review": "Reviewed shared content-language validation, regional key preservation, shop-main flow fallback and asset labels; existing state/price/permission contracts remain intact."
+      "sha256": "229b85dec0deb876c86e5a780930012414ff2f6e1565e6975e612b7b0de110e4",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/marketing/rule_fields.rs": {
       "status": "unproved",
@@ -1077,18 +1126,18 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "3f97811c5c1ce1f1d20d7b2200d05c8460c8df6da0c40891f3e8c3d4fec1076c",
-      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+      "sha256": "d5a735e0b5be116f049464ea2dd888ea9b4af372bebf01cc8c4a796296619118",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "a0a42df9c24f32e3fadd9d405d7ea8d523d2f67abba83f82d9746d66e8698498",
-      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+      "sha256": "25d41feca7008899674ba7ec369f00c49ced6b10b2e48d0d5e67545e5bdbd868",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
-      "sha256": "e683658ad9fbf79799a08e766ee491809a53f4d75a8f3c099401ed5a6d3ce824",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "d78eb5449e410c4e864338949ffcd28731fa9850074874faec982c10722cc8cc",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/operations/company_logo.rs": {
       "status": "unproved",
@@ -1107,23 +1156,23 @@
     },
     "src/operations/customers.rs": {
       "status": "unproved",
-      "sha256": "47783552b96b762aa5b2731e2ab460c53bbdc78f43a904f2568a8f8a865bdc09",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "185596e2d8f4f8acf0dc70c785b61a09881870fc14cb78dca4c81ddaa1249cd4",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/operations/master_data.rs": {
       "status": "unproved",
-      "sha256": "a2bf5670c01fba008abb9ccd104dd5d8134a115ddcc1ec8296a47ce0edbdb8d5",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "a98e3a55a3469c97e0c9e92cfd963a9c5ba2ac86c8c8ab0ef2571f4431c93fcc",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/operations/mod.rs": {
       "status": "unproved",
-      "sha256": "b8a35183c195741d6281ccdbcda1f54c13fa54376c3f2af94ccaa0d95608b67c",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "fb93b258cecbe6a12b79ac4b7f5e3964eac28b9d1d3494068252e03ef1066cfe",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/operations/orders.rs": {
       "status": "unproved",
-      "sha256": "5637562f04af885a6fac0fcd3a4a1206af9e7010b41a7b5789ddf85e83d0833d",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "9ee5d1faf36a64d6c07b80d3308b9ad5122a3297f49fdf269d4d13dbf467a840",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/operations/receipt_pdf.rs": {
       "status": "unproved",
@@ -1147,8 +1196,8 @@
     },
     "src/order_checkout.rs": {
       "status": "reviewed-binding",
-      "sha256": "c5efcd2cb66cb5f69061115a97caccbfb85b373e794920a524a8ffd4dd2af0be",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "e9f65eef1a6c2195d09772b3072c5958577554783c08371c040af7af087a748a",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/order_routes.rs": {
       "status": "unproved",
@@ -1257,8 +1306,8 @@
     },
     "src/routes.rs": {
       "status": "unproved",
-      "sha256": "9f6311a64a9193bc5890a06b9234d392db54847468914a57d9834fe3aadb2ee0",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "c3b82fc5c7120915644af588706ba5ec314589db54370c4305c4e20c73ce801a",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/rule_comparison.rs": {
       "status": "reviewed-binding",
@@ -1292,8 +1341,8 @@
     },
     "src/staging/clone.rs": {
       "status": "unproved",
-      "sha256": "4eea0f579f90aba2bed17d2919911405454c575b8ecdd8f589db9df9cc069e3a",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "f336d599f2134fd2c09b10e554181b14321af29663f242cc185d587a8bb0797d",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/staging/company.rs": {
       "status": "unproved",
@@ -1312,8 +1361,8 @@
     },
     "src/staging/release.rs": {
       "status": "unproved",
-      "sha256": "af6ca3756bac27b5f542941e39d968496902ebdb816abed529c6c72cd76a3b08",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "748b08a4ab4b1a7adc45f4c4e7f0c8c947ee4a9daf7cf187d572c8037ad59a7f",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/staging/snapshot.rs": {
       "status": "unproved",
@@ -1357,8 +1406,8 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "f79a31abe1f7e214438753bf4248829bf6d7acfa6c12aa9b517a5f5a223152d7",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "59a2d6cc0741a806aa3c0704d125512009d25fe941c7fd601d1830da143ee982",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "src/workers.rs": {
       "status": "unproved",
@@ -1547,9 +1596,17 @@
       "sha256": "2f15dc9a330abce6aa7122c9f72d7c4bb38d7f523757be2916d65dd37f9722f3",
       "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
+    "migrations/034-entity-history.sql": {
+      "sha256": "04510e911fc5693c4d4f41772b099122f6928678318c6c65c15a55b9d96c567e",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+    },
+    "migrations/035-history-finalization.sql": {
+      "sha256": "570844745676f6c08e66dc980123c742546c2b75779438efc17a59a6932a49c2",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+    },
     "proof/Commerce/Claims.lean": {
-      "sha256": "c9b984225b556b954c3147500a907788ae4436a16f787d44ccdc493282df5a73",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "9a858dc3abe6bf685f86583ab1500c913a93b91e044cee682f9420ceca27ebf5",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -1584,8 +1641,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "938681602c8cbc2532a899c545493bb4fad13ef03d22aa7bdcb855bd69ef113f",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "c58c44bb34f594b06df3d2b69d1f53dc815a26a10e89fb8387777ec05af8ed3c",
+      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
     },
     "scripts/formal/registry.py": {
       "sha256": "3b554637854314cffd45018b3e5adc568d24e0ab145d7d6fa75350d2f80f5900",

@@ -13,6 +13,7 @@ pub(crate) async fn create(
         .ok_or(bad("Environment name required, maximum 80 bytes"))?;
     let id = format!("stage-{}", &uid()[..20]);
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "staging.clone").await?;
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,16))")
         .bind(&t)
         .execute(&mut *tx)

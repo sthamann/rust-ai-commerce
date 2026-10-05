@@ -1,6 +1,30 @@
 /** Localized request guidance across all transports; original diagnostics remain available to developer tools. */
 import { getLocale } from "./i18n";
 const messages: Record<string, readonly string[]> = {
+  "Customer group is assigned to customers": [
+    "Assign the customers to another group before removing this group.",
+    "Ordne die Kunden einer anderen Gruppe zu, bevor du diese Gruppe entfernst.",
+    "Réaffectez les clients avant de supprimer ce groupe.",
+    "Asigna los clientes a otro grupo antes de eliminar este grupo.",
+  ],
+  "Customer group is assigned to advanced prices": [
+    "Update the product quantity prices before removing this group.",
+    "Passe die Produkt-Staffelpreise an, bevor du diese Gruppe entfernst.",
+    "Modifiez les prix dégressifs avant de supprimer ce groupe.",
+    "Actualiza los precios por cantidad antes de eliminar este grupo.",
+  ],
+  "Customer group is used by a rule or flow": [
+    "Update the rules or flows referencing this group before removing it.",
+    "Passe die Regeln oder Flows an, die diese Gruppe verwenden, bevor du sie entfernst.",
+    "Modifiez les règles ou flux utilisant ce groupe avant sa suppression.",
+    "Actualiza las reglas o flujos que usan este grupo antes de eliminarlo.",
+  ],
+  "Unknown customer group": [
+    "Choose a configured customer group.",
+    "Wähle eine eingerichtete Kundengruppe.",
+    "Choisissez un groupe client configuré.",
+    "Elige un grupo de clientes configurado.",
+  ],
   "Product number already exists": [
     "This product number is already used in this shop. Choose another number.",
     "Diese Produktnummer wird im Shop bereits verwendet. Wähle eine andere Nummer.",

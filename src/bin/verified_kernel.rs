@@ -143,6 +143,10 @@ fn eval(j: &Value) -> Result<Value, String> {
             args["postal"].as_bool().ok_or("Invalid postal")?,
             args["date"].as_bool().ok_or("Invalid date")?
         ))),
+        Some("customer_group_net") => Ok(json!(customer_group_net(
+            args["configured"].as_bool().ok_or("Invalid configured")?,
+            args["business"].as_bool().ok_or("Invalid business")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

@@ -65,6 +65,9 @@ export default function StudioRoutes() {
     access,
     setSettings,
     selectTab,
+    entityTarget,
+    openEntity,
+    entityBack,
     intent,
     onProduct,
     setPreviewOpen,
@@ -84,6 +87,9 @@ export default function StudioRoutes() {
     <AppSurfaceView selected={appSurface} />
   ) : tab === "orders" ? (
     <OrdersManager
+      initialId={entityTarget?.tab === "orders" ? entityTarget.id : undefined}
+      onEntity={openEntity}
+      onEntityBack={entityTarget ? entityBack : undefined}
       request={request}
       headers={{
         Authorization: `Bearer ${token}`,
@@ -91,12 +97,25 @@ export default function StudioRoutes() {
       }}
     />
   ) : tab === "customers" ? (
-    <CustomersManager request={request} />
+    <CustomersManager
+      request={request}
+      initialEmail={
+        entityTarget?.tab === "customers" ? entityTarget.id : undefined
+      }
+      onEntity={openEntity}
+      onEntityBack={entityTarget ? entityBack : undefined}
+    />
   ) : tab === "automation" ? (
     <AutomationView request={request} role={role} />
   ) : tab === "productData" ? (
     connected ? (
-      <ProductDataView request={request} />
+      <ProductDataView
+        request={request}
+        initialId={
+          entityTarget?.tab === "productData" ? entityTarget.id : undefined
+        }
+        onEntityBack={entityTarget ? entityBack : undefined}
+      />
     ) : (
       <div className="studio-empty">
         <p>{t("connectFirst")}</p>

@@ -1,4 +1,5 @@
 /** Order workspace: server actions, exact-once commands, provider progress and visible event history. */
+import EntityHistory from "../../shared/history/EntityHistory";
 import AddressCard from "../../shared/customer/AddressCard";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
 import "../../shared/styles/customers.css";
@@ -15,7 +16,11 @@ export default function OrderDetail({
   rights,
   onBack,
   download,
+  onCustomer,
+  onProduct,
 }: {
+  onCustomer?: (email: string) => void;
+  onProduct?: (id: string) => void;
   id: string;
   request: RequestFn;
   rights: string[];
@@ -153,8 +158,20 @@ export default function OrderDetail({
           <small>{o("order")}</small>
           <h2>{order.orderNumber}</h2>
           <p>
-            {order.customerEmail ?? "—"} ·{" "}
-            {new Date(order.createdAt).toLocaleString(locale)}
+            {order.orderCustomer?.customerId &&
+            onCustomer &&
+            rights.includes("customers.read") ? (
+              <button
+                type="button"
+                className="entity-link"
+                onClick={() => onCustomer(order.customerEmail)}
+              >
+                {order.customerEmail}
+              </button>
+            ) : (
+              (order.customerEmail ?? "—")
+            )}{" "}
+            · {new Date(order.createdAt).toLocaleString(locale)}
           </p>
         </div>
         <div className="order-amount">
@@ -193,7 +210,20 @@ export default function OrderDetail({
             {order.cart.lineItems.map((item: any) => (
               <div className="operation-row" key={item.id}>
                 <div>
-                  <strong>{item.label}</strong>
+                  {onProduct &&
+                  rights.includes("catalog.read") &&
+                  (item.type == null || item.type === "product") &&
+                  typeof item.referencedId === "string" ? (
+                    <button
+                      type="button"
+                      className="entity-link"
+                      onClick={() => onProduct(item.referencedId)}
+                    >
+                      <strong>{item.label}</strong>
+                    </button>
+                  ) : (
+                    <strong>{item.label}</strong>
+                  )}
                   <small>{item.referencedId}</small>
                 </div>
                 <span>× {item.quantity}</span>
@@ -237,6 +267,12 @@ export default function OrderDetail({
           download={download}
         />
       )}
+      <EntityHistory
+        request={request}
+        entity="order"
+        id={id}
+        revision={order.revision}
+      />
       <section className="studio-card order-activity">
         <h2>{o("activity")}</h2>
         {rights.includes("orders.write") && (

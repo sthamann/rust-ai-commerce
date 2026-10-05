@@ -21,7 +21,7 @@ pub(crate) fn resolve_selection(
         .iter()
         .filter(|v| {
             v.active
-                && (!v.business_only || group == "business")
+                && (!v.business_only || settings.is_business(group))
                 && v.available_in(&selected.country)
         })
         .collect::<Vec<_>>();

@@ -117,3 +117,8 @@ pub fn destination_tax_admissible(
 ) -> bool {
     condition && country && state && postal && date
 }
+
+/// Net presentation requires a currently configured group with an explicit business basis.
+pub fn customer_group_net(configured: bool, business: bool) -> bool {
+    configured && business
+}

@@ -28,6 +28,7 @@ pub(crate) async fn edit(
     let data = content::validate(&a, &t, &v).await?;
     let rev = v["revision"].as_i64().ok_or(bad("Revision required"))?;
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "merchant").await?;
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,15))")
         .bind(&t)
         .execute(&mut *tx)
@@ -90,6 +91,7 @@ pub(crate) async fn lifecycle(
         .ok_or(bad("Archived must be boolean"))?;
     let rev = v["revision"].as_i64().ok_or(bad("Revision required"))?;
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "merchant").await?;
     let n=sqlx::query("UPDATE knowledge_documents SET archived=$1,visibility='private',revision=revision+1 WHERE tenant=$2 AND id=$3 AND revision=$4 AND archived<>$1").bind(archived).bind(&t).bind(&id).bind(rev).execute(&mut *tx).await?.rows_affected();
     if n != 1 {
         return Err(conflict("Source changed or unavailable"));

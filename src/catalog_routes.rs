@@ -90,7 +90,7 @@ pub(crate) async fn catalog_page(
         }];
         // This preview contains one item. Searching the entire catalog for each
         // preview would turn catalog hydration into quadratic work.
-        let q = quote(&preview, std::slice::from_ref(p))?;
+        let q = quote(&preview, std::slice::from_ref(p), &settings)?;
         let mut v = json!(p);
         v["calculated_price"] = q["lineItems"][0]["price"].clone();
         data.push(v);

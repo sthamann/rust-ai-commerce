@@ -5,13 +5,20 @@ import { useCallback, useEffect, useState } from "react";
 import { downloadFile } from "../../shared/api/download";
 import { useOperationsText } from "../../shared/i18n/operations-i18n";
 import type { RequestFn } from "../shell/studio-types";
+import type { OpenEntity } from "../shell/useEntityNavigation";
 import OrderDetail from "./OrderDetail";
 export default function OrdersManager({
   request,
   headers,
+  initialId,
+  onEntity,
+  onEntityBack,
 }: {
   request: RequestFn;
   headers: Record<string, string>;
+  initialId?: string;
+  onEntity?: OpenEntity;
+  onEntityBack?: () => void;
 }) {
   const { o, locale } = useOperationsText();
   const [rows, setRows] = useState<any[]>([]),
@@ -20,6 +27,7 @@ export default function OrdersManager({
     [selected, setSelected] = useState<string>(),
     [error, setError] = useState(""),
     [rights, setRights] = useState<string[]>([]);
+  useEffect(() => setSelected(initialId), [initialId]);
   const load = useCallback(
     async (after = "") => {
       try {
@@ -58,7 +66,13 @@ export default function OrdersManager({
             id={selected}
             request={request}
             rights={rights}
+            onCustomer={(email) => onEntity?.("customers", email)}
+            onProduct={(id) => onEntity?.("productData", id)}
             onBack={() => {
+              if (onEntityBack) {
+                onEntityBack();
+                return;
+              }
               setSelected(undefined);
               void load();
             }}
@@ -76,7 +90,9 @@ export default function OrdersManager({
               <button
                 className="operation-row"
                 key={row.id}
-                onClick={() => setSelected(row.id)}
+                onClick={() =>
+                  onEntity ? onEntity("orders", row.id) : setSelected(row.id)
+                }
               >
                 <strong>{row.orderNumber}</strong>
                 <span>{row.customerEmail ?? "—"}</span>

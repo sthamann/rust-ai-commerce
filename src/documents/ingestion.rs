@@ -8,7 +8,7 @@ pub(crate) async fn ingest(
 ) -> Result<Json<Value>> {
     merchant(&a, &h)?;
     auth::permit(&h, "catalog")?;
-    Ok(Json(save(&a, &tenant(&h)?, &v, "api").await?))
+    Ok(Json(save(&a, &h, &tenant(&h)?, &v, "api").await?))
 }
 pub(crate) async fn upload(
     State(a): State<App>,
@@ -63,16 +63,17 @@ pub(crate) async fn upload(
     let (bytes, pdf) = file.ok_or(bad("File required"))?;
     v["content"] = json!(parser::text(bytes, pdf).await?);
     Ok(Json(
-        save(&a, &t, &v, if pdf { "pdf" } else { "upload-text" }).await?,
+        save(&a, &h, &t, &v, if pdf { "pdf" } else { "upload-text" }).await?,
     ))
 }
-async fn save(a: &App, t: &str, v: &Value, source: &str) -> Result<Value> {
+async fn save(a: &App, h: &HeaderMap, t: &str, v: &Value, source: &str) -> Result<Value> {
     let data = content::validate(a, t, v).await?;
     let title = data["title"].as_str().unwrap();
     let text = data["content"].as_str().unwrap();
     let product = data["productId"].as_str();
     let digest = data["digest"].as_str().unwrap();
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, h, "merchant").await?;
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,15))")
         .bind(t)
         .execute(&mut *tx)
@@ -125,6 +126,7 @@ pub(crate) async fn publish(
         return Err(bad("Explicit publication decision required"));
     }
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "merchant").await?;
     let n=sqlx::query("UPDATE knowledge_documents SET visibility=$1,revision=revision+1 WHERE tenant=$2 AND id=$3 AND revision=$4 AND NOT archived").bind(visibility).bind(&t).bind(&id).bind(v["revision"].as_i64()).execute(&mut *tx).await?.rows_affected();
     if n != 1 {
         return Err(conflict("Document changed or unavailable"));

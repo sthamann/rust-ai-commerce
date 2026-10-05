@@ -28,7 +28,8 @@
     "app_studio",
     "company_settings",
     "settings_scopes",
-    "knowledge_workspace"
+    "knowledge_workspace",
+    "crm_history"
   ],
   "providers": [
     "email_tests",

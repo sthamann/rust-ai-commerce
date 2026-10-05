@@ -35,3 +35,5 @@ Rule Builder facts; `settings_defaults.rs` compatibility enrichment;
 `international_capabilities.rs` native configuration/translation MCP operations.
 [The international contract](../../docs/international-commerce.md) names limits
 and real PostgreSQL suites. Translation workers live in their own domain folder.
+
+`customer_groups.rs` owns translated group definitions and verified price basis; `group_usage.rs` rejects removing referenced groups. See [entity history](../../docs/entity-history.md).

@@ -6,7 +6,7 @@ at 100%, and neither coverage nor the Lean subset proves the entire system bug-f
 
 ## Source architecture
 
-- Rust: 229 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
+- Rust: 241 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
 - Frontend: separate `admin/`, `storefront/`, `platform/` and `shared/` ownership. Views/controllers and styles are limited to 400 lines; locale data has a documented 700-line allowance. Runtime cycles, unresolved local imports, crossing application boundaries, missing folder contracts and undocumented source files fail CI.
 - Independent Python services, app examples and browser SDKs remain under `extensions/`; test tooling lives under `scripts/`. [The generated inventory](module-inventory.md) covers all these sources and is checked for drift.
 - Studio workspaces load lazily. Root application routing is isolated in `frontend/src/application/`; error boundaries keep workspace failures inside the current view and provide reload recovery for rejected cached module imports. The removed `CommerceManager` had no call site and duplicated old operational UI. Order state management remains in `admin/orders/OrderWorkflow.tsx`; product review moderation lives in `admin/catalog/ReviewModeration.tsx`.
@@ -74,6 +74,7 @@ supplied by a test. Cases include:
 - merchant authentication, chat failures, language changes, uploads and separate live/staging transports;
 - navigation through all 14 lazy Studio workspaces and a signed-out login path;
 - catalogue filtering, cursor pages, stale responses, customer-session expiry and forbidden operation replay;
+- independent default addresses, linked customer/order/product back paths, configured translated groups, lazy history and confirmed revision-bound restoration with retained failed drafts;
 - opt-in personalization, ranking, consent withdrawal and failed signals;
 - product gallery, variants, normalized purchase quantities, tier prices, SEO, reviews and public source-backed product questions;
 - delayed product answers after navigation and product-specific moderation with rejected writes;

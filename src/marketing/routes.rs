@@ -41,7 +41,7 @@ pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Valu
     result["jobs"] = jobs::values(&a, &t).await?;
     Ok(Json(result))
 }
-pub(super) async fn save(
+pub(crate) async fn save(
     State(a): State<App>,
     h: HeaderMap,
     Path((kind, id)): Path<(String, String)>,
@@ -154,6 +154,7 @@ pub(super) async fn save(
     let name = &data["name"];
     commerce::validate_names(name, &settings, 100)?;
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "merchant").await?;
     let sql = format!("SELECT revision FROM {table} WHERE tenant=$1 AND id=$2 FOR UPDATE");
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,17))")
         .bind(format!("{t}:{table}:{id}"))
@@ -226,6 +227,7 @@ async fn coupons(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Re
         .collect::<Result<Vec<_>>>()?;
     let t = tenant(&h)?;
     let mut tx = a.db.begin().await?;
+    history::context(&mut tx, &h, "merchant").await?;
     let r = sqlx::query("SELECT * FROM carts WHERE tenant=$1 AND token=$2 FOR UPDATE")
         .bind(&t)
         .bind(token(&h)?)
