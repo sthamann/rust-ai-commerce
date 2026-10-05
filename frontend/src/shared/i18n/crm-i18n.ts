@@ -83,10 +83,10 @@ export const crmWords = {
     "Sistema / autor desconocido",
   ],
   merchant: [
-    "Commerce Studio / API",
-    "Commerce Studio / API",
-    "Commerce Studio / API",
-    "Commerce Studio / API",
+    "Vendune Studio / API",
+    "Vendune Studio / API",
+    "Vendune Studio / API",
+    "Vendune Studio / API",
   ],
   customer: [
     "Customer account",
