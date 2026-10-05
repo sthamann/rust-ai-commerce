@@ -155,7 +155,11 @@ it("restores main-language inheritance when legacy and canonical keys coexist", 
   function Harness() {
     const [map, set] = useState(latest);
     return (
-      <ContentLanguage locales={languages} mainLocale="es-ES" language="de-DE">
+      <ContentLanguage
+        locales={[...languages, "de"]}
+        mainLocale="es-ES"
+        language="de-DE"
+      >
         <LocalizedField
           label="Description"
           value={map}

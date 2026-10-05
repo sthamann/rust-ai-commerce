@@ -55,7 +55,8 @@ export default function LocalizedField({
                 delete next[key];
                 const base = language.split("-")[0];
                 if (
-                  locales.filter((l) => l.split("-")[0] === base).length === 1
+                  locales.filter((l) => l !== base && l.split("-")[0] === base)
+                    .length <= 1
                 ) {
                   delete next[base];
                   delete next[language];
