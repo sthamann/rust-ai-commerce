@@ -28,3 +28,8 @@ synthetic Commerce Playground: server-filtered Products, the actual product
 editor/WYSIWYG and translated category tree. The Studio Vase and Studio Objects
 category were created and saved through the actual UI. No product data, server
 responses or layout were mocked for these captures.
+
+The `studio-settings-en.png` capture was recorded on 2026-10-05 from the running
+synthetic Commerce Playground. It shows the current grouped shell, dedicated
+settings navigation and native company form. The UI was captured directly,
+without mocked responses, layout editing or image generation.

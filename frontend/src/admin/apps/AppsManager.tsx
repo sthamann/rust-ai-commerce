@@ -7,6 +7,7 @@ import { useAppText } from "../../shared/i18n/app-i18n";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
 import { useEmailText } from "../../shared/i18n/email-i18n";
 import "../../shared/styles/apps.css";
+import "../styles/app-catalog.css";
 import type { RequestFn } from "../shell/studio-types";
 export default function AppsManager({
   request,

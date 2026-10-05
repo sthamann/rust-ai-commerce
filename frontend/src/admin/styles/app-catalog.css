@@ -1,0 +1,36 @@
+/* Independently loaded, tenant app catalog presentation; no dependency on customer navigation. */
+
+.studio .app-categories {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 0;
+}
+.studio .app-catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
+  gap: 20px;
+}
+.studio .app-catalog-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  text-align: left;
+  padding: 24px;
+  cursor: pointer;
+}
+.studio .app-catalog-card > span {
+  font-size: 12px;
+  color: var(--accent);
+}
+.studio .app-catalog-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 25px #1985bb12;
+}
+.studio .app-catalog-card h2 {
+  margin: 16px 0;
+}
+.studio .app-catalog-card strong {
+  color: var(--accent);
+  font-size: 13px;
+}

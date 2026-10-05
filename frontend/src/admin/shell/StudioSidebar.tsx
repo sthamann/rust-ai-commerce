@@ -6,6 +6,8 @@ import "../styles/operations.css";
 import "../styles/studio.css";
 
 import { useStudio } from "./StudioContext";
+import type { Tab } from "./navigation";
+import { useStudioText } from "../../shared/i18n/studio-ui-i18n";
 
 export default function StudioSidebar() {
   const {
@@ -30,6 +32,19 @@ export default function StudioSidebar() {
     load,
     onExit,
   } = useStudio();
+  const { u } = useStudioText();
+  const groups: { label: string; tabs: Tab[] }[] = [
+    {
+      label: u("intelligence"),
+      tabs: ["assistant", "overview", "knowledge", "agents"],
+    },
+    { label: u("commerce"), tabs: ["productData", "orders", "customers"] },
+    { label: u("experiences"), tabs: ["storyfronts", "automation", "apps"] },
+    {
+      label: u("workspace"),
+      tabs: ["developers", "environments", "users", "commerce"],
+    },
+  ];
   return (
     <aside className={`studio-sidebar ${menu ? "open" : ""}`}>
       <a className="studio-brand" href="#merchant">
@@ -41,7 +56,9 @@ export default function StudioSidebar() {
         </span>
       </a>
       <button className="workspace-switch" onClick={() => selectTab("users")}>
-        <span className="shop-monogram">A</span>
+        <span className="shop-monogram">
+          {workspaceName.slice(0, 1).toUpperCase()}
+        </span>
         <span>
           {workspaceName}
           <small>{t("demo")}</small>
@@ -57,33 +74,41 @@ export default function StudioSidebar() {
         {t("newChat")}
       </button>
       <nav aria-label={t("studio")}>
-        {nav
-          .filter((n) =>
-            n.id === "customers"
-              ? access.includes("customers.read")
-              : n.id === "orders"
-                ? access.includes("orders.read")
-                : n.id === "productData"
-                  ? access.includes("catalog.write")
-                  : true,
-          )
-          .map((n) => (
-            <button
-              key={n.id}
-              aria-current={!appSurface && tab === n.id ? "page" : undefined}
-              className={!appSurface && tab === n.id ? "active" : ""}
-              onClick={() => {
-                selectTab(n.id);
-                setMenu(false);
-              }}
-            >
-              <Icon name={n.icon} />
-              <span>{tabLabel(n.id)}</span>
-              {n.id === "overview" && data?.summary.ordersToday ? (
-                <b>{data.summary.ordersToday}</b>
-              ) : null}
-            </button>
-          ))}
+        {groups.map((group) => (
+          <div className="sidebar-nav-group" key={group.label}>
+            <span className="sidebar-group-label">{group.label}</span>
+            {group.tabs
+              .map((id) => nav.find((n) => n.id === id)!)
+              .filter((n) =>
+                n.id === "customers"
+                  ? access.includes("customers.read")
+                  : n.id === "orders"
+                    ? access.includes("orders.read")
+                    : n.id === "productData"
+                      ? access.includes("catalog.write")
+                      : true,
+              )
+              .map((n) => (
+                <button
+                  key={n.id}
+                  aria-current={
+                    !appSurface && tab === n.id ? "page" : undefined
+                  }
+                  className={!appSurface && tab === n.id ? "active" : ""}
+                  onClick={() => {
+                    selectTab(n.id);
+                    setMenu(false);
+                  }}
+                >
+                  <Icon name={n.icon} />
+                  <span>{tabLabel(n.id)}</span>
+                  {n.id === "overview" && data?.summary.ordersToday ? (
+                    <b>{data.summary.ordersToday}</b>
+                  ) : null}
+                </button>
+              ))}
+          </div>
+        ))}
         <AdminAppNavigation
           selected={appSurface}
           onSelect={(s) => {
@@ -112,10 +137,6 @@ export default function StudioSidebar() {
         )}
       </div>
       <div className="sidebar-bottom">
-        <button onClick={() => selectTab("commerce")}>
-          <Icon name="settings" />
-          {t("settings")}
-        </button>
         <button onClick={onExit}>
           <Icon name="arrow" />
           {t("storefront")}

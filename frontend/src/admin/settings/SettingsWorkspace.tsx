@@ -1,11 +1,15 @@
-/** One settings entry groups shared master data and shop configuration; operational entities remain dedicated. */
+/** Independent settings workspace: grouped navigation, explicit dirty-draft guards and native API forms. */
 import { useState } from "react";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
 import { useShopText } from "../../shared/i18n/shop-i18n";
 import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
+import { useStudioText } from "../../shared/i18n/studio-ui-i18n";
+import Icon, { type IconName } from "../../shared/ui/Icon";
 import type { RequestFn } from "../shell/studio-types";
+import "../styles/settings.css";
 import CommerceSettings from "./CommerceSettings";
 import MasterDataSettings from "./MasterDataSettings";
+type Area = "masterData" | "taxes" | "countries" | "shipping" | "payment";
 export default function SettingsWorkspace({
   request,
   rights,
@@ -21,40 +25,127 @@ export default function SettingsWorkspace({
 }) {
   const { c } = useCustomerText(),
     { s, t } = useShopText(),
-    { w } = useWorkbenchText();
-  const [area, setArea] = useState<
-    "masterData" | "taxes" | "countries" | "shipping" | "payment"
-  >("masterData");
+    { w } = useWorkbenchText(),
+    { u } = useStudioText();
+  const [area, setArea] = useState<Area>("masterData");
+  const [dirty, setDirty] = useState(false);
+  const [pending, setPending] = useState<(() => void) | null>(null);
+  const navigate = (action: () => void) => {
+    if (dirty) setPending(() => action);
+    else action();
+  };
+  const entries: { id: Area; label: string; hint: string; icon: IconName }[] = [
+    {
+      id: "masterData",
+      label: c("masterData"),
+      hint: u("companyHint"),
+      icon: "building",
+    },
+    { id: "taxes", label: s("taxes"), hint: u("taxesHint"), icon: "percent" },
+    {
+      id: "countries",
+      label: c("countries"),
+      hint: u("countriesHint"),
+      icon: "globe",
+    },
+    {
+      id: "shipping",
+      label: s("shipping"),
+      hint: u("shippingHint"),
+      icon: "truck",
+    },
+    {
+      id: "payment",
+      label: s("payment"),
+      hint: u("paymentHint"),
+      icon: "card",
+    },
+  ];
   return (
     <div className="studio-page operations settings-workspace">
       <div className="page-intro">
+        <span className="kicker">{u("workspace")}</span>
         <h1>{c("settings")}</h1>
-        <p>{c("masterDataHint")}</p>
+        <p>{u("settingsHint")}</p>
       </div>
-      <div className="settings-layout">
-        <nav aria-label={c("settings")}>
-          {(
-            ["masterData", "taxes", "countries", "shipping", "payment"] as const
-          ).map((k) => (
+      {pending && (
+        <div className="settings-discard" role="alert">
+          <p>{u("discardHint")}</p>
+          <div>
             <button
-              key={k}
-              className={area === k ? "active" : ""}
-              onClick={() => setArea(k)}
+              className="studio-secondary"
+              onClick={() => setPending(null)}
             >
-              {k === "masterData" ? c(k) : s(k)}
+              {u("keepEditing")}
+            </button>
+            <button
+              className="studio-primary"
+              onClick={() => {
+                setDirty(false);
+                pending();
+                setPending(null);
+              }}
+            >
+              {u("discard")}
+            </button>
+          </div>
+        </div>
+      )}
+      <div className="settings-layout">
+        <nav className="settings-navigation" aria-label={c("settings")}>
+          <span className="settings-nav-label">{u("shopSettings")}</span>
+          {entries.map((item) => (
+            <button
+              key={item.id}
+              aria-current={area === item.id ? "page" : undefined}
+              onClick={() => {
+                if (area !== item.id) navigate(() => setArea(item.id));
+              }}
+            >
+              <Icon name={item.icon} size={19} />
+              <span>
+                <strong>{item.label}</strong>
+                <small>{item.hint}</small>
+              </span>
             </button>
           ))}
-          <button onClick={onAutomation}>
-            {w("automation")} · {w("channels")}
-          </button>
-          <button onClick={onTeam}>{t("users")}</button>
-          <button onClick={onConnections}>{c("providerConnections")}</button>
+          <span className="settings-nav-label">{u("connectedAreas")}</span>
+          {[
+            {
+              label: w("automation"),
+              hint: u("automationHint"),
+              icon: "graph" as const,
+              action: onAutomation,
+            },
+            {
+              label: t("users"),
+              hint: u("teamHint"),
+              icon: "people" as const,
+              action: onTeam,
+            },
+            {
+              label: c("providerConnections"),
+              hint: u("aiHint"),
+              icon: "spark" as const,
+              action: onConnections,
+            },
+          ].map((item) => (
+            <button key={item.label} onClick={() => navigate(item.action)}>
+              <Icon name={item.icon} size={19} />
+              <span>
+                <strong>{item.label}</strong>
+                <small>{item.hint}</small>
+              </span>
+              <Icon name="arrow" size={14} />
+            </button>
+          ))}
         </nav>
-        <div>
+        <div className="settings-body">
           {area === "masterData" ? (
             <MasterDataSettings
               request={request}
               canWrite={rights.includes("settings.write")}
+              onDirty={setDirty}
             />
           ) : (
             <CommerceSettings
@@ -62,6 +153,7 @@ export default function SettingsWorkspace({
               request={request}
               area={area}
               canWrite={rights.includes("settings.write")}
+              onDirty={setDirty}
             />
           )}
         </div>

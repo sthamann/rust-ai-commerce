@@ -1,0 +1,95 @@
+/* Studio-owned form primitives load at the composition root, independent of lazy workspace history. */
+.studio .customer-field-grid,
+.studio .customer-address-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.studio .customer-field-grid label,
+.studio .operations form > label,
+.studio .settings-fields > label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+.studio .customer-field-grid :is(input, select, textarea),
+.studio .operations form > label :is(input, select, textarea) {
+  width: 100%;
+  min-width: 0;
+  background: var(--surface);
+  color: var(--text);
+}
+.studio .customer-field-grid textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+.studio .customer-defaults {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 20px 0 0;
+}
+.studio .customer-defaults label,
+.studio .customer-checkbox {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.studio input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 17px;
+  min-height: 17px;
+  flex-shrink: 0;
+  padding: 0;
+}
+.studio .customer-address-fields {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.studio .customer-address-grid article {
+  border-color: var(--border);
+  background: var(--panel);
+}
+.studio .customer-heading,
+.studio .section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.studio .customer-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.studio .operations :is(form, article) > h3 {
+  margin: 20px 0 12px;
+}
+.studio .operations form > button {
+  margin-top: 20px;
+}
+.studio .operations form > label {
+  margin: 16px 0;
+}
+.studio :is(input, select, textarea):disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+.studio .operations input[type="search"] {
+  width: 100%;
+  max-width: 440px;
+}
+@media (max-width: 600px) {
+  .studio .customer-field-grid,
+  .studio .customer-address-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

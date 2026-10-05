@@ -264,8 +264,10 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/preview/PreviewDialog.tsx](../frontend/src/admin/preview/PreviewDialog.tsx) | PreviewDialog keeps merchant interaction separate from workspace orchestration. |
 | [frontend/src/admin/preview/PreviewPanel.tsx](../frontend/src/admin/preview/PreviewPanel.tsx) | PreviewPanel renders verified shop state and typed user actions. |
 | [frontend/src/admin/settings/CommerceSettings.tsx](../frontend/src/admin/settings/CommerceSettings.tsx) | Country/tax/shipping/payment configuration uses the active workspace request and one revision. |
-| [frontend/src/admin/settings/MasterDataSettings.tsx](../frontend/src/admin/settings/MasterDataSettings.tsx) | Shared legal issuer/company record; issued documents keep their immutable original data. |
-| [frontend/src/admin/settings/SettingsWorkspace.tsx](../frontend/src/admin/settings/SettingsWorkspace.tsx) | One settings entry groups shared master data and shop configuration; operational entities remain dedicated. |
+| [frontend/src/admin/settings/MasterDataSettings.tsx](../frontend/src/admin/settings/MasterDataSettings.tsx) | Shared company record with grouped fields, revision-aware saves and localized draft feedback. |
+| [frontend/src/admin/settings/SettingsSaveBar.tsx](../frontend/src/admin/settings/SettingsSaveBar.tsx) | Consistent settings save feedback, dirty state and permission-aware controls. |
+| [frontend/src/admin/settings/SettingsWorkspace.tsx](../frontend/src/admin/settings/SettingsWorkspace.tsx) | Independent settings workspace: grouped navigation, explicit dirty-draft guards and native API forms. |
+| [frontend/src/admin/settings/useSettingsDraft.ts](../frontend/src/admin/settings/useSettingsDraft.ts) | Revisioned settings drafts survive locale refreshes, reject late loads and keep failed saves editable. |
 | [frontend/src/admin/shell/Merchant.tsx](../frontend/src/admin/shell/Merchant.tsx) | Studio composition root: layout, scoped controller and modular workspace views. |
 | [frontend/src/admin/shell/StudioComposer.tsx](../frontend/src/admin/shell/StudioComposer.tsx) | StudioComposer: focused Studio view; state and commands come from the session-scoped controller. |
 | [frontend/src/admin/shell/StudioContext.ts](../frontend/src/admin/shell/StudioContext.ts) | Typed, local Studio context; never shared across a different mounted Studio. |
@@ -279,11 +281,14 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/shell/useServerHealth.ts](../frontend/src/admin/shell/useServerHealth.ts) | Public server health is independent of the personal Studio session. |
 | [frontend/src/admin/shell/useStudioController.ts](../frontend/src/admin/shell/useStudioController.ts) | Studio session/controller: authentication context, tenant/staging state and chat commands. |
 | [frontend/src/admin/storyfronts/StoryfrontView.tsx](../frontend/src/admin/storyfronts/StoryfrontView.tsx) | Dedicated merchant integration surface for the independently deployed Storyfront service. |
+| [frontend/src/admin/styles/app-catalog.css](../frontend/src/admin/styles/app-catalog.css) | Independently loaded, tenant app catalog presentation; no dependency on customer navigation. |
 | [frontend/src/admin/styles/automation.css](../frontend/src/admin/styles/automation.css) | Actual graph nodes and original rule forms use the Studio theme and independent responsive columns. |
 | [frontend/src/admin/styles/catalog-editor.css](../frontend/src/admin/styles/catalog-editor.css) | Visual editor and category workspace responsive styles. |
 | [frontend/src/admin/styles/catalog.css](../frontend/src/admin/styles/catalog.css) | Light, precise catalog workspace with accessible tables, focused detail panels and visual authoring. |
 | [frontend/src/admin/styles/commerce-manager.css](../frontend/src/admin/styles/commerce-manager.css) | commerce manager: Studio visual system and merchant operational layouts. |
+| [frontend/src/admin/styles/forms.css](../frontend/src/admin/styles/forms.css) | Studio-owned form primitives load at the composition root, independent of lazy workspace history. |
 | [frontend/src/admin/styles/operations.css](../frontend/src/admin/styles/operations.css) | Operational screens share the studio's light surface and clear focus states. |
+| [frontend/src/admin/styles/settings.css](../frontend/src/admin/styles/settings.css) | Independent settings navigation, grouped native forms and save feedback in Studio theme tokens. |
 | [frontend/src/admin/styles/studio/01-studio.css](../frontend/src/admin/styles/studio/01-studio.css) | studio: studio styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/admin/styles/studio/02-workspace-switch.css](../frontend/src/admin/styles/studio/02-workspace-switch.css) | studio: workspace-switch styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/admin/styles/studio/03-welcome-symbol.css](../frontend/src/admin/styles/studio/03-welcome-symbol.css) | studio: welcome-symbol styles. Source order is preserved by the entry stylesheet. |
@@ -295,6 +300,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/studio/09-responsive.css](../frontend/src/admin/styles/studio/09-responsive.css) | studio: responsive styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/admin/styles/studio/10-studio-mobile-preview-button.css](../frontend/src/admin/styles/studio/10-studio-mobile-preview-button.css) | studio: studio-mobile-preview-button styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/admin/styles/studio.css](../frontend/src/admin/styles/studio.css) | Ordered studio stylesheet entry; domain rules live in the adjacent folder. |
+| [frontend/src/admin/styles/workspace-polish.css](../frontend/src/admin/styles/workspace-polish.css) | Consistent Studio density, readable hierarchy and independently scrollable navigation across workspaces. |
 | [frontend/src/admin/team/AccessManager.tsx](../frontend/src/admin/team/AccessManager.tsx) | Fine-grained team overrides, revocable invitations and personal session inventory. |
 | [frontend/src/admin/team/PersonalAccountForm.tsx](../frontend/src/admin/team/PersonalAccountForm.tsx) | PersonalAccountForm: focused account-form view with explicit typed inputs and callbacks. |
 | [frontend/src/admin/team/UsersManager.tsx](../frontend/src/admin/team/UsersManager.tsx) | Users Manager: Personal accounts, memberships, roles, invitations and scoped developer access.. |
@@ -342,6 +348,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/operations-i18n.ts](../frontend/src/shared/i18n/operations-i18n.ts) | Operational commerce labels in all supported languages. |
 | [frontend/src/shared/i18n/platform-i18n.ts](../frontend/src/shared/i18n/platform-i18n.ts) | Operator console translations. Every visible control has an explicit translation in all supported locales. |
 | [frontend/src/shared/i18n/shop-i18n.ts](../frontend/src/shared/i18n/shop-i18n.ts) | Shared shop text hook; dictionaries live in focused locale files. |
+| [frontend/src/shared/i18n/studio-ui-i18n.ts](../frontend/src/shared/i18n/studio-ui-i18n.ts) | Studio navigation and settings guidance in all four supported interface languages. |
 | [frontend/src/shared/i18n/workbench-i18n.ts](../frontend/src/shared/i18n/workbench-i18n.ts) | Complete four-language vocabulary for environments, developer tools and knowledge ingestion. |
 | [frontend/src/shared/styles/app-surfaces.css](../frontend/src/shared/styles/app-surfaces.css) | app surfaces: Shared customer, app and workbench styles; application workspaces must not import each other.. |
 | [frontend/src/shared/styles/apps.css](../frontend/src/shared/styles/apps.css) | apps: Shared customer, app and workbench styles; application workspaces must not import each other.. |

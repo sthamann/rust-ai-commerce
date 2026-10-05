@@ -9,6 +9,8 @@ import SettingsDialog from "../assistant/SettingsDialog";
 import PreviewDialog from "../preview/PreviewDialog";
 import "../styles/operations.css";
 import "../styles/studio.css";
+import "../styles/forms.css";
+import "../styles/workspace-polish.css";
 import { PreviewPanel } from "../preview/PreviewPanel";
 
 import { StudioContext } from "./StudioContext";

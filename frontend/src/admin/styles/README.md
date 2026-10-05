@@ -8,7 +8,11 @@ Files and their individual responsibilities are listed in [the generated source 
 
 - `commerce-manager.css`
 - `operations.css`
-- `studio.css`
+- `studio.css`: existing Studio layout baseline.
+- `workspace-polish.css`: shared theme, density, grouped scrollable navigation and page hierarchy.
+- `forms.css`: root-loaded native form primitives; never dependent on visiting a lazy workspace.
+- `settings.css`: settings-owned navigation, grouped forms and sticky save bar.
+- `app-catalog.css`: app-owned category and package cards.
 
 ## Verification
 

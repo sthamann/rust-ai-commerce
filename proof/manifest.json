@@ -952,8 +952,8 @@
     },
     "src/operations/receipts.rs": {
       "status": "unproved",
-      "sha256": "3b9d134ea66cb572008fe317adda8d119a5d0955e0b52c5caa6b4db6ab6ccab3",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "57a1fdfb5dd9df6328016c9b910bba18249fd814288ee59bd265db2fd5b952de",
+      "review": "Issuer updates admit matching existing revisions into the UPSERT source while preserving the row-lock conflict fence. The real HTTP suite verifies sequential saves, stale revisions, concurrent saves, tenant isolation and immutable issued receipts."
     },
     "src/operations/workflow.rs": {
       "status": "unproved",
