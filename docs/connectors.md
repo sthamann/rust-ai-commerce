@@ -39,9 +39,9 @@ the absolute checkout path. Preserve existing entries in your config.
 ```json
 {
   "mcpServers": {
-    "rust-ai-commerce": {
+    "vendune": {
       "command": "python3",
-      "args": ["/absolute/path/rust-ai-commerce/scripts/mcp_stdio.py"],
+      "args": ["/absolute/path/vendune/scripts/mcp_stdio.py"],
       "env": {
         "COMMERCE_URL": "http://127.0.0.1:8787",
         "COMMERCE_TENANT": "atelier"

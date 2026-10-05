@@ -10,7 +10,7 @@ export const fr: Dictionary = {
     "Accès en lecture : un éditeur ou administrateur doit approuver cette modification.",
   users: "Équipe & accès",
   commerce: "Ventes & livraison",
-  studio: "Commerce Studio",
+  studio: "Vendune Studio",
   overview: "La boutique aujourd’hui",
   assistant: "Assistant",
   knowledge: "Intelligence boutique",

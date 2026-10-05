@@ -1,7 +1,7 @@
 //! Generated conformance driver; invokes the same production policy functions as the commerce server.
-use rust_ai_commerce::verified_kernel::*;
 use serde_json::{Value, json};
 use std::io::{self, BufRead};
+use vendune::verified_kernel::*;
 fn eval(j: &Value) -> Result<Value, String> {
     let args = &j["args"];
     match j["function"].as_str() {

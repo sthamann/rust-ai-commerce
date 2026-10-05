@@ -114,7 +114,7 @@ export default function Storefront(props: { onMerchant: () => void }) {
             <strong>{company.brandName || company.name || shopTenant} /</strong>
             <a href="#legal">{co("legalPage")}</a>
             <p>{s("simulation")}</p>
-            <a href="https://github.com/sthamann/rust-ai-commerce">GitHub ↗</a>
+            <a href="https://github.com/sthamann/vendune">GitHub ↗</a>
           </footer>
           {account && (
             <CustomerAccount

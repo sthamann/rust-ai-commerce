@@ -74,7 +74,7 @@ python3 scripts/hosting_check.py --origin https://YOUR-BACKEND-DOMAIN
 python3 scripts/prepare_vercel.py --backend https://YOUR-BACKEND-DOMAIN
 ```
 
-Create the dedicated `rust-ai-commerce` Vercel project from this GitHub repository.
+Create the dedicated `vendune` Vercel project from this GitHub repository.
 Select `frontend` as root, Vite, `npm run build`, and `dist`. **Enable including
 source files outside the root directory**: the frontend imports the shared
 `extensions/sdk/analytics` module. This is also covered by the corrected Docker
@@ -102,7 +102,7 @@ query-parameter prototype.
 ## Local release checks
 
 ```sh
-docker build -f deploy/Dockerfile -t rust-ai-commerce:platform .
+docker build -f deploy/Dockerfile -t vendune:platform .
 # With the existing local Compose PostgreSQL container and private DATABASE_URL:
 python3 scripts/hosting_container.py
 ```

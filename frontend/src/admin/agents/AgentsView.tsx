@@ -4,7 +4,7 @@ import { useLocale } from "../../shared/i18n/i18n";
 import Icon from "../../shared/ui/Icon";
 import type { Overview } from "../shell/studio-types";
 const guide =
-  "https://github.com/sthamann/rust-ai-commerce/blob/main/docs/connectors.md";
+  "https://github.com/sthamann/vendune/blob/main/docs/connectors.md";
 export function AgentsView({
   data,
   onStorefront,

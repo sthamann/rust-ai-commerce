@@ -1,4 +1,5 @@
 /** ProductPurchase: focused pdp-purchase view with explicit typed inputs and callbacks. */
+import { BRAND } from "../../shared/ui/Brand";
 import { useShopText } from "../../shared/i18n/shop-i18n";
 
 import { shopApi, type Detail } from "../../shared/api/shop-api";
@@ -55,7 +56,9 @@ export default function ProductPurchase({
 }: ProductPurchaseProps) {
   return (
     <section className="pdp-purchase">
-      <p className="shop-kicker">ATELIER / {s(p.category)}</p>
+      <p className="shop-kicker">
+        {BRAND.name} / {s(p.category)}
+      </p>
       <h1>{p.name}</h1>
       <button
         className="rating-link"

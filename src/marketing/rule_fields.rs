@@ -75,7 +75,7 @@ pub(crate) fn matches(
 }
 pub(crate) fn compare(item: &Value, operator: &str, rule: &Value) -> bool {
     if rule.is_number() {
-        return rust_ai_commerce::rule_comparison::numeric(item.as_f64(), rule.as_f64(), operator)
+        return vendune::rule_comparison::numeric(item.as_f64(), rule.as_f64(), operator)
             .unwrap_or(false);
     }
     if rule.is_boolean() {
@@ -91,6 +91,6 @@ pub(crate) fn compare(item: &Value, operator: &str, rule: &Value) -> bool {
             .zip(rule.as_str())
             .is_some_and(|(a, b)| a.to_lowercase().contains(&b.to_lowercase()));
     }
-    rust_ai_commerce::rule_comparison::string(item.as_str(), rule.as_str().unwrap_or(""), operator)
+    vendune::rule_comparison::string(item.as_str(), rule.as_str().unwrap_or(""), operator)
         .unwrap_or(false)
 }

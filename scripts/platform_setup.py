@@ -5,7 +5,7 @@ import json, os, pathlib, secrets, subprocess, time, urllib.error, urllib.parse,
 
 root = pathlib.Path(__file__).resolve().parents[1]
 name = "platform_setup_" + uuid.uuid4().hex[:12]
-container = os.getenv("DB_CONTAINER", "rust-ai-commerce-postgres-1")
+container = os.getenv("DB_CONTAINER", "vendune-postgres-1")
 checks = []
 
 
@@ -55,7 +55,7 @@ env.pop("PAYPAL_ACCOUNTS", None)
 env.pop("OPENAI_API_KEY", None)
 env.pop("ANTHROPIC_API_KEY", None)
 env["APP_SERVICES"] = "{}"
-binary = str(root / "target/debug/rust-ai-commerce")
+binary = str(root / "target/debug/vendune")
 process = None
 try:
     sql("CREATE DATABASE " + name)

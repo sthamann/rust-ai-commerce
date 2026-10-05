@@ -1,4 +1,5 @@
 /** StorefrontHome: storefront view composed from the scoped cart/controller. */
+import { BRAND } from "../../shared/ui/Brand";
 import CollectionView from "./CollectionView";
 import ConciergeView from "./ConciergeView";
 
@@ -17,7 +18,9 @@ export default function StorefrontHome() {
       <AppSurfaceSlot location="storefront.home" context={{ salesChannel }} />
       <section className="shop-hero">
         <div>
-          <p className="shop-kicker">ATELIER / {w("consideredObjects")}</p>
+          <p className="shop-kicker">
+            {BRAND.name} / {w("consideredObjects")}
+          </p>
           <h1>
             {experience?.headline &&
             experience.headline !== "Objects for a more considered everyday."

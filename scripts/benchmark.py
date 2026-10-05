@@ -262,7 +262,7 @@ if __name__ == '__main__':
     parser.add_argument('--concurrency',type=lambda s:[int(v) for v in s.split(',')],default=[1,16,64])
     parser.add_argument('--arrival-rate',type=float,help='Fixed offered requests/second; includes client queue time in latency')
     parser.add_argument('--output', type=pathlib.Path, default=ROOT / '.run/benchmark.json')
-    parser.add_argument('--binary', type=pathlib.Path, default=ROOT / 'target/release/rust-ai-commerce')
+    parser.add_argument('--binary', type=pathlib.Path, default=ROOT / 'target/release/vendune')
     parser.add_argument('--source-diff', type=pathlib.Path, help='Diff corresponding to the measured binary, captured before building')
     parser.add_argument('--database-container', default='rust-commerce-performance-postgres-1')
     args = parser.parse_args()

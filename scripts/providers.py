@@ -28,7 +28,7 @@ threading.Thread(target=server.serve_forever,daemon=True).start()
 port=server.server_address[1]
 env={**os.environ,'OPENAI_API_KEY':'contract-openai','ANTHROPIC_API_KEY':'contract-claude','OPENAI_BASE_URL':f'http://127.0.0.1:{port}/v1','ANTHROPIC_BASE_URL':f'http://127.0.0.1:{port}/v1','BIND_ADDR':'127.0.0.1:8789'}
 log=open(root/'.run/provider-contract.log','w')
-process=subprocess.Popen([str(root/'target/debug/rust-ai-commerce')],cwd=root,env=env,stdout=log,stderr=log)
+process=subprocess.Popen([str(root/'target/debug/vendune')],cwd=root,env=env,stdout=log,stderr=log)
 base='http://127.0.0.1:8789'; ah={'Authorization':'Bearer '+os.environ['MERCHANT_TOKEN'],'x-tenant':'workshop'}
 def call(path,body=None,headers=None,expected=200):
     request=urllib.request.Request(base+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(ah if headers is None else headers)})
@@ -98,7 +98,7 @@ try:
         assert inference_started.wait(10)
         call('/api/agent/chat',{'conversationId':cid,'message':'Concurrent conflicting turn','inference':{'provider':'openai'}},expected=409)
         assert call('/health')['status']=='ok'
-        idle=subprocess.check_output(['docker','exec',os.getenv('DB_CONTAINER','rust-ai-commerce-postgres-1'),'psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-Atc',"SELECT count(*) FROM pg_stat_activity WHERE state='idle in transaction' AND query LIKE '%pg_try_advisory_xact_lock%'"],text=True).strip()
+        idle=subprocess.check_output(['docker','exec',os.getenv('DB_CONTAINER','vendune-postgres-1'),'psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-Atc',"SELECT count(*) FROM pg_stat_activity WHERE state='idle in transaction' AND query LIKE '%pg_try_advisory_xact_lock%'"],text=True).strip()
         assert idle=='0';assert turn.result()['messages'][-1]['data']['taskId']
     behavior['mode']='normal'
     passed('Conversation lease excludes concurrent turns while inference holds no advisory transaction or DB connection')

@@ -101,7 +101,7 @@ it("navigates every merchant workspace without duplicating registry requests", a
     ).toBe(true),
   );
   const navigation = screen.getByRole("navigation", {
-    name: "Commerce Studio",
+    name: "Vendune Studio",
   });
   const user = userEvent.setup();
   const buttons = within(navigation).getAllByRole("button");
@@ -140,7 +140,7 @@ it("keeps merchant credentials absent when signed out and shows a login path", a
   const user = userEvent.setup();
   await user.click(
     within(
-      screen.getByRole("navigation", { name: "Commerce Studio" }),
+      screen.getByRole("navigation", { name: "Vendune Studio" }),
     ).getByRole("button", { name: "Shop today" }),
   );
   expect(screen.getByRole("main")).toHaveTextContent("Shop today");

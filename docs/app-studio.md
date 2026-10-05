@@ -4,7 +4,7 @@ App Studio is a visual builder for **working native commerce apps**, using the s
 
 ## Try it
 
-Open Commerce Studio → **Developers**, or use `/?shop=YOUR_SHOP&studio=developers#merchant` to enter the workspace directly. Reload tabs opened before a local frontend build; an already-loaded browser bundle does not update itself. The included care-guide draft has a text block, data table and form. It starts private.
+Open Vendune Studio → **Developers**, or use `/?shop=YOUR_SHOP&studio=developers#merchant` to enter the workspace directly. Reload tabs opened before a local frontend build; an already-loaded browser bundle does not update itself. The included care-guide draft has a text block, data table and form. It starts private.
 
 Saved apps appear as clickable cards under **My apps**. Click a card to open its latest saved build on the editable design canvas with a bumped semantic version. The **Edit app** button also returns from the runtime preview to editing. Editing through **Versions & releases** opens the same canvas. Existing versions remain immutable. Every card has explicit **Edit app** and **Delete** buttons. Deletion moves all development versions into the recoverable App Studio **Trash**; restoring preserves version IDs/digests. Installed packages and app data remain independent: deactivate an installed package separately under **Apps**. Archived versions cannot be staged until restored. The same operation is available through `DELETE /api/developer/apps/{app}` and `POST /api/developer/apps/{app}/restore` (both `approve: true`), plus MCP `developer.archive` (`app`, `archived`, `approve`).
 

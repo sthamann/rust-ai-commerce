@@ -462,38 +462,38 @@
     },
     "src/bin/automation_rules.rs": {
       "status": "unproved",
-      "sha256": "9f7d8c00e395f43b96552b9db9e556592ffabca5f320a4fcd3c3d9d40d3263e8",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "8d5994b0922f61cd5c209a7598f377fa664709704c4ea911bc3b7e33958d3d8e",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/bin/context.rs": {
       "status": "unproved",
-      "sha256": "3795595ed6b1c685f1fca0161f7106b6c7eee7c90ed536a0cabd51651d4b9902",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "78d283a37b639a820e611587baf609987c14281721fd05b3581ef04e0b5cbb22",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/bin/delivery.rs": {
       "status": "unproved",
-      "sha256": "e68b537bef0e3fced1b6cc1959ab106f982c9a656b499f2041de1490d91d5c3e",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "e88ed79091431feb4755ce4dbbe390666c20c7f44ec47ba799ad19b268924d23",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/bin/price.rs": {
       "status": "unproved",
-      "sha256": "2aed9605260dcc1a66013d57820ec5774e36a6d68b4c9840d5a31e90545c53a6",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "378b39b2951c9eb06f5de230a592403111eee93e9f5dda6295ce4422306d6a50",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/bin/rules.rs": {
       "status": "unproved",
-      "sha256": "213bf0b3fa0685aaae78db8d27b713677e3254189590fdb554163a3040995200",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "21196640f2c70d6a458000d1f33ba5705570eaeba142f2386951bc79d9b17cdc",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "bf1bf9bd69ca939f15147812a6d12c44ee6570e469d2d53764a41165bad99ad8",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "88bc2b4927c9bc7b0a063715ec7542e09d63703ad203d0e08b820c01f9d5dc68",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
-      "sha256": "8da89b90aa75262364d2f9fe23cd0e56872ad2bade6c329a2a0b94a8b757e297",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "43c245c46485bd357393dbef51cd2501a14b8ffc5c72c887b7b80cabd995ec86",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
@@ -517,8 +517,8 @@
     },
     "src/cart_price.rs": {
       "status": "unproved",
-      "sha256": "0908dfe4f5080e693bbd50215763918f92afb4080b2944a1ad5e8605da410452",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "11c8e883fd01c9e3da8705904e72ebb1c540bfd1ec123d3e31f81c2abe56b598",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/cart_routes.rs": {
       "status": "unproved",
@@ -532,8 +532,8 @@
     },
     "src/catalog_model.rs": {
       "status": "unproved",
-      "sha256": "5b7a7d669114c02c1cf7c04bdfe166609da0abc33bbe1d7a83707a1f1c68c621",
-      "review": "Reviewed final catalog product-number hydration/serialization in catalog_model.rs: optional legacy decode, tenant DB fallback to ID, native Store API and merchant SKU consumer. All other reviewed catalog/category/checkout/staging behavior unchanged; extracted Lean kernel unchanged. Catalog MCP/flow/upload/release plus complete isolated integration suite passed; new empty-media and product-number frontend regression added. SQL/async/editor modules remain unproved."
+      "sha256": "6619053466d5263929ca90a9a2e6960510faa314af9daf6aba3e26fc8afa33b4",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/catalog_page.rs": {
       "status": "unproved",
@@ -622,8 +622,8 @@
     },
     "src/commerce/delivery.rs": {
       "status": "unproved",
-      "sha256": "6002bf38d546a8a5a6a6e558b3ffcc84f08b58af29408203a1ef0039691a36b6",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "2d8a36a070437c7395be3fb71a4032b8553b29fb321787f3a2381affa907a0d2",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/commerce/detail.rs": {
       "status": "unproved",
@@ -652,8 +652,8 @@
     },
     "src/commerce/mod.rs": {
       "status": "unproved",
-      "sha256": "f71aa49e9ebd6bb9e910a653bc32a6e28757fbf172767edbd0993667f81fe1db",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "fe8995e21efc9e14382e3a4dbac01aeec9f7d9676b40c1e18a353f2ef94db523",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/commerce/order_fields.rs": {
       "status": "unproved",
@@ -687,8 +687,8 @@
     },
     "src/commerce/product_fields.rs": {
       "status": "unproved",
-      "sha256": "5e55ecd95c580761a947be4a0c11c8cedb71432190fead1e8381667dba862271",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "9a3e55f1d0b3460c8efc46c3c5149b6fad66ba7d3dc3af7fca15eb90b3ec47ae",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/commerce/product_languages.rs": {
       "status": "unproved",
@@ -752,8 +752,8 @@
     },
     "src/concierge.rs": {
       "status": "unproved",
-      "sha256": "774ce077d5cb4b3bf3a2acca08eef8eb67e1bbd2df1335a538eb9f1b19112417",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "5bf14c0f163e2c1959417fa93a6ac8e91ccaeea063541b44b078bc6b03fa74e0",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/context.rs": {
       "status": "unproved",
@@ -857,23 +857,23 @@
     },
     "src/localization.rs": {
       "status": "unproved",
-      "sha256": "2179cc40397b0a83eb2b91bf171ef246bcdd986c5958b63e397bfe8bff9bba9b",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "8ca8554cdec36a1d3b3b268df55f9b5f10fee2d2fce97ae8735c2af6ee492a10",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/main.rs": {
       "status": "unproved",
-      "sha256": "96129fa9a4fa48c2203ae5eccee7afe0551ed7d615e6bb3bc8be43f40cea1ae2",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "c67ede2f5463066db384746452e476fd0f5181fb586505b8b6d60ee69dc53d05",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/marketing/app_flows.rs": {
       "status": "reviewed-binding",
-      "sha256": "a6488c897d8c74e9837db15ebf3233fc9f150a8d7a29bea379896b6d88fd35c6",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "ec7ac76777898cb75fb3cd2d6d0472baa2e79e25daa9bd7c411e574acebd07e0",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/marketing/catalog.rs": {
       "status": "unproved",
-      "sha256": "06bf915904bb65ef44e916a699124b848e375c77060534d6490e4ae8579ee474",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "cc8227b488487380f037f3f24e9c67605f371d7c321cab1b52c7da20bf51c881",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/marketing/channels.rs": {
       "status": "unproved",
@@ -947,8 +947,8 @@
     },
     "src/marketing/pipeline.rs": {
       "status": "reviewed-binding",
-      "sha256": "554357f3e24a3ea638e9bbc39049e8ac68d5269255f5ef6fcb7d9dd5d8ec5cdb",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "bc5bf207f695d803935ef72ec972f83a16eb008e85eeb31d5d9daad64fb5f0f8",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/marketing/pipeline_runtime.rs": {
       "status": "unproved",
@@ -962,8 +962,8 @@
     },
     "src/marketing/promotions.rs": {
       "status": "unproved",
-      "sha256": "756e6e46f91681c965d1db342871fe775eacdd9988ec36ca4e83be5c885b3929",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "50c852f08280a215a8ce893d6e5ea7e6371a52563448c6d35150c166d68200dc",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/marketing/routes.rs": {
       "status": "unproved",
@@ -972,13 +972,13 @@
     },
     "src/marketing/rule_fields.rs": {
       "status": "unproved",
-      "sha256": "175d4f7dfeaa906151e0cecba4ab8a135f618517c49fb822347d13c712b31638",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "2eb6494b41af4f1e35e69d77107084ec2776d5001a9bd584781d689364e5e0e8",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/marketing/rule_match.rs": {
       "status": "reviewed-binding",
-      "sha256": "8429b90ab9872f46bddc3a822565a35c260400bbea9b11229d5b8dbc4a29b229",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "3a1906acc85db543e35fe060fc8bdcadead699d0fe49233f8ad4e17490983e3f",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/marketing/rule_snapshot.rs": {
       "status": "unproved",
@@ -987,18 +987,18 @@
     },
     "src/marketing/rule_tests.rs": {
       "status": "unproved",
-      "sha256": "df67643c075b43489d7466d28c7b310f7d621c85e909f25f11b81f4044130a78",
-      "review": "Reviewed connected apps and real protocol consumers: 48 Rust tests, 1976 original PHP rule comparisons, 9 database/HTTP connector groups with forbidden flow targets and cross-tenant evidence, plus 18 commerce suites across two batches. Added original guest shipping-country regression. Adapters remain unproved."
+      "sha256": "ddd05401c0e80e1c050835682962599b552e58821357ef963f2cdb56d375f6c2",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/marketing/rules.rs": {
       "status": "unproved",
-      "sha256": "c886274852c6b1aaea6c5bec7c076a287d206516be69ba434928f7a551632ea8",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "220c9b190697cd8df3238aeeb15c5b3966dc3983e89547995484141dddbd37a9",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "7b2c7453f1e523564e906bdc523c15bf3535abe32764af384d1651323ab7ead7",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "4f48e2d050dd53622ed9730a201d75315a97fcb3abb95760f18df4b3081060f1",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/migrations.rs": {
       "status": "unproved",
@@ -1237,8 +1237,8 @@
     },
     "src/studio.rs": {
       "status": "unproved",
-      "sha256": "68e82dfa7a2cf1564db97930a82bdcc977a5d6050cc6db7fba62ad99604b9d01",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "1cb89f646570196831bdc9c4281822617816e1fb96f241177953fee35fc1f98b",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "src/translations/apply.rs": {
       "status": "reviewed-binding",
@@ -1283,16 +1283,16 @@
   },
   "inputs": {
     ".github/workflows/verify.yml": {
-      "sha256": "c984de06ef08e8a674417e3a58869c28391f2e4f7db1e28507e204e458892820",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "1fe54e6e551394d07ed704d5cd07c5f13fb37814ae4744a385a3d981d2e06736",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "Cargo.lock": {
-      "sha256": "eef925fec1a064bbe0dd7a25a88c3eea555fe674a5d7a762ca7e4812e7c8c299",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "5cc87059fea83b2f8c93670e7c50e8d9542e007d949bf904ffc8338fcc7b147a",
+      "review": "Full cargo metadata normalized the renamed vendune package into canonical Cargo.lock ordering. Reviewed the actual diff: only the same root package and unchanged dependency list moved alphabetically; no dependency versions, checksums or business decisions changed. Full Rust/UI/integration/differential suites passed. This explicit review updates the canonical lockfile input hash; the new branding check rejects noncanonical package ordering."
     },
     "Cargo.toml": {
-      "sha256": "240753b2dec36e130b9f05f1339be5b93ad7cb20e1de1c1853b3008c1f97e0c1",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "42c7b675a7de95306eb99ee9fcb56a62096370d8946ee0ae989207750f872a6e",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "fixtures/app-studio-schema.json": {
       "sha256": "7511608ce3bad039ba883206e6e1762aa672572b1ddb13594cdd40d28f3af205",
@@ -1483,8 +1483,8 @@
       "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
     },
     "scripts/formal/runners.py": {
-      "sha256": "a009732dcf573aa10b33f02eef9c4bf57a3a44d34d1d4e8bb0b09868d0543a23",
-      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+      "sha256": "21033982dff8a832f81d3042810bab961af155d024629aa59b41449c6313962b",
+      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
     "scripts/formal.py": {
       "sha256": "6eb0fc99ffb22e79f67fb8c532cb3ac20945f931b71d8a8c1b8eac0429a590b0",

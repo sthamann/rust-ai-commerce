@@ -4,7 +4,7 @@ These are native Rust prototype features, shared by Studio, Store API and MCP.
 They implement a documented subset of Shopware's country/tax/translation concepts;
 they do not establish full upstream schema/API compatibility or current tax law.
 
-## Configure a shop in Commerce Studio
+## Configure a shop in Vendune Studio
 
 Open **Settings → Countries**. The world catalogue contains **249 ISO
 3166-1 assigned entries plus Kosovo (XK, explicitly not ISO assigned)**. Entries

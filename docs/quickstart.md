@@ -15,8 +15,8 @@ Ollama and API credentials are optional for the initial commerce tour.
 ## Start commerce without a model download
 
 ```sh
-git clone https://github.com/sthamann/rust-ai-commerce.git
-cd rust-ai-commerce
+git clone https://github.com/sthamann/vendune.git
+cd vendune
 ./scripts/dev.sh
 ```
 
@@ -26,7 +26,7 @@ The storefront, SKU selection, quantity pricing, cart and simulated checkout
 work without a running LLM. Chat planning and vector indexing require their
 respective model services and report errors when unavailable.
 
-In Commerce Studio (`/#merchant`), select **Team & access → Create shop**.
+In Vendune Studio (`/#merchant`), select **Team & access → Create shop**.
 Create a personal owner account and a synthetic shop. One identity can belong
 to multiple shops. The generated global `MERCHANT_TOKEN` is an instance bootstrap
 credential, not an invitation or a merchant credential to distribute.
@@ -35,7 +35,7 @@ The synthetic B2B customer is `buyer@example.test` / `demo-business`. It is
 separate from merchant accounts. Payment processing is simulated/manual only.
 
 Stop the app with Ctrl+C. Restart with `./scripts/dev.sh`; database data is
-retained. Stop the database with `docker compose -p rust-ai-commerce stop`.
+retained. Stop the database with `docker compose -p vendune stop`.
 Do not remove its volume if you want to retain orders and accounts.
 
 ## Add the connected playground
@@ -92,12 +92,12 @@ Use a different Compose project and database/application ports on a fresh checko
 
 ```sh
 DB_PORT=15489 BIND_ADDR=127.0.0.1:8789 \
-COMPOSE_PROJECT_NAME=rust-ai-commerce-second ./scripts/dev.sh
+COMPOSE_PROJECT_NAME=vendune-second ./scripts/dev.sh
 ```
 
 `DB_PORT` is used when generating a new `.env`. For an existing `.env`, update
 its `DATABASE_URL` to the chosen port. Use the same project name/port when
-restarting; stop its database with `docker compose -p rust-ai-commerce-second stop`.
+restarting; stop its database with `docker compose -p vendune-second stop`.
 Never point a test run at a shop whose data you need to preserve.
 
 ## Troubleshooting
@@ -116,12 +116,12 @@ Local development defaults to `BOOTSTRAP_MODE=auto` and `PROCESS_ROLE=all`.
 For independently operated processes, run setup once before starting replicas:
 
 ```sh
-BOOTSTRAP_MODE=migrate target/release/rust-ai-commerce
-BOOTSTRAP_MODE=serve PROCESS_ROLE=http target/release/rust-ai-commerce
+BOOTSTRAP_MODE=migrate target/release/vendune
+BOOTSTRAP_MODE=serve PROCESS_ROLE=http target/release/vendune
 # Separate terminals/processes, using the same private database configuration:
-BOOTSTRAP_MODE=serve PROCESS_ROLE=memory-worker target/release/rust-ai-commerce
-BOOTSTRAP_MODE=serve PROCESS_ROLE=payment-worker target/release/rust-ai-commerce
-BOOTSTRAP_MODE=serve PROCESS_ROLE=app-worker target/release/rust-ai-commerce
+BOOTSTRAP_MODE=serve PROCESS_ROLE=memory-worker target/release/vendune
+BOOTSTRAP_MODE=serve PROCESS_ROLE=payment-worker target/release/vendune
+BOOTSTRAP_MODE=serve PROCESS_ROLE=app-worker target/release/vendune
 ```
 
 The HTTP role does not consume the durable outbox. The memory worker creates
@@ -130,3 +130,13 @@ refuses an incomplete setup. Schema checksums detect changed applied migrations
 when running setup; keep applied source immutable and add new migration files.
 Plan the initial index build before serving a large existing database. This
 process separation is a foundation, not a production deployment recipe.
+
+## Upgrading an existing pre-Vendune checkout
+
+The repository and binaries are now named **Vendune**. An old checkout directory
+can stay in place. `scripts/dev.sh` reuses a detected legacy Compose database
+project; an explicit `COMPOSE_PROJECT_NAME` overrides detection. Use that actual
+project name when stopping it. Never remove the old data volume to rename the
+app. Rebuild frontend and Rust before starting the new `target/debug/vendune`
+binary. Existing shop IDs and browser sessions remain valid. See [branding and
+compatibility](branding.md).

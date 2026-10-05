@@ -1,6 +1,6 @@
 //! Native catalogue and checkout domains; pricing ports remain in the library.
 use crate::*;
-use rust_ai_commerce::pricing::{TaxRule, proportional_tax_rules};
+use vendune::pricing::{TaxRule, proportional_tax_rules};
 mod types;
 pub(crate) use types::*;
 mod configuration;

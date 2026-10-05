@@ -2,6 +2,7 @@
 import { AdminAppNavigation } from "../../shared/apps/AppSurfaces";
 import "../../shared/styles/workbench.css";
 import Icon from "../../shared/ui/Icon";
+import Brand, { BRAND } from "../../shared/ui/Brand";
 import "../styles/operations.css";
 import "../styles/studio.css";
 
@@ -47,13 +48,8 @@ export default function StudioSidebar() {
   ];
   return (
     <aside className={`studio-sidebar ${menu ? "open" : ""}`}>
-      <a className="studio-brand" href="#merchant">
-        <span className="brand-mark">
-          <Icon name="spark" size={21} />
-        </span>
-        <span>
-          commerce<span className="brand-subtitle">{t("studio")}</span>
-        </span>
+      <a className="studio-brand" href="#merchant" aria-label={t("studio")}>
+        <Brand />
       </a>
       <button className="workspace-switch" onClick={() => selectTab("users")}>
         <span className="shop-monogram">
@@ -141,11 +137,7 @@ export default function StudioSidebar() {
           <Icon name="arrow" />
           {t("storefront")}
         </button>
-        <a
-          href="https://github.com/sthamann/rust-ai-commerce"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href={BRAND.repository} target="_blank" rel="noreferrer">
           {t("source")}
           <span>v0.5</span>
         </a>

@@ -1,6 +1,6 @@
 # Company identity, legal metadata and channel inheritance
 
-Commerce Studio → Settings → Master data owns a company's factual identity,
+Vendune Studio → Settings → Master data owns a company's factual identity,
 structured address, contact and bank details, public brand text and logo. The
 scope selector chooses the shared company basis or a configured sales channel.
 Storefront and headless channels use the same resolver. Separate SaaS tenants

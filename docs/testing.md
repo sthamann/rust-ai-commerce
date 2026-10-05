@@ -37,7 +37,7 @@ python3 scripts/verify_integration.py
 
 Local integration creates and removes its own uniquely named synthetic database;
 existing shops remain outside that run. The default database container is
-`rust-ai-commerce-postgres-1`; override it with `--container`. It uses `DATABASE_URL`
+`vendune-postgres-1`; override it with `--container`. It uses `DATABASE_URL`
 from the process or the local `.env`. CI alone passes `--existing-database` for its
 already-disposable database. Failures remain failures, and child processes stop
 before database cleanup. SIGINT flushes optional Rust coverage profiles.
@@ -174,7 +174,7 @@ UI screenshots supplement these tests; neither replaces whole-source coverage.
 
 ## Recorded international-commerce verification
 
-[CI run 37285967720](https://github.com/sthamann/rust-ai-commerce/actions/runs/37285967720)
+[CI run 37285967720](https://github.com/sthamann/vendune/actions/runs/37285967720)
 verified the international-commerce tree merged as `852f3d1` on 5 October 2026:
 67 Rust unit tests, 90 frontend tests and the registered 25 HTTP / 3 provider /
 4 browser-contract suites. The complete measured report, including untouched

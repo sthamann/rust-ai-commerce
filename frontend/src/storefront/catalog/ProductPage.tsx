@@ -1,4 +1,5 @@
 /** Product family, gallery, context pricing and moderated customer reviews. */
+import { BRAND } from "../../shared/ui/Brand";
 import RichDescription from "../../shared/content/RichDescription";
 import ImagePlaceholder from "./ImagePlaceholder";
 import { analyticsItems, commerceEvent } from "../analytics/ShopAnalytics";
@@ -203,7 +204,7 @@ export default function ProductPage({
           )}
           <ProductAttachments id={p.id} />
           <p className="product-material">
-            {s(p.properties.material ?? "")} · atelier /
+            {s(p.properties.material ?? "")} · {BRAND.name} /
           </p>
         </section>
         <section>

@@ -7,13 +7,6 @@ use axum::{
     response::{IntoResponse, Response},
     routing::{get, post},
 };
-use rust_ai_commerce::{
-    inference::{Choice, Inference},
-    knowledge,
-    pricing::{PriceInput, calculate, math_round},
-    sandbox::Sandbox,
-    verified_kernel,
-};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
@@ -25,6 +18,13 @@ use std::{
 };
 use tower_http::services::ServeDir;
 use uuid::Uuid;
+use vendune::{
+    inference::{Choice, Inference},
+    knowledge,
+    pricing::{PriceInput, calculate, math_round},
+    sandbox::Sandbox,
+    verified_kernel,
+};
 mod accounts;
 mod agent;
 mod apps;

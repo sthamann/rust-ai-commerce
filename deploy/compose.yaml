@@ -14,7 +14,7 @@ services:
       retries: 60
     restart: unless-stopped
   commerce:
-    image: rust-ai-commerce:${COMMERCE_IMAGE_TAG:-local}
+    image: vendune:${COMMERCE_IMAGE_TAG:-local}
     build: &commerce-build
       context: ..
       dockerfile: deploy/Dockerfile
@@ -38,9 +38,9 @@ services:
     restart: unless-stopped
   operator:
     profiles: [operator-setup]
-    image: rust-ai-commerce:${COMMERCE_IMAGE_TAG:-local}
+    image: vendune:${COMMERCE_IMAGE_TAG:-local}
     build: *commerce-build
-    command: ["/app/rust-ai-commerce", "--bootstrap-operator"]
+    command: ["/app/vendune", "--bootstrap-operator"]
     environment:
       DATABASE_URL: ${DATABASE_URL:?required}
       MERCHANT_TOKEN: ${MERCHANT_TOKEN:?required}

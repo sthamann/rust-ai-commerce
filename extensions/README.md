@@ -112,9 +112,9 @@ value, then restart them:
 ```sh
 export APP_SERVICES='{"workshop_notes":{"url":"http://127.0.0.1:8795","uiUrl":"http://127.0.0.1:8795/","token":"choose-a-private-development-token"}}'
 # Main HTTP process; projects core events without delivering external events:
-PROCESS_ROLE=http target/debug/rust-ai-commerce
+PROCESS_ROLE=http target/debug/vendune
 # Separate terminal, with the same DB/APP_SERVICES configuration:
-PROCESS_ROLE=app-worker target/debug/rust-ai-commerce
+PROCESS_ROLE=app-worker target/debug/vendune
 ```
 
 Install `apps/service-example/manifest.json` in your synthetic shop with

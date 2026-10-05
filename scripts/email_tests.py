@@ -436,7 +436,7 @@ class Contracts(unittest.TestCase):
         base = "http://127.0.0.1:" + str(port)
         # Other running workers must never consume this fixture's flow jobs.
         database = "commerce_mail_" + uuid.uuid4().hex[:12]
-        container = os.getenv("DB_CONTAINER", "rust-ai-commerce-postgres-1")
+        container = os.getenv("DB_CONTAINER", "vendune-postgres-1")
         sql = lambda command: subprocess.run(
             [
                 "docker",
@@ -481,7 +481,7 @@ class Contracts(unittest.TestCase):
         log = open(self.temp.name + "/core.log", "w")
         self.addCleanup(log.close)
         backend = subprocess.Popen(
-            [str(ROOT / "target/debug/rust-ai-commerce")],
+            [str(ROOT / "target/debug/vendune")],
             cwd=ROOT,
             env=env,
             stdout=log,

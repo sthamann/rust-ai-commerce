@@ -284,14 +284,14 @@ class Handler(BaseHTTPRequestHandler):
                 True,
                 {
                     "connected": app,
-                    "message": "Connected. Return to Commerce Studio and refresh the app.",
+                    "message": "Connected. Return to Vendune Studio and refresh the app.",
                 },
             )
         except Exception:
             self.completion(
                 False,
                 {
-                    "error": "Authorization failed or expired. Start again in Commerce Studio."
+                    "error": "Authorization failed or expired. Start again in Vendune Studio."
                 },
             )
 

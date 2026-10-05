@@ -456,10 +456,10 @@ export const workbenchWords = {
     "Las apps nativas de datos, API e interfaz funcionan aquí. El código libre y los servicios requieren una compilación externa aislada.",
   ],
   storyHint: [
-    "Connect your catalog to a conversational storefront. Rust Commerce keeps prices, inventory and checkout authoritative.",
-    "Verbinde deinen Katalog mit einem dialogorientierten Shop. Rust Commerce berechnet Preise, Bestand und Checkout verbindlich.",
-    "Connectez votre catalogue à une boutique conversationnelle. Rust Commerce gère les prix, stocks et paiements.",
-    "Conecta tu catálogo con una tienda conversacional. Rust Commerce controla precios, inventario y checkout.",
+    "Connect your catalog to a conversational storefront. Vendune keeps prices, inventory and checkout authoritative.",
+    "Verbinde deinen Katalog mit einem dialogorientierten Shop. Vendune berechnet Preise, Bestand und Checkout verbindlich.",
+    "Connectez votre catalogue à une boutique conversationnelle. Vendune gère les prix, stocks et paiements.",
+    "Conecta tu catálogo con una tienda conversacional. Vendune controla precios, inventario y checkout.",
   ],
   connectStory: [
     "Add Storyfront integration",

@@ -21,7 +21,7 @@ with tempfile.TemporaryDirectory() as directory:
     env={'APP_SERVICES':json.dumps(config),'PROCESS_ROLE':'http','BIND_ADDR':f'127.0.0.1:{api_port}'}
     try:
         start(['python3',str(ROOT/'extensions/apps/service-example/server.py')],{'APP_PORT':str(service_port),'APP_TOKEN':token,'APP_DB':db},'service-example-test.log')
-        start([str(ROOT/'target/debug/rust-ai-commerce')],env,'service-api-test.log')
+        start([str(ROOT/'target/debug/vendune')],env,'service-api-test.log')
         for _ in range(80):
             try:call('/health');break
             except OSError:time.sleep(.25)
@@ -41,8 +41,8 @@ with tempfile.TemporaryDirectory() as directory:
         order=call('/store-api/checkout/order',{}, {**ch,'Idempotency-Key':uuid.uuid4().hex})
         time.sleep(.8)
         with sqlite3.connect(db) as conn:assert conn.execute('SELECT count(*) FROM events').fetchone()[0]==0
-        start([str(ROOT/'target/debug/rust-ai-commerce')],{**env,'PROCESS_ROLE':'memory-worker'},'service-memory-worker-test.log')
-        worker=start([str(ROOT/'target/debug/rust-ai-commerce')],{**env,'PROCESS_ROLE':'app-worker'},'service-worker-test.log')
+        start([str(ROOT/'target/debug/vendune')],{**env,'PROCESS_ROLE':'memory-worker'},'service-memory-worker-test.log')
+        worker=start([str(ROOT/'target/debug/vendune')],{**env,'PROCESS_ROLE':'app-worker'},'service-worker-test.log')
         for _ in range(80):
             with sqlite3.connect(db) as conn:rows=conn.execute('SELECT tenant,event_key,data FROM events').fetchall()
             if rows:break
@@ -50,7 +50,7 @@ with tempfile.TemporaryDirectory() as directory:
         assert len(rows)==1 and rows[0][0]==u['workspace'] and json.loads(rows[0][2])['data']['orderId']==order['id']
         passed('Separate app worker consumes queued order event into app-owned durable SQLite storage')
         worker.terminate();worker.wait(15)
-        start([str(ROOT/'target/debug/rust-ai-commerce')],{**env,'PROCESS_ROLE':'app-worker'},'service-worker-restart-test.log')
+        start([str(ROOT/'target/debug/vendune')],{**env,'PROCESS_ROLE':'app-worker'},'service-worker-restart-test.log')
         request=urllib.request.Request(f'http://127.0.0.1:{service_port}/events',data=rows[0][2].encode(),headers={'Content-Type':'application/json','Authorization':'Bearer '+token,'x-tenant':u['workspace']})
         with urllib.request.urlopen(request) as r:assert json.load(r)['duplicate']
         time.sleep(.8)
