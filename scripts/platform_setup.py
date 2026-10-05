@@ -60,6 +60,18 @@ binary = str(root / "target/debug/vendune")
 process = None
 try:
     sql("CREATE DATABASE " + name)
+    migration_env = {key: value for key, value in env.items() if key not in {
+        "SEED_DEMO", "ALLOW_BOOTSTRAP_AUTH", "PLATFORM_ADMIN_EMAIL",
+        "PLATFORM_ADMIN_PASSWORD", "PLATFORM_ADMIN_NAME"}}
+    for _ in range(2):
+        migration = subprocess.run([binary], cwd=root, env=migration_env,
+                                   capture_output=True, text=True, timeout=90)
+        assert migration.returncode == 0, "Standalone migration job failed"
+        assert "Migration-only setup complete" in migration.stdout
+    assert sql("SELECT count(*) FROM products", name) == "0"
+    assert sql("SELECT count(*) FROM platform_operators", name) == "0"
+    assert sql("SELECT count(*) FROM merchant_users", name) == "0"
+    check("standalone repeatable migrations require no operator/bootstrap secrets and never seed accounts or products")
     result = subprocess.run(
         [binary, "--bootstrap-operator"],
         cwd=root,

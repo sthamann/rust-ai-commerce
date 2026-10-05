@@ -68,6 +68,32 @@ assert [p['id'] for p in call('/store-api/product',{'search':'%_'},headers)['ele
 assert not call('/store-api/product',{'search':"%' OR true --"},headers)['elements']
 assert all(p['category']=='pagegroup' for p in call('/store-api/product',{'category':'pagegroup'},headers)['elements'])
 ok('Server search finds later-page translations, respects fallback visibility and treats SQL/wildcard text literally')
+call('/api/automation/channels/ordered_channel',{'revision':0,'data':{
+    'name':{locale:'Ordered search fixture' for locale in ['en','de','fr','es']},
+    'kind':'storefront','active':True,'locales':['en-GB','de-DE','fr-FR','es-ES'],
+    'productIds':[]}},merchant,method='PUT')
+sql(f"""
+INSERT INTO products(tenant,id,name,category,description,price,tax_rate,stock,active)
+SELECT '{tenant}','ordered-'||lpad(i::text,4,'0'),'Ordered source '||i,
+CASE WHEN i<10 THEN 'othergroup' ELSE 'orderedgroup' END,'Search fixture',24.9,19,100,i<10 OR i>=20
+FROM generate_series(0,159) i;
+INSERT INTO product_translations(tenant,product_id,language_id,name,description)
+SELECT '{tenant}','ordered-'||lpad(i::text,4,'0'),'11111111111111111111111111111111','OrderedTranslationNeedle '||i,NULL
+FROM generate_series(0,159) i;
+INSERT INTO product_channel_visibility(tenant,product_id,channel_id,visible)
+SELECT '{tenant}','ordered-'||lpad(i::text,4,'0'),'ordered_channel',false FROM generate_series(20,29) i;
+""")
+ordered=[];cursor=None
+while True:
+    page=call('/store-api/product',{'search':'OrderedTranslationNeedle','category':'orderedgroup','limit':17,
+                                  **({'after':cursor} if cursor else {})},
+              {**headers,'sw-sales-channel-id':'ordered_channel'})
+    ids=[p['id'] for p in page['elements']]
+    ordered.extend(ids)
+    if not page['hasMore']:break
+    cursor=page['nextCursor']
+assert ordered==['ordered-'+str(i).zfill(4) for i in range(30,160)]
+ok('Common translated hits paginate completely after excluding wrong categories, inactive products and hidden channel rows')
 admin=call('/api/search/product',{'search':'Später'},merchant)
 mcp=call('/mcp',{'jsonrpc':'2.0','id':1,'method':'tools/call','params':{'name':'catalog.search','arguments':{'query':'Später','limit':7}}},headers)['result']['structuredContent']
 assert admin['elements']==mcp['elements']

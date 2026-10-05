@@ -521,8 +521,8 @@
     },
     "src/bootstrap.rs": {
       "status": "unproved",
-      "sha256": "f3ffb71cfb35f0c4534705a851a11aca737eea10c00aee7c86dd986cb06f65b8",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "6c42d84db2878b1bbfb1f473ea862e369ccc443acedc1bc6b9b759b48ed7cafd",
+      "review": "Reviewed standalone migration run: one private connection, unchanged ledger lock/apply/ready, no auth, seed or workers; fresh DB repeatability and platform creation passed. Ordered translated catalog preserves full fallback and tenant/channel/category/cursor filters; affected real HTTP/PostgreSQL suite passed. SQL remains outside extracted pure-policy proof."
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
