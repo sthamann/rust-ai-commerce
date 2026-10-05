@@ -1,4 +1,5 @@
 /** Customer payment handoff; browser navigation never marks a payment as captured. */
+import { shopScope } from "../../shared/api/shop-scope";
 import { useEffect, useState } from "react";
 import { shopApi } from "../../shared/api/shop-api";
 import { useAppText } from "../../shared/i18n/app-i18n";
@@ -49,8 +50,7 @@ export default function PaymentSession({
         headers: {
           "Content-Type": "application/json",
           "sw-context-token": token,
-          "x-tenant":
-            new URLSearchParams(location.search).get("shop") ?? "atelier",
+          "x-tenant": shopScope(),
           "Idempotency-Key": `${id}:${op}:${crypto.randomUUID()}`,
         },
         body: "{}",

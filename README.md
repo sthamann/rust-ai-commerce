@@ -85,7 +85,7 @@ The modern builder uses one inherited content-language editor and supports the s
 | Shopware behavior in Rust | Bounded ports checked against original Shopware PHP classes |
 | Storyfront shops | Catalog/variant/media import and checkout transfer through a separate [Storyfront app](docs/storyfront.md) |
 | SaaS platform administration | Separate personal operator access, audited shop creation, live-shop statistics and staging visibility |
-| Self-hosted storage | PostgreSQL + Apache AGE + pgvector; no paid database service required |
+| Self-hosted storage | PostgreSQL + private Qdrant; no paid database service required |
 
 The interface supports **English, German, French and Spanish**. MIT licensed.
 
@@ -166,7 +166,7 @@ its own multilingual OAuth/settings page. Google Analytics loads the actual GA4 
 in the native storefront after consent and imports reports; Gmail imports a support
 label into private shop knowledge; Slack receives order notifications or rule-bound
 Flow Builder actions. Private sources are consumed by the merchant model prompt and
-MCP, with source IDs and AGE product relationships. Apps can publish typed events,
+MCP, with source IDs and transactional SQL product relationships. Apps can publish typed events,
 and the visual builder edits nested AND/OR/NOT/XOR conditions, source-named typed rules and app actions. Connected flow graphs support true/false branches, consecutive actions, durable delays, stop nodes and saved-rule references.
 
 [Setup, provider permissions, event API and tested boundaries](docs/connected-apps.md)
@@ -234,7 +234,7 @@ no known demo customer accounts. The console supports all four interface languag
 [Operator console and API](docs/platform.md) · [Host setup and Vercel deployment](docs/deployment.md)
 
 The public deployment package includes a non-root Rust image, private open-source
-PostgreSQL/AGE/pgvector, HTTPS gateway, one-shot personal operator setup and closed
+PostgreSQL/Qdrant, HTTPS gateway, one-shot personal operator setup and closed
 merchant signup/bootstrap-token gates. **It is tested locally; a public host/domain
 and verified Vercel/backend deployment are still outstanding.** GitHub Pages is the
 documentation site, not a hosted commerce backend.
@@ -443,3 +443,5 @@ behavior ports with original-source comparisons. Please include the current
 version, steps to reproduce and expected versus observed behavior.
 
 App-owned product rules: engraving and gift-message packages supply their own Wasm business rules, input fields and localized forms. The core hosts a generic cart-contribution contract. See [extension examples](extensions/README.md#app-owned-product-configuration).
+
+Managed hosting and staged shop relocation are described in [managed-hosting.md](docs/managed-hosting.md).

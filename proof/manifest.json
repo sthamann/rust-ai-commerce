@@ -242,8 +242,8 @@
     },
     "src/agent.rs": {
       "status": "unproved",
-      "sha256": "bcc1afea0fc18e3b2cd6541efc5aeb332ef817afd80bde680fffd4cfd00fd240",
-      "review": "Reviewed connected app OAuth/encryption/tenant evidence, current-rights event and flow dispatch, original rule comparisons and 9 real HTTP connector fixture groups; 18 existing commerce suites passed across two batches. Adapters remain unproved."
+      "sha256": "0c24ea1dad7610e5c38e2cfcbf3f4879a8c8423a7d5f3ee6da75a8169322f492",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "src/apps/cart_contributions.rs": {
       "status": "unproved",
@@ -267,8 +267,8 @@
     },
     "src/apps/evidence.rs": {
       "status": "unproved",
-      "sha256": "f2594461335bdf96dd03303d2c3de382987aff74c62a0410159ee9148823397b",
-      "review": "Reviewed connected app tenant/OAuth/import race fences and per-shop AGE write serialization; 48 Rust tests, 1976 original rule comparison cases, 9 real connector groups, 4 private-state regressions and 18 commerce suites in two batches. Surrounding adapters remain unproved."
+      "sha256": "3f94aea606068de3722d246c9f3cc90dd331adee1860c06d0fd40db6611bda07",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "src/apps/evidence_routes.rs": {
       "status": "unproved",
@@ -507,8 +507,8 @@
     },
     "src/bootstrap.rs": {
       "status": "unproved",
-      "sha256": "43c245c46485bd357393dbef51cd2501a14b8ffc5c72c887b7b80cabd995ec86",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "f3ffb71cfb35f0c4534705a851a11aca737eea10c00aee7c86dd986cb06f65b8",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
@@ -557,8 +557,8 @@
     },
     "src/catalog_routes.rs": {
       "status": "unproved",
-      "sha256": "57b2dd0e398ee912a6a782796a4dc438145f610741936b65dfa2fb85024d2d0a",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "af74f378556c93594109df8c15c3f5db3cbf9648398666027234808f2552d03c",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "src/categories/admin.rs": {
       "status": "unproved",
@@ -852,8 +852,8 @@
     },
     "src/documents/retrieval.rs": {
       "status": "unproved",
-      "sha256": "1f23dc3f833899dfe3dd55d7d5cb48b851d9fedcca188ff81dce81f684c12843",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "4cefea6cbb64602356f144d5a9bceb84cd67865de9c5810f4a5b7588a119b12e",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "src/experience.rs": {
       "status": "unproved",
@@ -880,10 +880,25 @@
       "sha256": "663d744f195b4c3afb2e9132b7f9a77b942b2a291ddb4d9eddece9b58fe7d41e",
       "review": "Reviewed optional passive app presentation bounds and legacy digest preservation, main-locale list metadata, configured-locale generation schema, and strict provider compatibility: summaries are required objects within optional presentation while icon/cover accept nullable provider output. 84 Rust tests and real app/developer PostgreSQL suites exercise parsing, unsafe assets, immutable versions and tenant isolation."
     },
+    "src/knowledge/relations.rs": {
+      "status": "unproved",
+      "sha256": "1e80b94d5e8f41da0ffb13d67c69be12872892b9f6cb35ff2fbb3e6804bef033",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+    },
+    "src/knowledge/search.rs": {
+      "status": "unproved",
+      "sha256": "361fb8826ef04ccbe3e1c1464d32ad0bc342340a0d53964c94c3fd562d9dd313",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+    },
+    "src/knowledge/vectors.rs": {
+      "status": "unproved",
+      "sha256": "0cc8f9f717121445fdfb4f3ed63ba11778d05d464b4b12cfaa4ebde93b1f6855",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+    },
     "src/knowledge.rs": {
       "status": "unproved",
-      "sha256": "eaaa10844d6cedecbb8a0566d9b1181f1eb72856d06eee60ef7c30102cdd098a",
-      "review": "Reviewed canonical Product row locking before AGE synchronization, preventing order projection/manual-edit races and stale graph metadata. International, translations and full customer lifecycle PostgreSQL suites pass on the changed binary; Rust units/lint pass. Destination guard remains exactly five conjunctive predicates; schema, fixtures and all changed adapters reviewed. Surrounding SQL/AI remain unproved."
+      "sha256": "03fa77773667f5efa3aa586979fcee666f079cbce4382a62d7b4cd6b44d4e98d",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "src/lib.rs": {
       "status": "unproved",
@@ -897,8 +912,8 @@
     },
     "src/main.rs": {
       "status": "unproved",
-      "sha256": "c67ede2f5463066db384746452e476fd0f5181fb586505b8b6d60ee69dc53d05",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "c3007f2465d09c91e25fb1c3e9cbc81a7b1cdef0a4ad8c45f36ca761a8585722",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "src/marketing/app_flows.rs": {
       "status": "reviewed-binding",
@@ -1037,8 +1052,8 @@
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "fa85a484a4307e989b61c287cfeb3f4adf5aacd83ca157f2289792d6774895b3",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "706b61417a0dababc09034743cacb532f361b57ab8194b0a624af203da92feeb",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -1187,8 +1202,8 @@
     },
     "src/platform/provision.rs": {
       "status": "unproved",
-      "sha256": "fcb72b4e3050d6bad9b0e92129164b3de7552c197ee5f026605a39255d7239e9",
-      "review": "Reviewed gross capture aggregation for captured, late captured and refunded order cohorts: platform.py 11 real HTTP/PG groups passed including synthetic persisted money states, without PSP calls. Reviewed post-commit optional graph indexing failures cannot turn committed ownership into provisioning failure. Rust fmt/clippy and binaries pass; same extracted operator policy and SQL/provisioning adapters remain outside full proof."
+      "sha256": "3b515ec4220c5b8158a3e1350366f34534f9a9f072a0ae388f6aea5975bbe7ef",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "src/pricing.rs": {
       "status": "unproved",
@@ -1212,8 +1227,8 @@
     },
     "src/routes.rs": {
       "status": "unproved",
-      "sha256": "f7a55994db4128e3eddce2634261ff905f45d17ad7b62aef068af6371309e053",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "9f6311a64a9193bc5890a06b9234d392db54847468914a57d9834fe3aadb2ee0",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "src/rule_comparison.rs": {
       "status": "reviewed-binding",
@@ -1229,6 +1244,11 @@
       "status": "unproved",
       "sha256": "dc9a936dee659568e48871fab187ff75e746dd65206e54d1d3b06371cb48d32d",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/shop_domains.rs": {
+      "status": "unproved",
+      "sha256": "16a97a355aa834d44c33b41af8389031728fb260304726d18a2c93a4fd3fd2fb",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "src/staging/assets.rs": {
       "status": "unproved",
@@ -1318,16 +1338,16 @@
   },
   "inputs": {
     ".github/workflows/verify.yml": {
-      "sha256": "1fe54e6e551394d07ed704d5cd07c5f13fb37814ae4744a385a3d981d2e06736",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "953b237a00a6eff3d127fff96ac7de127254d8dfb2a347e9f5cd2eae710f7ff7",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "Cargo.lock": {
-      "sha256": "ef08069cc1fb76b0db745f339715f2e4417506e57385d1e56137a1fe810e7c3a",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "55c0900ccc155c21bba344f826e79f609a6db0f939e496e3b14e3c1fc9f93b56",
+      "review": "Reviewed SQLx TLS feature and lockfile: enables existing Rustls and WebPKI dependencies for encrypted managed PostgreSQL connections; no schema, query, permission, or verified-kernel changes."
     },
     "Cargo.toml": {
-      "sha256": "e14f2a351d288125b791a9296050c25765fa83c57ee7bb15b7b6932dadf8987f",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "93f8eeadd0625ac5e1b56bfc8c3b7255939fe56c6ef2b10764818cfca3ed1fd7",
+      "review": "Reviewed SQLx TLS feature and lockfile: enables existing Rustls and WebPKI dependencies for encrypted managed PostgreSQL connections; no schema, query, permission, or verified-kernel changes."
     },
     "fixtures/app-studio-schema.json": {
       "sha256": "82bbe13cbdced9b719e54eff764a3825564148a1f32bae216a6f52c96c4990df",
@@ -1352,6 +1372,10 @@
     "migrations/001.sql": {
       "sha256": "89fd780bf3d991bf3c056f4145e064e4aa030ef5e33a0fff1e5fc7330604a2a7",
       "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/002-managed.sql": {
+      "sha256": "1696c97b1e3aefc3fa339c6ec847d9e2b93b5b0fa48af4ee553fea4dc6e5db35",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "migrations/002.sql": {
       "sha256": "08f316512f3358ab3276c1d46f5343b96eac31b9b118e4e0c1c83517dd99c589",
@@ -1388,6 +1412,10 @@
     "migrations/010-apps-intelligence-payments.sql": {
       "sha256": "0fab6246dd1350d3e729e3d122624a1e4df44a40fba49d80bb1d833f8d5b38d1",
       "review": "Production policy extraction, terminal API guards, reviewed schema/build inputs; all surrounding modules remain unproved"
+    },
+    "migrations/011-documents-managed.sql": {
+      "sha256": "0968f1368db4904faf3bace72d2522ff93e63e49f20254f77815cc674b56584e",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "migrations/011-documents.sql": {
       "sha256": "44134b3643a70e6528d4d96fd7c7d34c5e6375644b06ddc603fce73f35dd84b4",
@@ -1480,6 +1508,10 @@
     "migrations/032-image-jobs.sql": {
       "sha256": "8b43858529f9217cbbf85d4ab3bbbc82ef21facaae8a1fcb94c8d2974ee88798",
       "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+    },
+    "migrations/033-managed-knowledge.sql": {
+      "sha256": "2f15dc9a330abce6aa7122c9f72d7c4bb38d7f523757be2916d65dd37f9722f3",
+      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "c9b984225b556b954c3147500a907788ae4436a16f787d44ccdc493282df5a73",

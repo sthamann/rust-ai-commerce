@@ -24,7 +24,7 @@ export default function KnowledgeGraph({
     <section className="studio-card graph-card">
       <div className="card-heading">
         <h2>{t("graph")}</h2>
-        <span className="soft-tag">Apache AGE</span>
+        <span className="soft-tag">{graph.engine}</span>
       </div>
       <p className="muted">{t("graphHint")}</p>
       <svg

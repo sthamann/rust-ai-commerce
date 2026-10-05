@@ -6,7 +6,7 @@ const SCHEMA: &[(&str, &str)] = &[
     // Product/category management is append-only; earlier migration hashes stay intact.
     // Append-only entries are applied in dependency order below.
     ("001", include_str!("../migrations/001.sql")),
-    ("002", include_str!("../migrations/002.sql")),
+    ("002-managed", include_str!("../migrations/002-managed.sql")),
     ("004-context", include_str!("../migrations/004-context.sql")),
     (
         "006-commerce",
@@ -21,8 +21,8 @@ const SCHEMA: &[(&str, &str)] = &[
         include_str!("../migrations/010-apps-intelligence-payments.sql"),
     ),
     (
-        "011-documents",
-        include_str!("../migrations/011-documents.sql"),
+        "011-documents-managed",
+        include_str!("../migrations/011-documents-managed.sql"),
     ),
     (
         "012-checkout-handoff",
@@ -112,6 +112,10 @@ const SCHEMA: &[(&str, &str)] = &[
         "032-image-jobs",
         include_str!("../migrations/032-image-jobs.sql"),
     ),
+    (
+        "033-managed-knowledge",
+        include_str!("../migrations/033-managed-knowledge.sql"),
+    ),
 ];
 
 pub(crate) async fn apply(pool: &PgPool) {
@@ -122,6 +126,24 @@ pub(crate) async fn apply(pool: &PgPool) {
         .await
         .expect("migration lock");
     sqlx::query("CREATE TABLE IF NOT EXISTS public.commerce_migrations(version text PRIMARY KEY,checksum text NOT NULL,applied_at timestamptz NOT NULL DEFAULT now())").execute(pool).await.expect("migration ledger");
+    // Historical AGE databases keep their original checksum contract; fresh installs use managed variants.
+    for (version, source) in [
+        ("002", include_str!("../migrations/002.sql")),
+        (
+            "011-documents",
+            include_str!("../migrations/011-documents.sql"),
+        ),
+    ] {
+        let applied: Option<String> =
+            sqlx::query_scalar("SELECT checksum FROM public.commerce_migrations WHERE version=$1")
+                .bind(version)
+                .fetch_optional(pool)
+                .await
+                .expect("legacy migration ledger");
+        if let Some(applied) = applied {
+            assert_eq!(applied, hash(source), "Legacy migration drift: {version}");
+        }
+    }
     for (version, source) in SCHEMA {
         let checksum = hash(source);
         let applied: Option<String> =

@@ -161,7 +161,7 @@ try:
     )  # Newly provisioned shop serves its actual sample catalogue.
     assert command(["docker", "exec", container, "id", "-u"]) == "10001"
     print(
-        "PASS built deployment image: non-root Rust, bundled frontend, real AGE PostgreSQL startup, personal operator login/provisioning, closed signup/bootstrap, no demo customers"
+        "PASS built deployment image: non-root Rust, bundled frontend, real PostgreSQL startup, personal operator login/provisioning, closed signup/bootstrap, no demo customers"
     )
 finally:
     if started:

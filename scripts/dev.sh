@@ -13,12 +13,15 @@ with open('.env','w') as f:
 PY
 fi
 set -a; source .env; set +a
+export QDRANT_URL="${QDRANT_URL:-http://127.0.0.1:${QDRANT_PORT:-16333}}"
 project="${COMPOSE_PROJECT_NAME:-vendune}"
 # Reuse an existing pre-Vendune database volume unless a project was explicitly selected.
 if [ -z "${COMPOSE_PROJECT_NAME:-}" ] && [ -n "$(docker ps -a --filter label=com.docker.compose.project=rust-ai-commerce --filter label=com.docker.compose.service=postgres --format '{{.ID}}')" ]; then
   project="rust-ai-commerce"
 fi
-docker compose -p "$project" up -d --build --wait postgres
+# Keep an existing legacy AGE image until its in-place conversion/export is completed.
+# Recreating that database with the standard image would remove extension libraries.
+docker compose -p "$project" up -d --no-recreate --wait postgres qdrant
 (cd frontend && npm ci && npm run build)
 cargo build --locked
 if [ "${CONNECTED_APPS:-0}" = "1" ]; then
