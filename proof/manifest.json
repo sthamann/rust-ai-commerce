@@ -1342,12 +1342,12 @@
       "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
     },
     "Cargo.lock": {
-      "sha256": "ef08069cc1fb76b0db745f339715f2e4417506e57385d1e56137a1fe810e7c3a",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "55c0900ccc155c21bba344f826e79f609a6db0f939e496e3b14e3c1fc9f93b56",
+      "review": "Reviewed SQLx TLS feature and lockfile: enables existing Rustls and WebPKI dependencies for encrypted managed PostgreSQL connections; no schema, query, permission, or verified-kernel changes."
     },
     "Cargo.toml": {
-      "sha256": "e14f2a351d288125b791a9296050c25765fa83c57ee7bb15b7b6932dadf8987f",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "93f8eeadd0625ac5e1b56bfc8c3b7255939fe56c6ef2b10764818cfca3ed1fd7",
+      "review": "Reviewed SQLx TLS feature and lockfile: enables existing Rustls and WebPKI dependencies for encrypted managed PostgreSQL connections; no schema, query, permission, or verified-kernel changes."
     },
     "fixtures/app-studio-schema.json": {
       "sha256": "82bbe13cbdced9b719e54eff764a3825564148a1f32bae216a6f52c96c4990df",

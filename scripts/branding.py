@@ -60,5 +60,5 @@ exit 75
                'LEGACY_EXISTS': legacy, 'COMPOSE_PROJECT_NAME': explicit, 'DOCKER_ARGS': str(tmp / 'args')}
         result = subprocess.run(['/bin/bash', str(tmp / 'scripts/dev.sh')], env=env, capture_output=True)
         assert result.returncode == 75, 'Launcher must stop at the fake Docker boundary'
-        assert (tmp / 'args').read_text().splitlines() == ['compose', '-p', expected, 'up', '-d', '--build', '--wait', 'postgres']
+        assert (tmp / 'args').read_text().splitlines() == ['compose', '-p', expected, 'up', '-d', '--no-recreate', '--wait', 'postgres', 'qdrant']
 print('PASS Vendune identity, shared safe SVGs, runtime paths and real launcher fresh/legacy/explicit-project compatibility')
