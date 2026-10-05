@@ -36,7 +36,7 @@ impl ProductFields {
             || !(0..=365).contains(&self.delivery_days)
             || self
                 .list_price
-                .is_some_and(|v| !v.is_finite() || v < 0. || v > 1_000_000.)
+                .is_some_and(|v| !v.is_finite() || !(0. ..=1_000_000.).contains(&v))
             || self.advanced_prices.len() > 100
             || self.properties.len() > 40
             || self
