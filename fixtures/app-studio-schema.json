@@ -1,0 +1,533 @@
+{
+  "type": "object",
+  "properties": {
+    "summary": {
+      "type": "object",
+      "properties": {
+        "en": {
+          "type": "string"
+        },
+        "de": {
+          "type": "string"
+        },
+        "fr": {
+          "type": "string"
+        },
+        "es": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "en",
+        "de",
+        "fr",
+        "es"
+      ],
+      "additionalProperties": false
+    },
+    "manifest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "coreApi": {
+          "type": "string",
+          "enum": [
+            "1"
+          ]
+        },
+        "runtime": {
+          "type": "string",
+          "enum": [
+            "declarative"
+          ]
+        },
+        "name": {
+          "type": "object",
+          "properties": {
+            "en": {
+              "type": "string"
+            },
+            "de": {
+              "type": "string"
+            },
+            "fr": {
+              "type": "string"
+            },
+            "es": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "en",
+            "de",
+            "fr",
+            "es"
+          ],
+          "additionalProperties": false
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "data.read",
+              "data.write",
+              "admin.slot",
+              "storefront.slot"
+            ]
+          }
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "label": {
+                "type": "object",
+                "properties": {
+                  "en": {
+                    "type": "string"
+                  },
+                  "de": {
+                    "type": "string"
+                  },
+                  "fr": {
+                    "type": "string"
+                  },
+                  "es": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "en",
+                  "de",
+                  "fr",
+                  "es"
+                ],
+                "additionalProperties": false
+              },
+              "fields": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "object",
+                      "properties": {
+                        "en": {
+                          "type": "string"
+                        },
+                        "de": {
+                          "type": "string"
+                        },
+                        "fr": {
+                          "type": "string"
+                        },
+                        "es": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "en",
+                        "de",
+                        "fr",
+                        "es"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "string",
+                        "integer",
+                        "boolean"
+                      ]
+                    },
+                    "translatable": {
+                      "type": "boolean"
+                    },
+                    "required": {
+                      "type": "boolean"
+                    },
+                    "indexed": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "label",
+                    "kind",
+                    "translatable",
+                    "required",
+                    "indexed"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "publicRead": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "label",
+              "fields",
+              "publicRead"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "slots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "location": {
+                "type": "string",
+                "enum": [
+                  "admin.apps",
+                  "product.detail"
+                ]
+              },
+              "component": {
+                "type": "string",
+                "enum": [
+                  "entity-form",
+                  "entity-list"
+                ]
+              },
+              "label": {
+                "type": "object",
+                "properties": {
+                  "en": {
+                    "type": "string"
+                  },
+                  "de": {
+                    "type": "string"
+                  },
+                  "fr": {
+                    "type": "string"
+                  },
+                  "es": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "en",
+                  "de",
+                  "fr",
+                  "es"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "location",
+              "component",
+              "label"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "views": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "layout": {
+                "type": "string",
+                "enum": [
+                  "stack",
+                  "grid"
+                ]
+              },
+              "blocks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "text",
+                        "table",
+                        "cards",
+                        "form"
+                      ]
+                    },
+                    "title": {
+                      "type": "object",
+                      "properties": {
+                        "en": {
+                          "type": "string"
+                        },
+                        "de": {
+                          "type": "string"
+                        },
+                        "fr": {
+                          "type": "string"
+                        },
+                        "es": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "en",
+                        "de",
+                        "fr",
+                        "es"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "text": {
+                      "type": "object",
+                      "properties": {
+                        "en": {
+                          "type": "string"
+                        },
+                        "de": {
+                          "type": "string"
+                        },
+                        "fr": {
+                          "type": "string"
+                        },
+                        "es": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "en",
+                        "de",
+                        "fr",
+                        "es"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "entity": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "readAction": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "writeAction": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "kind",
+                    "title",
+                    "text",
+                    "entity",
+                    "readAction",
+                    "writeAction"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "layout",
+              "blocks"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "surfaces": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string",
+                "enum": [
+                  "admin.navigation",
+                  "admin.order",
+                  "admin.product",
+                  "storefront.page",
+                  "storefront.home",
+                  "product.detail",
+                  "cart.summary",
+                  "account.overview"
+                ]
+              },
+              "label": {
+                "type": "object",
+                "properties": {
+                  "en": {
+                    "type": "string"
+                  },
+                  "de": {
+                    "type": "string"
+                  },
+                  "fr": {
+                    "type": "string"
+                  },
+                  "es": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "en",
+                  "de",
+                  "fr",
+                  "es"
+                ],
+                "additionalProperties": false
+              },
+              "uiPath": {
+                "type": "string"
+              },
+              "actions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "location",
+              "label",
+              "uiPath",
+              "actions"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "apiRoutes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "POST"
+                ]
+              },
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "admin",
+                  "storefront"
+                ]
+              },
+              "action": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path",
+              "method",
+              "scope",
+              "action"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "intelligence": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "object",
+              "properties": {
+                "en": {
+                  "type": "string"
+                },
+                "de": {
+                  "type": "string"
+                },
+                "fr": {
+                  "type": "string"
+                },
+                "es": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "en",
+                "de",
+                "fr",
+                "es"
+              ],
+              "additionalProperties": false
+            },
+            "tools": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "entities": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "description",
+            "tools",
+            "entities"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "coreApi",
+        "runtime",
+        "name",
+        "permissions",
+        "entities",
+        "slots",
+        "views",
+        "surfaces",
+        "apiRoutes",
+        "intelligence"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "summary",
+    "manifest"
+  ],
+  "additionalProperties": false
+}

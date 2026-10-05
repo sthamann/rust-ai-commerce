@@ -1,0 +1,74 @@
+/** App Studio binding indicators, empty canvas and properties inspector. */
+.app-binding {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 10px;
+  color: var(--muted, #64758c);
+  margin-top: 15px;
+}
+.app-ghost {
+  display: grid;
+  gap: 8px;
+}
+.app-ghost i {
+  display: block;
+  height: 24px;
+  border-radius: 5px;
+  background: var(--surface-alt, #f3f6fb);
+  border: 1px solid var(--border, #e4ebf5);
+}
+.app-ghost-table i:first-child {
+  background: #eef4ff;
+  height: 18px;
+}
+.app-ghost-cards {
+  grid-template-columns: repeat(3, 1fr);
+}
+.app-ghost-cards i {
+  height: 65px;
+}
+.app-ghost-form i {
+  height: 34px;
+}
+.app-ghost-form .app-ghost-button {
+  width: 90px;
+  background: #1769f3;
+  height: 27px;
+  border: 0;
+  margin-top: 6px;
+}
+.app-canvas-empty {
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  color: var(--muted, #64758c);
+}
+.app-inspector {
+  padding: 22px 18px;
+  border-left: 1px solid var(--border, #dce5ef);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.app-inspector .app-panel-label {
+  margin-bottom: 0;
+}
+.app-inspector-divider {
+  height: 1px;
+  background: var(--border, #dce5ef);
+  margin: 2px 0;
+}
+.app-inspector .intl-field-heading {
+  align-items: start;
+  flex-direction: column;
+  gap: 4px;
+}
+.app-inspector .intl-inherit {
+  font-size: 10px;
+}
+.app-inspector .muted {
+  font-size: 12px;
+  line-height: 1.7;
+}

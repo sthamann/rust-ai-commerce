@@ -56,6 +56,14 @@ try:
  assert b['manifest']['entities'][0]['fields'][0]['translatable'] and len(b['manifest']['actions'])==2
  assert captured[-1][0]=='/v1/responses' and 'private' not in str(b['manifest'])
  manifest['version']='1.1.0';claude=call('/api/developer/generate',{'environment':e['id'],'prompt':'Create a second multilingual app version','inference':{'provider':'anthropic','model':'local-fixture'}},a);assert claude['manifest']['version']=='1.1.0' and captured[-1][0]=='/v1/messages'
+ original_manifest=manifest
+ manifest=json.loads((root/'extensions/apps/care-studio/manifest.json').read_text());manifest['id']='native_'+uuid.uuid4().hex[:10]
+ native=call('/api/developer/generate',{'environment':e['id'],'prompt':'Extend the current native app','manifest':manifest,'inference':{'provider':'openai','model':'local-fixture'}},a)
+ assert native['manifest']['views'] and native['manifest']['apiRoutes'] and manifest['id'] in captured[-1][1]['input']
+ call('/api/developer/builds/'+native['id']+'/stage',{'approve':True,'digest':native['digest']},a)
+ assert any(v.get('native',{}).get('view',{}).get('id')=='workspace' for v in call('/api/apps/surfaces',session=a,tenant=e['id'])['surfaces'])
+ manifest=original_manifest
+ passed('Structured native generation carries current shared Manifest through provider wire, immutable build and real sandbox renderer registry')
  call('/api/developer/builds/'+b['id']+'/stage',{'approve':True,'digest':b['digest']},a)
  call('/api/apps/'+app_id+'/entities/guides',{'id':'care','fields':{'content':{'en':'Handwash','de':'Handwäsche','fr':'Lavage à la main','es':'Lavar a mano'}}},a,e['id'])
  record=call('/store-api/apps/'+app_id+'/actions/list_guides',{},a,e['id'])['elements'][0];assert record['content']['fr']=='Lavage à la main'

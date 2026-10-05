@@ -22,27 +22,20 @@ pub(super) fn validate(m: &apps::Manifest) -> Result<()> {
             "Reserved apps and Wasm configuration require a separate reviewed package; service code remains operator deployed",
         ));
     }
-    for lang in ["en", "de", "fr", "es"] {
-        if m.name
-            .get(lang)
-            .is_none_or(|s| s.trim().is_empty() || s.len() > 100)
-            || m.slots
+    let labels = std::iter::once(&m.name)
+        .chain(m.entities.iter().map(|e| &e.label))
+        .chain(
+            m.entities
                 .iter()
-                .any(|s| s.label.get(lang).is_none_or(|v| v.trim().is_empty()))
-        {
-            return Err(bad("All four interface translations are required"));
-        }
-    }
-    for e in &m.entities {
-        for lang in ["en", "de", "fr", "es"] {
-            if e.label.get(lang).is_none_or(|s| s.trim().is_empty())
-                || e.fields
-                    .iter()
-                    .any(|f| f.label.get(lang).is_none_or(|s| s.trim().is_empty()))
-            {
-                return Err(bad("All entity and field labels need four translations"));
-            }
-        }
+                .flat_map(|e| e.fields.iter().map(|f| &f.label)),
+        )
+        .chain(m.slots.iter().map(|s| &s.label))
+        .chain(m.surfaces.iter().map(|s| &s.label));
+    if labels
+        .into_iter()
+        .any(|l| l.is_empty() || l.values().any(|s| s.trim().is_empty() || s.len() > 100))
+    {
+        return Err(bad("App and field labels must be nonempty and bounded"));
     }
     Ok(())
 }
@@ -65,12 +58,37 @@ pub(super) async fn save(
         .as_str()
         .filter(|s| !s.trim().is_empty() && s.len() <= 8000)
         .ok_or(bad("Prompt required, maximum 8000 bytes"))?;
-    if ["en", "de", "fr", "es"].iter().any(|l| {
-        v["summary"][l]
-            .as_str()
-            .is_none_or(|s| s.trim().is_empty() || s.len() > 1000)
-    }) {
-        return Err(bad("Summary needs all four translations"));
+    let (settings, _) = commerce::config(a, t).await?;
+    let main = &settings.main_locale;
+    let base = main.split('-').next().unwrap_or(main);
+    let labels = std::iter::once(&m.name)
+        .chain(m.entities.iter().map(|e| &e.label))
+        .chain(
+            m.entities
+                .iter()
+                .flat_map(|e| e.fields.iter().map(|f| &f.label)),
+        )
+        .chain(m.surfaces.iter().map(|s| &s.label))
+        .chain(
+            m.views
+                .iter()
+                .flat_map(|v| v.blocks.iter().map(|b| &b.title)),
+        );
+    if labels.into_iter().any(|l| {
+        l.get(main)
+            .or_else(|| l.get(base))
+            .is_none_or(|s| s.trim().is_empty())
+    }) || v["summary"].as_object().is_none_or(|o| {
+        o.values()
+            .any(|s| s.as_str().is_none_or(|s| s.len() > 1000))
+    }) || v["summary"][main]
+        .as_str()
+        .or_else(|| v["summary"][base].as_str())
+        .is_none_or(|s| s.trim().is_empty())
+    {
+        return Err(bad(
+            "App labels and summary need the shop main language; other languages inherit",
+        ));
     }
     let manifest = json!(m);
     let digest = hash(&manifest.to_string());

@@ -122,6 +122,10 @@ pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
         "Explicitly approved idempotent provider command",
     ),
     (
+        "developer.archive",
+        "Explicit recoverable App Studio project removal or restore",
+    ),
+    (
         "developer.builds",
         "Read own immutable app development versions",
     ),

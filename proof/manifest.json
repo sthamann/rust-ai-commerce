@@ -165,7 +165,8 @@
     },
     "app_read_admissible": {
       "bindings": [
-        "src/apps/surfaces.rs"
+        "src/apps/surfaces.rs",
+        "src/apps/native_views.rs"
       ],
       "theorems": [
         "app_read_safe",
@@ -256,8 +257,8 @@
     },
     "src/apps/data.rs": {
       "status": "unproved",
-      "sha256": "e21848130c8befa263174c807a6cb3b8d0a24c52c26b00834deab8c67b227927",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "79bc14a6708e55ebfe14af900a78baa64aabc8d7425e1a4f341a6db00137c190",
+      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
     },
     "src/apps/events.rs": {
       "status": "unproved",
@@ -281,18 +282,33 @@
     },
     "src/apps/manifest.rs": {
       "status": "unproved",
-      "sha256": "234f408282f29ecd24063128915533df82bbc83bda97dee9b015d3f3a7feef93",
-      "review": "Reviewed email built-in registration and reserved-ID checks in apps/routes.rs, apps/manifest.rs, developer/builds.rs; existing permission/service gateway preserved. marketing/flows.rs snapshots committed orderCustomer and currency for queue recipient stability. verify.yml adds real SMTP/TLS/Resend/SendGrid and isolated PostgreSQL checkout-flow-MCP-staging regressions. No kernel policy or proof property changed; mail/network code remains unproved."
+      "sha256": "7faa5621e3c4971e7708a76085bccf1c81612c95e44e2465e9678517927dda70",
+      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
     },
     "src/apps/manifest_validation.rs": {
       "status": "unproved",
-      "sha256": "4494edba673b1f3e9062197177b90b5d9fd2b213d3faa8ee0b9a23e1285d75cc",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "84355419ac5b56724cee1396a6890105b48cf500befe8c47803e1f6f1423206e",
+      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
     },
     "src/apps/mod.rs": {
       "status": "unproved",
-      "sha256": "d94b96afeffe9dce697dac80f50efe9ec4a52d4a7a24168b371b6aee87eaa25a",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "d52d83b48ced21144427d55766fded4d712d237f38809ed4508b3f0d83be41ad",
+      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+    },
+    "src/apps/native_data.rs": {
+      "status": "unproved",
+      "sha256": "cae3cf9c4f296b9107a9dc19fb90407e2436369a1eb107bcf938e3d062e2556f",
+      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+    },
+    "src/apps/native_view_tests.rs": {
+      "status": "unproved",
+      "sha256": "1541f2e36828418cd9ac7ed6a550300797e55ff62e1c786e5dbd222ff23e8b29",
+      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+    },
+    "src/apps/native_views.rs": {
+      "status": "reviewed-binding",
+      "sha256": "1a9a55447efd69857fe8b1c111cdfb0da9159ab348cf74f76e1b01ed55f9f360",
+      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
     },
     "src/apps/planning.rs": {
       "status": "unproved",
@@ -326,8 +342,8 @@
     },
     "src/apps/surfaces.rs": {
       "status": "reviewed-binding",
-      "sha256": "7c6795ce966b1efaa66ce5b51adba961848fcf6cd6b42f55c1b871a44e32b369",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "a3fef6ee395b3a49889097eb60cbd6ba7d1faa4983162cf27fda6ca00df81cf5",
+      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
     },
     "src/assets/download.rs": {
       "status": "reviewed-binding",
@@ -481,8 +497,8 @@
     },
     "src/capabilities.rs": {
       "status": "unproved",
-      "sha256": "1bbb876efdc84b75a2aca19c441a872d386556481d97cc2672bfc6e6f5f9684e",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "23853fd542ea0d6c35194ec6bebd9a8af1fbf79bf3ab802040126a592b1938eb",
+      "review": "Reviewed native App Studio runtime and source/schema changes with existing extracted public-read guard; added tenant-owned approval-checked recoverable project archive/restore over HTTP and MCP, preserving immutable digests and installed app data, rejecting archived staging. Rust fmt/lint/unit checks and frontend shared-schema, edit/open/version/confirm-delete/restore tests; affected real PostgreSQL suites validate ownership, archive, restored digest and installed-data retention. SQL/UI/async adapters remain unproved."
     },
     "src/cart_model.rs": {
       "status": "unproved",
@@ -744,25 +760,30 @@
       "sha256": "758b744773b37cff7fe7a986fb14ed74167f767b07e11c4afbefdd28eddc2a6d",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/developer/archive.rs": {
+      "status": "unproved",
+      "sha256": "e02a0d79ebf3cf5858dc854eb68cc7b930b501c8140e779eb30c6da81ccc7acf",
+      "review": "Reviewed native App Studio runtime and source/schema changes with existing extracted public-read guard; added tenant-owned approval-checked recoverable project archive/restore over HTTP and MCP, preserving immutable digests and installed app data, rejecting archived staging. Rust fmt/lint/unit checks and frontend shared-schema, edit/open/version/confirm-delete/restore tests; affected real PostgreSQL suites validate ownership, archive, restored digest and installed-data retention. SQL/UI/async adapters remain unproved."
+    },
     "src/developer/builds.rs": {
       "status": "unproved",
-      "sha256": "c51c38e5af4324f05004c4075437c6b15af79315a9905870b92b3162a4df6575",
-      "review": "Reviewed email built-in registration and reserved-ID checks in apps/routes.rs, apps/manifest.rs, developer/builds.rs; existing permission/service gateway preserved. marketing/flows.rs snapshots committed orderCustomer and currency for queue recipient stability. verify.yml adds real SMTP/TLS/Resend/SendGrid and isolated PostgreSQL checkout-flow-MCP-staging regressions. No kernel policy or proof property changed; mail/network code remains unproved."
+      "sha256": "5a15524417e01b9e16cee9f368f2b242a5ff5108bb346618b958e2787552a1a4",
+      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
     },
     "src/developer/generation.rs": {
       "status": "unproved",
-      "sha256": "9e3d1f73f131300509b3de19b2c115a0d4dfed4aa36dd0dda6e8973bca8e96ac",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "7f7c969abbaa6e76fb6b2a6d426c557399f72d819ac6b8a9b06bcd7a4e945274",
+      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
     },
     "src/developer/mod.rs": {
       "status": "unproved",
-      "sha256": "c86f0b363c34204c0b6c9dcdb64572d52e4b08df024fd1f206c731d8d733f0ad",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "b24f280c62446529ca6216431fa924136c676f2f6c2f95531afdadc8e40963f0",
+      "review": "Reviewed native App Studio runtime and source/schema changes with existing extracted public-read guard; added tenant-owned approval-checked recoverable project archive/restore over HTTP and MCP, preserving immutable digests and installed app data, rejecting archived staging. Rust fmt/lint/unit checks and frontend shared-schema, edit/open/version/confirm-delete/restore tests; affected real PostgreSQL suites validate ownership, archive, restored digest and installed-data retention. SQL/UI/async adapters remain unproved."
     },
     "src/developer/routes.rs": {
       "status": "unproved",
-      "sha256": "f4d827f5f90268024ca1b7761e8dc6f4b4b0ff78e858f1490e20212f305f6f26",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "c753d721577faad6d92fd6d700f18eab2547952739527f395de62720273300c7",
+      "review": "Reviewed native App Studio runtime and source/schema changes with existing extracted public-read guard; added tenant-owned approval-checked recoverable project archive/restore over HTTP and MCP, preserving immutable digests and installed app data, rejecting archived staging. Rust fmt/lint/unit checks and frontend shared-schema, edit/open/version/confirm-delete/restore tests; affected real PostgreSQL suites validate ownership, archive, restored digest and installed-data retention. SQL/UI/async adapters remain unproved."
     },
     "src/discount.rs": {
       "status": "reviewed-binding",
@@ -971,13 +992,13 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "de736861fdfd4e8afa0a954b33d7155e637a2adf7f05ef9d54ebe31f3a1372b6",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "a382bd3f63ac23aa52d46ee16e85c5a7242c831e5b4d07f1dbd485272755ab0b",
+      "review": "Reviewed native App Studio runtime and source/schema changes with existing extracted public-read guard; added tenant-owned approval-checked recoverable project archive/restore over HTTP and MCP, preserving immutable digests and installed app data, rejecting archived staging. Rust fmt/lint/unit checks and frontend shared-schema, edit/open/version/confirm-delete/restore tests; affected real PostgreSQL suites validate ownership, archive, restored digest and installed-data retention. SQL/UI/async adapters remain unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "71c576cbec226935e02553e896875f1b755778ef661569171da62b924ddddafa",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "a7f213741685ac72406eab7a6eeb8171d2bb4db6890c4ab1f4864a1276b24640",
+      "review": "Reviewed App Studio native views, scoped translation validation, canonical agent schema and recoverable project trash. Registered migration 029 in the actual startup migration registry; real PostgreSQL native suite passes approval/cross-tenant rejection, archive hiding, archived-stage rejection, retained installed records and exact digest restore via MCP. Frontend open/edit/next-version/confirm-delete/restore regression tests pass. Public native writes reuse app_read_admissible; SQL/browser/async code remains unproved."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -1243,6 +1264,10 @@
       "sha256": "94eca2d307777d529d7f7014d31453786088b89fb25cecc2e6cb113d2d7eef32",
       "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
     },
+    "fixtures/app-studio-schema.json": {
+      "sha256": "7511608ce3bad039ba883206e6e1762aa672572b1ddb13594cdd40d28f3af205",
+      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+    },
     "fixtures/demo-catalog.json": {
       "sha256": "e5d5eea04a7693b3f92fa58be66ad36b7ad01d5920029c29f303693aa0032ba2",
       "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
@@ -1374,6 +1399,10 @@
     "migrations/028-translations.sql": {
       "sha256": "03ac466bb6f8cd7361a1fede97b59e6191549691659217735c5e0ca3a99d68f1",
       "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "migrations/029-developer-trash.sql": {
+      "sha256": "00315c964f26452c7c99682f2577d53b49c562765e5cf65cccf6dae0b2744fd5",
+      "review": "Reviewed native App Studio runtime and source/schema changes with existing extracted public-read guard; added tenant-owned approval-checked recoverable project archive/restore over HTTP and MCP, preserving immutable digests and installed app data, rejecting archived staging. Rust fmt/lint/unit checks and frontend shared-schema, edit/open/version/confirm-delete/restore tests; affected real PostgreSQL suites validate ownership, archive, restored digest and installed-data retention. SQL/UI/async adapters remain unproved."
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "c9b984225b556b954c3147500a907788ae4436a16f787d44ccdc493282df5a73",

@@ -152,3 +152,24 @@ it("keeps an authenticated editor mounted while changing UI language and disconn
   expect(result.current.connected).toBe(false);
   expect(result.current.data).toBeUndefined();
 });
+
+it.each([
+  ["developers", "developers"],
+  ["unknown", "assistant"],
+])(
+  "opens only a known Studio workspace from the %s deep link",
+  async (target, expected) => {
+    history.replaceState(
+      null,
+      "",
+      `/?shop=unit-shop&studio=${target}#merchant`,
+    );
+    network();
+    const { result } = renderHook(
+      () => useStudioController({ onChanged: vi.fn(), onExit: vi.fn() }),
+      { wrapper: LocaleProvider },
+    );
+    expect(result.current.tab).toBe(expected);
+    await waitFor(() => expect(result.current.serverReady).toBe(true));
+  },
+);
