@@ -198,7 +198,10 @@ export default function StudioRoutes() {
         data={data}
         request={request}
         onIntent={intent}
-        onProduct={onProduct}
+        onProduct={(id) => {
+          onProduct(id);
+          setPreviewOpen(true);
+        }}
       />
     ) : (
       <AgentsView data={data} onStorefront={onExit} />

@@ -83,7 +83,7 @@ pub async fn graph(db: &PgPool, tenant: &str) -> Result<Value, sqlx::Error> {
     let observed=cypher(db,"MATCH (a:Product {tenant:$tenant})-[r:CO_PURCHASED]->(b:Product {tenant:$tenant}) RETURN {left:a.product_id,right:b.product_id,orders:r.orders,source:r.source,lastEvent:r.event_id} ORDER BY r.orders DESC LIMIT 24",json!({"tenant":tenant})).await?;
     let documents=cypher(db,"MATCH (p:Product {tenant:$tenant})-[:HAS_DOCUMENT]->(d:Document {tenant:$tenant}) RETURN {product_id:p.product_id,document_id:d.document_id,title:d.title,source:d.source} LIMIT 100",json!({"tenant":tenant})).await?;
     let published: Vec<String> = sqlx::query_scalar(
-        "SELECT id FROM knowledge_documents WHERE tenant=$1 AND visibility='public'",
+        "SELECT id FROM knowledge_documents WHERE tenant=$1 AND visibility='public' AND NOT archived",
     )
     .bind(tenant)
     .fetch_all(db)
@@ -155,6 +155,11 @@ pub async fn sync_document(
     title: &str,
     digest: &str,
 ) -> Result<(), sqlx::Error> {
+    let cleanup = "SELECT result::text FROM ag_catalog.cypher('commerce', $graph$MATCH (p:Product {tenant:$tenant})-[r:HAS_DOCUMENT]->(d:Document {tenant:$tenant,document_id:$id}) DELETE r RETURN d.document_id$graph$, $1) AS (result ag_catalog.agtype)";
+    sqlx::query(cleanup)
+        .bind(GraphParams(json!({"tenant":tenant,"id":id}).to_string()))
+        .execute(&mut *conn)
+        .await?;
     let params = GraphParams(
         json!({"tenant":tenant,"id":id,"product":product,"title":title,"hash":digest}).to_string(),
     );

@@ -112,6 +112,10 @@ const SCHEMA: &[(&str, &str)] = &[
         "032-image-jobs",
         include_str!("../migrations/032-image-jobs.sql"),
     ),
+    (
+        "033-knowledge-workspace",
+        include_str!("../migrations/033-knowledge-workspace.sql"),
+    ),
 ];
 
 pub(crate) async fn apply(pool: &PgPool) {

@@ -30,6 +30,9 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
             .ok_or(bad("Invalid app capability name"))?;
         return apps::invoke_app(a, h, id, action, v).await;
     }
+    if documents::knowledge_schema(name).is_some() {
+        return documents::knowledge_invoke(a, h, name, v).await;
+    }
     if name.starts_with("knowledge.") {
         merchant(a, h)?;
         auth::permit(h, "knowledge.read")?;

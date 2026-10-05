@@ -27,7 +27,8 @@
     "translations",
     "app_studio",
     "company_settings",
-    "settings_scopes"
+    "settings_scopes",
+    "knowledge_workspace"
   ],
   "providers": [
     "email_tests",

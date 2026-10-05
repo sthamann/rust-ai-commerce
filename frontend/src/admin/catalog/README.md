@@ -16,7 +16,6 @@ Files and their individual responsibilities are listed in [the generated source 
 - `CategoriesWorkspace.tsx`: translated hierarchical category administration.
 - `catalog-i18n.ts`: English, German, French and Spanish UI labels.
 - `ProductAssets.tsx`, `ReviewModeration.tsx`: product-scoped assets/downloads and review moderation.
-- `DocumentsManager.tsx`: knowledge-source document management, independently available through Shop knowledge.
 
 [Feature contracts and remaining upstream gaps](../../../../docs/product-management.md).
 

@@ -62,6 +62,20 @@ images fall back independently. [Guide, manifest contract and tests](docs/app-li
 
 ![App details and registered admin interfaces](docs/screenshots/vendune-app-details.png)
 
+## Connected shop knowledge
+
+**Shop intelligence** is now a dedicated knowledge workspace with an overview, product connections,
+searchable source library, learning/decisions and a no-model evidence preview. Add
+care guides, data sheets, FAQs, shipping/returns policies or brand knowledge; edit
+with one inherited content language, review customer publication and selectively
+release sources from staging. Current SKU/specification facts, order associations
+and private app evidence remain distinguishable. The merchant assistant actually
+retrieves source passages and hashes; customer answers use only published sources.
+
+[Guide, lifecycle, HTTP/MCP contracts and verification](docs/knowledge-workspace.md).
+
+![Connected knowledge in Vendune Studio](docs/screenshots/vendune-knowledge-overview.png)
+
 ## Visual App Studio
 
 Build native apps visually in **Vendune Studio → Developers**. Compose text, tables, cards and forms, define typed app data, connect HTTP/MCP/AI tools and opt actions into the graphical Flow Builder. Human edits and Codex/Claude agent edits use the **same executable Manifest**. Open saved apps through explicit edit controls, remove development projects to a recoverable trash, save an immutable version, test real records in a private sandbox, then selectively release the package.

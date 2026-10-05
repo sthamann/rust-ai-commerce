@@ -8,4 +8,13 @@ This folder owns the Rust modules listed below. Each source begins with its resp
 - [`questions.rs](questions.rs): Product-specific read-only advice with authoritative price/specification snapshot and validated source citations.
 - [`retrieval.rs](retrieval.rs): Bounded lexical/vector source retrieval; public questions use only explicitly published documents.
 
+- [`content.rs`](content.rs): Enabled-language source validation, per-field inheritance and hash-bound chunk rebuilding.
+- [`lifecycle.rs`](lifecycle.rs): Revision-bound edit/archive/restore/detail with private re-review and outbox events.
+- [`workspace.rs`](workspace.rs): Whole-shop census, bounded cursor source inventory and latest knowledge activity.
+- [`product_knowledge.rs`](product_knowledge.rs): Canonical product facts and product-scoped AGE/app/order evidence.
+- [`preview.rs`](preview.rs): No-provider evidence preview sharing live product-answer source scope.
+- [`tools.rs`](tools.rs): Shared source/workspace HTTP operations exposed through typed MCP capabilities.
+
+[Knowledge workspace guide and source/test mapping](../../docs/knowledge-workspace.md).
+
 The [source inventory](../../docs/module-inventory.md) is checked in CI. [The behavioral map](../../docs/source-map.md) identifies integration suites, and [testing](../../docs/testing.md) describes actual coverage and limits. Every file is limited to 320 lines; `main.rs` to 120.

@@ -100,7 +100,7 @@ export default function Merchant(props: {
             )}
             <main
               id="studio-content"
-              className={`studio-main view-${appSurface ? "app" : tab} ${!appSurface && ["assistant", "overview", "knowledge"].includes(tab) ? "" : "is-workspace"}`}
+              className={`studio-main view-${appSurface ? "app" : tab} ${!appSurface && ["assistant", "overview"].includes(tab) ? "" : "is-workspace"}`}
             >
               <div className="studio-content">
                 {(error || notice) && (
@@ -147,15 +147,14 @@ export default function Merchant(props: {
                   </Suspense>
                 </WorkspaceBoundary>
               </div>
-              {!appSurface &&
-                ["assistant", "overview", "knowledge"].includes(tab) && (
-                  <PreviewPanel
-                    product={selected}
-                    request={request}
-                    connected={connected}
-                    onIntent={intent}
-                  />
-                )}
+              {!appSurface && ["assistant", "overview"].includes(tab) && (
+                <PreviewPanel
+                  product={selected}
+                  request={request}
+                  connected={connected}
+                  onIntent={intent}
+                />
+              )}
             </main>
             <footer className="studio-statusbar">
               <span>

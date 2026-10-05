@@ -13,6 +13,7 @@ pub(crate) fn cognition_router() -> Router<App> {
         )
 }
 async fn memory(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+    auth::permit(&h, "knowledge.read")?;
     Ok(Json(observations(&a, &merchant(&a, &h)?).await?))
 }
 async fn decide(
