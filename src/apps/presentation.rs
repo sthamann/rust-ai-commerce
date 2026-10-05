@@ -54,6 +54,15 @@ mod tests {
         ))
         .unwrap();
         assert!(json!(m).get("presentation").is_none());
+        let mut generated = json!(m);
+        generated["presentation"] =
+            json!({"icon":null,"cover":null,"description":{"en":"Care guidance"}});
+        let parsed: Manifest = serde_json::from_value(generated).unwrap();
+        validate(parsed.presentation.as_ref()).unwrap();
+        assert_eq!(
+            json!(parsed)["presentation"],
+            json!({"description":{"en":"Care guidance"}})
+        );
         for url in [
             "/media/shop/cover.webp",
             "/assets/app.svg",

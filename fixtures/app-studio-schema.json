@@ -543,7 +543,10 @@
               ],
               "additionalProperties": false
             }
-          }
+          },
+          "required": [
+            "description"
+          ]
         }
       },
       "required": [

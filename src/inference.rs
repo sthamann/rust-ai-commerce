@@ -230,8 +230,10 @@ mod tests {
         let schema = strict_schema(bundled);
         let p = &schema["properties"]["manifest"]["properties"]["presentation"]["anyOf"][0];
         assert_eq!(p["required"], json!(["cover", "description", "icon"]));
+        assert_eq!(p["properties"]["description"]["type"], "object");
+        assert!(p["properties"]["description"].get("anyOf").is_none());
         assert_eq!(
-            p["properties"]["description"]["anyOf"][0]["additionalProperties"],
+            p["properties"]["description"]["additionalProperties"],
             false
         );
     }

@@ -317,8 +317,8 @@
     },
     "src/apps/presentation.rs": {
       "status": "unproved",
-      "sha256": "5ae1a39695c7ff4cb7910c9cd77e0f0a73f27deeb8d530367ef6005ade4e6982",
-      "review": "Reviewed optional passive app presentation validation, additive omission preserving legacy version digests, and shop main-language app metadata. No commerce decision or extracted policy changes; URL/JSON/SQL and UI adapters remain unproved. Covered safe/unsafe artwork, immutable versions, tenant isolation and native registry surfaces."
+      "sha256": "07d112b154da4d3904316d27bb42c790118cc5d0fb9ed7eb5ab2749fe20ac5a2",
+      "review": "Reviewed optional passive app presentation bounds and legacy digest preservation, main-locale list metadata, configured-locale generation schema, and strict provider compatibility: summaries are required objects within optional presentation while icon/cover accept nullable provider output. 84 Rust tests and real app/developer PostgreSQL suites exercise parsing, unsafe assets, immutable versions and tenant isolation."
     },
     "src/apps/registry.rs": {
       "status": "unproved",
@@ -877,8 +877,8 @@
     },
     "src/inference.rs": {
       "status": "unproved",
-      "sha256": "78edeaaaa888e5b54f8b560541c73abc27177ba7b575ebe2d1df308a1977ebf3",
-      "review": "Reviewed optional app artwork as a passive, bounded HTTPS/media presentation adapter; omission preserves legacy digests. Checked dynamic presentation-description schema specialization and strict provider conversion regression. Native registry UI, version immutability and tenant-isolated metadata covered by integration tests; commerce policy/proof logic unchanged."
+      "sha256": "663d744f195b4c3afb2e9132b7f9a77b942b2a291ddb4d9eddece9b58fe7d41e",
+      "review": "Reviewed optional passive app presentation bounds and legacy digest preservation, main-locale list metadata, configured-locale generation schema, and strict provider compatibility: summaries are required objects within optional presentation while icon/cover accept nullable provider output. 84 Rust tests and real app/developer PostgreSQL suites exercise parsing, unsafe assets, immutable versions and tenant isolation."
     },
     "src/knowledge.rs": {
       "status": "unproved",
@@ -1330,8 +1330,8 @@
       "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
     },
     "fixtures/app-studio-schema.json": {
-      "sha256": "d93691fd90f1e8cfc7a70345fbe0c3b34b47acb221ca2738e09e5c591fe32d1d",
-      "review": "Reviewed optional app artwork as a passive, bounded HTTPS/media presentation adapter; omission preserves legacy digests. Checked dynamic presentation-description schema specialization and strict provider conversion regression. Native registry UI, version immutability and tenant-isolated metadata covered by integration tests; commerce policy/proof logic unchanged."
+      "sha256": "82bbe13cbdced9b719e54eff764a3825564148a1f32bae216a6f52c96c4990df",
+      "review": "Reviewed optional passive app presentation bounds and legacy digest preservation, main-locale list metadata, configured-locale generation schema, and strict provider compatibility: summaries are required objects within optional presentation while icon/cover accept nullable provider output. 84 Rust tests and real app/developer PostgreSQL suites exercise parsing, unsafe assets, immutable versions and tenant isolation."
     },
     "fixtures/demo-catalog.json": {
       "sha256": "e5d5eea04a7693b3f92fa58be66ad36b7ad01d5920029c29f303693aa0032ba2",
