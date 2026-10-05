@@ -1,6 +1,30 @@
 /** Localized request guidance across all transports; original diagnostics remain available to developer tools. */
 import { getLocale } from "./i18n";
 const messages: Record<string, readonly string[]> = {
+  "Product number already exists": [
+    "This product number is already used in this shop. Choose another number.",
+    "Diese Produktnummer wird im Shop bereits verwendet. Wähle eine andere Nummer.",
+    "Ce numéro de produit est déjà utilisé. Choisissez un autre numéro.",
+    "Este número de producto ya está en uso. Elige otro número.",
+  ],
+  "Product changed": [
+    "Another change was saved. Keep your draft and reload the product before merging it.",
+    "Eine andere Änderung wurde gespeichert. Bewahre deinen Entwurf und lade das Produkt vor dem Zusammenführen neu.",
+    "Une autre modification a été enregistrée. Conservez votre brouillon et rechargez le produit.",
+    "Se guardó otro cambio. Conserva tu borrador y vuelve a cargar el producto.",
+  ],
+  "Category parent is unavailable or creates a cycle": [
+    "Choose an existing parent outside this category's own branch.",
+    "Wähle eine bestehende übergeordnete Kategorie außerhalb dieses eigenen Zweigs.",
+    "Choisissez un parent existant hors de la branche de cette catégorie.",
+    "Elige una categoría superior existente fuera de esta misma rama.",
+  ],
+  "Category changed": [
+    "The category changed. Reload it before saving your changes.",
+    "Die Kategorie wurde geändert. Lade sie vor dem Speichern neu.",
+    "La catégorie a changé. Rechargez-la avant d'enregistrer.",
+    "La categoría cambió. Vuelve a cargarla antes de guardar.",
+  ],
   "Invalid credentials": [
     "Email or password is incorrect.",
     "E-Mail oder Passwort ist falsch.",

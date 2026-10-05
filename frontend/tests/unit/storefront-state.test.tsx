@@ -119,9 +119,9 @@ describe("Catalogue lifecycle", () => {
     expect(result.current.catalogLoading).toBe(false);
     act(() => result.current.setCategory("lighting"));
     await waitFor(() => expect(fetcher).toHaveBeenCalledTimes(3));
-    expect(JSON.parse(fetcher.mock.calls[2][1]!.body as string).category).toBe(
-      "lighting",
-    );
+    expect(
+      JSON.parse(fetcher.mock.calls[2][1]!.body as string).categoryId,
+    ).toBe("lighting");
     unmount();
     await act(async () =>
       pending[2](response({ elements: [], nextCursor: null })),

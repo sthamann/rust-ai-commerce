@@ -1,5 +1,5 @@
 -- Bounded explicit channel IDs, with effective-language search before pagination.
-SELECT p.* FROM products p WHERE p.tenant=$1 AND p.parent_id IS NULL
+SELECT p.* FROM products p WHERE p.tenant=$1 AND p.parent_id IS NULL AND p.active AND NOT EXISTS(SELECT 1 FROM product_channel_visibility v WHERE v.tenant=p.tenant AND v.product_id=p.id AND v.channel_id=$8 AND NOT v.visible)
 AND p.id=ANY($2) AND p.id>$3 AND ($4::text IS NULL OR p.category=$4)
 AND ($6::text IS NULL OR lower(
  coalesce((SELECT tr.name FROM product_translations tr WHERE tr.tenant=p.tenant

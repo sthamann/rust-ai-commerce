@@ -2,6 +2,7 @@
 use crate::*;
 mod download;
 mod rich;
+mod rich_document;
 mod upload;
 pub(crate) use rich::validate_rich;
 pub(crate) use upload::{list, publish};

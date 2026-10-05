@@ -17,6 +17,13 @@ pub(crate) fn validate_rich(value: &Value) -> Result<()> {
             .ok_or(bad("Maximum 40 rich description blocks"))?;
         for b in blocks {
             let typ = b["type"].as_str().ok_or(bad("Rich block type required"))?;
+            if typ == "document" {
+                if b["doc"]["type"] != "doc" {
+                    return Err(bad("Root document required"));
+                }
+                rich_document::validate(&b["doc"], 0, &mut 0)?;
+                continue;
+            }
             if !["paragraph", "heading", "list", "image", "video"].contains(&typ)
                 || b["text"].as_str().is_some_and(|s| s.len() > 4000)
             {
@@ -40,7 +47,7 @@ pub(crate) fn validate_rich(value: &Value) -> Result<()> {
             }
         }
     }
-    if value.to_string().len() > 12000 {
+    if value.to_string().len() > 32000 {
         return Err(bad("Rich content too large"));
     }
     Ok(())

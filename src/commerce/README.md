@@ -12,6 +12,8 @@ This folder owns the Rust modules listed below. Each source begins with its resp
 - [`order_fields.rs](order_fields.rs): Standard order read fields are projected from the authoritative quote/payment, never maintained twice.
 - [`order_machine.rs](order_machine.rs): Declarative order workflow schema. Extensions add states, never executable effects or payment truth.
 - [`order_workflow.rs](order_workflow.rs): One server-derived action catalogue drives UI, HTTP and MCP; built-in business guards cannot be bypassed.
+- [`product_admin.rs](product_admin.rs), [`product_admin.sql`](product_admin.sql): indexed server-filtered list and catalog identity/association writes.
+- [`product_channels.rs`](product_channels.rs): product-specific channel visibility overrides.
 - [`product_edit.rs](product_edit.rs): Revision-bound multilingual product metadata: specifications, SEO, cross-selling and free shipping.
 - [`product_fields.rs](product_fields.rs): Native product administration writes priced fields under the same revision and inventory row lock.
 - [`review_moderation.rs](review_moderation.rs): Merchant authorization and review publication.

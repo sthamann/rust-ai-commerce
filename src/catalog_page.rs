@@ -6,10 +6,14 @@ pub(crate) struct CatalogCriteria {
     pub(crate) limit: Option<u32>,
     pub(crate) after: Option<String>,
     pub(crate) category: Option<String>,
+    #[serde(rename = "categoryId")]
+    pub(crate) category_id: Option<String>,
     #[serde(alias = "query")]
     pub(crate) search: Option<String>,
     #[serde(skip)]
     pub(crate) product_ids: Option<Vec<String>>,
+    #[serde(skip)]
+    pub(crate) channel_id: String,
 }
 
 impl CatalogCriteria {
@@ -20,6 +24,7 @@ impl CatalogCriteria {
         }
         if self.after.as_ref().is_some_and(|s| s.len() > 200)
             || self.category.as_ref().is_some_and(|s| s.len() > 100)
+            || self.category_id.as_ref().is_some_and(|s| s.len() > 100)
             || self.search.as_ref().is_some_and(|s| s.len() > 200)
         {
             return Err(bad("Catalog filter is too long"));
@@ -48,7 +53,26 @@ pub(crate) async fn product_page(
         .as_deref()
         .map(str::trim)
         .filter(|s| !s.is_empty());
-    let rows = if let Some(ids) = &criteria.product_ids {
+    let rows = if let Some(category_id) = &criteria.category_id {
+        sqlx::query(include_str!("categories/listing.sql"))
+            .bind(t)
+            .bind(category_id)
+            .bind(after)
+            .bind(&criteria.product_ids)
+            .bind(search.map(|s| {
+                format!(
+                    "%{}%",
+                    s.replace('\\', "\\\\")
+                        .replace('%', "\\%")
+                        .replace('_', "\\_")
+                )
+            }))
+            .bind(chain)
+            .bind((limit + 1) as i64)
+            .bind(&criteria.channel_id)
+            .fetch_all(&a.db)
+            .await?
+    } else if let Some(ids) = &criteria.product_ids {
         // Explicit channel catalogs contain at most 500 IDs. Filter before pagination;
         // the unscoped million-product path keeps its specialized indexed queries.
         let pattern = search.map(|s| {
@@ -68,6 +92,7 @@ pub(crate) async fn product_page(
             .bind(chain)
             .bind(pattern)
             .bind((limit + 1) as i64)
+            .bind(&criteria.channel_id)
             .fetch_all(&a.db)
             .await?
     } else if let Some(search) = search {
@@ -101,14 +126,15 @@ pub(crate) async fn product_page(
             .bind(chain)
             .bind((limit + 1) as i64)
             .bind(literal_pattern(candidate))
+            .bind(&criteria.channel_id)
             .fetch_all(&a.db)
             .await?
     } else if let Some(category) = category {
-        sqlx::query("SELECT * FROM products WHERE tenant=$1 AND parent_id IS NULL AND id>$2 AND category=$3 ORDER BY id LIMIT $4")
-            .bind(t).bind(after).bind(category).bind((limit+1) as i64).fetch_all(&a.db).await?
+        sqlx::query("SELECT * FROM products WHERE tenant=$1 AND parent_id IS NULL AND active AND id>$2 AND category=$3 AND NOT EXISTS(SELECT 1 FROM product_channel_visibility v WHERE v.tenant=products.tenant AND v.product_id=products.id AND v.channel_id=$5 AND NOT v.visible) ORDER BY id LIMIT $4")
+            .bind(t).bind(after).bind(category).bind((limit+1) as i64).bind(&criteria.channel_id).fetch_all(&a.db).await?
     } else {
-        sqlx::query("SELECT * FROM products WHERE tenant=$1 AND parent_id IS NULL AND id>$2 ORDER BY id LIMIT $3")
-            .bind(t).bind(after).bind((limit+1) as i64).fetch_all(&a.db).await?
+        sqlx::query("SELECT * FROM products WHERE tenant=$1 AND parent_id IS NULL AND active AND id>$2 AND NOT EXISTS(SELECT 1 FROM product_channel_visibility v WHERE v.tenant=products.tenant AND v.product_id=products.id AND v.channel_id=$4 AND NOT v.visible) ORDER BY id LIMIT $3")
+            .bind(t).bind(after).bind((limit+1) as i64).bind(&criteria.channel_id).fetch_all(&a.db).await?
     };
     let has_more = rows.len() > limit;
     let products =

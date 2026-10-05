@@ -132,3 +132,18 @@ managed JSONB data and independently deployed code/storage. The Product Lab
 example exercises the shared UI/API/MCP gateway and overloaded-service isolation.
 See [the full app contract](app-platform.md). This is additional native extension
 capability, not Shopware PHP plugin ABI, App Script or Administration module parity.
+
+## Central product workspace and native categories (2026-10-05)
+
+The native editor is now a searchable/filterable list plus create/detail workflows,
+not a metadata-only form. Migration 026 and `categories/*` add real translated
+category trees, many-to-many assignments, active/visible semantics, nested-listing
+control and per-channel navigation roots. `commerce/product_admin*`,
+`product_channels.rs`, `product_fields.rs` and `product_edit.rs` share atomic writes
+with MCP, graph synchronization and product outbox events. Ordered media uploads,
+visual rich documents, native SKU creation and selective staging have real consumers.
+
+This supersedes the older “generic catalog editing UI missing” entry; complete
+variant generation, global property/manufacturer entities, CMS/product streams,
+original API/DAL schemas and full SEO URL generation remain missing.
+[Exact source mapping, implemented behaviors and gaps](product-management.md).

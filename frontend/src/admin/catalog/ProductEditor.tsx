@@ -1,0 +1,307 @@
+/** Revision-aware product aggregate editor: one save, translation tabs and product-scoped linked capabilities. */
+import { useEffect, useRef, useState } from "react";
+import { AppSurfaceSlot } from "../../shared/apps/AppSurfaces";
+import type { RequestFn } from "../shell/studio-types";
+import { useCatalogText } from "./catalog-i18n";
+import {
+  hydrateDraft,
+  newDraft,
+  languages,
+  type Category,
+  type ProductDraft,
+} from "./catalog-model";
+import GalleryUpload from "./GalleryUpload";
+import ProductPanels from "./ProductPanels";
+import ProductAssets from "./ProductAssets";
+import ReviewModeration from "./ReviewModeration";
+import ProductVariants from "./ProductVariants";
+import RelatedProducts from "./RelatedProducts";
+export default function ProductEditor({
+  id,
+  request,
+  categories,
+  onBack,
+  onCreated,
+}: {
+  id: string;
+  request: RequestFn;
+  categories: Category[];
+  onBack: () => void;
+  onCreated: (id: string) => void;
+}) {
+  const { c, locale } = useCatalogText();
+  const [draft, setDraft] = useState<ProductDraft>(newDraft);
+  const [baseline, setBaseline] = useState("");
+  const [lang, setLang] = useState(locale.slice(0, 2));
+  const [tab, setTab] = useState("general");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(!!id);
+  const [busy, setBusy] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const currentRequest = useRef(request);
+  currentRequest.current = request;
+  useEffect(() => {
+    let active = true;
+    if (!id) {
+      const d = newDraft();
+      setDraft(d);
+      setBaseline(JSON.stringify(d));
+      return;
+    }
+    setLoading(true);
+    currentRequest
+      .current(`/api/merchant/products/${id}`)
+      .then((v) => {
+        if (active) {
+          const d = hydrateDraft(v);
+          setDraft(d);
+          setBaseline(JSON.stringify(d));
+        }
+      })
+      .catch((e) => {
+        if (active) setError(e.message);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+    // All translations are loaded together; a UI locale change must not
+    // overwrite a draft. Merchant's boundary remounts on shop/environment changes.
+  }, [id]);
+  const dirty = JSON.stringify(draft) !== baseline;
+  useEffect(() => {
+    if (!dirty) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [dirty]);
+  const change = (d: ProductDraft) => {
+    setDraft(d);
+    setSaved(false);
+  };
+  const save = async () => {
+    setBusy(true);
+    setError("");
+    try {
+      const translations = { ...draft.translations };
+      const fallback =
+        translations[lang].name.trim() ||
+        Object.values(translations).find((v) => v.name.trim())?.name ||
+        "";
+      for (const l of languages)
+        translations[l] = {
+          ...translations[l],
+          name: translations[l].name.trim() || fallback,
+        };
+      const {
+        id: _id,
+        channels: _channels,
+        ...payload
+      } = { ...draft, translations };
+      const result = await request(
+        id ? `/api/merchant/products/${id}` : "/api/merchant/products",
+        payload,
+        id ? "PUT" : "POST",
+      );
+      const next = {
+        ...draft,
+        translations,
+        id: result.id,
+        revision: result.revision,
+      };
+      setDraft(next);
+      setBaseline(JSON.stringify(next));
+      setSaved(true);
+      if (!id) onCreated(result.id);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+  const tabs = [
+    "general",
+    "prices",
+    "media",
+    "variants",
+    "assignments",
+    "specs",
+    "seo",
+    "related",
+    "attachments",
+    "reviews",
+  ] as const;
+  if (loading) return <p role="status">{c("loading")}</p>;
+  return (
+    <div className="studio-page catalog-workspace">
+      <button
+        className="catalog-back"
+        onClick={() => (dirty ? setLeaving(true) : onBack())}
+      >
+        ← {c("back")}
+      </button>
+      {leaving && (
+        <div className="catalog-unsaved" role="alert">
+          <strong>{c("unsaved")}</strong>
+          <button
+            className="studio-secondary"
+            onClick={() => setLeaving(false)}
+          >
+            {c("continue")}
+          </button>
+          <button className="studio-secondary" onClick={onBack}>
+            {c("discard")}
+          </button>
+        </div>
+      )}
+      <div className="catalog-heading">
+        <div>
+          <p className="catalog-eyebrow">
+            {id ? draft.catalog.productNumber : c("newProduct")}
+          </p>
+          <h1>{draft.translations[lang]?.name || c("newProduct")}</h1>
+          <span role="status">
+            {saved
+              ? c("saved")
+              : dirty
+                ? c("unsaved")
+                : id
+                  ? `# ${draft.revision}`
+                  : ""}
+          </span>
+        </div>
+        <div className="catalog-editor-actions">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={draft.catalog.active}
+              onChange={(e) =>
+                change({
+                  ...draft,
+                  catalog: { ...draft.catalog, active: e.target.checked },
+                })
+              }
+            />
+            {c("active")}
+          </label>
+          <button
+            className="studio-primary"
+            disabled={
+              busy ||
+              (!dirty && !!id) ||
+              !draft.catalog.productNumber ||
+              !Object.values(draft.translations).some((t) => t.name.trim())
+            }
+            onClick={save}
+          >
+            {c(busy ? "saving" : "save")}
+          </button>
+        </div>
+      </div>
+      {error && (
+        <p role="alert" className="catalog-error">
+          {error}
+        </p>
+      )}
+      <div className="catalog-detail-layout">
+        <aside className="catalog-detail-nav">
+          <label>
+            {c("language")}
+            <select value={lang} onChange={(e) => setLang(e.target.value)}>
+              {languages.map((l) => (
+                <option value={l} key={l}>
+                  {
+                    {
+                      en: "English",
+                      de: "Deutsch",
+                      fr: "Français",
+                      es: "Español",
+                    }[l]
+                  }{" "}
+                  {draft.translations[l]?.name ? "✓" : ""}
+                </option>
+              ))}
+            </select>
+          </label>
+          <div role="tablist" aria-orientation="vertical">
+            {tabs.map((t) => (
+              <button
+                key={t}
+                role="tab"
+                aria-selected={tab === t}
+                onClick={() => setTab(t)}
+              >
+                {c(t)}
+              </button>
+            ))}
+          </div>
+        </aside>
+        <section className="studio-card catalog-detail-panel" role="tabpanel">
+          <h2>{c(tab as (typeof tabs)[number])}</h2>
+          {tab === "attachments" ? (
+            id ? (
+              <ProductAssets id={id} request={request} />
+            ) : (
+              <p>{c("createFirst")}</p>
+            )
+          ) : tab === "reviews" ? (
+            id ? (
+              <ReviewModeration productId={id} request={request} />
+            ) : (
+              <p>{c("createFirst")}</p>
+            )
+          ) : tab === "variants" ? (
+            id ? (
+              <ProductVariants
+                draft={draft}
+                request={request}
+                onOpen={(child) =>
+                  dirty ? setError(c("unsaved")) : onCreated(child)
+                }
+              />
+            ) : (
+              <p>{c("createFirst")}</p>
+            )
+          ) : tab === "related" ? (
+            <RelatedProducts
+              request={request}
+              id={id}
+              value={draft.extra.crossSelling}
+              onChange={(crossSelling) =>
+                change({ ...draft, extra: { ...draft.extra, crossSelling } })
+              }
+            />
+          ) : (
+            <ProductPanels
+              tab={tab}
+              draft={draft}
+              lang={lang}
+              categories={categories}
+              onChange={change}
+            />
+          )}
+          {tab === "media" &&
+            (id ? (
+              <GalleryUpload
+                draft={draft}
+                request={request}
+                onChange={change}
+              />
+            ) : (
+              <p>{c("createFirst")}</p>
+            ))}
+          <AppSurfaceSlot
+            location="admin.product"
+            context={{ productId: id }}
+          />
+        </section>
+      </div>
+    </div>
+  );
+}

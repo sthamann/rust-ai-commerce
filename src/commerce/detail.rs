@@ -10,6 +10,7 @@ pub(crate) async fn product_detail(
     let t = tenant(&h)?;
     marketing::admit_product(&a, &h, &id).await?;
     let (_, chain) = language_context(&a, &h).await?;
+    criteria.channel_id = marketing::channel_id(&h).into();
     criteria.product_ids = marketing::catalog_scope(&a, &h).await?;
     let (ps, family, next_cursor) = family_products(&a, &t, &chain, &id, &criteria).await?;
     let p = ps

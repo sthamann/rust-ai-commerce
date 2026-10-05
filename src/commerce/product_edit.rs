@@ -3,11 +3,17 @@ use super::*;
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct Edit {
+    #[serde(default, rename = "id")]
+    _id: Option<String>,
+    #[serde(default, rename = "channels")]
+    _channels: Value,
     revision: i64,
     translations: HashMap<String, Translation>,
     extra: Extra,
     #[serde(default)]
     commerce: Option<ProductFields>,
+    #[serde(default)]
+    catalog: Option<CatalogFields>,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -20,14 +26,20 @@ struct Translation {
 struct Extra {
     #[serde(default)]
     automation: Value,
+    #[serde(default)]
     seo: HashMap<String, Seo>,
+    #[serde(default)]
     specifications: HashMap<String, HashMap<String, String>>,
+    #[serde(default)]
     cross_selling: Vec<String>,
+    #[serde(default)]
     shipping_free: bool,
     #[serde(default)]
     digital: bool,
     #[serde(default)]
     rich_description: Value,
+    #[serde(default)]
+    identity: Value,
 }
 #[derive(Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -42,9 +54,25 @@ pub(crate) async fn edit_product(
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
+    save_product(a, h, id, v, false).await
+}
+pub(crate) async fn create_product(
+    State(a): State<App>,
+    h: HeaderMap,
+    Json(v): Json<Value>,
+) -> Result<Json<Value>> {
+    save_product(a, h, Uuid::new_v4().to_string(), v, true).await
+}
+async fn save_product(
+    a: App,
+    h: HeaderMap,
+    id: String,
+    v: Value,
+    create: bool,
+) -> Result<Json<Value>> {
     auth::permit(&h, "catalog")?;
     let t = merchant(&a, &h)?;
-    let edit: Edit = serde_json::from_value(v).map_err(|_| bad("Invalid product metadata"))?;
+    let mut edit: Edit = serde_json::from_value(v).map_err(|_| bad("Invalid product metadata"))?;
     if edit.extra.cross_selling.len() > 20
         || edit.extra.seo.len() > 4
         || edit.extra.specifications.len() > 4
@@ -90,7 +118,66 @@ pub(crate) async fn edit_product(
     if let Some(fields) = &edit.commerce {
         fields.validate()?;
     }
+    if let Some(c) = &edit.catalog {
+        c.validate()?;
+    }
+    if !edit.extra.identity.is_null()
+        && (!edit.extra.identity.is_object() || edit.extra.identity.to_string().len() > 8000)
+    {
+        return Err(bad("Invalid product identity metadata"));
+    }
+    if let Some(c) = &edit.catalog {
+        if edit.extra.automation.is_null() {
+            edit.extra.automation = json!({});
+        }
+        edit.extra.automation["categoryIds"] = json!(c.category_ids);
+    }
     let mut tx = a.db.begin().await?;
+    // Serialize product number allocation for this merchant, not globally.
+    sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,727))")
+        .bind(&t)
+        .execute(&mut *tx)
+        .await?;
+    if create {
+        let fields = edit
+            .catalog
+            .as_ref()
+            .ok_or(bad("New product catalog fields required"))?;
+        if edit.revision != 0 {
+            return Err(bad("New product revision must be zero"));
+        }
+        if let Some(parent) = &fields.parent_id {
+            let valid:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM products WHERE tenant=$1 AND id=$2 AND parent_id IS NULL)").bind(&t).bind(parent).fetch_one(&mut *tx).await?;
+            if !valid || fields.options.is_empty() {
+                return Err(bad("Variant parent and options required"));
+            }
+        }
+        sqlx::query("INSERT INTO products(tenant,id,name,description,category,price,tax_rate,stock,revision,parent_id) VALUES($1,$2,$3,$4,'objects',0,19,0,0,$5)").bind(&t).bind(&id).bind(&edit.translations["en"].name).bind(&edit.translations["en"].description).bind(&fields.parent_id).execute(&mut *tx).await?;
+    }
+    if !create {
+        let row = sqlx::query(
+            "SELECT revision,parent_id FROM products WHERE tenant=$1 AND id=$2 FOR UPDATE",
+        )
+        .bind(&t)
+        .bind(&id)
+        .fetch_optional(&mut *tx)
+        .await?
+        .ok_or(Error(StatusCode::NOT_FOUND, "Product not found".into()))?;
+        if row.get::<i64, _>("revision") != edit.revision {
+            return Err(conflict("Product changed"));
+        }
+        if edit
+            .catalog
+            .as_ref()
+            .is_some_and(|c| c.parent_id != row.get::<Option<String>, _>("parent_id"))
+        {
+            return Err(bad("Variant parent cannot be changed"));
+        }
+    }
+    if let Some(c) = &edit.catalog {
+        c.save(&mut tx, &t, &id).await?;
+    }
+
     for product in &edit.extra.cross_selling {
         let exists: bool =
             sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM products WHERE tenant=$1 AND id=$2)")
@@ -125,14 +212,27 @@ pub(crate) async fn edit_product(
         .fetch_one(&mut *tx)
         .await?;
     knowledge::sync_product(&mut tx, &t, &json!(product(&row))).await?;
+    sqlx::query("INSERT INTO outbox(tenant,kind,data) VALUES($1,$2,$3)")
+        .bind(&t)
+        .bind(if create {
+            "product.created"
+        } else {
+            "product.updated"
+        })
+        .bind(json!({"productId":id,"revision":edit.revision+1}))
+        .execute(&mut *tx)
+        .await?;
     tx.commit().await?;
-    Ok(Json(json!({"saved":true,"revision":edit.revision+1})))
+    Ok(Json(
+        json!({"id":id,"saved":true,"revision":edit.revision+1}),
+    ))
 }
 pub(crate) async fn product_editor(
     State(a): State<App>,
     h: HeaderMap,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
+    auth::permit(&h, "catalog.read")?;
     let t = merchant(&a, &h)?;
     let r = sqlx::query("SELECT * FROM products WHERE tenant=$1 AND id=$2")
         .bind(&t)
@@ -146,7 +246,16 @@ pub(crate) async fn product_editor(
         let locale: String = tr.get("locale");
         translations[&locale[..2]] = json!({"name":tr.get::<Option<String>,_>("name").unwrap_or_else(||r.get("name")),"description":tr.get::<Option<String>,_>("description").unwrap_or_else(||r.get("description"))});
     }
+    let channels = product_channels(&a, &t, &id).await?;
+    let selected_channels = channels
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter(|c| c["visible"] == true)
+        .map(|c| c["id"].clone())
+        .collect::<Vec<_>>();
+    let category_ids:Vec<String>=sqlx::query_scalar("SELECT category_id FROM product_categories WHERE tenant=$1 AND product_id=$2 ORDER BY category_id").bind(&t).bind(&id).fetch_all(&a.db).await?;
     Ok(Json(
-        json!({"revision":r.get::<i64,_>("revision"),"translations":translations,"extra":r.get::<Value,_>("extra"),"commerce":editable_fields(&r)}),
+        json!({"id":id,"channels":channels,"catalog":{"salesChannelIds":selected_channels,"active":r.get::<bool,_>("active"),"productNumber":r.get::<Option<String>,_>("product_number").unwrap_or_else(||id.clone()),"categoryIds":category_ids,"parentId":r.get::<Option<String>,_>("parent_id"),"options":r.get::<Value,_>("options")},"revision":r.get::<i64,_>("revision"),"translations":translations,"extra":r.get::<Value,_>("extra"),"commerce":editable_fields(&r)}),
     ))
 }

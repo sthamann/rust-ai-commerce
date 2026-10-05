@@ -222,12 +222,13 @@ export const workbenchWords = {
     "Aplicar código",
   ],
   discounts: ["Discounts", "Rabatte", "Réductions", "Descuentos"],
-  productData: [
-    "Product content",
-    "Produktinhalte",
-    "Contenu produit",
-    "Contenido de producto",
+  categoryNavigation: [
+    "Navigation category",
+    "Navigationskategorie",
+    "Catégorie de navigation",
+    "Categoría de navegación",
   ],
+  productData: ["Products", "Produkte", "Produits", "Productos"],
   productDataHint: [
     "Edit all translations, SEO, specifications and related products. Use a sandbox to review before publishing.",
     "Bearbeite Übersetzungen, SEO, Spezifikationen und verwandte Produkte. Prüfe Änderungen vor der Veröffentlichung in einer Sandbox.",

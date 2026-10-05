@@ -12,6 +12,8 @@ pub(crate) fn router(a: App) -> Router {
         .merge(accounts::router())
         .merge(operations::router())
         .merge(assets::router())
+        .merge(categories::router())
+        .merge(commerce::product_admin_router())
         .merge(marketing::router())
         .merge(payments::payment_router())
         .merge(cognition::cognition_router())

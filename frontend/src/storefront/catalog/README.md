@@ -6,6 +6,7 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 
 ## Modules
 
+- `ImagePlaceholder.tsx`: translated empty-media state for new products.
 - `MemoryRecommendations.tsx`
 - `ProductAttachments.tsx`
 - `ProductPage.tsx`

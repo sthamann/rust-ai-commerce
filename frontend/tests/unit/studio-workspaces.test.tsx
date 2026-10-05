@@ -30,6 +30,8 @@ function api(path: string) {
     "/api/merchant/orders": { elements: [], nextCursor: null },
     "/api/merchant/customers": { elements: [], nextCursor: null },
     "/api/search/product": { elements: [] },
+    "/api/merchant/products": { elements: [], nextCursor: null },
+    "/api/merchant/categories": { elements: [] },
     "/store-api/checkout/options": {
       countries: ["DE"],
       payments: [],

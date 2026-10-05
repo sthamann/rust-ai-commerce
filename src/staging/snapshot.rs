@@ -10,8 +10,11 @@ pub(crate) async fn snapshot(tx: &mut Tx<'_>, t: &str) -> Result<Value> {
         let id = value["id"].as_str().unwrap().to_string();
         let trs=sqlx::query("SELECT language_id,name,description FROM product_translations WHERE tenant=$1 AND product_id=$2 ORDER BY language_id FOR UPDATE").bind(t).bind(&id).fetch_all(&mut **tx).await?;
         value["translations"]=json!(trs.iter().map(|r|json!({"language_id":r.get::<String,_>("language_id"),"name":r.get::<Option<String>,_>("name"),"description":r.get::<Option<String>,_>("description")})).collect::<Vec<_>>());
+        value["categoryIds"]=json!(sqlx::query_scalar::<_,String>("SELECT category_id FROM product_categories WHERE tenant=$1 AND product_id=$2 ORDER BY category_id").bind(t).bind(&id).fetch_all(&mut **tx).await?);
+        value["channelVisibility"]=json!(sqlx::query("SELECT channel_id,visible FROM product_channel_visibility WHERE tenant=$1 AND product_id=$2 ORDER BY channel_id").bind(t).bind(&id).fetch_all(&mut **tx).await?.iter().map(|r|json!({"id":r.get::<String,_>("channel_id"),"visible":r.get::<bool,_>("visible")})).collect::<Vec<_>>());
         result.insert(format!("product:{id}"), value);
     }
+    categories::snapshot(tx, t, &mut result).await?;
     for (key, table) in [
         ("settings", "commerce_settings"),
         ("experience", "experiences"),
@@ -110,13 +113,45 @@ pub(crate) async fn snapshot(tx: &mut Tx<'_>, t: &str) -> Result<Value> {
     Ok(Value::Object(result))
 }
 pub(crate) async fn product_content(tx: &mut Tx<'_>, t: &str, value: &Value) -> Result<()> {
+    let mut published = value.clone();
+    live_asset_urls(&mut published, t);
+    let value = &published;
     let id = value["id"].as_str().ok_or(bad("Product ID required"))?;
+    // A new staged product enters live with zero inventory; stock remains an independent operational write.
+    sqlx::query("INSERT INTO products(tenant,id,name,category,description,price,tax_rate,stock,active,product_number) VALUES($1,$2,$3,$4,$5,$6,$7,0,$8,$9) ON CONFLICT(tenant,id) DO NOTHING").bind(t).bind(id).bind(value["name"].as_str()).bind(value["category"].as_str()).bind(value["description"].as_str()).bind(value["price"].as_f64()).bind(value["tax_rate"].as_f64()).bind(value["active"].as_bool().unwrap_or(true)).bind(value["product_number"].as_str()).execute(&mut **tx).await?;
     // Explicit allowlist preserves independently changing stock and never copies tenant keys.
-    let n=sqlx::query("UPDATE products SET (name,category,description,price,tax_rate,list_price,regulation_price,reference_price,advanced_prices,min_purchase,purchase_steps,max_purchase,parent_id,options,media,properties,delivery_days,extra)=(SELECT x.name,x.category,x.description,x.price,x.tax_rate,x.list_price,x.regulation_price,x.reference_price,x.advanced_prices,x.min_purchase,x.purchase_steps,x.max_purchase,x.parent_id,x.options,x.media,x.properties,x.delivery_days,x.extra FROM jsonb_populate_record(NULL::products,$1) x),revision=revision+1 WHERE tenant=$2 AND id=$3").bind(value).bind(t).bind(id).execute(&mut **tx).await?.rows_affected();
+    let n=sqlx::query("UPDATE products SET (name,category,description,price,tax_rate,list_price,regulation_price,reference_price,advanced_prices,min_purchase,purchase_steps,max_purchase,parent_id,options,media,properties,delivery_days,extra,active,product_number)=(SELECT x.name,x.category,x.description,x.price,x.tax_rate,x.list_price,x.regulation_price,x.reference_price,x.advanced_prices,x.min_purchase,x.purchase_steps,x.max_purchase,x.parent_id,x.options,x.media,x.properties,x.delivery_days,x.extra,x.active,x.product_number FROM jsonb_populate_record(NULL::products,$1) x),revision=revision+1 WHERE tenant=$2 AND id=$3").bind(value).bind(t).bind(id).execute(&mut **tx).await?.rows_affected();
     if n != 1 {
         return Err(conflict(
             "Product creation/deletion needs an explicit catalog migration",
         ));
+    }
+    if let Some(ids) = value["categoryIds"].as_array() {
+        crate::categories::assignments(
+            tx,
+            t,
+            id,
+            &ids.iter()
+                .filter_map(|v| v.as_str().map(str::to_string))
+                .collect::<Vec<_>>(),
+        )
+        .await?;
+    }
+    if let Some(channels) = value["channelVisibility"].as_array() {
+        sqlx::query("DELETE FROM product_channel_visibility WHERE tenant=$1 AND product_id=$2")
+            .bind(t)
+            .bind(id)
+            .execute(&mut **tx)
+            .await?;
+        for channel in channels {
+            sqlx::query("INSERT INTO product_channel_visibility VALUES($1,$2,$3,$4)")
+                .bind(t)
+                .bind(id)
+                .bind(channel["id"].as_str())
+                .bind(channel["visible"].as_bool())
+                .execute(&mut **tx)
+                .await?;
+        }
     }
     for tr in value["translations"]
         .as_array()
@@ -132,4 +167,49 @@ pub(crate) async fn product_content(tx: &mut Tx<'_>, t: &str, value: &Value) -> 
         .await?;
     knowledge::sync_product(tx, t, &json!(crate::product(&r))).await?;
     Ok(())
+}
+
+/// Local asset IDs clone unchanged; their delivery tenant changes from private staging to live.
+fn live_asset_urls(value: &mut Value, tenant: &str) {
+    match value {
+        Value::String(s) if s.starts_with("/store-api/assets/") => {
+            if let Ok(mut url) = reqwest::Url::parse(&format!("https://local{s}")) {
+                let pairs = url
+                    .query_pairs()
+                    .filter(|(k, _)| k != "shop")
+                    .map(|(k, v)| (k.into_owned(), v.into_owned()))
+                    .collect::<Vec<_>>();
+                url.set_query(None);
+                url.query_pairs_mut()
+                    .extend_pairs(pairs)
+                    .append_pair("shop", tenant);
+                *s = format!("{}?{}", url.path(), url.query().unwrap_or_default());
+            }
+        }
+        Value::Array(items) => {
+            for item in items {
+                live_asset_urls(item, tenant);
+            }
+        }
+        Value::Object(fields) => {
+            for item in fields.values_mut() {
+                live_asset_urls(item, tenant);
+            }
+        }
+        _ => {}
+    }
+}
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn release_rebinds_only_local_asset_urls() {
+        let mut value = json!({"media":[{"url":"/store-api/assets/image?shop=stage"}],"external":"https://example.test/?shop=stage"});
+        live_asset_urls(&mut value, "live");
+        assert_eq!(
+            value["media"][0]["url"],
+            "/store-api/assets/image?shop=live"
+        );
+        assert_eq!(value["external"], "https://example.test/?shop=stage");
+    }
 }

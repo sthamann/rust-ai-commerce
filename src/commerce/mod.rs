@@ -44,3 +44,9 @@ pub(crate) use product_fields::*;
 
 mod order_fields;
 pub(crate) use order_fields::*;
+
+mod product_admin;
+pub(crate) use product_admin::*;
+
+mod product_channels;
+pub(crate) use product_channels::*;

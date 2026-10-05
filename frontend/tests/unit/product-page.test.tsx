@@ -161,3 +161,31 @@ it("reports a failed detail load instead of rendering purchase controls", async 
   );
   expect(screen.queryByRole("spinbutton")).not.toBeInTheDocument();
 });
+
+it("renders an honest empty gallery and merchant product number for a new product", async () => {
+  vi.stubGlobal(
+    "fetch",
+    fixture({
+      ...detail,
+      product: { ...product, media: [], product_number: "STUDIO-001" },
+    }),
+  );
+  const { container } = render(
+    <ProductPage
+      id="lamp"
+      cart={cart}
+      busy={false}
+      onAdd={() => {}}
+      onCart={() => {}}
+    />,
+    { wrapper: LocaleProvider },
+  );
+  expect(
+    await screen.findByRole("img", { name: "No image yet" }),
+  ).toBeInTheDocument();
+  expect(container.querySelector(".gallery-main img")).toBeNull();
+  expect(screen.getByText("SKU STUDIO-001")).toBeInTheDocument();
+  expect(container.querySelector(".gallery-main")).not.toHaveTextContent(
+    "1 / 0",
+  );
+});

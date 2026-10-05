@@ -13,6 +13,11 @@
     "architecture": "node scripts/architecture.mjs"
   },
   "dependencies": {
+    "@tiptap/core": "^3.31.4",
+    "@tiptap/extension-image": "^3.31.4",
+    "@tiptap/pm": "^3.31.4",
+    "@tiptap/react": "^3.31.4",
+    "@tiptap/starter-kit": "^3.31.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },

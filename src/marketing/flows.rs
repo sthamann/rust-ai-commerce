@@ -47,6 +47,8 @@ impl Flow {
             return Err(bad("Invalid flow app action"));
         }
         if ![
+            "product.created",
+            "product.updated",
             "order.placed",
             "payment.captured",
             "order.state_changed",
@@ -78,6 +80,8 @@ pub(crate) async fn project_flows(
     data: &Value,
 ) -> Result<()> {
     if ![
+        "product.created",
+        "product.updated",
         "order.placed",
         "payment.captured",
         "order.state_changed",
@@ -108,7 +112,7 @@ pub(crate) async fn project_flows(
                 .unwrap_or_else(|| order.get("order_data")),
         )
     } else {
-        if !valid_app_event(kind) {
+        if !valid_app_event(kind) && !["product.created", "product.updated"].contains(&kind) {
             return Ok(());
         }
         (StoredCart{id:String::new(),tenant:t.into(),token:String::new(),data:serde_json::from_value(json!({"items":[],"group":"consumer","email":null,"company":null,"session":"app-event","buyer":null,"order":null})).map_err(|_|bad("Invalid event context"))?,revision:0,status:"event".into()},json!({"cart":{}}))

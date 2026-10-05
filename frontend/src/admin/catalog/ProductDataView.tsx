@@ -1,39 +1,32 @@
-/** All four product translations and extra fields are edited together under a product revision. */
-import ReviewModeration from "./ReviewModeration";
-import { AppSurfaceSlot } from "../../shared/apps/AppSurfaces";
-
-import { useEffect, useState } from "react";
-import { useOperationsText } from "../../shared/i18n/operations-i18n";
-import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
+/** Central catalog workspace: server-filtered cursor list, product details and hierarchical categories. */
+import { lazy, useEffect, useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
-import ProductAssets from "./ProductAssets";
-import RichEditor from "./RichEditor";
+import { useCatalogText } from "./catalog-i18n";
+import type { Category } from "./catalog-model";
+const ProductEditor = lazy(() => import("./ProductEditor"));
+import CategoriesWorkspace from "./CategoriesWorkspace";
+import "../styles/catalog.css";
+import "../styles/catalog-editor.css";
 export default function ProductDataView({ request }: { request: RequestFn }) {
-  const { o } = useOperationsText();
-  const { w } = useWorkbenchText();
-  const [products, setProducts] = useState<{ id: string; name: string }[]>([]);
-  const [id, setId] = useState("");
-  const [revision, setRevision] = useState(0);
-  const [translations, setTranslations] = useState<
-    Record<string, { name: string; description: string }>
-  >({});
-  const [extra, setExtra] = useState<any>({
-    seo: {},
-    specifications: {},
-    crossSelling: [],
-    shippingFree: false,
-  });
-  const [specText, setSpecText] = useState("{}");
+  const { c, money, locale } = useCatalogText();
+  const [view, setView] = useState("products");
+  const [id, setId] = useState<string | null>(null);
+  const [products, setProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+  const [category, setCategory] = useState("");
+  const [low, setLow] = useState(false);
+  const [cursor, setCursor] = useState("");
+  const [next, setNext] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [reload, setReload] = useState(0);
   useEffect(() => {
     let active = true;
-    request("/api/search/product", {})
+    request("/api/merchant/categories")
       .then((v) => {
-        if (active) {
-          setProducts(v.elements);
-          setId(v.elements[0]?.id ?? "");
-        }
+        if (active) setCategories(v.elements);
       })
       .catch((e) => {
         if (active) setError(e.message);
@@ -41,185 +34,248 @@ export default function ProductDataView({ request }: { request: RequestFn }) {
     return () => {
       active = false;
     };
-  }, [request]);
+  }, [request, reload]);
   useEffect(() => {
     let active = true;
-    if (!id) return;
-    request(`/api/merchant/products/${id}`)
-      .then((v) => {
-        if (active) {
-          setRevision(v.revision);
-          setTranslations(v.translations);
-          setExtra({
-            seo: {},
-            specifications: {},
-            crossSelling: [],
-            shippingFree: false,
-            ...v.extra,
+    setLoading(true);
+    setError("");
+    const timer = setTimeout(
+      () => {
+        const q = new URLSearchParams({ limit: "25" });
+        if (search.trim()) q.set("search", search.trim());
+        if (status) q.set("active", String(status === "active"));
+        if (category) q.set("categoryId", category);
+        if (low) q.set("lowStock", "true");
+        if (cursor) q.set("after", cursor);
+        request(`/api/merchant/products?${q}`)
+          .then((v) => {
+            if (active) {
+              setProducts(v.elements);
+              setNext(v.nextCursor ?? "");
+            }
+          })
+          .catch((e) => {
+            if (active) setError(e.message);
+          })
+          .finally(() => {
+            if (active) setLoading(false);
           });
-          setSpecText(JSON.stringify(v.extra?.specifications ?? {}, null, 2));
-        }
-      })
-      .catch((e) => {
-        if (active) setError(e.message);
-      });
+      },
+      search ? 220 : 0,
+    );
     return () => {
       active = false;
+      clearTimeout(timer);
     };
-  }, [id, request]);
+  }, [request, search, status, category, low, cursor, reload]);
+  const change = (fn: () => void) => {
+    setCursor("");
+    fn();
+  };
+  if (id !== null)
+    return (
+      <ProductEditor
+        key={id}
+        id={id}
+        request={request}
+        categories={categories}
+        onBack={() => {
+          setId(null);
+          setReload((v) => v + 1);
+        }}
+        onCreated={setId}
+      />
+    );
   return (
-    <div className="studio-page workbench">
-      <div className="page-intro">
-        <h1>{w("productData")}</h1>
-        <p>{w("productDataHint")}</p>
-      </div>
-      <section className="studio-card">
-        <label>
-          {w("product")}
-          <select value={id} onChange={(e) => setId(e.target.value)}>
-            {products.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <form
-          onSubmit={async (e) => {
-            e.preventDefault();
-            setBusy(true);
-            setError("");
-            try {
-              const v = await request(
-                `/api/merchant/products/${id}`,
-                {
-                  revision,
-                  translations,
-                  extra: { ...extra, specifications: JSON.parse(specText) },
-                },
-                "PUT",
-              );
-              setRevision(v.revision);
-            } catch (e) {
-              setError((e as Error).message);
-            } finally {
-              setBusy(false);
-            }
-          }}
-        >
-          {Object.entries(translations).map(([lang, tr]) => (
-            <fieldset key={lang}>
-              <legend>{lang.toUpperCase()}</legend>
-              <label>
-                {w("title")}
-                <input
-                  required
-                  value={tr.name}
-                  onChange={(e) =>
-                    setTranslations({
-                      ...translations,
-                      [lang]: { ...tr, name: e.target.value },
-                    })
-                  }
-                />
-              </label>
-              <label>
-                {w("description")}
-                <textarea
-                  value={tr.description}
-                  onChange={(e) =>
-                    setTranslations({
-                      ...translations,
-                      [lang]: { ...tr, description: e.target.value },
-                    })
-                  }
-                />
-              </label>
-              <label>
-                {w("seo")}
-                <input
-                  aria-label={`${w("seo")} ${lang}`}
-                  placeholder={w("title")}
-                  value={extra.seo?.[lang]?.title ?? ""}
-                  onChange={(e) =>
-                    setExtra({
-                      ...extra,
-                      seo: {
-                        ...extra.seo,
-                        [lang]: {
-                          title: e.target.value,
-                          description:
-                            extra.seo?.[lang]?.description ?? tr.description,
-                          slug: extra.seo?.[lang]?.slug ?? id,
-                        },
-                      },
-                    })
-                  }
-                />
-              </label>
-            </fieldset>
-          ))}
-          <label>
-            {w("crossSelling")}
-            <input
-              value={extra.crossSelling.join(", ")}
-              onChange={(e) =>
-                setExtra({
-                  ...extra,
-                  crossSelling: e.target.value
-                    .split(",")
-                    .map((s) => s.trim())
-                    .filter(Boolean),
-                })
-              }
-            />
-          </label>
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={extra.shippingFree}
-              onChange={(e) =>
-                setExtra({ ...extra, shippingFree: e.target.checked })
-              }
-            />
-            {w("shippingFree")}
-          </label>
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              checked={extra.digital ?? false}
-              onChange={(e) =>
-                setExtra({ ...extra, digital: e.target.checked })
-              }
-            />
-            {o("digital")}
-          </label>
-          <RichEditor
-            value={extra.richDescription ?? {}}
-            onChange={(richDescription) =>
-              setExtra({ ...extra, richDescription })
-            }
-          />
-          <AppSurfaceSlot
-            location="admin.product"
-            context={{ productId: id }}
-          />
-          <details>
-            <summary>{w("specifications")}</summary>
-            <textarea
-              rows={10}
-              value={specText}
-              onChange={(e) => setSpecText(e.target.value)}
-            />
-          </details>
-          <button className="studio-primary" disabled={busy}>
-            {w("save")}
+    <div className="studio-page catalog-workspace">
+      <div className="catalog-heading">
+        <div>
+          <p className="catalog-eyebrow">COMMERCE / {c("products")}</p>
+          <h1>{c("products")}</h1>
+          <p>{c("intro")}</p>
+        </div>
+        {view === "products" && (
+          <button className="studio-primary" onClick={() => setId("")}>
+            + {c("newProduct")}
           </button>
-        </form>
-        {error && <p role="alert">{error}</p>}
-      </section>
-      {id && <ProductAssets id={id} request={request} />}
-      {id && <ReviewModeration productId={id} request={request} />}
+        )}
+      </div>
+      <div className="catalog-tabs" role="tablist">
+        <button
+          role="tab"
+          aria-selected={view === "products"}
+          onClick={() => setView("products")}
+        >
+          {c("products")}
+        </button>
+        <button
+          role="tab"
+          aria-selected={view === "categories"}
+          onClick={() => setView("categories")}
+        >
+          {c("categories")}
+        </button>
+      </div>
+      {view === "categories" ? (
+        <CategoriesWorkspace
+          request={request}
+          categories={categories}
+          onRefresh={() => setReload((v) => v + 1)}
+        />
+      ) : (
+        <>
+          <section className="studio-card catalog-filters">
+            <label className="catalog-search">
+              {c("search")}
+              <input
+                type="search"
+                value={search}
+                onChange={(e) => change(() => setSearch(e.target.value))}
+              />
+            </label>
+            <label>
+              {c("status")}
+              <select
+                value={status}
+                onChange={(e) => change(() => setStatus(e.target.value))}
+              >
+                <option value="">{c("all")}</option>
+                <option value="active">{c("active")}</option>
+                <option value="inactive">{c("inactive")}</option>
+              </select>
+            </label>
+            <label>
+              {c("categories")}
+              <select
+                value={category}
+                onChange={(e) => change(() => setCategory(e.target.value))}
+              >
+                <option value="">{c("all")}</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.data.translations[locale.slice(0, 2)]?.name ??
+                      cat.data.translations.en.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={low}
+                onChange={(e) => change(() => setLow(e.target.checked))}
+              />
+              {c("lowStock")}
+            </label>
+          </section>
+          {error && (
+            <p role="alert" className="catalog-error">
+              {error}
+            </p>
+          )}
+          <section
+            className="studio-card catalog-table-wrap"
+            aria-busy={loading}
+          >
+            <table className="catalog-table">
+              <thead>
+                <tr>
+                  <th>{c("name")}</th>
+                  <th>{c("number")}</th>
+                  <th>{c("status")}</th>
+                  <th>{c("price")}</th>
+                  <th>{c("stock")}</th>
+                  <th>{c("variants")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((p) => (
+                  <tr key={p.id}>
+                    <td>
+                      <button
+                        className="catalog-product-link"
+                        onClick={() => setId(p.id)}
+                      >
+                        {p.media?.[0]?.url ? (
+                          <img src={p.media[0].url} alt="" />
+                        ) : (
+                          <span className="catalog-thumbnail">◇</span>
+                        )}
+                        <span>
+                          <strong>{p.name}</strong>
+                          <small>
+                            {(p.categoryIds ?? [])
+                              .map((id: string) => {
+                                const category = categories.find(
+                                  (c) => c.id === id,
+                                );
+                                return (
+                                  category?.data.translations[
+                                    locale.slice(0, 2)
+                                  ]?.name ?? category?.data.translations.en.name
+                                );
+                              })
+                              .filter(Boolean)
+                              .join(" · ") || "—"}
+                          </small>
+                        </span>
+                      </button>
+                    </td>
+                    <td>{p.productNumber}</td>
+                    <td>
+                      <span
+                        className={`catalog-badge ${p.active ? "is-active" : ""}`}
+                      >
+                        {c(p.active ? "active" : "inactive")}
+                      </span>
+                    </td>
+                    <td>{money(p.price)}</td>
+                    <td>
+                      <span className={p.stock <= 5 ? "catalog-low" : ""}>
+                        {p.stock}
+                      </span>
+                    </td>
+                    <td>{p.variantCount}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {!products.length && !loading && !error && (
+              <div className="catalog-empty">
+                <h2>{c("empty")}</h2>
+                <button className="studio-primary" onClick={() => setId("")}>
+                  {c("newProduct")}
+                </button>
+              </div>
+            )}
+            {loading && <p role="status">{c("loading")}</p>}
+            <div className="catalog-pagination">
+              <span>
+                {products.length} {c("products")}
+              </span>
+              <div>
+                {cursor && (
+                  <button
+                    className="studio-secondary"
+                    onClick={() => setCursor("")}
+                  >
+                    {c("first")}
+                  </button>
+                )}
+                {next && (
+                  <button
+                    className="studio-secondary"
+                    disabled={loading}
+                    onClick={() => setCursor(next)}
+                  >
+                    {c("next")} →
+                  </button>
+                )}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
     </div>
   );
 }

@@ -95,9 +95,11 @@ pub(super) async fn upload(
     if n >= 50 {
         return Err(bad("Maximum 50 assets per product"));
     }
-    sqlx::query("INSERT INTO product_assets(tenant,id,product_id,title,filename,mime,kind,content,digest) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)").bind(t).bind(&id).bind(product).bind(title).bind(filename).bind(mime).bind(kind).bind(content).bind(&digest).execute(&mut *tx).await?;
+    sqlx::query("INSERT INTO product_assets(tenant,id,product_id,title,filename,mime,kind,content,digest) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)").bind(&t).bind(&id).bind(product).bind(title).bind(filename).bind(mime).bind(kind).bind(content).bind(&digest).execute(&mut *tx).await?;
     tx.commit().await?;
-    Ok(Json(json!({"id":id,"digest":digest,"public":false})))
+    Ok(Json(
+        json!({"id":id,"shop":t,"digest":digest,"public":false}),
+    ))
 }
 fn validate_bytes(mime: &str, b: &[u8]) -> Result<()> {
     let ok = match mime {

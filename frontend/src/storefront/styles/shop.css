@@ -4,3 +4,49 @@
 @import "./shop/03-availability-span.css";
 @import "./shop/04-shop-stepper.css";
 @import "./shop/05-shop-grid-comparison.css";
+
+/* Channel-bound category navigation is generated from the merchant tree. */
+.shop-category-navigation {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.shop-category-navigation a {
+  padding: 10px 15px;
+  color: inherit;
+}
+.shop-category-navigation span {
+  font-size: 12px;
+  font-weight: 650;
+  opacity: 0.65;
+}
+.shop-category-description h3 {
+  margin: 18px 0 8px;
+}
+.shop-category-description p {
+  max-width: 700px;
+  line-height: 1.7;
+  opacity: 0.75;
+}
+
+.shop-image-placeholder {
+  min-height: 280px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #f2f1ec;
+  color: #66675e;
+}
+.shop-image-placeholder > span {
+  font-size: 80px;
+  color: #96998c;
+}
+.shop-image-placeholder > small {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}

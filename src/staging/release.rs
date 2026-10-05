@@ -40,6 +40,13 @@ pub(crate) async fn release(
         .bind(&t)
         .execute(&mut *tx)
         .await?;
+    for lock in [726, 727] {
+        sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,$2))")
+            .bind(&t)
+            .bind(lock as i64)
+            .execute(&mut *tx)
+            .await?;
+    }
     for k in keys.iter().filter(|k| k.starts_with("app:")) {
         sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,7))")
             .bind(&k[4..])
@@ -78,10 +85,13 @@ pub(crate) async fn release(
             return Err(conflict("Live content changed; resolve before release"));
         }
     }
+    categories::publish(&mut tx, &t, &current, &keys).await?;
     for key in &keys {
         let s = req.selections.iter().find(|s| s.key == *key).unwrap();
         let value = &current[&s.key];
-        if s.key == "order-workflow" {
+        if s.key.starts_with("category:") {
+            // Category units were published above in parent-first dependency order.
+        } else if s.key == "order-workflow" {
             auth::permit(&h, "settings.write")?;
             let m: commerce::OrderMachine =
                 serde_json::from_value(value.clone()).map_err(|_| bad("Invalid workflow"))?;

@@ -1,6 +1,7 @@
 //! Private cloned shops, scope admission and selective atomic release of reviewed changes.
 use crate::*;
 mod assets;
+mod categories;
 mod clone;
 mod documents;
 mod release;

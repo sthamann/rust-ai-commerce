@@ -3,7 +3,7 @@
 -- common term that matches millions of products/translations.
 SELECT DISTINCT ON (id) * FROM (
   (SELECT p.* FROM products p
-   WHERE p.tenant=$1 AND p.parent_id IS NULL AND p.id>$2
+   WHERE p.tenant=$1 AND p.parent_id IS NULL AND p.active AND NOT EXISTS(SELECT 1 FROM product_channel_visibility v WHERE v.tenant=p.tenant AND v.product_id=p.id AND v.channel_id=$8 AND NOT v.visible) AND p.id>$2
      AND ($3::text IS NULL OR p.category=$3)
      AND lower(p.name||' '||p.description) LIKE $7
      AND lower(
@@ -17,7 +17,7 @@ SELECT DISTINCT ON (id) * FROM (
    ORDER BY p.id LIMIT $6)
   UNION ALL
   (SELECT p.* FROM products p
-   WHERE p.tenant=$1 AND p.parent_id IS NULL AND p.id>$2
+   WHERE p.tenant=$1 AND p.parent_id IS NULL AND p.active AND NOT EXISTS(SELECT 1 FROM product_channel_visibility v WHERE v.tenant=p.tenant AND v.product_id=p.id AND v.channel_id=$8 AND NOT v.visible) AND p.id>$2
      AND ($3::text IS NULL OR p.category=$3)
      AND p.id IN (SELECT tr.product_id FROM product_translations tr
        WHERE tr.tenant=$1 AND tr.language_id=ANY($5)

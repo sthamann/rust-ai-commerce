@@ -327,18 +327,23 @@
     },
     "src/assets/mod.rs": {
       "status": "unproved",
-      "sha256": "913989d92c433445a74132ada790feb89257c4b1eac06526bd2e6c70f1fc3794",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "e00c49baee70b0baf9d195e5d6cdea82fd6fe994addbe7796f4781251177b195",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/assets/rich.rs": {
       "status": "unproved",
-      "sha256": "6d4457f42fb1bdb78ae3e4ec8fb7d2085e7f5ead0b6b69742c9127457ef21ce6",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "1309fb9659b0cad0c83b94c6b9375a23c2a42f2fb9fb48bc9807dbb0d1258f47",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+    },
+    "src/assets/rich_document.rs": {
+      "status": "unproved",
+      "sha256": "c3c24c03ab56edd55dbc55eef9ba5e9863fd4b2910c1d67a57c9bfeafbcb6fff",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/assets/upload.rs": {
       "status": "unproved",
-      "sha256": "819766b17e68ec27e33696101ae0f1229888c0f0330740fe6b63821fcc0e8cfe",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "41be7f2249118587cd0f0a7b9b54a3aa94daeb6b2189ac36e95fc29eb69d519a",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/auth/credentials.rs": {
       "status": "unproved",
@@ -362,8 +367,8 @@
     },
     "src/auth/middleware.rs": {
       "status": "unproved",
-      "sha256": "3dbec43ee761dd6512a5f21d601737719f0ae0464d86b6b9b28fa80cc12573fc",
-      "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+      "sha256": "96f791f53d3498245f3d14d7c6f6e76d74287d860582a5d81f04f626d59e7b02",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/auth/mod.rs": {
       "status": "unproved",
@@ -377,8 +382,8 @@
     },
     "src/auth/provision.rs": {
       "status": "unproved",
-      "sha256": "012d9b9fb5953533e6b68da467109c26e9cd32eb1650ad0644148ffb32158753",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "d271a77d1a999cdc54fd08a7a64bddf5f2993e845d14b721db2c2ba5e9e64b76",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/auth/registration.rs": {
       "status": "unproved",
@@ -467,8 +472,8 @@
     },
     "src/capabilities.rs": {
       "status": "unproved",
-      "sha256": "a77f55bc271dcde4bbd701e2c97e91d4c62a9a835ee46253dce68456d184fe28",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "71a8d98afef87a1e0b088d28e655e7c79d6d9f66b69161d711d63437d04c8d33",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/cart_model.rs": {
       "status": "unproved",
@@ -497,18 +502,33 @@
     },
     "src/catalog_model.rs": {
       "status": "unproved",
-      "sha256": "1bb7cb68451ae7e76dda728701e9c084a9a5a3bcc3a04a5438d58eb76d7ac745",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "5b7a7d669114c02c1cf7c04bdfe166609da0abc33bbe1d7a83707a1f1c68c621",
+      "review": "Reviewed final catalog product-number hydration/serialization in catalog_model.rs: optional legacy decode, tenant DB fallback to ID, native Store API and merchant SKU consumer. All other reviewed catalog/category/checkout/staging behavior unchanged; extracted Lean kernel unchanged. Catalog MCP/flow/upload/release plus complete isolated integration suite passed; new empty-media and product-number frontend regression added. SQL/async/editor modules remain unproved."
     },
     "src/catalog_page.rs": {
       "status": "unproved",
-      "sha256": "9f4cbf1a1786a29ac10b31d5e6378dca11650a9a8c448a3c0b3be8933463d2f4",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "e1164574817c1fb37382d0aa2ba93f6e52c08f5bb6a92e4400b80ce26d87b735",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/catalog_routes.rs": {
       "status": "unproved",
-      "sha256": "89f6a2241996b089cc6a11d2a938ac18a0dfae0ce3cd6bb54a4fb9774b3e43d8",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "aa42e1e3864a335124fb49adff879629f53435576a5f261c04fe8accbe3196df",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+    },
+    "src/categories/admin.rs": {
+      "status": "unproved",
+      "sha256": "e4d81946a66fa4cdc6fa2989154ea6df9125b0f23a8c352dbdb273d2999b4d90",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+    },
+    "src/categories/mod.rs": {
+      "status": "unproved",
+      "sha256": "4a366718c88e4f797b0e8fc1708bcd4f100dc49362394514778a4ce6dcf7d06f",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+    },
+    "src/categories/navigation.rs": {
+      "status": "unproved",
+      "sha256": "9ed416cb984515f83ca711a17df159d407b5f5c7e1808c6f0897a7723e39cd23",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/channel_metrics.rs": {
       "status": "unproved",
@@ -552,8 +572,8 @@
     },
     "src/commerce/catalog.rs": {
       "status": "unproved",
-      "sha256": "968ce5c09e2065eddf0416955ff4188eac7a5f1be8c550a6d1fb8905a5532819",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "155fede2ea9ccbe155d4ef952f3958ae22d5808c79fc3fb2eff99c0177b20ad5",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/commerce/configuration.rs": {
       "status": "unproved",
@@ -572,8 +592,8 @@
     },
     "src/commerce/detail.rs": {
       "status": "unproved",
-      "sha256": "c9bb065912562fb1928b23d89f66f037e24e766bfd313e937694b10cfb532b2d",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "6e45345a34af066703a398fc0134a108e3fe90bb2e9f8f96aa0ab066dc4b7dfe",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/commerce/fulfillment.rs": {
       "status": "reviewed-binding",
@@ -582,8 +602,8 @@
     },
     "src/commerce/mod.rs": {
       "status": "unproved",
-      "sha256": "f0cf2b18afe2b4b1dcd012167f0af172e725e7b2c6d69e4affa83f442c50caac",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "2a8e56fd39a3125cbc92c4096298f50db2bbd2ec7bfe1f7b69833bd9d6a330b7",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/commerce/order_fields.rs": {
       "status": "unproved",
@@ -600,15 +620,25 @@
       "sha256": "0347c893afd8de2d8230aa218a90411123d8d3d05ac5da9a3d3e8af256fdaeaa",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/commerce/product_admin.rs": {
+      "status": "unproved",
+      "sha256": "28f14428e76ad24dacbb8abe2eb33c1e70ad899bc2a7911497b20fa3436f3f9a",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+    },
+    "src/commerce/product_channels.rs": {
+      "status": "unproved",
+      "sha256": "e599f13d73c103420f42e801f9884031ae78bc26fe0ac3b9167db7cfdac687c3",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+    },
     "src/commerce/product_edit.rs": {
       "status": "unproved",
-      "sha256": "b4bc4b660d080b55a365c5b987e9545ccf6d3c046439724a49d9715054459ea8",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "85a248bde6489e31a70026e53ef83e99c3523678cbf9024e57143f8fc9e8f8b1",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/commerce/product_fields.rs": {
       "status": "unproved",
-      "sha256": "5491fb80752d738b151bd13b708b07f20d0f298c416bce31f0a5c0fdcf468f46",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "5e55ecd95c580761a947be4a0c11c8cedb71432190fead1e8381667dba862271",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/commerce/review_moderation.rs": {
       "status": "unproved",
@@ -717,8 +747,8 @@
     },
     "src/experience.rs": {
       "status": "unproved",
-      "sha256": "8e805b1823a85ac764ee48336fa165b821687e7fb79012ae3b4db34d2f8e719b",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "1302628efa6c020f334c52b4736c6644038c0316ea3d99f20ffd723399ddfe39",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/extensions.rs": {
       "status": "unproved",
@@ -757,8 +787,8 @@
     },
     "src/main.rs": {
       "status": "unproved",
-      "sha256": "9e9f4e8c060b9fbb9abf8f868346e7662ea1a6f73c35154d1bace0127b45fa86",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "ee3c6bf0dd7ffceb1809356c678038d6a1d69e50688f3d7192ede85ea5a571f4",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/marketing/app_flows.rs": {
       "status": "reviewed-binding",
@@ -767,13 +797,13 @@
     },
     "src/marketing/catalog.rs": {
       "status": "unproved",
-      "sha256": "63b68665d237ddd6efa3e4690f4199b5dcc03eb061b76553de6772055b428a39",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "06bf915904bb65ef44e916a699124b848e375c77060534d6490e4ae8579ee474",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/marketing/channels.rs": {
       "status": "unproved",
-      "sha256": "839f0e817aba6bfa710c32572cddc0ec70a31d2cfdcf2c0cb6f4ef39b09a3a4d",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "ddbc1b98e55f7d2a953c7e9617e2142337d192f026d8776b83eab2ed200f29f9",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/marketing/customer_facts.rs": {
       "status": "unproved",
@@ -802,8 +832,8 @@
     },
     "src/marketing/flows.rs": {
       "status": "unproved",
-      "sha256": "105def76e67125f9fb2eafb46135b280ee4a03f210146a5eac943dd61f437747",
-      "review": "Reviewed native scope evaluation, private tenant facts, per-matching-flow rule snapshot limits and isolated failures, bounded graphs, current-actor rechecks, durable delays and action receipts. Original PHP comparisons and actual checkout/delay/replay/revocation/oversized-reference regressions pass. Exact XOR and thirty-day admission guards have rejected negative mutations; interpreter, SQL and async orchestration remain unproved."
+      "sha256": "15cf8cf4363ea46d5de0532e9400c50844ea398e0c315a79ca92a3c90e572eff",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/marketing/gateway.rs": {
       "status": "unproved",
@@ -852,8 +882,8 @@
     },
     "src/marketing/routes.rs": {
       "status": "unproved",
-      "sha256": "f419bea50e134897de4239f8355603e8876b033c4e78573ea026232d8aa3b772",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "6b384b767c4f6a10a9eb1269fcbc8d10dc470bf03fe111ff4d062f8b59bb68ac",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/marketing/rule_fields.rs": {
       "status": "unproved",
@@ -882,13 +912,13 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "14a266d1a801d9367007b9fd85d80d02b313c221386cca66170f99f8413d3e5e",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "198565c5ff593e65fb4ff1781b901c2e6dab4e88e5590370d8f6243d1ce10d7f",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "70f94912912bfe341a0387d2cf5ee44f9d5a307e91206769401e7f91a6978639",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "8ac0b0ba95210a7c96634d77cb112385cb4dcd2926e7ccc737a2909856d9ba18",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -902,8 +932,8 @@
     },
     "src/operations/mod.rs": {
       "status": "unproved",
-      "sha256": "d870b8d2b7d869e54d544bce60ded840383de00a250d3f34e3b6dfb78452015b",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "7500a660fee0773495d066e8d901595877f658e3d5e2f2ddecba7a9de59e1e2a",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/operations/orders.rs": {
       "status": "unproved",
@@ -932,8 +962,8 @@
     },
     "src/order_checkout.rs": {
       "status": "reviewed-binding",
-      "sha256": "68e73c66a7d50616138cdad84042f51deaf75926ede185fb129cc5a8ff9805c3",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "578bbf654b3264f53d08a8290d53d1bd5477dbfd17ae04955b43bff403e224dd",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/order_routes.rs": {
       "status": "unproved",
@@ -1042,8 +1072,8 @@
     },
     "src/routes.rs": {
       "status": "unproved",
-      "sha256": "735da9803759c69c5fbe00f136deefd242bb819cfe64f81a20de9b430f599df8",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "9c380cdec08b25ba8c224fa8253631bb0bdd7df373a971fef9006472859823b8",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/rule_comparison.rs": {
       "status": "reviewed-binding",
@@ -1065,10 +1095,15 @@
       "sha256": "239496fafab8086b3618e9caa369fa34931f46a299052b1ca600567785526254",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/staging/categories.rs": {
+      "status": "unproved",
+      "sha256": "0cf6f22d3fe16f58e00373dfa111f530ee2b17bb2e47f39b371cfeaf49934e37",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+    },
     "src/staging/clone.rs": {
       "status": "unproved",
-      "sha256": "7ce4918295c281b5763c2608daa7b5da916d1f7852b20efcd276168773d9efaf",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "8ff20488e55c89fbce4a83943a0042052353338ae78cd42a636c5d5ba07320ae",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/staging/documents.rs": {
       "status": "unproved",
@@ -1077,18 +1112,18 @@
     },
     "src/staging/mod.rs": {
       "status": "unproved",
-      "sha256": "9ec42975d11dcd1301def23e1b26bcd1bfca964ad749098438603ce5e53a2dd1",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "efcfa894e59b5572b29790e48eb21b3a42e12e4b883900b6478f00dc096af5d3",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/staging/release.rs": {
       "status": "unproved",
-      "sha256": "43b68678fb63e2ea49609e17d340c93387aad58facd0f9dcee9152639c6dbad2",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "ca6505d0d8298b76d8a0dde73628279fb4bb931a329ba58f4d896fcc2298f1b9",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/staging/snapshot.rs": {
       "status": "unproved",
-      "sha256": "2b3b7d3ad35849fa8b4a00eed104c112743f68a5f070dd1566500f427c9aeb68",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "1f7c788caeecb4d72e2589cb1b72168bb1ffa057bf38873db01075f92f635231",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "src/studio.rs": {
       "status": "unproved",
@@ -1227,6 +1262,14 @@
     "migrations/025-automation-pipelines.sql": {
       "sha256": "88d1da56ac8c56675dd2cbb49ddcccfea324d715616f96d51c416598c31ec26e",
       "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "migrations/026-product-catalog.sql": {
+      "sha256": "2663d37d22732c6ad03fc38850617a71e0a3c85188736e2583381deff457d6a8",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+    },
+    "migrations/027-product-search.sql": {
+      "sha256": "186280185b4d7f8233fcab4525a68a551518e562f60d6a55e2c50d0ba3ecebc5",
+      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "5f8e07e5914ed4f3616143abf8983c6a4bb99045a5958ec6346771895bfbe841",

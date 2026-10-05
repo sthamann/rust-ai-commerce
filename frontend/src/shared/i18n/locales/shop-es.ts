@@ -1,6 +1,7 @@
 /** Storefront and operational interface strings: es. */
 import type { Key } from "./shop-de";
 export const es: Record<Key, string> = {
+  noImage: "Todavía sin imagen",
   firstPage: "Primera página",
   nextPage: "Página siguiente",
   moreVariants: "Cargar más variantes",

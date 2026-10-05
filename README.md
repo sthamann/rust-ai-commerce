@@ -147,7 +147,7 @@ documentation site, not a hosted commerce backend.
 The real Rust checkout, order workflow, access, refund and download paths now
 call a small pure kernel with **20 policies and 45 Lean-proved properties**.
 The production functions are extracted through a closed typed grammar; compiled
-Rust/Lean outputs are compared on 3,614 cases. Deliberately broken policies must
+Rust/Lean outputs are compared on 4,136 cases. Deliberately broken policies must
 fail the proof checks. CI also audits transitive axioms and locks every Rust,
 schema, build and proof input to an explicitly reviewed source inventory.
 
@@ -157,10 +157,32 @@ protocols, apps, browser and AI behavior remain outside the proofs. Read the
 [exact contracts, evidence and future-change procedure](docs/formal-verification.md).
 Lean is needed for verification; the running commerce server does not depend on it.
 
+## Products and categories
+
+Commerce Studio has one **Products** workspace with searchable/filterable product
+lists, creation and a complete native product detail editor. Manage four-language
+names and visual rich descriptions, prices/tax/stock/quantity rules, galleries and
+uploads, native variant SKUs, categories and channel visibility, properties,
+specifications, SEO metadata, cross-selling, attachments, downloads and reviews.
+Revision-bound saves share the real commerce API and MCP; committed product events
+can execute durable flows.
+
+Categories are real translated parent/child records with product assignments,
+page/folder/link types, nested listing control and a navigation root per sales
+channel. The storefront consumes that tree and its category-filtered product API.
+Products and category changes can be staged and published selectively.
+
+![Searchable product workspace](docs/assets/catalog-products-en.png)
+![Product detail with visual description editor](docs/assets/catalog-editor-en.png)
+
+See the [product management guide](docs/product-management.md) for routes, file
+ownership, original Shopware source references, tests and explicit remaining gaps.
+This does not claim complete original DAL, CMS, product-stream or SEO-URL parity.
+
 ## Merchant workbench and private releases
 
 The workbench now has **Storyfronts**, **Developers**, **Environments**,
-**Automation** and **Product content** sections. An existing merchant can create
+**Automation** and **Products** sections. An existing merchant can create
 additional shops. Prompt-generated apps are immutable reviewed drafts, installed
 in a private sandbox and selectively published with their own typed data/API/UI.
 Codex and Claude Code can use the exported package schema and authorized MCP

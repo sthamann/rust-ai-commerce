@@ -3,6 +3,7 @@ import { useConnectedText } from "../../shared/i18n/connected-i18n";
 import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
 import { type Config, type Kind, langs } from "./automation-types";
 
+import { useEffect, useState } from "react";
 import FlowBuilder from "./FlowBuilder";
 import RuleBuilder from "./RuleBuilder";
 export type AutomationEditorProps = {
@@ -49,6 +50,19 @@ export default function AutomationEditor({
   locale,
   setAdvanced,
 }: AutomationEditorProps) {
+  const [categories, setCategories] = useState<any[]>([]);
+  useEffect(() => {
+    let active = true;
+    if (kind === "channels")
+      request("/api/merchant/categories")
+        .then((v) => {
+          if (active) setCategories(v.elements);
+        })
+        .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [kind, request]);
   return (
     <form
       onSubmit={(e) => {
@@ -270,6 +284,20 @@ export default function AutomationEditor({
                 )
               }
             />
+          </label>
+          <label>
+            {w("categoryNavigation")}
+            <select
+              value={data.navigationCategoryId ?? "catalog-root"}
+              onChange={(e) => update("navigationCategoryId", e.target.value)}
+            >
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.data.translations[locale.slice(0, 2)]?.name ??
+                    cat.data.translations.en.name}
+                </option>
+              ))}
+            </select>
           </label>
           <a
             href={`/?shop=${new URLSearchParams(location.search).get("shop") ?? "atelier"}&channel=${id}#`}

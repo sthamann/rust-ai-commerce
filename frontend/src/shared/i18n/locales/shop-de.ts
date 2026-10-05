@@ -1,5 +1,6 @@
 /** Storefront and operational interface strings: de. */
 export const de = {
+  noImage: "Noch kein Bild",
   firstPage: "Erste Seite",
   nextPage: "Nächste Seite",
   moreVariants: "Weitere Varianten laden",

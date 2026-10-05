@@ -1,5 +1,6 @@
 /** Product family, gallery, context pricing and moderated customer reviews. */
 import RichDescription from "../../shared/content/RichDescription";
+import ImagePlaceholder from "./ImagePlaceholder";
 import { analyticsItems, commerceEvent } from "../analytics/ShopAnalytics";
 import ProductAttachments from "./ProductAttachments";
 import ProductPurchase from "./ProductPurchase";
@@ -124,15 +125,21 @@ export default function ProductPage({
       <div className="pdp-main">
         <section className="pdp-gallery" aria-label={s("images")}>
           <div className="gallery-main">
-            <img
-              src={p.media[image]?.url}
-              alt={`${p.name} · ${Object.values(p.options).map(s).join(" / ")} · ${s(p.media[image]?.view ?? "front")}`}
-              width="780"
-              height="600"
-            />
-            <span>
-              {s("images")} · {image + 1} / {p.media.length}
-            </span>
+            {p.media[image]?.url ? (
+              <img
+                src={p.media[image].url}
+                alt={`${p.name} · ${Object.values(p.options).map(s).join(" / ")} · ${s(p.media[image].view ?? "front")}`}
+                width="780"
+                height="600"
+              />
+            ) : (
+              <ImagePlaceholder label={s("noImage")} />
+            )}
+            {p.media.length > 0 && (
+              <span>
+                {s("images")} · {image + 1} / {p.media.length}
+              </span>
+            )}
           </div>
           <div className="gallery-thumbs">
             {p.media.map((m, i) => (
