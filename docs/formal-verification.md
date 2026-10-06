@@ -3,8 +3,9 @@
 The prototype now runs Lean 4.29.1 proofs for **26 policies used in production
 Rust paths**. Fifty-five theorems cover the properties below. This is **not a
 certificate that the entire commerce core is correct or bug-free**. The current
-inventory contains 260 Rust modules: one extracted policy module, 23 reviewed
-binding modules, one comparison driver and 235 unproved modules. Binding review
+inventory contains 266 Rust modules (reviewed at `88370c3`, 6 October 2026):
+one extracted policy module, 23 reviewed binding modules, one comparison driver
+and 241 unproved modules. Binding review
 is not a proof of those modules.
 
 ## Connection to the real application

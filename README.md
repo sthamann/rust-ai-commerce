@@ -6,87 +6,40 @@
 
 # Vendune
 
-**An extensible Rust commerce core for AI-assisted B2C and B2B experiences.**
+**Your storefront. Your apps. Your AI. One commerce core.**
 
-[![Verify](https://github.com/sthamann/vendune/actions/workflows/verify.yml/badge.svg)](https://github.com/sthamann/vendune/actions/workflows/verify.yml)
-[![Status: prototype](https://img.shields.io/badge/status-working_prototype-2459ef)](#current-boundaries)
+[![Verify](https://github.com/sthamann/vendune/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/sthamann/vendune/actions/workflows/verify.yml)
+[![Documentation](https://github.com/sthamann/vendune/actions/workflows/pages.yml/badge.svg?branch=main)](https://sthamann.github.io/vendune/docs/)
+[![Status: working prototype](https://img.shields.io/badge/status-working_prototype-2459ef)](#current-boundaries)
 [![License: Sustainable Use](https://img.shields.io/badge/license-Sustainable_Use-18b9d9)](LICENSE)
-[![Self-hosted](https://img.shields.io/badge/deployment-self_hosted-14233f)](docs/quickstart.md)
 
-[**Get started**](#get-started) · [**Explore the playground**](docs/playground.md) · [**Build an app**](docs/app-studio.md) · [**Connect an agent**](docs/connectors.md) · [**Illustrated feature tour**](docs/features.md) · [**Documentation**](https://sthamann.github.io/vendune/docs/)
+[**Start locally**](#get-started) · [**See it in action**](#see-vendune-in-action) · [**Full feature tour**](https://sthamann.github.io/vendune/docs/features.html) · [**Build an app**](docs/app-studio.md) · [**Documentation**](https://sthamann.github.io/vendune/docs/)
 
 </div>
 
-Vendune connects a storefront, a merchant workspace, shop knowledge and agents to
-**the same commerce operations**. Product prices, stock, customer permissions and
-checkout remain server-controlled. AI can retrieve evidence and propose changes;
-authorized merchants review and apply them.
+Vendune is a self-hosted **Rust commerce system** for B2C and B2B shops. Run a
+storefront, manage it in Vendune Studio, build custom experiences and give agents
+access to the same catalog, prices, inventory and checkout. AI retrieves shop
+knowledge and proposes changes; you review the exact changes before they go live.
 
-Self-host the source. Run your own stores. Build extensions across the frontend,
-Studio, API and AI layer. Commercial shop platforms or hosted SaaS for other
-merchants require a separate license. [See the usage guide](docs/licensing.md).
+| Run your shop | Build your experience | Keep control |
+| --- | --- | --- |
+| Products, variants, customer accounts, orders, taxes, shipping and documents | Visual App Studio, typed data, custom storefronts, HTTP/MCP actions and app services | Private sandboxes, selected releases, scoped team access, version history and central AI settings |
 
-> **Working prototype.** The local tour uses synthetic data and simulated payments.
-> Complete Shopware parity, production payment support and database-wide SaaS
-> isolation are still being built. [Read the exact boundaries](#current-boundaries).
+[![Nord Atelier — the actual Vendune storefront with generated fashion product photography](docs/assets/feature-tour/storefront.jpg)](docs/features.md#storefront-and-shopping)
 
-[![Vendune Studio — searchable products, variants and categories in one workspace](docs/assets/feature-tour/products.jpg)](docs/product-management.md)
+**Meet Nord Atelier.** The default demo has **12 fashion products, 34 purchasable
+SKUs, seven categories and four content languages**, with individually generated
+product photographs included. Choose a size, add it to your bag and follow the
+real checkout. [Explore the collection](docs/fashion-demo.md).
 
-**A shop worth trying.** New demo shops start with [Nord Atelier](docs/fashion-demo.md): 12 fashion products, 34 size SKUs, four content languages and individually generated product photographs. The catalog is shared by the native storefront and the private Experience integration; checkout uses the actual commerce API.
-
-| Harbor Wool Coat | Cloud Knit | Everyday Leather Tote |
-| :---: | :---: | :---: |
-| ![Generated demo coat](frontend/public/media/demo/fashion/coat.webp) | ![Generated demo knit](frontend/public/media/demo/fashion/knit.webp) | ![Generated demo leather tote](frontend/public/media/demo/fashion/bag.webp) |
-
-## Why Vendune?
-
-- **Commerce with one source of truth.** Browser, API and agent clients use shared
-  pricing, cart, inventory and order operations.
-- **Intelligence with evidence.** Connect products, documents, support sources
-  and observed behavior. Inspect where an answer comes from and what was approved.
-- **Apps beyond a settings page.** Add admin modules, product fields, storefront
-  surfaces, typed data, HTTP/MCP actions, events and external services.
-- **A model is a choice.** Centrally configured, inherited Ollama/OpenAI/Anthropic adapters;
-  ordinary commerce runs without a model download or API key.
-- **Change with control.** Private sandboxes, immutable app versions, selective
-  releases, scoped team access and history for supported entities.
-- **Ports you can inspect.** Selected Shopware behavior is compared with original
-  PHP classes; small production policies have explicitly bounded Lean proofs.
-
-## New in Studio
-
-- **Sign in once, continue in place.** Protected Studio deep links open the login page first. An expired active session opens a login overlay over the current workspace and preserves unsaved drafts. Same-account and membership checks prevent another user from resuming private editors; failed writes are never replayed. [Session behavior](docs/studio-api-and-channels.md#studio-login-and-session-expiry).
-
-- **Manage real shop processes.** Every shop has an editable main sales channel, three reusable starter rules and two order/payment note flows. Search, edit, schedule campaigns and remove unused definitions with dependency checks. [Automation lifecycle](docs/automation.md#starting-configuration-and-lifecycle).
-
-- **One-page checkout.** Address, delivery and payment together; review the server quote, then place one explicit order. Price changes require a fresh review. [Checkout contract](docs/checkout.md).
-
-- **Write visually or in Markdown.** One safe product document, one content language, guarded drafts.
-- **Review variants before creation.** Option groups, combinations, individual SKUs/prices/stock and duplicate protection.
-- **Connect with precise access.** Developer → API & integrations: scoped keys valid for 1–90 days, source-derived endpoint explorer and live read tests.
-- **Create another storefront in three steps.** Storefront or headless, searchable catalog selection and inherited company/checkout settings.
-- **Discover standard apps immediately.** Fresh shops see the bundled catalog without silently activating external integrations.
-
-[Explore the Studio integration guide](docs/studio-api-and-channels.md).
-
-**One entry for the whole platform:** [admin.vendune.ai](https://admin.vendune.ai/)
-links merchant and platform logins. Operators create subdomain shops, configure
-inherited AI providers, inspect each shop and pause/restore operations.
-[Operator guide](docs/platform.md).
-
-
-[![One-page checkout with real server quote and synthetic customer details](docs/assets/feature-tour/checkout.gif)](docs/checkout.md)
-
-| Visual + Markdown editing | API + MCP explorer | Current storefront |
-| :---: | :---: | :---: |
-| [![Product editor](docs/assets/feature-tour/product-editor.jpg)](docs/studio-api-and-channels.md#products--description) | [![API explorer](docs/assets/feature-tour/identity-explorer.jpg)](docs/studio-api-and-channels.md#developer--api--integrations) | [![Current storefront](docs/assets/feature-tour/collection.jpg)](docs/features.md#storefront-and-shopping) |
-
-Screenshots and GIFs show the actual isolated Nord Atelier demo with English UI. [Capture provenance](docs/assets/feature-tour/README.md).
-
+> **Working prototype.** The captures use isolated synthetic shops and simulated
+> payments. Current capabilities and remaining production work are described
+> [below](#current-boundaries) and in the [complete feature guide](docs/features.md).
 
 ## Get started
 
-You need **Rust stable 1.96+, Node.js 22+, Docker Compose and Python 3**.
+**Rust stable 1.96+ · Node.js 22+ · Docker Compose · Python 3**
 
 ```sh
 git clone https://github.com/sthamann/vendune.git
@@ -95,227 +48,207 @@ cd vendune
 ```
 
 Open [the storefront](http://127.0.0.1:8787/) or
-[Vendune Studio](http://127.0.0.1:8787/#merchant). On the Studio login page, choose
-**Create shop** to create your personal owner account and a
-separate synthetic shop. Try a product variant, quantity price, cart and simulated
-checkout before adding AI.
+[Vendune Studio](http://127.0.0.1:8787/#merchant). Choose **Create shop** on the
+Studio login page to create your personal owner account and a separate shop.
+The fashion demo, variants, cart and simulated checkout work **without a model
+download or provider API key**.
 
-The first start pulls PostgreSQL/Qdrant images and builds the frontend and Rust application; it can
-take several minutes. No model is downloaded. Private credentials are generated
-in ignored `.env`. Keep the terminal open; Ctrl+C stops the app without deleting
-the database. [Requirements, restarts and troubleshooting](docs/quickstart.md).
+**Your first round:** choose a coat size → place a simulated order → inspect it
+in Studio → create a sandbox → try a product change → review its release.
+[Follow the illustrated tour](docs/features.md).
 
-### Current illustrated tour and legacy playground
-
-[Follow the complete feature guide with real screenshots and GIFs](docs/features.md)
-for the current Nord Atelier storefront, all Studio workspaces and platform controls.
-
-The CLI below retains the mug/lamp **legacy furniture** walkthrough. Set
-`DEMO_CATALOG=legacy-furniture` in your private `.env` and restart the local
-server before creating its playground; existing catalogs remain unchanged.
-Keep the normal `DEMO_CATALOG=fashion` default for new fashion shops.
-
-After creating your merchant account on the compatibility instance:
-
-```sh
-python3 scripts/playground.py --email your-personal-merchant@example.test
-```
-
-Enter your password at the private prompt. The script creates a **Commerce
-Playground** with a `TRY10` coupon, engraving app, Home collection sales channel
-and an active branching invoice flow, then prints the shop links. Setup creates
-no orders and makes no AI/provider calls. Re-running preserves your edits.
-
-**Try this:** choose a mug variant → register a customer and addresses → apply
-`TRY10` → place a simulated order → inspect the order, flow execution and PDF
-invoice. [Follow the ten-minute walkthrough](docs/playground.md).
+The first start builds the frontend/Core and starts PostgreSQL/Qdrant; allow a
+few minutes. Private credentials are generated in ignored `.env`. Keep the
+terminal open; Ctrl+C stops the app and retains the database.
+[Full setup and troubleshooting](docs/quickstart.md).
 
 <details>
-<summary><strong>Add AI, an MCP client or a separate development instance</strong></summary>
+<summary><strong>Add a model, connect an agent or run the legacy playground</strong></summary>
 
-- [Local Ollama setup](docs/quickstart.md#add-local-ai-optional). The documented
-  default model download is about 24 GB, with additional memory needed at runtime.
-- [OpenAI and Anthropic API setup](docs/connectors.md#models-inside-the-merchant-chat).
-  API credentials and charges are separate from consumer chat subscriptions.
-- [Claude Desktop and local MCP clients](docs/connectors.md#claude-desktop--local-mcp-clients).
-  Hosted ChatGPT/Claude connections need separate reachable endpoints and account setup.
-- [A second local instance](docs/quickstart.md#run-a-separate-development-instance),
-  using separate database/application ports and a separate Compose project.
+- **AI:** use centrally configured Ollama, OpenAI Responses or Anthropic Messages.
+  [Provider setup](docs/connectors.md#models-inside-the-merchant-chat) ·
+  [Optional local Ollama](docs/quickstart.md#add-local-ai-optional). The documented
+  local model download is about 24 GB; runtime needs additional memory. Cloud API
+  credentials and charges are separate from consumer chat subscriptions.
+- **Agents:** [connect a local MCP client](docs/connectors.md#claude-desktop--local-mcp-clients).
+  Hosted clients need a reachable HTTPS endpoint and account-side registration;
+  OAuth-based clients additionally need an appropriate gateway.
+- **Another instance:** [use separate ports, credentials and volumes](docs/quickstart.md#run-a-separate-development-instance).
+- **Legacy furniture walkthrough:** [the playground CLI](docs/playground.md)
+  exercises mug/lamp fixtures, TRY10, personalization and an invoice flow.
+  Select `DEMO_CATALOG=legacy-furniture` and restart **before creating that shop**.
+  Keep the normal fashion default for Nord Atelier; existing shops retain their data.
 
 </details>
+
+## See Vendune in action
+
+### Shop, review, place the order
+
+One checkout combines contact, billing/delivery addresses, shipping, payment,
+coupons and the authoritative total. **Review order** and **Place order** are
+separate steps. A changed quote needs a new review; repeated requests return the
+same saved order. Inventory and immutable order snapshots commit together.
+
+[![Select delivery, review the server quote and place an actual simulated order](docs/assets/feature-tour/checkout.gif)](docs/features.md#one-page-checkout)
+
+*Real checkout interaction in the Nord Atelier test shop. The payment is simulated.*
+
+The **ten-tab product editor** brings visual/Markdown descriptions, translated
+content, prices/stock, reviewed variant combinations, galleries, category/channel
+visibility, specifications, SEO, cross-selling, downloads and reviews together. [Explore commerce](docs/features.md#products-and-categories).
+
+### Give AI evidence. Review its changes.
+
+Products, uploaded text/PDF sources, curated relationships, observed purchases
+and configured app evidence meet in **Shop intelligence**. Test retrieval,
+inspect passages and source identity, and explicitly publish eligible knowledge
+for shoppers. Merchant-private evidence stays within authorized merchant use.
+
+The assistant keeps conversations and inspectable proposals. Approved changes
+use the same permission/revision checks as manual edits. Translation and image
+jobs produce private drafts. Choose Ollama, OpenAI or Anthropic; ordinary
+commerce runs independently of inference.
+
+[![Current Shop intelligence with actual catalog totals and separate evidence categories](docs/assets/feature-tour/knowledge.jpg)](docs/knowledge-workspace.md)
+
+Stored knowledge and observations are distinct from model-weight training;
+observed associations do not establish sales uplift.
+[Knowledge and AI tour](docs/features.md#assistant-and-shop-intelligence).
+
+### Build an app that belongs in your shop
+
+**Visual App Studio and coding agents share one executable manifest.** Compose
+Text, Cards, Data tables and Input forms; define typed models; add product,
+customer or order fields; choose public reads, HTTP/MCP tools, AI access and Flow
+actions deliberately. Test actual persisted records in a private sandbox, save
+an immutable version and publish selected changes.
+
+[![Add components, then undo and redo in the actual App Studio canvas](docs/assets/feature-tour/app-design.gif)](docs/app-studio.md)
+
+*Actual design-canvas interaction. The canvas labels sample data; the working
+sandbox preview uses real managed records.*
+
+Nine assistants cover storefront/admin apps, connected experiences, connectors,
+events, webhooks and schedules. Separately deployed services can bring their own
+frontend, database and capabilities through the scoped SDK.
+[App Studio](docs/app-studio.md) · [Guided contracts](docs/app-assistants.md) ·
+[Full app SDK](docs/app-platform.md) · [Runnable Product Lab](extensions/apps/product-lab).
+
+### Make the process visible. Publish what you choose.
+
+Rules and campaigns feed a graphical Flow Builder with Yes/No branches,
+consecutive actions, durable delays, documents and configured app actions.
+Execution traces show actual results and errors. Signed app webhooks and UTC
+schedules connect external events to the same durable path.
+
+[![Navigate conditions, delay and document steps in a real saved flow](docs/assets/feature-tour/flow-canvas.gif)](docs/automation.md)
+
+*Inspect the saved six-step flow. This editor recording does not assert an external delivery.*
+
+Compare a private stage with its live baseline, select changes and publish them
+atomically. Product content releases preserve live inventory. Version history
+supports validated content restoration, without replaying financial operations.
+
+[![Release only the selected app package while its separate care-record data stays private](docs/assets/feature-tour/selective-release.gif)](docs/workbench.md)
+
+*Package and app-data publication are independent. The unselected data stays in the sandbox.*
+
+These are real browser captures; waits are shortened for readability. The
+[complete tour](docs/features.md) has **40 current screenshots and 12 interaction
+GIFs**, with [capture versions and provenance](docs/assets/feature-tour/README.md).
+
+## Operate the whole platform
+
+[**admin.vendune.ai**](https://admin.vendune.ai/) is the entry to merchant and
+platform sign-in. The separate operator console creates shops, inspects their dossiers, and
+supports pause, recoverable trash and restore. Configured wildcard routing gives
+shops subdomains; diagnostics probe the actual database, index, pools and queues.
+
+Central encrypted **Ollama/OpenAI/Anthropic settings** are inherited or overridden
+per shop. Chat, app generation, translations and AI proposals share that selection.
+Keys stay server-side; “Configured” reports settings, not provider health.
+
+[![Central AI configuration in the actual isolated platform console](docs/assets/feature-tour/platform-ai.jpg)](docs/platform.md)
+
+**Connect your own experience.** The latest opt-in integration adds trusted
+server-side merchant identity, owned shop provisioning, structured inference,
+one-use Studio handoff and channel-bound hosted frontends. Public frontend
+traffic uses a restricted proxy. The trusted identity service and its credentials
+remain operator-managed; this is not a deployed Google/Apple OAuth service.
+[Experience integration](docs/experience-integration.md) · [Platform guide](docs/platform.md).
 
 ## Explore the connected system
 
-| Workspace | What you can try | Guide |
+| Area | What is connected | Guide |
 | --- | --- | --- |
-| **Catalog** | Search and filter products; generate and edit variant combinations; visual/Markdown descriptions, media, properties, specifications, SEO, cross-selling, categories and downloads | [Products](docs/product-management.md) |
-| **Customers & orders** | Customer accounts, billing/delivery defaults, address books, group configuration, linked records, order state transitions, activity and PDF documents | [Operations](docs/merchant-operations.md) · [History](docs/entity-history.md) |
-| **International settings** | Main-language inheritance, reviewed bulk AI translation, country/region pickers, destination tax rules, shipping/payment methods and channel overrides | [International commerce](docs/international-commerce.md) · [Settings & media](docs/settings-media.md) |
-| **Shop knowledge** | Product connections, text/PDF sources, publication controls, evidence retrieval, observed co-purchases and decision previews | [Knowledge workspace](docs/knowledge-workspace.md) |
-| **Rules & flows** | Nested conditions, branching graphs, consecutive actions, durable delays, documents, AI proposals and app actions | [Automation](docs/automation.md) |
-| **Apps & developers** | App library, visual and guided builders, typed entities, embedded editors, API/MCP/AI exposure, signed webhooks and persistent schedules | [App Studio](docs/app-studio.md) · [Assistants](docs/app-assistants.md) |
-| **Storyfront & channels** | Guided multishop/headless setup, inherited channel settings, searchable product assignment, Storyfront import and checkout transfer | [Storyfront](docs/storyfront.md) · [Workbench](docs/workbench.md) |
-| **Platform & releases** | Shop subdomains, service directory, central encrypted AI settings, operator dossiers, reversible pause/trash, actual infrastructure diagnostics, private stages and selective publishing | [Platform](docs/platform.md) · [Staging](docs/workbench.md#what-a-sandbox-contains) |
+| **Catalog & channels** | Search, ten editor tabs, translated category trees, variants and guided storefront/headless channels | [Products](docs/product-management.md) · [Channels](docs/studio-api-and-channels.md#sales-channels) |
+| **Customers & orders** | Accounts, address books, gross/net customer groups, fulfillment, payments, numbered PDFs and digital entitlements | [Operations](docs/merchant-operations.md) · [History](docs/entity-history.md) |
+| **International settings** | Company/channel inheritance, enabled content locales, countries, destination taxes and eligible shipping/payment methods | [International commerce](docs/international-commerce.md) · [Settings](docs/settings-media.md) |
+| **Knowledge & automation** | Published/private sources, reviewed recommendations/proposals, coupons, rules, event graphs and durable workers | [Knowledge](docs/knowledge-workspace.md) · [Automation](docs/automation.md) |
+| **Apps & developers** | Eight bundled apps, nine builder assistants, typed storage, SDK surfaces, scoped API keys, HTTP/MCP tools, schedules and webhooks | [App library](docs/app-library.md) · [App contracts](docs/app-platform.md) |
+| **Platform & experiences** | Shop domains, inherited AI, lifecycle, diagnostics, trusted identity, private stages and selective releases | [Platform](docs/platform.md) · [Experiences](docs/experience-integration.md) |
 
-The interface supports **English, German, Spanish and French**. Content editors
-use one selected language with inheritance from the shop's main language;
-additional enabled content locales do not create walls of duplicate fields.
+The **eight bundled apps** are Personalize this product, PayPal, Shopware
+Payments, Storyfront, Google Analytics, Gmail, Slack and Email delivery
+(SMTP/Resend/SendGrid). Each has explicit setup and permission boundaries;
+installation does not silently connect a provider.
+[App capabilities](docs/features.md#the-eight-bundled-apps).
 
-### Intelligence that you can inspect
-
-Knowledge flows from catalog facts, uploaded documents and configured apps into
-an evidence workspace. Merchant answers can use private sources; customer
-answers use published sources. Source IDs, passages and hashes make retrieval
-inspectable. Proposed changes pass the same permissions and revision checks as
-ordinary commerce edits.
-
-**This is stored knowledge and observations, not continuous model-weight training.**
-An observed association does not prove a sales uplift.
-[See the actual retrieval and learning boundary](docs/knowledge-workspace.md).
-
-![Shop knowledge, sources, connections and decisions in the actual English Studio](docs/screenshots/vendune-knowledge-overview.png)
-
-### Build visually. Extend in code. Use the same contract.
-
-Visual App Studio and coding agents work with the **same executable manifest**.
-Compose forms, cards and tables; define typed data; add fields or tabs to existing
-product/customer/order editors; decide which actions appear in HTTP, MCP, AI and
-Flow Builder. Save an immutable version, test real records in a private sandbox
-and release the selected package.
-
-Independent app-service frontends can use their own framework and authorized
-browser SDK. External services can own additional APIs and database structures;
-they require separate deployment and permission configuration. The system does
-not claim automatic compilation or safe execution of arbitrary hostile source.
-
-[Start with App Studio](docs/app-studio.md) · [Full app contract](docs/app-platform.md) ·
-[Twelve guided assistant examples](extensions/apps/assistant-examples/README.md) ·
-[Product Lab across admin, storefront and MCP](extensions/apps/product-lab)
-
-![Visual App Studio — shared manifest, component palette, canvas and properties](docs/screenshots/vendune-app-studio.jpg)
-
-### Automate the work around commerce
-
-Native events feed the graphical Flow Builder: saved rules, true/false branches,
-consecutive actions, persistent delays, documents and app actions. Signed
-webhooks and UTC schedules join the same durable event path. App-owned Wasm rules
-can contribute to the real cart, including engraving or gift-message fees.
-
-![The running playground's graphical order flow with branches, delay and invoice generation](docs/screenshots/vendune-flow.jpg)
-
-| Integration | Connected behavior | Setup |
-| --- | --- | --- |
-| **Google Analytics** | Consent-controlled GA4 tag and ecommerce events in the native storefront; report import | [Connected apps](docs/connected-apps.md) |
-| **Gmail** | Import a support label into private merchant knowledge | [Connected apps](docs/connected-apps.md) |
-| **Slack** | Order notifications and rule-bound flow actions | [Connected apps](docs/connected-apps.md) |
-| **SMTP / Resend / SendGrid** | Configurable transactional templates, previews and durable delivery queue | [Email delivery](docs/email-delivery.md) |
-| **PayPal Orders v2** | Prototype external payment adapter and local protocol fixtures | [Payment scope](docs/intelligence-apps-payments.md) |
-
-Provider credentials and account authorization are separate setup steps. Default
-installation sends no external emails or Slack messages. Provider fixtures verify
-local contracts; they do not prove live delivery or a real payment transaction.
-
-<details>
-<summary><strong>More Studio screenshots and short recorded demos</strong></summary>
-
-[Product editor](docs/screenshots/vendune-product-editor.jpg) ·
-[Media gallery](docs/screenshots/vendune-product-media.jpg) ·
-[App discovery](docs/screenshots/vendune-app-discovery.png) ·
-[App detail](docs/screenshots/vendune-app-details.png) ·
-[Order operations](docs/screenshots/vendune-orders.jpg) ·
-[Company details](docs/screenshots/company-settings.jpg) ·
-[Country picker](docs/screenshots/vendune-countries.jpg)
-
-[Watch three feature clips](https://sthamann.github.io/vendune/#demo): SKU/tier
-selection, Wasm app personalization and a reviewed AI price proposal. Earlier
-clips retain the branding/navigation at capture time and shorten waiting time.
-The screenshots above are actual English captures from synthetic shops.
-[Capture dates and evidence notes](docs/assets/README.md).
-
-</details>
+Studio has **15 workspaces** in **English, German, Spanish and French**, plus
+dynamic content locales with main-language inheritance. Developers get scoped
+keys and an explorer with **214 static HTTP method/path pairs** at the reviewed
+source; installed app routes are discovered per shop.
+[Studio/API tour](docs/studio-api-and-channels.md).
 
 ## Inside the core
 
-```text
-Storefront · Vendune Studio · Apps · HTTP / MCP / UCP clients
-                           │
-             Authentication · scopes · revisions
-                           │
-             Shared Rust commerce operations
-                 │                    │
-     PostgreSQL: records,       Durable events / workers
-     source relationships,           │
-     orders and history       Flows · app services · knowledge
-                                      │
-                               Private Qdrant retrieval
-                               + optional model adapters
-```
+**Rust + PostgreSQL + private Qdrant + bounded Wasm extensions.** Browser,
+HTTP, MCP and UCP clients reach shared commerce operations with authenticated
+scope and revision checks. PostgreSQL owns orders, stock, users, app records,
+knowledge and queues. Qdrant is a rebuildable retrieval index whose candidates
+are checked against current records and publication state.
 
-The same committed commerce data reaches browser and agent consumers.
-Knowledge retrieval validates semantic candidates against current PostgreSQL
-records and publication state. Version-checked configuration caches reduce
-repeated reads; checkout keeps authoritative transactional reads.
+Independent workers process events, payments, knowledge, translation and media.
+External calls stay outside database transactions; approved Wasm policies have
+bounded fuel/memory and no network/filesystem access.
+[Architecture](docs/architecture.md) · [Source map](docs/source-map.md) ·
+[Worker roles](docs/intelligence-apps-payments.md) · [Wasm examples](extensions/README.md).
 
-[Architecture](docs/architecture.md) · [Source ownership](docs/module-inventory.md) ·
-[Frontend modules](frontend/README.md) · [Read performance](docs/read-performance.md) ·
-[Worker roles](docs/intelligence-apps-payments.md)
+### Evidence you can inspect
 
-### Evidence over promises
-
-- **Original-source comparisons:** bounded pricing, context, tax and rule ports
-  are checked against original Shopware **6.7.14.2** PHP classes. The
-  [feature matrix](docs/shopware-parity.md) distinguishes native behavior,
-  partial ports and missing features.
-- **Partial formal verification:** **26 extracted production policies and 55
-  Lean-proved properties**, with Rust/Lean conformance and negative mutations.
-  [Exact proof boundary](docs/formal-verification.md); no entire-core certificate.
-- **Measured performance:** recorded local tests use **1,000,000 products and
-  1,000,000 translations**, with raw responses, latency data and failed runs
-  retained. [Benchmarks](docs/benchmarks.md) establish bounded local results,
-  not production capacity or a speed claim versus Shopware.
-- **Continuous checks:** source boundaries, localization, Rust/frontend tests,
-  real PostgreSQL integration, original PHP comparisons and Lean/mutation gates.
-  [Current CI](https://github.com/sthamann/vendune/actions) · [Testing and coverage](docs/testing.md).
-  Full-system 100% coverage is not achieved.
+| Evidence | What it establishes |
+| --- | --- |
+| **7,000 original-PHP comparisons** | Bounded pricing, context, shipping-tax, rule and comparison behavior against reviewed Shopware sources. [Parity matrix](docs/shopware-parity.md). |
+| **26 extracted production policies · 55 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
+| **1,000,000 products + 1,000,000 translations** | Dated local commerce workloads with retained raw measurements and failures; not production capacity or a Shopware speed ratio. [Benchmarks](docs/benchmarks.md). |
+| **Continuous verification** | Source ownership, localization, Rust/frontend checks, real PostgreSQL integration, original PHP comparisons and Lean/mutation gates. [CI](https://github.com/sthamann/vendune/actions) · [Testing](docs/testing.md). |
 
 ## Current boundaries
 
 | Area | Current scope |
 | --- | --- |
-| **Payments** | Simulated/manual or configured PayPal Sandbox/Live Orders v2. Local protocol fixtures are verified; actual PSP transactions remain unverified. Shopware Payments requires its private connector and official integration access. |
-| **SaaS isolation** | Tenant-scoped API/MCP operations and 22 composite relationship constraints are tested. Core-wide RLS is absent; the local database role is a superuser. [Actual guarantees and remaining work](docs/tenant-isolation.md). |
-| **Shopware compatibility** | Selected behavior ports, not complete DAL/Admin API/Store API, CMS, Rule/Flow or extension compatibility. |
-| **Agents and models** | Selected MCP/UCP capabilities; not full protocol conformance. Hosted client setup, production OAuth, live model quality and causal learning gains remain separate work. |
-| **Hosting** | Public Studio and health endpoint reachable at [app.vendune.ai](https://app.vendune.ai/#merchant); Northflank deployment and prepared Vercel/self-hosted paths. Browser MCP admits the configured `app.vendune.ai` origin and rejects foreign origins. This is not a production checkout certification. |
-| **Apps** | Executable declarative packages and separately deployed services. Automatic arbitrary compilation, bundle signing and hostile-code microVM isolation are not implemented. |
+| **Production readiness** | Working prototype. Recovery/MFA, distributed quotas, automatic relocation/failover, legal compliance and full-system coverage remain additional work. |
+| **Payments & connected services** | Simulated/manual payments and a configured PayPal Orders v2 Sandbox/Live adapter. Local provider fixtures are tested; real PSP transactions and external delivery require observed account-side results. Shopware Payments/Storyfront need their private services. |
+| **Tenant isolation** | Scoped API/MCP operations, critical composite foreign keys and forced RLS for managed app tables. Core-wide RLS is absent; the local DB role is a superuser. [Exact isolation boundary](docs/tenant-isolation.md). |
+| **Shopware & protocols** | Selected native behavior ports and HTTP/MCP/UCP capabilities; complete DAL/CMS/plugin compatibility and full protocol conformance are outside this slice. |
+| **Custom apps & hosting** | Declarative packages plus separately deployed services. Arbitrary source builds, bundle signing and hostile-code microVM containment are not implemented. Deployment/health availability does not certify production checkout. |
 
-Use synthetic data for the playground. Deployment instructions do not establish
-production security. [Security](docs/security.md) · [Deployment](docs/deployment.md) ·
-[Managed hosting](docs/managed-hosting.md).
+[Security](docs/security.md) · [Managed hosting](docs/managed-hosting.md) ·
+[Complete feature scope](docs/features.md).
 
-## License
+## License and contributions
 
-**Source available under the [Vendune Sustainable Use License 1.0](LICENSE),**
-following n8n's sustainable-use approach with explicit commerce-specific terms.
+**Source available under the [Vendune Sustainable Use License 1.0](LICENSE).**
+Run and customize your company's own stores, brands and apps. Selling a competing
+shop system, white-labeling or providing managed commerce/SaaS for independent
+merchants requires a separate written commercial license.
 
-- **Permitted:** your own commercial stores, multiple brands belonging to your
-  company, customization, app development and non-commercial experimentation.
-- **Separate commercial permission required:** selling a competing shop system,
-  white-labeling, managed commerce hosting or SaaS for independent merchants,
-  including commerce APIs or agent-based platform access.
+This is not an OSI-approved open-source license. Earlier MIT-distributed versions
+retain their original rights; third-party terms remain intact.
+[Usage examples and commercial inquiries](docs/licensing.md) · [Third-party notices](THIRD_PARTY.md).
 
-This is **not an OSI-approved open-source license**. Third-party licenses remain
-intact. Previously distributed MIT versions retain their original rights; this
-change is not retroactive. [Usage examples and commercial inquiries](docs/licensing.md).
-
-## Contribute
-
-Bring a reproducible commerce bug, a better setup experience, locale corrections
-or a bounded Shopware port with original-source comparisons.
-[Read the contribution guide](CONTRIBUTING.md) and
-[open an issue](https://github.com/sthamann/vendune/issues/new/choose).
-Keep credentials and customer data out of public reports.
-
-[Full feature tour](docs/features.md) · [API/source map](docs/source-map.md) ·
-[Migration workflow](docs/migration.md) · [Brand assets](docs/branding.md) ·
-[Third-party notices](THIRD_PARTY.md)
+Bring a reproducible commerce bug, a useful extension, a locale correction or a
+bounded Shopware port with original-source comparisons.
+[Contribute](CONTRIBUTING.md) · [Open an issue](https://github.com/sthamann/vendune/issues/new/choose) ·
+[Changelog](CHANGELOG.md).
