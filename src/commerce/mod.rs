@@ -34,7 +34,9 @@ pub(crate) use fulfillment::*;
 mod selection;
 pub(crate) use selection::*;
 
+mod product_create;
 mod product_edit;
+pub(crate) use product_create::create_product;
 pub(crate) use product_edit::*;
 
 mod order_machine;

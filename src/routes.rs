@@ -4,6 +4,15 @@ use crate::*;
 pub(crate) fn router(a: App) -> Router {
     Router::new()
         .merge(platform::router())
+        .merge(shop_domains::frontends::router())
+        .route("/api/identity/exchange", post(auth::broker::exchange))
+        .route(
+            "/api/identity/inference",
+            post(auth::broker_inference::generate)
+                .layer(axum::extract::DefaultBodyLimit::max(8_200_000)),
+        )
+        .route("/api/auth/handoff", post(auth::handoff::create))
+        .route("/api/auth/redeem", post(auth::handoff::redeem))
         .merge(translations::router())
         .merge(apps::app_router())
         .merge(checkout_handoff::router())
@@ -142,6 +151,10 @@ pub(crate) fn router(a: App) -> Router {
         .fallback_service(ServeDir::new("frontend/dist").append_index_html_on_directories(true))
         .layer(axum::extract::DefaultBodyLimit::max(64 * 1024))
         .layer(axum::middleware::from_fn(performance::memoize))
+        .layer(axum::middleware::from_fn_with_state(
+            a.clone(),
+            shop_domains::frontends::serve,
+        ))
         .layer(axum::middleware::from_fn_with_state(
             a.clone(),
             track_channels,

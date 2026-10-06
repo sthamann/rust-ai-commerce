@@ -152,6 +152,10 @@ const SCHEMA: &[(&str, &str)] = &[
         "041-platform-control",
         include_str!("../migrations/041-platform-control.sql"),
     ),
+    (
+        "042-identity-frontends",
+        include_str!("../migrations/042-identity-frontends.sql"),
+    ),
 ];
 
 pub(crate) async fn apply(pool: &PgPool) {

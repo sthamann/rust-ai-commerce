@@ -27,8 +27,30 @@ pub(crate) async fn provision_shop(
     seed_catalog: bool,
     demo_customer: bool,
 ) -> Result<Sandbox> {
-    if ["app", "www", "api", "admin", "mail", "platform"].contains(&slug) {
+    if [
+        "app",
+        "www",
+        "api",
+        "admin",
+        "mail",
+        "platform",
+        "experience",
+    ]
+    .contains(&slug)
+    {
         return Err(bad("Reserved shop ID"));
+    }
+    sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,43))")
+        .bind(slug)
+        .execute(&mut **tx)
+        .await?;
+    let alias_exists: bool =
+        sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM hosted_frontends WHERE alias=$1)")
+            .bind(slug)
+            .fetch_one(&mut **tx)
+            .await?;
+    if alias_exists {
+        return Err(conflict("Shop address is already used by a frontend"));
     }
     if sqlx::query("INSERT INTO tenants(id,name) VALUES($1,$2) ON CONFLICT DO NOTHING")
         .bind(slug)

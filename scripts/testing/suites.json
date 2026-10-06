@@ -42,7 +42,8 @@
     "managed_search",
     "app_assistants",
     "read_performance",
-    "fashion_demo"
+    "fashion_demo",
+    "identity_broker"
   ],
   "browser_contracts": [
     "analytics",

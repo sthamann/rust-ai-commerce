@@ -50,7 +50,10 @@ This lists every checked-in source module in these roots, including files with n
 | [src/assets/rich.rs](../src/assets/rich.rs) | Safe structured rich content, never executable HTML. Same schema for merchant API and frontend. |
 | [src/assets/rich_document.rs](../src/assets/rich_document.rs) | Allow-listed editor JSON with bounded depth and content; HTML/handlers/styles cannot enter the renderer. |
 | [src/assets/upload.rs](../src/assets/upload.rs) | File admission, immutable bytes and explicit publishing; binary content never enters merchant list responses. |
+| [src/auth/broker.rs](../src/auth/broker.rs) | Optional trusted identity exchange: signatures bind route, audience, expiry and one-use nonce. |
+| [src/auth/broker_inference.rs](../src/auth/broker_inference.rs) | Trusted server-to-server inference inherits operator settings without disclosing any provider credentials. |
 | [src/auth/credentials.rs](../src/auth/credentials.rs) | Argon2 password operations run off the asynchronous request executor. |
+| [src/auth/handoff.rs](../src/auth/handoff.rs) | One-time personal-session handoff to the Studio; no passwords or bearer tokens in links. |
 | [src/auth/integrations.rs](../src/auth/integrations.rs) | Expiring API/MCP keys are bounded to one workspace and intersect their creator's current membership. |
 | [src/auth/invitations.rs](../src/auth/invitations.rs) | Single-use, expiring invitations. Acceptance verifies an existing account password. |
 | [src/auth/members.rs](../src/auth/members.rs) | Workspace member visibility and immediately effective role/revocation changes. |
@@ -115,6 +118,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/commerce/order_workflow.rs](../src/commerce/order_workflow.rs) | One server-derived action catalogue drives UI, HTTP and MCP; built-in business guards cannot be bypassed. |
 | [src/commerce/product_admin.rs](../src/commerce/product_admin.rs) | Central product list and identity/association writes; all persistence is tenant scoped. |
 | [src/commerce/product_channels.rs](../src/commerce/product_channels.rs) | Per-product channel visibility overrides remain indexed even when an open catalog contains millions of products. |
+| [src/commerce/product_create.rs](../src/commerce/product_create.rs) | Product creation accepts validated stable import IDs; the shared domain save handler retains pricing, ownership and history checks. |
 | [src/commerce/product_edit.rs](../src/commerce/product_edit.rs) | Revision-bound multilingual product metadata: specifications, SEO, cross-selling and free shipping. |
 | [src/commerce/product_fields.rs](../src/commerce/product_fields.rs) | Native product administration writes priced fields under the same revision and inventory row lock. |
 | [src/commerce/product_languages.rs](../src/commerce/product_languages.rs) | Enabled content languages, NULL field inheritance and stable global language registration. |
@@ -251,6 +255,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/rule_comparison.rs](../src/rule_comparison.rs) | Behavioral port of Shopware 6.7.14.2 RuleComparison::numeric and FloatComparator's exact epsilon boundaries. |
 | [src/sandbox.rs](../src/sandbox.rs) | Pure Wasmtime guest execution with bounded resources and no host imports. |
 | [src/seed.rs](../src/seed.rs) | Idempotent synthetic template catalogue initialization. |
+| [src/shop_domains/frontends.rs](../src/shop_domains/frontends.rs) | Generic operator-allowlisted frontend mounts. Host scope is derived from storage, never client headers. |
 | [src/shop_domains.rs](../src/shop_domains.rs) | Resolve configured shop subdomains before authentication; reject unknown hosts and conflicting scopes. |
 | [src/staging/assets.rs](../src/staging/assets.rs) | Binary assets are immutable, staged independently through metadata/digest units; paid entitlements never clone. |
 | [src/staging/categories.rs](../src/staging/categories.rs) | Category release units and dependency-ordered tree publication; stock is never part of a catalog release. |
@@ -676,6 +681,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/formal.py](../scripts/formal.py) | Run extraction, Lean proofs/axiom audit, compiled conformance and complete source-inventory checks. |
 | [scripts/hosting_check.py](../scripts/hosting_check.py) | Check a deployed experimental SaaS HTTPS origin without credentials or real orders. |
 | [scripts/hosting_container.py](../scripts/hosting_container.py) | Smoke-test the built deployment image against an isolated database on the local Compose network. |
+| [scripts/identity_broker.py](../scripts/identity_broker.py) | Synthetic broker signatures, durable replay prevention, scoped frontend routing and private Studio handoff; no provider calls. |
 | [scripts/image_jobs.py](../scripts/image_jobs.py) | Real image jobs/bytes against a local Images fixture: private review, stale/tenant guards, edit multipart and no paid calls. |
 | [scripts/integration.py](../scripts/integration.py) | Exercise the real HTTP -> Rust -> PostgreSQL path. Never contacts a PSP. |
 | [scripts/intelligence.py](../scripts/intelligence.py) | Actual SQL knowledge persistence and optional live local inference integration. |
