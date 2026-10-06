@@ -52,6 +52,10 @@ env.update({
     "BIND_ADDR": f"127.0.0.1:{port}",
     "MERCHANT_TOKEN": "quality-only-synthetic-bootstrap-credential",
     "APP_SERVICES": "{}", "SEED_DEMO": "true", "PROCESS_ROLE": "all",
+    # The existing scalability fixture deliberately offers 32 simultaneous edits
+    # from one shop. Configure that admitted load explicitly; production defaults
+    # remain conservative and separate saturation tests verify 429 behavior.
+    "TENANT_CONCURRENCY": "32",
     # Existing differential cases intentionally use the versioned furniture fixture.
     # The fashion_demo provider suite starts a separate server with the shipping default.
     "DEMO_CATALOG": "legacy-furniture",
