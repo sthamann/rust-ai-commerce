@@ -113,7 +113,8 @@ it("live tests the existing scoped request and prevents path escape and write te
     "GET /store-api/company-logo/{id}",
   ]) {
     await user.clear(screen.getByRole("searchbox"));
-    await user.type(screen.getByRole("searchbox"), path);
+    await user.click(screen.getByRole("searchbox"));
+    await user.paste(path);
     await user.click(screen.getByRole("button", { name: path }));
     expect(
       screen.getByRole("button", { name: "Run read request" }),
