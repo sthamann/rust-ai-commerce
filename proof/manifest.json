@@ -533,8 +533,8 @@
     },
     "src/auth/middleware.rs": {
       "status": "unproved",
-      "sha256": "910dc5bdf795b0082dd8af4af95d13114474741df27baddd649c121d8f363e26",
-      "review": "Reviewed all changed Rust, append-only schemas, build/extraction and Lean inputs: lease hooks bind new/reused connections and reset on release; strict runtime rejects owner/bypass/TRUNCATE and preserves app-schema ownership; two-replica non-owner PostgreSQL tests deny forged foreign writes, enforce operator quotas and parent-stage daily usage, release persisted allocation quantities once despite corrupted snapshots, and distinguish commit from rollback invalidation. Money retains legacy EUR rounding with explicit scale and original Shopware differential; receipt-backed state admission is monotonic with late capture/refund. Async SQL/provider code remains unproved. Rust 113 tests, staging/app/automation/settings and strict checkout/CRM/tenant regressions passed; 274 frontend tests and production build passed."
+      "sha256": "99801d16ac2b9c0d29695e2648997773acd997f44ef6fb3b912e4dc63821bc21",
+      "review": "Reviewed storefront_pages.rs SKU deep-link HTML admission and existing marketing tenant/channel policy, routes/main registration and auth middleware query scope for public product HTML; frontend identity/slug routing regression tests plus real HTTP cross-host/query/header and inactive-product regressions. No extracted business policy changed."
     },
     "src/auth/mod.rs": {
       "status": "unproved",
@@ -1133,8 +1133,8 @@
     },
     "src/main.rs": {
       "status": "unproved",
-      "sha256": "73b20327ea05a61eacd31e360e235af26edb192e42aef4116715d72cb1785d78",
-      "review": "Reviewed tenant-scoped fashion fixture provisioning, opt-in idempotent demo seeding and curated catalog-specific links; Rust lint and units pass, actual signup/locale/variant/image/isolated checkout/fresh-process HTTP regressions pass. No business-policy or proof-boundary changes."
+      "sha256": "7a88fec4ed29c060407ea8c81583ce298504d95c7aae45bf2180763fda8d838c",
+      "review": "Reviewed storefront_pages.rs SKU deep-link HTML admission and existing marketing tenant/channel policy, routes/main registration and auth middleware query scope for public product HTML; frontend identity/slug routing regression tests plus real HTTP cross-host/query/header and inactive-product regressions. No extracted business policy changed."
     },
     "src/marketing/app_flows.rs": {
       "status": "reviewed-binding",
@@ -1588,8 +1588,8 @@
     },
     "src/routes.rs": {
       "status": "unproved",
-      "sha256": "b02d164c0adadc4d71030b3234b65e94098aa3cb447c9362015fc025f372e387",
-      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
+      "sha256": "e8c7dc4764e485a82307113018c555c2f9e999697f1f97939f4045d2fe9b9f50",
+      "review": "Reviewed storefront_pages.rs SKU deep-link HTML admission and existing marketing tenant/channel policy, routes/main registration and auth middleware query scope for public product HTML; frontend identity/slug routing regression tests plus real HTTP cross-host/query/header and inactive-product regressions. No extracted business policy changed."
     },
     "src/rule_comparison.rs": {
       "status": "reviewed-binding",
@@ -1655,6 +1655,11 @@
       "status": "unproved",
       "sha256": "bfed88d4ba4d09633d85c85c43813f52db8f8a18d88b68e94cca793dc242f000",
       "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+    },
+    "src/storefront_pages.rs": {
+      "status": "unproved",
+      "sha256": "61ce47f7d31b21e46a664d5c5155aebb813b886ef9054245d6fe32db140cef37",
+      "review": "Reviewed storefront_pages.rs SKU deep-link HTML admission and existing marketing tenant/channel policy, routes/main registration and auth middleware query scope for public product HTML; frontend identity/slug routing regression tests plus real HTTP cross-host/query/header and inactive-product regressions. No extracted business policy changed."
     },
     "src/studio.rs": {
       "status": "unproved",

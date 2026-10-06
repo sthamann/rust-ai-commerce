@@ -1,4 +1,5 @@
 /** Cart lifecycle, authoritative checkout commands and storefront coordination. */
+import { routeProductId } from "../catalog/product-url";
 import { shopScope } from "../../shared/api/shop-scope";
 import { useCompanyIdentity } from "./useCompanyIdentity";
 import { useCatalog } from "./useCatalog";
@@ -25,13 +26,7 @@ import "../styles/order-completion.css";
 const session = localStorage.getItem("rac-session") || crypto.randomUUID();
 localStorage.setItem("rac-session", session);
 function productId() {
-  try {
-    return location.hash.startsWith("#product/")
-      ? decodeURIComponent(location.hash.slice(9))
-      : "";
-  } catch {
-    return "";
-  }
+  return routeProductId(new URL(location.href));
 }
 
 export function useStorefrontController({
@@ -109,8 +104,41 @@ export function useStorefrontController({
       setAppPath(location.hash);
       if (productId()) window.scrollTo({ top: 0, behavior: "instant" });
     };
+    const navigate = (event: MouseEvent) => {
+      const link = (event.target as Element)?.closest<HTMLAnchorElement>(
+        "a[href]",
+      );
+      if (
+        !link ||
+        link.target ||
+        link.download ||
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      )
+        return;
+      const url = new URL(link.href);
+      if (
+        url.origin !== location.origin ||
+        !(url.pathname === "/" || url.pathname.startsWith("/products/"))
+      )
+        return;
+      if (["#merchant", "#login", "#platform"].includes(url.hash)) return;
+      event.preventDefault();
+      history.pushState(null, "", url);
+      hash();
+    };
     window.addEventListener("hashchange", hash);
-    return () => window.removeEventListener("hashchange", hash);
+    window.addEventListener("popstate", hash);
+    document.addEventListener("click", navigate);
+    return () => {
+      window.removeEventListener("hashchange", hash);
+      window.removeEventListener("popstate", hash);
+      document.removeEventListener("click", navigate);
+    };
   }, []);
   useEffect(() => {
     let active = true;

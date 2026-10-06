@@ -1,4 +1,5 @@
 /** CollectionView: storefront view composed from the scoped cart/controller. */
+import { productURL } from "../catalog/product-url";
 import { BRAND } from "../../shared/ui/Brand";
 import ImagePlaceholder from "../catalog/ImagePlaceholder";
 import CatalogNavigation from "./CatalogNavigation";
@@ -71,7 +72,7 @@ export default function CollectionView() {
           >
             <a
               className="shop-product-image"
-              href={`#product/${p.id}`}
+              href={productURL(p)}
               aria-label={`${s("details")}: ${p.name}`}
             >
               {p.media[0]?.url ? (
@@ -91,7 +92,7 @@ export default function CollectionView() {
             </a>
             <div className="shop-product-info">
               <p className="shop-kicker">{s(p.category)}</p>
-              <a href={`#product/${p.id}`}>
+              <a href={productURL(p)}>
                 <h3>{p.name}</h3>
               </a>
               <p>{p.description}</p>
@@ -100,7 +101,7 @@ export default function CollectionView() {
                 {s(cart?.customerGroup === "business" ? "net" : "gross")}
               </small>
             </div>
-            <a className="shop-product-link" href={`#product/${p.id}`}>
+            <a className="shop-product-link" href={productURL(p)}>
               {s("details")}
               <Icon name="arrow" size={18} />
             </a>

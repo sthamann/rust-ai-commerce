@@ -142,3 +142,18 @@ public deployments. [Control-plane behavior and boundaries](platform.md).
 ## Optional private experience service
 
 The generic trusted broker, one-use Studio handoff and hosted frontend mount are opt-in. Configure the exact private service issuer/origin and matching runtime-only shared keys; see [experience integration](experience-integration.md). The private service and Storyfront never belong in this public build or repository.
+
+### Storefront product addresses
+
+Public storefronts use `https://SHOP.vendune.ai/`. The shared Studio deliberately remains at
+`https://app.vendune.ai/?shop=SHOP#merchant` so merchant login stays on its original domain.
+Legacy product bookmarks discard stale `studio` parameters and move to the shop domain.
+Product links use `/products/SKU/LOCALIZED-SLUG` (or `/products/SKU` without a slug),
+with the selected content language and sales channel retained. SKU identity prevents two
+same-name products from colliding; translated slugs inherit through the existing language
+chain. The server admits direct HTML requests through the same tenant, active-product
+and sales-channel checks as the Store API. Browser navigation and Back/Forward retain
+cart state, and reloads serve the application at that URL. Older slug addresses still find
+the SKU and canonicalize to the currently saved slug. Metadata and canonical tags are
+rendered by the client; server-side product HTML, sitemap generation and slug-only
+redirect history are not implemented by this change.

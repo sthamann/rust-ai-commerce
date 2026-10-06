@@ -1,4 +1,5 @@
 /** OverviewView renders verified shop state and typed user actions. */
+import { storefrontURL } from "../../shared/api/shop-scope";
 import { useLocale } from "../../shared/i18n/i18n";
 import Icon from "../../shared/ui/Icon";
 import ProductArt from "../../shared/ui/ProductArt";
@@ -113,9 +114,7 @@ export function OverviewView({
           {data.productsPagination.hasMore && (
             <p className="empty-note">
               {t("catalogPageNotice", { count: data.products.length })}{" "}
-              <a href={`/?shop=${encodeURIComponent(data.tenant)}`}>
-                {t("storefront")} ↗
-              </a>
+              <a href={storefrontURL(data.tenant)}>{t("storefront")} ↗</a>
             </p>
           )}
         </section>

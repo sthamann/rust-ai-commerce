@@ -64,6 +64,7 @@ pub(crate) use cart_mutation::*;
 mod order_checkout;
 pub(crate) use order_checkout::*;
 mod catalog_routes;
+mod storefront_pages;
 pub(crate) use catalog_routes::*;
 mod catalog_page;
 pub(crate) use catalog_page::*;

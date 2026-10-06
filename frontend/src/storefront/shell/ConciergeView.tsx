@@ -1,4 +1,5 @@
 /** ConciergeView: storefront view composed from the scoped cart/controller. */
+import { productURL } from "../catalog/product-url";
 import { shopApi } from "../../shared/api/shop-api";
 import "../../shared/styles/apps.css";
 import "../../shared/styles/workbench.css";
@@ -60,7 +61,7 @@ export default function ConciergeView() {
         <div className="shop-advice" role="status">
           <p>{advice.explanation}</p>
           {advice.recommended_ids.map((pid) => (
-            <a key={pid} href={`#product/${pid}`}>
+            <a key={pid} href={productURL({ id: pid })}>
               {products.find((p) => p.id === pid)?.name} ↗
             </a>
           ))}

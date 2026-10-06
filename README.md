@@ -101,7 +101,7 @@ same saved order. Inventory and immutable order snapshots commit together.
 
 The **ten-tab product editor** brings visual/Markdown descriptions, translated
 content, prices/stock, reviewed variant combinations, galleries, category/channel
-visibility, specifications, SEO, cross-selling, downloads and reviews together. [Explore commerce](docs/features.md#products-and-categories).
+visibility, specifications, SEO, cross-selling, downloads and reviews together. Public shops use their own subdomain; product links use stable SKU addresses with inherited localized SEO slugs and support direct reloads. [Explore commerce](docs/features.md#products-and-categories).
 
 ### Give AI evidence. Review its changes.
 
