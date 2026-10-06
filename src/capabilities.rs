@@ -9,6 +9,9 @@ pub(crate) async fn capabilities() -> Json<Value> {
     )
 }
 pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+    if legal::schema(name).is_some() {
+        return legal::invoke(a, h, name, v).await;
+    }
     if history::schema(name).is_some() {
         return history::invoke(a, h, name, v).await;
     }

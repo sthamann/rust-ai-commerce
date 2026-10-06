@@ -17,6 +17,7 @@ import {
 } from "../../shared/api/shop-api";
 import { useShopText } from "../../shared/i18n/shop-i18n";
 import MemoryRecommendations from "./MemoryRecommendations";
+import ProductSafety from "../legal/ProductSafety";
 import ProductQuestion from "./ProductQuestion";
 export default function ProductPage({
   id,
@@ -244,6 +245,7 @@ export default function ProductPage({
           </dl>
         </section>
       </div>
+      <ProductSafety value={p.extra?.compliance} />
       <ProductQuestion productId={p.id} />
       {p.extra?.crossSelling?.length ? (
         <section className="app-slot">

@@ -34,7 +34,8 @@
     "settings_scopes",
     "knowledge_workspace",
     "crm_history",
-    "tenant_isolation"
+    "tenant_isolation",
+    "legal_privacy"
   ],
   "providers": [
     "email_tests",

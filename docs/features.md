@@ -13,13 +13,14 @@ Screenshots and GIFs show the real application with synthetic accounts and order
 | Area | What is included | Start here |
 | --- | --- | --- |
 | Shopping | Fashion catalog, categories, variants, media, prices, reviews, customer accounts and checkout | [Storefront](#storefront-and-shopping) |
-| Catalog | Ten editor tabs, rich descriptions, translations, variants, galleries, categories, downloads and history | [Products](#products-and-categories) |
+| Catalog | Unified editor tabs, rich descriptions, translations, variants, galleries, categories, downloads and history | [Products](#products-and-categories) |
 | Operations | CRM, addresses, customer groups, order workflows, delivery, payments and immutable PDFs | [Customers and orders](#customers-orders-and-documents) |
 | Intelligence | Reviewed proposals, private/published knowledge, retrieval, recommendations, translations and image drafts | [Intelligence](#assistant-and-shop-intelligence) |
 | Processes | Saved rules, coupons, campaigns, graphical branches, durable delays and app actions | [Rules and flows](#rules-campaigns-and-flow-builder) |
 | Experiences | Sales channels, inherited settings, Storyfront checkout transfer and hosted private frontends | [Channels](#sales-channels-and-connected-experiences) |
 | Extensions | Eight bundled apps, visual App Studio, typed data, SDK surfaces, services, webhooks, schedules and Wasm | [Apps](#apps-and-app-studio) |
 | Control | Team rights, scoped API keys, private stages, selected releases, shop administration and diagnostics | [Workspace](#workspace-access-and-releases) · [Platform](#vendune-platform) |
+| European operation | Consent gates, channel legal documents, sector facts, guarded checkout and durable consumer requests | [European operation](european-operation.md) |
 | Foundation | Shared HTTP/MCP/UCP operations, transactional storage, independent workers and bounded verification | [Core](#shared-apis-storage-and-verification) |
 
 ## Storefront and shopping
@@ -78,7 +79,7 @@ The sidebar groups **15 workspaces**. The shell provides a shop switcher, live/p
 | Intelligence | Shop today | Actual orders, value, inventory, activity and review counts |
 | Intelligence | Shop intelligence | Sources, connections, observations and decisions |
 | Intelligence | Agent commerce | Public shopping journey, adapters and connection boundaries |
-| Commerce | Products | Product list, ten editor tabs and category tree |
+| Commerce | Products | Product list, eleven editor tabs and category tree |
 | Commerce | Orders | Workflow, payment, fulfillment, documents and notes |
 | Commerce | Customers | Profiles, address books, groups and linked orders |
 | Experiences | Storyfronts | Configured catalog publication and checkout integration |
@@ -106,7 +107,7 @@ Search by name/product number and filter active status, category or low stock. T
 
 ![Search, status/category filters, actual prices, inventory and child-variant counts](assets/feature-tour/products.jpg)
 
-### Ten connected editor tabs
+### Eleven connected editor tabs
 
 | Tab | What you can maintain |
 | --- | --- |
@@ -120,10 +121,11 @@ Search by name/product number and filter active status, category or low stock. T
 | Cross-selling | Search and assign other products belonging to the same shop |
 | Attachments & downloads | Immutable product files and paid digital access |
 | Reviews | Inspect and publish/hide customer submissions |
+| Safety & compliance | Translated manufacturer/responsible-person contacts, warnings and sector-specific product facts |
 
 Each editor uses one **Content language**. Inherited values are distinguishable from explicit translations; a missing/null value inherits, while an intentional empty description remains empty. Saving binds the product revision and updates its relevant translations/associations atomically. [Full field contracts](product-management.md).
 
-![Current central product editor with all ten tabs and one content-language selector](assets/feature-tour/product-editor.jpg)
+![Recorded central product editor with one content-language selector; the current release also adds Safety & compliance](assets/feature-tour/product-editor.jpg)
 
 ### Pricing, quantities and inventory
 

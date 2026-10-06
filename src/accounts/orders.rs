@@ -29,6 +29,7 @@ fn project(raw: &Value, created: &str) -> Value {
         "billingAddressId",
         "shippingAddressId",
         "deliveries",
+        "legal",
     ] {
         v[key] = raw[key].clone();
     }

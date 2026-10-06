@@ -97,6 +97,7 @@ child=call('/store-api/product/mug-terracotta-500',{}, {**sh,'x-commerce-locale'
 assert child['extra']['specifications']['fr']['Matière']=='Grès' and child['extra']['shippingFree']
 passed('Product translations/specifications/free shipping and source documents publish selectively while unselected campaigns stay private')
 c,h=cart();ids=[]
+policy=call('/store-api/legal',h=h);call('/store-api/privacy/consent',{'policyVersion':policy['policyVersion'],'choices':{'personalization':True}},h,method='PUT')
 for i in range(3):
  event=uuid.uuid4().hex;v=call('/store-api/personalization/events',{'eventId':event,'kind':'view','productId':'lamp'},h);ids.append(event)
 assert v['rankedProductIds'][0]=='lamp' and v['adapted']
@@ -105,6 +106,7 @@ call('/store-api/personalization/events',{'eventId':uuid.uuid4().hex,'kind':'car
 call('/store-api/personalization/events',{'eventId':uuid.uuid4().hex,'kind':'view','productId':'unknown'},h,expected=400)
 another=call('/store-api/checkout/cart',{}, sh)
 other_h={**h,'sw-context-token':another['token']}
+call('/store-api/privacy/consent',{'policyVersion':policy['policyVersion'],'choices':{'personalization':True}},other_h,method='PUT')
 assert not call('/store-api/personalization/events',{'eventId':uuid.uuid4().hex,'kind':'view','productId':'lamp'},other_h)['adapted']
 call('/store-api/personalization',h=h,method='DELETE');v=call('/store-api/personalization/events',{'eventId':uuid.uuid4().hex,'kind':'view','productId':'lamp'},h);assert not v['adapted']
 passed('Persistent behavior is consumed immediately for channel/stock-safe ranking, deduplicates events and can be cleared')

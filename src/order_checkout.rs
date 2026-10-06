@@ -100,6 +100,7 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     // Configuration cannot change between this price calculation and order commit.
     let (config, settings_revision) =
         commerce::scoped_locked(&mut tx, &c.tenant, &c.data.sales_channel).await?;
+    let legal_snapshot = legal::snapshot(&mut tx, &c, &config, &ps).await?;
     let selected = commerce::selection(&c.data);
     for address in [&selected.address, &selected.billing_address]
         .into_iter()
@@ -235,6 +236,7 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     // Explicit simulated authorization: no external money is charged.
     let mut order = json!({"id":id,"orderNumber":format!("RAC-{}",&id[..8]),"cart":q,"state":"placed","channel":c.data.channel,"revision":1,"deliveries":q["deliveries"],"payment":{"method":q["paymentMethod"],"provider":if q["paymentMethod"]["mode"]=="simulated"{"simulated"}else{"manual"},"state":if q["paymentMethod"]["mode"]=="simulated"{"authorized"}else{"pending"},"realMoneyCharged":false},"customerGroup":c.data.group});
     order["money"] = json!(money);
+    order["legal"] = legal_snapshot;
     order
         .as_object_mut()
         .unwrap()

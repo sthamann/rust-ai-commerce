@@ -29,6 +29,7 @@ export type Product = {
     crossSelling?: string[];
     shippingFree?: boolean;
     digital?: boolean;
+    compliance?: Record<string, unknown>;
     richDescription?: Record<
       string,
       import("../content/RichDescription").RichBlock[]
@@ -72,6 +73,7 @@ export type Payment = {
   mode: string;
 };
 export type Config = {
+  legal?: import("../legal/legal-types").LegalConfig;
   customerGroups?: import("../customer/customer-types").CustomerGroup[];
   countries: string[];
   mainLocale?: string;
@@ -109,6 +111,7 @@ export type Order = {
   }[];
 };
 export type Cart = {
+  legal?: { requiresDigital: boolean; strictCheckout: boolean };
   couponCodes?: string[];
   discountTotal?: number;
   discounts?: {

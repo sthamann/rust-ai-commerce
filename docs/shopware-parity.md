@@ -208,3 +208,7 @@ No full Shopware Payments, accelerated wallet/card or conversion-uplift parity i
 ## General payment apps
 
 `payments/{contract,registry,accounts,app_commands,remote,generic_receipts,sessions,provider_webhooks}.rs` implement the versioned provider boundary, tenant/channel inheritance, approved onboarding links, immutable environment/version/account snapshots, isolated checkout sessions and exact receipt claims. App Studio and coding agents use the same declarations; HTTP/MCP/Flow dispatch share durable jobs. `scripts/payment_providers.py` exercises a second provider through real HTTP/PG. The private connector separately ports source-backed provider behavior. This is not complete Shopware Payments parity, a delivered Stripe adapter or a successful real-money test; details are in [payment-provider-api.md](payment-provider-api.md).
+
+## European-operation additions
+
+Vendune-native legal/privacy settings connect cart/channel consent, built-in tracking gates, document snapshots, public withdrawal/data-rights intake, private review and receipt-email events. These are additions, not a claim of one-to-one Shopware or statutory parity. The [requirement matrix](european-operation.md#requirements-catalog-and-actual-implementation-boundary) explicitly marks missing price-history computation, age verification and subscription cancellation workflows.

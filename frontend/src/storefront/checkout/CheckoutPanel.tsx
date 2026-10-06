@@ -1,4 +1,6 @@
 /** One-page checkout: server-reviewed selection, explicit purchase and durable provider handoff. */
+import { useLegalText } from "../../shared/i18n/legal-i18n";
+import CheckoutLegal from "../legal/CheckoutLegal";
 import { useEffect, useRef, useState } from "react";
 import type { Cart, Order, Selection } from "../../shared/api/shop-api";
 import { AppSurfaceSlot } from "../../shared/apps/AppSurfaces";
@@ -35,6 +37,7 @@ export default function CheckoutPanel({
 }) {
   const { s, money } = useShopText();
   const { x } = useCheckoutText();
+  const { l } = useLegalText();
   const ref = useRef<HTMLDialogElement>(null);
   const [selection, setSelection] = useState<Selection>(
     cart?.checkout ?? {
@@ -43,6 +46,8 @@ export default function CheckoutPanel({
       paymentMethodId: "demo-card",
     },
   );
+  const [legalReady, setLegalReady] = useState(false);
+  const acceptLegal = useRef<() => Promise<void>>(async () => {});
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [reviewedRevision, setReviewedRevision] = useState<number>();
@@ -74,7 +79,10 @@ export default function CheckoutPanel({
         const next = await onSelection(selection);
         setSelection(next.checkout);
         setReviewedRevision(next.revision);
-      } else await onBuy();
+      } else if (legalReady) {
+        await acceptLegal.current();
+        await onBuy();
+      } else throw new Error(l("agree"));
     } catch (e) {
       setReviewedRevision(undefined);
       setError((e as Error).message);
@@ -149,6 +157,14 @@ export default function CheckoutPanel({
                 onCart={onCart}
                 busy={locked}
                 onSubmit={submit}
+              />
+              <CheckoutLegal
+                token={cart.token}
+                digital={!!cart.legal?.requiresDigital}
+                onReady={(ready, accept) => {
+                  setLegalReady(ready);
+                  if (accept) acceptLegal.current = accept;
+                }}
               />
               {(error || requestError) && (
                 <p className="shop-error" role="alert">

@@ -465,6 +465,16 @@
     "source": "src/operations/mod.rs"
   },
   {
+    "path": "/api/merchant/legal/requests",
+    "method": "GET",
+    "source": "src/legal/mod.rs"
+  },
+  {
+    "path": "/api/merchant/legal/requests/{id}",
+    "method": "PUT",
+    "source": "src/legal/mod.rs"
+  },
+  {
     "path": "/api/merchant/media/jobs/{id}",
     "method": "GET",
     "source": "src/assets/mod.rs"
@@ -1010,6 +1020,26 @@
     "source": "src/cognition/routes.rs"
   },
   {
+    "path": "/store-api/legal",
+    "method": "GET",
+    "source": "src/legal/mod.rs"
+  },
+  {
+    "path": "/store-api/legal/acceptance",
+    "method": "PUT",
+    "source": "src/legal/mod.rs"
+  },
+  {
+    "path": "/store-api/legal/requests",
+    "method": "POST",
+    "source": "src/legal/mod.rs"
+  },
+  {
+    "path": "/store-api/legal/requests/{id}",
+    "method": "GET",
+    "source": "src/legal/mod.rs"
+  },
+  {
     "path": "/store-api/navigation",
     "method": "GET",
     "source": "src/categories/mod.rs"
@@ -1058,6 +1088,16 @@
     "path": "/store-api/personalization/events",
     "method": "POST",
     "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/privacy/consent",
+    "method": "GET",
+    "source": "src/legal/mod.rs"
+  },
+  {
+    "path": "/store-api/privacy/consent",
+    "method": "PUT",
+    "source": "src/legal/mod.rs"
   },
   {
     "path": "/store-api/product",

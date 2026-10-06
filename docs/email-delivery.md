@@ -172,3 +172,7 @@ and the Codex browser have independent Studio sign-ins. The header now says
 public server health. Sign in through **Team & Access** with a member account.
 The current session token stays in sessionStorage, so a new browser/profile needs
 its own sign-in. Email access never bypasses this boundary.
+
+## Consumer-request receipts
+
+Built-in Email Delivery 1.1.0 subscribes to six `consumer.*.requested` events and renders bounded EN/DE/FR/ES acknowledgements with immutable declaration reference and receipt time. `notifyConsumerRequests` controls these transactional messages. Delivery must be enabled and configured; dry-run does not send email. Existing 1.0.0 installed manifests need an explicit update. See [European operation](european-operation.md) for privacy, review and legal boundaries.

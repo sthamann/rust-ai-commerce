@@ -1,6 +1,7 @@
 /** Browser platform shims for isolated component tests; no network or real provider calls. */
 import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, vi } from "vitest";
+import { publishConsent } from "../../src/shared/legal/consent-store";
 import { cleanup } from "@testing-library/react";
 const testWindow = (globalThis as unknown as { jsdom: { window: Window } })
   .jsdom.window;
@@ -17,6 +18,7 @@ beforeEach(() => {
   sessionStorage.clear();
   localStorage.setItem("rac-locale", "en-GB");
   history.replaceState(null, "", "/?shop=unit-shop#merchant");
+  publishConsent(undefined);
   vi.stubGlobal(
     "fetch",
     vi.fn(() =>

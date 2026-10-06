@@ -99,7 +99,7 @@ same saved order. Inventory and immutable order snapshots commit together.
 
 *Real checkout interaction in the Nord Atelier test shop. The payment is simulated.*
 
-The **ten-tab product editor** brings visual/Markdown descriptions, translated
+The **product editor** brings visual/Markdown descriptions, translated
 content, prices/stock, reviewed variant combinations, galleries, category/channel
 visibility, specifications, SEO, cross-selling, downloads and reviews together. Public shops use their own subdomain; product links use stable SKU addresses with inherited localized SEO slugs and support direct reloads. [Explore commerce](docs/features.md#products-and-categories).
 
@@ -114,6 +114,18 @@ sessions and ownership checks, never merchant credentials.
 [![Customer account — actual orders, default addresses and purchased downloads](docs/assets/showcase/customer-account.png)](docs/merchant-operations.md#storefront-account-experience)
 
 *Actual account interaction in an isolated Nord Atelier test shop; all purchases are simulated.*
+
+### Operate in Europe with connected privacy and legal controls
+
+**Settings → Legal & privacy** brings a source-linked sector checklist, inherited
+channel documents, provider disclosures and a private consumer-request workspace
+together. The storefront starts optional tracking denied, supports equal privacy
+choices and revocation, gates analytics/media/maps/personalization, and exposes an
+online withdrawal function. Strict server checkout binds current legal documents
+and separate digital-delivery approval to immutable orders. Email and Flow Builder
+use the same durable events. [Configuration, architecture and exact legal/technical
+boundaries](docs/european-operation.md). Reviewed legal texts and sector-specific
+obligations remain the operator's responsibility; strict checkout defaults off in demos.
 
 ### Give AI evidence. Review its changes.
 
@@ -199,7 +211,7 @@ remain operator-managed; this is not a deployed Google/Apple OAuth service.
 
 | Area | What is connected | Guide |
 | --- | --- | --- |
-| **Catalog & channels** | Search, ten editor tabs, translated category trees, variants and guided storefront/headless channels | [Products](docs/product-management.md) · [Channels](docs/studio-api-and-channels.md#sales-channels) |
+| **Catalog & channels** | Search, eleven editor tabs, translated category trees, variants and guided storefront/headless channels | [Products](docs/product-management.md) · [Channels](docs/studio-api-and-channels.md#sales-channels) |
 | **Customers & orders** | Responsive customer workspace, separate sign-in/registration, default billing/delivery addresses, purchase details, HTTPS tracking, owned invoice PDFs and paid downloads; Studio fulfillment and customer groups | [Operations](docs/merchant-operations.md) · [History](docs/entity-history.md) |
 | **International settings** | Company/channel inheritance, enabled content locales, countries, destination taxes and eligible shipping/payment methods | [International commerce](docs/international-commerce.md) · [Settings](docs/settings-media.md) |
 | **Knowledge & automation** | Published/private sources, reviewed recommendations/proposals, coupons, rules, event graphs and durable workers | [Knowledge](docs/knowledge-workspace.md) · [Automation](docs/automation.md) |
@@ -237,7 +249,7 @@ bounded fuel/memory and no network/filesystem access.
 | Evidence | What it establishes |
 | --- | --- |
 | **7,000 original-PHP comparisons** | Bounded pricing, context, shipping-tax, rule and comparison behavior against reviewed Shopware sources. [Parity matrix](docs/shopware-parity.md). |
-| **30 extracted production policies · 65 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
+| **32 extracted production policies · 67 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
 | **1,000,000 products + 1,000,000 translations** | Dated local commerce workloads with retained raw measurements and failures; not production capacity or a Shopware speed ratio. [Benchmarks](docs/benchmarks.md). |
 | **Continuous verification** | Source ownership, localization, Rust/frontend checks, real PostgreSQL integration, original PHP comparisons and Lean/mutation gates. [CI](https://github.com/sthamann/vendune/actions) · [Testing](docs/testing.md). |
 

@@ -604,6 +604,21 @@ class Contracts(unittest.TestCase):
                 break
             time.sleep(0.1)
         self.assertEqual(jobs[0]["result"]["outcome"], "accepted")
+        # Public legal declaration takes the actual outbox → email app → SMTP path.
+        request = api("/store-api/legal/requests", {
+            "kind": "withdrawal", "name": "Fixture Buyer", "email": "buyer@example.test",
+            "reference": order["orderNumber"], "message": "I withdraw this contract.", "requestKey": "legal-" + suffix,
+        }, ch)
+        for _ in range(150):
+            if len(self.smtp.messages) >= 2:
+                break
+            time.sleep(0.1)
+        self.assertEqual(len(self.smtp.messages), 2)
+        from email import policy
+        from email.parser import BytesParser
+        receipt_body = BytesParser(policy=policy.default).parsebytes(self.smtp.messages[1][1]).get_content()
+        self.assertIn(request["id"], receipt_body)
+        self.assertIn(b"receivedAt", self.smtp.messages[1][1])
         # Published read-only actions cannot be turned into a sending flow.
         flow["appAction"]["action"] = "status"
         api(

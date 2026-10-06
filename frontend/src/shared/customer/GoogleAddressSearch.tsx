@@ -1,4 +1,5 @@
 /** Opt-in Places widget fills editable address fields, rejects unsupported destinations and ignores stale replies. */
+import { usePurpose, openConsent } from "../legal/consent-store";
 import { useEffect, useRef, useState } from "react";
 import { useCheckoutText } from "../i18n/checkout-i18n";
 import {
@@ -22,6 +23,7 @@ export default function GoogleAddressSearch({
 }) {
   const { x } = useCheckoutText();
   const key = browserPlacesKey();
+  const consent = usePurpose("maps");
   const [enabled, setEnabled] = useState(false);
   const [status, setStatus] = useState<
     | "addressLoading"
@@ -35,7 +37,7 @@ export default function GoogleAddressSearch({
   const latest = useRef({ value, onChange, countries, disabled });
   latest.current = { value, onChange, countries, disabled };
   useEffect(() => {
-    if (!enabled || !key) return;
+    if (!enabled || !key || !consent) return;
     let active = true,
       sequence = 0;
     setStatus("addressLoading");
@@ -91,7 +93,7 @@ export default function GoogleAddressSearch({
       widget.current?.remove();
       widget.current = null;
     };
-  }, [enabled, key, x("addressSearch")]);
+  }, [enabled, key, consent, x("addressSearch")]);
   useEffect(() => {
     if (widget.current) {
       widget.current.includedRegionCodes = [
@@ -103,12 +105,15 @@ export default function GoogleAddressSearch({
   if (!key) return null;
   return (
     <div className="google-address-search">
-      {!enabled && (
+      {(!enabled || !consent) && (
         <button
           type="button"
           className="shop-secondary"
           disabled={disabled}
-          onClick={() => setEnabled(true)}
+          onClick={() => {
+            setEnabled(true);
+            if (!consent) openConsent();
+          }}
         >
           {x("addressSearch")}
         </button>

@@ -4,6 +4,7 @@ export function createAnalytics({
   channel = "default",
   measurementId,
   storage = localStorage,
+  managedConsent = false,
 }) {
   const key = `rac-analytics:${shop}:${channel}`;
   let active = false;
@@ -47,6 +48,18 @@ export function createAnalytics({
     win[`ga-disable-${measurementId}`] = true;
     script?.remove();
     script = null;
+    const prefix = key.replace(/[^a-zA-Z0-9_]/g, "_");
+    for (const name of (document.cookie || "")
+      .split(";")
+      .map((x) => x.trim().split("=")[0])
+      .filter((x) => x.startsWith(prefix + "_"))) {
+      const domains = ["", location.hostname];
+      const parts = (location.hostname || "").split(".");
+      for (let i = 1; i < parts.length - 1; i++)
+        domains.push("." + parts.slice(i).join("."));
+      for (const domain of domains)
+        document.cookie = `${name}=; Max-Age=0; Path=/${domain ? "; Domain=" + domain : ""}; SameSite=Lax`;
+    }
     if (win.gtag)
       win.gtag("consent", "update", { analytics_storage: "denied" });
   }
@@ -97,7 +110,7 @@ export function createAnalytics({
     if (value) enable();
     else disable();
   }
-  if (storage.getItem(key) === "granted") enable();
+  if (!managedConsent && storage.getItem(key) === "granted") enable();
   return {
     event,
     consent,

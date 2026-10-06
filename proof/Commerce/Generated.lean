@@ -93,4 +93,10 @@ def payment_transition_admissible (current : Nat) (next : Nat) : Bool :=
 def resource_quota_admissible (limit : Nat) : Bool :=
   ((decide (limit > 0)) && (decide (limit ≤ 1000000)))
 
+def consent_admissible (enabled : Bool) (current : Bool) (fresh : Bool) (chosen : Bool) : Bool :=
+  (((enabled && current) && fresh) && chosen)
+
+def legal_checkout_admissible (strict : Bool) (current : Bool) (accepted : Bool) (digital : Bool) (immediate : Bool) : Bool :=
+  ((!strict) || ((current && accepted) && ((!digital) || immediate)))
+
 end CommerceKernel

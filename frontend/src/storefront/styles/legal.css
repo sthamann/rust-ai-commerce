@@ -1,0 +1,198 @@
+/** Responsive, equally weighted consent controls and readable legal/customer forms. */
+.privacy-banner {
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+  position: fixed;
+  z-index: 150;
+  top: auto;
+  right: auto;
+  margin: 0;
+  bottom: 24px;
+  left: 24px;
+  width: min(560px, calc(100vw - 48px));
+  background: #fff;
+  color: #173b2d;
+  border: 1px solid #c9d8cf;
+  border-radius: 22px;
+  padding: 26px;
+  box-shadow: 0 14px 65px #102f2829;
+  max-height: calc(100dvh - 48px);
+  overflow: auto;
+}
+.privacy-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 12px;
+}
+.privacy-heading h2 {
+  font-size: 24px;
+  margin: 8px 0 14px;
+}
+.legal-eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  color: #547060;
+}
+.privacy-banner p {
+  line-height: 1.6;
+  margin: 10px 0;
+}
+.privacy-banner small {
+  display: block;
+  line-height: 1.6;
+  color: #496052;
+}
+.privacy-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0 12px;
+}
+.privacy-actions button {
+  flex: 1;
+  min-height: 44px;
+  background: #eef4ef;
+  color: #173b2d;
+  border: 1px solid #b6cbbf;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.privacy-actions button:focus-visible,
+.privacy-banner a:focus-visible {
+  outline: 3px solid #227c55;
+  outline-offset: 3px;
+}
+.privacy-banner a {
+  font-size: 13px;
+  text-decoration: underline;
+}
+.privacy-purposes {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+.privacy-purposes label,
+.checkout-legal label {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  line-height: 1.5;
+}
+.privacy-purposes input,
+.checkout-legal input {
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
+  accent-color: #227c55;
+}
+.privacy-purposes small {
+  margin: 6px 0 0 30px;
+}
+.legal-document {
+  max-width: 900px !important;
+  margin: auto;
+  padding: 48px 24px !important;
+}
+.legal-document article {
+  white-space: pre-wrap;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+.legal-request-form {
+  display: grid;
+  gap: 20px;
+  max-width: 640px;
+  margin: 28px 0;
+}
+.legal-request-form label {
+  display: grid;
+  gap: 9px;
+  font-size: 14px;
+}
+.legal-request-form input,
+.legal-request-form select,
+.legal-request-form textarea {
+  min-height: 48px;
+  padding: 12px;
+  border: 1px solid #c2d0c7;
+  border-radius: 10px;
+  font: inherit;
+  background: #fff;
+}
+.checkout-legal {
+  display: grid;
+  gap: 14px;
+  margin: 20px 0;
+  font-size: 13px;
+}
+.checkout-legal nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.checkout-legal a {
+  text-decoration: underline;
+}
+.shop-footer {
+  flex-wrap: wrap !important;
+  gap: 16px;
+}
+.shop-footer button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.product-compliance {
+  border-top: 1px solid #d0dace;
+  margin: 30px 0;
+  padding-top: 22px;
+}
+.product-compliance dl {
+  display: grid;
+  gap: 15px;
+}
+.product-compliance dt {
+  font-weight: 600;
+  font-size: 12px;
+}
+.product-compliance dd {
+  margin: 5px 0;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+@media (max-width: 600px) {
+  .privacy-banner {
+    bottom: 12px;
+    left: 12px;
+    width: calc(100vw - 24px);
+    padding: 20px;
+    max-height: calc(100dvh - 24px);
+  }
+  .privacy-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .privacy-actions button:last-child:nth-child(3) {
+    grid-column: 1/-1;
+  }
+  .legal-document {
+    padding: 30px 18px !important;
+  }
+  .privacy-heading h2 {
+    font-size: 21px;
+  }
+}
+
+.privacy-banner::backdrop {
+  background: #102f2833;
+  backdrop-filter: blur(3px);
+}

@@ -15,6 +15,12 @@ import { LocaleProvider } from "../../src/shared/i18n/i18n";
 import CheckoutPanel from "../../src/storefront/checkout/CheckoutPanel";
 import PaymentSession from "../../src/storefront/checkout/PaymentSession";
 import { placeCheckoutOrder } from "../../src/storefront/checkout/checkout-order";
+vi.mock("../../src/storefront/legal/PrivacyProvider", () => ({
+  useLegalPolicy: () => ({
+    policyVersion: "fixture",
+    data: { strictCheckout: false },
+  }),
+}));
 const api = vi.hoisted(() => vi.fn());
 vi.mock("../../src/shared/api/shop-api", () => ({ shopApi: api }));
 vi.mock("../../src/shared/geography/useCountryCatalogue", () => ({
@@ -127,7 +133,9 @@ describe("One-page purchase", () => {
     await user.click(screen.getByRole("button", { name: "Review order" }));
     expect(review).toHaveBeenCalledOnce();
     expect(buy).not.toHaveBeenCalled();
-    await user.click(screen.getByRole("button", { name: /Place order.*59/ }));
+    await user.click(
+      screen.getByRole("button", { name: /Order with obligation to pay.*59/ }),
+    );
     expect(buy).toHaveBeenCalledOnce();
     expect(
       screen.queryByRole("button", { name: "Save selection" }),

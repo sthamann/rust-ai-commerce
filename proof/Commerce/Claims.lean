@@ -263,4 +263,10 @@ theorem payment_refunded_terminal (next : Nat) :
     payment_transition_admissible 6 next = true ↔ next = 6 := by
   simp [payment_transition_admissible]; omega
 theorem payment_pending_capture : payment_transition_admissible 0 4 = true := by rfl
+theorem consent_exact (enabled current fresh chosen : Bool) :
+    consent_admissible enabled current fresh chosen = true ↔ enabled = true ∧ current = true ∧ fresh = true ∧ chosen = true := by
+  cases enabled <;> cases current <;> cases fresh <;> cases chosen <;> simp [consent_admissible]
+theorem legal_checkout_exact (strict current accepted digital immediate : Bool) :
+    legal_checkout_admissible strict current accepted digital immediate = true ↔ strict = false ∨ current = true ∧ accepted = true ∧ (digital = false ∨ immediate = true) := by
+  cases strict <;> cases current <;> cases accepted <;> cases digital <;> cases immediate <;> simp [legal_checkout_admissible]
 end CommerceKernel

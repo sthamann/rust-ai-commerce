@@ -118,6 +118,8 @@ impl CheckoutSelection {
 #[derive(Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub(crate) struct Settings {
+    #[serde(default)]
+    pub legal: crate::legal::Config,
     #[serde(default = "main_locale")]
     pub main_locale: String,
     #[serde(default = "content_locales")]

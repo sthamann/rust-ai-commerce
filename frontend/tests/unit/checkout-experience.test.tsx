@@ -16,6 +16,7 @@ import {
   addressFromPlace,
   type AddressComponent,
 } from "../../src/shared/customer/google-address";
+import { publishConsent } from "../../src/shared/legal/consent-store";
 import { emptyAddress } from "../../src/shared/customer/customer-types";
 const google = vi.hoisted(() => ({ key: "", load: vi.fn() }));
 vi.mock("../../src/shared/customer/google-address", async (original) => ({
@@ -132,6 +133,11 @@ describe("Optional Google address search", () => {
     expect(google.load).not.toHaveBeenCalled();
   });
   it("fills the form only for deliverable countries and requests only address components", async () => {
+    publishConsent({
+      choices: { maps: true },
+      decided: true,
+      policyVersion: "test",
+    });
     google.key = "fixture";
     library();
     const changed = vi.fn();
@@ -168,6 +174,11 @@ describe("Optional Google address search", () => {
     expect(fetchFields).toHaveBeenCalledWith({ fields: ["addressComponents"] });
   });
   it("ignores an old reply arriving after a more recent selection", async () => {
+    publishConsent({
+      choices: { maps: true },
+      decided: true,
+      policyVersion: "test",
+    });
     google.key = "fixture";
     library();
     const changed = vi.fn();
@@ -205,6 +216,11 @@ describe("Optional Google address search", () => {
     expect(changed.mock.calls[0][0].city).toBe("Latest");
   });
   it("retains manual entry when the provider fails", async () => {
+    publishConsent({
+      choices: { maps: true },
+      decided: true,
+      policyVersion: "test",
+    });
     google.key = "fixture";
     google.load.mockRejectedValue(new Error("Unavailable"));
     search();

@@ -50,6 +50,7 @@ use studio::*;
 mod auth;
 mod commerce;
 mod foundation;
+mod legal;
 pub(crate) use foundation::*;
 mod catalog_model;
 pub(crate) use catalog_model::*;

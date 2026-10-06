@@ -1,14 +1,12 @@
 /** Revision-aware product aggregate editor: one save, translation tabs and product-scoped linked capabilities. */
+import ProductCompliance from "../legal/ProductCompliance";
+import { useLegalText } from "../../shared/i18n/legal-i18n";
 import { useCrmText } from "../../shared/i18n/crm-i18n";
 import EntityHistory from "../../shared/history/EntityHistory";
 import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
 import ProductEditorNav from "./ProductEditorNav";
 import { useEffect, useRef, useState } from "react";
-import {
-  AppSurfaceSlot,
-  AppSurfaceView,
-  useAppSurfaces,
-} from "../../shared/apps/AppSurfaces";
+import { AppSurfaceView, useAppSurfaces } from "../../shared/apps/AppSurfaces";
 import type { RequestFn } from "../shell/studio-types";
 import { useCatalogText } from "./catalog-i18n";
 import {
@@ -18,7 +16,7 @@ import {
   type ProductDraft,
 } from "./catalog-model";
 import ProductMediaWorkspace from "./ProductMediaWorkspace";
-import TaxClassSelect from "./TaxClassSelect";
+import ProductEditorExtras from "./ProductEditorExtras";
 import ProductPanels from "./ProductPanels";
 import ProductAssets from "./ProductAssets";
 import ReviewModeration from "./ReviewModeration";
@@ -43,6 +41,7 @@ export default function ProductEditor({
     (s) => s.surface.location === "admin.product.tab",
   );
   const { r } = useCrmText();
+  const { l } = useLegalText();
   const [draft, setDraft] = useState<ProductDraft>(newDraft);
   const [reloadIndex, setReloadIndex] = useState(0);
   const [baseline, setBaseline] = useState("");
@@ -192,6 +191,7 @@ export default function ProductEditor({
     "related",
     "attachments",
     "reviews",
+    "compliance",
   ] as const;
   if (loading) return <p role="status">{c("loading")}</p>;
   return (
@@ -295,12 +295,20 @@ export default function ProductEditor({
               className="studio-card catalog-detail-panel"
               role="tabpanel"
             >
-              {!selectedApp && <h2>{c(tab as (typeof tabs)[number])}</h2>}
+              {!selectedApp && (
+                <h2>
+                  {tab === "compliance"
+                    ? l("compliance")
+                    : c(tab as Parameters<typeof c>[0])}
+                </h2>
+              )}
               {selectedApp ? (
                 <AppSurfaceView
                   selected={selectedApp}
                   context={{ productId: id }}
                 />
+              ) : tab === "compliance" ? (
+                <ProductCompliance draft={draft} onChange={change} />
               ) : tab === "media" ? (
                 <ProductMediaWorkspace
                   unsaved={JSON.stringify(draft) !== baseline}
@@ -355,30 +363,14 @@ export default function ProductEditor({
                   onChange={change}
                 />
               )}
-              {tab === "prices" && (
-                <TaxClassSelect
-                  request={request}
-                  value={draft.extra.taxClassId ?? ""}
-                  onChange={(taxClassId) =>
-                    change({
-                      ...draft,
-                      extra: { ...draft.extra, taxClassId: taxClassId || null },
-                    })
-                  }
-                />
-              )}
-              {id && tab === "general" && (
-                <AppSurfaceSlot
-                  location="admin.product.general"
-                  context={{ productId: id }}
-                />
-              )}
-              {id && !selectedApp && (
-                <AppSurfaceSlot
-                  location="admin.product"
-                  context={{ productId: id }}
-                />
-              )}
+              <ProductEditorExtras
+                id={id}
+                tab={tab}
+                draft={draft}
+                request={request}
+                change={change}
+                selectedApp={!!selectedApp}
+              />
             </section>
           </div>
           {id && (

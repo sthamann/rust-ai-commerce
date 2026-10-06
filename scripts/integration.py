@@ -23,7 +23,7 @@ if TOKEN:
         assert policy['source']=='persisted' and len(policy['digest'])==64, 'First-start policy must be lockable by checkout'
 
 ps=request('/store-api/product',{})['elements'];assert len(ps)==6;check('catalog reads seeded products')
-c,h,s=cart();e=request('/api/experience',{'session':s});assert e['blocks'] and 0<e['propensity']<=1
+c,h,s=cart();policy=request('/store-api/legal',headers=h);request('/store-api/privacy/consent',{'policyVersion':policy['policyVersion'],'choices':{'personalization':True}},h,method='PUT');e=request('/api/experience',{'session':s},h);assert e['blocks'] and 0<e['propensity']<=1
 c=request('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'mug','quantity':2}]},h)
 assert c['price']['totalPrice']==49.8 and c['lineItems'][0]['quantity']==2;check('B2C cart uses server price and tax')
 request('/store-api/checkout/cart',{'items':[{'id':'mug','quantity':1}],'revision':1},h,'PUT',409);check('stale cart revision rejected')

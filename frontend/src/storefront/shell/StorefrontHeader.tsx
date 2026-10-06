@@ -1,4 +1,5 @@
 /** StorefrontHeader: storefront view composed from the scoped cart/controller. */
+import { openConsent } from "../../shared/legal/consent-store";
 import { collectionURL } from "../catalog/product-url";
 import { shopApi, type Cart } from "../../shared/api/shop-api";
 import { StorefrontAppNavigation } from "../../shared/apps/AppSurfaces";
@@ -21,12 +22,8 @@ export default function StorefrontHeader() {
     w,
     onMerchant,
     adaptation,
-    setAdaptation,
     shopTenant,
     products,
-    setRanked,
-    setPersonalized,
-    setViewed,
     openBag,
   } = useStorefront();
   const displayName =
@@ -77,26 +74,7 @@ export default function StorefrontHeader() {
       <button
         className="shop-text-button"
         aria-pressed={adaptation}
-        onClick={() => {
-          const enabled = !adaptation;
-          setAdaptation(enabled);
-          localStorage.setItem(
-            `rac-adaptation:${shopTenant}`,
-            enabled ? "1" : "0",
-          );
-          if (!enabled) {
-            setRanked([]);
-            setPersonalized(false);
-            setViewed({});
-            if (cart)
-              void shopApi(
-                "/store-api/personalization",
-                undefined,
-                cart.token,
-                "DELETE",
-              ).catch(() => {});
-          }
-        }}
+        onClick={openConsent}
       >
         {w(adaptation ? "adaptationOn" : "adaptationOff")}
       </button>
