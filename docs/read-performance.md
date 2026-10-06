@@ -27,8 +27,8 @@ Migration [037](../migrations/037-read-context-cache.sql) stamps basis/override 
 before every insert/update. The global language registry changes version on actual
 inserts, updates, deletes and truncation. Conflict-only registration does not
 invalidate the fleet or lock the global version row. Cache state is local to one
-process and discarded on restart; replicas need no invalidation subscription to
-observe a committed change. The SQL statement uses PostgreSQL's
+process and discarded on restart. Authoritative version probes observe committed
+changes even if the new outbox notification listener is unavailable. The SQL statement uses PostgreSQL's
 [MVCC snapshot](https://www.postgresql.org/docs/current/mvcc-intro.html).
 
 Within an admitted read request the first loaded context is reused. A concurrent
@@ -76,8 +76,9 @@ inappropriate for paths holding a transaction while acquiring another connection
 `/api/runtime` exposes aggregate cache/pool diagnostics only to the existing
 instance bootstrap credential when bootstrap authentication is enabled. Personal
 merchant sessions receive `performance: null`, preserving fleet activity privacy.
-Public production hosting disables that credential; operator metrics integration
-is a separate remaining task.
+Public production hosting disables that credential. The authenticated platform
+infrastructure API now exposes pool/cache diagnostics, process admission metrics
+and strict-runtime configuration status; external telemetry export remains open.
 
 Run the real two-replica regression against a disposable database:
 
@@ -123,7 +124,8 @@ do not transfer the small-fixture percentage improvement to that dataset.
    content/app/configuration revisions. Never place personalized B2B responses,
    cart tokens or private knowledge in a public cache. Content invalidation comes
    from committed events; cache failure falls back to the origin. No such public
-   response cache or distributed invalidation layer is delivered by this change.
+   response cache is delivered. The new settings eviction listener is separate
+   from those proposed public content projections.
 3. **One fleet connection budget.** Keep PostgreSQL as the transactional primary;
    avoid multiplying connections indefinitely with Rust replicas. For example,
    four HTTP replicas with 12 connections and three workers with four connections
@@ -159,3 +161,20 @@ do not transfer the small-fixture percentage improvement to that dataset.
 See [the broader scalability plan](scalability.md) for the fault-isolation, inventory,
 backup and cost contract. Async cache/SQL correctness is tested here; the existing
 Lean policy extraction does not prove database, browser or distributed behavior.
+
+## Production foundation update
+
+Committed outbox events now notify every replica to evict the affected tenant's
+settings cache. Configuration writes emit an explicit event. Reconnect clears the
+cache, and authoritative versions remain the correctness gate; notification delivery
+is not durable business delivery. Each process reserves one additional database
+connection for its listener. Strict RLS adds scope-binding/reset SQL around borrowed
+connections; the dated latency baseline above predates these hooks and must not be
+used as a measurement of the new security path. Direct PostgreSQL/session pooling
+is required; transaction pooling is not yet compatible.
+
+The HTTP path now has bounded process/per-tenant permits, a reserved checkout pool,
+429/Retry-After saturation responses, persistent daily interactive AI quotas and
+operator histogram buckets. Concurrent permits are process-local, daily quotas
+are database-wide. Complete provider/token/spend quotas, distributed concurrency
+and telemetry export remain open. [Exact configuration and tests](production-architecture.md).

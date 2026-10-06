@@ -7,7 +7,7 @@ pub(crate) async fn runtime(State(a): State<App>, h: HeaderMap) -> Result<Json<V
     Ok(Json(
         json!({"outboxPending":r.get::<i64,_>("pending"),"eventsConsumed":r.get::<i64,_>("consumed"),"consumer":"durable audit projection; no external messages sent",
             // Instance-wide diagnostic counters are visible only to the existing instance credential.
-            "performance":if header(&h,"x-rac-user")==Some("bootstrap") {Some(json!({"reads":a.reads.snapshot(),"pool":{"size":a.db.size(),"idle":a.db.num_idle()}}))}else{None}}),
+            "performance":if header(&h,"x-rac-user")==Some("bootstrap") {Some(json!({"reads":a.reads.snapshot(),"admission":a.admission.snapshot(),"pool":{"size":a.db.size(),"idle":a.db.num_idle()}}))}else{None}}),
     ))
 }
 pub(crate) async fn consume_once(a: &App) -> Result<()> {

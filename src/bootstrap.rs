@@ -23,9 +23,10 @@ pub(crate) async fn bootstrap() -> App {
         Some(pool)
     };
     let db = performance::pool_options()
-        .connect(&database_url)
+        .connect(&env::var("DATABASE_RUNTIME_URL").unwrap_or(database_url.clone()))
         .await
         .expect("commerce connection");
+    performance::verify_row_security(&db).await;
     migrations::ready(&db).await;
     // Personal-only hosting has no shared bootstrap credential. Legacy development mode still requires one.
     let auth = if env::var("ALLOW_BOOTSTRAP_AUTH").as_deref() == Ok("false") {
@@ -54,6 +55,7 @@ pub(crate) async fn bootstrap() -> App {
         channel_metrics: Arc::new(channel_metrics::ChannelMetrics::default()),
         app_limits: Arc::new(apps::ServiceLimits::default()),
         reads: Arc::new(performance::Reads::default()),
+        admission: Arc::new(performance::Admission::default()),
     };
     if let Some(setup) = setup {
         if env::var("SEED_DEMO").as_deref() != Ok("false") {
@@ -92,6 +94,7 @@ pub(crate) async fn bootstrap() -> App {
     }
     if mode != "migrate" {
         workers::start(&a);
+        performance::start_invalidations(&a);
         if env::var("PROCESS_ROLE").unwrap_or("all".into()) == "all"
             || env::var("PROCESS_ROLE").as_deref() == Ok("memory-worker")
         {
@@ -158,5 +161,10 @@ pub(crate) fn entry() {
             .block_on(platform::bootstrap_operator());
         return;
     }
-    tokio::runtime::Runtime::new().unwrap().block_on(run());
+    tokio::runtime::Runtime::new()
+        .unwrap()
+        .block_on(vendune::tenant_scope::scoped(
+            vendune::tenant_scope::Scope::System,
+            run(),
+        ));
 }

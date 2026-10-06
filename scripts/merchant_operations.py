@@ -73,6 +73,14 @@ req('/api/merchant/assets/'+asset['id'],{'public':True,'digest':asset['digest']}
 email='buyer'+suffix+'@example.test';reg=req('/store-api/account/register',{'name':'Buyer','email':email,'password':password},public)
 login=req('/store-api/account/login',{'email':email,'password':password},ch);ch['sw-context-token']=login['token'];customer={**public,'x-customer-token':login['customerToken']}
 order=req('/store-api/checkout/order',{}, {**ch,'Idempotency-Key':'download-'+suffix});id=order['id']
+# The standard order-received flow also appends an audited note and advances the
+# revision. Wait for that real event consumer before testing unrelated CRM edits.
+for _ in range(100):
+    jobs=req('/api/automation/executions',h=h)['jobs']
+    if any(job['flow']=='default_order_received' and job['state']=='completed' for job in jobs):break
+    time.sleep(.1)
+else:raise AssertionError('Default order-received flow did not complete')
+order=req('/api/merchant/orders/'+id,h=h)
 assert order['cart']['shippingCosts']['totalPrice']==0 and order['deliveries']==[]
 assert 'token' not in req('/api/merchant/orders/'+id,h=h)['cart']
 assert req('/api/merchant/customers/'+email,h=h)['orders'][0]['id']==id
@@ -90,7 +98,9 @@ check('paid download ownership, anonymous/foreign rejection and immutable purcha
 assert not mcp('merchant.order.note',{'id':id,'revision':order['revision'],'text':'Packed by support'},sh)['isError']
 req('/api/merchant/orders/'+id+'/transition',{'revision':order['revision'],'kind':'order','state':'in_progress'},sh,expected=409)
 order=req('/api/merchant/orders/'+id,h=h);order=req('/api/merchant/orders/'+id+'/transition',{'revision':order['revision'],'kind':'order','state':'in_progress'},sh)
-assert req('/api/merchant/orders/'+id,h=h)['activity'][0]['kind']=='transition'
+audited=req('/api/merchant/orders/'+id,h=h)
+assert audited['state']=='in_progress'
+assert len([event for event in audited['activity'] if event['kind']=='transition' and event['data']['state']=='in_progress' and event['actor']==support['user']['id']])==1
 check('revision-bound notes/status mutations are audited and stale changes fail')
 req('/api/merchant/receipts/settings',{'revision':3,'data':{'name':'Synthetic Seller GmbH','address':'Teststrasse 1, Berlin','taxId':'TEST-ONLY'}},h,'PUT')
 body={'revision':order['revision'],'kind':'invoice','locale':'de','requestKey':'receipt-'+suffix}

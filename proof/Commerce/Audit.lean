@@ -13,6 +13,8 @@ import Commerce.Claims
 #print axioms CommerceKernel.checkout_review_exact
 #print axioms CommerceKernel.completion_exact
 #print axioms CommerceKernel.completion_safe
+#print axioms CommerceKernel.currency_scale_exact
+#print axioms CommerceKernel.currency_scale_overflow_denied
 #print axioms CommerceKernel.customer_group_net_exact
 #print axioms CommerceKernel.customer_group_unknown_denied
 #print axioms CommerceKernel.destination_tax_exact
@@ -28,6 +30,9 @@ import Commerce.Claims
 #print axioms CommerceKernel.manual_payment_exact
 #print axioms CommerceKernel.manual_payment_safe
 #print axioms CommerceKernel.order_edit_exact
+#print axioms CommerceKernel.payment_pending_capture
+#print axioms CommerceKernel.payment_refunded_terminal
+#print axioms CommerceKernel.payment_transition_exact
 #print axioms CommerceKernel.platform_exact
 #print axioms CommerceKernel.platform_personal_required
 #print axioms CommerceKernel.receipt_exact
@@ -41,6 +46,8 @@ import Commerce.Claims
 #print axioms CommerceKernel.reservation_authorized_unvoided
 #print axioms CommerceKernel.reservation_captured_denied
 #print axioms CommerceKernel.reservation_release_exact
+#print axioms CommerceKernel.resource_quota_exact
+#print axioms CommerceKernel.resource_quota_zero_denied
 #print axioms CommerceKernel.revision_exact
 #print axioms CommerceKernel.revision_exact_behavior
 #print axioms CommerceKernel.rule_authenticated_exact

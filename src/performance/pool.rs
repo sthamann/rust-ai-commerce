@@ -24,9 +24,26 @@ pub(crate) fn pool_options() -> PgPoolOptions {
         .after_connect(|conn, _| {
             Box::pin(async move {
                 sqlx::raw_sql("SET search_path = public; SET jit = off")
-                    .execute(conn)
+                    .execute(&mut *conn)
                     .await?;
+                super::row_security::bind(conn).await?;
                 Ok(())
+            })
+        })
+        .before_acquire(|conn, _| {
+            Box::pin(async move {
+                super::row_security::bind(conn).await?;
+                Ok(true)
+            })
+        })
+        .after_release(|conn, _| {
+            Box::pin(async move {
+                sqlx::query(
+                    "SELECT set_config('rac.tenant','',false),set_config('rac.system','off',false)",
+                )
+                .execute(conn)
+                .await?;
+                Ok(true)
             })
         })
 }

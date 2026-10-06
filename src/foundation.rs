@@ -12,6 +12,7 @@ pub(crate) struct App {
     pub(crate) sandboxes: Arc<RwLock<HashMap<String, Arc<Sandbox>>>>,
     pub(crate) channel_metrics: Arc<channel_metrics::ChannelMetrics>,
     pub(crate) app_limits: Arc<apps::ServiceLimits>,
+    pub(crate) admission: Arc<performance::Admission>,
     pub(crate) reads: Arc<performance::Reads>,
 }
 #[derive(Debug)]

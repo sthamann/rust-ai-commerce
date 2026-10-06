@@ -26,12 +26,21 @@ tenant/idempotency key across concurrent requests. Disjoint product orders can
 progress independently. There is no unbounded model call in this transaction.
 All writes originate from deterministic operations, not model-generated SQL.
 
-Next production steps: decimal/integer money type with explicit currency scale,
-tenant row-level security on core tables, broader
-inventory reservations and production payment state machines, caches invalidated by
-outbox events, observability, resource admission and tenant quotas. The current
-money implementation deliberately reproduces Shopware float behavior inside
-the ported slice; changing representations requires the differential gate.
+The [illustrated production architecture](production-architecture.md) explains
+implemented money, database security, inventory, payment, cache, admission and
+observability foundations. Orders/provider boundaries now use explicit minor
+integers and currency scale; the ported calculators deliberately retain Shopware
+float behavior and remain behind the original-source differential gates. Core
+FORCE RLS requires a separate non-owner runtime login and strict startup; direct
+or session pooling is supported. All payment methods have persisted allocations,
+provider money states have central admission, committed outbox events evict
+settings caches, and replicas share daily interactive HTTP AI quotas.
+
+Remaining production steps include integer pricing/tax intermediate rounding,
+distributed concurrent/spend/job quotas, telemetry export, independently operated
+cells and measured recovery/failover. The guide gives exact configuration, tests,
+privileged exceptions and limits rather than treating the foundation as complete
+production certification.
 
 ## Intelligence is connected to state
 

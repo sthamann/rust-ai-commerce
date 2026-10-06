@@ -28,8 +28,9 @@ pub(crate) async fn resolve(State(a): State<App>, mut request: Request, next: Ne
         }
         let binding = sqlx::query("SELECT tenant,channel FROM hosted_frontends WHERE alias=$1")
             .bind(shop)
-            .fetch_optional(&a.db)
-            .await;
+            .fetch_optional(&a.db);
+        let binding =
+            vendune::tenant_scope::scoped(vendune::tenant_scope::Scope::System, binding).await;
         let (scope, channel) = match binding {
             Ok(Some(r)) => (
                 r.get::<String, _>("tenant"),
@@ -50,8 +51,9 @@ pub(crate) async fn resolve(State(a): State<App>, mut request: Request, next: Ne
         let exists =
             sqlx::query_scalar::<_, bool>("SELECT EXISTS(SELECT 1 FROM tenants WHERE id=$1)")
                 .bind(&scope)
-                .fetch_one(&a.db)
-                .await;
+                .fetch_one(&a.db);
+        let exists =
+            vendune::tenant_scope::scoped(vendune::tenant_scope::Scope::System, exists).await;
         if !matches!(exists, Ok(true)) {
             return Error(StatusCode::NOT_FOUND, "Unknown shop".into()).into_response();
         }

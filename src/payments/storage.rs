@@ -79,7 +79,7 @@ pub(crate) async fn persist(
                 state = "captured_late".into();
             }
         } else if ["pending", "ready", "approved"].contains(&state.as_str()) {
-            state = if v["status"] == "APPROVED" {
+            state = if v["status"] == "APPROVED" || state == "approved" {
                 "approved"
             } else {
                 "ready"
@@ -112,6 +112,7 @@ pub(crate) async fn persist(
         }
     }
     let transitioned = state != p.state;
+    state::transition(&p.state, &state)?;
     sqlx::query("UPDATE payment_attempts SET state=$1,provider_order=coalesce($2,provider_order),approval_url=coalesce($3,approval_url),capture_id=$4,refunded_minor=$5,revision=revision+1 WHERE tenant=$6 AND id=$7").bind(&state).bind(provider_order).bind(url).bind(capture).bind(refunded).bind(&p.tenant).bind(&p.id).execute(&mut **tx).await?;
     if transitioned && state == "approved" {
         // Approval is verified by the provider adapter, never by a browser return URL.
@@ -182,7 +183,7 @@ pub(crate) async fn update_order(
         "payment.updated"
     };
     sqlx::query("INSERT INTO outbox(tenant,kind,data) VALUES($1,$2,$3)").bind(&p.tenant).bind(kind).bind(json!({"orderId":p.order,"attemptId":p.id,"state":state,"provider":p.provider,"environment":p.environment,"realMoneyCharged":p.environment=="live" && state=="captured","order":event_order})).execute(&mut **tx).await?;
-    if state == "captured" && let Some(e)=sqlx::query("UPDATE exposures SET rewarded=true WHERE tenant=$1 AND session=(SELECT data->>'session' FROM carts WHERE id=$2) AND rewarded=false RETURNING variant").bind(&p.tenant).bind(o["cart"]["id"].as_str().unwrap()).fetch_optional(&mut **tx).await?{sqlx::query("UPDATE policy SET purchases=purchases+1 WHERE tenant=$1 AND variant=$2").bind(&p.tenant).bind(e.get::<String,_>("variant")).execute(&mut **tx).await?;}
+    if state == "captured" && let Some(e)=sqlx::query("UPDATE exposures SET rewarded=true WHERE tenant=$1 AND session=(SELECT data->>'session' FROM carts WHERE tenant=$1 AND id=$2) AND rewarded=false RETURNING variant").bind(&p.tenant).bind(o["cart"]["id"].as_str().unwrap()).fetch_optional(&mut **tx).await?{sqlx::query("UPDATE policy SET purchases=purchases+1 WHERE tenant=$1 AND variant=$2").bind(&p.tenant).bind(e.get::<String,_>("variant")).execute(&mut **tx).await?;}
     Ok(())
 }
 pub(crate) async fn release_stock(
@@ -200,17 +201,10 @@ pub(crate) async fn release_stock(
             "Captured or uncertain payment cannot release inventory",
         ));
     }
-    let rows=sqlx::query("UPDATE inventory_reservations SET released=true WHERE tenant=$1 AND attempt_id=$2 AND NOT released RETURNING product_id,quantity").bind(&p.tenant).bind(&p.id).fetch_all(&mut **tx).await?;
-    for row in rows {
-        sqlx::query(
-            "UPDATE products SET stock=stock+$1,revision=revision+1 WHERE tenant=$2 AND id=$3",
-        )
-        .bind(row.get::<i32, _>("quantity"))
-        .bind(&p.tenant)
-        .bind(row.get::<String, _>("product_id"))
-        .execute(&mut **tx)
-        .await?;
-    }
+    state::transition(&p.state, state)?;
+    crate::commerce::inventory::release(tx, &p.tenant, &p.order).await?;
+    sqlx::query("UPDATE inventory_reservations SET released=true WHERE tenant=$1 AND attempt_id=$2 AND NOT released")
+        .bind(&p.tenant).bind(&p.id).execute(&mut **tx).await?;
     sqlx::query(
         "UPDATE payment_attempts SET state=$1,revision=revision+1 WHERE tenant=$2 AND id=$3",
     )

@@ -117,11 +117,15 @@ fn action(path: &str, method: &str) -> &'static str {
     }
     "catalog"
 }
-pub(crate) async fn authenticate(
-    State(a): State<App>,
-    mut request: Request,
-    next: Next,
-) -> Response {
+pub(crate) async fn authenticate(state: State<App>, request: Request, next: Next) -> Response {
+    // Identity lookup is trusted; the admitted business request gets a narrower context below.
+    vendune::tenant_scope::scoped(
+        vendune::tenant_scope::Scope::System,
+        authenticate_scoped(state, request, next),
+    )
+    .await
+}
+async fn authenticate_scoped(State(a): State<App>, mut request: Request, next: Next) -> Response {
     for key in [
         "x-rac-user",
         "x-rac-role",
@@ -210,7 +214,22 @@ pub(crate) async fn authenticate(
     if let Err(e) = crate::platform::admit(&a, request.headers(), &path, &method).await {
         return e.into_response();
     }
-    next.run(request).await
+    let scope = if public
+        || path.starts_with("/api/auth/")
+        || path == "/api/workspaces"
+        || path.starts_with("/api/developer")
+        || path.starts_with("/api/environments")
+        || path.starts_with("/api/workspace/")
+    {
+        // Provisioning, identity and staging require cross-workspace reads, after their existing grants.
+        vendune::tenant_scope::Scope::System
+    } else {
+        match tenant(request.headers()) {
+            Ok(t) => vendune::tenant_scope::Scope::Tenant(t),
+            Err(e) => return e.into_response(),
+        }
+    };
+    vendune::tenant_scope::scoped(scope, performance::admit_request(&a, request, next)).await
 }
 #[cfg(test)]
 mod tests {

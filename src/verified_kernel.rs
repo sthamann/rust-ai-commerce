@@ -158,3 +158,22 @@ pub fn reservation_release_admissible(
 ) -> bool {
     uncaptured || authorized && void_confirmed
 }
+
+// Supported explicit currency precision; larger scales must not overflow the decimal factor.
+pub fn currency_scale_admissible(scale: u64) -> bool {
+    scale <= 6
+}
+
+// Explicit ledger state codes are mapped by payments/state.rs; no backward monetary transitions.
+pub fn payment_transition_admissible(current: u64, next: u64) -> bool {
+    current <= 9
+        && next <= 9
+        && (current == next
+            || current <= 3 && next > current && next <= 4
+            || current <= 3 && (next == 7 || next == 8)
+            || (current == 4 || current == 5 || current == 9) && (next == 5 || next == 6)
+            || (current == 7 || current == 8) && next == 9)
+}
+pub fn resource_quota_admissible(limit: u64) -> bool {
+    limit > 0 && limit <= 1000000
+}

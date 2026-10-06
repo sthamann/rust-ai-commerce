@@ -144,25 +144,15 @@ pub(crate) fn attempt(r: &sqlx::postgres::PgRow) -> Attempt {
     }
 }
 pub(crate) fn amount_string(minor: i64) -> String {
-    format!("{}.{:02}", minor / 100, minor % 100)
+    vendune::money::Money::new(minor, vendune::money::Currency::eur()).decimal()
 }
 pub(crate) fn parse_minor(value: &str) -> Result<i64> {
-    let parts = value.split('.').collect::<Vec<_>>();
-    if parts.len() != 2
-        || parts[1].len() != 2
-        || !parts
-            .iter()
-            .all(|p| !p.is_empty() && p.bytes().all(|c| c.is_ascii_digit()))
-    {
+    let amount =
+        vendune::money::Money::parse(value, vendune::money::Currency::eur()).map_err(bad)?;
+    if amount.minor() < 0 || value.starts_with('-') {
         return Err(bad("Invalid provider money amount"));
     }
-    let major = parts[0]
-        .parse::<i64>()
-        .map_err(|_| bad("Amount overflow"))?;
-    major
-        .checked_mul(100)
-        .and_then(|v| v.checked_add(parts[1].parse::<i64>().ok()?))
-        .ok_or(bad("Amount overflow"))
+    Ok(amount.minor())
 }
 /// Each adapter implements this command boundary; the core owns ledger transitions.
 pub(crate) trait PaymentProvider {

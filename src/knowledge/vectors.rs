@@ -132,7 +132,7 @@ pub fn start(db: PgPool) {
     if std::env::var("QDRANT_URL").is_err() {
         return;
     }
-    tokio::spawn(async move {
+    crate::tenant_scope::spawn(async move {
         loop {
             if let Err(e) = drain(&db).await {
                 eprintln!("vector index: {e}");

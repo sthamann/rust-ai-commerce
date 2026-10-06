@@ -140,8 +140,10 @@ transaction. Preserve these foundations.
 Move reward/statistical counter updates from the purchase transaction into
 idempotent projections. Keep app compilation and slow external work outside
 inventory locks. Separate inventory storage from catalog content and keep the
-stock-changing transaction short. Extend explicit reservation and release rules
-for production payment outcomes and expiration.
+stock-changing transaction short. All payment methods now persist order allocations;
+release uses those quantities once, and verified payment states have central
+transition admission. Continue testing expiration/failover and multi-location
+inventory before claiming complete production inventory behavior.
 
 A flash sale for one SKU remains a single-inventory contention problem, even
 after shops are distributed across cells. First measure contention with short
@@ -185,12 +187,13 @@ when measured requirements exceed this design.
 ## 7. Add the SaaS operating contract
 
 Derive a trusted tenant context from verified membership or domain routing.
-Enforce it in queries, caches, search, jobs and storage. Add core-table RLS with
-a least-privileged database role as defense in depth; test transaction-scoped
-context for leakage under pooling. Existing tenant checks and managed-app RLS
-do not yet provide core-wide RLS. Migration 038 adds 22 composite tenant
-foreign keys and CI adversarial tests; these prevent wrong-shop relationships
-but do not replace database read/write containment. See [tenant isolation](tenant-isolation.md).
+Enforce it in queries, caches, search, jobs and storage. Core FORCE RLS and
+connection-bound scope are now implemented, with non-owner two-replica regression
+and strict startup checks. Direct/session pooling is required; transaction poolers
+need a different transaction-local integration. Migration 038 adds 22 composite
+tenant foreign keys and adversarial tests. Deployment must actually use the separate
+restricted login; policy installation alone does not establish containment. See
+[tenant isolation](tenant-isolation.md) and the [current production architecture](production-architecture.md).
 
 Implement idempotent provisioning, domain lifecycle, secret management, plan
 limits, durable usage accounting, audit/export/offboarding and per-tenant restore.

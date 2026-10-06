@@ -9,12 +9,18 @@ use std::{
         atomic::{AtomicU64, Ordering},
     },
 };
+mod admission;
 mod cache;
+pub(crate) use admission::{Admission, run as admit_request};
+mod invalidation;
 mod languages;
+pub(crate) use invalidation::start as start_invalidations;
 mod pool;
+mod row_security;
 mod settings;
 pub(crate) use languages::{LanguageRow, languages};
 pub(crate) use pool::pool_options;
+pub(crate) use row_security::verify as verify_row_security;
 pub(crate) use settings::settings;
 
 type Scope = (String, String);
@@ -30,6 +36,7 @@ pub(crate) struct LanguageEntry {
 pub(crate) struct Reads {
     settings: Mutex<cache::Cache<Scope, SettingsEntry>>,
     languages: Mutex<cache::Cache<(), LanguageEntry>>,
+    invalidations: AtomicU64,
     probes: AtomicU64,
     hits: AtomicU64,
     loads: AtomicU64,
@@ -41,6 +48,7 @@ impl Default for Reads {
         Self {
             settings: Mutex::new(cache::Cache::new(256, 32 * 1024 * 1024)),
             languages: Mutex::new(cache::Cache::new(1, 1024 * 1024)),
+            invalidations: AtomicU64::new(0),
             probes: AtomicU64::new(0),
             hits: AtomicU64::new(0),
             loads: AtomicU64::new(0),
@@ -50,9 +58,21 @@ impl Default for Reads {
     }
 }
 impl Reads {
+    pub(crate) fn invalidate(&self, tenant: &str) {
+        self.settings
+            .lock()
+            .unwrap()
+            .remove_where(|(t, _)| t == tenant);
+        self.invalidations.fetch_add(1, Ordering::Relaxed);
+    }
+    pub(crate) fn clear(&self) {
+        self.settings.lock().unwrap().remove_where(|_| true);
+        self.languages.lock().unwrap().remove_where(|_| true);
+    }
+
     pub(crate) fn snapshot(&self) -> Value {
         let (entries, bytes) = self.settings.lock().unwrap().usage();
-        json!({"enabled":self.enabled,"versionProbes":self.probes.load(Ordering::Relaxed),
+        json!({"eventInvalidations":self.invalidations.load(Ordering::Relaxed),"enabled":self.enabled,"versionProbes":self.probes.load(Ordering::Relaxed),
             "decodedHits":self.hits.load(Ordering::Relaxed),"payloadLoads":self.loads.load(Ordering::Relaxed),
             "requestMemoHits":self.memo_hits.load(Ordering::Relaxed),"settingsEntries":entries,
             "estimatedSettingsBytes":bytes,"maxSettingsEntries":256,"settingsBudgetBytes":32*1024*1024})

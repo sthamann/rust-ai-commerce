@@ -59,6 +59,16 @@ impl<K: Eq + Hash + Clone, V> Cache<K, V> {
             },
         );
     }
+    pub(crate) fn remove_where(&mut self, predicate: impl Fn(&K) -> bool) {
+        self.entries.retain(|key, entry| {
+            if predicate(key) {
+                self.weight -= entry.weight;
+                false
+            } else {
+                true
+            }
+        });
+    }
     pub(crate) fn usage(&self) -> (usize, usize) {
         (self.entries.len(), self.weight)
     }
@@ -67,6 +77,19 @@ impl<K: Eq + Hash + Clone, V> Cache<K, V> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn scoped_eviction_preserves_foreign_entries_and_owned_snapshots() {
+        let mut cache = Cache::new(3, 20);
+        cache.insert(("a", "default"), Arc::new(1), 4);
+        cache.insert(("a", "second"), Arc::new(2), 4);
+        cache.insert(("b", "default"), Arc::new(3), 4);
+        let snapshot = cache.get(&("a", "default")).unwrap();
+        cache.remove_where(|(tenant, _)| *tenant == "a");
+        assert_eq!(cache.usage(), (1, 4));
+        assert_eq!(*cache.get(&("b", "default")).unwrap(), 3);
+        assert_eq!(*snapshot, 1);
+        assert!(cache.get(&("a", "default")).is_none());
+    }
     #[test]
     fn bounded_weighted_eviction_preserves_recent_entries_and_owned_snapshots() {
         let mut cache = Cache::new(2, 10);

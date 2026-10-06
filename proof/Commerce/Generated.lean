@@ -84,4 +84,13 @@ def shop_request_admissible (active : Bool) (paused : Bool) (read_only : Bool) (
 def reservation_release_admissible (uncaptured : Bool) (authorized : Bool) (void_confirmed : Bool) : Bool :=
   (uncaptured || (authorized && void_confirmed))
 
+def currency_scale_admissible (scale : Nat) : Bool :=
+  (decide (scale ≤ 6))
+
+def payment_transition_admissible (current : Nat) (next : Nat) : Bool :=
+  (((decide (current ≤ 9)) && (decide (next ≤ 9))) && (((((decide (current = next)) || (((decide (current ≤ 3)) && (decide (next > current))) && (decide (next ≤ 4)))) || ((decide (current ≤ 3)) && ((decide (next = 7)) || (decide (next = 8))))) || ((((decide (current = 4)) || (decide (current = 5))) || (decide (current = 9))) && ((decide (next = 5)) || (decide (next = 6))))) || (((decide (current = 7)) || (decide (current = 8))) && (decide (next = 9)))))
+
+def resource_quota_admissible (limit : Nat) : Bool :=
+  ((decide (limit > 0)) && (decide (limit ≤ 1000000)))
+
 end CommerceKernel
