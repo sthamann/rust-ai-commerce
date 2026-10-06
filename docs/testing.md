@@ -238,3 +238,17 @@ Browser checks cover inherited source creation in App Studio Lab, private custom
 exclusion versus merchant retrieval, the real product preview, desktop and 375px
 layouts. See [the knowledge guide](knowledge-workspace.md) for source ownership,
 HTTP/MCP contracts, screenshots and the fixed-model/causality boundaries.
+
+## Adversarial tenant isolation
+
+The registered `tenant_isolation` HTTP suite uses two synthetic workspaces, real
+merchant/customer sessions, direct MCP/UCP calls, foreign IDs, forged scope
+headers, same-ID app records and revoked one-workspace integration keys. It
+re-reads victim state after denied mutations. The database helper tests all 22
+new composite foreign keys with own/foreign controls, scans tenant foreign keys
+for missing scoped counterparts, and tests forced app RLS under a restricted
+role including context reset on the same connection. It runs automatically via
+the existing CI integration registry, with zero provider calls.
+
+[Exact scope and remaining core-RLS boundary](tenant-isolation.md). Grouped
+checks are behavioral evidence, not 100% endpoint/authorization coverage.

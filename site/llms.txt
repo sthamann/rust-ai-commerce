@@ -1,6 +1,6 @@
 # Vendune
 
-> An MIT-licensed Rust ecommerce prototype for merchant-approved AI operations,
+> A source-available Rust ecommerce prototype under the Vendune Sustainable Use License for merchant-approved AI operations,
 > local LLMs, partial MCP/UCP adapters and selected original Shopware behavior ports.
 
 ## Start
@@ -27,3 +27,10 @@ Working prototype. Payments simulated/manual/Sandbox; no real money is charged.
 Not a full Shopware replacement or validated production SaaS.
 MCP/UCP are partial bindings. Hosted accounts and production OAuth are not configured.
 Live cloud quality, production scale and causal sales uplift are unverified.
+
+## License
+Own-business storefronts are permitted. Commercial shop platforms, managed hosting,
+white-label or embedded commerce SaaS for independent merchants need separate written permission.
+Previously distributed MIT versions retain their terms. Third-party licenses remain intact.
+- [License](https://github.com/sthamann/vendune/blob/main/LICENSE)
+- [Usage guide](https://github.com/sthamann/vendune/blob/main/docs/licensing.md)

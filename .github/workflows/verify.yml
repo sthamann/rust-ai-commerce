@@ -4,7 +4,7 @@ permissions:
   contents: read
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       DATABASE_URL: postgres://commerce:ci-only-password@127.0.0.1:15487/commerce
       QDRANT_URL: http://127.0.0.1:16333

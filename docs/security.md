@@ -39,8 +39,11 @@ sessionStorage, so same-origin XSS could steal them. Production needs an
 appropriate cookie/token gateway, strict CSP, TLS, origins/CSRF, OIDC/MFA,
 password recovery, verified email, abuse/rate controls and session management.
 
-All business relations are tenant-filtered in native HTTP, graph/vector and
-MCP paths. Database tables share one PostgreSQL application identity;
+Native object handlers bind tenant scope in HTTP, graph/vector and MCP paths.
+The adversarial [tenant isolation suite](tenant-isolation.md) tests ID/header
+swaps and unchanged victim state; it is not an exhaustive endpoint audit.
+Migration 038 additionally scopes 22 critical foreign-key relationships by
+tenant, preventing wrong-shop order/payment/event/staging associations. Database tables share one PostgreSQL application identity;
 **core-wide RLS and physically isolated tenants are not implemented**. Managed app
 tables have forced RLS; the local DB account is a superuser, which bypasses it.
 A restricted-identity regression proves the policy, not production containment. These

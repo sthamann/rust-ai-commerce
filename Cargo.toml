@@ -2,7 +2,7 @@
 name = "vendune"
 version = "0.5.0"
 edition = "2024"
-license = "MIT"
+license-file = "LICENSE"
 description = "Experimental AI-native commerce and Shopware migration laboratory"
 
 [dependencies]

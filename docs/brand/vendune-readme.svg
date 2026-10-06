@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400" role="img" aria-label="Vendune">
+  <title>Vendune — Commerce for humans. Built for agents.</title>
+  <desc>Vendune's blue and cyan dune identity connects storefronts, the merchant studio and agents to one commerce core.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7faff"/><stop offset="1" stop-color="#e9f4ff"/></linearGradient>
+    <linearGradient id="dune" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2459ef"/><stop offset="1" stop-color="#18b9d9"/></linearGradient>
+    <linearGradient id="sand" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#2459ef" stop-opacity=".07"/><stop offset="1" stop-color="#18b9d9" stop-opacity=".17"/></linearGradient>
+  </defs>
+  <rect width="1280" height="400" rx="28" fill="url(#background)"/>
+  <path d="M700 400C800 258 970 452 1280 228V400Z" fill="url(#sand)"/>
+  <path d="M638 400C851 193 1003 450 1280 190" fill="none" stroke="#2459ef" stroke-opacity=".10" stroke-width="2"/>
+  <path d="M696 400C890 239 1035 426 1280 251" fill="none" stroke="#18b9d9" stroke-opacity=".22" stroke-width="2"/>
+  <g transform="translate(56 50)">
+    <rect width="58" height="58" rx="16" fill="url(#dune)"/>
+    <path d="M11 16h11l8 21 8-21h11L34 46h-9Z" fill="#fff"/>
+    <path d="M12 44c11-7 23-6 34-2" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="3" stroke-linecap="round"/>
+  </g>
+  <g font-family="Inter,Arial,sans-serif" fill="#14233f">
+    <text x="130" y="92" font-size="45" font-weight="700" letter-spacing="-2">Vendune</text>
+    <text x="56" y="188" font-size="48" font-weight="700" letter-spacing="-2">Commerce for humans.</text>
+    <text x="56" y="244" font-size="48" font-weight="700" letter-spacing="-2" fill="#2459ef">Built for agents.</text>
+    <text x="58" y="293" font-size="20" fill="#536782">Rust core. Connected knowledge. Merchant control.</text>
+    <text x="58" y="349" font-size="15" font-weight="600" letter-spacing="2" fill="#58729b">SELF-HOSTED · SOURCE AVAILABLE · EXTENSIBLE</text>
+  </g>
+  <g fill="none" stroke="#9abbe4" stroke-width="2">
+    <path d="M909 138L1077 104 1129 247 919 293Z" stroke-dasharray="4 8"/>
+    <path d="M909 138L1016 209 1077 104M1016 209L1129 247M1016 209L919 293"/>
+  </g>
+  <g font-family="Inter,Arial,sans-serif" font-size="15" font-weight="600" text-anchor="middle" fill="#526984">
+    <rect x="841" y="114" width="138" height="48" rx="15" fill="#fff" stroke="#dae6f5"/>
+    <text x="910" y="144">Storefront</text>
+    <rect x="1014" y="78" width="126" height="48" rx="15" fill="#fff" stroke="#dae6f5"/>
+    <text x="1077" y="108">Studio</text>
+    <rect x="1066" y="223" width="126" height="48" rx="15" fill="#fff" stroke="#dae6f5"/>
+    <text x="1129" y="253">Agents</text>
+    <rect x="853" y="269" width="132" height="48" rx="15" fill="#fff" stroke="#dae6f5"/>
+    <text x="919" y="299">Apps</text>
+    <rect x="946" y="184" width="140" height="50" rx="16" fill="url(#dune)"/>
+    <text x="1016" y="215" fill="#fff">Rust core</text>
+  </g>
+</svg>

@@ -136,6 +136,10 @@ const SCHEMA: &[(&str, &str)] = &[
         "037-read-context-cache",
         include_str!("../migrations/037-read-context-cache.sql"),
     ),
+    (
+        "038-tenant-references",
+        include_str!("../migrations/038-tenant-references.sql"),
+    ),
 ];
 
 pub(crate) async fn apply(pool: &PgPool) {

@@ -1,8 +1,8 @@
 [
   {
     "file": "index.html",
-    "title": "Vendune \u2014 Open-source agentic commerce with merchant control",
-    "description": "Explore an open-source Rust ecommerce prototype with merchant-approved AI actions, local LLMs, MCP/UCP adapters and selected Shopware behavior ports."
+    "title": "Vendune \u2014 Agentic commerce with merchant control",
+    "description": "Explore a source-available Rust commerce prototype with merchant-controlled AI, extensible apps, local models and MCP/UCP adapters. Self-host your own stores."
   },
   {
     "file": "benchmarks.html",
