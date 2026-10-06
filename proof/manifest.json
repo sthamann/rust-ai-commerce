@@ -1049,8 +1049,8 @@
     },
     "src/inference.rs": {
       "status": "unproved",
-      "sha256": "5f3f79093cc3c78d3b7e2de3a6fde87ee18dd80b52401a979a74e5ba84157c3b",
-      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
+      "sha256": "8245febf63d95b98963bc81cde0eab7f38e2eccb678c9ea9eafc7baf07810de6",
+      "review": "Preserve existing textual OpenAI/Claude wire contracts for normal chat; use multimodal content only when broker images exist. Provider fixture and broker regressions verify both routes."
     },
     "src/knowledge/relations.rs": {
       "status": "unproved",

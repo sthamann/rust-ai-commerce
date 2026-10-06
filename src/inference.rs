@@ -172,11 +172,11 @@ impl Inference {
                 format!("{}/api/chat", self.ollama.trim_end_matches('/')),
             ),
             Provider::Openai => (
-                json!({"model":model,"store":false,"instructions":system,"input":[{"role":"user","content":visual}],"max_output_tokens":8192,"text":{"format":{"type":"json_schema","name":"commerce_result","strict":true,"schema":strict_schema(schema.clone())}}}),
+                json!({"model":model,"store":false,"instructions":system,"input":if images.is_empty(){json!(user)}else{json!([{"role":"user","content":visual}])},"max_output_tokens":8192,"text":{"format":{"type":"json_schema","name":"commerce_result","strict":true,"schema":strict_schema(schema.clone())}}}),
                 format!("{}/responses", self.openai_url.trim_end_matches('/')),
             ),
             Provider::Anthropic => (
-                json!({"model":model,"max_tokens":8192,"system":system,"messages":[{"role":"user","content":claude}],"output_config":{"format":{"type":"json_schema","schema":schema}}}),
+                json!({"model":model,"max_tokens":8192,"system":system,"messages":[{"role":"user","content":if images.is_empty(){json!(user)}else{json!(claude)}}],"output_config":{"format":{"type":"json_schema","schema":schema}}}),
                 format!("{}/messages", self.anthropic_url.trim_end_matches('/')),
             ),
         };
