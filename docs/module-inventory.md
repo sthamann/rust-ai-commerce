@@ -466,6 +466,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/markdown-editor.css](../frontend/src/admin/styles/markdown-editor.css) | Shared visual/Markdown product editor treatment using existing Studio theme tokens. |
 | [frontend/src/admin/styles/media-workspace.css](../frontend/src/admin/styles/media-workspace.css) | Gallery workspace: airy tiles, focused image inspector and accessible upload surfaces using Studio theme tokens. |
 | [frontend/src/admin/styles/operations.css](../frontend/src/admin/styles/operations.css) | Operational screens share the studio's light surface and clear focus states. |
+| [frontend/src/admin/styles/provider-account.css](../frontend/src/admin/styles/provider-account.css) | Shared provider onboarding layout works independently of the lazy-loaded visual App Studio. |
 | [frontend/src/admin/styles/sales-channels.css](../frontend/src/admin/styles/sales-channels.css) | Sales-channel cards, onboarding and scoped settings use the same responsive, accessible Studio design. |
 | [frontend/src/admin/styles/settings.css](../frontend/src/admin/styles/settings.css) | Independent settings navigation, grouped native forms and save feedback in Studio theme tokens. |
 | [frontend/src/admin/styles/studio/01-studio.css](../frontend/src/admin/styles/studio/01-studio.css) | studio: studio styles. Source order is preserved by the entry stylesheet. |

@@ -1,0 +1,51 @@
+/** Shared provider onboarding layout works independently of the lazy-loaded visual App Studio. */
+.provider-account {
+  display: grid;
+  gap: 20px;
+  padding: 24px;
+  margin-block: 20px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+}
+.provider-account > h2 {
+  margin: 0;
+  font-size: 20px;
+}
+.provider-account > label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.provider-account > label select {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.provider-account .workbench-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.provider-account > a {
+  justify-self: start;
+  text-decoration: none;
+}
+.provider-account > p {
+  margin: 0;
+  line-height: 1.6;
+}
+@media (max-width: 640px) {
+  .provider-account {
+    padding: 16px;
+    border-radius: 16px;
+  }
+  .provider-account .workbench-row > button {
+    flex: 1 1 180px;
+  }
+}
