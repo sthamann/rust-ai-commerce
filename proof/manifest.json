@@ -1293,8 +1293,8 @@
     },
     "src/money.rs": {
       "status": "reviewed-binding",
-      "sha256": "f2de165124e0cc8aad0e3416a454db592a17211aae5a3788f4d8995c3797527a",
-      "review": "Reviewed all changed Rust, append-only schemas, build/extraction and Lean inputs: lease hooks bind new/reused connections and reset on release; strict runtime rejects owner/bypass/TRUNCATE and preserves app-schema ownership; two-replica non-owner PostgreSQL tests deny forged foreign writes, enforce operator quotas and parent-stage daily usage, release persisted allocation quantities once despite corrupted snapshots, and distinguish commit from rollback invalidation. Money retains legacy EUR rounding with explicit scale and original Shopware differential; receipt-backed state admission is monotonic with late capture/refund. Async SQL/provider code remains unproved. Rust 113 tests, staging/app/automation/settings and strict checkout/CRM/tenant regressions passed; 274 frontend tests and production build passed."
+      "sha256": "039c3f3be70eb843a5c2bf1b6bbf8b6b5dfb89111050118a774b2557980a8142",
+      "review": "Final Money boundary review rejects negative source totals before rounding, including fractions below one cent that previously rounded to negative zero. Signed Money remains valid for explicit credit arithmetic. Exact roundtrip/overflow/currency tests and original-Shopware positive EUR boundary comparison remain intact. Product-question quota classifier follows the actual native route. No broader pricing rewrite, SQL proof or provider certification is claimed."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",

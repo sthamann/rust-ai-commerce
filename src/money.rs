@@ -123,7 +123,11 @@ impl Money {
     /// This is not a conversion of the Shopware price calculators to integer arithmetic.
     pub fn from_legacy_eur(total: f64) -> Result<Self, &'static str> {
         let minor = (total * 100.).round();
-        if !minor.is_finite() || minor < 0. || minor >= 9_223_372_036_854_775_808. {
+        if !total.is_finite()
+            || total < 0.
+            || !minor.is_finite()
+            || minor >= 9_223_372_036_854_775_808.
+        {
             return Err("Invalid legacy checkout amount");
         }
         Ok(Self::new(minor as i64, Currency::eur()))
@@ -181,7 +185,14 @@ mod tests {
                 .checked_add(&Money::new(1, Currency::new("EUR", 3).unwrap()))
                 .is_err()
         );
-        for total in [f64::NAN, f64::INFINITY, -1., 1e30] {
+        for total in [
+            f64::NAN,
+            f64::INFINITY,
+            -1.,
+            -0.004,
+            -f64::MIN_POSITIVE,
+            1e30,
+        ] {
             assert!(Money::from_legacy_eur(total).is_err());
         }
     }
