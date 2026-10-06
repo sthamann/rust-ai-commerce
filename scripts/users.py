@@ -29,7 +29,10 @@ for origin in [BASE]+([public_origin] if public_origin.startswith('https://') el
 for origin in ['https://studio.example.test.evil.test','https://studio.example.test/path','null','https://foreign.test']:
     req('/mcp',mcp_list,{**oh,'Origin':origin,'Host':'studio.example.test'},expected=403)
 check('browser MCP admits configured origins and rejects foreign, path, null and spoofed Host origins')
-assert owner['workspaces']==[{'id':owner['workspace'],'name':'Team Demo','role':'owner'}]
+assert len(owner['workspaces'])==1
+workspace=owner['workspaces'][0]
+assert {k:workspace[k] for k in ['id','name','role']}=={'id':owner['workspace'],'name':'Team Demo','role':'owner'}
+assert workspace['urls']['storefrontUrl']==f"https://{owner['workspace']}.vendune.ai/" if os.getenv('SHOP_DOMAIN_SUFFIX')=='vendune.ai' else '?shop='+owner['workspace'] in workspace['urls']['storefrontUrl']
 assert 'password_hash' not in json.dumps(owner); check('personal owner registration and scoped workspace discovery')
 req('/api/auth/login',{'email':owner['user']['email'],'password':'wrong'},expected=401)
 req('/api/auth/login',{'email':'nonexistent-'+suffix+'@example.test','password':password},expected=401)

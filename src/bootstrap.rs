@@ -44,13 +44,12 @@ pub(crate) async fn bootstrap() -> App {
         .build()
         .unwrap();
     let a = App {
-        db,
+        db: db.clone(),
         inference_slots: Arc::new(tokio::sync::Semaphore::new(4)),
         token: Arc::new(auth),
-        inference: Inference::from_env(http.clone()),
+        inference: Inference::from_env(http.clone()).with_database(db.clone()),
         http,
         model: Arc::new(env::var("OLLAMA_MODEL").unwrap_or("qwen3.6:35b".into())),
-        ollama: Arc::new(env::var("OLLAMA_URL").unwrap_or("http://127.0.0.1:11434".into())),
         sandboxes: Arc::new(RwLock::new(HashMap::new())),
         channel_metrics: Arc::new(channel_metrics::ChannelMetrics::default()),
         app_limits: Arc::new(apps::ServiceLimits::default()),

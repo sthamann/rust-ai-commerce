@@ -224,4 +224,12 @@ theorem checkout_review_exact (revision methods : Bool) (expected actual : Nat) 
     revision = true ∧ expected = actual ∧ methods = true := by
   simp [checkout_review_admissible, and_assoc]
 
+/-- Exact lifecycle admission includes legitimate reads and settlement; no blanket rejection. -/
+theorem shop_availability_exact (active paused read settlement : Bool) :
+    shop_request_admissible active paused read settlement = (settlement || active || paused && read) := by rfl
+/-- Archived availability cannot admit customer operations or merchant reads, except reconciliation. -/
+theorem shop_archived_denied (read : Bool) :
+    shop_request_admissible false false read false = false := by
+  cases read <;> simp [shop_request_admissible]
+
 end CommerceKernel

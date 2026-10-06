@@ -5,7 +5,7 @@ pub(super) async fn provider(State(a): State<App>, h: HeaderMap) -> Result<Json<
     merchant(&a, &h)?;
     auth::permit(&h, "catalog.read")?;
     Ok(Json(
-        json!({"configured":super::image_provider::configured(),"model":super::image_provider::model()}),
+        json!({"configured":super::image_provider::configured(&a).await,"model":super::image_provider::model()}),
     ))
 }
 pub(super) async fn enqueue(
@@ -49,7 +49,7 @@ pub(super) async fn enqueue(
             ));
         }
     }
-    if !super::image_provider::configured() {
+    if !super::image_provider::configured(&a).await {
         return Err(bad("Image provider not configured"));
     }
     let count:i64=sqlx::query_scalar("SELECT count(*) FROM media_jobs WHERE tenant=$1 AND product_id=$2 AND state IN ('queued','processing')").bind(&t).bind(&product).fetch_one(&mut *tx).await?;
@@ -162,10 +162,10 @@ pub(super) async fn apply(
 pub(crate) async fn image_once(a: &App) -> Result<()> {
     // Interrupted provider calls are deliberately not retried: a lost response may already have incurred a charge.
     sqlx::query("UPDATE media_jobs SET state='failed',error='Image request interrupted; start a new job manually' WHERE state='processing' AND started_at < now()-interval '5 minutes'").execute(&a.db).await?;
-    if !super::image_provider::configured() {
+    if !super::image_provider::configured(a).await {
         return Ok(());
     }
-    let job=sqlx::query("UPDATE media_jobs SET state='processing',started_at=now() WHERE (tenant,id)=(SELECT tenant,id FROM media_jobs WHERE state='queued' ORDER BY created_at LIMIT 1 FOR UPDATE SKIP LOCKED) RETURNING *").fetch_optional(&a.db).await?;
+    let job=sqlx::query("UPDATE media_jobs SET state='processing',started_at=now() WHERE (tenant,id)=(SELECT tenant,id FROM media_jobs WHERE state='queued' AND EXISTS(SELECT 1 FROM tenants t WHERE t.id=coalesce((SELECT live_tenant FROM shop_environments WHERE tenant=media_jobs.tenant),media_jobs.tenant) AND t.status='active') ORDER BY created_at LIMIT 1 FOR UPDATE SKIP LOCKED) RETURNING *").fetch_optional(&a.db).await?;
     let Some(job) = job else {
         return Ok(());
     };
@@ -204,6 +204,7 @@ async fn generate(a: &App, t: &str, product: &str, request: &Value) -> Result<St
         None
     };
     let bytes = super::image_provider::create(
+        a,
         request["prompt"]
             .as_str()
             .ok_or(bad("Invalid image instructions"))?,

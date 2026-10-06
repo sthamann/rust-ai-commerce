@@ -2,7 +2,7 @@
 use super::*;
 pub(crate) async fn once(a: &App) -> Result<()> {
     let lease = Uuid::new_v4().to_string();
-    let row=sqlx::query("UPDATE translation_jobs SET status='processing',lease=$1,lease_until=now()+interval '15 minutes' WHERE (tenant,id)=(SELECT tenant,id FROM translation_jobs WHERE status='queued' OR (status='processing' AND lease_until<now()) ORDER BY created_at FOR UPDATE SKIP LOCKED LIMIT 1) RETURNING *").bind(&lease).fetch_optional(&a.db).await?;
+    let row=sqlx::query("UPDATE translation_jobs SET status='processing',lease=$1,lease_until=now()+interval '15 minutes' WHERE (tenant,id)=(SELECT tenant,id FROM translation_jobs WHERE (status='queued' OR (status='processing' AND lease_until<now())) AND EXISTS(SELECT 1 FROM tenants t WHERE t.id=coalesce((SELECT live_tenant FROM shop_environments WHERE tenant=translation_jobs.tenant),translation_jobs.tenant) AND t.status='active') ORDER BY created_at FOR UPDATE SKIP LOCKED LIMIT 1) RETURNING *").bind(&lease).fetch_optional(&a.db).await?;
     let Some(job) = row else {
         return Ok(());
     };

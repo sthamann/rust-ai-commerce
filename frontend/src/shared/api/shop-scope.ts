@@ -1,9 +1,13 @@
-/** Canonical browser shop scope for storefront URLs and tenant-isolated customer storage. */
+/** Canonical shop hosts; Studio identity remains on the shared origin. Reserved service hosts never become tenant IDs. */
+const reserved = ["app", "www", "admin", "api", "platform", "mail"];
+export function validShopId(id: string): boolean {
+  return /^[a-z0-9][a-z0-9-]{0,46}[a-z0-9]$/.test(id) && !reserved.includes(id);
+}
 export function hostnameShop(): string | undefined {
   const host = location.hostname;
   if (!host.endsWith(".vendune.ai")) return undefined;
   const shop = host.slice(0, -".vendune.ai".length);
-  return ["app", "www"].includes(shop) ? undefined : shop;
+  return validShopId(shop) ? shop : undefined;
 }
 export function shopScope(): string {
   return (
@@ -13,10 +17,30 @@ export function shopScope(): string {
   );
 }
 export function storefrontURL(id: string, studio = false): string {
+  const publicHost =
+    location.hostname === "vendune.ai" ||
+    location.hostname.endsWith(".vendune.ai");
   const path = `/?shop=${encodeURIComponent(id)}${studio ? "#merchant" : ""}`;
-  return !studio &&
-    (location.hostname === "vendune.ai" ||
-      location.hostname.endsWith(".vendune.ai"))
-    ? `https://${id}.vendune.ai/`
-    : path;
+  if (!publicHost || !validShopId(id)) return path;
+  return studio ? `https://app.vendune.ai${path}` : `https://${id}.vendune.ai/`;
+}
+/** Upgrade legacy shared-origin storefront bookmarks without moving login, Studio or private staging sessions. */
+export function canonicalShopURL(url: URL): string | undefined {
+  if (
+    !["app.vendune.ai", "vendune.ai", "www.vendune.ai"].includes(url.hostname)
+  )
+    return;
+  const id = url.searchParams.get("shop");
+  if (
+    !id ||
+    !validShopId(id) ||
+    url.searchParams.has("studio") ||
+    url.searchParams.has("sandbox") ||
+    ["#merchant", "#studio-content", "#login", "#platform"].includes(url.hash)
+  )
+    return;
+  const target = new URL(url.href);
+  target.hostname = `${id}.vendune.ai`;
+  target.searchParams.delete("shop");
+  return target.href;
 }

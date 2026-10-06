@@ -127,3 +127,14 @@ large-catalog staged branches, backups/restores and measured failover. The
 [operator guide](platform.md) describes exactly what the dashboard measures.
 
 The Northflank topology, cost model and migration boundaries are in [managed-hosting.md](managed-hosting.md).
+
+## Central provider secrets and shop domains
+
+With wildcard DNS/TLS and `SHOP_DOMAIN_SUFFIX=vendune.ai`, new shops use
+`SHOP.vendune.ai`; `admin.vendune.ai` is the public service directory. Set
+`COMMERCE_PUBLIC_ORIGIN=https://app.vendune.ai` for the shared merchant Studio.
+Provision `PLATFORM_SECRET_KEY` as a persistent runtime-only 64-character random
+hex key before saving provider API keys in the operator console. All replicas and
+AI workers need the same key; back it up separately. Do not rotate it without
+re-encrypting existing credentials. `INFERENCE_ALLOW_LOOPBACK` stays false in
+public deployments. [Control-plane behavior and boundaries](platform.md).

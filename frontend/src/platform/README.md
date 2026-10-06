@@ -16,3 +16,7 @@ Files and their individual responsibilities are listed in [the generated source 
 ## Verification
 
 Run `npm run build`, `npm test`, `npm run test:coverage` and `npm run architecture` from `frontend/`. Coverage includes untested source files; a module in this folder is not automatically fully tested. See the root [testing guide](../../../docs/testing.md) for backend integration and coverage limits.
+
+## Service directory and operator controls
+
+`AdminHub.tsx` is the public `admin.vendune.ai` directory. Merchant login uses the shared Studio origin; operator access uses the independently checked grant. `PlatformAI`, `PlatformShopDetail` and `PlatformInfrastructure` own separate editors/readouts. `platform-api.ts` keeps typed operator contracts; `shared/i18n/control-i18n.ts` supplies EN/DE/ES/FR vocabulary.

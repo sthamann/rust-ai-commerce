@@ -1,6 +1,6 @@
 # SaaS operator console
 
-Open `/#platform` on the same origin as the storefront. This is a separate,
+Open [admin.vendune.ai](https://admin.vendune.ai/) for the service directory, then choose **Platform operator**. Locally, open `/#platform`. This is a separate,
 multilingual control plane for the platform operator, with a light blue workspace,
 shop directory, statistics, shop creation and a bounded activity log. Its personal
 session is independent of the merchant studio's browser session.
@@ -67,8 +67,11 @@ an empty shop or sample catalogue. Neither choice creates demo customers or know
 customer passwords. Settings, membership and audit commit in one transaction.
 The shop uses simulated payments until explicitly configured for a provider.
 
-The directory opens `/?shop=ID` and `/?shop=ID#merchant`. One frontend serves many
-shops and selected sales channels. The configured `SHOP_DOMAIN_SUFFIX` can bind
+On a configured public host, the directory opens `https://ID.vendune.ai/` and
+`https://app.vendune.ai/?shop=ID#merchant`. Legacy shared-origin storefront
+bookmarks redirect to the shop subdomain and retain product/channel/locale context.
+Studio/login and private sandbox URLs stay on their original authenticated origin.
+One frontend serves many shops and selected sales channels. The configured `SHOP_DOMAIN_SUFFIX` can bind
 known shop subdomains to tenant scope; see [managed hosting](managed-hosting.md).
 Automatic DNS/certificate provisioning for arbitrary merchant domains, billing,
 resource quotas and automatic Storyfront-service provisioning remain absent.
@@ -87,8 +90,12 @@ returned by the aggregate endpoints.
 | `GET /api/platform/session` | Current operator identity and platform capabilities |
 | `GET /api/platform/overview?days=30` | Global counts, per-currency totals, persisted channel counters |
 | `GET /api/platform/shops?days=30&search=demo&limit=50&after=ID` | Bounded live-shop directory; `hasMore`, `nextCursor` |
-| `GET /api/platform/shops/ID?days=30` | Shop name, currency totals and daily orders |
-| `POST /api/platform/shops` | `{id,name,ownerEmail?,seedCatalog?}`; returns shop paths and payment/indexing state |
+| `GET /api/platform/shops/ID?days=30` | Registration/status, business identity, team, product/customer/app counts, channels, lifetime HTTP timings, currency totals and daily orders |
+| `POST /api/platform/shops` | `{id,name,ownerEmail?,seedCatalog?}`; returns canonical `urls`, legacy paths and payment/indexing state |
+| `POST /api/platform/shops/ID/status` | `{status,revision,reason,confirmShopId?}`; audited, reversible lifecycle |
+| `GET /api/platform/ai` | Current revision, sanitized settings and key-presence flags; never key values |
+| `PUT /api/platform/ai` | `{revision,settings,keys?,clearKeys?}`; encrypted write-only credentials |
+| `GET /api/platform/infrastructure` | Real database/Qdrant probes, process pool/cache, queues, HTTP timings and optional Linux container resources |
 | `GET /api/platform/audit` | Latest 100 operator events without private audit payloads |
 
 The frontend and API support English, German, French and Spanish for UI copy.
@@ -110,3 +117,71 @@ provisioning, browser behavior and deployment are explicitly outside its proof.
 This console is an experimental platform control plane, not a complete hardened
 SaaS operations system. Backup restore, abuse control, SSO/MFA/account recovery,
 quotas, settlement accounting and measured failover still require work.
+
+## Central AI, inherited by all shops
+
+**AI providers** selects the platform default and manages Ollama-compatible,
+OpenAI Responses and Anthropic Messages connections. Existing shops and new shops
+resolve the same server-side settings. Chat, app generation, product questions,
+translation jobs and AI flow proposals use the shared adapter. Choose **Platform
+default** to follow later operator changes; explicit provider choices remain
+available. Settings are cached per process for at most five seconds. Restarted
+replicas recover them from PostgreSQL. No browser account subscription is linked. **Configured** means the adapter has
+the required settings/credentials, not that a paid request or provider-health
+probe has succeeded.
+
+Keys are write-only and stored as AES-256-GCM ciphertext with a random nonce and
+provider-specific authentication. `PLATFORM_SECRET_KEY` must contain 64 random
+hex characters, be runtime-only, identical across replicas, and backed up
+separately from the database. A missing/mismatched key fails safely; replacing it
+without preserving the old key makes existing ciphertext unreadable. Blank key
+fields retain stored keys. Removing a stored key restores environment fallback;
+it does not erase an environment credential. Disabling a provider denies its use.
+No key is returned to merchants, operators or audit responses.
+
+Ollama credentials/endpoints are also used by embeddings, while
+`EMBEDDING_MODEL` stays pinned to the indexed 1024-dimensional model. Changing the
+chat model cannot silently reinterpret the vector index. Optional product image
+jobs use the inherited OpenAI connection but still require
+`IMAGE_GENERATION_ENABLED=true` and keep their independent image model. Central
+settings do not start a paid inference/image request by themselves.
+
+![Central AI settings in the actual local operator UI](assets/platform-ai-en.png)
+
+## Shop lifecycle and dossier
+
+Open a directory row to view registration, company/legal details, team access,
+products, customers, installed apps, sales channels and recorded API/MCP/UCP
+activity. Channel cards link to their actual storefront scope. Counts are bounded
+reads over stored records; HTTP calls are not unique visitors.
+
+**Pause** requires a reason and current status revision. Customer actions, AI
+requests and ordinary writes are denied. Authenticated merchants retain read-only
+GET access and explicitly admitted product/order searches and quotes. Live-shop
+suspension also applies to its private stages. New outbox/flow/app/schedule/
+translation/vector/image work is deferred; already-running requests/tasks can
+finish. Reconciliation of existing payment outcomes remains available.
+
+**Move to trash** additionally requires typing the exact shop ID. It closes shop
+operations but preserves records and can be restored through the same console.
+This is recoverable deletion, not physical erasure or a GDPR purge. Status changes
+are revision-checked in a transaction and record actor, time and reason. They do
+not automatically cancel orders, refund payments or terminate running providers.
+
+## Infrastructure and measurement boundaries
+
+![Actual local service probes; unavailable Linux counters remain empty](assets/platform-infrastructure-en.png)
+
+**Infrastructure** shows PostgreSQL size/version/connection probes, Qdrant
+health, Rust pool/cache diagnostics and pending events. HTTP counters persist
+per shop/channel and aggregate across processes. Mean/max handler milliseconds
+use only calls with recorded timing; older requests do not dilute averages.
+They exclude the external network and browser rendering, and are best-effort
+operational diagnostics rather than billing or security logs.
+
+CPU/RAM come from Linux `/proc` and cgroup v2 when available; CPU needs two
+refreshes at least a second apart and is normalized to the container quota.
+Unavailable readings display **—**. Pool/cache/process readings describe the
+responding process/container, not every hosting service or the whole fleet.
+No p95/p99, host-wide load, database CPU, external LLM performance or GA visitor
+counts are invented. Use the hosting provider's monitoring for that broader view.

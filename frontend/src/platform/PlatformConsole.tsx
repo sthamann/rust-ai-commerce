@@ -1,4 +1,8 @@
 /** Independent platform control plane: personal operator access, bounded statistics and audited shop creation. */
+import { useControlText } from "../shared/i18n/control-i18n";
+import PlatformAI from "./PlatformAI";
+import PlatformInfrastructure from "./PlatformInfrastructure";
+import PlatformShopDetail from "./PlatformShopDetail";
 import Brand from "../shared/ui/Brand";
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "../shared/i18n/i18n";
@@ -19,6 +23,7 @@ import PlatformSignIn from "./PlatformSignIn";
 import "./styles/platform.css";
 const storage = "rac-platform-token";
 export default function PlatformConsole() {
+  const c = useControlText();
   const t = usePlatformText(),
     { date } = useLocale();
   const [token, setToken] = useState(
@@ -29,9 +34,9 @@ export default function PlatformConsole() {
     [page, setPage] = useState<ShopPage>(),
     [audit, setAudit] = useState<Audit[]>([]),
     [detail, setDetail] = useState<ShopDetail>();
-  const [view, setView] = useState<"overview" | "shops" | "activity">(
-      "overview",
-    ),
+  const [view, setView] = useState<
+      "overview" | "shops" | "activity" | "ai" | "infrastructure"
+    >("overview"),
     [days, setDays] = useState(30),
     [search, setSearch] = useState(""),
     [create, setCreate] = useState(false),
@@ -60,13 +65,20 @@ export default function PlatformConsole() {
         `/api/platform/shops?days=${days}&search=${encodeURIComponent(search)}`,
       ),
       request<{ elements: Audit[] }>(token, "/api/platform/audit"),
+      detail
+        ? request<ShopDetail>(
+            token,
+            `/api/platform/shops/${detail.id}?days=${days}`,
+          )
+        : Promise.resolve(undefined),
     ])
-      .then(([o, m, s, a]) => {
+      .then(([o, m, s, a, d]) => {
         if (current !== generation.current) return;
         setOperator(o);
         setOverview(m);
         setPage(s);
         setAudit(a.elements);
+        if (d) setDetail(d);
       })
       .catch((e) => {
         if (current !== generation.current) return;
@@ -158,7 +170,9 @@ export default function PlatformConsole() {
         </div>
         <strong>{t("title")}</strong>
         <nav>
-          {(["overview", "shops", "activity"] as const).map((v) => (
+          {(
+            ["overview", "shops", "ai", "infrastructure", "activity"] as const
+          ).map((v) => (
             <button
               key={v}
               className={view === v ? "selected" : ""}
@@ -169,7 +183,7 @@ export default function PlatformConsole() {
                 setCreate(false);
               }}
             >
-              {t(v)}
+              {v === "ai" || v === "infrastructure" ? c(v) : t(v)}
             </button>
           ))}
         </nav>
@@ -183,7 +197,9 @@ export default function PlatformConsole() {
         <header>
           <div>
             <small>{t("title")}</small>
-            <h1>{t(view)}</h1>
+            <h1>
+              {view === "ai" || view === "infrastructure" ? c(view) : t(view)}
+            </h1>
           </div>
           <div className="platform-actions">
             <PlatformLanguage />
@@ -241,6 +257,21 @@ export default function PlatformConsole() {
         ) : detail && overview ? (
           <>
             <button onClick={() => setDetail(undefined)}>← {t("back")}</button>
+            <PlatformShopDetail
+              data={detail}
+              token={token}
+              onChanged={() =>
+                void run(async () => {
+                  setDetail(
+                    await request(
+                      token,
+                      `/api/platform/shops/${detail.id}?days=${days}`,
+                    ),
+                  );
+                  setRefresh((x) => x + 1);
+                })
+              }
+            />
             <PlatformDashboard data={overview} detail={detail} />
           </>
         ) : view === "overview" && overview ? (
@@ -273,6 +304,10 @@ export default function PlatformConsole() {
               )
             }
           />
+        ) : view === "ai" ? (
+          <PlatformAI key={refresh} token={token} />
+        ) : view === "infrastructure" ? (
+          <PlatformInfrastructure key={refresh} token={token} />
         ) : view === "activity" ? (
           <section className="platform-panel">
             <h2>{t("activity")}</h2>

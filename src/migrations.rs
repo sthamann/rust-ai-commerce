@@ -148,6 +148,10 @@ const SCHEMA: &[(&str, &str)] = &[
         "040-automation-defaults",
         include_str!("../migrations/040-automation-defaults.sql"),
     ),
+    (
+        "041-platform-control",
+        include_str!("../migrations/041-platform-control.sql"),
+    ),
 ];
 
 pub(crate) async fn apply(pool: &PgPool) {

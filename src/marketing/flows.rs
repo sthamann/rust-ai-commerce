@@ -162,7 +162,7 @@ pub(crate) async fn flow_once(a: &App) -> Result<()> {
     // Expired inference is uncertain, never automatically repeated into duplicate change proposals.
     sqlx::query("UPDATE flow_jobs SET state='uncertain',error='Worker stopped before result confirmation' WHERE state='running' AND lease_until<now()").execute(&a.db).await?;
     let mut tx = a.db.begin().await?;
-    let row=sqlx::query("SELECT id,tenant,definition,cursor,execution FROM flow_jobs WHERE state='queued' AND available_at<=now() ORDER BY available_at,event_id LIMIT 1 FOR UPDATE SKIP LOCKED").fetch_optional(&mut *tx).await?;
+    let row=sqlx::query("SELECT id,tenant,definition,cursor,execution FROM flow_jobs WHERE state='queued' AND available_at<=now() AND EXISTS(SELECT 1 FROM tenants t WHERE t.id=coalesce((SELECT live_tenant FROM shop_environments WHERE tenant=flow_jobs.tenant),flow_jobs.tenant) AND t.status='active') ORDER BY available_at,event_id LIMIT 1 FOR UPDATE SKIP LOCKED").fetch_optional(&mut *tx).await?;
     let Some(row) = row else { return Ok(()) };
     let id: String = row.get("id");
     let t: String = row.get("tenant");

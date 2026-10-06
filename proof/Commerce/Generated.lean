@@ -78,4 +78,7 @@ def app_core_reference_admissible (product : Bool) (private_data : Bool) : Bool 
 def checkout_review_admissible (revision_matches : Bool) (expected_total : Nat) (actual_total : Nat) (methods_confirmed : Bool) : Bool :=
   ((revision_matches && (decide (expected_total = actual_total))) && methods_confirmed)
 
+def shop_request_admissible (active : Bool) (paused : Bool) (read_only : Bool) (settlement : Bool) : Bool :=
+  ((settlement || active) || (paused && read_only))
+
 end CommerceKernel

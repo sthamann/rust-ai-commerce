@@ -1,5 +1,6 @@
 /** Searchable shop directory and server-validated provisioning form. */
 import { storefrontURL } from "../shared/api/shop-scope";
+import { useControlText } from "../shared/i18n/control-i18n";
 import { useState } from "react";
 import { useLocale } from "../shared/i18n/i18n";
 import { usePlatformText } from "../shared/i18n/platform-i18n";
@@ -49,7 +50,7 @@ export function CreateShop({
           {t("id")}
           <input
             required
-            pattern="[a-z0-9][a-z0-9-]{1,47}"
+            pattern="[a-z0-9][a-z0-9-]{0,46}[a-z0-9]"
             minLength={2}
             maxLength={48}
             placeholder="my-shop"
@@ -105,6 +106,7 @@ export default function PlatformShops({
 }) {
   const t = usePlatformText(),
     { number } = useLocale();
+  const c = useControlText();
   const [search, setSearch] = useState("");
   return (
     <>
@@ -133,7 +135,10 @@ export default function PlatformShops({
               </span>
               <div>
                 <h2>{s.name}</h2>
-                <code>{s.id}</code>
+                <code>{s.id}</code>{" "}
+                <span className={`platform-status ${s.status}`}>
+                  {c(s.status)}
+                </span>
               </div>
               <button onClick={() => onDetail(s)} disabled={busy}>
                 {t("detail")} ↗
@@ -157,14 +162,14 @@ export default function PlatformShops({
             </div>
             <div className="platform-actions">
               <a
-                href={storefrontURL(s.id)}
+                href={s.urls?.storefrontUrl ?? storefrontURL(s.id)}
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 {t("open")} ↗
               </a>
               <a
-                href={storefrontURL(s.id, true)}
+                href={s.urls?.studioUrl ?? storefrontURL(s.id, true)}
                 target="_blank"
                 rel="noopener noreferrer"
               >

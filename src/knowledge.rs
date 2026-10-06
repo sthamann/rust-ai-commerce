@@ -11,13 +11,18 @@ pub use search::search;
 pub async fn embedding(
     http: &reqwest::Client,
     url: &str,
+    key: Option<&str>,
     model: &str,
     text: &str,
 ) -> Result<Vec<f32>, String> {
-    let response = http
+    let mut request = http
         .post(format!("{}/api/embed", url.trim_end_matches('/')))
         .json(&json!({"model":model,"input":text,"truncate":false}))
-        .timeout(std::time::Duration::from_secs(10))
+        .timeout(std::time::Duration::from_secs(10));
+    if let Some(key) = key {
+        request = request.bearer_auth(key);
+    }
+    let response = request
         .send()
         .await
         .map_err(|_| "Embedding service unavailable")?;

@@ -9,12 +9,12 @@ checks = []
 password = "Synthetic-platform-2026!"
 
 
-def req(path, body=None, headers=None, expected=200):
+def req(path, body=None, headers=None, expected=200, method=None):
     r = urllib.request.Request(
         BASE + path,
         data=None if body is None else json.dumps(body).encode(),
         headers={"Content-Type": "application/json", **(headers or {})},
-        method="GET" if body is None else "POST",
+        method=method or ("GET" if body is None else "POST"),
     )
     try:
         with urllib.request.urlopen(r, timeout=90) as response:
@@ -274,6 +274,8 @@ assert any(
 check(
     "aggregate APIs expose no customer credentials or private evidence; provisioning is audited"
 )
+from platform_control import verify
+verify(req, sql, owner, other, seed, empty, oh, h, check, BASE)
 subprocess.run(
     [
         "python3",

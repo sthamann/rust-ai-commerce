@@ -1,4 +1,5 @@
 /** Start catalogue translations, poll durable progress, review paginated drafts and apply bounded revision-checked batches. */
+import { useControlText } from "../../shared/i18n/control-i18n";
 import { responseError } from "../../shared/i18n/errors-i18n";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -31,12 +32,13 @@ export default function TranslationJobs({
   config: InternationalConfig;
   disabled: boolean;
 }) {
+  const c = useControlText();
   const { i } = useInternationalText();
   const current = useRef(request);
   current.current = request;
   const [jobs, setJobs] = useState<Job[]>([]),
     [providers, setProviders] = useState<any[]>([]),
-    [provider, setProvider] = useState("ollama"),
+    [provider, setProvider] = useState("platform"),
     [target, setTarget] = useState(
       config.locales.find((l) => l !== config.mainLocale) ?? "",
     ),
@@ -139,7 +141,8 @@ export default function TranslationJobs({
           >
             {providers.map((p) => (
               <option key={p.id} value={p.id} disabled={!p.configured}>
-                {p.name} · {p.model}
+                {p.id === "platform" ? c("platformDefault") : p.name} ·{" "}
+                {p.model}
               </option>
             ))}
           </select>

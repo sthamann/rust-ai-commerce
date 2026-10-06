@@ -40,7 +40,7 @@ merchants require a separate license. [See the usage guide](docs/licensing.md).
   and observed behavior. Inspect where an answer comes from and what was approved.
 - **Apps beyond a settings page.** Add admin modules, product fields, storefront
   surfaces, typed data, HTTP/MCP actions, events and external services.
-- **A model is a choice.** Local Ollama or optional OpenAI/Anthropic API adapters;
+- **A model is a choice.** Centrally configured, inherited Ollama/OpenAI/Anthropic adapters;
   ordinary commerce runs without a model download or API key.
 - **Change with control.** Private sandboxes, immutable app versions, selective
   releases, scoped team access and history for supported entities.
@@ -62,6 +62,12 @@ merchants require a separate license. [See the usage guide](docs/licensing.md).
 - **Discover standard apps immediately.** Fresh shops see the bundled catalog without silently activating external integrations.
 
 [Explore the Studio integration guide](docs/studio-api-and-channels.md).
+
+**One entry for the whole platform:** [admin.vendune.ai](https://admin.vendune.ai/)
+links merchant and platform logins. Operators create subdomain shops, configure
+inherited AI providers, inspect each shop and pause/restore operations.
+[Operator guide](docs/platform.md).
+
 
 [![One-page checkout with real server quote and synthetic customer details](docs/assets/vendune-checkout-en.png)](docs/checkout.md)
 
@@ -135,7 +141,7 @@ invoice. [Follow the ten-minute walkthrough](docs/playground.md).
 | **Rules & flows** | Nested conditions, branching graphs, consecutive actions, durable delays, documents, AI proposals and app actions | [Automation](docs/automation.md) |
 | **Apps & developers** | App library, visual and guided builders, typed entities, embedded editors, API/MCP/AI exposure, signed webhooks and persistent schedules | [App Studio](docs/app-studio.md) · [Assistants](docs/app-assistants.md) |
 | **Storyfront & channels** | Guided multishop/headless setup, inherited channel settings, searchable product assignment, Storyfront import and checkout transfer | [Storyfront](docs/storyfront.md) · [Workbench](docs/workbench.md) |
-| **Platform & releases** | Operator shop creation and statistics, private stages, selective publishing, team scopes and expiring integration keys | [Platform](docs/platform.md) · [Staging](docs/workbench.md#what-a-sandbox-contains) |
+| **Platform & releases** | Shop subdomains, service directory, central encrypted AI settings, operator dossiers, reversible pause/trash, actual infrastructure diagnostics, private stages and selective publishing | [Platform](docs/platform.md) · [Staging](docs/workbench.md#what-a-sandbox-contains) |
 
 The interface supports **English, German, Spanish and French**. Content editors
 use one selected language with inheritance from the shop's main language;
@@ -246,7 +252,7 @@ repeated reads; checkout keeps authoritative transactional reads.
   are checked against original Shopware **6.7.14.2** PHP classes. The
   [feature matrix](docs/shopware-parity.md) distinguishes native behavior,
   partial ports and missing features.
-- **Partial formal verification:** **25 extracted production policies and 53
+- **Partial formal verification:** **26 extracted production policies and 55
   Lean-proved properties**, with Rust/Lean conformance and negative mutations.
   [Exact proof boundary](docs/formal-verification.md); no entire-core certificate.
 - **Measured performance:** recorded local tests use **1,000,000 products and

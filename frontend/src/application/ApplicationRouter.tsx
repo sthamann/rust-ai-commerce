@@ -2,11 +2,20 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useLocale } from "../shared/i18n/i18n";
 import WorkspaceBoundary from "../shared/ui/WorkspaceBoundary";
+import { canonicalShopURL } from "../shared/api/shop-scope";
+const AdminHub = lazy(() => import("../platform/AdminHub"));
 const Merchant = lazy(() => import("../admin/shell/Merchant"));
 const Storefront = lazy(() => import("../storefront/shell/Storefront"));
 const PlatformConsole = lazy(() => import("../platform/PlatformConsole"));
 export default function ApplicationRouter() {
   const { t } = useLocale();
+  const canonical = canonicalShopURL(new URL(location.href));
+  useEffect(() => {
+    if (canonical) location.replace(canonical);
+  }, [canonical]);
+  const [hub, setHub] = useState(
+    location.hostname === "admin.vendune.ai" && !location.hash,
+  );
   const [platform, setPlatform] = useState(
     location.hash === "#platform" ||
       (!location.hash &&
@@ -20,6 +29,7 @@ export default function ApplicationRouter() {
   );
   useEffect(() => {
     const change = () => {
+      setHub(location.hostname === "admin.vendune.ai" && !location.hash);
       setPlatform(
         location.hash === "#platform" ||
           (!location.hash &&
@@ -36,7 +46,10 @@ export default function ApplicationRouter() {
     window.addEventListener("hashchange", change);
     return () => window.removeEventListener("hashchange", change);
   }, []);
-  const content = platform ? (
+  if (canonical) return <div role="status">…</div>;
+  const content = hub ? (
+    <AdminHub />
+  ) : platform ? (
     <PlatformConsole />
   ) : admin ? (
     <Merchant

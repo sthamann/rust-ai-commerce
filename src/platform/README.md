@@ -9,3 +9,13 @@ This folder owns the Rust modules listed below. Each source begins with its resp
 - [`provision.rs`](provision.rs): Operator shop creation commits ownership, settings and audit atomically; never issues another user's credentials.
 
 The [source inventory](../../docs/module-inventory.md) is checked in CI. [The behavioral map](../../docs/source-map.md) identifies integration suites, and [testing](../../docs/testing.md) describes actual coverage and limits. Every file is limited to 320 lines; `main.rs` to 120.
+
+## Control plane
+
+- `ai.rs`: revisioned global defaults and encrypted, write-only provider keys. Authenticated operator access is independent of merchant membership.
+- `lifecycle.rs`: reversible active/paused/archived state and request fence; reconciliation remains available.
+- `shop_detail.rs`: bounded business/team/channel dossier and diagnostic traffic.
+- `infrastructure.rs`: database/Qdrant probes, pool/cache/queue and fleet HTTP diagnostics.
+- `resources.rs`: Linux cgroup v2 CPU/memory; unavailable readings are null, never invented.
+
+New background work is deferred while paused/archived. In-flight work can finish. Restore resumes queued jobs; trash does not physically delete commerce records.

@@ -9,7 +9,6 @@ pub(crate) struct App {
     pub(crate) http: reqwest::Client,
     pub(crate) inference: Inference,
     pub(crate) model: Arc<String>,
-    pub(crate) ollama: Arc<String>,
     pub(crate) sandboxes: Arc<RwLock<HashMap<String, Arc<Sandbox>>>>,
     pub(crate) channel_metrics: Arc<channel_metrics::ChannelMetrics>,
     pub(crate) app_limits: Arc<apps::ServiceLimits>,
@@ -60,6 +59,7 @@ pub(crate) fn validate_tenant(t: &str) -> Result<()> {
             .bytes()
             .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == b'-')
         || t.starts_with('-')
+        || t.ends_with('-')
     {
         return Err(bad(
             "Workspace ID must be 2..48 lowercase letters, numbers or hyphens",

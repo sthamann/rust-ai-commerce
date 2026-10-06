@@ -31,6 +31,7 @@ def evalRequest (j : Json) : Except String Json := do
   | "app_tool_admissible" => pure (toJson (app_tool_admissible ((← (args.getObjVal? "enabled") >>= Json.getBool?)) ((← (args.getObjVal? "authorized") >>= Json.getBool?))))
   | "app_core_reference_admissible" => pure (toJson (app_core_reference_admissible ((← (args.getObjVal? "product") >>= Json.getBool?)) ((← (args.getObjVal? "private_data") >>= Json.getBool?))))
   | "checkout_review_admissible" => pure (toJson (checkout_review_admissible ((← (args.getObjVal? "revision_matches") >>= Json.getBool?)) ((← (args.getObjVal? "expected_total") >>= Json.getNat?)) ((← (args.getObjVal? "actual_total") >>= Json.getNat?)) ((← (args.getObjVal? "methods_confirmed") >>= Json.getBool?))))
+  | "shop_request_admissible" => pure (toJson (shop_request_admissible ((← (args.getObjVal? "active") >>= Json.getBool?)) ((← (args.getObjVal? "paused") >>= Json.getBool?)) ((← (args.getObjVal? "read_only") >>= Json.getBool?)) ((← (args.getObjVal? "settlement") >>= Json.getBool?))))
   | _ => throw "Unknown policy"
 
 def main : IO Unit := do

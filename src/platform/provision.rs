@@ -60,6 +60,6 @@ pub(super) async fn create(
         true
     };
     Ok(Json(
-        json!({"id":id,"name":name.trim(),"ownerId":owner,"seedCatalog":seed,"knowledgeIndexed":indexed,"paymentMode":"simulated","storefrontPath":format!("/?shop={id}"),"studioPath":format!("/?shop={id}#merchant")}),
+        json!({"id":id,"name":name.trim(),"ownerId":owner,"seedCatalog":seed,"knowledgeIndexed":indexed,"paymentMode":"simulated","urls":crate::shop_domains::links(id),"storefrontPath":format!("/?shop={id}"),"studioPath":format!("/?shop={id}#merchant")}),
     ))
 }

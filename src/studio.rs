@@ -3,6 +3,7 @@ use super::*;
 use axum::{extract::Request, middleware::Next};
 
 pub(super) async fn track_channels(State(a): State<App>, request: Request, next: Next) -> Response {
+    let start = std::time::Instant::now();
     let path = request.uri().path();
     let channel = if path == "/mcp" {
         Some("mcp")
@@ -10,6 +11,10 @@ pub(super) async fn track_channels(State(a): State<App>, request: Request, next:
         Some("ucp")
     } else if path.starts_with("/store-api/") {
         Some("storefront")
+    } else if path.starts_with("/api/") && !path.starts_with("/api/platform/") {
+        Some("api")
+    } else if path == "/" && header(request.headers(), "x-tenant").is_some() {
+        Some("frontend")
     } else {
         None
     };
@@ -19,7 +24,12 @@ pub(super) async fn track_channels(State(a): State<App>, request: Request, next:
         let failure = response.status().is_client_error() || response.status().is_server_error();
         // Diagnostic counters are best-effort and do not delay commerce. They
         // count HTTP calls (including synthetic tests/admin reads), never people.
-        a.channel_metrics.record(t, channel, failure);
+        a.channel_metrics.record(
+            t,
+            channel,
+            failure,
+            start.elapsed().as_millis().min(i64::MAX as u128) as i64,
+        );
     }
     response
 }
@@ -48,7 +58,7 @@ pub(super) async fn merchant_overview(
     let plans=sqlx::query("SELECT count(*) FILTER(WHERE NOT applied AND (jsonb_array_length(proposal->'proposal'->'changes')>0 OR proposal->'proposal'->'experience' IS NOT NULL AND proposal->'proposal'->'experience'<>'null'::jsonb)) AS pending,count(*) FILTER(WHERE applied) AS applied FROM tasks WHERE tenant=$1").bind(&t).fetch_one(&a.db).await?;
     let activity=sqlx::query("SELECT kind,time::text AS time,id FROM (SELECT 'order' AS kind,created_at AS time,id FROM orders WHERE tenant=$1 UNION ALL SELECT CASE WHEN applied AND applied_at IS NOT NULL THEN 'approved' ELSE 'proposal' END AS kind,coalesce(applied_at,created_at) AS time,id FROM tasks WHERE tenant=$1) a ORDER BY time DESC LIMIT 10").bind(&t).fetch_all(&a.db).await?;
     let channels=sqlx::query("SELECT channel,calls,failures,last_seen::text AS last_seen FROM channel_metrics WHERE tenant=$1 ORDER BY channel").bind(&t).fetch_all(&a.db).await?;
-    let providers = a.inference.providers();
+    let providers = a.inference.public_providers().await.map_err(bad)?;
     Ok(Json(json!({
         "locale":locale,"tenant":t,"dataMode":"synthetic-demo","products":ps,"productsPagination":{"nextCursor":page.next_cursor,"hasMore":page.next_cursor.is_some(),"limit":page.limit},
         "summary":{"orders":stats.get::<i64,_>("orders"),"ordersToday":stats.get::<i64,_>("today"),"revenue":stats.get::<f64,_>("revenue"),"pendingPlans":plans.get::<i64,_>("pending"),"appliedPlans":plans.get::<i64,_>("applied")},

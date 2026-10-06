@@ -204,6 +204,9 @@ pub(crate) async fn authenticate(
     if let Err(e) = auth_result {
         return e.into_response();
     }
+    if let Err(e) = crate::platform::admit(&a, request.headers(), &path, &method).await {
+        return e.into_response();
+    }
     next.run(request).await
 }
 #[cfg(test)]
