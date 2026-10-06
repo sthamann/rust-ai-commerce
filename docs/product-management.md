@@ -10,7 +10,7 @@ The interface and content editor support English, German, French and Spanish. Ch
 - **Prices & stock:** gross base price, tax rate, stock, quantity minimum/steps/maximum, delivery days, list/regulation price, reference units and rule-bound discount tiers.
 - **Media:** ordered gallery, cover image, external HTTPS image URLs and actual PNG/JPEG/WebP uploads for saved products. Uploaded bytes start private and the gallery action explicitly publishes the selected digest.
 - **Variants:** list native child SKUs; create a child with its own number, option values, prices and stock; open its independent editor. A reviewable generator creates up to 50 Cartesian combinations per batch; existing combinations are skipped, child option edits are supported, and the server rejects concurrent duplicates.
-- **Categories & channels:** multiple category assignments and per-product sales-channel visibility. Existing channel-level explicit product lists can restrict this further; an empty channel-level list means the whole catalog. With no custom channels, the default storefront is controlled by product activation.
+- **Categories & channels:** multiple category assignments and per-product sales-channel visibility. Existing channel-level explicit product lists can restrict this further; an empty channel-level list means the whole catalog. The persisted default storefront also respects activation and per-product channel visibility.
 - **Specifications:** translated specifications, generic product properties and native automation metadata including dimensions/weight.
 - **SEO:** translated title, description and slug metadata. This does not implement complete original Shopware SEO URL generation.
 - **Cross-selling:** search and select products from this tenant.

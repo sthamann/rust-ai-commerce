@@ -49,6 +49,8 @@ merchants require a separate license. [See the usage guide](docs/licensing.md).
 
 ## New in Studio
 
+- **Manage real shop processes.** Every shop has an editable main sales channel, three reusable starter rules and two order/payment note flows. Search, edit, schedule campaigns and remove unused definitions with dependency checks. [Automation lifecycle](docs/automation.md#starting-configuration-and-lifecycle).
+
 - **One-page checkout.** Address, delivery and payment together; review the server quote, then place one explicit order. Price changes require a fresh review. [Checkout contract](docs/checkout.md).
 
 - **Write visually or in Markdown.** One safe product document, one content language, guarded drafts.
@@ -63,7 +65,7 @@ merchants require a separate license. [See the usage guide](docs/licensing.md).
 
 | Visual + Markdown editing | API + MCP explorer | Sales channels |
 | :---: | :---: | :---: |
-| [![Product editor](docs/assets/studio-editor-en.png)](docs/studio-api-and-channels.md#products--description) | [![API explorer](docs/assets/studio-api-en.png)](docs/studio-api-and-channels.md#developer--api--integrations) | [![Sales channels](docs/assets/studio-channels-en.png)](docs/studio-api-and-channels.md#sales-channels) |
+| [![Product editor](docs/assets/studio-editor-en.png)](docs/studio-api-and-channels.md#products--description) | [![API explorer](docs/assets/studio-api-en.png)](docs/studio-api-and-channels.md#developer--api--integrations) | [![Sales channels](docs/assets/studio-channels-en.jpg)](docs/studio-api-and-channels.md#sales-channels) |
 
 Screenshots show the running synthetic playground with English UI, not mockups.
 

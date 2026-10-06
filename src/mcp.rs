@@ -50,6 +50,12 @@ pub(crate) fn tool_schema(name: &str) -> Value {
         "automation.save" => {
             json!({"kind":{"type":"string","enum":["rules","flows","promotions","channels"]},"id":{"type":"string"},"revision":{"type":"integer","minimum":0},"data":{"type":"object"}})
         }
+        "automation.delete" => {
+            json!({"kind":{"type":"string","enum":["rules","flows","promotions","channels"]},"id":{"type":"string"},"revision":{"type":"integer","minimum":1}})
+        }
+        "automation.dependencies" => {
+            json!({"kind":{"type":"string","enum":["rules","flows","promotions","channels"]},"id":{"type":"string"}})
+        }
         "automation.preview" | "automation.import" => json!({"condition":{"type":"object"}}),
         "merchant.customer.addresses" => json!({"id":{"type":"string"}}),
         "merchant.customer.address.save" => {
@@ -128,6 +134,8 @@ pub(crate) fn tool_schema(name: &str) -> Value {
         "merchant.product.create" => vec!["product"],
         "merchant.category.create" => vec!["category"],
         "merchant.category.save" => vec!["id", "category"],
+        "automation.delete" => vec!["kind", "id", "revision"],
+        "automation.dependencies" => vec!["kind", "id"],
         "automation.save" => vec!["kind", "id", "revision", "data"],
         "automation.preview" | "automation.import" => vec!["condition"],
         "merchant.customer.addresses" => vec!["id"],
@@ -214,8 +222,10 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
                     if n.starts_with("automation.") {
                         return merchant(&a, &h).is_ok()
                             && auth::permit(&h, "settings.read").is_ok()
-                            && (!matches!(*n, "automation.save" | "automation.import")
-                                || auth::permit(&h, "settings.write").is_ok());
+                            && (!matches!(
+                                *n,
+                                "automation.save" | "automation.import" | "automation.delete"
+                            ) || auth::permit(&h, "settings.write").is_ok());
                     }
                     if n.starts_with("knowledge.") {
                         return merchant(&a, &h).is_ok()

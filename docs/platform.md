@@ -25,7 +25,7 @@ session is independent of the merchant studio's browser session.
 - API activity is persisted lifetime HTTP request counts, including development
   tests and merchant calls. It is not GA visitors or the selected order window.
   In-flight counter updates may appear after the normal metrics flush.
-- Sales channels count the built-in default plus enabled configured channels.
+- Sales channels count active persisted channels, including the required main `default` channel once.
   Connected evidence counts app evidence records; uploaded product documents
   remain accessible in each shop's knowledge workspace.
 

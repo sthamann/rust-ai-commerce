@@ -2,6 +2,10 @@
 
 Ownership, executable contracts and explicit migration boundaries are described in [the automation guide](../../../../docs/automation.md). Each module owns one responsibility; HTTP and MCP delegate to the same tenant-bound operations.
 
+- [AutomationDefinitions.tsx](AutomationDefinitions.tsx): Searchable definitions with explicit editing, active state and revisions.
+- [AutomationDelete.tsx](AutomationDelete.tsx): Shared dependency inspection and confirmation; failures stay visible, server mutations carry the expected revision.
+- [PromotionSchedule.tsx](PromotionSchedule.tsx): Campaign timing, priority and exclusivity without a second API schema.
+- [lifecycle-i18n.ts](lifecycle-i18n.ts): EN/DE/FR/ES vocabulary for start processes and safe configuration lifecycle.
 - [AutomationEditor.tsx](AutomationEditor.tsx): AutomationEditor: focused form view with explicit typed inputs and callbacks.
 - [AutomationView.tsx](AutomationView.tsx): Typed merchant rule/campaign/flow/channel forms with exact JSON available for advanced review.
 - [CustomFieldCondition.tsx](CustomFieldCondition.tsx): Typed custom field conditions support text, numeric, Boolean and date values using original field payload names.

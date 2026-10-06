@@ -6,6 +6,8 @@ Ownership, executable contracts and explicit migration boundaries are described 
 - [catalog.rs](catalog.rs): Native condition metadata, app action/event discovery and source-compatible condition import.
 - [channels.rs](channels.rs): Sales channels share a merchant tenant but bind independent catalog visibility, locale and cart identity.
 - [customer_facts.rs](customer_facts.rs): Customer rule authority is loaded by tenant and stable customer ID, with aggregate history and calendar age.
+- [dependencies.rs](dependencies.rs): Tenant-owned semantic references, durable uses and channel dependency counts for safe removal.
+- [lifecycle.rs](lifecycle.rs): Shared HTTP/MCP revision-bound deletion, serialized configuration mutations and reference admission.
 - [facts.rs](facts.rs): Assemble private server-owned rule context once per quote/event; never publish customer facts in cart responses.
 - [flow_access.rs](flow_access.rs): Every queued flow step rehydrates current membership; stored definitions never preserve revoked privileges.
 - [flow_actions.rs](flow_actions.rs): Native action schema and permissions use original Core names; no arbitrary SQL, shell or unguarded payment transitions.

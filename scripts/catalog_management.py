@@ -64,7 +64,10 @@ req('/api/automation/channels/catalog_channel',{'revision':0,'data':channel},mer
 saved=req('/api/merchant/products/'+pid,h=merchant);saved.pop('id');saved.pop('channels');saved['catalog']['salesChannelIds']=[];req('/api/merchant/products/'+pid,saved,merchant,'PUT')
 ch={'sw-sales-channel-id':'catalog_channel'};assert pid not in [p['id'] for p in req('/store-api/product',{},ch)['elements']];req('/store-api/product/'+pid,{},ch,expected=404)
 assert len(req('/store-api/navigation',{},ch)['elements'])==2;check('per-product channel visibility and per-channel category roots affect the public API')
-variant=copy.deepcopy(draft);variant['catalog'].update({'productNumber':'VAR-'+suffix,'parentId':pid,'options':{'size':'M'},'active':True,'salesChannelIds':[]});vid=req('/api/merchant/products',variant,merchant)['id']
+# The persisted main channel now participates in visibility just like additional channels.
+req('/store-api/product/'+pid,{},expected=404)
+saved=req('/api/merchant/products/'+pid,h=merchant);saved.pop('id');saved.pop('channels');saved['catalog']['salesChannelIds']=['default'];req('/api/merchant/products/'+pid,saved,merchant,'PUT')
+variant=copy.deepcopy(draft);variant['catalog'].update({'productNumber':'VAR-'+suffix,'parentId':pid,'options':{'size':'M'},'active':True,'salesChannelIds':['default']});vid=req('/api/merchant/products',variant,merchant)['id']
 assert req('/api/merchant/products?parentId='+pid,h=merchant)['elements'][0]['id']==vid
 assert any(v['id']==vid for v in req('/store-api/product/'+pid,{})['variants']);check('created variants have a native family and independent product records')
 # The real aggregate rejects duplicate combinations and rolls back conflicting edits.

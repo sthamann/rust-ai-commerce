@@ -13,9 +13,6 @@ pub(crate) struct Channel {
     pub navigation_category_id: Option<String>,
 }
 pub(crate) async fn channel(a: &App, t: &str, id: &str, locale: &str) -> Result<Option<Channel>> {
-    if id == "default" {
-        return Ok(None);
-    }
     let data: Value =
         sqlx::query_scalar("SELECT data FROM sales_channels WHERE tenant=$1 AND id=$2")
             .bind(t)
@@ -26,8 +23,17 @@ pub(crate) async fn channel(a: &App, t: &str, id: &str, locale: &str) -> Result<
                 StatusCode::NOT_FOUND,
                 "Sales channel unavailable".into(),
             ))?;
-    let c: Channel = serde_json::from_value(data).map_err(|_| bad("Invalid channel"))?;
-    if !c.active || !c.locales.contains(&locale.to_string()) {
+    let mut c: Channel = serde_json::from_value(data).map_err(|_| bad("Invalid channel"))?;
+    // The main channel inherits shop languages; additional channels select a subset.
+    if id == "default" {
+        c.locales = commerce::config(a, t).await?.0.locales;
+    }
+    let allowed = c.locales.contains(&locale.to_string())
+        || (id == "default"
+            && c.locales
+                .iter()
+                .any(|enabled| enabled.split('-').next() == locale.split('-').next()));
+    if !c.active || !allowed {
         return Err(Error(
             StatusCode::FORBIDDEN,
             "Sales channel or language unavailable".into(),

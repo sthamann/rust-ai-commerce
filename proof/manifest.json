@@ -483,8 +483,8 @@
     },
     "src/auth/provision.rs": {
       "status": "unproved",
-      "sha256": "d271a77d1a999cdc54fd08a7a64bddf5f2993e845d14b721db2c2ba5e9e64b76",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "20a800cbbd9c08ffa2d20c8a23734037918736e330363695dbbfe970295b4b4c",
+      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
     },
     "src/auth/registration.rs": {
       "status": "unproved",
@@ -573,8 +573,8 @@
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
-      "sha256": "908c7e0282317a38b7b27642291e34a559c94ca3fe1d25671034c2e12a29184d",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "5da5eabef5e6cab7fdf0b3295c93cafab9267f664aedb2205420f598a32ca5b0",
+      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
     },
     "src/capabilities.rs": {
       "status": "unproved",
@@ -1053,8 +1053,8 @@
     },
     "src/marketing/channels.rs": {
       "status": "unproved",
-      "sha256": "ddbc1b98e55f7d2a953c7e9617e2142337d192f026d8776b83eab2ed200f29f9",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "b291a131470073d7a47409d8eed9c290f5e0e31511e5f5a70034eeea7ece4d3d",
+      "review": "Reviewed automation lifecycle SQL and controllers, tenant serialization and foreign keys, actual default channel language inheritance and persisted-channel metrics; these integration paths remain outside the Lean policy proof boundary."
     },
     "src/marketing/condition_gateway.rs": {
       "status": "unproved",
@@ -1065,6 +1065,11 @@
       "status": "unproved",
       "sha256": "6381eeee59989d6bf9e7c97f5f7f4a06dbd4b3e8d642d613a2f03da3350198a9",
       "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/marketing/dependencies.rs": {
+      "status": "unproved",
+      "sha256": "2a2e09330110498d4feb4f87a607ef767092b80ac9d9c8a1833083a9eb04ee16",
+      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
     },
     "src/marketing/facts.rs": {
       "status": "unproved",
@@ -1093,18 +1098,23 @@
     },
     "src/marketing/flows.rs": {
       "status": "unproved",
-      "sha256": "013c9230b147fa7fee24c3c7f6e0eaf39e263b9df4654e2f18d42d5497e73f54",
-      "review": "Reviewed assistant contracts, required tenant references, additive choices, MCP-only ingress and authorized grounding/selected app proposals. Merchant/chat/flow authority reaches both bind and approval; local model fixtures reject scope bypass and private grounding. Async adapters remain unproved."
+      "sha256": "937bea24dbf98c9e82be5b2f5c24232beadef72f0b9acf5f72a2dafed8b62ef6",
+      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
     },
     "src/marketing/gateway.rs": {
       "status": "unproved",
-      "sha256": "d0bb9b42e68952dd8035da48a3aa226095b73547148db8b238d7f7191b6015d7",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "36f4f63732eea5e3462de4ef9ad04d2f6f6afee55583b719a8aca16abbf7929f",
+      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
     },
     "src/marketing/jobs.rs": {
       "status": "unproved",
       "sha256": "74148b2a41e0f01f9e84e06e02cdc0ae2e1b4450695254460d7216fcb95e7880",
       "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+    },
+    "src/marketing/lifecycle.rs": {
+      "status": "unproved",
+      "sha256": "271322a527534d97dd57974b70f09dd4eee5e3abdef2b01784636b55266372c6",
+      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
     },
     "src/marketing/line_facts.rs": {
       "status": "unproved",
@@ -1118,8 +1128,8 @@
     },
     "src/marketing/mod.rs": {
       "status": "unproved",
-      "sha256": "1454f627e69e930004fd8a3e76ee078f13daffcb0f18f0b59771f86be18dd15c",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "f2cd28bebf1ef25f951f04d91f511b488f12609176a58b40e5778539805b2e95",
+      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
     },
     "src/marketing/pipeline.rs": {
       "status": "reviewed-binding",
@@ -1143,8 +1153,8 @@
     },
     "src/marketing/routes.rs": {
       "status": "unproved",
-      "sha256": "229b85dec0deb876c86e5a780930012414ff2f6e1565e6975e612b7b0de110e4",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "f2e880b3ce0f7ee6d57ab541f4bad5ff4f97d2922dc6a9e49074536619c55780",
+      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
     },
     "src/marketing/rule_fields.rs": {
       "status": "unproved",
@@ -1173,13 +1183,13 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "6787a149f9057d8f9d167da51ca78919bdab0e859b688bbf4759c2930f5df910",
-      "review": "Reviewed product_admin.rs tenant-locked variant option uniqueness and mcp.rs configured HTTPS or bound-loopback Origin admission without Host reflection. Real HTTP tests cover concurrent duplicates, rollback, foreign parents, allowed origins and rejected foreign/path/null/spoofed Host origins; SQL and transport remain outside Lean proof boundary."
+      "sha256": "cdde56ff30794aa70282e73c1a8c46870022f408482ff646c266432f36d1e30b",
+      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "750d2704f23834da97185ce0d7db63c00b03292c72e230bcfd251336aea035fa",
-      "review": "Reviewed exact checkout amount/revision admission and committed replay, method candidates/media, scoped HTTPS PayPal returns and approval-triggered durable capture; PostgreSQL checkout and synthetic provider tests pass. Attribution now requires private per-shop configuration; additive migration 039 removes only the default while preserving receipts. Tenant schema fixture explicitly supplies synthetic attribution and all adversarial tenant checks pass."
+      "sha256": "41b0edef5d7be204d5bae72a4672402d70aa9286adf79dfe64d8312b44c867cf",
+      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -1348,8 +1358,8 @@
     },
     "src/platform/metrics.rs": {
       "status": "unproved",
-      "sha256": "1401e3d3877134836bf6ff2203892d28275504a288b9b1701da0732d76f9b946",
-      "review": "Reviewed gross capture aggregation for captured, late captured and refunded order cohorts: platform.py 11 real HTTP/PG groups passed including synthetic persisted money states, without PSP calls. Reviewed post-commit optional graph indexing failures cannot turn committed ownership into provisioning failure. Rust fmt/clippy and binaries pass; same extracted operator policy and SQL/provisioning adapters remain outside full proof."
+      "sha256": "da030632cbfd1aed8dadf4c1158880f6f49bfc557f0e0a5dd78a1e0bf5b15294",
+      "review": "Reviewed automation lifecycle SQL and controllers, tenant serialization and foreign keys, actual default channel language inheritance and persisted-channel metrics; these integration paths remain outside the Lean policy proof boundary."
     },
     "src/platform/mod.rs": {
       "status": "unproved",
@@ -1438,8 +1448,8 @@
     },
     "src/staging/release.rs": {
       "status": "unproved",
-      "sha256": "748b08a4ab4b1a7adc45f4c4e7f0c8c947ee4a9daf7cf187d572c8037ad59a7f",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "6c44193a8c5aa674b918e4bd732f4fa4c96292eadebc52a4090aa8b6ad4da9da",
+      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
     },
     "src/staging/snapshot.rs": {
       "status": "unproved",
@@ -1696,6 +1706,10 @@
     "migrations/039-explicit-payment-attribution.sql": {
       "sha256": "c6149c519634167459ae018041ce964977af600680479b4fbcd7a40b7e6f8d44",
       "review": "Reviewed exact checkout amount/revision admission and committed replay, method candidates/media, scoped HTTPS PayPal returns and approval-triggered durable capture; PostgreSQL checkout and synthetic provider tests pass. Attribution now requires private per-shop configuration; additive migration 039 removes only the default while preserving receipts. Tenant schema fixture explicitly supplies synthetic attribution and all adversarial tenant checks pass."
+    },
+    "migrations/040-automation-defaults.sql": {
+      "sha256": "39a79c1374c46d4b56488c43ee0d3db3bc4138fb07ee932877d9c4fc95d2aaef",
+      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "8382f3ec37f01a2bf5f585b222cbbedc1d92f80aa4a2494eb83f227032f99dd6",

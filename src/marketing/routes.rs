@@ -6,11 +6,18 @@ pub(crate) fn router() -> Router<App> {
         .merge(metadata::router())
         .route("/api/automation", get(list))
         .route("/api/automation/executions", get(jobs::list))
-        .route("/api/automation/{kind}/{id}", axum::routing::put(save))
+        .route(
+            "/api/automation/{kind}/{id}",
+            axum::routing::put(save).delete(lifecycle::delete),
+        )
+        .route(
+            "/api/automation/{kind}/{id}/dependencies",
+            get(lifecycle::dependencies),
+        )
         .route("/api/automation/rules/preview", post(preview))
         .route("/store-api/checkout/coupons", axum::routing::put(coupons))
 }
-fn table(kind: &str) -> Result<&'static str> {
+pub(super) fn table(kind: &str) -> Result<&'static str> {
     match kind {
         "rules" => Ok("commerce_rules"),
         "promotions" => Ok("commerce_promotions"),
@@ -37,6 +44,12 @@ pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Valu
             .fetch_all(&a.db)
             .await?;
         result[kind]=json!(rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"data":r.get::<Value,_>("data"),"revision":r.get::<i64,_>("revision")})).collect::<Vec<_>>());
+    }
+    let settings = commerce::config(&a, &t).await?.0;
+    if let Some(channels) = result["channels"].as_array_mut() {
+        for channel in channels.iter_mut().filter(|c| c["id"] == "default") {
+            channel["data"]["locales"] = json!(settings.locales);
+        }
     }
     result["jobs"] = jobs::values(&a, &t).await?;
     Ok(Json(result))
@@ -80,6 +93,16 @@ pub(crate) async fn save(
                     return Err(bad("Invalid campaign timestamp"));
                 }
             }
+            if p.start.is_some()
+                && p.end.is_some()
+                && !sqlx::query_scalar::<_, bool>("SELECT $1::timestamptz <= $2::timestamptz")
+                    .bind(&p.start)
+                    .bind(&p.end)
+                    .fetch_one(&a.db)
+                    .await?
+            {
+                return Err(bad("Campaign end precedes start"));
+            }
         }
         "flows" => {
             let f: flows::Flow =
@@ -115,8 +138,18 @@ pub(crate) async fn save(
             data["actor"] = json!(header(&h, "x-rac-user").unwrap_or("bootstrap"));
         }
         "channels" => {
+            if id == "default" {
+                data["locales"] = json!(settings.locales);
+            }
             let c: Channel =
                 serde_json::from_value(data.clone()).map_err(|_| bad("Invalid channel"))?;
+            if id == "default"
+                && (!c.active || c.kind != "storefront" || c.locales != settings.locales)
+            {
+                return Err(bad(
+                    "Main channel must remain active and inherit shop languages",
+                ));
+            }
             if !["storefront", "headless"].contains(&c.kind.as_str())
                 || c.locales.is_empty()
                 || c.locales.iter().any(|v| !settings.locales.contains(v))
@@ -155,6 +188,8 @@ pub(crate) async fn save(
     commerce::validate_names(name, &settings, 100)?;
     let mut tx = a.db.begin().await?;
     history::context(&mut tx, &h, "merchant").await?;
+    lifecycle::lock(&mut tx, &t).await?;
+    lifecycle::validate_references(&mut tx, &t, &kind, &id, &data).await?;
     let sql = format!("SELECT revision FROM {table} WHERE tenant=$1 AND id=$2 FOR UPDATE");
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,17))")
         .bind(format!("{t}:{table}:{id}"))

@@ -12,6 +12,54 @@ Saved rules can be referenced with `{"type":"ruleReference","ruleId":"eligible"}
 
 ![Native connected flow editor with a reviewable AI action](assets/automation-flow-en.jpg)
 
+## Starting configuration and lifecycle
+
+Every newly provisioned merchant/operator shop has a persisted `default` storefront,
+three editable rules (`default_all_orders`, `default_business_customers`,
+`default_cart_100`) and two editable note flows: `default_order_received` on
+`order.placed`, and `default_payment_received` on `payment.captured`. These flows
+write real order activity after committed events. They do not send emails, charge
+customers, call a model, or enable a discount. Connect the relevant app before
+adding email, Slack or AI actions. Built-in names/instructions ship in EN/DE/ES/FR;
+content editing uses one selected language with the shop-main-language fallback.
+
+Migration 040 backfills missing start definitions once, without overwriting any
+existing definition. Signup provisioning runs the same database function before
+customer creation. Deleted starter rules/flows stay deleted on later server starts.
+Sandbox creation copies the current merchant definitions rather than reseeding them.
+
+The main channel can be renamed, translated and assigned catalog/navigation content.
+It inherits the shop languages (including existing regional-language fallback) and shared company/checkout basis; additional
+channels can choose their own languages and sparse settings overrides. The main
+channel cannot be deactivated or deleted. Storefront reads now use its persisted
+catalog configuration instead of bypassing it as an invisible code special case.
+
+Commerce invariants remain in Rust: stock reservations, price/tax calculations,
+payment authority and admissible order transitions. Flows orchestrate merchant
+processes through those guarded APIs. The starter business/cart rules are reusable
+conditions, not a claim that all legacy price/availability rules were converted into
+configurable flows. Campaign start/end, priority, exclusivity and stable saved-rule
+references are editable in Studio. No automatic commercial offer is seeded.
+
+Rules, campaigns, flows and additional channels expose the same revision-bound
+lifecycle in HTTP and MCP. Studio shows searchable definitions, active state,
+explicit editing and one shared confirmation dialog. Deletion is blocked by saved
+rule/channel references (including inactive definitions), settings references,
+redeemed promotions, unfinished/uncertain jobs, channel customers/carts/orders,
+product visibility and channel overrides. Deactivate historical definitions rather
+than destroy these links. The server rechecks dependencies and revisions inside
+the delete transaction; tenant-scoped foreign keys also prevent checkout/customer
+writes from racing a channel deletion. Flow projection takes shared definition
+locks so already queued work cannot be lost in that race. Completed flow jobs and
+existing orders survive deletion of an otherwise unused definition. History records
+the deletion; the current history UI does not restore a deleted definition.
+
+`automation_lifecycle` follows a real checkout into the starter flow and tests own/
+foreign tenants, stale deletes, rule references, main-channel protection and the
+same MCP deletion handler. Frontend lifecycle tests cover persisted main-channel
+editing, granular permissions, selection/search, confirmation, blocked dependency
+lists and failures that remain visible. These checks are not whole-core coverage.
+
 ## Source inventory and limits
 
 `reference/automation-catalog.php` reflects **114 concrete production Rule subclasses and 16 Core FlowAction names**. It excludes test classes and abstract helpers. This corrects the old text-only 120-name inventory, which was not an accurate count of executable production classes.
@@ -64,11 +112,13 @@ The current built-in producers remain order placement, payment capture/update an
 | Catalog | `GET /api/automation/catalog` | `automation.catalog` |
 | Definitions and latest jobs | `GET /api/automation` (configuration), `GET /api/automation/executions` (bounded refreshed jobs) | `automation.list` |
 | Revision-bound configuration write | `PUT /api/automation/{rules,flows,promotions,channels}/{id}` | `automation.save` (`kind`, `id`, `revision`, `data`) |
+| Dependencies | `GET /api/automation/{kind}/{id}/dependencies` | `automation.dependencies` (`kind`, `id`) |
+| Delete unused configuration | `DELETE /api/automation/{kind}/{id}` with `revision` | `automation.delete` (`kind`, `id`, `revision`) |
 | Side-effect-free cart rule preview | `POST /api/automation/rules/preview` | `automation.preview` (`condition`) |
 | Original condition normalization | `POST /api/automation/import-condition` | `automation.import` (`condition`) |
 | Rule entity metadata | `PUT /api/automation/entities/{products,customers,orders}/{id}` | Use the authenticated HTTP route; no separate metadata MCP tool yet |
 
-Configuration reads/previews require `settings.read`; writes/imports require `settings.write`. Each action additionally checks its specific customers/orders/documents/apps/catalog/knowledge permission. Preview requires the same cart context token as storefront cart operations. API and MCP call the same handlers.
+Configuration reads/previews require `settings.read`; writes/deletes/imports require `settings.write`. Each action additionally checks its specific customers/orders/documents/apps/catalog/knowledge permission. Preview requires the same cart context token as storefront cart operations. API and MCP call the same handlers.
 
 Example native graph (`data.pipeline`, together with a translated flow name, instruction, locale, trigger and top-level condition):
 

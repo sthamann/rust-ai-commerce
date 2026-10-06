@@ -1,0 +1,66 @@
+/* Configuration workspace: readable definitions, clear selection and contextual actions. */
+.studio .automation-definitions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-self: start;
+  position: sticky;
+  top: 1rem;
+}
+.studio .automation-definition {
+  display: grid;
+  gap: 0.65rem;
+  padding: 1.1rem;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.studio .automation-definition[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--hover);
+}
+.studio .automation-definition-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.studio .automation-process-guide {
+  margin: 1.5rem 0;
+  padding: 1.5rem 2rem;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.studio .automation-process-guide p {
+  max-width: 80ch;
+  line-height: 1.6;
+}
+.studio .automation-delete {
+  margin-top: 1rem;
+}
+.studio .automation-delete > button {
+  color: #c13e55;
+}
+.studio .automation-delete li {
+  margin: 0.65rem 0;
+}
+.studio .promotion-schedule {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 800px) {
+  .studio .automation-definitions {
+    position: static;
+  }
+  .studio .promotion-schedule {
+    grid-template-columns: 1fr;
+  }
+}

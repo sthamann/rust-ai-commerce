@@ -37,6 +37,7 @@ pub(crate) async fn release(
     }
     let mut tx = a.db.begin().await?;
     history::context(&mut tx, &h, "staging.release").await?;
+    marketing::lock_config(&mut tx, &t).await?;
     operations::lock_company(&mut tx, &t).await?;
     operations::lock_company(&mut tx, &id).await?;
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,16))")
@@ -204,6 +205,27 @@ pub(crate) async fn release(
         } else {
             value.clone()
         };
+    }
+    // Validate references against the final aggregate, including jointly selected new rules.
+    for key in &keys {
+        if let Some((kind, unit)) = key.split_once(':') {
+            if ["rule", "promotion", "flow", "channel"].contains(&kind) {
+                marketing::validate_references(
+                    &mut tx,
+                    &t,
+                    if kind == "rule" { "rules" } else { kind },
+                    unit,
+                    &current[key],
+                )
+                .await?;
+            }
+            if kind == "channel"
+                && unit == "default"
+                && (current[key]["active"] != true || current[key]["kind"] != "storefront")
+            {
+                return Err(bad("Main channel must remain active and storefront"));
+            }
+        }
     }
     let release = uid();
     let selected = json!(keys);

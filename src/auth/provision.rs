@@ -80,6 +80,10 @@ pub(crate) async fn provision_shop(
             .execute(&mut **tx)
             .await?;
     }
+    sqlx::query("SELECT public.seed_shop_automation($1)")
+        .bind(slug)
+        .execute(&mut **tx)
+        .await?;
     if demo_customer {
         sqlx::query("INSERT INTO customers(tenant,email,password_hash,company,group_name) VALUES($1,'buyer@example.test',$2,'Example Studio','business')").bind(slug).bind(demo_password).execute(&mut **tx).await?;
         accounts::seed_demo_address(tx, slug).await?;

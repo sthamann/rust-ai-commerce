@@ -174,6 +174,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/marketing/channels.rs](../src/marketing/channels.rs) | Sales channels share a merchant tenant but bind independent catalog visibility, locale and cart identity. |
 | [src/marketing/condition_gateway.rs](../src/marketing/condition_gateway.rs) | Shared rule admission and authoritative context for tax and other native consumers. |
 | [src/marketing/customer_facts.rs](../src/marketing/customer_facts.rs) | Customer rule authority is loaded by tenant and stable customer ID, with aggregate history and calendar age. |
+| [src/marketing/dependencies.rs](../src/marketing/dependencies.rs) | Inspect tenant-owned definition references and durable uses before configuration deletion. |
 | [src/marketing/facts.rs](../src/marketing/facts.rs) | Assemble private server-owned rule context once per quote/event; never publish customer facts in cart responses. |
 | [src/marketing/flow_access.rs](../src/marketing/flow_access.rs) | Every queued flow step rehydrates current membership; stored definitions never preserve revoked privileges. |
 | [src/marketing/flow_actions.rs](../src/marketing/flow_actions.rs) | Native action schema and permissions use original Core names; no arbitrary SQL, shell or unguarded payment transitions. |
@@ -182,6 +183,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/marketing/flows.rs](../src/marketing/flows.rs) | Durable order-event flows: conditions, shop notes and AI proposals; no unapproved model mutations. |
 | [src/marketing/gateway.rs](../src/marketing/gateway.rs) | MCP automation tools call the same tenant-bound handlers and validators as HTTP; no separate mutation semantics. |
 | [src/marketing/jobs.rs](../src/marketing/jobs.rs) | Read bounded tenant flow execution summaries without reloading rule/channel configuration on each Studio refresh. |
+| [src/marketing/lifecycle.rs](../src/marketing/lifecycle.rs) | Revision-bound deletion and reference admission share HTTP/MCP authorization and tenant locks. |
 | [src/marketing/line_facts.rs](../src/marketing/line_facts.rs) | Rule line facts use immutable priced lines plus current tenant product metadata; protected values override metadata. |
 | [src/marketing/metadata.rs](../src/marketing/metadata.rs) | Authorized revision-bound source facts for products, customers and orders; secrets and pricing authority are excluded. |
 | [src/marketing/mod.rs](../src/marketing/mod.rs) | Native rule conditions, coupons, durable flows and headless/storefront sales-channel boundaries. |
@@ -281,6 +283,8 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/assistant/MessageText.tsx](../frontend/src/admin/assistant/MessageText.tsx) | MessageText keeps merchant interaction separate from workspace orchestration. |
 | [frontend/src/admin/assistant/ProposalCard.tsx](../frontend/src/admin/assistant/ProposalCard.tsx) | ProposalCard keeps merchant interaction separate from workspace orchestration. |
 | [frontend/src/admin/assistant/SettingsDialog.tsx](../frontend/src/admin/assistant/SettingsDialog.tsx) | SettingsDialog keeps merchant interaction separate from workspace orchestration. |
+| [frontend/src/admin/automation/AutomationDefinitions.tsx](../frontend/src/admin/automation/AutomationDefinitions.tsx) | Searchable, explicitly editable definitions with visible active state and version. |
+| [frontend/src/admin/automation/AutomationDelete.tsx](../frontend/src/admin/automation/AutomationDelete.tsx) | One confirmation and a server recheck; stale versions and used definitions never disappear silently. |
 | [frontend/src/admin/automation/AutomationEditor.tsx](../frontend/src/admin/automation/AutomationEditor.tsx) | AutomationEditor: focused form view with explicit typed inputs and callbacks. |
 | [frontend/src/admin/automation/AutomationView.tsx](../frontend/src/admin/automation/AutomationView.tsx) | Typed merchant rule/campaign/flow/channel forms with exact JSON available for advanced review. |
 | [frontend/src/admin/automation/CustomFieldCondition.tsx](../frontend/src/admin/automation/CustomFieldCondition.tsx) | Typed custom field conditions support text, numeric, Boolean and date values using original field payload names. |
@@ -291,9 +295,11 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/automation/FlowInputs.tsx](../frontend/src/admin/automation/FlowInputs.tsx) | Schema-derived flow parameters; runtime-bound event fields are intentionally supplied by the server. |
 | [frontend/src/admin/automation/FlowTopology.tsx](../frontend/src/admin/automation/FlowTopology.tsx) | Readable connected overview of the persisted graph; selecting a node opens its matching editor card. |
 | [frontend/src/admin/automation/JsonField.tsx](../frontend/src/admin/automation/JsonField.tsx) | JSON editing retains incomplete input and invalidates the actual payload instead of silently saving the last valid value. |
+| [frontend/src/admin/automation/PromotionSchedule.tsx](../frontend/src/admin/automation/PromotionSchedule.tsx) | Campaign scheduling uses ISO instants in the API and local times in the editor. |
 | [frontend/src/admin/automation/RuleBuilder.tsx](../frontend/src/admin/automation/RuleBuilder.tsx) | Visual recursive rule tree: AND/OR/NOT groups, typed facts and editable leaf conditions. |
 | [frontend/src/admin/automation/SourceRuleFields.tsx](../frontend/src/admin/automation/SourceRuleFields.tsx) | Original metadata drives typed condition inputs, including nested source scopes; unsupported runtimes stay visibly disabled. |
 | [frontend/src/admin/automation/automation-types.ts](../frontend/src/admin/automation/automation-types.ts) | Automation editor contracts; content languages come from the selected shop. |
+| [frontend/src/admin/automation/lifecycle-i18n.ts](../frontend/src/admin/automation/lifecycle-i18n.ts) | Shared lifecycle, starting-process and dependency vocabulary for every automation editor. |
 | [frontend/src/admin/automation/pipeline-types.ts](../frontend/src/admin/automation/pipeline-types.ts) | Stable graph data mirrors the Rust pipeline contract, with explicit true/false edges and persistent node identifiers. |
 | [frontend/src/admin/automation/source-rules.ts](../frontend/src/admin/automation/source-rules.ts) | Convert source condition nodes for the graphical editor without losing original payload fields. |
 | [frontend/src/admin/catalog/AiImageStudio.tsx](../frontend/src/admin/catalog/AiImageStudio.tsx) | Optional image-provider jobs create private previews; applying a reviewed image is explicit and revision checked. |
@@ -419,6 +425,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/app-studio-panels.css](../frontend/src/admin/styles/app-studio-panels.css) | App Studio model, connection, agent and version panels. |
 | [frontend/src/admin/styles/app-studio-responsive.css](../frontend/src/admin/styles/app-studio-responsive.css) | Responsive App Studio layouts and reduced-motion settings. |
 | [frontend/src/admin/styles/app-studio.css](../frontend/src/admin/styles/app-studio.css) | App Studio: restrained light canvas, compact control density and responsive palette/inspector workspaces. |
+| [frontend/src/admin/styles/automation-lifecycle.css](../frontend/src/admin/styles/automation-lifecycle.css) | Configuration workspace: readable definitions, clear selection and contextual actions. |
 | [frontend/src/admin/styles/automation.css](../frontend/src/admin/styles/automation.css) | Actual graph nodes and original rule forms use the Studio theme and independent responsive columns. |
 | [frontend/src/admin/styles/catalog-editor.css](../frontend/src/admin/styles/catalog-editor.css) | Visual editor and category workspace responsive styles. |
 | [frontend/src/admin/styles/catalog.css](../frontend/src/admin/styles/catalog.css) | Light, precise catalog workspace with accessible tables, focused detail panels and visual authoring. |
@@ -617,6 +624,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/apps.py](../scripts/apps.py) | Real PostgreSQL app lifecycle, managed schema/RLS, typed API/MCP, cart and observation tests. |
 | [scripts/automation.py](../scripts/automation.py) | Real HTTP/PostgreSQL branching automation, private facts, durable delays and revoked-actor regressions. No providers. |
 | [scripts/automation_differential.py](../scripts/automation_differential.py) | Compare actual original Shopware rule classes with native scopes using independent synthetic entities. |
+| [scripts/automation_lifecycle.py](../scripts/automation_lifecycle.py) | Tenant-bound default configuration, revision-safe deletion and actual event-flow effects. |
 | [scripts/automation_registry.py](../scripts/automation_registry.py) | Rebuild the native rule catalog from pinned PHP reflection and explicitly reviewed scope bindings. |
 | [scripts/benchmark.py](../scripts/benchmark.py) | Reproducible local HTTP + PostgreSQL benchmark, with response validation. |
 | [scripts/branding.py](../scripts/branding.py) | Keep the public Vendune identity, shared vector assets and executable package/deployment paths consistent. |

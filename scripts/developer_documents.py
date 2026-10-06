@@ -128,14 +128,14 @@ try:
  req=urllib.request.Request(base+'/store-api/checkout/order',data=b'{}',headers={'Content-Type':'application/json','x-tenant':slug,'sw-context-token':c['token'],'Idempotency-Key':uuid.uuid4().hex})
  with urllib.request.urlopen(req,timeout=30) as r:order=json.load(r)
  for _ in range(100):
-  jobs=call('/api/automation',session=a)['jobs'];done=[j for j in jobs if j['state']=='completed']
+  jobs=call('/api/automation',session=a)['jobs'];done=[j for j in jobs if j['flow']=='price_draft' and j['state']=='completed']
   if done:break
   time.sleep(.2)
  assert done and done[0]['result']['taskId'],jobs
  task=done[0]['result']['taskId'];ps=call('/api/search/product',{},a)['elements'];assert next(p for p in ps if p['id']=='lamp')['price']==74.9
  call('/api/agent/tasks/'+task+'/apply',{'approve':True},a)
  assert next(p for p in call('/api/search/product',{},a)['elements'] if p['id']=='lamp')['price']==69.9
- assert call('/api/automation',session=a)['jobs'][0]['applied']
+ assert next(j for j in call('/api/automation',session=a)['jobs'] if j['flow']=='price_draft')['applied']
  passed('Actual order flow creates an AI proposal through the model adapter; price changes only after merchant approval')
  print(json.dumps({'passed':len(checks),'checks':checks,'realModelInference':False,'paidProviderCalls':0},indent=2))
 finally:

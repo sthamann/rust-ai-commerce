@@ -43,7 +43,7 @@ editing. Cover illustrations are generated inline vectors, not official provider
 logos or AI photographs. No app installation, live deactivation or provider call
 was performed to capture them.
 
-The `studio-editor-en.png`, `studio-api-en.png` and `studio-channels-en.png`
+The `studio-editor-en.png`, `studio-api-en.png` and `studio-channels-en.jpg`
 captures were recorded on 2026-10-06 from the running synthetic Commerce
 Playground. They show applied Markdown in the visual editor, real MCP discovery
 in the API explorer and native channel cards. Product and channel test drafts

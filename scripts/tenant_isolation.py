@@ -6,6 +6,7 @@ import json
 import os
 import pathlib
 import subprocess
+import time
 import urllib.error
 import urllib.request
 import uuid
@@ -67,6 +68,15 @@ def fixture():
     call('/api/apps/care_studio/actions/save_guides', record, h)
     stage = call('/api/environments', {'name': 'Private fixture'}, h)['id']
     build = call('/api/developer/import', {'environment': stage, 'prompt': 'Fixture', 'summary': {'en': 'Fixture', 'de': 'Test', 'es': 'Prueba'}, 'manifest': manifest}, h)
+    # Establish the victim baseline after its legitimate asynchronous order flow commits.
+    # Keep the complete before/after equality check below; do not exclude audit notes.
+    for _ in range(300):
+        jobs = call('/api/automation/executions', h=h)['jobs']
+        if any(j['flow'] == 'default_order_received' and j['state'] == 'completed' for j in jobs):
+            break
+        time.sleep(.1)
+    else:
+        raise AssertionError(('Default order flow did not settle', jobs))
     return dict(tenant=t, user=user, h=h, public=p, integration=integration, customer=customer, ch=ch, email=email, cart=cart, order=order, receipt=receipt, asset=asset, doc=doc, stage=stage, build=build)
 
 

@@ -33,7 +33,7 @@ The plaintext key is shown once, masked in the UI, and only held in component
 memory. Store it in your integration's secret manager. Scheduled future start
 dates and refresh-token rotation are not implemented.
 
-The explorer lists **202 static HTTP method/path pairs** with their Rust source
+The explorer lists **204 static HTTP method/path pairs** with their Rust source
 module. `scripts/api_catalogue.py` regenerates this list from `.route`
 declarations; the mandatory CI structure check rejects drift. Installed app `apiRoutes` are
 loaded separately for the current shop. This is not a complete OpenAPI schema;
@@ -79,7 +79,10 @@ masks and native property-group entities remain upstream gaps.
 ## Sales channels
 
 A dedicated workspace separates channels from Rule/Flow Builder. The main
-storefront remains available. Create another storefront or headless channel in
+storefront is a persisted, editable `default` channel. It inherits shop languages and
+shared company/checkout settings, and cannot be deleted or deactivated. Other
+channels expose dependency-checked deletion. See [automation lifecycle](automation.md#starting-configuration-and-lifecycle).
+Create another storefront or headless channel in
 three steps: translated name/type → enabled languages/navigation/catalog → review.
 Choose products by search rather than entering IDs. All-catalog mode still
 respects activation and per-product channel visibility. Preview links contain
