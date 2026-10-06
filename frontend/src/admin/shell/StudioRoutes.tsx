@@ -116,6 +116,7 @@ export default function StudioRoutes() {
     />
   ) : tab === "channels" ? (
     <SalesChannelsWorkspace
+      key={environment || workspace}
       request={request}
       workspace={environment || workspace}
       onTeam={() => selectTab("users")}
