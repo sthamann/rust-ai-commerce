@@ -125,6 +125,12 @@ Each editor uses one **Content language**. Inherited values are distinguishable 
 
 ![Current central product editor with all ten tabs and one content-language selector](assets/feature-tour/product-editor.jpg)
 
+### Pricing, quantities and inventory
+
+The price/stock tab combines current gross price, tax, inventory, purchase limits, quantity steps and optional list/regulation/reference prices. Tier rows can target a customer group and saved rule. Delivery and free-shipping fields feed checkout; changing a parent does not invent stock for its independently purchasable child SKUs. Save the reviewed revision to apply changes.
+
+![Price, tax, stock and quantity controls in the actual coat editor](assets/feature-tour/product-pricing.jpg)
+
 ### Visual and Markdown descriptions
 
 The visual editor supports bold/italic/underline, headings, quotations, lists, links, safe image/video blocks, undo/redo and preview. It stores bounded typed document blocks, not executable HTML. Markdown edits the same description through an explicit **Apply Markdown** step; unapplied source changes block an accidental save. Some rich attributes/video/underline are outside the Markdown subset and are disclosed rather than silently discarded.
@@ -157,6 +163,16 @@ Specifications expose localized merchant properties and dimensions; SEO stores t
 
 ![Actual translated category tree](assets/feature-tour/categories.jpg)
 
+![Category assignment and explicit channel visibility in the product editor](assets/feature-tour/product-visibility.jpg)
+
+![Localized specification rows and physical dimensions](assets/feature-tour/product-specifications.jpg)
+
+![Localized SEO metadata and slug controls](assets/feature-tour/product-seo.jpg)
+
+![Cross-selling selects only current products from this shop](assets/feature-tour/product-cross-selling.jpg)
+
+![Product review moderation with publication/hiding controls and actual review count](assets/feature-tour/product-reviews.jpg)
+
 ![Product-specific files and downloads workspace](assets/feature-tour/product-downloads.jpg)
 
 ## Customers, orders and documents
@@ -168,6 +184,8 @@ Search customers and maintain contact/company/VAT/phone/birthday fields, preferr
 Customer groups have translated names and configurable gross/net display. Rules and pricing can target them. Group/status changes revalidate authority and revoke stale customer sessions/cart privileges. Required groups and referenced shipping/payment definitions have dependency guards; an in-use object cannot simply be removed through the UI. New guest orders retain an explicit guest identity instead of acquiring account ownership by email. [CRM/history](entity-history.md) · [Operations](merchant-operations.md).
 
 ![Customer detail with synthetic contact information and trusted group controls](assets/feature-tour/customer-detail.jpg)
+
+![Translated customer groups and their gross/net pricing configuration](assets/feature-tour/customer-groups.jpg)
 
 ### Order workflow and fulfillment
 
@@ -286,6 +304,8 @@ Shop-main and enabled content locales drive product/category/settings/app editor
 Shipping maintains fees, country/rule availability, delivery times and tax allocation; payment maintains manual/simulated/configured provider mode, country/customer eligibility and descriptions. A channel inherits checkout settings until an explicit field-level override. Switching a dirty scope asks for save/discard. Dependency checks protect referenced methods and preserve existing order snapshots. [Shared basis and overrides](settings-media.md).
 
 ![Languages, main-language control and optional reviewed translation jobs](assets/feature-tour/languages.jpg)
+
+![Shipping methods with current fees, scope and availability controls](assets/feature-tour/shipping.jpg)
 
 ![Payment-method eligibility and the explicitly simulated demo method](assets/feature-tour/payments.jpg)
 

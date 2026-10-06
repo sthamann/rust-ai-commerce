@@ -15,9 +15,12 @@ The feature guide was reviewed against `main` at **`5e4f8b5`**. The unchanged UI
 screenshots and all twelve GIFs were captured from **`036b36a`** (the current
 Nord Atelier demo, including the preceding platform controls). The instance was
 then rebuilt from `5e4f8b5` to check the trusted identity/hosted frontend additions.
-`identity-explorer.jpg`, `app-data-models.jpg` and `app-design-still.jpg` were
-captured from that rebuild. They show the latest identity route and the actual
-saved app model/design. This distinction avoids relabeling older captures as a
+`identity-explorer.jpg`, `app-data-models.jpg`, `app-design-still.jpg`,
+`product-pricing.jpg`, `product-visibility.jpg`, `product-specifications.jpg`,
+`product-seo.jpg`, `product-cross-selling.jpg`, `product-reviews.jpg`,
+`shipping.jpg` and `customer-groups.jpg` were captured from that rebuild. They
+show the latest identity route, actual saved app model/design and native product,
+shipping and customer-group controls. This distinction avoids relabeling older captures as a
 different source build.
 
 The twelve checked-in fashion photographs are generated demo artwork. The
