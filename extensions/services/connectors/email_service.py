@@ -1,7 +1,7 @@
 """Email app actions and event intake: queue bounded immutable envelopes with revision fences."""
 
 import email_config as config
-from email_templates import envelope, order, TEMPLATES
+from email_templates import envelope, order, consumer_receipt, TEMPLATES
 
 
 def action(store, tenant, name, value):
@@ -34,6 +34,15 @@ def action(store, tenant, name, value):
 
 
 def event(store, tenant, value):
+    kind = value.get("kind", "")
+    if kind in {"consumer." + k + ".requested" for k in ("withdrawal", "access", "erase", "correct", "portability", "objection")}:
+        s = {**config.DEFAULTS, **store.get(tenant, "email")["settings"]}
+        if not s["notifyConsumerRequests"] or not s["enabled"]:
+            return {"ignored": True, "reason": "Consumer receipt email disabled"}
+        return action(store, tenant, "send", {
+            "message": consumer_receipt(value.get("data", {}), s),
+            "requestKey": value["idempotencyKey"],
+        })
     if value.get("kind") == "order.placed" and store.get(tenant, "email")[
         "settings"
     ].get("notifyOrders"):

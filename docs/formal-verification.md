@@ -1,12 +1,12 @@
 # Lean-checked commerce contracts
 
-The prototype now runs Lean 4.29.1 proofs for **30 policies used in production
-Rust paths**. Fifty-five theorems cover the properties below. This is **not a
-certificate that the entire commerce core is correct or bug-free**. The current
-inventory contains 266 Rust modules (reviewed at `88370c3`, 6 October 2026):
-one extracted policy module, 23 reviewed binding modules, one comparison driver
-and 241 unproved modules. Binding review
-is not a proof of those modules.
+The prototype runs Lean 4.29.1 proofs for **32 policies used in production
+Rust paths**, with **67 named properties**. This is **not a certificate that the
+entire commerce core is correct or bug-free**. The European-operation review
+contains 293 Rust modules: one extracted policy module, 29 reviewed binding
+modules, one comparison driver and 262 unproved modules. Binding review is not a
+proof of those modules. The [manifest](../proof/manifest.json) and CI artifact are
+the authoritative per-revision inventory.
 
 ## Connection to the real application
 
@@ -83,6 +83,18 @@ Authentication is supplied by the middleware; the theorem does not prove that
 middleware or the older aggregate `read` permission path. Provider receipt
 identity/signature checks and their parsers remain outside the pure theorem.
 
+## Consent and legal checkout additions
+
+`consent_admissible` admits exactly an enabled purpose with a current, fresh,
+affirmative receipt; production consumers check it while holding the actual
+receipt/settings locks. `legal_checkout_admissible` admits non-strict demo mode,
+or current accepted documents and, when immediate consumer digital supply is
+requested, separate approval. Their exact Boolean equivalences cover every
+assignment, with mutations that remove current/fresh/affirmative/waiver checks.
+These statements do not prove the legal adequacy of texts, identity verification,
+retention, product claims, SQL isolation or email delivery. The real HTTP tests
+verify selected adapter behavior. See [European operation](european-operation.md).
+
 ## Verification that runs on every push and pull request
 
 The existing **Verify prototype / verify** job now also:
@@ -93,13 +105,13 @@ The existing **Verify prototype / verify** job now also:
    verification workflow also require an explicit recorded review after changes.
 3. Builds proofs with the pinned Lean toolchain and rechecks compiled declarations
    using bundled `leanchecker`.
-4. Audits all 55 required theorems' transitive axioms. Only Lean's standard
+4. Audits all 67 required theorems' transitive axioms. Only Lean's standard
    `propext`, `Quot.sound` and `Classical.choice` foundations are allowed. `sorry`,
    `admit`, custom axioms, `native_decide` and missing theorem audits fail.
-5. Executes compiled Rust and Lean functions on **4,930** identical inputs:
+5. Executes compiled Rust and Lean functions on **5,879** identical inputs:
    exhaustive Boolean assignments plus numeric boundaries/random cases, including
    `u64::MAX`. Their output types and values must match.
-6. Requires Lean to reject **64** deliberately broken policy variants. Also
+6. Requires Lean to reject **82** deliberately broken policy variants. Also
    rejects 14 unsupported grammar examples, three stale/unclassified/disconnected
    inventory cases and nine proof-shortcut/axiom/missing-audit examples.
 7. Runs existing Rust, PHP-reference and real PostgreSQL HTTP regressions.
@@ -227,7 +239,7 @@ limits decimal precision, `resource_quota_admissible` admits positive bounded op
 limits, and `payment_transition_admissible` defines the monotonic ledger graph,
 including late capture. `src/money.rs`, `src/platform/quotas.rs` and
 `src/payments/state.rs` are their real consumers. The reviewed manifest now has
-30 policies and 65 named theorems; compiled Rust/Lean comparisons and negative
+32 policies and 67 named theorems; compiled Rust/Lean comparisons and negative
 mutations remain required. These proofs do not cover signed integer parsing,
 floating-point conversion, SQL hooks/transactions, provider evidence, or the whole
 server. [Architecture and executable checks](production-architecture.md).

@@ -1,5 +1,6 @@
 /** EmailProviderFields: focused connector-settings view with explicit typed inputs and callbacks. */
 import { useEmailText } from "../../shared/i18n/email-i18n";
+import { useLegalText } from "../../shared/i18n/legal-i18n";
 import { languages } from "./email-languages";
 
 export type EmailProviderFieldsProps = {
@@ -20,6 +21,7 @@ export default function EmailProviderFields({
   field,
   secret,
 }: EmailProviderFieldsProps) {
+  const { l } = useLegalText();
   return (
     <div className="connector-settings">
       <label>
@@ -75,17 +77,21 @@ export default function EmailProviderFields({
         </>
       )}
       <p>{e("secrets")}</p>
-      {["enabled", "dryRun", "notifyOrders"].map((key) => (
-        <label className="checkbox-label" key={key}>
-          <input
-            type="checkbox"
-            disabled={!manage || busy}
-            checked={settings[key]}
-            onChange={(ev) => change(key, ev.target.checked)}
-          />
-          {e(key === "notifyOrders" ? "automatic" : key)}
-        </label>
-      ))}
+      {["enabled", "dryRun", "notifyOrders", "notifyConsumerRequests"].map(
+        (key) => (
+          <label className="checkbox-label" key={key}>
+            <input
+              type="checkbox"
+              disabled={!manage || busy}
+              checked={settings[key]}
+              onChange={(ev) => change(key, ev.target.checked)}
+            />
+            {key === "notifyConsumerRequests"
+              ? l("receiptEmail")
+              : e(key === "notifyOrders" ? "automatic" : key)}
+          </label>
+        ),
+      )}
       <label>
         {e("locale")}
         <select

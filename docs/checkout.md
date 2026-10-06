@@ -113,3 +113,7 @@ browser checks are development evidence, not a conversion-rate claim or live pay
 See [payment provider contributions](payment-provider-contributions.md) for the
 current native adapter boundary, invoice/receipt requirements and the deferred
 Nano/XNO proposal. Declaring an app payment method alone cannot mark orders paid.
+
+## Legal acknowledgement
+
+The purchase button explicitly states the obligation to pay. Configurable strict checkout enforces current document acknowledgement server-side and requires separate immediate digital-supply acknowledgement for consumer downloads. Order documents and acceptance are immutable. [Enable and configure the European-operation controls](european-operation.md#strict-checkout-and-durable-documents); demo strict mode is off until reviewed configuration is supplied.

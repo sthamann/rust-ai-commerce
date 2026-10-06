@@ -1,4 +1,5 @@
 /** Read-only product questions cite only tenant-owned, explicitly published source documents. */
+import { useLegalText } from "../../shared/i18n/legal-i18n";
 import { useEffect, useRef, useState } from "react";
 import { shopApi } from "../../shared/api/shop-api";
 import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
@@ -8,6 +9,7 @@ type Answer = {
   sources: { sourceId: string; title: string; excerpt: string }[];
 };
 export default function ProductQuestion({ productId }: { productId: string }) {
+  const { l } = useLegalText();
   const { w, locale } = useWorkbenchText();
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<Answer>();
@@ -26,6 +28,7 @@ export default function ProductQuestion({ productId }: { productId: string }) {
   return (
     <section className="product-question">
       <h2>{w("askProduct")}</h2>
+      <small>{l("ai")}</small>
       <p>{w("questionHint")}</p>
       <form
         onSubmit={async (e) => {

@@ -1,6 +1,14 @@
 //! Durable order-event flows: conditions, shop notes and AI proposals; no unapproved model mutations.
 use super::*;
 pub(super) const EVENTS: &[&str] = &[
+    "privacy.consent_changed",
+    "consumer.withdrawal.requested",
+    "consumer.access.requested",
+    "consumer.erase.requested",
+    "consumer.correct.requested",
+    "consumer.portability.requested",
+    "consumer.objection.requested",
+    "consumer.request.reviewed",
     "product.created",
     "product.updated",
     "order.placed",
@@ -17,7 +25,11 @@ pub(super) const EVENTS: &[&str] = &[
     "intelligence.decision",
 ];
 fn knowledge_event(kind: &str) -> bool {
-    EVENTS.contains(&kind) && (kind.starts_with("knowledge.") || kind == "intelligence.decision")
+    EVENTS.contains(&kind)
+        && (kind.starts_with("knowledge.")
+            || kind == "intelligence.decision"
+            || kind.starts_with("consumer.")
+            || kind.starts_with("privacy."))
 }
 
 #[derive(Clone, Deserialize, Serialize)]
@@ -88,6 +100,12 @@ pub(crate) async fn project_flows(
     if !EVENTS.contains(&kind) && !valid_app_event(kind) {
         return Ok(());
     }
+    // Generic automation access is not customer-data access. Email apps receive their explicitly subscribed raw event.
+    let mut public_event = data.clone();
+    if kind.starts_with("consumer.") {
+        public_event.as_object_mut().map(|v| v.remove("receipt"));
+    }
+    let data = &public_event;
     let rows = sqlx::query("SELECT id,data FROM commerce_flows WHERE tenant=$1 AND data->>'event'=$2 AND data->>'active'='true' ORDER BY id FOR SHARE")
         .bind(t)
         .bind(kind)

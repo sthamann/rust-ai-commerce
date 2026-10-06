@@ -7,10 +7,23 @@ pub(crate) async fn experience(
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let t = tenant(&h)?;
+    let Ok(c) = load_cart(&a, &h).await else {
+        return Ok(Json(
+            json!({"variant":"discovery","propensity":1.0,"adaptation":{"localBehavior":false,"policy":"no session; static layout"}}),
+        ));
+    };
+    if legal::require(&a, &c, "personalization").await.is_err() {
+        return Ok(Json(
+            json!({"variant":"discovery","propensity":1.0,"adaptation":{"localBehavior":false,"policy":"no consent; static layout"}}),
+        ));
+    }
     let session = v["session"]
         .as_str()
         .filter(|s| s.len() >= 8 && s.len() <= 128)
         .ok_or(bad("Session ID required"))?;
+    if session != c.data.session {
+        return Err(bad("Experience session must match cart"));
+    }
     let requested_locale = language_context(&a, &h).await?.0;
     let er = sqlx::query("SELECT data,revision FROM experiences WHERE tenant=$1")
         .bind(&t)
@@ -18,6 +31,7 @@ pub(crate) async fn experience(
         .await?;
     let e: Value = er.get("data");
     let mut tx = a.db.begin().await?;
+    legal::require_locked(&mut tx, &c, "personalization").await?;
     let existing =
         sqlx::query("SELECT variant,propensity FROM exposures WHERE tenant=$1 AND session=$2")
             .bind(&t)
@@ -107,6 +121,7 @@ pub(crate) async fn personalization(
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let c = load_cart(&a, &h).await?;
+    legal::require(&a, &c, "personalization").await?;
     let id = v["productId"].as_str().ok_or(bad("Product required"))?;
     let event = v["eventId"]
         .as_str()
@@ -132,6 +147,7 @@ pub(crate) async fn personalization(
     }
     let session = hash(&c.id);
     let mut tx = a.db.begin().await?;
+    legal::require_locked(&mut tx, &c, "personalization").await?;
     sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,18))")
         .bind(format!("{}:{session}", c.tenant))
         .execute(&mut *tx)

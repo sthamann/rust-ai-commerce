@@ -13,13 +13,14 @@ Screenshots and GIFs show the real application with synthetic accounts and order
 | Area | What is included | Start here |
 | --- | --- | --- |
 | Shopping | Fashion catalog, categories, variants, media, prices, reviews, customer accounts and checkout | [Storefront](#storefront-and-shopping) |
-| Catalog | Ten editor tabs, rich descriptions, translations, variants, galleries, categories, downloads and history | [Products](#products-and-categories) |
+| Catalog | Unified editor tabs, rich descriptions, translations, variants, galleries, categories, downloads and history | [Products](#products-and-categories) |
 | Operations | CRM, addresses, customer groups, order workflows, delivery, payments and immutable PDFs | [Customers and orders](#customers-orders-and-documents) |
 | Intelligence | Reviewed proposals, private/published knowledge, retrieval, recommendations, translations and image drafts | [Intelligence](#assistant-and-shop-intelligence) |
 | Processes | Saved rules, coupons, campaigns, graphical branches, durable delays and app actions | [Rules and flows](#rules-campaigns-and-flow-builder) |
 | Experiences | Sales channels, inherited settings, Storyfront checkout transfer and hosted private frontends | [Channels](#sales-channels-and-connected-experiences) |
 | Extensions | Eight bundled apps, visual App Studio, typed data, SDK surfaces, services, webhooks, schedules and Wasm | [Apps](#apps-and-app-studio) |
 | Control | Team rights, scoped API keys, private stages, selected releases, shop administration and diagnostics | [Workspace](#workspace-access-and-releases) · [Platform](#vendune-platform) |
+| European operation | Consent gates, channel legal documents, sector facts, guarded checkout and durable consumer requests | [European operation](european-operation.md) |
 | Foundation | Shared HTTP/MCP/UCP operations, transactional storage, independent workers and bounded verification | [Core](#shared-apis-storage-and-verification) |
 
 ## Storefront and shopping

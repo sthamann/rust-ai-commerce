@@ -1,17 +1,16 @@
 /** Opt-in behavior signals and stable product ordering; no authoritative prices are changed. */
+import { usePurpose } from "../../shared/legal/consent-store";
 import { useEffect, useState } from "react";
 import { shopApi, type Cart, type Product } from "../../shared/api/shop-api";
 export function usePersonalization(
   products: Product[],
   cart: Cart | undefined,
   id: string,
-  shopTenant: string,
+  _shopTenant: string,
 ) {
   const [ranked, setRanked] = useState<string[]>([]);
   const [personalized, setPersonalized] = useState(false);
-  const [adaptation, setAdaptation] = useState(
-    localStorage.getItem(`rac-adaptation:${shopTenant}`) === "1",
-  );
+  const adaptation = usePurpose("personalization");
   const [viewed, setViewed] = useState<Record<string, number>>({});
   useEffect(() => {
     if (!adaptation || !cart || !id) return;
@@ -36,6 +35,13 @@ export function usePersonalization(
       active = false;
     };
   }, [id, adaptation, cart?.id]);
+  useEffect(() => {
+    if (!adaptation) {
+      setRanked([]);
+      setPersonalized(false);
+      setViewed({});
+    }
+  }, [adaptation]);
   const affinity = Object.entries(viewed).sort((a, b) => b[1] - a[1])[0];
   const adapted =
     adaptation && (personalized || (!!affinity && affinity[1] >= 3));
@@ -57,7 +63,6 @@ export function usePersonalization(
     personalized,
     setPersonalized,
     adaptation,
-    setAdaptation,
     viewed,
     setViewed,
     affinity,

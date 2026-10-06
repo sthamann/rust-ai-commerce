@@ -50,6 +50,8 @@ struct Extra {
     rich_description: Value,
     #[serde(default)]
     identity: Value,
+    #[serde(default)]
+    compliance: Value,
 }
 #[derive(Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -88,6 +90,7 @@ pub(super) async fn save_product(
             .await?;
     let settings = decode_config(data)?;
     super::product_languages::validate(&edit.translations, &settings)?;
+    crate::legal::validate_product(&edit.extra.compliance, &settings)?;
     let main_key = super::product_languages::key(&settings.main_locale, &settings);
     let main = edit
         .translations

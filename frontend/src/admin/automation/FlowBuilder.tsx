@@ -5,6 +5,7 @@ import {
   useKnowledgeText,
   type KnowledgeWord,
 } from "../../shared/i18n/knowledge-i18n";
+import { useLegalText } from "../../shared/i18n/legal-i18n";
 import FlowCanvas from "./FlowCanvas";
 import { useAutomationText } from "../../shared/i18n/automation-i18n";
 import FlowInputs from "./FlowInputs";
@@ -21,6 +22,7 @@ export default function FlowBuilder({
   const { mainLocale } = useContentLanguage();
   const { a } = useAutomationText();
   const k = useKnowledgeText();
+  const { l } = useLegalText();
   const knowledgeEvents: Record<string, KnowledgeWord> = {
     "knowledge.document.ingested": "event_ingested",
     "knowledge.document.updated": "event_updated",
@@ -66,9 +68,15 @@ export default function FlowBuilder({
             <option key={v} value={v}>
               {v.startsWith("app.")
                 ? `${catalog.apps.find((a) => a.id === v.split(".")[1])?.manifest.name[locale.slice(0, 2)] ?? v.split(".")[1]} · ${v.endsWith(".source_imported") ? x("sourceImported") : v.split(".")[2]}`
-                : knowledgeEvents[v]
-                  ? k(knowledgeEvents[v])
-                  : x(v)}
+                : v === "privacy.consent_changed"
+                  ? l("consentChanged")
+                  : v === "consumer.request.reviewed"
+                    ? l("requestReviewed")
+                    : v.startsWith("consumer.")
+                      ? `${l("requestEvent")} · ${l(v.split(".")[1] as "withdrawal")}`
+                      : knowledgeEvents[v]
+                        ? k(knowledgeEvents[v])
+                        : x(v)}
             </option>
           ))}
         </select>

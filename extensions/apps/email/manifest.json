@@ -1,13 +1,13 @@
 {
   "id": "email",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "coreApi": "1",
   "runtime": "service",
   "name": {
     "en": "Email Delivery",
     "de": "E-Mail-Versand",
-    "fr": "Envoi d\u2019e-mails",
-    "es": "Env\u00edo de correos"
+    "fr": "Envoi d’e-mails",
+    "es": "Envío de correos"
   },
   "category": "operations",
   "permissions": [
@@ -150,6 +150,12 @@
     }
   ],
   "events": [
-    "order.placed"
+    "order.placed",
+    "consumer.withdrawal.requested",
+    "consumer.access.requested",
+    "consumer.erase.requested",
+    "consumer.correct.requested",
+    "consumer.portability.requested",
+    "consumer.objection.requested"
   ]
 }

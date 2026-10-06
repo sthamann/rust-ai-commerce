@@ -14,4 +14,7 @@ a.event('page_view',{});assert(a.event('purchase',{transaction_id:'order-one',va
 let layer=JSON.stringify(context.window.dataLayer);assert(!layer.includes('private-ticket'));assert(!layer.includes('private@example.test'));assert(layer.includes('view_item'));assert(layer.includes('purchase'));assert(layer.includes('send_to'));
 a.consent(false);assert.equal(scripts.length,0);assert(!a.event('view_item',{}));assert(context.window['ga-disable-G-TEST12345']);
 const other=context.createAnalytics({shop:'b',channel:'one',measurementId:'G-OTHER12345'});assert.equal(scripts.length,0);other.consent(true);assert(other.event('purchase',{transaction_id:'order-one'}));other.dispose();
+map.set('rac-analytics:managed:default','granted');
+const managed=context.createAnalytics({shop:'managed',measurementId:'G-MANAGED',managedConsent:true});
+assert.equal(scripts.length,0);assert(!managed.enabled());managed.consent(true);assert.equal(scripts.length,1);managed.consent(false);assert.equal(scripts.length,0);
 console.log('PASS consent defaults, actual gtag script URL, ecommerce payload allowlist, no customer identities/tickets, purchase deduplication and tenant-scoped choices');

@@ -1,4 +1,5 @@
 /** Safe rich blocks with native image/video rendering; no HTML interpretation or script execution. */
+import ExternalVideo from "../legal/ExternalVideo";
 import { renderRichNode, safeRichUrl, type RichNode } from "./rich-document";
 export type RichBlock = {
   type: "paragraph" | "heading" | "list" | "image" | "video" | "document";
@@ -40,12 +41,7 @@ export default function RichDescription({ blocks }: { blocks: RichBlock[] }) {
           </figure>
         ) : b.type === "video" && safeRichUrl(b.url) ? (
           <figure key={i}>
-            <video
-              controls
-              preload="metadata"
-              src={b.url}
-              aria-label={b.text}
-            />
+            <ExternalVideo url={b.url!} label={b.text} />
             {b.text && <figcaption>{b.text}</figcaption>}
           </figure>
         ) : (

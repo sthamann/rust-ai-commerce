@@ -10,7 +10,7 @@ import {
   type Order,
   type Product,
 } from "../../shared/api/shop-api";
-import { useConnectedText } from "../../shared/i18n/connected-i18n";
+import { usePurpose } from "../../shared/legal/consent-store";
 let current: Analytics | undefined;
 export const commerceEvent = (name: string, data: unknown) =>
   current?.event(name, data);
@@ -36,7 +36,7 @@ export default function ShopAnalytics({
   bag: boolean;
   order?: Order;
 }) {
-  const { x } = useConnectedText();
+  const allowed = usePurpose("analytics");
   const [choice, setChoice] = useState<string | null>(null);
   const [configured, setConfigured] = useState(false);
   const client = useRef<Analytics | undefined>(undefined);
@@ -54,9 +54,10 @@ export default function ShopAnalytics({
           shop,
           channel,
           measurementId: v.measurementId,
+          managedConsent: true,
         });
         current = client.current;
-        setChoice(client.current.choice());
+        setChoice(null);
         setConfigured(true);
       })
       .catch(() => {});
@@ -115,30 +116,10 @@ export default function ShopAnalytics({
         })),
       });
   }, [order, choice]);
-  if (!configured) return null;
-  const choose = (value: boolean) => {
-    client.current?.consent(value);
-    setChoice(value ? "granted" : "denied");
-  };
-  return choice === null ? (
-    <aside className="analytics-consent" aria-label={x("analytics")}>
-      <div>
-        <strong>{x("analytics")}</strong>
-        <p>{x("consent")}</p>
-      </div>
-      <button className="shop-secondary" onClick={() => choose(false)}>
-        {x("decline")}
-      </button>
-      <button className="shop-primary" onClick={() => choose(true)}>
-        {x("allow")}
-      </button>
-    </aside>
-  ) : choice === "granted" ? (
-    <button
-      className="analytics-withdraw shop-text-button"
-      onClick={() => choose(false)}
-    >
-      {x("withdraw")}
-    </button>
-  ) : null;
+  useEffect(() => {
+    if (!configured) return;
+    client.current?.consent(allowed);
+    setChoice(allowed ? "granted" : "denied");
+  }, [allowed, configured]);
+  return null;
 }

@@ -3,6 +3,7 @@ import { routeProductId } from "../catalog/product-url";
 import { shopScope } from "../../shared/api/shop-scope";
 import { useCompanyIdentity } from "./useCompanyIdentity";
 import { useCatalog } from "./useCatalog";
+import { useConsentedExperience } from "./useConsentedExperience";
 import { usePersonalization } from "./usePersonalization";
 
 import { useEffect, useRef, useState } from "react";
@@ -86,7 +87,6 @@ export function useStorefrontController({
     personalized,
     setPersonalized,
     adaptation,
-    setAdaptation,
     viewed,
     setViewed,
     affinity,
@@ -192,6 +192,7 @@ export function useStorefrontController({
         const exp = await shopApi<{ variant: string; headline?: string }>(
           "/api/experience",
           { session },
+          c.token,
         );
         if (active) setExperience(exp);
       } catch (e) {
@@ -202,6 +203,7 @@ export function useStorefrontController({
       active = false;
     };
   }, [locale]);
+  useConsentedExperience(cart, adaptation, session, setExperience);
   const run = async (fn: () => Promise<void>) => {
     setBusy(true);
     setError("");
@@ -376,7 +378,6 @@ export function useStorefrontController({
     personalized,
     setPersonalized,
     adaptation,
-    setAdaptation,
     viewed,
     setViewed,
     experience,

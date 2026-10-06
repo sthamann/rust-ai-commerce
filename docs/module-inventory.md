@@ -176,6 +176,13 @@ This lists every checked-in source module in these roots, including files with n
 | [src/knowledge/search.rs](../src/knowledge/search.rs) | Qdrant candidates are rechecked against tenant/model/content revision in authoritative PostgreSQL. |
 | [src/knowledge/vectors.rs](../src/knowledge/vectors.rs) | Private Qdrant adapter: tenant/model filters, deterministic identities and durable PostgreSQL index queue. |
 | [src/knowledge.rs](../src/knowledge.rs) | Transactional PostgreSQL knowledge relations and separately indexed Qdrant retrieval. |
+| [src/legal/capabilities.rs](../src/legal/capabilities.rs) | MCP legal tools delegate to the same ownership/permission-checked HTTP domain handlers. |
+| [src/legal/checkout.rs](../src/legal/checkout.rs) | Explicit document/digital acknowledgement and immutable order policy snapshots; transport-neutral checkout guard. |
+| [src/legal/consent.rs](../src/legal/consent.rs) | Cart/channel-bound affirmative choices; stale/expired policy receipts never authorize processing. |
+| [src/legal/mod.rs](../src/legal/mod.rs) | Connected legal/privacy boundary: configuration, consent, checkout snapshots and durable requests. |
+| [src/legal/model.rs](../src/legal/model.rs) | Bounded multilingual legal configuration; policy changes invalidate optional-purpose consent. |
+| [src/legal/product.rs](../src/legal/product.rs) | Explicit product safety/sector facts, with market-language fallback; no inference of certifications. |
+| [src/legal/requests.rs](../src/legal/requests.rs) | Durable withdrawal/data-rights intake, tenant-scoped operator review and customer-held receipt access. |
 | [src/lib.rs](../src/lib.rs) | Reusable pricing, context, sandbox, graph and inference modules. |
 | [src/localization.rs](../src/localization.rs) | Shop locale resolution, translated catalog hydration and non-mutating merchant quote. |
 | [src/main.rs](../src/main.rs) | Process lifetime only. See docs/source-map.md for domain responsibilities. |
@@ -345,6 +352,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/catalog/ProductAssets.tsx](../frontend/src/admin/catalog/ProductAssets.tsx) | Bounded upload and explicit digest-bound publication of attachments and paid files. |
 | [frontend/src/admin/catalog/ProductDataView.tsx](../frontend/src/admin/catalog/ProductDataView.tsx) | Central catalog workspace: server-filtered cursor list, product details and hierarchical categories. |
 | [frontend/src/admin/catalog/ProductEditor.tsx](../frontend/src/admin/catalog/ProductEditor.tsx) | Revision-aware product aggregate editor: one save, translation tabs and product-scoped linked capabilities. |
+| [frontend/src/admin/catalog/ProductEditorExtras.tsx](../frontend/src/admin/catalog/ProductEditorExtras.tsx) | Price-tax selection and permission-filtered extension slots attached to the product editor. |
 | [frontend/src/admin/catalog/ProductEditorNav.tsx](../frontend/src/admin/catalog/ProductEditorNav.tsx) | Core product tabs and installed app submenus share one accessible navigation. |
 | [frontend/src/admin/catalog/ProductLocalizedContent.tsx](../frontend/src/admin/catalog/ProductLocalizedContent.tsx) | Consistent main-language inheritance for product rich documents, specification groups and individual SEO fields. |
 | [frontend/src/admin/catalog/ProductMediaWorkspace.tsx](../frontend/src/admin/catalog/ProductMediaWorkspace.tsx) | One product-media workspace: cover, ordered gallery, multilingual image metadata, drag/drop and optional reviewed AI drafts. |
@@ -411,6 +419,10 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/intelligence/MemoryView.tsx](../frontend/src/admin/intelligence/MemoryView.tsx) | Durable co-purchase evidence and revision-bound merchant decisions, with simulation labels and explicit confirmation. |
 | [frontend/src/admin/intelligence/SourceEditor.tsx](../frontend/src/admin/intelligence/SourceEditor.tsx) | Single-language source editor with inherited fields, product lookup and private-first API/file ingestion. |
 | [frontend/src/admin/intelligence/knowledge-types.ts](../frontend/src/admin/intelligence/knowledge-types.ts) | Typed knowledge read models preserve source ownership, revisions, sampling and privacy boundaries. |
+| [frontend/src/admin/legal/ConsumerRequests.tsx](../frontend/src/admin/legal/ConsumerRequests.tsx) | Permission-scoped consumer request queue and optimistic, recorded review actions. |
+| [frontend/src/admin/legal/LegalServices.tsx](../frontend/src/admin/legal/LegalServices.tsx) | Purpose inventory and provider disclosures edited in the selected content language. |
+| [frontend/src/admin/legal/LegalSettings.tsx](../frontend/src/admin/legal/LegalSettings.tsx) | Central revisioned legal workspace, inherited channel settings, source-backed sector guidance and request review. |
+| [frontend/src/admin/legal/ProductCompliance.tsx](../frontend/src/admin/legal/ProductCompliance.tsx) | Product-owned multilingual regulatory facts; collected evidence never claims automatic product certification. |
 | [frontend/src/admin/orders/OrderDetail.tsx](../frontend/src/admin/orders/OrderDetail.tsx) | Order workspace: server actions, exact-once commands, provider progress and visible event history. |
 | [frontend/src/admin/orders/OrderPaymentDelivery.tsx](../frontend/src/admin/orders/OrderPaymentDelivery.tsx) | Payment jobs are observed until confirmation. Delivery actions share the server state machine. |
 | [frontend/src/admin/orders/OrderWorkflow.tsx](../frontend/src/admin/orders/OrderWorkflow.tsx) | Server-owned transitions: one source for permitted actions, labels and business guards. |
@@ -475,6 +487,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/knowledge-evidence.css](../frontend/src/admin/styles/knowledge-evidence.css) | Product evidence, retrieval excerpts, observed pairs and responsive knowledge layouts. |
 | [frontend/src/admin/styles/knowledge-sources.css](../frontend/src/admin/styles/knowledge-sources.css) | Knowledge source library/editor layouts: single-language forms and lifecycle controls. |
 | [frontend/src/admin/styles/knowledge.css](../frontend/src/admin/styles/knowledge.css) | Unified knowledge workspace: evidence-first hierarchy, accessible cards and theme-aware responsive layouts. |
+| [frontend/src/admin/styles/legal-settings.css](../frontend/src/admin/styles/legal-settings.css) | Light legal workspace: compact readiness, sector chips, linked sources and single-language editors. |
 | [frontend/src/admin/styles/markdown-editor.css](../frontend/src/admin/styles/markdown-editor.css) | Shared visual/Markdown product editor treatment using existing Studio theme tokens. |
 | [frontend/src/admin/styles/media-workspace.css](../frontend/src/admin/styles/media-workspace.css) | Gallery workspace: airy tiles, focused image inspector and accessible upload surfaces using Studio theme tokens. |
 | [frontend/src/admin/styles/operations.css](../frontend/src/admin/styles/operations.css) | Operational screens share the studio's light surface and clear focus states. |
@@ -568,6 +581,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/i18n.tsx](../frontend/src/shared/i18n/i18n.tsx) | i18n: Four-language locale context, UI dictionaries and translated API errors. |
 | [frontend/src/shared/i18n/international-i18n.ts](../frontend/src/shared/i18n/international-i18n.ts) | International settings vocabulary. Every key requires English, German, French and Spanish. |
 | [frontend/src/shared/i18n/knowledge-i18n.ts](../frontend/src/shared/i18n/knowledge-i18n.ts) | Knowledge workspace vocabulary: sources, evidence and capabilities without fabricated learning claims. |
+| [frontend/src/shared/i18n/legal-i18n.ts](../frontend/src/shared/i18n/legal-i18n.ts) | Complete EN/DE/FR/ES legal workspace and storefront vocabulary; documents use shop content languages. |
 | [frontend/src/shared/i18n/locales/de.ts](../frontend/src/shared/i18n/locales/de.ts) | Merchant interface strings: de. |
 | [frontend/src/shared/i18n/locales/en.ts](../frontend/src/shared/i18n/locales/en.ts) | Merchant interface strings: en. |
 | [frontend/src/shared/i18n/locales/es.ts](../frontend/src/shared/i18n/locales/es.ts) | Merchant interface strings: es. |
@@ -579,10 +593,15 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/operations-i18n.ts](../frontend/src/shared/i18n/operations-i18n.ts) | Operational commerce labels in all supported languages. |
 | [frontend/src/shared/i18n/payment-provider-i18n.ts](../frontend/src/shared/i18n/payment-provider-i18n.ts) | Payment contract editor and account onboarding vocabulary. |
 | [frontend/src/shared/i18n/platform-i18n.ts](../frontend/src/shared/i18n/platform-i18n.ts) | Operator console translations. Every visible control has an explicit translation in all supported locales. |
+| [frontend/src/shared/i18n/product-legal-i18n.ts](../frontend/src/shared/i18n/product-legal-i18n.ts) | Product safety and sector facts in EN/DE/FR/ES; values follow the shared content-language inheritance. |
 | [frontend/src/shared/i18n/shop-i18n.ts](../frontend/src/shared/i18n/shop-i18n.ts) | Shared shop text hook; dictionaries live in focused locale files. |
 | [frontend/src/shared/i18n/studio-ui-i18n.ts](../frontend/src/shared/i18n/studio-ui-i18n.ts) | Studio navigation and settings guidance in all four supported interface languages. |
 | [frontend/src/shared/i18n/workbench-i18n.ts](../frontend/src/shared/i18n/workbench-i18n.ts) | Complete four-language vocabulary for environments, developer tools and knowledge ingestion. |
 | [frontend/src/shared/i18n/workspace-i18n.ts](../frontend/src/shared/i18n/workspace-i18n.ts) | Settings scopes, dependency confirmation and media workspace vocabulary in every supported interface language. |
+| [frontend/src/shared/legal/ExternalVideo.tsx](../frontend/src/shared/legal/ExternalVideo.tsx) | Optional external video is not contacted until the same shop privacy choice allows it. |
+| [frontend/src/shared/legal/consent-store.ts](../frontend/src/shared/legal/consent-store.ts) | Live consent registry starts denied; only validated server receipts unlock integrations. No legacy grant is trusted. |
+| [frontend/src/shared/legal/legal-types.ts](../frontend/src/shared/legal/legal-types.ts) | Channel-scoped legal policy, explicit optional purposes and durable consumer requests. |
+| [frontend/src/shared/legal/requirements.ts](../frontend/src/shared/legal/requirements.ts) | Source-backed requirement catalogue; operational applicability is reviewed, never inferred as legal certification. |
 | [frontend/src/shared/styles/app-surfaces.css](../frontend/src/shared/styles/app-surfaces.css) | app surfaces: Shared customer, app and workbench styles; application workspaces must not import each other.. |
 | [frontend/src/shared/styles/apps.css](../frontend/src/shared/styles/apps.css) | apps: Shared customer, app and workbench styles; application workspaces must not import each other.. |
 | [frontend/src/shared/styles/customers.css](../frontend/src/shared/styles/customers.css) | Shared light account/address workspace, responsive and keyboard-accessible. |
@@ -628,6 +647,11 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/checkout/OrderConfetti.tsx](../frontend/src/storefront/checkout/OrderConfetti.tsx) | Finite CSS celebration after an accepted order; no timers, libraries or motion for reduced-motion users. |
 | [frontend/src/storefront/checkout/PaymentSession.tsx](../frontend/src/storefront/checkout/PaymentSession.tsx) | Provider handoff and bounded durable-status polling; only verified server receipts confirm payment. |
 | [frontend/src/storefront/checkout/checkout-order.ts](../frontend/src/storefront/checkout/checkout-order.ts) | Bind the purchase to the reviewed cart and total; the server remains the pricing authority. |
+| [frontend/src/storefront/legal/CheckoutLegal.tsx](../frontend/src/storefront/legal/CheckoutLegal.tsx) | Current legal-document links and separate non-prechecked digital performance acknowledgement. |
+| [frontend/src/storefront/legal/ConsumerRequestForm.tsx](../frontend/src/storefront/legal/ConsumerRequestForm.tsx) | Public two-step declaration with immutable downloadable receipt; references never expose order data. |
+| [frontend/src/storefront/legal/LegalDocument.tsx](../frontend/src/storefront/legal/LegalDocument.tsx) | Published legal text uses selected content language/main-language inheritance; empty content is visible as missing. |
+| [frontend/src/storefront/legal/PrivacyProvider.tsx](../frontend/src/storefront/legal/PrivacyProvider.tsx) | Unified affirmative consent: server-validated receipt, channel boundaries, expiry and policy revalidation. |
+| [frontend/src/storefront/legal/ProductSafety.tsx](../frontend/src/storefront/legal/ProductSafety.tsx) | Explicit PDP safety/sector facts; no generated warning, certification or origin is invented. |
 | [frontend/src/storefront/shell/CatalogNavigation.tsx](../frontend/src/storefront/shell/CatalogNavigation.tsx) | Public category navigation uses the same tenant/channel tree as the listing API, with translated names. |
 | [frontend/src/storefront/shell/CollectionView.tsx](../frontend/src/storefront/shell/CollectionView.tsx) | CollectionView: storefront view composed from the scoped cart/controller. |
 | [frontend/src/storefront/shell/CompanyLegalPage.tsx](../frontend/src/storefront/shell/CompanyLegalPage.tsx) | Directly reachable channel legal page; renders only the server's explicit public projection as text. |
@@ -639,11 +663,13 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/shell/StorefrontLanguage.tsx](../frontend/src/storefront/shell/StorefrontLanguage.tsx) | Shop-configured content languages, including custom locales; the interface keeps its supported language vocabulary. |
 | [frontend/src/storefront/shell/useCatalog.ts](../frontend/src/storefront/shell/useCatalog.ts) | Cursor catalogue loading, debounced filters and stale-response protection. |
 | [frontend/src/storefront/shell/useCompanyIdentity.ts](../frontend/src/storefront/shell/useCompanyIdentity.ts) | Channel-scoped public brand/legal identity; stale responses cannot leak across tenants or languages. |
+| [frontend/src/storefront/shell/useConsentedExperience.ts](../frontend/src/storefront/shell/useConsentedExperience.ts) | Assign experiments only after current personalization consent; discard stale responses on withdrawal. |
 | [frontend/src/storefront/shell/usePersonalization.ts](../frontend/src/storefront/shell/usePersonalization.ts) | Opt-in behavior signals and stable product ordering; no authoritative prices are changed. |
 | [frontend/src/storefront/shell/useStorefrontController.ts](../frontend/src/storefront/shell/useStorefrontController.ts) | Cart lifecycle, authoritative checkout commands and storefront coordination. |
 | [frontend/src/storefront/styles/checkout-fields.css](../frontend/src/storefront/styles/checkout-fields.css) | Checkout-owned form layout, independent of previously mounted account/admin stylesheets. |
 | [frontend/src/storefront/styles/checkout.css](../frontend/src/storefront/styles/checkout.css) | One-page checkout: calm responsive workspace with a sticky, readable order review. |
 | [frontend/src/storefront/styles/company-identity.css](../frontend/src/storefront/styles/company-identity.css) | Public company branding and readable legal identity across storefront channels. |
+| [frontend/src/storefront/styles/legal.css](../frontend/src/storefront/styles/legal.css) | Responsive, equally weighted consent controls and readable legal/customer forms. |
 | [frontend/src/storefront/styles/order-completion.css](../frontend/src/storefront/styles/order-completion.css) | Order receipt page and finite transform-only celebration; honors reduced motion. |
 | [frontend/src/storefront/styles/shop/01--root.css](../frontend/src/storefront/styles/shop/01--root.css) | shop: -root styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/storefront/styles/shop/02-shop-product-image.css](../frontend/src/storefront/styles/shop/02-shop-product-image.css) | shop: shop-product-image styles. Source order is preserved by the entry stylesheet. |
@@ -734,6 +760,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/intelligence.py](../scripts/intelligence.py) | Actual SQL knowledge persistence and optional live local inference integration. |
 | [scripts/international_commerce.py](../scripts/international_commerce.py) | International configuration at the real HTTP/PostgreSQL path; all rates and addresses are synthetic fixtures, not tax advice. |
 | [scripts/knowledge_workspace.py](../scripts/knowledge_workspace.py) | Actual tenant-scoped knowledge lifecycle, multilingual retrieval, cursor census and selective staging; no model calls. |
+| [scripts/legal_privacy.py](../scripts/legal_privacy.py) | Real tenant-scoped consent, checkout guards, declarations, MCP and flow consumers; no external providers. |
 | [scripts/load.py](../scripts/load.py) | Local HTTP latency sample. Does not claim production or Shopware speedup. |
 | [scripts/managed_search.py](../scripts/managed_search.py) | Real PostgreSQL/Qdrant synchronization; synthetic embeddings test transport, not AI quality. |
 | [scripts/marketing_accounts.py](../scripts/marketing_accounts.py) | Real isolated shops: customer authority, limited coupons, event flows, channels and selected releases. No paid models. |

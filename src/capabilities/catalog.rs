@@ -1,6 +1,27 @@
 //! Public HTTP/MCP capability catalogue, separate from authorization and dispatch.
 pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
     (
+        "privacy.policy",
+        "Read effective channel legal documents and consent policy",
+    ),
+    (
+        "privacy.consent",
+        "Record affirmative optional-purpose choices for this cart",
+    ),
+    (
+        "legal.accept",
+        "Acknowledge current terms and separately requested digital delivery",
+    ),
+    (
+        "legal.request",
+        "Submit withdrawal or data-rights declaration without disclosing orders",
+    ),
+    ("merchant.legal.requests", "Read private consumer requests"),
+    (
+        "merchant.legal.review",
+        "Review consumer request with revision and audit note",
+    ),
+    (
         "merchant.history",
         "Read scoped entity change summaries; no credential snapshots",
     ),

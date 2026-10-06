@@ -7,6 +7,7 @@ DEFAULTS = {
     "enabled": False,
     "dryRun": True,
     "notifyOrders": False,
+    "notifyConsumerRequests": True,
     "fromEmail": "",
     "fromName": "",
     "replyTo": "",
@@ -39,7 +40,7 @@ def settings(value):
     if not isinstance(value, dict) or set(value) - set(DEFAULTS):
         raise ValueError("Unknown email setting")
     s = {**copy.deepcopy(DEFAULTS), **value}
-    for k in ("enabled", "dryRun", "notifyOrders"):
+    for k in ("enabled", "dryRun", "notifyOrders", "notifyConsumerRequests"):
         if type(s[k]) is not bool:
             raise ValueError("Email switch must be boolean")
     for k, default in DEFAULTS.items():

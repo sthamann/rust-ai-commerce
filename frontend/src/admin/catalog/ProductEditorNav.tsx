@@ -1,4 +1,5 @@
 /** Core product tabs and installed app submenus share one accessible navigation. */
+import { useLegalText } from "../../shared/i18n/legal-i18n";
 import ContentLanguagePicker from "../../shared/i18n/ContentLanguagePicker";
 import { useAppSurfaces, surfaceLabel } from "../../shared/apps/AppSurfaces";
 import { useCatalogText } from "./catalog-i18n";
@@ -13,6 +14,7 @@ export default function ProductEditorNav({
   id: string;
   onSelect: (t: string) => void;
 }) {
+  const { l } = useLegalText();
   const { c, locale } = useCatalogText();
   const appTabs = useAppSurfaces().filter(
     (s) => s.surface.location === "admin.product.tab",
@@ -29,7 +31,9 @@ export default function ProductEditorNav({
             aria-selected={tab === t}
             onClick={() => onSelect(t)}
           >
-            {c(t as Parameters<typeof c>[0])}
+            {t === "compliance"
+              ? l("compliance")
+              : c(t as Parameters<typeof c>[0])}
           </button>
         ))}
         {id &&

@@ -194,6 +194,19 @@ fn eval(j: &Value) -> Result<Value, String> {
         Some("resource_quota_admissible") => Ok(json!(resource_quota_admissible(
             args["limit"].as_u64().ok_or("Invalid limit")?
         ))),
+        Some("consent_admissible") => Ok(json!(consent_admissible(
+            args["enabled"].as_bool().ok_or("Invalid enabled")?,
+            args["current"].as_bool().ok_or("Invalid current")?,
+            args["fresh"].as_bool().ok_or("Invalid fresh")?,
+            args["chosen"].as_bool().ok_or("Invalid chosen")?
+        ))),
+        Some("legal_checkout_admissible") => Ok(json!(legal_checkout_admissible(
+            args["strict"].as_bool().ok_or("Invalid strict")?,
+            args["current"].as_bool().ok_or("Invalid current")?,
+            args["accepted"].as_bool().ok_or("Invalid accepted")?,
+            args["digital"].as_bool().ok_or("Invalid digital")?,
+            args["immediate"].as_bool().ok_or("Invalid immediate")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

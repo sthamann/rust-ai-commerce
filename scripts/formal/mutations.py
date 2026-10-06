@@ -5,6 +5,11 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("consent_admissible","current &&","true &&"),
+ ("consent_admissible","fresh &&","true &&"),
+ ("consent_admissible","&& chosen","&& true"),
+ ("legal_checkout_admissible","accepted &&","true &&"),
+ ("legal_checkout_admissible","!digital || immediate","true"),
  ("payment_transition_admissible","current <= 9 && next <= 9","true"),
  ("payment_transition_admissible","next > current","true"),
  ("resource_quota_admissible","limit > 0","true"),

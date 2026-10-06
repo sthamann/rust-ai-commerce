@@ -163,6 +163,7 @@ pub(crate) async fn cart_json(a: &App, c: &StoredCart) -> Result<Value> {
     .await?;
     let mut result = commerce::enrich(q, &preview, &ps, &config, revision)?;
     result["selectionNeedsConfirmation"] = json!(changed);
+    result["legal"] = json!({"requiresDigital":!config.is_business(&c.data.group) && ps.iter().any(|p|p.extra["digital"]==true),"strictCheckout":config.legal.strict_checkout});
     commerce::dates(a, &mut result).await?;
     result["locale"] = json!(locale);
     result["languageIdChain"] = json!(chain);

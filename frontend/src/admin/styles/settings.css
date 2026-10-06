@@ -14,6 +14,10 @@
   position: sticky;
   top: 20px;
   min-width: 0;
+  max-height: calc(100dvh - 190px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
 }
 .studio .settings-nav-label {
   color: var(--muted);
@@ -242,6 +246,8 @@
   }
   .studio .settings-navigation {
     position: static;
+    max-height: none;
+    overflow: visible;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .studio .settings-nav-label {

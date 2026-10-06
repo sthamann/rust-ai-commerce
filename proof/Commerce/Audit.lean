@@ -13,6 +13,7 @@ import Commerce.Claims
 #print axioms CommerceKernel.checkout_review_exact
 #print axioms CommerceKernel.completion_exact
 #print axioms CommerceKernel.completion_safe
+#print axioms CommerceKernel.consent_exact
 #print axioms CommerceKernel.currency_scale_exact
 #print axioms CommerceKernel.currency_scale_overflow_denied
 #print axioms CommerceKernel.customer_group_net_exact
@@ -27,6 +28,7 @@ import Commerce.Claims
 #print axioms CommerceKernel.download_payment_required
 #print axioms CommerceKernel.financial_contact_required
 #print axioms CommerceKernel.flow_delay_exact
+#print axioms CommerceKernel.legal_checkout_exact
 #print axioms CommerceKernel.manual_payment_exact
 #print axioms CommerceKernel.manual_payment_safe
 #print axioms CommerceKernel.order_edit_exact

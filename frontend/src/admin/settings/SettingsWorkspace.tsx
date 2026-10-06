@@ -1,5 +1,7 @@
 /** Independent settings workspace: grouped navigation, explicit dirty-draft guards and native API forms. */
 import { useCrmText } from "../../shared/i18n/crm-i18n";
+import LegalSettings from "../legal/LegalSettings";
+import { useLegalText } from "../../shared/i18n/legal-i18n";
 import CustomerGroupsSettings from "./CustomerGroupsSettings";
 import { useState } from "react";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
@@ -19,7 +21,8 @@ type Area =
   | "shipping"
   | "payment"
   | "languages"
-  | "customerGroups";
+  | "customerGroups"
+  | "legal";
 export default function SettingsWorkspace({
   request,
   rights,
@@ -39,6 +42,7 @@ export default function SettingsWorkspace({
     { u } = useStudioText(),
     { i } = useInternationalText();
   const { r } = useCrmText();
+  const { l } = useLegalText();
   const [area, setArea] = useState<Area>("masterData");
   const [dirty, setDirty] = useState(false);
   const [pending, setPending] = useState<(() => void) | null>(null);
@@ -89,6 +93,7 @@ export default function SettingsWorkspace({
       hint: u("paymentHint"),
       icon: "card",
     },
+    { id: "legal", label: l("title"), hint: l("hint"), icon: "lock" },
   ];
   return (
     <div className="studio-page operations settings-workspace">
@@ -130,8 +135,8 @@ export default function SettingsWorkspace({
               onClick={() => {
                 if (area !== item.id) {
                   if (
-                    !["masterData", "customerGroups"].includes(area) &&
-                    !["masterData", "customerGroups"].includes(item.id)
+                    !["masterData", "customerGroups", "legal"].includes(area) &&
+                    !["masterData", "customerGroups", "legal"].includes(item.id)
                   )
                     setArea(item.id);
                   else navigate(() => setArea(item.id));
@@ -180,6 +185,13 @@ export default function SettingsWorkspace({
           {area === "masterData" ? (
             <MasterDataSettings
               request={request}
+              canWrite={rights.includes("settings.write")}
+              onDirty={setDirty}
+            />
+          ) : area === "legal" ? (
+            <LegalSettings
+              request={request}
+              rights={rights}
               canWrite={rights.includes("settings.write")}
               onDirty={setDirty}
             />

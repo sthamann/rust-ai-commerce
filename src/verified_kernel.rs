@@ -177,3 +177,18 @@ pub fn payment_transition_admissible(current: u64, next: u64) -> bool {
 pub fn resource_quota_admissible(limit: u64) -> bool {
     limit > 0 && limit <= 1000000
 }
+
+/// Optional processing requires an enabled purpose and a fresh affirmative receipt for this policy.
+pub fn consent_admissible(enabled: bool, current: bool, fresh: bool, chosen: bool) -> bool {
+    enabled && current && fresh && chosen
+}
+/// Strict checkout binds the current document version and separately requested digital delivery.
+pub fn legal_checkout_admissible(
+    strict: bool,
+    current: bool,
+    accepted: bool,
+    digital: bool,
+    immediate: bool,
+) -> bool {
+    !strict || current && accepted && (!digital || immediate)
+}

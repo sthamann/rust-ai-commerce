@@ -108,3 +108,22 @@ def order(value, s):
         },
         s,
     )
+
+
+def consumer_receipt(event, s):
+    """Immutable declaration receipt, not an identity check or refund confirmation."""
+    data = event.get("receipt", {})
+    locale = data.get("locale", s.get("locale", "en")).split("-")[0]
+    text = {
+        "en": ("Request received", "We received your declaration. This confirms receipt, not a refund or completion. Keep this message."),
+        "de": ("Anfrage eingegangen", "Wir haben deine Erklärung erhalten. Dies bestätigt den Eingang, keine Erstattung oder Erledigung. Bewahre diese Nachricht auf."),
+        "fr": ("Demande reçue", "Nous avons reçu votre déclaration. Ceci confirme la réception, pas un remboursement ou une résolution. Conservez ce message."),
+        "es": ("Solicitud recibida", "Hemos recibido tu declaración. Esto confirma la recepción, no un reembolso ni una resolución. Conserva este mensaje."),
+    }.get(locale)
+    if text is None:
+        text = ("Request received", "Your declaration has been received. Keep this message as confirmation of receipt.")
+    body = text[1] + "\n\n" + json.dumps({
+        "requestId": event.get("requestId", ""), "kind": event.get("kind", ""),
+        **{k: data.get(k, "") for k in ("name", "email", "reference", "message", "receivedAt")},
+    }, ensure_ascii=False, indent=2)
+    return {"to": data.get("email", ""), "subject": text[0], "text": body}

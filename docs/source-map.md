@@ -401,3 +401,7 @@ App assistants compile the shared Manifest in `frontend/src/admin/developer/assi
 
 - `src/storefront_pages.rs`: direct product URL HTML admission using existing tenant/channel policy.
 - `frontend/src/storefront/catalog/product-url.ts`: localized product URLs, legacy SKU routes and collection navigation.
+
+## European operation
+
+`src/legal/` owns privacy policy/receipt, guarded checkout snapshots, sector facts and consumer request review. `frontend/src/{admin,shared,storefront}/legal/` connects their actual interface and consent consumers. Migration 048 scopes receipts, logs and review audits; the email connector and Flow Builder consume their outbox events. See [the complete behavior map and limits](european-operation.md).

@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { shopApi } from "../../src/shared/api/shop-api";
 import { useCatalog } from "../../src/storefront/shell/useCatalog";
 import { usePersonalization } from "../../src/storefront/shell/usePersonalization";
+import { publishConsent } from "../../src/shared/legal/consent-store";
 import { cart, product } from "./fixtures";
 const response = (value: unknown, status = 200) => ({
   ok: status < 400,
@@ -159,7 +160,11 @@ describe("Personalization consent and ranking", () => {
     expect(result.current.adapted).toBe(false);
   });
   it("uses server ranking without mutating products and disables it on withdrawal", async () => {
-    localStorage.setItem("rac-adaptation:unit-shop", "1");
+    publishConsent({
+      choices: { personalization: true },
+      decided: true,
+      policyVersion: "test",
+    });
     const second = { ...product, id: "chair", category: "seating" };
     const products = [product, second];
     const fetcher = vi
@@ -178,7 +183,7 @@ describe("Personalization consent and ranking", () => {
       kind: "view",
       productId: "lamp",
     });
-    act(() => result.current.setAdaptation(false));
+    act(() => publishConsent(undefined));
     expect(result.current.list).toEqual(products);
     expect(result.current.adapted).toBe(false);
   });
@@ -191,7 +196,11 @@ describe("Personalization consent and ranking", () => {
       usePersonalization(products, undefined, "", "unit-shop"),
     );
     act(() => {
-      result.current.setAdaptation(true);
+      publishConsent({
+        choices: { personalization: true },
+        decided: true,
+        policyVersion: "test",
+      });
       result.current.setViewed({ seating: 2 });
     });
     expect(result.current.adapted).toBe(false);
@@ -200,7 +209,11 @@ describe("Personalization consent and ranking", () => {
     expect(result.current.list[0].id).toBe("chair");
   });
   it("survives a failed signal and ignores an answer after unmount", async () => {
-    localStorage.setItem("rac-adaptation:unit-shop", "1");
+    publishConsent({
+      choices: { personalization: true },
+      decided: true,
+      policyVersion: "test",
+    });
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
     const first = renderHook(() =>
       usePersonalization([product], cart, "lamp", "unit-shop"),

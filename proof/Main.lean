@@ -36,6 +36,8 @@ def evalRequest (j : Json) : Except String Json := do
   | "currency_scale_admissible" => pure (toJson (currency_scale_admissible ((← (args.getObjVal? "scale") >>= Json.getNat?))))
   | "payment_transition_admissible" => pure (toJson (payment_transition_admissible ((← (args.getObjVal? "current") >>= Json.getNat?)) ((← (args.getObjVal? "next") >>= Json.getNat?))))
   | "resource_quota_admissible" => pure (toJson (resource_quota_admissible ((← (args.getObjVal? "limit") >>= Json.getNat?))))
+  | "consent_admissible" => pure (toJson (consent_admissible ((← (args.getObjVal? "enabled") >>= Json.getBool?)) ((← (args.getObjVal? "current") >>= Json.getBool?)) ((← (args.getObjVal? "fresh") >>= Json.getBool?)) ((← (args.getObjVal? "chosen") >>= Json.getBool?))))
+  | "legal_checkout_admissible" => pure (toJson (legal_checkout_admissible ((← (args.getObjVal? "strict") >>= Json.getBool?)) ((← (args.getObjVal? "current") >>= Json.getBool?)) ((← (args.getObjVal? "accepted") >>= Json.getBool?)) ((← (args.getObjVal? "digital") >>= Json.getBool?)) ((← (args.getObjVal? "immediate") >>= Json.getBool?))))
   | _ => throw "Unknown policy"
 
 def main : IO Unit := do
