@@ -1,6 +1,21 @@
 /** Storefront and operational interface strings: fr. */
 import type { Key } from "./shop-de";
 export const fr: Record<Key, string> = {
+  fashionBrand: "Nord Atelier",
+  fashionCollection: "La collection capsule",
+  fashionHero: "Ton style. Tout naturellement.",
+  fashionIntro:
+    "Des couleurs douces, des lignes épurées et des pièces pour chaque jour. Démo mode avec des photos de produits générées par IA.",
+  fashionWish:
+    "Que cherches-tu ? Par exemple : une tenue pour les journées fraîches d’automne à moins de 400 €",
+  outerwear: "Vestes et manteaux",
+  knitwear: "Maille",
+  tops: "Hauts",
+  bottoms: "Pantalons et jupes",
+  dresses: "Robes",
+  shoes: "Chaussures",
+  accessories: "Accessoires",
+
   noImage: "Aucune image pour le moment",
   firstPage: "Première page",
   nextPage: "Page suivante",

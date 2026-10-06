@@ -1,5 +1,20 @@
 /** Storefront and operational interface strings: de. */
 export const de = {
+  fashionBrand: "Nord Atelier",
+  fashionCollection: "Die Capsule-Kollektion",
+  fashionHero: "Dein Stil. Ganz selbstverständlich.",
+  fashionIntro:
+    "Ruhige Farben, klare Silhouetten und Lieblingsstücke für jeden Tag. Fashion-Demo mit KI-generierten Produktbildern.",
+  fashionWish:
+    "Was suchst du? Zum Beispiel: ein Outfit für kühle Herbsttage unter 400 €",
+  outerwear: "Jacken & Mäntel",
+  knitwear: "Strick",
+  tops: "Oberteile",
+  bottoms: "Hosen & Röcke",
+  dresses: "Kleider",
+  shoes: "Schuhe",
+  accessories: "Accessoires",
+
   noImage: "Noch kein Bild",
   firstPage: "Erste Seite",
   nextPage: "Nächste Seite",
