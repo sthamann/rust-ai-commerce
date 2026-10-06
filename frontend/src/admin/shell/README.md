@@ -22,10 +22,22 @@ Files and their individual responsibilities are listed in [the generated source 
   on focus/visibility restoration. It deduplicates checks, releases listeners and
   timers on unmount, and ignores failures belonging to an older login token.
 
-An authoritative session rejection clears the active Studio token, permissions,
-overview, conversations and messages together. It presents a translated sign-in
-action instead of retaining an apparently connected overview beside failing
-editors. The server's expiry and tenant/permission checks remain unchanged.
+`useStudioAccess.ts` verifies a personal session before any protected workspace
+mounts or loads data. Anonymous and initially invalid sessions use `#login`,
+preserving same-origin shop/tab/entity query parameters. The storefront remains
+public. Integration keys belong in the developer API tester, never in Studio's
+personal login.
+
+`StudioSignIn.tsx` renders the dedicated multilingual login page and a native
+blocking dialog when an already verified session expires. The current workspace
+stays mounted and inert behind the dialog: entity, staging context and drafts
+remain intact. Only the same account with active membership may resume it;
+leaving Studio explicitly clears the in-memory workspace by reloading the login
+page. The transport suspends later operations using the expired token. No failed
+mutation is replayed after login. Token renewal updates a ref behind stable
+request functions, so editors and app surfaces do not remount solely because a
+token changed. Permission (403), network and provider errors do not trigger an
+expiry dialog. Old-token replies cannot expire a new session.
 
 ## Verification
 

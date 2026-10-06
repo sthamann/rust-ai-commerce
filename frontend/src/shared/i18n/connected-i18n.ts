@@ -1,6 +1,48 @@
 /** Four-language vocabulary for connected apps, consent and visual automation. */
 import { useLocale } from "./i18n";
 export const connectedWords: Record<string, readonly string[]> = {
+  sessionExpiredTitle: [
+    "Sign in again",
+    "Erneut anmelden",
+    "Se reconnecter",
+    "Iniciar sesión de nuevo",
+  ],
+  resumeEditorHint: [
+    "Sign in again to continue here. Your unsaved changes stay on this page. Failed actions will not be repeated automatically.",
+    "Melde dich erneut an, um hier weiterzuarbeiten. Deine ungespeicherten Änderungen bleiben auf dieser Seite. Fehlgeschlagene Aktionen werden nicht automatisch wiederholt.",
+    "Reconnectez-vous pour continuer ici. Vos modifications restent sur cette page. Les actions échouées ne sont pas répétées automatiquement.",
+    "Inicia sesión de nuevo para continuar aquí. Tus cambios permanecen en esta página. Las acciones fallidas no se repiten automáticamente.",
+  ],
+  studioLoginHint: [
+    "Sign in to manage your shop. You will return to the page you requested.",
+    "Melde dich an, um deinen Shop zu verwalten. Anschließend öffnet sich die gewünschte Seite.",
+    "Connectez-vous pour gérer votre boutique. Vous retrouverez la page demandée.",
+    "Inicia sesión para gestionar tu tienda. Volverás a la página solicitada.",
+  ],
+  resumeSameAccount: [
+    "Sign in with the same account to resume this page.",
+    "Melde dich mit demselben Konto an, um diese Seite fortzusetzen.",
+    "Reconnectez-vous avec le même compte pour reprendre cette page.",
+    "Inicia sesión con la misma cuenta para continuar en esta página.",
+  ],
+  studioShopAccess: [
+    "This account has no access to this shop.",
+    "Dieses Konto hat keinen Zugriff auf diesen Shop.",
+    "Ce compte n’a pas accès à cette boutique.",
+    "Esta cuenta no tiene acceso a esta tienda.",
+  ],
+  checkingSession: [
+    "Checking your session…",
+    "Sitzung wird geprüft…",
+    "Vérification de votre session…",
+    "Verificando tu sesión…",
+  ],
+  leaveStudio: [
+    "Leave Studio",
+    "Studio verlassen",
+    "Quitter le Studio",
+    "Salir de Studio",
+  ],
   studioSignIn: [
     "Sign in to Studio",
     "Im Studio anmelden",

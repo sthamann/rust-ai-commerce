@@ -44,6 +44,7 @@ import { useStudio } from "./StudioContext";
 
 export default function StudioRoutes() {
   const {
+    auth,
     appSurface,
     tab,
     request,
@@ -55,14 +56,11 @@ export default function StudioRoutes() {
     environments,
     refreshEnvironments,
     setEnvironment,
-    setToken,
     setWorkspace,
     setWorkspaceName,
     setMessages,
     setId,
     setData,
-    setConnected,
-    setConversations,
     connected,
     data,
     access,
@@ -166,8 +164,8 @@ export default function StudioRoutes() {
         workspace={workspace}
         onSession={(session: Session) => {
           if (session.token) {
-            sessionStorage.setItem("rac-user-token", session.token);
-            setToken(session.token);
+            void auth.accept(session);
+            return;
           }
           sessionStorage.setItem("rac-user-workspace", session.workspace);
           setWorkspace(session.workspace);
@@ -186,15 +184,7 @@ export default function StudioRoutes() {
           setId(undefined);
           setData(undefined);
         }}
-        onLogout={() => {
-          sessionStorage.removeItem("rac-user-token");
-          sessionStorage.removeItem("rac-user-workspace");
-          setToken("");
-          setConnected(false);
-          setData(undefined);
-          setMessages([]);
-          setConversations([]);
-        }}
+        onLogout={auth.logout}
       />
       {connected && <AccessManager request={liveRequest} />}
     </>

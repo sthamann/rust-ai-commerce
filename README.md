@@ -49,6 +49,8 @@ merchants require a separate license. [See the usage guide](docs/licensing.md).
 
 ## New in Studio
 
+- **Sign in once, continue in place.** Protected Studio deep links open the login page first. An expired active session opens a login overlay over the current workspace and preserves unsaved drafts. Same-account and membership checks prevent another user from resuming private editors; failed writes are never replayed. [Session behavior](docs/studio-api-and-channels.md#studio-login-and-session-expiry).
+
 - **Manage real shop processes.** Every shop has an editable main sales channel, three reusable starter rules and two order/payment note flows. Search, edit, schedule campaigns and remove unused definitions with dependency checks. [Automation lifecycle](docs/automation.md#starting-configuration-and-lifecycle).
 
 - **One-page checkout.** Address, delivery and payment together; review the server quote, then place one explicit order. Price changes require a fresh review. [Checkout contract](docs/checkout.md).

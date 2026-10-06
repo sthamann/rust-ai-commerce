@@ -1,7 +1,8 @@
 /** Actual Studio composition navigates lazy workspaces with explicit synthetic HTTP contracts. */
-import { render, screen, within, waitFor } from "@testing-library/react";
+import { act, render, screen, within, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, it, vi } from "vitest";
+import { reportMerchantSessionFailure } from "../../src/shared/api/merchant-session";
 import Merchant from "../../src/admin/shell/Merchant";
 import { LocaleProvider } from "../../src/shared/i18n/i18n";
 import { overview, providers, session } from "./fixtures";
@@ -149,22 +150,15 @@ it("keeps merchant credentials absent when signed out and shows a login path", a
   render(<Merchant onChanged={async () => {}} onExit={() => {}} />, {
     wrapper: LocaleProvider,
   });
-  const user = userEvent.setup();
-  await user.click(
-    within(
-      screen.getByRole("navigation", { name: "Vendune Studio" }),
-    ).getByRole("button", { name: "Shop today" }),
-  );
-  expect(screen.getByRole("main")).toHaveTextContent("Shop today");
-  expect(screen.getByRole("main")).toHaveTextContent(/sign in/i);
+  expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
   expect(
-    fetcher.mock.calls.every(([path]) =>
-      ["/health", "/api/apps/surfaces"].includes(path),
-    ),
-  ).toBe(true);
+    screen.getByRole("heading", { name: "Sign in to Studio" }),
+  ).toBeVisible();
+  await waitFor(() => expect(location.hash).toBe("#login"));
+  expect(fetcher.mock.calls.every(([path]) => path === "/health")).toBe(true);
 });
 
-it("offers one shared sign-in path instead of stale shop overview after product authentication expires", async () => {
+it("opens a blocking login overlay on the current workspace after product authentication expires", async () => {
   sessionStorage.setItem("rac-user-token", "unit-token");
   let expired = false;
   vi.stubGlobal(
@@ -185,7 +179,9 @@ it("offers one shared sign-in path instead of stale shop overview after product 
   render(<Merchant onChanged={async () => {}} onExit={() => {}} />, {
     wrapper: LocaleProvider,
   });
-  const navigation = screen.getByRole("navigation", { name: "Vendune Studio" });
+  const navigation = await screen.findByRole("navigation", {
+    name: "Vendune Studio",
+  });
   const user = userEvent.setup();
   await within(navigation).findByRole("button", {
     name: "Products",
@@ -198,18 +194,60 @@ it("offers one shared sign-in path instead of stale shop overview after product 
   await user.click(
     within(navigation).getByRole("button", { name: "Products" }),
   );
-  const notice = await screen.findByRole("alert");
-  expect(notice).toHaveTextContent("Your Studio session has expired.");
-  await user.click(
-    within(navigation).getByRole("button", { name: "Shop today" }),
-  );
-  expect(screen.getByRole("main")).toHaveTextContent(
-    "Sign in to Studio to see shop data",
+  const dialog = await screen.findByRole("dialog");
+  expect(dialog).toHaveTextContent("Sign in again");
+  expect(dialog).toHaveTextContent("Your unsaved changes stay on this page");
+  expect(document.querySelector(".studio")).toHaveAttribute("inert");
+  expect(sessionStorage.getItem("rac-user-token")).toBeNull();
+  expect(within(dialog).getByRole("textbox", { name: "Email" })).toHaveValue(
+    session.user.email,
   );
   expect(
-    screen.queryByRole("heading", { name: "Your shop, at a glance." }),
-  ).not.toBeInTheDocument();
-  expect(sessionStorage.getItem("rac-user-token")).toBeNull();
-  await user.click(within(notice).getByRole("button", { name: /sign in/i }));
-  expect(await screen.findByRole("textbox", { name: "Email" })).toBeVisible();
+    within(dialog).getByRole("textbox", { name: "Email" }),
+  ).toHaveAttribute("readonly");
+});
+
+it("keeps the same chat input mounted and returns to it after the overlay login", async () => {
+  sessionStorage.setItem("rac-user-token", "ui-resume-old");
+  const fetcher = vi.fn(async (path: string) => ({
+    ok: true,
+    status: 200,
+    json: async () =>
+      path === "/api/auth/login"
+        ? { ...session, token: "ui-resume-new" }
+        : api(path),
+  }));
+  vi.stubGlobal("fetch", fetcher);
+  render(<Merchant onChanged={async () => {}} onExit={() => {}} />, {
+    wrapper: LocaleProvider,
+  });
+  await screen.findByRole("navigation", { name: "Vendune Studio" });
+  const user = userEvent.setup();
+  const input = document.querySelector<HTMLTextAreaElement>(
+    ".studio-composer textarea",
+  )!;
+  await user.type(input, "Unsubmitted private draft");
+  act(() =>
+    reportMerchantSessionFailure(
+      "/api/merchant/products",
+      { Authorization: "Bearer ui-resume-old" },
+      401,
+      "Session or integration key expired or invalid",
+    ),
+  );
+  const dialog = await screen.findByRole("dialog");
+  expect(input.isConnected).toBe(true);
+  expect(input).toHaveValue("Unsubmitted private draft");
+  await user.type(
+    within(dialog).getByLabelText("Password (at least 12 characters)"),
+    "synthetic-existing-password",
+  );
+  await user.click(within(dialog).getByRole("button", { name: "Sign in" }));
+  await waitFor(() =>
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument(),
+  );
+  expect(document.querySelector(".studio-composer textarea")).toBe(input);
+  expect(input).toHaveValue("Unsubmitted private draft");
+  expect(document.querySelector(".studio")).not.toHaveAttribute("inert");
+  expect(sessionStorage.getItem("rac-user-token")).toBe("ui-resume-new");
 });

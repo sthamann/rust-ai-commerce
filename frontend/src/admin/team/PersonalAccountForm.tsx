@@ -7,9 +7,10 @@ import "../styles/commerce-manager.css";
 export type PersonalAccountFormProps = {
   run: (fn: () => Promise<void>) => Promise<void>;
   mode: string;
-  onSession: (s: import("./UsersManager").Session) => void;
+  onSession: (s: import("./UsersManager").Session) => void | Promise<void>;
   s: ReturnType<typeof useShopText>["s"];
   busy: boolean;
+  email?: string;
 };
 export default function PersonalAccountForm({
   run,
@@ -17,6 +18,7 @@ export default function PersonalAccountForm({
   onSession,
   s,
   busy,
+  email,
 }: PersonalAccountFormProps) {
   return (
     <form
@@ -30,7 +32,7 @@ export default function PersonalAccountForm({
             `/api/auth/${mode === "join" ? "accept" : mode}`,
             body,
           );
-          onSession(session);
+          await onSession(session);
         });
       }}
     >
@@ -38,6 +40,8 @@ export default function PersonalAccountForm({
         <label>
           {s("email")}
           <input
+            defaultValue={email}
+            readOnly={!!email}
             type="email"
             name="email"
             autoComplete="email"
