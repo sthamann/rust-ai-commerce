@@ -25,7 +25,6 @@ export default function CheckoutIdentity({
     [error, setError] = useState("");
   return (
     <section className="checkout-identity">
-      <h3>{c("checkoutContact")}</h3>
       {cart.customerId ? (
         <p className="customer-connected">
           {cart.customerEmail} · {w("account")}

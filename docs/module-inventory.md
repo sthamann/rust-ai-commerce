@@ -212,11 +212,12 @@ This lists every checked-in source module in these roots, including files with n
 | [src/order_checkout.rs](../src/order_checkout.rs) | Atomic checkout, stock locks, extension policy and idempotency. |
 | [src/order_routes.rs](../src/order_routes.rs) | Merchant order read adapter. |
 | [src/outbox.rs](../src/outbox.rs) | Durable outbox and audit projection worker. |
-| [src/payments/mod.rs](../src/payments/mod.rs) | Provider-independent payment ledger and durable workers; the first adapter is explicitly PayPal Sandbox. |
+| [src/payments/mod.rs](../src/payments/mod.rs) | Provider-independent payment ledger and durable workers; the PayPal adapter supports explicit Sandbox/Live environments. |
 | [src/payments/operations.rs](../src/payments/operations.rs) | Durable idempotent payment commands, customer context binding and serial refund admission. |
 | [src/payments/paypal.rs](../src/payments/paypal.rs) | Native PayPal Orders v2 sandbox wire adapter; credentials never enter prompts or browser responses. |
 | [src/payments/provider.rs](../src/payments/provider.rs) | Payment provider identity, tenant account configuration and immutable wire context. |
 | [src/payments/receipt_guard.rs](../src/payments/receipt_guard.rs) | Bind integer provider receipt amounts and status to the formally checked exact-match predicate. |
+| [src/payments/return_urls.rs](../src/payments/return_urls.rs) | Provider return/cancel URLs preserve the tenant and sales channel; navigation is never payment evidence. |
 | [src/payments/routes.rs](../src/payments/routes.rs) | Customer payment status/capture and merchant refund operations share the durable command API. |
 | [src/payments/storage.rs](../src/payments/storage.rs) | Transactional provider receipts and order state updates; external responses cannot invent amounts or tenants. |
 | [src/payments/webhooks.rs](../src/payments/webhooks.rs) | PayPal verifies webhook signatures before inbox insertion; provider reconciliation confirms monetary state. |
@@ -500,6 +501,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/automation-fields.ts](../frontend/src/shared/i18n/automation-fields.ts) | Localized labels for original rule and native flow parameter fields. |
 | [frontend/src/shared/i18n/automation-i18n.ts](../frontend/src/shared/i18n/automation-i18n.ts) | Four-language automation editor vocabulary keeps source identifiers stable and user labels readable. |
 | [frontend/src/shared/i18n/automation-labels.ts](../frontend/src/shared/i18n/automation-labels.ts) | Source-named rule labels are localized independently from their stable integration identifiers. |
+| [frontend/src/shared/i18n/checkout-i18n.ts](../frontend/src/shared/i18n/checkout-i18n.ts) | Checkout vocabulary: the same purchase and payment states in every supported UI language. |
 | [frontend/src/shared/i18n/company-i18n.ts](../frontend/src/shared/i18n/company-i18n.ts) | Company identity, field inheritance and legal storefront vocabulary in four interface languages. |
 | [frontend/src/shared/i18n/connected-i18n.ts](../frontend/src/shared/i18n/connected-i18n.ts) | Four-language vocabulary for connected apps, consent and visual automation. |
 | [frontend/src/shared/i18n/content-language.ts](../frontend/src/shared/i18n/content-language.ts) | Resolve editable translation keys without merging distinct regional locales or fabricating inherited values. |
@@ -548,8 +550,11 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/catalog/ProductReviews.tsx](../frontend/src/storefront/catalog/ProductReviews.tsx) | ProductReviews: focused pdp-reviews view with explicit typed inputs and callbacks. |
 | [frontend/src/storefront/checkout/CheckoutDetails.tsx](../frontend/src/storefront/checkout/CheckoutDetails.tsx) | Address book, guest contact and delivery/payment selection share the authoritative cart context API. |
 | [frontend/src/storefront/checkout/CheckoutIdentity.tsx](../frontend/src/storefront/checkout/CheckoutIdentity.tsx) | Inline guest/login/registration step rotates the cart on authentication and refreshes owning defaults. |
-| [frontend/src/storefront/checkout/CheckoutPanel.tsx](../frontend/src/storefront/checkout/CheckoutPanel.tsx) | Accessible cart dialog: authoritative totals, delivery context and checkout. |
-| [frontend/src/storefront/checkout/PaymentSession.tsx](../frontend/src/storefront/checkout/PaymentSession.tsx) | Customer payment handoff; browser navigation never marks a payment as captured. |
+| [frontend/src/storefront/checkout/CheckoutMethods.tsx](../frontend/src/storefront/checkout/CheckoutMethods.tsx) | Method cards keep delivery and payment discoverable without concealing country restrictions. |
+| [frontend/src/storefront/checkout/CheckoutPanel.tsx](../frontend/src/storefront/checkout/CheckoutPanel.tsx) | One-page checkout: server-reviewed selection, explicit purchase and durable provider handoff. |
+| [frontend/src/storefront/checkout/CheckoutSummary.tsx](../frontend/src/storefront/checkout/CheckoutSummary.tsx) | Sticky order review presents authoritative totals and discounts beside the purchase action. |
+| [frontend/src/storefront/checkout/PaymentSession.tsx](../frontend/src/storefront/checkout/PaymentSession.tsx) | Provider handoff and bounded durable-status polling; only verified server receipts confirm payment. |
+| [frontend/src/storefront/checkout/checkout-order.ts](../frontend/src/storefront/checkout/checkout-order.ts) | Bind the purchase to the reviewed cart and total; the server remains the pricing authority. |
 | [frontend/src/storefront/shell/CatalogNavigation.tsx](../frontend/src/storefront/shell/CatalogNavigation.tsx) | Public category navigation uses the same tenant/channel tree as the listing API, with translated names. |
 | [frontend/src/storefront/shell/CollectionView.tsx](../frontend/src/storefront/shell/CollectionView.tsx) | CollectionView: storefront view composed from the scoped cart/controller. |
 | [frontend/src/storefront/shell/CompanyLegalPage.tsx](../frontend/src/storefront/shell/CompanyLegalPage.tsx) | Directly reachable channel legal page; renders only the server's explicit public projection as text. |
@@ -563,6 +568,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/shell/useCompanyIdentity.ts](../frontend/src/storefront/shell/useCompanyIdentity.ts) | Channel-scoped public brand/legal identity; stale responses cannot leak across tenants or languages. |
 | [frontend/src/storefront/shell/usePersonalization.ts](../frontend/src/storefront/shell/usePersonalization.ts) | Opt-in behavior signals and stable product ordering; no authoritative prices are changed. |
 | [frontend/src/storefront/shell/useStorefrontController.ts](../frontend/src/storefront/shell/useStorefrontController.ts) | Cart lifecycle, authoritative checkout commands and storefront coordination. |
+| [frontend/src/storefront/styles/checkout.css](../frontend/src/storefront/styles/checkout.css) | One-page checkout: calm responsive workspace with a sticky, readable order review. |
 | [frontend/src/storefront/styles/company-identity.css](../frontend/src/storefront/styles/company-identity.css) | Public company branding and readable legal identity across storefront channels. |
 | [frontend/src/storefront/styles/shop/01--root.css](../frontend/src/storefront/styles/shop/01--root.css) | shop: -root styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/storefront/styles/shop/02-shop-product-image.css](../frontend/src/storefront/styles/shop/02-shop-product-image.css) | shop: shop-product-image styles. Source order is preserved by the entry stylesheet. |
@@ -618,6 +624,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/catalog_management.py](../scripts/catalog_management.py) | Real HTTP/PostgreSQL catalog creation, categories, multilingual editor, visibility and staging regressions. Synthetic isolated shops only. |
 | [scripts/check_site.py](../scripts/check_site.py) | Check the generated documentation's links and discovery metadata. |
 | [scripts/checkout_handoff.py](../scripts/checkout_handoff.py) | Exercise actual PostgreSQL checkout transfer, isolation, replay and durable ordering. |
+| [scripts/checkout_review.py](../scripts/checkout_review.py) | Real SQL checkout rejects unreviewed changes without orders or stock writes; synthetic fixture only. |
 | [scripts/cloud_benchmark.py](../scripts/cloud_benchmark.py) | Bounded private-cloud HTTP load using the existing validated benchmark sampler. |
 | [scripts/commerce.py](../scripts/commerce.py) | Real HTTP/PG tests for SKUs, moderated reviews, tax/shipping/payment and deliveries. |
 | [scripts/company_settings.py](../scripts/company_settings.py) | Real HTTP company basis/channel inheritance, immutable issuer snapshots, bounded logos and private staging. No external services. |

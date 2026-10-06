@@ -1,16 +1,16 @@
 # storefront/checkout
 
-Customer identity, quote confirmation and provider handoff.
+One-page customer identity, authoritative quote review and provider handoff.
 
-Each file starts with its responsibility. See [the source inventory](../../../../docs/module-inventory.md) for the full map.
+- `CheckoutPanel.tsx`: owns draft/review lifecycle, modal locks and confirmation.
+- `CheckoutDetails.tsx`: native form, customer account, addresses and selection.
+- `CheckoutIdentity.tsx`: existing login/register and customer contact controls.
+- `CheckoutMethods.tsx`: destination-aware delivery/payment radio choices.
+- `CheckoutSummary.tsx`: actual item media, quantity/coupon, totals and explicit CTA.
+- `checkout-order.ts`: tenant/channel/cart transport, reviewed revision/cents and replay key.
+- `PaymentSession.tsx`: verified status, bounded polling, provider return and recovery.
+- `../styles/checkout.css`: responsive checkout layout and touch/focus states.
 
-## Modules
-
-- `CheckoutDetails.tsx`
-- `CheckoutIdentity.tsx`
-- `CheckoutPanel.tsx`
-- `PaymentSession.tsx`
-
-## Verification
-
-Run `npm run build`, `npm test`, `npm run test:coverage` and `npm run architecture` from `frontend/`. Coverage includes untested source files. See [testing and limitations](../../../../docs/testing.md); file presence does not mean full test coverage.
+[Checkout contract and proof boundary](../../../../docs/checkout.md).
+Run frontend build, tests, architecture/localization and coverage checks.
+Coverage includes untested source; file presence does not mean full coverage.

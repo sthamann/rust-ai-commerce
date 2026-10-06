@@ -3,32 +3,30 @@ import { useEffect, useState } from "react";
 import { shopApi, type Cart, type Selection } from "../../shared/api/shop-api";
 import AddressFields from "../../shared/customer/AddressFields";
 import {
-  addressComplete,
   emptyAddress,
   type AddressList,
 } from "../../shared/customer/customer-types";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
-import { useShopText } from "../../shared/i18n/shop-i18n";
+import { useCheckoutText } from "../../shared/i18n/checkout-i18n";
+import CheckoutMethods from "./CheckoutMethods";
 import CheckoutIdentity from "./CheckoutIdentity";
 export default function CheckoutDetails({
   cart,
   selection,
   onChange,
   onCart,
-  onSave,
+  onSubmit,
   busy,
-  dirty,
 }: {
   cart: Cart;
   selection: Selection;
   onChange: (p: Partial<Selection>) => void;
   onCart: (c: Cart) => void;
-  onSave: () => Promise<void>;
+  onSubmit: () => Promise<void>;
   busy: boolean;
-  dirty: boolean;
 }) {
-  const { c } = useCustomerText(),
-    { s, money } = useShopText();
+  const { c } = useCustomerText();
+  const { x } = useCheckoutText();
   const [book, setBook] = useState<AddressList>(),
     [same, setSame] = useState(
       !selection.address ||
@@ -104,12 +102,13 @@ export default function CheckoutDetails({
         onSigned={() => void load()}
       />
       <form
+        id="checkout-details"
         onSubmit={async (e) => {
           e.preventDefault();
           setSaving(true);
           setError("");
           try {
-            await onSave();
+            await onSubmit();
           } catch (e) {
             setError((e as Error).message);
           } finally {
@@ -117,6 +116,7 @@ export default function CheckoutDetails({
           }
         }}
       >
+        <h3>{x("contact")}</h3>
         <label>
           {c("email")}
           <input
@@ -128,10 +128,10 @@ export default function CheckoutDetails({
             onChange={(e) => onChange({ customerEmail: e.target.value })}
           />
         </label>
-        <h3>{c("checkoutAddresses")}</h3>
         {selector("billing")}
         <h4>{c("billingAddress")}</h4>
         <AddressFields
+          autoCompleteSection="billing"
           value={selection.billingAddress}
           countries={cart.availableCountries}
           disabled={busy || saving}
@@ -171,6 +171,7 @@ export default function CheckoutDetails({
             {selector("shipping")}
             <h4>{c("shippingAddress")}</h4>
             <AddressFields
+              autoCompleteSection="shipping"
               value={selection.address}
               countries={cart.availableCountries}
               disabled={busy || saving}
@@ -184,52 +185,13 @@ export default function CheckoutDetails({
             />
           </>
         )}
-        <h3>{c("checkoutMethods")}</h3>
-        <div className="customer-field-grid">
-          <label>
-            {s("shipping")}
-            <select
-              value={selection.shippingMethodId}
-              disabled={busy || saving}
-              onChange={(e) => onChange({ shippingMethodId: e.target.value })}
-            >
-              {cart.availableShippingMethods
-                .filter((v) => v.countries.includes(selection.country))
-                .map((v) => (
-                  <option key={v.id} value={v.id}>
-                    {s(v.name)} · {money(v.price)}
-                  </option>
-                ))}
-            </select>
-          </label>
-          <label>
-            {s("payment")}
-            <select
-              value={selection.paymentMethodId}
-              disabled={busy || saving}
-              onChange={(e) => onChange({ paymentMethodId: e.target.value })}
-            >
-              {cart.availablePaymentMethods.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {s(v.name)}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-        <p>{c("checkoutHint")}</p>
-        <button
-          className="shop-secondary"
-          disabled={
-            busy ||
-            saving ||
-            !dirty ||
-            !addressComplete(selection.billingAddress)
-          }
-        >
-          {saving ? s("processing") : s("saveSelection")}
-        </button>
-        {dirty && <small>{s("unsaved")}</small>}
+        <h3>{x("methods")}</h3>
+        <CheckoutMethods
+          cart={cart}
+          selection={selection}
+          onChange={onChange}
+          disabled={busy || saving}
+        />
         {error && <p role="alert">{error}</p>}
       </form>
     </section>

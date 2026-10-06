@@ -1,14 +1,12 @@
-/** Accessible cart dialog: authoritative totals, delivery context and checkout. */
-import { AppSurfaceSlot } from "../../shared/apps/AppSurfaces";
-import { addressComplete } from "../../shared/customer/customer-types";
-import { useCustomerText } from "../../shared/i18n/customer-i18n";
-import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
-import CheckoutDetails from "./CheckoutDetails";
-
+/** One-page checkout: server-reviewed selection, explicit purchase and durable provider handoff. */
 import { useEffect, useRef, useState } from "react";
 import type { Cart, Order, Selection } from "../../shared/api/shop-api";
+import { AppSurfaceSlot } from "../../shared/apps/AppSurfaces";
 import { useShopText } from "../../shared/i18n/shop-i18n";
+import { useCheckoutText } from "../../shared/i18n/checkout-i18n";
 import Icon from "../../shared/ui/Icon";
+import CheckoutDetails from "./CheckoutDetails";
+import CheckoutSummary from "./CheckoutSummary";
 import PaymentSession from "./PaymentSession";
 export default function CheckoutPanel({
   cart,
@@ -20,242 +18,150 @@ export default function CheckoutPanel({
   onBuy,
   onCoupons,
   onCart,
+  requestError,
 }: {
+  requestError?: string;
   cart?: Cart;
   order?: Order;
   busy: boolean;
   onClose: () => void;
   onCart: (c: Cart) => void;
   onQuantity: (id: string, q: number) => void;
-  onSelection: (s: Selection) => Promise<void>;
-  onBuy: () => void;
+  onSelection: (s: Selection) => Promise<Cart>;
+  onBuy: () => Promise<void>;
   onCoupons: (codes: string[]) => Promise<void>;
 }) {
-  const { s, money } = useShopText();
-  const { c } = useCustomerText();
+  const { s } = useShopText();
+  const { x } = useCheckoutText();
   const ref = useRef<HTMLDialogElement>(null);
-  const [selection, setSelection] = useState<Selection>();
+  const [selection, setSelection] = useState<Selection>(
+    cart?.checkout ?? {
+      country: "DE",
+      shippingMethodId: "pickup",
+      paymentMethodId: "demo-card",
+    },
+  );
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [coupon, setCoupon] = useState("");
-  const { w, locale } = useWorkbenchText();
+  const [reviewedRevision, setReviewedRevision] = useState<number>();
+  const identity = `${cart?.id}:${cart?.customerId ?? ""}`;
   useEffect(() => {
     ref.current?.showModal();
   }, []);
-  useEffect(() => setSelection(cart?.checkout), [cart?.revision, cart?.id]);
+  // Preserve unsaved contact/address drafts when quantity or coupons refresh the cart.
+  useEffect(() => {
+    if (cart) {
+      setSelection(cart.checkout);
+      setReviewedRevision(undefined);
+    }
+  }, [identity]);
   const dirty =
     !!cart?.selectionNeedsConfirmation ||
     JSON.stringify(selection) !== JSON.stringify(cart?.checkout);
-  const set = (patch: Partial<Selection>) =>
-    setSelection((old) => (old ? { ...old, ...patch } : old));
+  const reviewed = !!cart && !dirty && reviewedRevision === cart.revision;
+  const locked = busy || saving;
+  const close = () => {
+    if (!locked) onClose();
+  };
+  const submit = async () => {
+    if (!cart || locked) return;
+    setSaving(true);
+    setError("");
+    try {
+      if (!reviewed) {
+        const next = await onSelection(selection);
+        setSelection(next.checkout);
+        setReviewedRevision(next.revision);
+      } else await onBuy();
+    } catch (e) {
+      setReviewedRevision(undefined);
+      setError((e as Error).message);
+    } finally {
+      setSaving(false);
+    }
+  };
   return (
     <dialog
       ref={ref}
-      className="shop-bag"
-      onCancel={onClose}
+      className="shop-bag vendune-checkout"
+      onCancel={(e) => {
+        if (locked) e.preventDefault();
+        else close();
+      }}
       onClick={(e) => {
-        if (e.target === ref.current) onClose();
+        if (e.target === ref.current) close();
       }}
       aria-labelledby="bag-title"
     >
-      <div className="bag-heading">
-        <h2 id="bag-title">{s("bag")}</h2>
-        <button aria-label={s("close")} onClick={onClose}>
+      <header className="bag-heading">
+        <div>
+          <h2 id="bag-title">{x("title")}</h2>
+          <p>{x("subtitle")}</p>
+        </div>
+        <button
+          type="button"
+          disabled={locked}
+          aria-label={s("close")}
+          onClick={close}
+        >
           <Icon name="close" />
         </button>
-      </div>
+      </header>
       <div className="bag-body">
         <AppSurfaceSlot
           location="cart.summary"
           context={{ itemCount: cart?.lineItems.length ?? 0 }}
         />
-        {order && (
-          <div className="order-confirmation" role="status">
+        {order ? (
+          <section className="checkout-success">
             <Icon name="check" />
-            <div>
-              <strong>
-                {s("orderPlaced")} · {order.orderNumber}
-              </strong>
-              <p>
-                {s(
-                  order.payment.state === "pending"
-                    ? "pending-payment"
-                    : order.payment.state,
-                )}{" "}
-                · {s(order.deliveries?.[0]?.state ?? "open")}
-              </p>
-              <small>
-                {order.deliveries?.[0]?.deliveryDate.earliest} —{" "}
-                {order.deliveries?.[0]?.deliveryDate.latest}
-              </small>
-            </div>
-          </div>
-        )}
-        {order?.payment.attemptId && cart && (
-          <PaymentSession id={order.payment.attemptId} token={cart.token} />
-        )}
-        {!cart?.lineItems.length ? (
+            <h3>
+              {s("orderPlaced")} · {order.orderNumber}
+            </h3>
+            {order.payment.attemptId && cart ? (
+              <PaymentSession
+                autoRedirect
+                id={order.payment.attemptId}
+                token={cart.token}
+              />
+            ) : (
+              <p>{s(order.payment.state)}</p>
+            )}
+            <button className="shop-secondary" onClick={close}>
+              {x("back")}
+            </button>
+          </section>
+        ) : !cart?.lineItems.length ? (
           <p>{s("empty")}</p>
         ) : (
-          <>
-            {cart.lineItems.map((i) => (
-              <div className="bag-item" key={i.id}>
-                <a href={`#product/${i.id}`} onClick={onClose}>
-                  <img
-                    src={`/media/${i.id}-front.svg`}
-                    alt=""
-                    width="80"
-                    height="70"
-                  />
-                  <div>
-                    <strong>{i.label}</strong>
-                    <small>{i.id}</small>
-                    <small>
-                      {money(i.price.unitPrice)}{" "}
-                      {s(cart.price.taxStatus === "net" ? "net" : "gross")}
-                    </small>
-                  </div>
-                </a>
-                <div className="bag-item-actions">
-                  <div className="shop-stepper">
-                    <button
-                      disabled={busy || i.quantity <= i.minPurchase}
-                      aria-label={`${s("quantity")} − ${i.label}`}
-                      onClick={() =>
-                        onQuantity(i.id, i.quantity - i.purchaseSteps)
-                      }
-                    >
-                      −
-                    </button>
-                    <span>{i.quantity}</span>
-                    <button
-                      disabled={
-                        busy ||
-                        (i.maxPurchase != null &&
-                          i.quantity + i.purchaseSteps > i.maxPurchase)
-                      }
-                      aria-label={`${s("quantity")} + ${i.label}`}
-                      onClick={() =>
-                        onQuantity(i.id, i.quantity + i.purchaseSteps)
-                      }
-                    >
-                      +
-                    </button>
-                  </div>
-                  <button
-                    className="shop-text-button"
-                    disabled={busy}
-                    onClick={() => onQuantity(i.id, 0)}
-                  >
-                    {s("remove")}
-                  </button>
-                </div>
-              </div>
-            ))}
-            {selection && (
+          <div className="checkout-layout">
+            <div className="checkout-form">
               <CheckoutDetails
                 cart={cart}
                 selection={selection}
-                onChange={set}
-                onCart={onCart}
-                busy={busy}
-                dirty={dirty}
-                onSave={() => onSelection(selection)}
-              />
-            )}
-            <form
-              className="checkout-selection"
-              onSubmit={async (e) => {
-                e.preventDefault();
-                setSaving(true);
-                setError("");
-                try {
-                  await onCoupons(coupon.trim() ? [coupon.trim()] : []);
-                } catch (e) {
-                  setError((e as Error).message);
-                } finally {
-                  setSaving(false);
+                onChange={(patch) =>
+                  setSelection((old) => ({ ...old, ...patch }))
                 }
-              }}
-            >
-              <label>
-                {w("coupon")}
-                <input
-                  value={coupon}
-                  onChange={(e) => setCoupon(e.target.value)}
-                  maxLength={64}
-                  placeholder={cart.couponCodes?.join(", ")}
-                />
-              </label>
-              <button className="shop-secondary" disabled={busy || saving}>
-                {w("applyCoupon")}
-              </button>
-              {!!cart.couponCodes?.length && (
-                <small>
-                  {cart.couponCodes.join(", ")} ·{" "}
-                  {cart.discounts?.length
-                    ? w("couponApplied")
-                    : w("couponNotApplicable")}
-                </small>
+                onCart={onCart}
+                busy={locked}
+                onSubmit={submit}
+              />
+              {(error || requestError) && (
+                <p className="shop-error" role="alert">
+                  {error || requestError}
+                </p>
               )}
-            </form>
-            {cart.discounts?.map((d) => (
-              <p key={d.id}>
-                {d.name[locale.slice(0, 2)] ?? d.id} · −{money(d.amount)}
-              </p>
-            ))}
-            <dl className="bag-totals">
-              <div>
-                <dt>{s("subtotal")}</dt>
-                <dd>
-                  {money(cart.price.positionPrice)}{" "}
-                  {cart.price.taxStatus === "net" && s("net")}
-                </dd>
-              </div>
-              <div>
-                <dt>{s("shipping")}</dt>
-                <dd>{money(cart.shippingCosts.totalPrice)}</dd>
-              </div>
-              <div>
-                <dt>{s("tax")}</dt>
-                <dd>{money(cart.price.tax)}</dd>
-              </div>
-              <div className="grand-total">
-                <dt>{s("total")}</dt>
-                <dd>{money(cart.price.totalPrice)}</dd>
-              </div>
-            </dl>
-            {cart.deliveries[0] && (
-              <p className="delivery-estimate">
-                {s("delivery")}: {cart.deliveries[0].deliveryDate.earliest} —{" "}
-                {cart.deliveries[0].deliveryDate.latest}
-              </p>
-            )}
-            <button
-              className="shop-primary"
-              disabled={
-                busy ||
-                saving ||
-                dirty ||
-                !cart.lineItems.length ||
-                !addressComplete(selection?.billingAddress) ||
-                !(selection?.customerEmail ?? cart.customerEmail)
-              }
-              onClick={onBuy}
-            >
-              {busy
-                ? s("processing")
-                : cart.availablePaymentMethods.find(
-                      (p) => p.id === selection?.paymentMethodId,
-                    )?.mode === "simulated"
-                  ? s("buy")
-                  : c("placeOrder")}
-              <Icon name="arrow" size={18} />
-            </button>
-          </>
+            </div>
+            <CheckoutSummary
+              cart={cart}
+              busy={locked}
+              reviewed={reviewed}
+              onQuantity={onQuantity}
+              onCoupons={onCoupons}
+              onClose={close}
+            />
+          </div>
         )}
-        {error && <p role="alert">{error}</p>}
-        <p className="shop-disclosure">{s("simulation")}</p>
       </div>
     </dialog>
   );

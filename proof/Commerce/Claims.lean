@@ -218,4 +218,10 @@ theorem app_core_reference_private (private_data : Bool) :
 /-- Exact exposure policy, including legitimate public product content. -/
 theorem app_core_reference_exact (product private_data : Bool) :
     app_core_reference_admissible product private_data = (product || private_data) := by rfl
+/-- Review accepts exactly an unchanged revision/amount and confirmed methods; no vacuous rejection. -/
+theorem checkout_review_exact (revision methods : Bool) (expected actual : Nat) :
+    checkout_review_admissible revision expected actual methods = true ↔
+    revision = true ∧ expected = actual ∧ methods = true := by
+  simp [checkout_review_admissible, and_assoc]
+
 end CommerceKernel

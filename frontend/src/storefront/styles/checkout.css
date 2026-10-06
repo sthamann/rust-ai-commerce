@@ -1,0 +1,333 @@
+/* One-page checkout: calm responsive workspace with a sticky, readable order review. */
+.shop-bag.vendune-checkout {
+  width: min(1120px, calc(100vw - 40px));
+  max-width: none;
+  height: min(880px, calc(100dvh - 40px));
+  max-height: none;
+  margin: auto;
+  inset: 0;
+  border: 1px solid #dfe5ee;
+  border-radius: 24px;
+  box-shadow: 0 32px 100px #15284433;
+  color: #192a43;
+  background: #fff;
+}
+.vendune-checkout[open] {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.vendune-checkout::backdrop {
+  background: #15243b77;
+  backdrop-filter: blur(5px);
+}
+.vendune-checkout .bag-heading {
+  flex-shrink: 0;
+  padding: 26px 32px;
+  background: #fff;
+  border-bottom: 1px solid #e7ecf3;
+}
+.vendune-checkout .bag-heading h2 {
+  font-size: 28px;
+  letter-spacing: -0.8px;
+}
+.vendune-checkout .bag-heading p {
+  color: #60718a;
+  font-size: 14px;
+  margin: 6px 0 0;
+}
+.vendune-checkout .bag-heading button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.vendune-checkout .bag-body {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  padding: 0;
+  overflow: auto;
+}
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(300px, 1fr);
+  align-items: start;
+}
+.checkout-form {
+  padding: 28px 32px;
+}
+.checkout-details form {
+  display: grid;
+  gap: 16px;
+}
+.checkout-details h3 {
+  font-size: 18px;
+  margin: 24px 0 0;
+  letter-spacing: -0.3px;
+}
+.checkout-details h4 {
+  margin: 0;
+  font-size: 14px;
+  color: #60718a;
+}
+.checkout-details .customer-field-grid {
+  gap: 14px;
+}
+.checkout-details input:not([type="checkbox"]):not([type="radio"]),
+.checkout-details select,
+.checkout-coupon input {
+  min-height: 48px;
+  background: #fff;
+  border: 1px solid #d6deeb;
+  border-radius: 10px;
+  font-size: 16px;
+}
+.checkout-details input:focus,
+.checkout-details select:focus {
+  outline: 3px solid #dbeafe;
+  border-color: #2563eb;
+}
+.checkout-details .customer-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+.checkout-methods {
+  display: grid;
+  gap: 18px;
+}
+.checkout-methods fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.checkout-methods legend {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.checkout-details label.checkout-method {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid #dce3ef;
+  border-radius: 12px;
+  min-height: 64px;
+  padding: 14px;
+  cursor: pointer;
+  color: #192a43;
+}
+.checkout-method.selected {
+  background: #f3f7ff;
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 1px #2563eb;
+}
+.checkout-method input {
+  width: 18px;
+  height: 18px;
+  accent-color: #2563eb;
+}
+.checkout-method span {
+  flex: 1;
+  display: grid;
+  gap: 4px;
+}
+.checkout-method small {
+  font-size: 12px;
+  color: #60718a;
+}
+.checkout-summary {
+  position: sticky;
+  top: 0;
+  max-height: calc(100dvh - 156px);
+  overflow: auto;
+  padding: 30px;
+  background: #f6f8fc;
+  min-width: 0;
+  border-left: 1px solid #e7ecf3;
+}
+.checkout-summary h3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 22px;
+  font-size: 18px;
+}
+.checkout-summary h3 span {
+  border-radius: 20px;
+  padding: 4px 10px;
+  background: #e7edf7;
+  font-size: 12px;
+}
+.checkout-items {
+  display: grid;
+  gap: 16px;
+}
+.checkout-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e0e6ef;
+}
+.checkout-item a {
+  display: grid;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+}
+.checkout-item a:hover strong {
+  color: #2563eb;
+}
+.checkout-item small {
+  color: #60718a;
+  font-size: 12px;
+}
+.checkout-item .shop-stepper {
+  width: fit-content;
+  border-radius: 9px;
+  background: #fff;
+}
+.checkout-item .shop-stepper button {
+  min-height: 44px;
+  min-width: 44px;
+}
+.checkout-coupon {
+  margin: 20px 0;
+  font-size: 14px;
+}
+.checkout-coupon summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.checkout-coupon form {
+  display: grid;
+  gap: 10px;
+}
+.checkout-coupon label {
+  display: grid;
+  gap: 8px;
+}
+.checkout-summary .bag-totals {
+  margin-top: 24px;
+}
+.checkout-summary .bag-totals div {
+  padding: 8px 0;
+}
+.checkout-summary .grand-total {
+  padding-top: 18px;
+  margin-top: 8px;
+  border-top: 1px solid #dce3ef;
+  font-size: 21px;
+}
+.checkout-summary .checkout-purchase {
+  width: 100%;
+  min-height: 54px;
+  margin-top: 18px;
+  justify-content: center;
+  border-radius: 12px;
+  background: #2563eb;
+  color: white;
+}
+.checkout-note,
+.checkout-summary .delivery-estimate {
+  color: #60718a;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.checkout-success {
+  margin: auto;
+  padding: 40px;
+  max-width: 640px;
+}
+.payment-session {
+  padding: 26px;
+  background: #f6f8fc;
+  border-radius: 16px;
+  border: 1px solid #dce3ef;
+  display: grid;
+  gap: 14px;
+}
+.payment-session .shop-primary,
+.payment-session .shop-secondary {
+  min-height: 48px;
+  text-align: center;
+}
+@media (max-width: 760px) {
+  .shop-bag.vendune-checkout {
+    width: 100vw;
+    height: 100dvh;
+    border-radius: 0;
+    margin: 0;
+  }
+  .vendune-checkout .bag-heading {
+    padding: 18px;
+  }
+  .vendune-checkout .bag-heading h2 {
+    font-size: 24px;
+  }
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+  .checkout-form {
+    padding: 8px 20px 24px;
+  }
+  .checkout-summary {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    border-left: 0;
+    border-top: 1px solid #e7ecf3;
+    padding: 24px 20px;
+  }
+  .checkout-success {
+    padding: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vendune-checkout * {
+    scroll-behavior: auto;
+    transition: none;
+  }
+}
+
+.checkout-identity .customer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+.checkout-identity .customer-actions button {
+  min-height: 44px;
+  padding: 10px 14px;
+  font-size: 13px;
+  border-radius: 10px;
+}
+.checkout-item img {
+  grid-row: 1 / 3;
+  border-radius: 10px;
+  object-fit: cover;
+}
+.checkout-item a:has(img) {
+  grid-template-columns: 48px 1fr;
+  column-gap: 10px;
+}
+.vendune-checkout .checkout-details form > label:not(.customer-checkbox) {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+}
+.vendune-checkout
+  .checkout-details
+  form
+  > label
+  > input:not([type="checkbox"]) {
+  width: 100%;
+}

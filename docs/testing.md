@@ -6,7 +6,7 @@ at 100%, and neither coverage nor the Lean subset proves the entire system bug-f
 
 ## Source architecture
 
-- Rust: 241 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
+- Rust: 251 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
 - Frontend: separate `admin/`, `storefront/`, `platform/` and `shared/` ownership. Views/controllers and styles are limited to 400 lines; locale data has a documented 700-line allowance. Runtime cycles, unresolved local imports, crossing application boundaries, missing folder contracts and undocumented source files fail CI.
 - Independent Python services, app examples and browser SDKs remain under `extensions/`; test tooling lives under `scripts/`. [The generated inventory](module-inventory.md) covers all these sources and is checked for drift.
 - Studio workspaces load lazily. Root application routing is isolated in `frontend/src/application/`; error boundaries keep workspace failures inside the current view and provide reload recovery for rejected cached module imports. The removed `CommerceManager` had no call site and duplicated old operational UI. Order state management remains in `admin/orders/OrderWorkflow.tsx`; product review moderation lives in `admin/catalog/ReviewModeration.tsx`.
@@ -260,3 +260,17 @@ the existing CI integration registry, with zero provider calls.
 
 [Exact scope and remaining core-RLS boundary](tenant-isolation.md). Grouped
 checks are behavioral evidence, not 100% endpoint/authorization coverage.
+
+## Checkout verification (6 October 2026)
+
+The checkout change passes 222 frontend tests across 34 files (including eight
+checkout regressions) and 96 Rust unit tests. Frontend whole-source line coverage
+is 60.78%; statements 59.70%, branches 53.50%, functions 49.32%. These figures are
+frontend-only and do not replace the older full-stack baseline report.
+
+Real isolated SQL/HTTP suites verify review admission (five checks), native payment
+wire behavior (ten checks) and tenant isolation (38 checks). The browser saved a
+synthetic order after explicit review; 390-pixel emulation had no checkout content
+overflow. No paid model/PSP calls were used. The public Studio's origin fix was
+verified separately with allowed-origin 200, foreign-origin 403 and a fresh
+merchant-owned test shop with products, eight discoverable apps and browser MCP.

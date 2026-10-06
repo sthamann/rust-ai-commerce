@@ -110,6 +110,18 @@ pub(crate) async fn persist(
     }
     let transitioned = state != p.state;
     sqlx::query("UPDATE payment_attempts SET state=$1,provider_order=coalesce($2,provider_order),approval_url=coalesce($3,approval_url),capture_id=$4,refunded_minor=$5,revision=revision+1 WHERE tenant=$6 AND id=$7").bind(&state).bind(provider_order).bind(url).bind(capture).bind(refunded).bind(&p.tenant).bind(&p.id).execute(&mut **tx).await?;
+    if transitioned && state == "approved" {
+        // Approval is verified by the provider adapter, never by a browser return URL.
+        enqueue_tx(
+            tx,
+            &p.tenant,
+            &p.id,
+            "capture",
+            &format!("approved:{}", p.id),
+            &json!({}),
+        )
+        .await?;
+    }
     if transitioned {
         update_order(tx, p, &state).await?;
     }

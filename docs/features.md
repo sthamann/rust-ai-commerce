@@ -159,11 +159,14 @@ propose a registered app-data change and execute it after explicit approval.
 An external workshop app runs its own service, iframe UI and SQLite event inbox.
 Managed app tables have forced tenant RLS; core tables retain application filters.
 
-The first payment adapter is **native PayPal Sandbox Orders v2** with persistent
+The first payment adapter is **native PayPal Orders v2 (configured Sandbox/Live)** with persistent
 attempts, reserved stock, idempotent capture/refund, verified webhooks and leased
 workers. It is not Shopware Payments. That example reports a missing official
 standalone connector contract and is deliberately unavailable at checkout.
-Configure server-only accounts before trying a real Sandbox handoff.
+Configure server-only accounts and explicit private attribution before a handoff.
+The [one-page checkout](checkout.md) reviews the authoritative quote before purchase;
+verified provider approval queues capture automatically. Local wire fixtures pass,
+but an actual PSP account run remains unverified.
 
 Long model calls no longer hold database transactions/connections. Bounded
 context, conversation leases and independent payment/app workers address concrete

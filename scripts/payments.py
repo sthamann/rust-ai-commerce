@@ -7,7 +7,7 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self,*args):pass
     def answer(self,code,v):self.send_response(code);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps(v).encode())
     def do_GET(self):
-        bn=self.headers.get('PayPal-Partner-Attribution-Id');assert bn=='shopwareAG_Cart_Shopware6_PPCP';bn_seen.append(bn)
+        bn=self.headers.get('PayPal-Partner-Attribution-Id');assert bn=='Vendune_Fixture_Only';bn_seen.append(bn)
         id=self.path.rsplit('/',1)[-1]
         if self.path.startswith('/v2/payments/refunds/'):
             value=pending_refunds[id];value['status']='COMPLETED';return self.answer(200,value)
@@ -17,12 +17,15 @@ class Handler(BaseHTTPRequestHandler):
         body=self.rfile.read(int(self.headers.get('Content-Length',0)))
         if self.path=='/v1/oauth2/token':return self.answer(200,{'access_token':'fixture-access'})
         if self.headers.get('Authorization')!='Bearer fixture-access':return self.answer(401,{})
-        bn=self.headers.get('PayPal-Partner-Attribution-Id');assert bn=='shopwareAG_Cart_Shopware6_PPCP';bn_seen.append(bn)
+        bn=self.headers.get('PayPal-Partner-Attribution-Id');assert bn=='Vendune_Fixture_Only';bn_seen.append(bn)
         v=json.loads(body or b'{}');key=self.headers.get('PayPal-Request-Id');path=self.path
         if path=='/v1/notifications/verify-webhook-signature':return self.answer(200,{'verification_status':'SUCCESS' if v['transmission_sig']=='fixture-valid' else 'FAILURE'})
         with gate:
             if (path,key) in keys:return self.answer(200,keys[(path,key)])
             if path=='/v2/checkout/orders':
+                from urllib.parse import urlsplit,parse_qs
+                urls=v['payment_source']['paypal']['experience_context'];returned=parse_qs(urlsplit(urls['return_url']).query);cancelled=parse_qs(urlsplit(urls['cancel_url']).query)
+                assert returned['shop']==['workshop'] and returned['channel']==['default'] and returned['paymentReturn']==['approved'] and cancelled['paymentReturn']==['cancelled'] and urls['return_url']!=urls['cancel_url']
                 id='PAY-'+uuid.uuid4().hex[:16];value={'id':id,'status':'CREATED','purchase_units':v['purchase_units'],'links':[{'rel':'payer-action','href':'https://www.sandbox.paypal.com/checkoutnow?token='+id}]};orders[id]=value
             elif path.endswith('/capture'):
                 id=path.split('/')[-2];value=copy.deepcopy(orders[id]);value['status']='COMPLETED';amount=copy.deepcopy(value['purchase_units'][0]['amount']);
@@ -36,7 +39,7 @@ class Handler(BaseHTTPRequestHandler):
             else:return self.answer(404,{})
             keys[(path,key)]=value;self.answer(200,value)
 server=ThreadingHTTPServer(('127.0.0.1',0),Handler);threading.Thread(target=server.serve_forever,daemon=True).start()
-port=server.server_address[1];base='http://127.0.0.1:8794';accounts={t:{'clientId':'fixture-'+t,'clientSecret':'fixture-secret','webhookId':'fixture-webhook'} for t in ['atelier','workshop']}
+port=server.server_address[1];base='http://127.0.0.1:8794';accounts={t:{'clientId':'fixture-'+t,'clientSecret':'fixture-secret','webhookId':'fixture-webhook','bnCode':'Vendune_Fixture_Only'} for t in ['atelier','workshop']}
 env={**os.environ,'BIND_ADDR':'127.0.0.1:8794','PAYPAL_SANDBOX_BASE_URL':f'http://127.0.0.1:{port}','PAYPAL_SANDBOX_ACCOUNTS':json.dumps(accounts)}
 log=open(ROOT/'.run/payments-contract.log','w');process=None
 def call(path,body=None,h=None,method=None,expected=200):
@@ -75,6 +78,14 @@ try:
     hh={**h,'Idempotency-Key':id+':capture'}
     with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:jobs=list(ex.map(lambda _:call('/store-api/payments/'+id+'/capture',{},hh),range(6)))
     assert len({j['jobId'] for j in jobs})==1;wait(id,h,'captured');assert captures.count(pid)==1;check('Concurrent capture and lost provider reply reconcile to one capture and one local result')
+    automatic,auto_h=purchase();auto_id=automatic['payment']['attemptId'];wait(auto_id,auto_h,'ready')
+    auto_pid=next(k for k,v in orders.items() if v['purchase_units'][0]['custom_id']==auto_id)
+    call('/store-api/payments/'+auto_id+'/reconcile',{}, {**auto_h,'Idempotency-Key':auto_id+':forged-return'})
+    time.sleep(.5);assert call('/store-api/payments/'+auto_id,h=auto_h)['state']=='ready' and captures.count(auto_pid)==0
+    orders[auto_pid]['status']='APPROVED'
+    call('/store-api/payments/'+auto_id+'/reconcile',{}, {**auto_h,'Idempotency-Key':auto_id+':approved-return'})
+    auto_status=wait(auto_id,auto_h,'captured');assert captures.count(auto_pid)==1 and not auto_status['realMoneyCharged']
+    check('Distinct scoped return/cancel URLs and verified approval automatically capture once; forged return cannot mark paid')
     wh={'x-tenant':'workshop','paypal-auth-algo':'SHA256withRSA','paypal-cert-url':'https://api.sandbox.paypal.com/fixture','paypal-transmission-id':'fixture-transmission','paypal-transmission-sig':'fixture-valid','paypal-transmission-time':'2026-10-02T10:00:00Z'}
     event={'id':'EV-'+uuid.uuid4().hex,'event_type':'PAYMENT.CAPTURE.COMPLETED','resource':{'id':'CAP-'+pid,'supplementary_data':{'related_ids':{'order_id':pid}}}}
     call('/store-api/payments/paypal/webhooks',event,{**wh,'paypal-transmission-sig':'forged'},expected=401)
@@ -90,7 +101,7 @@ try:
         if current['refundedMinor']==200:break
         time.sleep(.15)
     assert current['refundedMinor']==200 and len(refunds)==2 and bn_seen
-    check('Pending refund resumes by provider refund ID with no second refund; every wire request carries official Shopware BN attribution')
+    check('Pending refund resumes by provider refund ID with no second refund; every wire request carries only configured synthetic attribution')
     process.terminate();process.wait(timeout=15);start();assert call('/store-api/payments/'+id,h=h)['refundedMinor']==200;check('Process restart preserves provider order, capture, refund and customer access')
     before=next(p for p in call('/store-api/product',{}, {'x-tenant':'workshop'})['elements'] if p['id']=='notebook')['stock'];cancelled,ch=purchase();cid=cancelled['payment']['attemptId'];wait(cid,ch,'ready')
     call('/store-api/payments/'+cid+'/cancel',{}, {**ch,'Idempotency-Key':cid+':cancel'});wait(cid,ch,'cancelled')

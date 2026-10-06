@@ -126,6 +126,7 @@ export default function Storefront(props: { onMerchant: () => void }) {
           {bag && (
             <CheckoutPanel
               cart={cart}
+              requestError={error}
               order={order}
               busy={busy}
               onClose={() => setBag(false)}

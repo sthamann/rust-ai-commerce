@@ -30,7 +30,7 @@ parity has not been established. **Missing** means no implementation exists.
 | Extension system | `sandbox.rs`, `extensions.rs`, four WAT examples | Actual B2B purchase hook, tenant activation/revision, import/fuel/memory/stack restrictions, persisted-policy refresh across app instances | Original PHP plugins, automatic PHP→Rust/Wasm compilation, general hook ABI and process-isolated compiler |
 | App custom entities / admin modules / event actions | `src/apps/*`, migration 010, `AppsManager.tsx`, iframe SDK and four app manifests | **Native prototype:** versioned typed tables, tenant references/RLS, additive upgrades, role-checked HTTP/MCP actions, product/admin slots, separate service and durable events | Original app registration/signing/permissions protocol, DAL interoperability, general component runtime, marketplace/install trust, destructive migrations |
 | Order association memory and merchant-approved recommendations | `src/cognition/*`, outbox, AGE, `MemoryView.tsx`, `MemoryRecommendations.tsx` | **Native extension:** persisted order/event evidence, deduplication, hypothesis approval and actual public consumer | No original Shopware equivalence claimed; experiments/causal uplift/weight training missing |
-| Native external payment adapter | `src/payments/*`, payment UI, `scripts/payments.py` | PayPal Sandbox create/capture/reconcile/refund, reserved stock/release, webhook postback verification, restart and uncertain receipts using local contract server | No actual Sandbox account run or live charge; Shopware Payments connector remains unavailable; original payment API/state parity missing |
+| Native external payment adapter | `src/payments/*`, payment UI, `scripts/payments.py` | Configured PayPal Sandbox/Live create/capture/reconcile/refund, reserved stock/release, webhook postback verification, restart and uncertain receipts using local contract server | No actual Sandbox account run or live charge; Shopware Payments connector remains unavailable; original payment API/state parity missing |
 | Full DAL, category/search criteria, CMS, subscriptions, returns and currencies | — | **Missing**, except native bounded catalog/search paths | Port as separate source units with original fixtures and state/response comparisons; partial rules/flows/promotions/customer accounts are listed below |
 | Commercial B2B modules | — | **Missing:** demo company pricing/approval is native prototype behavior | Licensed source/entitlement and explicit independent parity scope required |
 
@@ -88,7 +88,7 @@ response envelopes and operation paths differ.
 | Fine team and integration access | `auth/permissions.rs`, `integrations.rs`, `members.rs`, `invitations.rs` | Fifteen HTTP/MCP scopes, explicit overrides, per-shop keys, expiry/revocation and non-escalating role/invite delegation | Original ACL privilege graph and production IdP/account recovery |
 | Files, digital products and rich content | `assets/*`, `staging/assets.rs`, rich/attachment/download frontend components | Typed localized blocks, MIME/magic checks, private paid downloads, immutable entitlement, mixed physical delivery and selected digest release | AV/object storage/media transforms, partial-line refund entitlements, full CMS/product-data model |
 | App workflow extension | `commerce/order_machine.rs`, `operations/workflow.rs`, `marketing/flows.rs`, app event deliveries | Native app provenance, translated custom states/edges, immutable event conditions, durable app inbox and actual flow notes | Complete upstream app state/FlowSequence signing/registration protocol; native graphical branches, sequences and delays are implemented above |
-| PayPal attribution and durable refunds | `payments/*` | Local Orders v2 wire contract, official PPCP BN header, single capture on lost response, pending refund lookup and restart | Actual Sandbox/Live PSP validation, advanced PayPal features and supported Shopware Payments standalone contract |
+| PayPal attribution and durable refunds | `payments/*` | Local Orders v2 wire contract, explicit configured private attribution header, single capture on lost response, pending refund lookup and restart | Actual Sandbox/Live PSP validation, advanced PayPal features and supported Shopware Payments standalone contract |
 
 The customer and operational rows above are native end-to-end behaviors, without
 a new original-PHP entity/state parity proof. The current 7,000 original-PHP
@@ -198,3 +198,9 @@ transactional before/after aggregates; twelve editable types delegate rollback
 to current domain validation. Credentials, immutable identity/login metadata and
 financial events are not rewound. Historical Shopware versions are not imported
 or synthesized. [The history contract](entity-history.md) lists all boundaries.
+
+Checkout review and approval return: `order_checkout.rs`, `payments/storage.rs`,
+`payments/return_urls.rs` and `frontend/src/storefront/checkout/*` provide native
+one-page selection, revision/amount confirmation and verified approval capture.
+Local PostgreSQL/provider fixtures cover stale reviews, replay and forged returns.
+No full Shopware Payments, accelerated wallet/card or conversion-uplift parity is claimed.

@@ -10,6 +10,7 @@ import Commerce.Claims
 #print axioms CommerceKernel.cancellation_exact
 #print axioms CommerceKernel.cancellation_safe
 #print axioms CommerceKernel.checkout_contact_exact
+#print axioms CommerceKernel.checkout_review_exact
 #print axioms CommerceKernel.completion_exact
 #print axioms CommerceKernel.completion_safe
 #print axioms CommerceKernel.customer_group_net_exact

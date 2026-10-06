@@ -157,6 +157,20 @@ fn eval(j: &Value) -> Result<Value, String> {
                 .as_bool()
                 .ok_or("Invalid private_data")?
         ))),
+        Some("checkout_review_admissible") => Ok(json!(checkout_review_admissible(
+            args["revision_matches"]
+                .as_bool()
+                .ok_or("Invalid revision_matches")?,
+            args["expected_total"]
+                .as_u64()
+                .ok_or("Invalid expected_total")?,
+            args["actual_total"]
+                .as_u64()
+                .ok_or("Invalid actual_total")?,
+            args["methods_confirmed"]
+                .as_bool()
+                .ok_or("Invalid methods_confirmed")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

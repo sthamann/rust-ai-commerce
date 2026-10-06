@@ -27,7 +27,7 @@ def run(a, b, passed):
         setup += f"INSERT INTO carts(id,tenant,token,data) VALUES('{f['probe_cart']}','{t}','probe-token-{oid}','{{}}'),('{f['free_cart']}','{t}','free-token-{oid}','{{}}');"
         setup += f"INSERT INTO orders(id,tenant,cart_id,idempotency_key,fingerprint,data) VALUES('{f['probe_order']}','{t}','{f['probe_cart']}','probe-{oid}','fixture','{{}}');"
         f['event'] = sql(f"INSERT INTO outbox(tenant,kind,data) VALUES('{t}','security.fixture','{{}}') RETURNING id;").splitlines()[0]
-        setup += f"INSERT INTO payment_attempts(id,tenant,order_id,provider,adapter_version,amount_minor,currency,state) VALUES('{f['attempt']}','{t}','{oid}','manual','fixture',100,'EUR','captured');"
+        setup += f"INSERT INTO payment_attempts(id,tenant,order_id,provider,adapter_version,bn_code,amount_minor,currency,state) VALUES('{f['attempt']}','{t}','{oid}','manual','fixture','Vendune_Fixture_Only',100,'EUR','captured');"
         setup += f"INSERT INTO payment_jobs(id,tenant,attempt_id,operation,fingerprint,state) VALUES('{f['job']}','{t}','{f['attempt']}','reconcile','fixture','completed');"
     setup += f"INSERT INTO commerce_promotions(tenant,id,data) VALUES('{ta}','security-promo','{{}}');"
     setup += f"INSERT INTO products(tenant,id,name,category,description,price,tax_rate,stock) VALUES('{tb}','foreign-only','Foreign','fixture','fixture',1,19,1);"

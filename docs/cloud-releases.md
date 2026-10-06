@@ -47,3 +47,19 @@ Common translated terms use ordered, deduplicated candidate IDs before loading
 full product rows. Effective field fallback, channel/category filters and cursor
 boundaries still apply before the page limit. Candidate scans can still grow with
 the number of matching translations; this is not a constant-work search claim.
+
+## Public Studio origin
+
+Set both `COMMERCE_PUBLIC_ORIGIN` and `PUBLIC_BASE_URL` on the runtime service to
+`https://app.vendune.ai`, then update/restart the service. Keep these runtime-only;
+no database credential belongs in the builder. The origin guard intentionally
+ignores Host/forwarded headers and accepts only the configured Studio origin.
+Do not weaken it to repair a 403. No-Origin clients still use ordinary auth checks.
+
+On 6 October 2026 the deployed `fa09350` release (including API-explorer autofill
+correction) was verified in Northflank. Updating the old internal code.run origin
+restored public browser MCP: allowed origin 200, foreign origin 403. An authenticated
+merchant created fresh synthetic shops; on the current loaded Studio the new shop
+retained its session immediately. Products, eight discoverable standard apps and
+MCP tools/list worked. Reload tabs opened before the release to load its new bundle.
+This check does not certify actual payments or production SaaS security.
