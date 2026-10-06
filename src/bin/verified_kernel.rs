@@ -177,6 +177,13 @@ fn eval(j: &Value) -> Result<Value, String> {
             args["read_only"].as_bool().ok_or("Invalid read_only")?,
             args["settlement"].as_bool().ok_or("Invalid settlement")?
         ))),
+        Some("reservation_release_admissible") => Ok(json!(reservation_release_admissible(
+            args["uncaptured"].as_bool().ok_or("Invalid uncaptured")?,
+            args["authorized"].as_bool().ok_or("Invalid authorized")?,
+            args["void_confirmed"]
+                .as_bool()
+                .ok_or("Invalid void_confirmed")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

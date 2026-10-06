@@ -232,4 +232,12 @@ theorem shop_archived_denied (read : Bool) :
     shop_request_admissible false false read false = false := by
   cases read <;> simp [shop_request_admissible]
 
+/-- Release accepts exactly uncaptured attempts or an explicitly voided authorization. -/
+theorem reservation_release_exact (uncaptured authorized voidConfirmed : Bool) :
+    reservation_release_admissible uncaptured authorized voidConfirmed = (uncaptured || authorized && voidConfirmed) := by rfl
+/-- Uncertain authorizations cannot restore inventory. -/
+theorem reservation_authorized_unvoided : reservation_release_admissible false true false = false := by rfl
+/-- A later capture cannot be hidden by a void flag. -/
+theorem reservation_captured_denied (voidConfirmed : Bool) : reservation_release_admissible false false voidConfirmed = false := by
+  cases voidConfirmed <;> simp [reservation_release_admissible]
 end CommerceKernel

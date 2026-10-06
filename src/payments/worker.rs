@@ -16,18 +16,26 @@ pub(crate) async fn payment_once(a: &App) -> Result<()> {
                 .collect::<Vec<_>>()
         })
         .unwrap_or_default();
-    if tenants.is_empty() {
+    let configured: Value =
+        serde_json::from_str(&env::var("PAYMENT_SERVICES").unwrap_or("{}".into()))
+            .map_err(|_| bad("Invalid payment services"))?;
+    let providers: Vec<String> = configured
+        .as_object()
+        .map(|m| m.keys().cloned().collect())
+        .unwrap_or_default();
+    if tenants.is_empty() && providers.is_empty() {
         return Ok(());
     }
     let mut tx = a.db.begin().await?;
-    let row=sqlx::query("SELECT j.* FROM payment_jobs j JOIN payment_attempts p ON p.id=j.attempt_id WHERE j.tenant=ANY($1) AND j.available_at<=now() AND (j.state='queued' OR j.state='running' AND j.lease_until<now()) AND NOT EXISTS(SELECT 1 FROM payment_jobs other WHERE other.attempt_id=j.attempt_id AND other.id<>j.id AND other.state='running' AND other.lease_until>now()) ORDER BY j.created_at LIMIT 1 FOR UPDATE OF j,p SKIP LOCKED").bind(&tenants).fetch_optional(&mut *tx).await?;
+    let row=sqlx::query("SELECT j.* FROM payment_jobs j JOIN payment_attempts p ON p.id=j.attempt_id WHERE (p.provider='paypal' AND j.tenant=ANY($1) OR p.provider=ANY($2)) AND j.available_at<=now() AND (j.state='queued' OR j.state='running' AND j.lease_until<now()) AND NOT EXISTS(SELECT 1 FROM payment_jobs other WHERE other.attempt_id=j.attempt_id AND other.id<>j.id AND other.state='running' AND other.lease_until>now()) ORDER BY j.created_at LIMIT 1 FOR UPDATE OF j,p SKIP LOCKED").bind(&tenants).bind(&providers).fetch_optional(&mut *tx).await?;
     let Some(job) = row else {
         tx.commit().await?;
-        return expire_one(a, &tenants).await;
+        return expire_one(a, &tenants, &providers).await;
     };
     let id = job.get::<String, _>("id");
     let op = job.get::<String, _>("operation");
-    let input = job.get::<Value, _>("request");
+    let mut input = job.get::<Value, _>("request");
+    input["ledgerJobKey"] = json!(id);
     let generation = job.get::<i32, _>("attempts") + 1;
     sqlx::query("UPDATE payment_jobs SET state='running',attempts=$1,lease_until=now()+interval '60 seconds' WHERE id=$2").bind(generation).bind(&id).execute(&mut *tx).await?;
     let row = sqlx::query("SELECT * FROM payment_attempts WHERE id=$1")
@@ -36,18 +44,19 @@ pub(crate) async fn payment_once(a: &App) -> Result<()> {
         .await?;
     let p = attempt(&row);
     tx.commit().await?;
-    let outcome =
-        if op == "capture" && !["ready", "approved", "captured"].contains(&p.state.as_str()) {
-            Err(conflict("Payment cannot be captured in this state"))
-        } else if op == "cancel" {
-            if p.provider_order.is_some() {
-                dispatch(a, &p, "reconcile", &id, &input).await
-            } else {
-                Ok(json!({"notCreated":true}))
-            }
+    let outcome = if ["capture", "authorize"].contains(&op.as_str())
+        && !["ready", "approved", "authorized", "captured"].contains(&p.state.as_str())
+    {
+        Err(conflict("Payment cannot be captured in this state"))
+    } else if op == "cancel" && p.provider == "paypal" {
+        if p.provider_order.is_some() {
+            dispatch(a, &p, "reconcile", &id, &input).await
         } else {
-            dispatch(a, &p, &op, &id, &input).await
-        };
+            Ok(json!({"notCreated":true}))
+        }
+    } else {
+        dispatch(a, &p, &op, &id, &input).await
+    };
     let mut tx = a.db.begin().await?;
     // Every receipt re-reads the authoritative attempt and claims its job generation.
     let fence = sqlx::query("SELECT state,attempts FROM payment_jobs WHERE id=$1 FOR UPDATE")
@@ -65,7 +74,7 @@ pub(crate) async fn payment_once(a: &App) -> Result<()> {
     let current = attempt(&row);
     match outcome {
         Ok(v) => {
-            if op == "refund" && v["status"] == "PENDING" {
+            if op == "refund" && p.provider == "paypal" && v["status"] == "PENDING" {
                 let remote = v["id"]
                     .as_str()
                     .filter(|s| s.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'-'))
@@ -85,30 +94,40 @@ pub(crate) async fn payment_once(a: &App) -> Result<()> {
             }
             // SAVEPOINT keeps a rejected/malformed remote receipt from partially mutating local state.
             sqlx::query("SAVEPOINT receipt").execute(&mut *tx).await?;
-            let result = if op == "cancel" && v["status"] != "COMPLETED" {
-                let validation = if v["notCreated"] == true {
-                    Ok(())
+            let result =
+                if op == "cancel" && current.provider == "paypal" && v["status"] != "COMPLETED" {
+                    let validation = if v["notCreated"] == true {
+                        Ok(())
+                    } else {
+                        paypal::validate_order(&current, &v)
+                    };
+                    if let Err(e) = validation {
+                        Err(e)
+                    } else {
+                        release_stock(
+                            &mut tx,
+                            &current,
+                            if input["expiry"] == true {
+                                "expired"
+                            } else {
+                                "cancelled"
+                            },
+                            false,
+                        )
+                        .await
+                    }
                 } else {
-                    paypal::validate_order(&current, &v)
+                    persist(&mut tx, &current, &op, &input, &v).await
                 };
-                if let Err(e) = validation {
-                    Err(e)
-                } else {
-                    release_stock(
-                        &mut tx,
-                        &current,
-                        if input["expiry"] == true {
-                            "expired"
-                        } else {
-                            "cancelled"
-                        },
-                    )
-                    .await
-                }
-            } else {
-                persist(&mut tx, &current, &op, &input, &v).await
-            };
             if let Err(e) = result {
+                if e.0 == StatusCode::ACCEPTED && generation < 8 {
+                    sqlx::query("ROLLBACK TO SAVEPOINT receipt")
+                        .execute(&mut *tx)
+                        .await?;
+                    sqlx::query("UPDATE payment_jobs SET state='queued',available_at=now()+interval '10 seconds',lease_until=NULL WHERE id=$1").bind(&id).execute(&mut *tx).await?;
+                    tx.commit().await?;
+                    return Ok(());
+                }
                 sqlx::query("ROLLBACK TO SAVEPOINT receipt")
                     .execute(&mut *tx)
                     .await?;
@@ -125,10 +144,10 @@ pub(crate) async fn payment_once(a: &App) -> Result<()> {
     tx.commit().await?;
     Ok(())
 }
-async fn expire_one(a: &App, tenants: &[String]) -> Result<()> {
+async fn expire_one(a: &App, tenants: &[String], providers: &[String]) -> Result<()> {
     // An uncertain provider operation requires reconciliation, never automatic inventory release.
     let mut tx = a.db.begin().await?;
-    let row=sqlx::query("SELECT * FROM payment_attempts p WHERE tenant=ANY($1) AND expires_at<now() AND state IN ('pending','ready','approved') AND NOT EXISTS(SELECT 1 FROM payment_jobs j WHERE j.attempt_id=p.id AND j.state IN ('queued','running','uncertain')) ORDER BY expires_at LIMIT 1 FOR UPDATE SKIP LOCKED").bind(tenants).fetch_optional(&mut *tx).await?;
+    let row=sqlx::query("SELECT * FROM payment_attempts p WHERE (provider='paypal' AND tenant=ANY($1) OR provider=ANY($2)) AND expires_at<now() AND state IN ('pending','ready','approved') AND NOT EXISTS(SELECT 1 FROM payment_jobs j WHERE j.attempt_id=p.id AND j.state IN ('queued','running','uncertain')) ORDER BY expires_at LIMIT 1 FOR UPDATE SKIP LOCKED").bind(tenants).bind(providers).fetch_optional(&mut *tx).await?;
     if let Some(r) = row {
         let p = attempt(&r);
         enqueue_tx(

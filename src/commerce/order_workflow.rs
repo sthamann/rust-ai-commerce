@@ -7,7 +7,7 @@ pub(crate) fn guard(o: &Value, m: &OrderMachine, kind: &str, target: &str) -> Op
     if !verified_kernel::order_edit_admissible(terminal) {
         return Some("terminalOrder");
     }
-    let external = o["payment"]["provider"] == "paypal";
+    let external = crate::payments::external(o);
     let ps = o["payment"]["state"].as_str().unwrap_or("");
     let refund = ["paid", "captured", "partially_refunded"].contains(&ps);
     let deliveries_open = o["deliveries"]
@@ -59,7 +59,7 @@ pub(crate) fn workflow(o: &Value, m: &OrderMachine, revision: i64) -> Value {
         }
     }
     if ["pending", "authorized"].contains(&o["payment"]["state"].as_str().unwrap_or(""))
-        && o["payment"]["provider"] != "paypal"
+        && !crate::payments::external(o)
     {
         let reason = guard(o, m, "payment", "paid");
         actions.push(json!({"id":"mark_paid","kind":"payment","from":o["payment"]["state"],"state":"paid","enabled":reason.is_none(),"reason":reason}));

@@ -59,6 +59,8 @@ export type Shipping = {
   taxType: string;
 };
 export type Payment = {
+  provider?: string;
+  providerMethod?: string;
   id: string;
   name: string;
   translations?: import("../geography/geography-types").TextMap;

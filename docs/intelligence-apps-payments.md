@@ -82,6 +82,8 @@ configuration records remain in that cart until the cart is discarded.
 
 ## Payment adapter and ledger
 
+Payment apps now use the [general provider API 1](payment-provider-api.md): versioned contracts, tenant/channel onboarding, frozen environments and accounts, redirect/embedded checkout, exact receipt allocation and protected app/Flow/MCP commands. Shopware Payments provider code and attribution remain in the private repository; the public build has no dependency on that repository.
+
 `payments/provider.rs::PaymentProvider` is the native adapter boundary. The core
 owns amounts, order/cart authorization, idempotency, inventory and ledger states.
 The provider owns wire calls. The first adapter is PayPal **Orders v2**, with configured Sandbox or Live environments.

@@ -54,7 +54,7 @@ pub(crate) async fn transition_order(
                 return Err(conflict(reason));
             }
             if target == "cancelled" {
-                if o["payment"]["provider"] == "paypal"
+                if crate::payments::external(&o)
                     || ["paid", "captured", "partially_refunded"]
                         .contains(&o["payment"]["state"].as_str().unwrap_or(""))
                 {
@@ -80,7 +80,7 @@ pub(crate) async fn transition_order(
             if let Some(reason) = guard(&o, &machine, kind, target) {
                 return Err(conflict(reason));
             }
-            if o["payment"]["provider"] == "paypal" {
+            if crate::payments::external(&o) {
                 return Err(conflict(
                     "External payments require a confirmed provider receipt",
                 ));
@@ -91,7 +91,7 @@ pub(crate) async fn transition_order(
                     .states
                     .iter()
                     .any(|s| s.id == o["state"].as_str().unwrap_or("") && s.terminal),
-                o["payment"]["provider"] == "paypal",
+                crate::payments::external(&o),
                 ["pending", "authorized"].contains(&current),
                 target == "paid",
             ) {

@@ -63,6 +63,18 @@ export type Manifest = {
   name: Text;
   category?: string;
   presentation?: { icon?: string; cover?: string; description?: Text };
+  paymentProvider?: {
+    apiVersion: "1";
+    methods: {
+      id: string;
+      name: Text;
+      currencies: string[];
+      countries: string[];
+      capabilities: string[];
+      checkout: "redirect" | "embedded";
+      intent: "capture" | "authorize";
+    }[];
+  };
   permissions: string[];
   events?: string[];
   schedules?: {

@@ -78,7 +78,11 @@ pub(crate) async fn prepare(
     c: &StoredCart,
     order: &mut Value,
     minor: i64,
+    return_origin: Option<&str>,
 ) -> Result<()> {
+    if order["cart"]["paymentMethod"]["provider"].is_string() {
+        return prepare_remote(tx, c, order, minor, return_origin).await;
+    }
     let version: Option<String> = sqlx::query_scalar(
         "SELECT version FROM app_packages WHERE tenant=$1 AND id='paypal' AND active FOR SHARE",
     )
@@ -107,6 +111,8 @@ pub(crate) async fn prepare(
 #[derive(Clone)]
 pub(crate) struct Attempt {
     pub id: String,
+    pub provider: String,
+    pub context: Value,
     pub tenant: String,
     pub order: String,
     pub amount: i64,
@@ -122,6 +128,8 @@ pub(crate) struct Attempt {
 pub(crate) fn attempt(r: &sqlx::postgres::PgRow) -> Attempt {
     Attempt {
         id: r.get("id"),
+        provider: r.get("provider"),
+        context: r.get("provider_context"),
         tenant: r.get("tenant"),
         order: r.get("order_id"),
         amount: r.get("amount_minor"),
@@ -193,7 +201,11 @@ pub(crate) async fn dispatch(
     key: &str,
     input: &Value,
 ) -> Result<Value> {
-    PaypalSandbox.execute(a, p, op, key, input).await
+    if p.provider == "paypal" {
+        PaypalSandbox.execute(a, p, op, key, input).await
+    } else {
+        remote::execute(a, p, op, key, input).await
+    }
 }
 
 #[cfg(test)]

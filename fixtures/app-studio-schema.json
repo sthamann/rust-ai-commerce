@@ -17,7 +17,12 @@
           "type": "string"
         }
       },
-      "required": ["en", "de", "fr", "es"],
+      "required": [
+        "en",
+        "de",
+        "fr",
+        "es"
+      ],
       "additionalProperties": false
     },
     "manifest": {
@@ -31,11 +36,16 @@
         },
         "coreApi": {
           "type": "string",
-          "enum": ["1"]
+          "enum": [
+            "1"
+          ]
         },
         "runtime": {
           "type": "string",
-          "enum": ["declarative"]
+          "enum": [
+            "declarative",
+            "service"
+          ]
         },
         "name": {
           "type": "object",
@@ -53,14 +63,25 @@
               "type": "string"
             }
           },
-          "required": ["en", "de", "fr", "es"],
+          "required": [
+            "en",
+            "de",
+            "fr",
+            "es"
+          ],
           "additionalProperties": false
         },
         "permissions": {
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["data.read", "data.write", "admin.slot", "storefront.slot"]
+            "enum": [
+              "data.read",
+              "data.write",
+              "admin.slot",
+              "storefront.slot",
+              "payments.provider"
+            ]
           }
         },
         "entities": {
@@ -87,7 +108,12 @@
                     "type": "string"
                   }
                 },
-                "required": ["en", "de", "fr", "es"],
+                "required": [
+                  "en",
+                  "de",
+                  "fr",
+                  "es"
+                ],
                 "additionalProperties": false
               },
               "fields": {
@@ -114,12 +140,21 @@
                           "type": "string"
                         }
                       },
-                      "required": ["en", "de", "fr", "es"],
+                      "required": [
+                        "en",
+                        "de",
+                        "fr",
+                        "es"
+                      ],
                       "additionalProperties": false
                     },
                     "kind": {
                       "type": "string",
-                      "enum": ["string", "integer", "boolean"]
+                      "enum": [
+                        "string",
+                        "integer",
+                        "boolean"
+                      ]
                     },
                     "translatable": {
                       "type": "boolean"
@@ -131,8 +166,16 @@
                       "type": "boolean"
                     },
                     "coreReference": {
-                      "type": ["string", "null"],
-                      "enum": ["product", "customer", "order", null]
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "enum": [
+                        "product",
+                        "customer",
+                        "order",
+                        null
+                      ]
                     },
                     "choices": {
                       "type": "array",
@@ -159,11 +202,19 @@
                                 "type": "string"
                               }
                             },
-                            "required": ["en", "de", "fr", "es"],
+                            "required": [
+                              "en",
+                              "de",
+                              "fr",
+                              "es"
+                            ],
                             "additionalProperties": false
                           }
                         },
-                        "required": ["value", "label"],
+                        "required": [
+                          "value",
+                          "label"
+                        ],
                         "additionalProperties": false
                       }
                     }
@@ -185,7 +236,12 @@
                 "type": "boolean"
               }
             },
-            "required": ["name", "label", "fields", "publicRead"],
+            "required": [
+              "name",
+              "label",
+              "fields",
+              "publicRead"
+            ],
             "additionalProperties": false
           }
         },
@@ -196,11 +252,17 @@
             "properties": {
               "location": {
                 "type": "string",
-                "enum": ["admin.apps", "product.detail"]
+                "enum": [
+                  "admin.apps",
+                  "product.detail"
+                ]
               },
               "component": {
                 "type": "string",
-                "enum": ["entity-form", "entity-list"]
+                "enum": [
+                  "entity-form",
+                  "entity-list"
+                ]
               },
               "label": {
                 "type": "object",
@@ -218,11 +280,20 @@
                     "type": "string"
                   }
                 },
-                "required": ["en", "de", "fr", "es"],
+                "required": [
+                  "en",
+                  "de",
+                  "fr",
+                  "es"
+                ],
                 "additionalProperties": false
               }
             },
-            "required": ["location", "component", "label"],
+            "required": [
+              "location",
+              "component",
+              "label"
+            ],
             "additionalProperties": false
           }
         },
@@ -236,7 +307,10 @@
               },
               "layout": {
                 "type": "string",
-                "enum": ["stack", "grid"]
+                "enum": [
+                  "stack",
+                  "grid"
+                ]
               },
               "blocks": {
                 "type": "array",
@@ -248,7 +322,12 @@
                     },
                     "kind": {
                       "type": "string",
-                      "enum": ["text", "table", "cards", "form"]
+                      "enum": [
+                        "text",
+                        "table",
+                        "cards",
+                        "form"
+                      ]
                     },
                     "title": {
                       "type": "object",
@@ -266,7 +345,12 @@
                           "type": "string"
                         }
                       },
-                      "required": ["en", "de", "fr", "es"],
+                      "required": [
+                        "en",
+                        "de",
+                        "fr",
+                        "es"
+                      ],
                       "additionalProperties": false
                     },
                     "text": {
@@ -285,17 +369,31 @@
                           "type": "string"
                         }
                       },
-                      "required": ["en", "de", "fr", "es"],
+                      "required": [
+                        "en",
+                        "de",
+                        "fr",
+                        "es"
+                      ],
                       "additionalProperties": false
                     },
                     "entity": {
-                      "type": ["string", "null"]
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     },
                     "readAction": {
-                      "type": ["string", "null"]
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     },
                     "writeAction": {
-                      "type": ["string", "null"]
+                      "type": [
+                        "string",
+                        "null"
+                      ]
                     },
                     "contextBinding": {
                       "anyOf": [
@@ -310,10 +408,17 @@
                             },
                             "key": {
                               "type": "string",
-                              "enum": ["productId", "customerId", "orderId"]
+                              "enum": [
+                                "productId",
+                                "customerId",
+                                "orderId"
+                              ]
                             }
                           },
-                          "required": ["field", "key"],
+                          "required": [
+                            "field",
+                            "key"
+                          ],
                           "additionalProperties": false
                         }
                       ]
@@ -333,7 +438,11 @@
                 }
               }
             },
-            "required": ["id", "layout", "blocks"],
+            "required": [
+              "id",
+              "layout",
+              "blocks"
+            ],
             "additionalProperties": false
           }
         },
@@ -378,7 +487,12 @@
                     "type": "string"
                   }
                 },
-                "required": ["en", "de", "fr", "es"],
+                "required": [
+                  "en",
+                  "de",
+                  "fr",
+                  "es"
+                ],
                 "additionalProperties": false
               },
               "uiPath": {
@@ -391,7 +505,10 @@
                 }
               },
               "permission": {
-                "type": ["string", "null"],
+                "type": [
+                  "string",
+                  "null"
+                ],
                 "enum": [
                   "catalog.read",
                   "catalog.write",
@@ -425,17 +542,28 @@
               },
               "method": {
                 "type": "string",
-                "enum": ["GET", "POST"]
+                "enum": [
+                  "GET",
+                  "POST"
+                ]
               },
               "scope": {
                 "type": "string",
-                "enum": ["admin", "storefront"]
+                "enum": [
+                  "admin",
+                  "storefront"
+                ]
               },
               "action": {
                 "type": "string"
               }
             },
-            "required": ["path", "method", "scope", "action"],
+            "required": [
+              "path",
+              "method",
+              "scope",
+              "action"
+            ],
             "additionalProperties": false
           }
         },
@@ -458,7 +586,12 @@
                   "type": "string"
                 }
               },
-              "required": ["en", "de", "fr", "es"],
+              "required": [
+                "en",
+                "de",
+                "fr",
+                "es"
+              ],
               "additionalProperties": false
             },
             "tools": {
@@ -474,7 +607,11 @@
               }
             }
           },
-          "required": ["description", "tools", "entities"],
+          "required": [
+            "description",
+            "tools",
+            "entities"
+          ],
           "additionalProperties": false
         },
         "presentation": {
@@ -505,11 +642,136 @@
                   "type": "string"
                 }
               },
-              "required": ["en", "de", "fr", "es"],
+              "required": [
+                "en",
+                "de",
+                "fr",
+                "es"
+              ],
               "additionalProperties": false
             }
           },
-          "required": ["description"]
+          "required": [
+            "description"
+          ]
+        },
+        "category": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "payment",
+            null
+          ]
+        },
+        "paymentProvider": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "apiVersion": {
+                  "type": "string",
+                  "enum": [
+                    "1"
+                  ]
+                },
+                "methods": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "object",
+                        "properties": {
+                          "en": {
+                            "type": "string"
+                          },
+                          "de": {
+                            "type": "string"
+                          },
+                          "fr": {
+                            "type": "string"
+                          },
+                          "es": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "en",
+                          "de",
+                          "fr",
+                          "es"
+                        ],
+                        "additionalProperties": false
+                      },
+                      "currencies": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "countries": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "capabilities": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "capture",
+                            "authorize",
+                            "void",
+                            "refund",
+                            "vault",
+                            "recurring"
+                          ]
+                        }
+                      },
+                      "checkout": {
+                        "type": "string",
+                        "enum": [
+                          "redirect",
+                          "embedded"
+                        ]
+                      },
+                      "intent": {
+                        "type": "string",
+                        "enum": [
+                          "capture",
+                          "authorize"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "currencies",
+                      "countries",
+                      "capabilities",
+                      "checkout",
+                      "intent"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "apiVersion",
+                "methods"
+              ]
+            }
+          ]
         }
       },
       "required": [
@@ -524,11 +786,16 @@
         "views",
         "surfaces",
         "apiRoutes",
-        "intelligence"
+        "intelligence",
+        "category",
+        "paymentProvider"
       ],
       "additionalProperties": false
     }
   },
-  "required": ["summary", "manifest"],
+  "required": [
+    "summary",
+    "manifest"
+  ],
   "additionalProperties": false
 }

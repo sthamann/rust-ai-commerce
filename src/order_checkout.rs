@@ -208,11 +208,7 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     if external && staging::parent(a, &c.tenant).await?.is_some() {
         return Err(bad("External payments are disabled in private sandboxes"));
     }
-    if external && !["paypal-sandbox", "paypal-live"].contains(&selected.payment_method_id.as_str())
-    {
-        return Err(bad("Provider connector is not configured"));
-    }
-    if external {
+    if external && q["paymentMethod"]["provider"].is_null() {
         payments::account(&c.tenant)?;
         payments::base()?;
         if (selected.payment_method_id == "paypal-live") != (payments::environment() == "live") {
@@ -241,7 +237,18 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     marketing::record_uses(&mut tx, &c.tenant, &id, &q).await?;
     assets::snapshot(&mut tx, &c, &id).await?;
     if external {
-        payments::prepare(&mut tx, &c, &mut order, minor).await?;
+        let return_origin = if q["paymentMethod"]["provider"].is_string() {
+            match header(h, "origin") {
+                Some(origin) => Some(
+                    payments::sessions::origin(a, &c.tenant, &c.data.sales_channel, Some(origin))
+                        .await?,
+                ),
+                None => None,
+            }
+        } else {
+            None
+        };
+        payments::prepare(&mut tx, &c, &mut order, minor, return_origin.as_deref()).await?;
         commerce::order_fields(&mut order);
         sqlx::query("UPDATE orders SET data=$1 WHERE id=$2")
             .bind(&order)

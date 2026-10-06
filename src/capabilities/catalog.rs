@@ -176,6 +176,14 @@ pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
         "Explicitly approved idempotent provider command",
     ),
     (
+        "merchant.payment.providers",
+        "Read installed payment contracts and merchant account readiness",
+    ),
+    (
+        "merchant.payment.onboarding",
+        "Approved provider onboarding scoped to merchant and sales channel",
+    ),
+    (
         "developer.archive",
         "Explicit recoverable App Studio project removal or restore",
     ),

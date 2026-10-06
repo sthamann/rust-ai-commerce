@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "26 extracted production policies; surrounding modules remain unproved",
+  "claim": "27 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -244,6 +244,16 @@
         "shop_availability_exact",
         "shop_archived_denied"
       ]
+    },
+    "reservation_release_admissible": {
+      "bindings": [
+        "src/payments/storage.rs"
+      ],
+      "theorems": [
+        "reservation_release_exact",
+        "reservation_authorized_unvoided",
+        "reservation_captured_denied"
+      ]
     }
   },
   "sources": {
@@ -339,18 +349,18 @@
     },
     "src/apps/gateway.rs": {
       "status": "reviewed-binding",
-      "sha256": "db680cdd776ba16a520ec3f5e04ec488584c639054ea0c4b6e12f18b95334ed0",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "011bb86a7b99d2dd0d9fc1fd15fea03147e52bcd1c0a212946784aa5a8520287",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/apps/manifest.rs": {
       "status": "unproved",
-      "sha256": "954e00c3d9de2d3b9c0c4bb4ec839d2af81e0fa107007931e847cf4e2e47e74e",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "a2dab0c89208f72b646c826fac3760ccb2df107d7d8c38b972d6d8c81441da3a",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/apps/manifest_validation.rs": {
       "status": "unproved",
-      "sha256": "1d7e4c0f685b044f6f3832e8d4d08bf970d228064f2c04a77688b3df5c4f2fe4",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "aba03197d4a7aa5d6079aca4947979d29322bd60589cdef585e7f9fca05587b8",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/apps/mod.rs": {
       "status": "unproved",
@@ -384,13 +394,13 @@
     },
     "src/apps/registry.rs": {
       "status": "unproved",
-      "sha256": "bd701dd00d338da39fbfc6eeb15fcb5d8cce84d64ca7e61a14e4b8374a43e3f4",
-      "review": "Reviewed app MCP-only ingress and exact exposure/private-reference production policies. Required indexed owned references and additive enum upgrades reviewed; asynchronous scheduler/webhook behavior is integration-tested, not Lean proved."
+      "sha256": "ac2d9e4063a205ab2cb5549f4b059f04b4fdff98c9380facbe8209a5a3a57520",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/apps/routes.rs": {
       "status": "unproved",
-      "sha256": "e898c94efea57d41708aa61ec7b930a2f41c1b7d882c42ca0ce8f6a56e82ef22",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "7fc44d803a71e84d923f56ecf74214bee34b7b54437a3aa058f463be93467052",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/apps/runtime.rs": {
       "status": "unproved",
@@ -494,8 +504,8 @@
     },
     "src/auth/middleware.rs": {
       "status": "unproved",
-      "sha256": "fa6d761a26a42eb2ca9d8523b0f06a6f1aac5136d7521f05067f713acea74e01",
-      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
+      "sha256": "5938ff53e75794cfd2cda9a82959e980918b87f56a590b81658e49b753f90628",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/auth/mod.rs": {
       "status": "unproved",
@@ -589,8 +599,8 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "305e6f528c5472b555911697f62445c612465ba1dfb947817a3e1da200d8d1b5",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "335dbe882aa5f0f43058b4ade93e3d11a8ee15a5a9bd5d3e11f5a54648857f82",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
@@ -599,8 +609,8 @@
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
-      "sha256": "5da5eabef5e6cab7fdf0b3295c93cafab9267f664aedb2205420f598a32ca5b0",
-      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
+      "sha256": "06a0d312f77d08e8e5df2bf08c315fea4eb91cc2248798deedce9c0d564b5b9f",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/capabilities.rs": {
       "status": "unproved",
@@ -719,8 +729,8 @@
     },
     "src/commerce/context_routes.rs": {
       "status": "unproved",
-      "sha256": "d4aca82be0702fdde88312f30a811bda322ce5db26d6e10b5bfb12482a79b124",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "f3cfb9660c8e584a3db03edfe558bb621223ebfd8b4683821543cb9c75181c82",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/commerce/customer_groups.rs": {
       "status": "reviewed-binding",
@@ -739,8 +749,8 @@
     },
     "src/commerce/fulfillment.rs": {
       "status": "reviewed-binding",
-      "sha256": "f6f2ec3659f61a6767261c1ff0e67a91ce7608d913cb393b6419523f85f5b44b",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "f8113016e9733eabc7e7536606251c2c400bca330b6164bcdd9b07f6321dfa96",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/commerce/geography.rs": {
       "status": "unproved",
@@ -784,8 +794,8 @@
     },
     "src/commerce/order_workflow.rs": {
       "status": "reviewed-binding",
-      "sha256": "0347c893afd8de2d8230aa218a90411123d8d3d05ac5da9a3d3e8af256fdaeaa",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "01e41a73b686dbf04498ca1f3260e67c8196b7578794d649341a4df27a887848",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/commerce/product_admin.rs": {
       "status": "unproved",
@@ -864,8 +874,8 @@
     },
     "src/commerce/settings_validation.rs": {
       "status": "unproved",
-      "sha256": "ddf5fc217a5d4d26e61da1c347740d9f97c637d78c706d315d946caf2fb5bdae",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "37e955c47deef12ccd5fab280879e1cc1f479ad8a0ce621076256a7c2a54f7d1",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/commerce/tax.rs": {
       "status": "unproved",
@@ -884,8 +894,8 @@
     },
     "src/commerce/types.rs": {
       "status": "unproved",
-      "sha256": "5b3cf14085c53c1b7acb46e6f3d619dfc5eb77f6ed18dbd68c4dc290570dcf3a",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "9af0acc143a5c3083961b916b5a6c56aead5ce758c913b80c94da40c60f71f76",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/concierge.rs": {
       "status": "unproved",
@@ -919,8 +929,8 @@
     },
     "src/developer/generation.rs": {
       "status": "unproved",
-      "sha256": "9fcb40f4009a51c3e425f2f6ca35a0024f777f2ebdf66681736b542a8d75ce96",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "145741283e47b452a826b66c9c3d02e0a7ce5ac8257d9e74485380e297741ddf",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/developer/mod.rs": {
       "status": "unproved",
@@ -929,8 +939,8 @@
     },
     "src/developer/routes.rs": {
       "status": "unproved",
-      "sha256": "cd65d2ed895dc6126d750c82891127ff38a34812b4500cbdbeac8d0cb785790d",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "ba4cce9d22659ee6afddeaf309908af4561a2779f95f2535982f410419f3a6e5",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/discount.rs": {
       "status": "reviewed-binding",
@@ -1229,13 +1239,13 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "cdde56ff30794aa70282e73c1a8c46870022f408482ff646c266432f36d1e30b",
-      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
+      "sha256": "1722899bc04e6ef8da9d61f9214813bccaa6831a1bd2c8767c44f5a906f8b4cd",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "1de39313076eab230860a8c526180169fdf971103860b764f752228f8fb8c246",
-      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
+      "sha256": "02520d765cab29260f34cb3db57ec65cc09c88a0fc9d55108f40d8f9173a5fd8",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -1269,8 +1279,8 @@
     },
     "src/operations/mod.rs": {
       "status": "unproved",
-      "sha256": "fb93b258cecbe6a12b79ac4b7f5e3964eac28b9d1d3494068252e03ef1066cfe",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "9657ab8112897108f70e1d36795d977c864c447190f2a910090eb9aa900e971e",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/operations/orders.rs": {
       "status": "unproved",
@@ -1299,8 +1309,8 @@
     },
     "src/order_checkout.rs": {
       "status": "reviewed-binding",
-      "sha256": "4b22c29d700fa2cc66885c443f78994eded0a5209084c5177f9dc5356e01624e",
-      "review": "Reviewed checkout quote admission and exact-price Lean equivalence; provider approval creates one durable capture job, scoped return URLs and customer job status. Real SQL review/replay/isolation and local PayPal forged-return, lost-reply, refund, cancellation and restart regressions pass; live providers and Shopware Payments remain unverified."
+      "sha256": "f2c2d9c0ee369de780ac407fcd570f417ab1d1991f30946b440cef5aa37a7ef5",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/order_routes.rs": {
       "status": "unproved",
@@ -1312,15 +1322,35 @@
       "sha256": "db3c4a5e8b8e40c0775eadd3b5d906a0e9e836a252657f3c3185dcfa3af6e45a",
       "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
+    "src/payments/accounts.rs": {
+      "status": "unproved",
+      "sha256": "97af3583fd21024d2a67a2070b87eece7910179b000b7c9be38e268596139e2c",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+    },
+    "src/payments/app_commands.rs": {
+      "status": "unproved",
+      "sha256": "d19ad4e00fe82db7d132c333e77d61c9b4c27b6180ca6e015d0e6a1a925957f2",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+    },
+    "src/payments/contract.rs": {
+      "status": "unproved",
+      "sha256": "3ad156a4c7170e5df1906ff000181c81ff9ba516247c77f628484b6404e029a2",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+    },
+    "src/payments/generic_receipts.rs": {
+      "status": "unproved",
+      "sha256": "9ca616737d52b69fa46fe4722dea94319460e6b4e485d3179b6701ae3846c23d",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+    },
     "src/payments/mod.rs": {
       "status": "unproved",
-      "sha256": "a792d96959e3a3228b26380e0c0c0077ae1782aaf45d7f6b1620021d02c0629a",
-      "review": "Reviewed checkout quote admission and exact-price Lean equivalence; provider approval creates one durable capture job, scoped return URLs and customer job status. Real SQL review/replay/isolation and local PayPal forged-return, lost-reply, refund, cancellation and restart regressions pass; live providers and Shopware Payments remain unverified."
+      "sha256": "f6292d3af6481625ac4976235fe0575a6627c09f0fad1a353dfee0278430b575",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/payments/operations.rs": {
       "status": "reviewed-binding",
-      "sha256": "b8ebd7da9a113a9dd2242bfd3cdc59cb4f1e9f062a2d0f11899e227a517b6ca0",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "91588dae7b0343efcf122c1e74f8e965d5419bb6c3b4a11dfc8390b43fdef199",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/payments/paypal.rs": {
       "status": "unproved",
@@ -1329,28 +1359,48 @@
     },
     "src/payments/provider.rs": {
       "status": "unproved",
-      "sha256": "48e1b0a7de899b992260d7ee2468e00554e949b80b561f1fd089507553db908a",
-      "review": "Reviewed exact checkout amount/revision admission and committed replay, method candidates/media, scoped HTTPS PayPal returns and approval-triggered durable capture; PostgreSQL checkout and synthetic provider tests pass. Attribution now requires private per-shop configuration; additive migration 039 removes only the default while preserving receipts. Tenant schema fixture explicitly supplies synthetic attribution and all adversarial tenant checks pass."
+      "sha256": "e3cfd4d8bb95dd7e472059d383661f41a978c588fa5f3001b793e1f421eaa14a",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+    },
+    "src/payments/provider_webhooks.rs": {
+      "status": "unproved",
+      "sha256": "0a18aba1a0917c204563e4466724de733ccf08dc45550cf888f16015978517c1",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/payments/receipt_guard.rs": {
       "status": "reviewed-binding",
       "sha256": "27b3635cffff2fa49002be5cf912ecb4cfc83a9b98ffd81514320c79eb147f54",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/payments/registry.rs": {
+      "status": "unproved",
+      "sha256": "ba6bf730aa96d0f1fd836fe8ae728beac4216248fd97f102dcd7a74c043db822",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+    },
+    "src/payments/remote.rs": {
+      "status": "unproved",
+      "sha256": "8eb5e744e6f66d768f1cc83ff18bdfab50de571ed49ed1228fdd24f9859ad8d9",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+    },
     "src/payments/return_urls.rs": {
       "status": "unproved",
-      "sha256": "3b0ddb388718104d26af779e727a34307282c4bedaeb065db965be4f84f29637",
-      "review": "Reviewed checkout quote admission and exact-price Lean equivalence; provider approval creates one durable capture job, scoped return URLs and customer job status. Real SQL review/replay/isolation and local PayPal forged-return, lost-reply, refund, cancellation and restart regressions pass; live providers and Shopware Payments remain unverified."
+      "sha256": "60ec2880f1a90cbb820f0a5702d8b86f86e861bcb29ff20a2588f9109d360021",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/payments/routes.rs": {
       "status": "unproved",
-      "sha256": "372cb5bae118fe90e43dd9184848ca51e200ff79a88bc9be3ba2a41fe6f31b9c",
-      "review": "Reviewed checkout quote admission and exact-price Lean equivalence; provider approval creates one durable capture job, scoped return URLs and customer job status. Real SQL review/replay/isolation and local PayPal forged-return, lost-reply, refund, cancellation and restart regressions pass; live providers and Shopware Payments remain unverified."
+      "sha256": "39bfb4cf03a788257d4f875ea770c94c2e4a0fad186a03ac852ff48774a25e7f",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+    },
+    "src/payments/sessions.rs": {
+      "status": "unproved",
+      "sha256": "3796021734ea7ed28f07c7b134330babbb7ee25607afc217437e17445484763b",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/payments/storage.rs": {
-      "status": "unproved",
-      "sha256": "c90136a7e5b43c583e358baa74cae2aa4d4755098039ed6c04a32bc04e299251",
-      "review": "Reviewed checkout quote admission and exact-price Lean equivalence; provider approval creates one durable capture job, scoped return URLs and customer job status. Real SQL review/replay/isolation and local PayPal forged-return, lost-reply, refund, cancellation and restart regressions pass; live providers and Shopware Payments remain unverified."
+      "status": "reviewed-binding",
+      "sha256": "34bea3321895e1e7e68dfda560687e6919893fed2042c1820803521fdb9d8d0b",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/payments/webhooks.rs": {
       "status": "unproved",
@@ -1359,8 +1409,8 @@
     },
     "src/payments/worker.rs": {
       "status": "unproved",
-      "sha256": "257ac8ff0302b84526c653f580478f2372d7eb8cbc3d8413ba6fb246c6ce9fd6",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "a08e3394ccbe175d8368c81d4d94d421c5be3e56f9bd1ef3cec6a9632fe6e1f9",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/performance/cache.rs": {
       "status": "unproved",
@@ -1414,8 +1464,8 @@
     },
     "src/platform/lifecycle.rs": {
       "status": "reviewed-binding",
-      "sha256": "be341df8631557eb0f0560a9f2423e1a62dd5c0c082779a1424a0b67f90f68ee",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "abde4e1aa4a9da7c5505caea9e48b0d573d59a13599bdff5261b5049c32f004f",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/platform/metrics.rs": {
       "status": "unproved",
@@ -1569,8 +1619,8 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "84d63d71941c7159284f2b49c8309e7d3e2c4cef1aa43fdb9163645c4c528bdb",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "300f4f6e827efd4d0ae3babfe0e91f2dea25ccdddd029c734e0288ddce802eb3",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "src/workers.rs": {
       "status": "unproved",
@@ -1592,8 +1642,8 @@
       "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "fixtures/app-studio-schema.json": {
-      "sha256": "fe7909b926f092266e58cb822dab36a41a86b4d77f31b9a54af55195ee850200",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "28b0ba7f2d800f73cc2cc46dfb55897c4c405c5b6208b5c3bdf965d82d6f29f0",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "fixtures/demo-catalog.json": {
       "sha256": "e5d5eea04a7693b3f92fa58be66ad36b7ad01d5920029c29f303693aa0032ba2",
@@ -1803,9 +1853,13 @@
       "sha256": "abd99904333af5d473c169efc8400427aa45d7dcdbce7bf335d8b91cce5f7038",
       "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
     },
+    "migrations/043-payment-providers.sql": {
+      "sha256": "3dc8a9d4bad196397c79f2f001531c84a1e25f2994be55380e49182bf399bb48",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+    },
     "proof/Commerce/Claims.lean": {
-      "sha256": "c36491be78fb50051ce832318574e95ce36530dc20baa804bfe85086b8ed6f38",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "e003f73782ceae89ebe0328049a835d803235a7f5b6f882840d176b0f2dcc5c7",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -1840,8 +1894,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "2540f236796060b08101ee86cb985b46ec520d1d24abb81cc00cdd1c54be51c4",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "43dfb9e663e48837090b8cbc50cd3f3ed19566ed6b40917400c795cb49ffafa9",
+      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
     },
     "scripts/formal/registry.py": {
       "sha256": "3b554637854314cffd45018b3e5adc568d24e0ab145d7d6fa75350d2f80f5900",

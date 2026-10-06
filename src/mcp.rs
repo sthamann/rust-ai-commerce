@@ -86,8 +86,11 @@ pub(crate) fn tool_schema(name: &str) -> Value {
         "merchant.receipt.create" => {
             json!({"id":{"type":"string"},"revision":{"type":"integer"},"kind":{"type":"string","enum":["invoice","delivery_note","cancellation"]},"locale":{"type":"string","enum":["en","de","fr","es"]},"requestKey":{"type":"string"},"referenceId":{"type":"string"}})
         }
+        "merchant.payment.onboarding" => {
+            json!({"id":{"type":"string"},"operation":{"type":"string","enum":["start","status","disconnect"]},"channel":{"type":"string"},"environment":{"type":"string","enum":["sandbox","live","contract-fixture"]},"country":{"type":"string"},"requestKey":{"type":"string"},"approve":{"type":"boolean"}})
+        }
         "merchant.payment" => {
-            json!({"id":{"type":"string"},"operation":{"type":"string","enum":["capture","refund","reconcile","cancel"]},"amountMinor":{"type":"integer","minimum":1},"requestKey":{"type":"string"},"approve":{"type":"boolean"}})
+            json!({"id":{"type":"string"},"operation":{"type":"string","enum":["capture","authorize","void","refund","reconcile","cancel"]},"amountMinor":{"type":"integer","minimum":1},"requestKey":{"type":"string"},"approve":{"type":"boolean"}})
         }
         "developer.archive" => {
             json!({"app":{"type":"string"},"archived":{"type":"boolean"},"approve":{"type":"boolean"}})

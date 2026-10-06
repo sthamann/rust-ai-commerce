@@ -38,6 +38,9 @@ import Commerce.Claims
 #print axioms CommerceKernel.replay_exact
 #print axioms CommerceKernel.replay_open_fingerprint
 #print axioms CommerceKernel.replay_same_cart
+#print axioms CommerceKernel.reservation_authorized_unvoided
+#print axioms CommerceKernel.reservation_captured_denied
+#print axioms CommerceKernel.reservation_release_exact
 #print axioms CommerceKernel.revision_exact
 #print axioms CommerceKernel.revision_exact_behavior
 #print axioms CommerceKernel.rule_authenticated_exact

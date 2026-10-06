@@ -1,6 +1,6 @@
 # Lean-checked commerce contracts
 
-The prototype now runs Lean 4.29.1 proofs for **26 policies used in production
+The prototype now runs Lean 4.29.1 proofs for **27 policies used in production
 Rust paths**. Fifty-five theorems cover the properties below. This is **not a
 certificate that the entire commerce core is correct or bug-free**. The current
 inventory contains 266 Rust modules (reviewed at `88370c3`, 6 October 2026):
@@ -217,3 +217,5 @@ Their real HTTP/PostgreSQL and component regressions are documented in
 Two production-bound decisions add four theorems: MCP tool exposure requires both explicit enablement and current action authorization; customer/order core references must be private, while product references may be public. The real MCP ingress and manifest validator consume these functions. The async scheduler, HMAC parser, SQL receipt transactions, native renderer and provider integrations are not proved. Real disposable PostgreSQL/HTTP tests cover owned references, team scopes, MCP opt-out, webhook-to-flow effects and cold-restored cron/replay receipts.
 
 The checkout review theorem covers the exact pure admission predicate. Header parsing, SQL/cart pricing, provider jobs and the browser remain unproved adapters. Real HTTP tests reject stale/partial/malformed reviews without orders or stock writes and preserve committed-order replay. See [checkout](checkout.md).
+
+The provider extension adds `reservation_release_admissible`: only uncaptured attempts or a provider-confirmed voided authorization may restore stock. Exact and negative properties are extracted from the live Rust consumer. Provider receipt authentication, ownership SQL and async jobs remain outside Lean.

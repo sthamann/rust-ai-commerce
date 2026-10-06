@@ -9,9 +9,10 @@ pub(crate) async fn options(State(a): State<App>, h: HeaderMap) -> Result<Json<V
     } else {
         false
     };
+    let available = payments::registry::available(&a, &t, marketing::channel_id(&h)).await?;
     let locale = header(&h, "x-commerce-locale").unwrap_or(&s.main_locale);
     Ok(Json(
-        json!({"mainLocale":s.main_locale,"locales":s.locales,"countries":s.countries,"shipping":s.shipping.iter().filter(|v|v.active).map(|v|super::method_text::localized_shipping(v,locale,&s)).collect::<Vec<_>>(),"payments":s.payments.iter().filter(|v|v.active&&(!v.business_only||business)).map(|v|super::method_text::localized_payment(v,locale,&s)).collect::<Vec<_>>(),"revision":revision}),
+        json!({"mainLocale":s.main_locale,"locales":s.locales,"countries":s.countries,"shipping":s.shipping.iter().filter(|v|v.active).map(|v|super::method_text::localized_shipping(v,locale,&s)).collect::<Vec<_>>(),"payments":s.payments.iter().filter(|v|v.active&&(!v.business_only||business)&&v.provider.as_ref().is_none_or(|p|v.provider_method.as_ref().is_some_and(|m|available.contains(&(p.clone(),m.clone()))))).map(|v|super::method_text::localized_payment(v,locale,&s)).collect::<Vec<_>>(),"revision":revision}),
     ))
 }
 pub(crate) async fn select_checkout(
