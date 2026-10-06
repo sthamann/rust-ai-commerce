@@ -47,6 +47,23 @@ merchants require a separate license. [See the usage guide](docs/licensing.md).
 - **Ports you can inspect.** Selected Shopware behavior is compared with original
   PHP classes; small production policies have explicitly bounded Lean proofs.
 
+## New in Studio
+
+- **Write visually or in Markdown.** One safe product document, one content language, guarded drafts.
+- **Review variants before creation.** Option groups, combinations, individual SKUs/prices/stock and duplicate protection.
+- **Connect with precise access.** Developer → API & integrations: scoped keys valid for 1–90 days, source-derived endpoint explorer and live read tests.
+- **Create another storefront in three steps.** Storefront or headless, searchable catalog selection and inherited company/checkout settings.
+- **Discover standard apps immediately.** Fresh shops see the bundled catalog without silently activating external integrations.
+
+[Explore the Studio integration guide](docs/studio-api-and-channels.md).
+
+| Visual + Markdown editing | API + MCP explorer | Sales channels |
+| :---: | :---: | :---: |
+| [![Product editor](docs/assets/studio-editor-en.png)](docs/studio-api-and-channels.md#products--description) | [![API explorer](docs/assets/studio-api-en.png)](docs/studio-api-and-channels.md#developer--api--integrations) | [![Sales channels](docs/assets/studio-channels-en.png)](docs/studio-api-and-channels.md#sales-channels) |
+
+Screenshots show the running synthetic playground with English UI, not mockups.
+
+
 ## Get started
 
 You need **Rust stable 1.96+, Node.js 22+, Docker Compose and Python 3**.
@@ -103,13 +120,13 @@ invoice. [Follow the ten-minute walkthrough](docs/playground.md).
 
 | Workspace | What you can try | Guide |
 | --- | --- | --- |
-| **Catalog** | Search and filter products; edit variants, rich descriptions, media, properties, specifications, SEO, cross-selling, categories and downloads | [Products](docs/product-management.md) |
+| **Catalog** | Search and filter products; generate and edit variant combinations; visual/Markdown descriptions, media, properties, specifications, SEO, cross-selling, categories and downloads | [Products](docs/product-management.md) |
 | **Customers & orders** | Customer accounts, billing/delivery defaults, address books, group configuration, linked records, order state transitions, activity and PDF documents | [Operations](docs/merchant-operations.md) · [History](docs/entity-history.md) |
 | **International settings** | Main-language inheritance, reviewed bulk AI translation, country/region pickers, destination tax rules, shipping/payment methods and channel overrides | [International commerce](docs/international-commerce.md) · [Settings & media](docs/settings-media.md) |
 | **Shop knowledge** | Product connections, text/PDF sources, publication controls, evidence retrieval, observed co-purchases and decision previews | [Knowledge workspace](docs/knowledge-workspace.md) |
 | **Rules & flows** | Nested conditions, branching graphs, consecutive actions, durable delays, documents, AI proposals and app actions | [Automation](docs/automation.md) |
 | **Apps & developers** | App library, visual and guided builders, typed entities, embedded editors, API/MCP/AI exposure, signed webhooks and persistent schedules | [App Studio](docs/app-studio.md) · [Assistants](docs/app-assistants.md) |
-| **Storyfront & channels** | Catalog/variant/media import into Storyfront, checkout transfer, channel navigation and visibility | [Storyfront](docs/storyfront.md) · [Workbench](docs/workbench.md) |
+| **Storyfront & channels** | Guided multishop/headless setup, inherited channel settings, searchable product assignment, Storyfront import and checkout transfer | [Storyfront](docs/storyfront.md) · [Workbench](docs/workbench.md) |
 | **Platform & releases** | Operator shop creation and statistics, private stages, selective publishing, team scopes and expiring integration keys | [Platform](docs/platform.md) · [Staging](docs/workbench.md#what-a-sandbox-contains) |
 
 The interface supports **English, German, Spanish and French**. Content editors
@@ -241,7 +258,7 @@ repeated reads; checkout keeps authoritative transactional reads.
 | **SaaS isolation** | Tenant-scoped API/MCP operations and 22 composite relationship constraints are tested. Core-wide RLS is absent; the local database role is a superuser. [Actual guarantees and remaining work](docs/tenant-isolation.md). |
 | **Shopware compatibility** | Selected behavior ports, not complete DAL/Admin API/Store API, CMS, Rule/Flow or extension compatibility. |
 | **Agents and models** | Selected MCP/UCP capabilities; not full protocol conformance. Hosted client setup, production OAuth, live model quality and causal learning gains remain separate work. |
-| **Hosting** | Local and prepared Vercel/self-hosted deployment paths. No validated public commerce deployment; GitHub Pages hosts documentation. |
+| **Hosting** | Public Studio and health endpoint reachable at [app.vendune.ai](https://app.vendune.ai/#merchant); Northflank deployment and prepared Vercel/self-hosted paths. Root vendune.ai currently has a TLS configuration issue. This is not a production checkout certification. |
 | **Apps** | Executable declarative packages and separately deployed services. Automatic arbitrary compilation, bundle signing and hostile-code microVM isolation are not implemented. |
 
 Use synthetic data for the playground. Deployment instructions do not establish

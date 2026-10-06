@@ -1,114 +1,133 @@
-/** Variant creation writes real child products through the same validated product aggregate API. */
+/** Native variant family browser with cursor pagination, explicit editing and a bounded creation wizard. */
 import { useEffect, useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
 import { useCatalogText } from "./catalog-i18n";
 import { type ProductDraft } from "./catalog-model";
 import PairFields from "./PairFields";
+import VariantGenerator from "./VariantGenerator";
+import { useVariantText } from "./variant-i18n";
+import "../styles/variants.css";
 export default function ProductVariants({
   draft,
   request,
   onOpen,
+  onChange,
+  dirty = false,
 }: {
   draft: ProductDraft;
   request: RequestFn;
   onOpen: (id: string) => void;
+  onChange: (draft: ProductDraft) => void;
+  dirty?: boolean;
 }) {
-  const { c, money } = useCatalogText();
-  const [items, setItems] = useState<any[]>([]);
-  const [number, setNumber] = useState("");
-  const [options, setOptions] = useState<Record<string, string>>({});
-  const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
+  const { c, money } = useCatalogText(),
+    v = useVariantText();
+  const [items, setItems] = useState<any[]>([]),
+    [cursor, setCursor] = useState<string | null>(null),
+    [error, setError] = useState(""),
+    [busy, setBusy] = useState(false),
+    [reload, setReload] = useState(0);
   useEffect(() => {
+    if (draft.catalog.parentId) return;
     let active = true;
+    setItems([]);
+    setCursor(null);
+    setBusy(true);
+    setError("");
     request(
-      `/api/merchant/products?limit=100&parentId=${encodeURIComponent(draft.id!)}`,
+      `/api/merchant/products?limit=50&parentId=${encodeURIComponent(draft.id!)}`,
     )
-      .then((v) => {
-        if (active) setItems(v.elements);
+      .then((result) => {
+        if (active) {
+          setItems(result.elements);
+          setCursor(result.nextCursor);
+        }
       })
       .catch((e) => {
         if (active) setError(e.message);
+      })
+      .finally(() => {
+        if (active) setBusy(false);
       });
     return () => {
       active = false;
     };
-  }, [draft.id, request]);
+  }, [draft.id, draft.catalog.parentId, request, reload]);
+  if (draft.catalog.parentId)
+    return (
+      <>
+        <button
+          type="button"
+          className="studio-secondary"
+          disabled={dirty}
+          onClick={() => onOpen(draft.catalog.parentId!)}
+        >
+          {v("parent")}
+        </button>
+        <h3>{c("options")}</h3>
+        <PairFields
+          value={draft.catalog.options}
+          onChange={(options) =>
+            onChange({ ...draft, catalog: { ...draft.catalog, options } })
+          }
+        />
+      </>
+    );
   return (
     <>
       <p>{c("variantHint")}</p>
+      {dirty && <p role="status">{c("unsaved")}</p>}
       {items.map((p) => (
         <button
           type="button"
           className="catalog-variant"
           key={p.id}
+          disabled={dirty || busy}
           onClick={() => onOpen(p.id)}
         >
           <strong>
             {Object.entries(p.options)
-              .map(([k, v]) => `${k}: ${v}`)
+              .map(([k, value]) => `${k}: ${value}`)
               .join(" · ")}
           </strong>
           <span>
             {p.productNumber} · {money(p.price)} · {p.stock} {c("stock")}
           </span>
+          <span>{v("edit")} ↗</span>
         </button>
       ))}
-      <h3>{c("newVariant")}</h3>
-      <label>
-        {c("number")}
-        <input value={number} onChange={(e) => setNumber(e.target.value)} />
-      </label>
-      <h4>{c("options")}</h4>
-      <PairFields value={options} onChange={setOptions} />
+      {cursor && (
+        <button
+          type="button"
+          className="studio-secondary"
+          disabled={busy}
+          onClick={async () => {
+            setBusy(true);
+            setError("");
+            try {
+              const result = await request(
+                `/api/merchant/products?limit=50&parentId=${encodeURIComponent(draft.id!)}&after=${encodeURIComponent(cursor)}`,
+              );
+              setItems((old) => [...old, ...result.elements]);
+              setCursor(result.nextCursor);
+            } catch (e) {
+              setError((e as Error).message);
+            } finally {
+              setBusy(false);
+            }
+          }}
+        >
+          {v("more")}
+        </button>
+      )}
       {error && <p role="alert">{error}</p>}
-      <button
-        type="button"
-        className="studio-primary"
-        disabled={busy || !number || !Object.keys(options).length}
-        onClick={async () => {
-          setBusy(true);
-          setError("");
-          try {
-            const { id, channels: _channels, ...payload } = draft;
-            const suffix = Object.values(options).join(" / ");
-            const v = await request(
-              "/api/merchant/products",
-              {
-                ...payload,
-                revision: 0,
-                translations: Object.fromEntries(
-                  Object.keys(draft.translations).map((l) => [
-                    l,
-                    {
-                      ...draft.translations[l],
-                      name:
-                        draft.translations[l].name == null
-                          ? null
-                          : `${draft.translations[l].name} · ${suffix}`,
-                    },
-                  ]),
-                ),
-                catalog: {
-                  ...draft.catalog,
-                  active: false,
-                  parentId: id,
-                  productNumber: number,
-                  options,
-                },
-              },
-              "POST",
-            );
-            onOpen(v.id);
-          } catch (e) {
-            setError((e as Error).message);
-          } finally {
-            setBusy(false);
-          }
-        }}
-      >
-        {c("newVariant")}
-      </button>
+      <fieldset disabled={dirty || busy}>
+        <VariantGenerator
+          parent={draft}
+          request={request}
+          onCreated={async () => setReload((n) => n + 1)}
+        />
+      </fieldset>
     </>
   );
 }

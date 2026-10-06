@@ -17,44 +17,48 @@ export type Tab =
   | "automation"
   | "productData"
   | "orders"
-  | "customers";
+  | "customers"
+  | "channels";
 
 export function useStudioNavigation() {
   const { t } = useLocale();
   const { w } = useWorkbenchText();
   const { o } = useOperationsText();
   const tabLabel = (id: Tab) =>
-    id === "commerce"
-      ? t("settings")
-      : id === "orders" || id === "customers"
-        ? o(id)
-        : [
-              "storyfronts",
-              "developers",
-              "environments",
-              "automation",
-              "productData",
-            ].includes(id)
-          ? w(
-              id as
-                | "storyfronts"
-                | "developers"
-                | "environments"
-                | "automation"
-                | "productData",
-            )
-          : t(
-              id as Exclude<
-                Tab,
-                | "storyfronts"
-                | "developers"
-                | "environments"
-                | "automation"
-                | "productData"
-                | "orders"
-                | "customers"
-              >,
-            );
+    id === "channels"
+      ? w("channels")
+      : id === "commerce"
+        ? t("settings")
+        : id === "orders" || id === "customers"
+          ? o(id)
+          : [
+                "storyfronts",
+                "developers",
+                "environments",
+                "automation",
+                "productData",
+              ].includes(id)
+            ? w(
+                id as
+                  | "storyfronts"
+                  | "developers"
+                  | "environments"
+                  | "automation"
+                  | "productData",
+              )
+            : t(
+                id as Exclude<
+                  Tab,
+                  | "storyfronts"
+                  | "developers"
+                  | "environments"
+                  | "automation"
+                  | "productData"
+                  | "orders"
+                  | "channels"
+                  | "customers"
+                >,
+              );
 
   const nav: { id: Tab; icon: IconName }[] = [
     { id: "assistant", icon: "chat" },
@@ -65,6 +69,7 @@ export function useStudioNavigation() {
     { id: "agents", icon: "agents" },
     { id: "commerce", icon: "settings" },
     { id: "productData", icon: "box" },
+    { id: "channels", icon: "layers" },
     { id: "automation", icon: "pulse" },
     { id: "users", icon: "lock" },
     { id: "storyfronts", icon: "layers" },

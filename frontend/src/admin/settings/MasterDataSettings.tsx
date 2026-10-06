@@ -67,17 +67,19 @@ export default function MasterDataSettings({
   request,
   canWrite,
   onDirty,
+  initialChannel = "",
 }: {
   request: RequestFn;
   canWrite: boolean;
   onDirty?: (dirty: boolean) => void;
+  initialChannel?: string;
 }) {
   const { c } = useCustomerText();
   const { co, locale } = useCompanyText(),
     { u } = useStudioText(),
     { o } = useOperationsText();
   const [uploading, setUploading] = useState(false);
-  const [scope, setScope] = useState(""),
+  const [scope, setScope] = useState(initialChannel),
     [pending, setPending] = useState<string>();
   const state = useSettingsDraft<CompanyData, CompanyContext>(
     request,

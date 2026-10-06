@@ -40,7 +40,12 @@ function api(path: string) {
     "/api/intelligence": { pairs: [], hypotheses: [] },
     "/api/knowledge/sources": { elements: [], nextCursor: null },
     "/api/apps": { packages: [] },
-    "/api/developer": { builds: [], providers },
+    "/api/developer": {
+      builds: [],
+      providers,
+      locales: ["en-GB", "de-DE", "es-ES", "fr-FR"],
+      mainLocale: "en-GB",
+    },
     "/api/workspace/members": { members: [], invitations: [] },
     "/store-api/countries": {
       countries: [],
@@ -58,7 +63,14 @@ function api(path: string) {
     },
     "/api/merchant/commerce": {
       revision: 1,
-      data: { countries: ["DE"], taxes: [], shipping: [], payments: [] },
+      data: {
+        mainLocale: "en-GB",
+        locales: ["en-GB", "de-DE", "es-ES", "fr-FR"],
+        countries: ["DE"],
+        taxes: [],
+        shipping: [],
+        payments: [],
+      },
     },
     "/api/automation/catalog": {
       conditions: ["alwaysValid", "cartCartAmount"],
@@ -105,7 +117,7 @@ it("navigates every merchant workspace without duplicating registry requests", a
   });
   const user = userEvent.setup();
   const buttons = within(navigation).getAllByRole("button");
-  expect(buttons.length).toBe(14);
+  expect(buttons.length).toBe(15);
   for (const button of buttons) {
     await user.click(button);
     await waitFor(() => expect(button).toHaveAttribute("aria-current", "page"));
@@ -120,7 +132,7 @@ it("navigates every merchant workspace without duplicating registry requests", a
     fetcher.mock.calls.filter(([path]) => path === "/api/apps/surfaces"),
   ).toHaveLength(1);
   expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-  // Fourteen lazy workspace transitions share this test budget. Each waitFor
+  // Fifteen lazy workspace transitions share this test budget. Each waitFor
   // retains its short deadline; instrumented shared CI needs more than 5s total.
 }, 20_000);
 it("keeps merchant credentials absent when signed out and shows a login path", async () => {

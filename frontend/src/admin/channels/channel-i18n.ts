@@ -1,0 +1,201 @@
+/** Sales-channel onboarding and inherited settings vocabulary in all interface languages. */
+import { useLocale } from "../../shared/i18n/i18n";
+const words = {
+  title: [
+    "Sales channels",
+    "Verkaufskanäle",
+    "Canaux de vente",
+    "Canales de venta",
+  ],
+  hint: [
+    "Multiple storefronts, one catalog and team. Each channel has its own name, languages, navigation and settings overrides.",
+    "Mehrere Shops, ein Katalog und Team. Jeder Kanal hat eigene Namen, Sprachen, Navigation und abweichende Einstellungen.",
+    "Plusieurs boutiques, un catalogue et une équipe. Chaque canal possède noms, langues, navigation et réglages propres.",
+    "Varias tiendas, un catálogo y equipo. Cada canal tiene nombres, idiomas, navegación y ajustes propios.",
+  ],
+  independent: [
+    "Independent SaaS shops have separate data and access. Create them in Team & access.",
+    "Unabhängige SaaS-Shops haben getrennte Daten und Zugänge. Lege sie unter Team & Zugang an.",
+    "Les boutiques SaaS indépendantes ont des données et accès séparés. Créez-les dans Équipe et accès.",
+    "Las tiendas SaaS independientes tienen datos y accesos separados. Créalas en Equipo y acceso.",
+  ],
+  new: [
+    "Create sales channel",
+    "Verkaufskanal anlegen",
+    "Créer un canal",
+    "Crear canal",
+  ],
+  edit: [
+    "Manage channel",
+    "Kanal verwalten",
+    "Gérer le canal",
+    "Gestionar canal",
+  ],
+  name: ["Channel name", "Kanalname", "Nom du canal", "Nombre del canal"],
+  type: ["Channel type", "Kanaltyp", "Type de canal", "Tipo de canal"],
+  storefront: ["Storefront", "Storefront", "Boutique", "Tienda"],
+  storefrontHint: [
+    "A ready-to-use shop with products and checkout.",
+    "Ein direkt nutzbarer Shop mit Produkten und Checkout.",
+    "Une boutique prête avec produits et paiement.",
+    "Una tienda lista con productos y pago.",
+  ],
+  headless: ["Headless API", "Headless-API", "API headless", "API headless"],
+  headlessHint: [
+    "Connect your own frontend or an agent using the Store API.",
+    "Verbinde ein eigenes Frontend oder einen Agenten über die Store-API.",
+    "Connectez votre frontend ou agent via la Store API.",
+    "Conecta tu frontend o agente mediante Store API.",
+  ],
+  basics: ["Basics", "Grundlagen", "Général", "General"],
+  catalog: [
+    "Catalog & languages",
+    "Katalog & Sprachen",
+    "Catalogue et langues",
+    "Catálogo e idiomas",
+  ],
+  review: [
+    "Review & create",
+    "Prüfen & anlegen",
+    "Vérifier et créer",
+    "Revisar y crear",
+  ],
+  next: ["Next", "Weiter", "Suivant", "Siguiente"],
+  back: ["Back", "Zurück", "Retour", "Volver"],
+  save: [
+    "Save channel",
+    "Kanal speichern",
+    "Enregistrer le canal",
+    "Guardar canal",
+  ],
+  saved: [
+    "Channel saved",
+    "Kanal gespeichert",
+    "Canal enregistré",
+    "Canal guardado",
+  ],
+  languages: [
+    "Available languages",
+    "Verfügbare Sprachen",
+    "Langues disponibles",
+    "Idiomas disponibles",
+  ],
+  all: [
+    "Entire catalog",
+    "Gesamter Katalog",
+    "Catalogue entier",
+    "Catálogo completo",
+  ],
+  selected: [
+    "Selected products",
+    "Ausgewählte Produkte",
+    "Produits sélectionnés",
+    "Productos seleccionados",
+  ],
+  root: [
+    "Navigation category",
+    "Navigationskategorie",
+    "Catégorie de navigation",
+    "Categoría de navegación",
+  ],
+  search: [
+    "Find products",
+    "Produkte finden",
+    "Rechercher des produits",
+    "Buscar productos",
+  ],
+  add: [
+    "Add product",
+    "Produkt hinzufügen",
+    "Ajouter le produit",
+    "Añadir producto",
+  ],
+  remove: [
+    "Remove product",
+    "Produkt entfernen",
+    "Retirer le produit",
+    "Quitar producto",
+  ],
+  scope: [
+    "Inherited settings",
+    "Vererbte Einstellungen",
+    "Réglages hérités",
+    "Ajustes heredados",
+  ],
+  scopeHint: [
+    "The shared shop basis applies until you override a field. Reset restores inheritance; future basis changes follow automatically.",
+    "Die Shop-Basis gilt, bis du Felder überschreibst. Zurücksetzen stellt Vererbung her; spätere Basisänderungen werden automatisch übernommen.",
+    "La base s’applique jusqu’à une modification. Réinitialiser restaure l’héritage des changements futurs.",
+    "La base se aplica hasta que modifiques campos. Restablecer recupera la herencia de cambios futuros.",
+  ],
+  company: [
+    "Company & identity",
+    "Firma & Identität",
+    "Entreprise et identité",
+    "Empresa e identidad",
+  ],
+  taxes: ["Taxes", "Steuern", "Taxes", "Impuestos"],
+  shipping: ["Shipping", "Versand", "Livraison", "Envío"],
+  payment: ["Payment", "Zahlung", "Paiement", "Pago"],
+  preview: [
+    "Open storefront",
+    "Shop öffnen",
+    "Ouvrir la boutique",
+    "Abrir tienda",
+  ],
+  deactivate: [
+    "Deactivate channel",
+    "Kanal deaktivieren",
+    "Désactiver le canal",
+    "Desactivar canal",
+  ],
+  activate: [
+    "Activate channel",
+    "Kanal aktivieren",
+    "Activer le canal",
+    "Activar canal",
+  ],
+  deactivateHint: [
+    "The channel stops accepting storefront requests. Existing orders and history remain available.",
+    "Der Kanal nimmt keine Storefront-Anfragen mehr an. Bestehende Bestellungen und Historie bleiben verfügbar.",
+    "Le canal cesse d’accepter des requêtes. Commandes et historique restent disponibles.",
+    "El canal deja de aceptar solicitudes. Pedidos e historial siguen disponibles.",
+  ],
+  discard: [
+    "Discard unsaved changes?",
+    "Ungespeicherte Änderungen verwerfen?",
+    "Abandonner les modifications ?",
+    "¿Descartar cambios sin guardar?",
+  ],
+  invalid: [
+    "Enter a main-language name, choose at least one language and select products or the entire catalog.",
+    "Gib einen Namen in der Hauptsprache ein, wähle mindestens eine Sprache und Produkte oder den gesamten Katalog.",
+    "Saisissez un nom dans la langue principale, une langue et des produits ou tout le catalogue.",
+    "Indica nombre en idioma principal, al menos un idioma y productos o catálogo completo.",
+  ],
+  technical: [
+    "Technical identifier",
+    "Technische Kennung",
+    "Identifiant technique",
+    "Identificador técnico",
+  ],
+  inactive: ["Inactive", "Inaktiv", "Inactif", "Inactivo"],
+  active: ["Active", "Aktiv", "Actif", "Activo"],
+  default: [
+    "Main storefront",
+    "Haupt-Storefront",
+    "Boutique principale",
+    "Tienda principal",
+  ],
+  team: [
+    "Team & access",
+    "Team & Zugang",
+    "Équipe et accès",
+    "Equipo y acceso",
+  ],
+} as const;
+export function useChannelText() {
+  const { locale } = useLocale();
+  return (k: keyof typeof words) =>
+    words[k][{ "en-GB": 0, "de-DE": 1, "fr-FR": 2, "es-ES": 3 }[locale]];
+}

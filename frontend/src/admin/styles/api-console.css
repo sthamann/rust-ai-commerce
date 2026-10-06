@@ -1,0 +1,121 @@
+/* Responsive developer key management and bounded API explorer using Studio theme tokens. */
+.developer-workspace-tabs {
+  padding: 20px 40px 0;
+}
+.api-console {
+  display: grid;
+  gap: 24px;
+}
+.api-console fieldset {
+  border: 0;
+  padding: 0;
+}
+.api-scope-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.api-scope-grid label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.api-key-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 0;
+  border-top: 1px solid var(--border);
+}
+.api-key-row p {
+  margin: 5px 0;
+  overflow-wrap: anywhere;
+}
+.api-secret {
+  padding: 18px;
+  margin: 18px 0;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 14px;
+}
+.api-explorer-grid {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(0, 1.5fr);
+  gap: 24px;
+  margin: 20px 0;
+}
+.api-route-list {
+  max-height: 540px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+.api-route {
+  display: flex;
+  width: 100%;
+  text-align: left;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px;
+  background: var(--surface);
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+}
+.api-route code {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.api-route[aria-pressed="true"] {
+  background: var(--hover);
+  color: var(--accent);
+}
+.api-response {
+  max-height: 440px;
+  overflow: auto;
+  padding: 18px;
+  background: var(--panel);
+  border-radius: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 900px) {
+  .api-explorer-grid {
+    grid-template-columns: 1fr;
+  }
+  .api-route-list {
+    max-height: 240px;
+  }
+  .developer-workspace-tabs {
+    padding: 16px;
+  }
+}
+
+.api-scope-grid small {
+  display: block;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.api-console .studio-card > label,
+.api-explorer-grid > div > label {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+  color: var(--muted);
+}
+.api-explorer-grid h3 {
+  overflow-wrap: anywhere;
+}
+.api-route .soft-tag {
+  flex-shrink: 0;
+}

@@ -754,8 +754,8 @@
     },
     "src/commerce/product_admin.rs": {
       "status": "unproved",
-      "sha256": "28f14428e76ad24dacbb8abe2eb33c1e70ad899bc2a7911497b20fa3436f3f9a",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "2aa9317a19e448818aa37b876c12fbd174c71acf9b2de23736687e922f21e605",
+      "review": "Reviewed product_admin.rs: tenant-scoped variant option uniqueness under existing aggregate advisory lock; whitespace-only and empty child options rejected. Real catalog creation/edit/rollback, concurrent duplicate and foreign-parent regressions pass; async SQL remains outside Lean proof boundary."
     },
     "src/commerce/product_channels.rs": {
       "status": "unproved",
@@ -1164,8 +1164,8 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "e140ce3540f31ae69ce40a16634556537987cad0b5a21938449d6d3649e821d0",
-      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
+      "sha256": "6787a149f9057d8f9d167da51ca78919bdab0e859b688bbf4759c2930f5df910",
+      "review": "Reviewed product_admin.rs tenant-locked variant option uniqueness and mcp.rs configured HTTPS or bound-loopback Origin admission without Host reflection. Real HTTP tests cover concurrent duplicates, rollback, foreign parents, allowed origins and rejected foreign/path/null/spoofed Host origins; SQL and transport remain outside Lean proof boundary."
     },
     "src/migrations.rs": {
       "status": "unproved",

@@ -15,3 +15,4 @@ print(f'PASS {len(files)} Rust modules: responsibility documented; <=320 lines; 
 subprocess.run(["node", "frontend/scripts/architecture.mjs"], cwd=root, check=True)
 subprocess.run(["node", "frontend/scripts/localization.mjs"], cwd=root, check=True)
 subprocess.run(["python3", "scripts/testing/source_inventory.py"], cwd=root, check=True)
+subprocess.run(["python3", "scripts/api_catalogue.py", "--check"], cwd=root, check=True)

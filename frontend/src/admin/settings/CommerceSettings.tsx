@@ -37,15 +37,17 @@ export default function CommerceSettings({
   area,
   canWrite,
   onDirty,
+  initialChannel = "",
 }: {
   request: RequestFn;
   area: "taxes" | "countries" | "shipping" | "payment" | "languages";
   canWrite: boolean;
   onDirty?: (dirty: boolean) => void;
+  initialChannel?: string;
 }) {
   const { i, locale } = useInternationalText();
   const { w } = useWorkspaceText();
-  const [channel, setChannel] = useState("");
+  const [channel, setChannel] = useState(initialChannel);
   const [contentLanguage, setContentLanguage] = useState<string>();
   const [scopeError, setScopeError] = useState("");
   const context = useCompanyContext(request);

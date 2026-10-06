@@ -21,6 +21,14 @@ def invite(owner, role, label):
     req('/api/auth/accept',{'name':label,'password':password,'invitationToken':i['token']},expected=404)
     return s
 owner=register('team'); other=register('isolated'); oh=headers(owner)
+# Browser MCP admits configured public and actual loopback origins, never caller Host.
+mcp_list={'jsonrpc':'2.0','id':1,'method':'tools/list'}
+public_origin=os.getenv('COMMERCE_PUBLIC_ORIGIN','')
+for origin in [BASE]+([public_origin] if public_origin.startswith('https://') else []):
+    assert 'tools' in req('/mcp',mcp_list,{**oh,'Origin':origin})['result']
+for origin in ['https://studio.example.test.evil.test','https://studio.example.test/path','null','https://foreign.test']:
+    req('/mcp',mcp_list,{**oh,'Origin':origin,'Host':'studio.example.test'},expected=403)
+check('browser MCP admits configured origins and rejects foreign, path, null and spoofed Host origins')
 assert owner['workspaces']==[{'id':owner['workspace'],'name':'Team Demo','role':'owner'}]
 assert 'password_hash' not in json.dumps(owner); check('personal owner registration and scoped workspace discovery')
 req('/api/auth/login',{'email':owner['user']['email'],'password':'wrong'},expected=401)

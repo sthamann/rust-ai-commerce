@@ -22,6 +22,7 @@ import TaxClassSelect from "./TaxClassSelect";
 import ProductPanels from "./ProductPanels";
 import ProductAssets from "./ProductAssets";
 import ReviewModeration from "./ReviewModeration";
+import { EditorBuffer } from "./EditorBuffer";
 import ProductVariants from "./ProductVariants";
 import RelatedProducts from "./RelatedProducts";
 export default function ProductEditor({
@@ -54,6 +55,7 @@ export default function ProductEditor({
   const [loading, setLoading] = useState(!!id);
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [editorPending, setEditorPending] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const currentRequest = useRef(request);
   currentRequest.current = request;
@@ -116,7 +118,7 @@ export default function ProductEditor({
     // All translations are loaded together; a UI locale change must not
     // overwrite a draft. Merchant's boundary remounts on shop/environment changes.
   }, [id, reloadIndex]);
-  const dirty = JSON.stringify(draft) !== baseline;
+  const dirty = JSON.stringify(draft) !== baseline || editorPending;
   useEffect(() => {
     if (!dirty) return;
     const handler = (e: BeforeUnloadEvent) => {
@@ -200,173 +202,197 @@ export default function ProductEditor({
         languageKeys[0]
       }
       language={safeLang}
-      onLanguageChange={setLang}
+      onLanguageChange={(language) =>
+        editorPending ? setError(c("unsaved")) : setLang(language)
+      }
     >
-      <div className="studio-page catalog-workspace">
-        <button
-          className="catalog-back"
-          onClick={() => (dirty ? setLeaving(true) : onBack())}
-        >
-          ← {r("back")}
-        </button>
-        {leaving && (
-          <div className="catalog-unsaved" role="alert">
-            <strong>{c("unsaved")}</strong>
-            <button
-              className="studio-secondary"
-              onClick={() => setLeaving(false)}
-            >
-              {c("continue")}
-            </button>
-            <button className="studio-secondary" onClick={onBack}>
-              {c("discard")}
-            </button>
-          </div>
-        )}
-        <div className="catalog-heading">
-          <div>
-            <p className="catalog-eyebrow">
-              {id ? draft.catalog.productNumber : c("newProduct")}
-            </p>
-            <h1>{draft.translations[lang]?.name || c("newProduct")}</h1>
-            <span role="status">
-              {saved
-                ? c("saved")
-                : dirty
-                  ? c("unsaved")
-                  : id
-                    ? `# ${draft.revision}`
-                    : ""}
-            </span>
-          </div>
-          <div className="catalog-editor-actions">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={draft.catalog.active}
-                onChange={(e) =>
-                  change({
-                    ...draft,
-                    catalog: { ...draft.catalog, active: e.target.checked },
-                  })
+      <EditorBuffer.Provider
+        value={{ pending: editorPending, setPending: setEditorPending }}
+      >
+        <div className="studio-page catalog-workspace">
+          <button
+            className="catalog-back"
+            onClick={() =>
+              dirty || editorPending ? setLeaving(true) : onBack()
+            }
+          >
+            ← {r("back")}
+          </button>
+          {leaving && (
+            <div className="catalog-unsaved" role="alert">
+              <strong>{c("unsaved")}</strong>
+              <button
+                className="studio-secondary"
+                onClick={() => setLeaving(false)}
+              >
+                {c("continue")}
+              </button>
+              <button className="studio-secondary" onClick={onBack}>
+                {c("discard")}
+              </button>
+            </div>
+          )}
+          <div className="catalog-heading">
+            <div>
+              <p className="catalog-eyebrow">
+                {id ? draft.catalog.productNumber : c("newProduct")}
+              </p>
+              <h1>{draft.translations[lang]?.name || c("newProduct")}</h1>
+              <span role="status">
+                {saved
+                  ? c("saved")
+                  : dirty
+                    ? c("unsaved")
+                    : id
+                      ? `# ${draft.revision}`
+                      : ""}
+              </span>
+            </div>
+            <div className="catalog-editor-actions">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={draft.catalog.active}
+                  onChange={(e) =>
+                    change({
+                      ...draft,
+                      catalog: { ...draft.catalog, active: e.target.checked },
+                    })
+                  }
+                />
+                {c("active")}
+              </label>
+              <button
+                className="studio-primary"
+                disabled={
+                  busy ||
+                  editorPending ||
+                  (!dirty && !!id) ||
+                  !draft.catalog.productNumber ||
+                  !Object.values(draft.translations).some((t) => t.name?.trim())
                 }
-              />
-              {c("active")}
-            </label>
-            <button
-              className="studio-primary"
-              disabled={
-                busy ||
-                (!dirty && !!id) ||
-                !draft.catalog.productNumber ||
-                !Object.values(draft.translations).some((t) => t.name?.trim())
-              }
-              onClick={save}
-            >
-              {c(busy ? "saving" : "save")}
-            </button>
+                onClick={save}
+              >
+                {c(busy ? "saving" : "save")}
+              </button>
+            </div>
           </div>
-        </div>
-        {error && (
-          <p role="alert" className="catalog-error">
-            {error}
-          </p>
-        )}
-        <div className="catalog-detail-layout">
-          <ProductEditorNav tabs={tabs} tab={tab} id={id} onSelect={setTab} />
-          <section className="studio-card catalog-detail-panel" role="tabpanel">
-            {!selectedApp && <h2>{c(tab as (typeof tabs)[number])}</h2>}
-            {selectedApp ? (
-              <AppSurfaceView
-                selected={selectedApp}
-                context={{ productId: id }}
-              />
-            ) : tab === "media" ? (
-              <ProductMediaWorkspace
-                unsaved={JSON.stringify(draft) !== baseline}
-                draft={draft}
-                request={request}
-                onChange={change}
-              />
-            ) : tab === "attachments" ? (
-              id ? (
-                <ProductAssets id={id} request={request} />
-              ) : (
-                <p>{c("createFirst")}</p>
-              )
-            ) : tab === "reviews" ? (
-              id ? (
-                <ReviewModeration productId={id} request={request} />
-              ) : (
-                <p>{c("createFirst")}</p>
-              )
-            ) : tab === "variants" ? (
-              id ? (
-                <ProductVariants
+          {error && (
+            <p role="alert" className="catalog-error">
+              {error}
+            </p>
+          )}
+          <div className="catalog-detail-layout">
+            <ProductEditorNav
+              tabs={tabs}
+              tab={tab}
+              id={id}
+              onSelect={(next) =>
+                editorPending ? setError(c("unsaved")) : setTab(next)
+              }
+            />
+            <section
+              className="studio-card catalog-detail-panel"
+              role="tabpanel"
+            >
+              {!selectedApp && <h2>{c(tab as (typeof tabs)[number])}</h2>}
+              {selectedApp ? (
+                <AppSurfaceView
+                  selected={selectedApp}
+                  context={{ productId: id }}
+                />
+              ) : tab === "media" ? (
+                <ProductMediaWorkspace
+                  unsaved={JSON.stringify(draft) !== baseline}
                   draft={draft}
                   request={request}
-                  onOpen={(child) =>
-                    dirty ? setError(c("unsaved")) : onCreated(child)
+                  onChange={change}
+                />
+              ) : tab === "attachments" ? (
+                id ? (
+                  <ProductAssets id={id} request={request} />
+                ) : (
+                  <p>{c("createFirst")}</p>
+                )
+              ) : tab === "reviews" ? (
+                id ? (
+                  <ReviewModeration productId={id} request={request} />
+                ) : (
+                  <p>{c("createFirst")}</p>
+                )
+              ) : tab === "variants" ? (
+                id ? (
+                  <ProductVariants
+                    draft={draft}
+                    dirty={dirty}
+                    onChange={change}
+                    request={request}
+                    onOpen={(child) =>
+                      dirty ? setError(c("unsaved")) : onCreated(child)
+                    }
+                  />
+                ) : (
+                  <p>{c("createFirst")}</p>
+                )
+              ) : tab === "related" ? (
+                <RelatedProducts
+                  request={request}
+                  id={id}
+                  value={draft.extra.crossSelling}
+                  onChange={(crossSelling) =>
+                    change({
+                      ...draft,
+                      extra: { ...draft.extra, crossSelling },
+                    })
                   }
                 />
               ) : (
-                <p>{c("createFirst")}</p>
-              )
-            ) : tab === "related" ? (
-              <RelatedProducts
-                request={request}
-                id={id}
-                value={draft.extra.crossSelling}
-                onChange={(crossSelling) =>
-                  change({ ...draft, extra: { ...draft.extra, crossSelling } })
-                }
-              />
-            ) : (
-              <ProductPanels
-                tab={tab}
-                draft={draft}
-                lang={safeLang}
-                categories={categories}
-                onChange={change}
-              />
-            )}
-            {tab === "prices" && (
-              <TaxClassSelect
-                request={request}
-                value={draft.extra.taxClassId ?? ""}
-                onChange={(taxClassId) =>
-                  change({
-                    ...draft,
-                    extra: { ...draft.extra, taxClassId: taxClassId || null },
-                  })
-                }
-              />
-            )}
-            {id && tab === "general" && (
-              <AppSurfaceSlot
-                location="admin.product.general"
-                context={{ productId: id }}
-              />
-            )}
-            {id && !selectedApp && (
-              <AppSurfaceSlot
-                location="admin.product"
-                context={{ productId: id }}
-              />
-            )}
-          </section>
+                <ProductPanels
+                  tab={tab}
+                  draft={draft}
+                  lang={safeLang}
+                  categories={categories}
+                  onChange={change}
+                />
+              )}
+              {tab === "prices" && (
+                <TaxClassSelect
+                  request={request}
+                  value={draft.extra.taxClassId ?? ""}
+                  onChange={(taxClassId) =>
+                    change({
+                      ...draft,
+                      extra: { ...draft.extra, taxClassId: taxClassId || null },
+                    })
+                  }
+                />
+              )}
+              {id && tab === "general" && (
+                <AppSurfaceSlot
+                  location="admin.product.general"
+                  context={{ productId: id }}
+                />
+              )}
+              {id && !selectedApp && (
+                <AppSurfaceSlot
+                  location="admin.product"
+                  context={{ productId: id }}
+                />
+              )}
+            </section>
+          </div>
+          {id && (
+            <EntityHistory
+              request={request}
+              entity="product"
+              id={id}
+              revision={draft.revision}
+              dirty={dirty || busy}
+              onRestored={async () => setReloadIndex((v) => v + 1)}
+            />
+          )}
         </div>
-        {id && (
-          <EntityHistory
-            request={request}
-            entity="product"
-            id={id}
-            revision={draft.revision}
-            dirty={dirty || busy}
-            onRestored={async () => setReloadIndex((v) => v + 1)}
-          />
-        )}
-      </div>
+      </EditorBuffer.Provider>
     </ContentLanguage>
   );
 }

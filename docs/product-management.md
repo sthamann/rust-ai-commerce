@@ -9,7 +9,7 @@ The interface and content editor support English, German, French and Spanish. Ch
 - **General:** name, unique shop-local product number, short description, visual rich description, manufacturer identity, manufacturer number, EAN/GTIN, digital product and free-shipping flags.
 - **Prices & stock:** gross base price, tax rate, stock, quantity minimum/steps/maximum, delivery days, list/regulation price, reference units and rule-bound discount tiers.
 - **Media:** ordered gallery, cover image, external HTTPS image URLs and actual PNG/JPEG/WebP uploads for saved products. Uploaded bytes start private and the gallery action explicitly publishes the selected digest.
-- **Variants:** list native child SKUs; create a child with its own number, option values, prices and stock; open its independent editor. This does not generate Cartesian variant combinations.
+- **Variants:** list native child SKUs; create a child with its own number, option values, prices and stock; open its independent editor. A reviewable generator creates up to 50 Cartesian combinations per batch; existing combinations are skipped, child option edits are supported, and the server rejects concurrent duplicates.
 - **Categories & channels:** multiple category assignments and per-product sales-channel visibility. Existing channel-level explicit product lists can restrict this further; an empty channel-level list means the whole catalog. With no custom channels, the default storefront is controlled by product activation.
 - **Specifications:** translated specifications, generic product properties and native automation metadata including dimensions/weight.
 - **SEO:** translated title, description and slug metadata. This does not implement complete original Shopware SEO URL generation.
@@ -35,7 +35,7 @@ Reference: Shopware **6.7.14.2**, commit [`29535190246fcaf0b091d7bdf02dd16358c94
 | Storefront navigation and category listing | `/store-api/navigation`, `/store-api/product` with `categoryId`; `CatalogNavigation.tsx` | Localized tree and real product filtering before pagination; no hard-coded category names |
 | Catalog content staging | `staging/categories.rs`, `clone.rs`, `release.rs` | Category and product units can publish selectively in one transaction; dependency order, staged digest and live baseline checks; live stock stays live-owned |
 
-This is a behavioral port to native APIs and storage, not original DAL/UUID/wire-schema compatibility. Missing upstream features include product streams/dynamic product groups, complete CMS category layouts, breadcrumbs/deep category routes, service/footer navigation roots, arbitrary language/currency context, manufacturer/property-group entities, Cartesian variant generation, full inheritance masks, bulk import/export and deletion workflows. Automatic authenticated image previews inside private staging editors are not yet implemented; private source URLs do not become publicly accessible. Category navigation is deliberately bounded to 2,000 nodes per channel; large product catalogs remain cursor-paginated and are not loaded into the browser.
+This is a behavioral port to native APIs and storage, not original DAL/UUID/wire-schema compatibility. Missing upstream features include product streams/dynamic product groups, complete CMS category layouts, breadcrumbs/deep category routes, service/footer navigation roots, arbitrary language/currency context, manufacturer/property-group entities, full inheritance masks, bulk import/export and deletion workflows. Automatic authenticated image previews inside private staging editors are not yet implemented; private source URLs do not become publicly accessible. Category navigation is deliberately bounded to 2,000 nodes per channel; large product catalogs remain cursor-paginated and are not loaded into the browser.
 
 ## APIs and MCP
 
@@ -65,3 +65,5 @@ continues to identify carts, associations and API routes.
 ## Channel settings and media workspaces (2026-10-05)
 
 See [the settings/media guide](settings-media.md) for the current single-language editor, field-level checkout overrides, dependency-safe method removal, gallery and optional private image jobs. These are native prototype extensions; they do not establish additional full Shopware API/DAL parity, current tax law, paid-provider quality or whole-system formal certification.
+
+For Markdown editing, guided variants, integration keys and channel onboarding, see [the Studio integration guide](studio-api-and-channels.md).
