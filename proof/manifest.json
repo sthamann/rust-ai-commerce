@@ -784,8 +784,8 @@
     },
     "src/commerce/product_edit.rs": {
       "status": "unproved",
-      "sha256": "117de0f26d6f0c175e8596ac8ce1268147791371a90cbd144f49564d5243b43f",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "c2a2c7113876743a9e405c53923f66b6115abe8f977d1820d0db2d063d7ffb55",
+      "review": "Reviewed optional generated-demo provenance preservation in product metadata. Real fashion_demo HTTP test edits the coat through the merchant API and reads the changed price and retained provenance; existing transaction, translation and history behavior unchanged. No production policy changes; SQL/async product adapters remain unproved."
     },
     "src/commerce/product_fields.rs": {
       "status": "unproved",

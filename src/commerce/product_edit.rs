@@ -31,6 +31,8 @@ pub(super) struct Translation {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct Extra {
     #[serde(default)]
+    demo: Value,
+    #[serde(default)]
     automation: Value,
     #[serde(default)]
     tax_class_id: Option<String>,

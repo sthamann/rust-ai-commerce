@@ -64,6 +64,13 @@ with (ROOT / 'artifacts/fashion-demo-server.log').open('w') as log:
                 assert r.headers['Content-Type'].startswith('image/webp')
             assert hashlib.sha256(content).hexdigest() == asset['sha256']
         check('Localized category navigation and all 12 real generated WebP assets are delivered over HTTP')
+        editor = request('/api/merchant/products/coat', headers=merchant)
+        editor['commerce']['price'] = 253
+        saved = request('/api/merchant/products/coat', editor, merchant, method='PUT')
+        assert saved['saved'] is True
+        edited = request('/api/merchant/products/coat', headers=merchant)
+        assert edited['commerce']['price'] == 253 and edited['extra']['demo']['synthetic']
+        check('Fashion products remain fully editable with generated-demo provenance preserved')
         graph = request('/api/knowledge', headers=merchant)
         encoded = json.dumps(graph)
         assert 'coat' in encoded and 'scarf' in encoded and 'lamp' not in encoded
