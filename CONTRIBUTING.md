@@ -28,7 +28,6 @@ For documentation/site changes:
 
 ```sh
 python3 -m pip install -r site/requirements.txt
-python3 -m pip install -r site/requirements.txt
 python3 scripts/build_site.py
 python3 scripts/check_site.py
 ```
@@ -36,7 +35,7 @@ python3 scripts/check_site.py
 For frontend changes, run `npm ci`, `npm run format:check` and `npm run build`
 from `frontend/`. For Rust changes, use `cargo fmt --check`,
 `cargo clippy --locked --all-targets -- -D warnings` and `cargo test --locked`.
-Run the relevant application suites from [the feature tour](docs/features.md#verify)
+Run the relevant application suites from [the testing guide](docs/testing.md#repeatable-checks)
 against your own instance. Original Shopware ports require original-source
 comparisons described in [the migration workflow](docs/migration.md).
 

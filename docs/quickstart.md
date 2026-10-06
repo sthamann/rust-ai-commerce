@@ -33,8 +33,11 @@ Create a personal owner account and a synthetic shop. One identity can belong
 to multiple shops. The generated global `MERCHANT_TOKEN` is an instance bootstrap
 credential, not an invitation or a merchant credential to distribute.
 
-The synthetic B2B customer is `buyer@example.test` / `demo-business`. It is
-separate from merchant accounts. The default tour uses simulated/manual payments.
+The default Nord Atelier storefront has 12 parent products, 34 purchasable
+SKUs and bundled generated photographs. [Current fashion tour](fashion-demo.md).
+The legacy `atelier`/`workshop` compatibility shops can contain synthetic B2B
+`buyer@example.test` / `demo-business` when demo seeding is enabled; this is
+separate from merchant accounts and is not a universal login for every new shop. The default tour uses simulated/manual payments.
 A separately configured native PayPal adapter supports Sandbox/Live;
 actual PSP transactions remain unverified.
 
@@ -44,7 +47,13 @@ Do not remove its volume if you want to retain orders and accounts.
 
 ## Add the connected playground
 
-After creating your personal merchant account:
+The CLI below is the **legacy furniture compatibility tour**, with mug/lamp
+IDs. Before creating its playground, set `DEMO_CATALOG=legacy-furniture` in the
+private `.env` and restart the local app. Existing shops are not rewritten.
+For the current Nord Atelier walkthrough, use [the illustrated feature guide](features.md)
+with the normal `DEMO_CATALOG=fashion` default.
+
+After creating your personal merchant account on the compatibility instance:
 
 ```sh
 python3 scripts/playground.py --email your-personal-merchant@example.test
@@ -74,7 +83,7 @@ An existing `.env` keeps its previous model selection.
 Restart the app after changing `.env`. In Studio, choose Local in **Settings**.
 Select **Refresh shop knowledge** when the embedding service is ready.
 
-Try a bounded request such as: “Propose a price of EUR 23 for the mug. Do not
+Try a bounded request such as: “Propose a price of EUR 159 for the bag. Do not
 apply it yet.” Inspect the actual change fields before approving; the model's
 summary alone is not an execution guarantee.
 

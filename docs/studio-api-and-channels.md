@@ -58,7 +58,7 @@ The plaintext key is shown once, masked in the UI, and only held in component
 memory. Store it in your integration's secret manager. Scheduled future start
 dates and refresh-token rotation are not implemented.
 
-The explorer lists **204 static HTTP method/path pairs** with their Rust source
+The explorer lists **214 static HTTP method/path pairs** (reviewed at `5e4f8b5`, 6 October 2026) with their Rust source
 module. `scripts/api_catalogue.py` regenerates this list from `.route`
 declarations; the mandatory CI structure check rejects drift. Installed app `apiRoutes` are
 loaded separately for the current shop. This is not a complete OpenAPI schema;
