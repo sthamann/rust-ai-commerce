@@ -10,6 +10,7 @@
     <link rel="canonical" href="{{canonical}}" />
     <link rel="icon" href="{{root}}favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="{{root}}style.css" />
+    {{page_assets}}
     <meta property="og:type" content="website" />
     <meta property="og:title" content="{{title}}" />
     <meta property="og:description" content="{{description}}" />
@@ -41,14 +42,13 @@
     </header>
     <main id="main" class="wrap">{{content}}</main>
     <footer class="wrap footer">
-      <span>Source available. Merchant control. <a href="{{root}}docs/licensing.html">Sustainable Use License</a>.</span>
+      <span
+        >Source available. Merchant control.
+        <a href="{{root}}docs/licensing.html">Sustainable Use License</a>.</span
+      >
       <div>
-        <a
-          href="{{root}}docs/repository/CONTRIBUTING.html"
-          >Contribute</a
-        ><a
-          href="{{root}}docs/security.html"
-          >Security & scope</a
+        <a href="{{root}}docs/repository/CONTRIBUTING.html">Contribute</a
+        ><a href="{{root}}docs/security.html">Security & scope</a
         ><a href="{{root}}sitemap.xml">Sitemap</a>
       </div>
       <p>

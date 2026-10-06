@@ -1,0 +1,13 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:12.000
+A selected coat SKU enters the cart.
+
+00:00:12.000 --> 00:00:14.000
+Review the address, delivery and server-calculated total.
+
+00:00:14.000 --> 00:00:24.000
+Place a test order: authorization is simulated.
+
+00:00:24.000 --> 00:00:27.833
+The saved order opens its native confirmation page.

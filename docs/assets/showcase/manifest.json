@@ -1,0 +1,129 @@
+{
+  "capturedAt": "2026-10-06",
+  "freshCaptureSource": "84d4f1bc45811f3ac0b1e8646f44b147b9771dec",
+  "clips": {
+    "checkout": {
+      "durationSeconds": 27.833333,
+      "width": 1440,
+      "height": 1000,
+      "bytes": 755436,
+      "sha256": "b1e0cbf1d66531cbc0744cb0861edb1924fd7b1d8e9b901cd3864af850dfb2e4",
+      "source": "84d4f1b; checkout-sku.webm [154,166] + checkout-order.webm in capture order; idle removed; no speed changes"
+    },
+    "app-studio": {
+      "durationSeconds": 6.875,
+      "width": 1024,
+      "height": 576,
+      "bytes": 126467,
+      "sha256": "035a0ec357a5a372f98ac6d9555b3f9f7a14992c95600d4425f52cb0ca594cb1",
+      "source": "036b36a; ../feature-tour/app-design.gif; H.264 transcode; source presentation holds retained"
+    },
+    "knowledge": {
+      "durationSeconds": 6.0,
+      "width": 1024,
+      "height": 576,
+      "bytes": 158147,
+      "sha256": "e468a914cf0f9227e12ea8a1eeda6f0bc034b1c3bf893e21ef664f636f0275c2",
+      "source": "036b36a; ../feature-tour/knowledge-publication.gif; H.264 transcode; source presentation holds retained"
+    },
+    "flows": {
+      "durationSeconds": 8.5,
+      "width": 1024,
+      "height": 576,
+      "bytes": 256729,
+      "sha256": "db76a73b4f6a4a5614ec38965437efb0c3424d788e0dbd1eb97ea927b4bd2595",
+      "source": "036b36a; ../feature-tour/flow-canvas.gif; H.264 transcode; source presentation holds retained"
+    },
+    "release": {
+      "durationSeconds": 5.5,
+      "width": 1024,
+      "height": 576,
+      "bytes": 85057,
+      "sha256": "4991e1e9fae58e1de0fb7cee5cf05a41d05d18583d775c3414ecb51339b9c56c",
+      "source": "036b36a; ../feature-tour/selective-release.gif; H.264 transcode; source presentation holds retained"
+    },
+    "translations": {
+      "durationSeconds": 5.375,
+      "width": 1024,
+      "height": 576,
+      "bytes": 78940,
+      "sha256": "f2aeac422099e0e830b5f1dfcc2fa8cab4c6b56716b431986495a9bf138a25d7",
+      "source": "036b36a; ../feature-tour/product-languages.gif; H.264 transcode; source presentation holds retained"
+    }
+  },
+  "screenshots": {
+    "flows-gallery.webp": {
+      "width": 1024,
+      "height": 576,
+      "sha256": "7799d9b6e339fd154d2956c7483921ec7870bede536593d93955b07015b02003",
+      "source": "036b36a; feature-tour/flow-canvas.gif frame 10; unretouched WebP transcode"
+    },
+    "checkout-complete.webp": {
+      "width": 1440,
+      "height": 1000,
+      "sha256": "650c1719850b47950a67ec17d90fbfb6caf406f28c2a266daf66e7a16bf06a92",
+      "source": "84d4f1b actual UI"
+    },
+    "knowledge.webp": {
+      "width": 1024,
+      "height": 576,
+      "sha256": "f5003d393769c31ad20fbceba3da60fac886a82c79dfa98f2d1a6c1bfafdd1ed",
+      "source": "feature-tour; see README.md"
+    },
+    "release.webp": {
+      "width": 1024,
+      "height": 576,
+      "sha256": "7ed45b547c5dc9d4846dcbf20d11241442d2114cb410ebea434502a401407c23",
+      "source": "feature-tour; see README.md"
+    },
+    "app-studio-gallery.webp": {
+      "width": 1280,
+      "height": 720,
+      "sha256": "6e60067bbc00224caff3b599d5a5ec835593ad7056494d4117090f93f3a41b02",
+      "source": "feature-tour; see README.md"
+    },
+    "flows.webp": {
+      "width": 1024,
+      "height": 576,
+      "sha256": "7799d9b6e339fd154d2956c7483921ec7870bede536593d93955b07015b02003",
+      "source": "036b36a; feature-tour/flow-canvas.gif frame 10; unretouched WebP transcode"
+    },
+    "checkout.webp": {
+      "width": 1440,
+      "height": 1000,
+      "sha256": "4fba1ecdcdcce6f3a48a45aa4238a21dd8edcaf881ef0c27eced718df2c74176",
+      "source": "84d4f1b actual UI"
+    },
+    "translations.webp": {
+      "width": 1024,
+      "height": 576,
+      "sha256": "c9994f8b42679a14a3dba515f7577da33470f25f9aceb38594ec60de029fde2f",
+      "source": "feature-tour; see README.md"
+    },
+    "knowledge-gallery.webp": {
+      "width": 1024,
+      "height": 576,
+      "sha256": "74fad595355eeeeefa367e4da6b7e20b1b5cac40e3150c81fd312bd7e1f5c44a",
+      "source": "feature-tour; see README.md"
+    },
+    "app-studio.webp": {
+      "width": 1024,
+      "height": 576,
+      "sha256": "1407fce3ae54be5f03b5cd2d115ce4f3f561fe4355bd226c20dda859499a9879",
+      "source": "feature-tour; see README.md"
+    },
+    "storefront.webp": {
+      "width": 1440,
+      "height": 1000,
+      "sha256": "0a6f288c3331097d1519d795d6daac3633003600369437ba440acf007bf76d08",
+      "source": "84d4f1b actual UI"
+    },
+    "product-detail.webp": {
+      "width": 1440,
+      "height": 1000,
+      "sha256": "78d969bd2357e39a392d9fd0911f51cfb583c5bc080ddb1273c693cf253df5a8",
+      "source": "84d4f1b actual UI"
+    }
+  },
+  "boundary": "Actual browser UI, synthetic shops and accounts. No real payment or paid inference. Presentation edits are not latency measurements."
+}

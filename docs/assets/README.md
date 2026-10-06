@@ -66,3 +66,11 @@ The [6 October 2026 capture set](feature-tour/README.md) accompanies
 GIFs come from real isolated Nord Atelier/empty lifecycle shops. Recording
 provenance distinguishes unchanged UI captures at `036b36a` from the reviewed
 `5e4f8b5` integration additions; no response or DOM mocking is used.
+
+## Homepage showcase refresh
+
+The [homepage showcase](showcase/README.md) adds six selectable, captioned H.264
+workflow videos and expandable WebP captures. Fresh Nord Atelier storefront,
+product and saved-checkout captures are from `84d4f1b`; five same-day feature
+recordings retain their earlier source versions and editing boundaries.
+[The manifest](showcase/manifest.json) records durations, dimensions and hashes.

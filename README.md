@@ -13,7 +13,7 @@
 [![Status: working prototype](https://img.shields.io/badge/status-working_prototype-2459ef)](#current-boundaries)
 [![License: Sustainable Use](https://img.shields.io/badge/license-Sustainable_Use-18b9d9)](LICENSE)
 
-[**Start locally**](#get-started) · [**See it in action**](#see-vendune-in-action) · [**Full feature tour**](https://sthamann.github.io/vendune/docs/features.html) · [**Build an app**](docs/app-studio.md) · [**How it works**](docs/production-architecture.md) · [**Documentation**](https://sthamann.github.io/vendune/docs/)
+[**Start locally**](#get-started) · [**See it in action**](#see-vendune-in-action) · [**Interactive demos**](https://sthamann.github.io/vendune/index.html#demo) · [**Full feature tour**](https://sthamann.github.io/vendune/docs/features.html) · [**Build an app**](docs/app-studio.md) · [**How it works**](docs/production-architecture.md) · [**Documentation**](https://sthamann.github.io/vendune/docs/)
 
 </div>
 
@@ -26,7 +26,7 @@ knowledge and proposes changes; you review the exact changes before they go live
 | --- | --- | --- |
 | Products, variants, customer accounts, orders, taxes, shipping and documents | Visual App Studio, typed data, custom storefronts, HTTP/MCP actions and app services | Private sandboxes, selected releases, scoped team access, version history and central AI settings |
 
-[![Nord Atelier — the actual Vendune storefront with generated fashion product photography](docs/assets/feature-tour/storefront.jpg)](docs/features.md#storefront-and-shopping)
+[![Nord Atelier — the actual Vendune storefront with generated fashion product photography](docs/assets/showcase/storefront.webp)](docs/features.md#storefront-and-shopping)
 
 **Meet Nord Atelier.** The default demo has **12 fashion products, 34 purchasable
 SKUs, seven categories and four content languages**, with individually generated
