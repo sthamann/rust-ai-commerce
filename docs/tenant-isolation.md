@@ -78,36 +78,34 @@ A cannot see/write B, and transaction-local context disappears on connection
 reuse. `artifacts/tenant-isolation.json` records grouped checks; this is not a
 claim of exhaustive endpoint coverage or a penetration-test certificate.
 
-## Explicitly incomplete: database-wide read/write containment
+## Core RLS and strict runtime mode
 
-Core tables still lack row-level security. The local `commerce` database role
-is a superuser with `BYPASSRLS`, which bypasses even forced app policies.
-The restricted-role test proves those app policies, not containment under the
-actual local runtime role. The 22 foreign keys prevent wrong associations;
-they cannot stop an unscoped `SELECT`, `UPDATE` or `DELETE` on unrelated rows.
-No full independent-SaaS database containment or production security certificate
-is claimed. Partial Lean policies do not prove SQL authorization.
-PostgreSQL explicitly documents that superuser and `BYPASSRLS` roles bypass
-[row security](https://www.postgresql.org/docs/current/ddl-rowsecurity.html).
-Object-level authorization for every supplied ID remains an application
-requirement, as described in [OWASP BOLA](https://api-security.owasp.org/editions/2023/en/0xa1-broken-object-level-authorization/).
+Migration 044 adds forced row policies to current public core tenant tables.
+Managed app tables retain their existing forced policy. `tenant_scope.rs` carries
+server-derived task context; SQLx pool hooks bind fresh/reused connections and
+clear them on release. The actual query uses that same borrowed connection.
+Unknown tasks deny core rows. Strict startup requires `DATABASE_RUNTIME_URL` and
+`DB_RLS_REQUIRED=true` and rejects superuser/BYPASSRLS roles, core owners/owner
+membership, core TRUNCATE privileges and missing forced policies. A default
+development superuser still bypasses RLS: installing migrations does not establish
+strict enforcement on public hosting. PostgreSQL documents this bypass in its
+[row-security guide](https://www.postgresql.org/docs/current/ddl-rowsecurity.html).
 
-The next structural hardening must introduce separate migration/runtime/worker
-identities, a least-privileged runtime without schema ownership/BYPASSRLS, and
-core RLS with fail-closed tenant context. Context must be transaction-local on
-the **same** connection as every protected query; a session-wide `SET` on a pool
-is unsafe. Authentication/control-plane lookups and global work claiming need
-narrow privileged interfaces; workers must enter the claimed tenant context
-before reading or writing commerce data. Apps must not receive raw core database
-credentials or schema privileges.
+The `production_foundations` suite runs **two actual server replicas under a
+non-owner, NOSUPERUSER NOBYPASSRLS login**, omits tenant WHERE filters in direct
+SQL probes, tests foreign mutations, pooled reuse, registration and strict-runtime
+checkout/CRM/tenant regressions. It also checks outbox-driven cache eviction and
+shared daily quotas. Run it with the integration registry. The tenant-isolation
+report now records whether strict runtime was enabled for that run.
 
-Acceptance requires real tests omitting tenant predicates, read/insert/update/
-delete probes under the actual runtime role, alternating tenants on one pooled
-connection, rollback/cancellation/restart, platform and cross-tenant workers,
-cache isolation and every supported extension entry. This is substantive work;
-adding policies without converting the actual connection paths would break the
-server or leave bypasses. Separate database cells provide additional blast-radius
-control but do not automatically isolate shops sharing a cell.
+Identity, provisioning, platform, staging/developer control and fleet workers have
+explicit trusted system scopes. They retain their existing tenant/object guards;
+this is not complete worker privilege separation or proof against SQL injection
+and process compromise. Dynamic app DDL ownership must be restricted to managed
+app tables. Direct PostgreSQL or session pooling is required; transaction/statement
+poolers would need transaction-local scopes instead of these connection hooks.
+See [deployment, privilege setup and remaining risks](production-architecture.md).
+Object/customer ownership checks remain necessary even under RLS.
 
 Public hosting additionally requires isolated origins/CSP, session and recovery
 hardening, resource quotas, secure provider/service storage, backup/export/restore

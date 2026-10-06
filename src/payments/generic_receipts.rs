@@ -161,6 +161,7 @@ pub(crate) async fn persist(
     } else {
         return Err(bad("Unsupported provider receipt state"));
     }
+    state::transition(&p.state, &state)?;
     sqlx::query("UPDATE payment_attempts SET state=$1,provider_order=$2,approval_url=coalesce($3,approval_url),capture_id=$4,refunded_minor=$5,provider_context=$6,revision=revision+1 WHERE tenant=$7 AND id=$8").bind(&state).bind(remote).bind(url).bind(capture).bind(refunded).bind(context).bind(&p.tenant).bind(&p.id).execute(&mut **tx).await?;
     if state != p.state {
         if state == "approved" || (state == "authorized" && p.context["intent"] == "capture") {

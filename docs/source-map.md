@@ -15,6 +15,16 @@ inputs and state effects. A module's presence does not count as a test.
 
 The maintained full inventory, including all newly added Rust files, frontend feature folders, independent services and SDKs, is [module-inventory.md](module-inventory.md). Coverage percentages and explicit remaining gaps are in [testing.md](testing.md). The tables below describe selected behavioral suites and must not be read as 100% coverage.
 
+## Production foundations
+
+The [illustrated architecture guide](production-architecture.md) connects ingress,
+tenant scope, stock/money/payment transactions, outbox projections, AI and deployment.
+New boundaries live in `money.rs`, `tenant_scope.rs`, `performance/{row_security,
+admission,invalidation}.rs`, `commerce/inventory.rs`, `payments/state.rs`,
+`platform/quotas.rs` and `migrations/schema.rs`. Unit tests, the strict
+`production_foundations` suite, payment fixtures and original-Shopware money boundary
+comparison cover their effects; asynchronous SQL and provider code remain unproved.
+
 ## International configuration and language boundaries
 
 `commerce/geography.rs` owns catalogue/overlay/address admission; `tax_rules.rs`

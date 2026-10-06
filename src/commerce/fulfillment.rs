@@ -66,12 +66,7 @@ pub(crate) async fn transition_order(
                 {
                     return Err(conflict("Shipped orders require a return workflow"));
                 }
-                for item in o["cart"]["lineItems"]
-                    .as_array()
-                    .ok_or(bad("Invalid order lines"))?
-                {
-                    sqlx::query("UPDATE products SET stock=stock+$1,revision=revision+1 WHERE tenant=$2 AND id=$3").bind(item["quantity"].as_i64().unwrap_or(0) as i32).bind(&t).bind(item["referencedId"].as_str().unwrap_or("")).execute(&mut *tx).await?;
-                }
+                inventory::release(&mut tx, &t, &id).await?;
                 o["payment"]["state"] = json!("cancelled");
             }
             o["state"] = json!(target);

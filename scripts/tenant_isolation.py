@@ -152,7 +152,7 @@ call('/api/workspace/integrations/' + key['id'], h=a['h'], method='DELETE')
 call('/api/merchant/orders', h=kh, expected=401)
 passed('Workspace-bound integration keys cannot inherit a person\'s second membership, widen scopes or survive revocation')
 schema_tests(a, b, passed)
-report = {'suite': 'tenant-isolation', 'passed': len(checks), 'checks': checks, 'database': 'actual PostgreSQL', 'paidCalls': 0, 'coreRls': False, 'wholeSystemCertified': False}
+report = {'suite': 'tenant-isolation', 'passed': len(checks), 'checks': checks, 'database': 'actual PostgreSQL', 'paidCalls': 0, 'coreRls': os.getenv('DB_RLS_REQUIRED') == 'true', 'runtimeRoleVerified': os.getenv('DB_RLS_REQUIRED') == 'true', 'wholeSystemCertified': False}
 report['measuredAt'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
 report['sourceCommit'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
 report['workingTreeChanged'] = bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip())

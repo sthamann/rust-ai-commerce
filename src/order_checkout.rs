@@ -143,7 +143,13 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
             return Err(conflict("Insufficient stock"));
         }
     }
-    let minor = (q["price"]["totalPrice"].as_f64().unwrap() * 100.).round() as i64;
+    let money = vendune::money::Money::from_legacy_eur(
+        q["price"]["totalPrice"]
+            .as_f64()
+            .ok_or(bad("Invalid total"))?,
+    )
+    .map_err(bad)?;
+    let minor = money.minor();
     // Legacy API clients may omit the pair. Browser checkout always binds its reviewed quote.
     match (
         header(h, "x-commerce-cart-revision"),
@@ -228,12 +234,14 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     let id = uid();
     // Explicit simulated authorization: no external money is charged.
     let mut order = json!({"id":id,"orderNumber":format!("RAC-{}",&id[..8]),"cart":q,"state":"placed","channel":c.data.channel,"revision":1,"deliveries":q["deliveries"],"payment":{"method":q["paymentMethod"],"provider":if q["paymentMethod"]["mode"]=="simulated"{"simulated"}else{"manual"},"state":if q["paymentMethod"]["mode"]=="simulated"{"authorized"}else{"pending"},"realMoneyCharged":false},"customerGroup":c.data.group});
+    order["money"] = json!(money);
     order
         .as_object_mut()
         .unwrap()
         .extend(customer_snapshot.as_object().unwrap().clone());
     commerce::order_fields(&mut order);
     sqlx::query("INSERT INTO orders(id,tenant,cart_id,idempotency_key,fingerprint,data) VALUES($1,$2,$3,$4,$5,$6)").bind(&id).bind(&c.tenant).bind(&c.id).bind(key).bind(&fingerprint).bind(&order).execute(&mut *tx).await?;
+    commerce::inventory::allocate(&mut tx, &c, &id).await?;
     marketing::record_uses(&mut tx, &c.tenant, &id, &q).await?;
     assets::snapshot(&mut tx, &c, &id).await?;
     if external {

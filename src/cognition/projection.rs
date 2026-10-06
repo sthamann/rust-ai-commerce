@@ -34,7 +34,7 @@ pub(crate) async fn project(
         .fetch_one(&mut **tx)
         .await?;
     // External pending orders are observed only after confirmed capture. Legacy demo orders stay labelled.
-    if order["payment"]["provider"] == "paypal" && kind != "payment.captured" {
+    if crate::payments::external(&order) && kind != "payment.captured" {
         return Ok(());
     }
     let simulated = order["payment"]["realMoneyCharged"] != true;

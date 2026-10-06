@@ -44,7 +44,8 @@
     "app_assistants",
     "read_performance",
     "fashion_demo",
-    "identity_broker"
+    "identity_broker",
+    "production_foundations"
   ],
   "browser_contracts": [
     "analytics",
@@ -54,6 +55,7 @@
   ],
   "tooling": [
     "testing/tooling_tests",
-    "branding"
+    "branding",
+    "money_boundary_differential"
   ]
 }

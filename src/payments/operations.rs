@@ -67,7 +67,7 @@ pub(crate) async fn enqueue(
                 .filter(|v| *v > 0)
                 .ok_or(bad("Positive amountMinor required"))?;
             let reserved:i64=sqlx::query_scalar("SELECT coalesce(sum((request->>'amountMinor')::bigint),0)::bigint FROM payment_jobs WHERE tenant=$1 AND attempt_id=$2 AND operation='refund' AND state IN ('queued','running','uncertain')").bind(&t).bind(id).fetch_one(&mut *tx).await?;
-            if !["captured", "partially_refunded"].contains(&p.state.as_str())
+            if !["captured", "captured_late", "partially_refunded"].contains(&p.state.as_str())
                 || !p
                     .refunded
                     .checked_add(reserved)

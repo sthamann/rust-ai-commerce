@@ -7,6 +7,7 @@ mod ai;
 mod infrastructure;
 mod lifecycle;
 mod metrics;
+mod quotas;
 mod resources;
 mod shop_detail;
 pub(crate) use lifecycle::admit;
@@ -22,6 +23,10 @@ pub(crate) fn router() -> Router<App> {
         )
         .route("/api/platform/shops/{id}", get(shop_detail::detail))
         .route("/api/platform/shops/{id}/status", post(lifecycle::change))
+        .route(
+            "/api/platform/shops/{id}/quotas",
+            get(quotas::get).put(quotas::save),
+        )
         .route("/api/platform/ai", get(ai::get).put(ai::save))
         .route(
             "/api/platform/infrastructure",

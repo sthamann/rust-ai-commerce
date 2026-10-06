@@ -17,7 +17,7 @@ pub(crate) fn start(a: &App) {
     );
     if ["all", "translation-worker"].contains(&role.as_str()) {
         let worker = a.clone();
-        tokio::spawn(async move {
+        vendune::tenant_scope::spawn(async move {
             let mut ticks = tokio::time::interval(std::time::Duration::from_secs(1));
             loop {
                 ticks.tick().await;
@@ -29,7 +29,7 @@ pub(crate) fn start(a: &App) {
     }
     if ["all", "media-worker"].contains(&role.as_str()) {
         let worker = a.clone();
-        tokio::spawn(async move {
+        vendune::tenant_scope::spawn(async move {
             let mut ticks = tokio::time::interval(std::time::Duration::from_secs(1));
             loop {
                 ticks.tick().await;
@@ -41,7 +41,7 @@ pub(crate) fn start(a: &App) {
     }
     if ["all", "http"].contains(&role.as_str()) {
         let worker = a.clone();
-        tokio::spawn(async move {
+        vendune::tenant_scope::spawn(async move {
             let mut ticks = tokio::time::interval(std::time::Duration::from_secs(1));
             loop {
                 ticks.tick().await;
@@ -51,7 +51,7 @@ pub(crate) fn start(a: &App) {
     }
     if ["all", "memory-worker"].contains(&role.as_str()) {
         let worker = a.clone();
-        tokio::spawn(async move {
+        vendune::tenant_scope::spawn(async move {
             let mut ticks = tokio::time::interval(std::time::Duration::from_millis(250));
             loop {
                 ticks.tick().await;
@@ -63,7 +63,7 @@ pub(crate) fn start(a: &App) {
     }
     if ["all", "payment-worker"].contains(&role.as_str()) {
         let worker = a.clone();
-        tokio::spawn(async move {
+        vendune::tenant_scope::spawn(async move {
             let mut ticks = tokio::time::interval(std::time::Duration::from_millis(250));
             loop {
                 ticks.tick().await;
@@ -75,7 +75,7 @@ pub(crate) fn start(a: &App) {
     }
     if ["all", "app-worker"].contains(&role.as_str()) {
         let collector = a.clone();
-        tokio::spawn(async move {
+        vendune::tenant_scope::spawn(async move {
             let mut ticks = tokio::time::interval(std::time::Duration::from_secs(5));
             loop {
                 ticks.tick().await;
@@ -86,7 +86,7 @@ pub(crate) fn start(a: &App) {
             }
         });
         let worker = a.clone();
-        tokio::spawn(async move {
+        vendune::tenant_scope::spawn(async move {
             let mut ticks = tokio::time::interval(std::time::Duration::from_millis(250));
             loop {
                 ticks.tick().await;

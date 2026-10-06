@@ -240,4 +240,27 @@ theorem reservation_authorized_unvoided : reservation_release_admissible false t
 /-- A later capture cannot be hidden by a void flag. -/
 theorem reservation_captured_denied (voidConfirmed : Bool) : reservation_release_admissible false false voidConfirmed = false := by
   cases voidConfirmed <;> simp [reservation_release_admissible]
+/-- Every supported precision, and only supported precision, passes the production boundary. -/
+theorem currency_scale_exact (scale : Nat) :
+    currency_scale_admissible scale = true ↔ scale ≤ 6 := by simp [currency_scale_admissible]
+/-- Arbitrarily large input precision cannot pass. -/
+theorem currency_scale_overflow_denied (scale : Nat) (h : 6 < scale) :
+    currency_scale_admissible scale = false := by simp [currency_scale_admissible]; omega
+/-- All and only positive bounded operator quotas are admitted. -/
+theorem resource_quota_exact (limit : Nat) :
+    resource_quota_admissible limit = true ↔ 0 < limit ∧ limit ≤ 1000000 := by simp [resource_quota_admissible]
+theorem resource_quota_zero_denied : resource_quota_admissible 0 = false := by rfl
+/-- Full ledger transition relation, including confirmed late capture and refund progression. -/
+theorem payment_transition_exact (current next : Nat) :
+    payment_transition_admissible current next = true ↔
+    current ≤ 9 ∧ next ≤ 9 ∧ (current = next ∨
+    (current ≤ 3 ∧ next > current ∧ next ≤ 4) ∨
+    (current ≤ 3 ∧ (next = 7 ∨ next = 8)) ∨
+    ((current = 4 ∨ current = 5 ∨ current = 9) ∧ (next = 5 ∨ next = 6)) ∨
+    ((current = 7 ∨ current = 8) ∧ next = 9)) := by
+  simp [payment_transition_admissible, and_assoc, or_assoc]
+theorem payment_refunded_terminal (next : Nat) :
+    payment_transition_admissible 6 next = true ↔ next = 6 := by
+  simp [payment_transition_admissible]; omega
+theorem payment_pending_capture : payment_transition_admissible 0 4 = true := by rfl
 end CommerceKernel

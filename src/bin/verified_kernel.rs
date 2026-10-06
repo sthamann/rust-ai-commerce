@@ -184,6 +184,16 @@ fn eval(j: &Value) -> Result<Value, String> {
                 .as_bool()
                 .ok_or("Invalid void_confirmed")?
         ))),
+        Some("currency_scale_admissible") => Ok(json!(currency_scale_admissible(
+            args["scale"].as_u64().ok_or("Invalid scale")?
+        ))),
+        Some("payment_transition_admissible") => Ok(json!(payment_transition_admissible(
+            args["current"].as_u64().ok_or("Invalid current")?,
+            args["next"].as_u64().ok_or("Invalid next")?
+        ))),
+        Some("resource_quota_admissible") => Ok(json!(resource_quota_admissible(
+            args["limit"].as_u64().ok_or("Invalid limit")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

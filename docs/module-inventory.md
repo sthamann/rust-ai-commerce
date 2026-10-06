@@ -74,6 +74,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/bin/automation_rules.rs](../src/bin/automation_rules.rs) | JSON batch transport for comparisons with original Shopware rule classes; not a production authority endpoint. |
 | [src/bin/context.rs](../src/bin/context.rs) | Bounded ports of original language-chain, rule priority and quantity selection. |
 | [src/bin/delivery.rs](../src/bin/delivery.rs) | Batch proportional-tax fixture transport for the original-PHP comparator. |
+| [src/bin/money_boundary.rs](../src/bin/money_boundary.rs) | Batch transport for comparing the actual legacy-to-integer checkout boundary against original Shopware totals. |
 | [src/bin/price.rs](../src/bin/price.rs) | Batch price fixture transport for the original-PHP differential comparator. |
 | [src/bin/rules.rs](../src/bin/rules.rs) | Batch original-PHP numeric-rule comparison transport. |
 | [src/bin/verified_kernel.rs](../src/bin/verified_kernel.rs) | Generated conformance driver; invokes the same production policy functions as the commerce server. |
@@ -110,6 +111,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/commerce/geography.rs](../src/commerce/geography.rs) | Bundled MIT country catalogue, tenant-owned overrides and typed region admission. |
 | [src/commerce/group_usage.rs](../src/commerce/group_usage.rs) | Removing a customer group rejects live customer, price and native/source-rule dependencies under the settings lock. |
 | [src/commerce/international_capabilities.rs](../src/commerce/international_capabilities.rs) | International configuration and translation MCP tools call the exact same scoped native handlers as HTTP. |
+| [src/commerce/inventory.rs](../src/commerce/inventory.rs) | All-checkout allocation ledger; release is idempotent and always uses persisted quantities, never edited order JSON. |
 | [src/commerce/method_text.rs](../src/commerce/method_text.rs) | Shared translated names and descriptions with field-wise shop-main-language inheritance. |
 | [src/commerce/method_usage.rs](../src/commerce/method_usage.rs) | Tenant-scoped dependency preflight and authoritative deletion guards; order snapshots remain immutable. |
 | [src/commerce/mod.rs](../src/commerce/mod.rs) | Native catalogue and checkout domains; pricing ports remain in the library. |
@@ -205,7 +207,9 @@ This lists every checked-in source module in these roots, including files with n
 | [src/marketing/rule_tests.rs](../src/marketing/rule_tests.rs) | Regression cases for native rule facts and original container boundaries. |
 | [src/marketing/rules.rs](../src/marketing/rules.rs) | Bounded Shopware-style boolean/numeric rule AST. Unknown operators/conditions fail closed. |
 | [src/mcp.rs](../src/mcp.rs) | Typed MCP schemas and JSON-RPC transport. |
+| [src/migrations/schema.rs](../src/migrations/schema.rs) | Append-only ordered migration source catalogue; deployed checksums are never rewritten. |
 | [src/migrations.rs](../src/migrations.rs) | Versioned setup is separate from serving; no catalog-wide startup repair. |
+| [src/money.rs](../src/money.rs) | Exact signed minor-unit amounts with explicit currency scale; legacy Shopware float pricing stays isolated. |
 | [src/operations/addresses.rs](../src/operations/addresses.rs) | Merchant/MCP address operations use identical customer ownership and revision checks to the Store API. |
 | [src/operations/company_logo.rs](../src/operations/company_logo.rs) | Tenant-owned logo uploads: bounded decoding, metadata stripping, immutable PNG storage and linked public delivery. |
 | [src/operations/company_model.rs](../src/operations/company_model.rs) | Company profile admission, sparse channel inheritance and structured-address print projection. |
@@ -236,13 +240,17 @@ This lists every checked-in source module in these roots, including files with n
 | [src/payments/return_urls.rs](../src/payments/return_urls.rs) | Provider return/cancel URLs preserve the tenant and sales channel; navigation is never payment evidence. |
 | [src/payments/routes.rs](../src/payments/routes.rs) | Customer payment status/capture and merchant refund operations share the durable command API. |
 | [src/payments/sessions.rs](../src/payments/sessions.rs) | Customer-bound, short-lived provider UI sessions; iframe messages are never ledger receipts. |
+| [src/payments/state.rs](../src/payments/state.rs) | One monotonic provider-neutral ledger state machine; evidence validation and authorization stay in receipt adapters. |
 | [src/payments/storage.rs](../src/payments/storage.rs) | Transactional provider receipts and order state updates; external responses cannot invent amounts or tenants. |
 | [src/payments/webhooks.rs](../src/payments/webhooks.rs) | PayPal verifies webhook signatures before inbox insertion; provider reconciliation confirms monetary state. |
 | [src/payments/worker.rs](../src/payments/worker.rs) | Leased payment jobs; network runs after claim commit, fenced receipts prevent duplicate local effects. |
+| [src/performance/admission.rs](../src/performance/admission.rs) | Bounded instance/tenant concurrency, durable UTC-day AI quotas, and low-cardinality latency telemetry. |
 | [src/performance/cache.rs](../src/performance/cache.rs) | Bounded weighted LRU for immutable decoded read models; no network I/O under its mutex. |
+| [src/performance/invalidation.rs](../src/performance/invalidation.rs) | Commit-only outbox notifications eagerly evict replica caches; authoritative version probes survive missed events. |
 | [src/performance/languages.rs](../src/performance/languages.rs) | Global language registry is versioned in the same transaction as every registry mutation. |
 | [src/performance/mod.rs](../src/performance/mod.rs) | Shared read-context caching with authoritative versions; mutations and checkout locks stay outside memoization. |
 | [src/performance/pool.rs](../src/performance/pool.rs) | Explicit per-process database budgets and bounded queue waits; invalid deployment values fail fast. |
+| [src/performance/row_security.rs](../src/performance/row_security.rs) | Bind each borrowed PostgreSQL connection to task scope, and reject unsafe strict-runtime roles. |
 | [src/performance/settings.rs](../src/performance/settings.rs) | One MVCC snapshot validates base/override UUIDs; warm reads avoid transmitting or decoding JSON. |
 | [src/planner.rs](../src/planner.rs) | Grounded model planning, recorded inputs and proposed changes. |
 | [src/platform/ai.rs](../src/platform/ai.rs) | Operator-only inference administration: optimistic revision, encrypted write-only keys and audit without secrets. |
@@ -253,6 +261,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/platform/metrics.rs](../src/platform/metrics.rs) | Aggregate-only control-plane reads: real tenants, bounded pages, explicit currencies and simulated/confirmed amounts. |
 | [src/platform/mod.rs](../src/platform/mod.rs) | Global SaaS control plane: operator-only aggregate statistics and audited shop provisioning. |
 | [src/platform/provision.rs](../src/platform/provision.rs) | Operator shop creation commits ownership, settings and audit atomically; never issues another user's credentials. |
+| [src/platform/quotas.rs](../src/platform/quotas.rs) | Operator-only per-shop daily interactive AI limits, optimistic revisions and durable audit. |
 | [src/platform/resources.rs](../src/platform/resources.rs) | Linux container resource readings; unavailable fields stay null on other hosts and the first CPU sample. |
 | [src/platform/shop_detail.rs](../src/platform/shop_detail.rs) | Operator shop dossier: registration, business identity, access roster, channels and measured HTTP activity. |
 | [src/pricing.rs](../src/pricing.rs) | Behavioral port of Shopware 6.7.14.2 quantity calculators. |
@@ -274,6 +283,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/staging/release.rs](../src/staging/release.rs) | Selected units publish in one transaction with staged digests and live baseline conflict checks. |
 | [src/staging/snapshot.rs](../src/staging/snapshot.rs) | Fixed publishable units: product content/translations, settings, experience and app packages. |
 | [src/studio.rs](../src/studio.rs) | Verified merchant overview facts consumed by the chat and activity views. |
+| [src/tenant_scope.rs](../src/tenant_scope.rs) | Database lease context: unknown tasks fail closed; trusted workers explicitly retain their scope. |
 | [src/translations/apply.rs](../src/translations/apply.rs) | Apply at most 50 reviewed drafts per request; stale products become conflicts rather than being overwritten. |
 | [src/translations/fields.rs](../src/translations/fields.rs) | Translate only human-readable text; preserve identifiers, URLs, rich structure and source specification keys. |
 | [src/translations/mod.rs](../src/translations/mod.rs) | Tenant-scoped, resumable AI translation drafts; applying is revision checked and emits native product events. |
@@ -715,6 +725,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/marketing_accounts.py](../scripts/marketing_accounts.py) | Real isolated shops: customer authority, limited coupons, event flows, channels and selected releases. No paid models. |
 | [scripts/mcp_stdio.py](../scripts/mcp_stdio.py) | Line-delimited MCP stdio bridge for Claude Desktop and other local clients. |
 | [scripts/merchant_operations.py](../scripts/merchant_operations.py) | Real HTTP/PostgreSQL CRM, receipt, scoped-access and paid-download regressions. No PSP traffic. |
+| [scripts/money_boundary_differential.py](../scripts/money_boundary_differential.py) | Gate the exact checkout boundary using totals from original Shopware calculators, never a PHP rewrite. |
 | [scripts/payment_providers.py](../scripts/payment_providers.py) | Provider-neutral financial ledger through real HTTP/PostgreSQL and a local private-service fixture. |
 | [scripts/payments.py](../scripts/payments.py) | PayPal wire-contract and real Rust/PostgreSQL state tests. Local fixture, never real provider traffic. |
 | [scripts/platform.py](../scripts/platform.py) | Real PostgreSQL/HTTP operator control-plane regression; synthetic accounts only, no paid providers. |
@@ -726,6 +737,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/prepare_host.py](../scripts/prepare_host.py) | Prepare private first-host configuration; no server purchase, SSH, deployment or secret logging. |
 | [scripts/prepare_vercel.py](../scripts/prepare_vercel.py) | Render same-origin Vercel API proxy configuration; no credentials, deployments or account changes. |
 | [scripts/product_lab.py](../scripts/product_lab.py) | Local full-app example lifecycle; private keys and independent code/data, no automatic installation. |
+| [scripts/production_foundations.py](../scripts/production_foundations.py) | Strict non-owner PostgreSQL runtime, pool isolation, inventory and two-replica invalidation regressions. |
 | [scripts/protocols.py](../scripts/protocols.py) | Protocol flows exercise the same commerce core; model smoke test is opt-in. |
 | [scripts/providers.py](../scripts/providers.py) | Cloud wire-contract tests using local HTTP servers, NOT live cloud inference. |
 | [scripts/read_performance.py](../scripts/read_performance.py) | Two real Rust replicas test coherent read caches; optional matched local HTTP baseline probe. |

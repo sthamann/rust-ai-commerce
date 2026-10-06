@@ -39,8 +39,10 @@ def wait(id,h,state):
   if v['state']==state:return v
   time.sleep(.15)
  raise AssertionError((state,v,call('/api/payments',h=ah)))
+def sql(statement):
+ return subprocess.check_output(['docker','exec','-i',os.getenv('DB_CONTAINER','rust-ai-commerce-postgres-1'),'psql','-U','commerce','-d',os.environ['TEST_DATABASE'],'-At','-v','ON_ERROR_STOP=1'],input=statement,text=True).strip()
 def purchase():
- h={'x-tenant':'workshop'};c=call('/store-api/checkout/cart',{'session':uuid.uuid4().hex},h);h['sw-context-token']=c['token'];c=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'notebook','quantity':1}]},h)
+ h={'x-tenant':'workshop'};c=call('/store-api/checkout/cart',{'session':uuid.uuid4().hex},h);h['sw-context-token']=c['token'];c=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'notebook','quantity':1},{'referencedId':'mug','quantity':1}]},h)
  s=c['checkout'];s.update(paymentMethodId='example-payments-wallet',customerEmail='fixture@example.test',billingAddress={'name':'Fixture Buyer','firstName':'Fixture','lastName':'Buyer','street':'Fixture Street 1','postalCode':'12345','city':'Test','country':'DE'});call('/store-api/checkout/context',{'revision':c['revision'],'checkout':s},h,'PUT')
  return call('/store-api/checkout/order',{}, {**h,'Idempotency-Key':uuid.uuid4().hex}),h
 try:
@@ -63,6 +65,7 @@ try:
  o,h=purchase();id=o['payment']['attemptId'];wait(id,h,'ready');assert o['payment']['provider']==m['id']
  call('/store-api/payments/'+id+'/session',h={**h,'x-tenant':'atelier'},expected=404);session=call('/store-api/payments/'+id+'/session',h=h);assert session['expiresIn']==300 and secret not in json.dumps(session)
  call('/api/merchant/orders/'+o['id']+'/transition',{'kind':'payment','state':'paid','revision':o['revision']},ah,expected=409)
+ assert sql("SELECT count(*) FROM pair_evidence WHERE tenant='workshop' AND order_id='"+o['id']+"';")== '0'
  print('PASS Generic provider checkout, customer-bound embedded sessions and external-payment manual override protection')
  flow={'name':{'en':'Provider reconciliation','de':'Anbieter-Abgleich','es':'Conciliación'},'active':True,'event':'payment.captured','condition':{'type':'alwaysValid'},'action':'app_action','instruction':{'en':'Reconcile through core jobs','de':'Über Kernaufträge abgleichen','es':'Conciliar mediante tareas'},'locale':'en-GB','appAction':{'app':m['id'],'action':'payment_command','arguments':{'operation':'reconcile','approve':True}}}
  call('/api/automation/flows/provider_reconcile',{'revision':0,'data':flow},ah,'PUT')
@@ -74,11 +77,14 @@ try:
   if completed:break
   time.sleep(.1)
  assert completed,jobs
+ for _ in range(100):
+  if sql("SELECT count(*) FROM pair_evidence WHERE tenant='workshop' AND order_id='"+o['id']+"';")== '1':break
+  time.sleep(.1)
+ else:raise AssertionError('Confirmed generic capture did not reach knowledge projection')
+ print('PASS Generic provider observation waits for confirmed capture and contributes one deduplicated product pair')
  print('PASS Verified approval queues one capture; payment events execute the app Flow action; exact refund and over-refund admission work')
  notice={'apiVersion':'1','provider':m['id'],'adapterVersion':'1.0.0','tenant':'workshop','attemptId':id,'environment':'contract-fixture','accountRef':'merchant-workshop','reference':'REF-'+id,'eventId':'synthetic-notification'}
  payload=json.dumps(notice).encode();stamp=str(int(time.time()));signature=hmac.new(secret.encode(),stamp.encode()+b'.'+payload,hashlib.sha256).hexdigest();headers={'x-tenant':'workshop','x-payment-timestamp':stamp,'x-payment-signature':signature}
- def sql(statement):
-  return subprocess.check_output(['docker','exec','-i',os.getenv('DB_CONTAINER','rust-ai-commerce-postgres-1'),'psql','-U','commerce','-d',os.environ['TEST_DATABASE'],'-At','-v','ON_ERROR_STOP=1'],input=statement,text=True).strip()
  sql("UPDATE tenants SET status='paused' WHERE id='workshop';")
  call('/store-api/checkout/options',h={'x-tenant':'workshop'},expected=503)
  call('/store-api/payment-providers/'+m['id']+'/webhooks',notice,{**headers,'x-payment-signature':'0'*64},expected=401)

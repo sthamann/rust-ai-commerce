@@ -79,6 +79,15 @@ def check():
     search = json.loads((SITE / 'docs/search.json').read_text())
     assert {row['source']: row['url'] for row in search} == expected, 'Search inventory drift'
     assert all(row['text'] for row in search), 'Empty searchable document'
+    architecture = (SITE / 'docs/production-architecture.html').read_text()
+    for name in ['system', 'checkout', 'security', 'intelligence']:
+        diagram = SITE / f'docs/assets/architecture/{name}.svg'
+        assert diagram.is_file(), ('Missing rendered architecture diagram', name)
+        xml = ElementTree.parse(diagram).getroot()
+        assert xml.find('{*}title') is not None and xml.find('{*}desc') is not None
+        assert f'assets/architecture/{name}.svg' in architecture
+    assert 'DATABASE_RUNTIME_URL' in architecture and 'DB_RLS_REQUIRED' in architecture
+
     print(f'PASS: {len(pages)} pages, all {len(expected)} Markdown sources, {links} local links/assets, '
           'unique titles, metadata, JSON-LD, full-text search and sitemap')
 

@@ -13,6 +13,7 @@
 - [Connected playground](https://sthamann.github.io/vendune/playground.html)
 
 ## Full HTML documentation
+- [Production architecture](https://sthamann.github.io/vendune/docs/production-architecture.html): Illustrated request, checkout, tenant security, cache, quota and grounded AI paths, with source locations, deployment configuration and explicit proof limits.
 - [All guides and developer notes](https://sthamann.github.io/vendune/docs/)
 - [Shop knowledge](https://sthamann.github.io/vendune/docs/knowledge-workspace.html)
 - [App Studio](https://sthamann.github.io/vendune/docs/app-studio.html)

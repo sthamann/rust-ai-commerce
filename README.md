@@ -13,7 +13,7 @@
 [![Status: working prototype](https://img.shields.io/badge/status-working_prototype-2459ef)](#current-boundaries)
 [![License: Sustainable Use](https://img.shields.io/badge/license-Sustainable_Use-18b9d9)](LICENSE)
 
-[**Start locally**](#get-started) · [**See it in action**](#see-vendune-in-action) · [**Full feature tour**](https://sthamann.github.io/vendune/docs/features.html) · [**Build an app**](docs/app-studio.md) · [**Documentation**](https://sthamann.github.io/vendune/docs/)
+[**Start locally**](#get-started) · [**See it in action**](#see-vendune-in-action) · [**Full feature tour**](https://sthamann.github.io/vendune/docs/features.html) · [**Build an app**](docs/app-studio.md) · [**How it works**](docs/production-architecture.md) · [**Documentation**](https://sthamann.github.io/vendune/docs/)
 
 </div>
 
@@ -225,9 +225,22 @@ bounded fuel/memory and no network/filesystem access.
 | Evidence | What it establishes |
 | --- | --- |
 | **7,000 original-PHP comparisons** | Bounded pricing, context, shipping-tax, rule and comparison behavior against reviewed Shopware sources. [Parity matrix](docs/shopware-parity.md). |
-| **27 extracted production policies · 58 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
+| **30 extracted production policies · 65 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
 | **1,000,000 products + 1,000,000 translations** | Dated local commerce workloads with retained raw measurements and failures; not production capacity or a Shopware speed ratio. [Benchmarks](docs/benchmarks.md). |
 | **Continuous verification** | Source ownership, localization, Rust/frontend checks, real PostgreSQL integration, original PHP comparisons and Lean/mutation gates. [CI](https://github.com/sthamann/vendune/actions) · [Testing](docs/testing.md). |
+
+## Production architecture
+
+[![How Vendune connects storefronts, Studio, commerce transactions, apps and intelligence](docs/assets/architecture/system.svg)](docs/production-architecture.md)
+
+The core now includes an exact money boundary with explicit currency scale, strict
+RLS deployment checks, allocations for all payment methods, a central payment state
+machine, commit-driven cache eviction, resource admission, shared daily interactive
+AI quotas and operator latency histograms. [Follow the complete request, checkout,
+security and intelligence paths](docs/production-architecture.md), including rendered
+diagrams, source locations, configuration, tests and the remaining production gaps.
+The ported pricing slice deliberately retains Shopware float behavior; a complete
+integer/decimal pricing migration must continue to pass its original-source gates.
 
 ## Current boundaries
 
@@ -235,7 +248,7 @@ bounded fuel/memory and no network/filesystem access.
 | --- | --- |
 | **Production readiness** | Working prototype. Recovery/MFA, distributed quotas, automatic relocation/failover, legal compliance and full-system coverage remain additional work. |
 | **Payments & connected services** | Simulated/manual payments, native PayPal Orders v2 and a versioned [provider API](docs/payment-provider-api.md) for isolated payment apps: onboarding, redirect/embedded checkout, capture/authorize/void/refund, signed callbacks and Flow/MCP actions. App Studio edits the same contract. Local fixtures are tested; real PSP outcomes and the private Shopware Payments service require approved provider configuration. |
-| **Tenant isolation** | Scoped API/MCP operations, critical composite foreign keys and forced RLS for managed app tables. Core-wide RLS is absent; the local DB role is a superuser. [Exact isolation boundary](docs/tenant-isolation.md). |
+| **Tenant isolation** | Scoped API/MCP operations, tenant-aware foreign keys, core FORCE RLS policies and connection-scoped runtime enforcement. Strict deployments require a separate non-owner runtime login; policies alone do not protect a superuser. [Exact isolation boundary](docs/tenant-isolation.md). |
 | **Shopware & protocols** | Selected native behavior ports and HTTP/MCP/UCP capabilities; complete DAL/CMS/plugin compatibility and full protocol conformance are outside this slice. |
 | **Custom apps & hosting** | Declarative packages plus separately deployed services. Arbitrary source builds, bundle signing and hostile-code microVM containment are not implemented. Deployment/health availability does not certify production checkout. |
 

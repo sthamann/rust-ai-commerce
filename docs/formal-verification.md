@@ -1,6 +1,6 @@
 # Lean-checked commerce contracts
 
-The prototype now runs Lean 4.29.1 proofs for **27 policies used in production
+The prototype now runs Lean 4.29.1 proofs for **30 policies used in production
 Rust paths**. Fifty-five theorems cover the properties below. This is **not a
 certificate that the entire commerce core is correct or bug-free**. The current
 inventory contains 266 Rust modules (reviewed at `88370c3`, 6 October 2026):
@@ -219,3 +219,15 @@ Two production-bound decisions add four theorems: MCP tool exposure requires bot
 The checkout review theorem covers the exact pure admission predicate. Header parsing, SQL/cart pricing, provider jobs and the browser remain unproved adapters. Real HTTP tests reject stale/partial/malformed reviews without orders or stock writes and preserve committed-order replay. See [checkout](checkout.md).
 
 The provider extension adds `reservation_release_admissible`: only uncaptured attempts or a provider-confirmed voided authorization may restore stock. Exact and negative properties are extracted from the live Rust consumer. Provider receipt authentication, ownership SQL and async jobs remain outside Lean.
+
+## Production boundary increment
+
+Three further extracted decisions add seven properties: `currency_scale_admissible`
+limits decimal precision, `resource_quota_admissible` admits positive bounded operator
+limits, and `payment_transition_admissible` defines the monotonic ledger graph,
+including late capture. `src/money.rs`, `src/platform/quotas.rs` and
+`src/payments/state.rs` are their real consumers. The reviewed manifest now has
+30 policies and 65 named theorems; compiled Rust/Lean comparisons and negative
+mutations remain required. These proofs do not cover signed integer parsing,
+floating-point conversion, SQL hooks/transactions, provider evidence, or the whole
+server. [Architecture and executable checks](production-architecture.md).
