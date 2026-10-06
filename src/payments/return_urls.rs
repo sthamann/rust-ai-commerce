@@ -11,7 +11,7 @@ pub(crate) fn urls(
         .unwrap_or("http://127.0.0.1:8787".into());
     build(&origin, tenant, channel, attempt, live)
 }
-fn build(
+pub(crate) fn build(
     origin: &str,
     tenant: &str,
     channel: &str,

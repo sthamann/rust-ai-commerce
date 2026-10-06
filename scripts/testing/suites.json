@@ -14,6 +14,7 @@
     "checkout_handoff",
     "checkout_review",
     "payments",
+    "payment_providers",
     "services",
     "app_surfaces",
     "extensions",

@@ -1,0 +1,134 @@
+{
+  "id": "example_payments",
+  "version": "1.0.0",
+  "coreApi": "1",
+  "runtime": "service",
+  "category": "payment",
+  "name": {
+    "en": "Example Payments",
+    "de": "Beispiel-Zahlungen",
+    "fr": "Paiements exemple",
+    "es": "Pagos de ejemplo"
+  },
+  "permissions": [
+    "payments.provider"
+  ],
+  "entities": [],
+  "slots": [],
+  "actions": [
+    {
+      "name": "onboarding",
+      "description": "Manage payment provider account",
+      "handler": "payment_onboarding",
+      "public": false,
+      "mcp": true,
+      "permission": "payments.manage",
+      "flowAllowed": false,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": [
+              "start",
+              "status",
+              "disconnect"
+            ]
+          },
+          "channel": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "requestKey": {
+            "type": "string"
+          },
+          "approve": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "operation",
+          "requestKey"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "payment_command",
+      "description": "Queue provider payment operation",
+      "handler": "payment_command",
+      "public": false,
+      "permission": "payments.manage",
+      "mcp": true,
+      "flowAllowed": true,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": "string",
+            "enum": [
+              "capture",
+              "authorize",
+              "void",
+              "cancel",
+              "refund",
+              "reconcile"
+            ]
+          },
+          "attemptId": {
+            "type": "string"
+          },
+          "event": {
+            "type": "object"
+          },
+          "requestKey": {
+            "type": "string"
+          },
+          "approve": {
+            "type": "boolean"
+          },
+          "amountMinor": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "operation",
+          "requestKey",
+          "approve"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "paymentProvider": {
+    "apiVersion": "1",
+    "methods": [
+      {
+        "id": "wallet",
+        "name": {
+          "en": "Example Wallet",
+          "de": "Beispiel-Wallet",
+          "fr": "Portefeuille exemple",
+          "es": "Cartera de ejemplo"
+        },
+        "currencies": [
+          "EUR"
+        ],
+        "countries": [
+          "DE",
+          "AT"
+        ],
+        "capabilities": [
+          "capture",
+          "authorize",
+          "void",
+          "refund"
+        ],
+        "checkout": "embedded",
+        "intent": "capture"
+      }
+    ]
+  }
+}

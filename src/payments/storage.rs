@@ -7,6 +7,9 @@ pub(crate) async fn persist(
     input: &Value,
     v: &Value,
 ) -> Result<()> {
+    if p.provider != "paypal" {
+        return generic_receipts::persist(tx, p, op, input, v).await;
+    }
     let mut state = p.state.clone();
     let mut capture = p.capture.clone();
     let mut provider_order = p.provider_order.clone();
@@ -178,7 +181,7 @@ pub(crate) async fn update_order(
     } else {
         "payment.updated"
     };
-    sqlx::query("INSERT INTO outbox(tenant,kind,data) VALUES($1,$2,$3)").bind(&p.tenant).bind(kind).bind(json!({"orderId":p.order,"attemptId":p.id,"state":state,"provider":"paypal","environment":p.environment,"realMoneyCharged":p.environment=="live" && state=="captured","order":event_order})).execute(&mut **tx).await?;
+    sqlx::query("INSERT INTO outbox(tenant,kind,data) VALUES($1,$2,$3)").bind(&p.tenant).bind(kind).bind(json!({"orderId":p.order,"attemptId":p.id,"state":state,"provider":p.provider,"environment":p.environment,"realMoneyCharged":p.environment=="live" && state=="captured","order":event_order})).execute(&mut **tx).await?;
     if state == "captured" && let Some(e)=sqlx::query("UPDATE exposures SET rewarded=true WHERE tenant=$1 AND session=(SELECT data->>'session' FROM carts WHERE id=$2) AND rewarded=false RETURNING variant").bind(&p.tenant).bind(o["cart"]["id"].as_str().unwrap()).fetch_optional(&mut **tx).await?{sqlx::query("UPDATE policy SET purchases=purchases+1 WHERE tenant=$1 AND variant=$2").bind(&p.tenant).bind(e.get::<String,_>("variant")).execute(&mut **tx).await?;}
     Ok(())
 }
@@ -186,8 +189,13 @@ pub(crate) async fn release_stock(
     tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     p: &Attempt,
     state: &str,
+    void_confirmed: bool,
 ) -> Result<()> {
-    if !["pending", "ready", "approved"].contains(&p.state.as_str()) {
+    if !verified_kernel::reservation_release_admissible(
+        ["pending", "ready", "approved"].contains(&p.state.as_str()),
+        p.state == "authorized",
+        void_confirmed,
+    ) {
         return Err(conflict(
             "Captured or uncertain payment cannot release inventory",
         ));

@@ -44,6 +44,14 @@ pub(crate) async fn enqueue(
         .await?
         .ok_or(Error(StatusCode::NOT_FOUND, "Payment not found".into()))?;
     let p = attempt(&r);
+    if p.provider != "paypal"
+        && ["capture", "authorize", "void", "refund"].contains(&op)
+        && !p.context["capabilities"]
+            .as_array()
+            .is_some_and(|caps| caps.iter().any(|c| c == op))
+    {
+        return Err(bad("Payment operation is not supported by this method"));
+    }
     // Existing operation retries return the original job, even after its terminal state.
     let job = hash(&format!("{t}:{key}"));
     let exists: bool =
@@ -72,7 +80,8 @@ pub(crate) async fn enqueue(
             {
                 return Err(conflict("Refund exceeds the remaining captured amount"));
             }
-        } else if !["pending", "ready", "approved"].contains(&p.state.as_str()) && op != "reconcile"
+        } else if !["pending", "ready", "approved", "authorized"].contains(&p.state.as_str())
+            && op != "reconcile"
         {
             return Err(conflict("Payment is terminal"));
         }

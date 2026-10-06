@@ -1,6 +1,7 @@
 /** Payment jobs are observed until confirmation. Delivery actions share the server state machine. */
 import { useState } from "react";
 import { useOperationsText } from "../../shared/i18n/operations-i18n";
+import { usePaymentProviderText } from "../../shared/i18n/payment-provider-i18n";
 import type { OrderAction } from "./OrderWorkflow";
 export default function OrderPaymentDelivery({
   order,
@@ -20,6 +21,7 @@ export default function OrderPaymentDelivery({
   onCheck: () => void;
 }) {
   const { o } = useOperationsText();
+  const paymentText = usePaymentProviderText();
   const [tracking, setTracking] = useState<Record<number, string>>({});
   const [refund, setRefund] = useState("");
   const actions = order.workflow?.actions ?? [];
@@ -60,6 +62,17 @@ export default function OrderPaymentDelivery({
           >
             {o("reconcile")}
           </button>
+          {order.payment.state === "authorized" &&
+            (["capture", "void"] as const).map((operation) => (
+              <button
+                key={operation}
+                disabled={busy || pendingJob}
+                className="studio-secondary"
+                onClick={() => void onPayment(operation)}
+              >
+                {paymentText(operation)}
+              </button>
+            ))}
           {["captured", "partially_refunded"].includes(order.payment.state) && (
             <form
               onSubmit={async (e) => {

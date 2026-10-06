@@ -66,7 +66,15 @@ pub(crate) async fn admit(a: &App, h: &HeaderMap, path: &str, method: &str) -> R
         && header(h, "x-rac-user").is_some()
         && path.starts_with("/api/");
     // Reconciliation callbacks for already-created payments must remain usable during suspension/trash.
-    let settlement = path == "/store-api/payments/paypal/webhooks";
+    // Route exemption is availability only: the handler still verifies HMAC and original attempt identity.
+    let settlement = method == "POST"
+        && (path == "/store-api/payments/paypal/webhooks"
+            || path
+                .strip_prefix("/store-api/payment-providers/")
+                .is_some_and(|tail| {
+                    tail.strip_suffix("/webhooks")
+                        .is_some_and(|id| !id.is_empty() && !id.contains('/'))
+                }));
     if !verified_kernel::shop_request_admissible(
         status == "active",
         status == "paused",

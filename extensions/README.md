@@ -268,3 +268,7 @@ the automatic all-order path and an equivalent flow unintentionally. See the
 ### Guided app examples
 
 [Twelve assistant contracts](apps/assistant-examples/README.md) cover frontend/admin/combined, payment/shipping/ERP services, event subscriptions, signed webhook ingress and persistent UTC schedules, with product/customer/order bindings and independent team/MCP access. Provider contracts require provider service implementations.
+
+## Payment providers
+
+`apps/payment-provider/manifest.json` is a provider-neutral service contract with translated methods, account onboarding and protected payment commands for HTTP, MCP and Flow Builder. App Studio edits the same contract. The public core validates exact receipts and owns stock/order/refund jobs; proprietary PSP calls remain in a separate private service. See [Payment provider API 1](../docs/payment-provider-api.md) for deployment, embedded checkout, immutable upgrades, callbacks and limits. The example is synthetic; it does not call Stripe or collect money.

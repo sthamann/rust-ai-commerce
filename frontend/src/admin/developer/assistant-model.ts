@@ -233,6 +233,67 @@ export function assistedManifest(s: AssistantSetup): Manifest {
       ];
     else m.webhooks = [{ id: "incoming", action: "received" }];
   }
+  if (s.kind === "payment") {
+    m.permissions.push("payments.provider");
+    m.paymentProvider = {
+      apiVersion: "1",
+      methods: [
+        {
+          id: "wallet",
+          name: s.name,
+          currencies: ["EUR"],
+          countries: [],
+          capabilities: ["capture", "refund"],
+          checkout: "redirect",
+          intent: "capture",
+        },
+      ],
+    };
+    m.actions!.push({
+      name: "onboarding",
+      description: "Manage payment account onboarding",
+      handler: "payment_onboarding",
+      public: false,
+      permission: "payments.manage",
+      mcp: s.mcp,
+      inputSchema: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          channel: { type: "string" },
+          environment: { type: "string" },
+          country: { type: "string" },
+          requestKey: { type: "string" },
+          approve: { type: "boolean" },
+        },
+        required: ["requestKey"],
+        additionalProperties: false,
+      },
+    });
+  }
+  if (s.kind === "payment")
+    m.actions!.push({
+      name: "payment_command",
+      description: "Queue provider payment operation",
+      handler: "payment_command",
+      public: false,
+      permission: "payments.manage",
+      mcp: s.mcp,
+      flowAllowed: true,
+      inputSchema: {
+        type: "object",
+        properties: {
+          operation: { type: "string" },
+          attemptId: { type: "string" },
+          event: { type: "object" },
+          requestKey: { type: "string" },
+          approve: { type: "boolean" },
+          amountMinor: { type: "integer" },
+        },
+        required: ["operation", "requestKey", "approve"],
+        additionalProperties: false,
+      },
+    });
   const result = compile(m);
   result.actions = result.actions!.map((a) =>
     a.entity

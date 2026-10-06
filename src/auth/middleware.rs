@@ -79,7 +79,7 @@ fn action(path: &str, method: &str) -> &'static str {
     if path.starts_with("/api/payments/jobs/") {
         return "payments.manage";
     }
-    if path.starts_with("/api/payments") {
+    if path.starts_with("/api/payments") || path.starts_with("/api/payment-providers") {
         return if method == "GET" {
             "payments.read"
         } else {

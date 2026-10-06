@@ -1,10 +1,12 @@
 /** Provider handoff and bounded durable-status polling; only verified server receipts confirm payment. */
 import { useEffect, useRef, useState } from "react";
+import EmbeddedPayment from "./EmbeddedPayment";
 import { shopApi } from "../../shared/api/shop-api";
 import { useCheckoutText } from "../../shared/i18n/checkout-i18n";
 import { useShopText } from "../../shared/i18n/shop-i18n";
 type Status = {
   state: string;
+  checkout?: "redirect" | "embedded";
   approvalUrl?: string;
   amountMinor: number;
   currency: string;
@@ -86,13 +88,14 @@ function PaymentStatus({ id, token, autoRedirect = false }: PaymentProps) {
       autoRedirect &&
       !returned &&
       data?.state === "ready" &&
+      data.checkout !== "embedded" &&
       data.approvalUrl &&
       !redirected.current
     ) {
       redirected.current = true;
       window.location.assign(data.approvalUrl);
     }
-  }, [autoRedirect, returned, data?.state, data?.approvalUrl]);
+  }, [autoRedirect, returned, data?.state, data?.approvalUrl, data?.checkout]);
   const retry = () => {
     action.current = shopApi(
       `/store-api/payments/${id}/${data?.state === "approved" ? "capture" : "reconcile"}`,
@@ -133,11 +136,22 @@ function PaymentStatus({ id, token, autoRedirect = false }: PaymentProps) {
         </strong>
       )}
       {paid && <p>{x("paidHint")}</p>}
-      {data?.approvalUrl && data.state === "ready" && !returned && (
-        <a className="shop-primary" href={data.approvalUrl}>
-          {x("continuePay")}
-        </a>
+      {data?.checkout === "embedded" && data.state === "ready" && !returned && (
+        <EmbeddedPayment
+          id={id}
+          token={token}
+          onChanged={retry}
+          approvalUrl={data.approvalUrl}
+        />
       )}
+      {data?.checkout !== "embedded" &&
+        data?.approvalUrl &&
+        data.state === "ready" &&
+        !returned && (
+          <a className="shop-primary" href={data.approvalUrl}>
+            {x("continuePay")}
+          </a>
+        )}
       {delayed && !paid && (
         <>
           <p>{x("delayed")}</p>

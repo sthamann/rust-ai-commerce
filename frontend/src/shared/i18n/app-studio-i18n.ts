@@ -38,6 +38,12 @@ export const appStudioWords = {
     "Ouvrir pour modifier",
     "Abrir para editar",
   ],
+  payments: [
+    "Payment provider",
+    "Zahlungsanbieter",
+    "Prestataire de paiement",
+    "Proveedor de pagos",
+  ],
   design: ["Design", "Gestaltung", "Conception", "Diseño"],
   data: [
     "Data models",

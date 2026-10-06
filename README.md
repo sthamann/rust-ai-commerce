@@ -225,7 +225,7 @@ bounded fuel/memory and no network/filesystem access.
 | Evidence | What it establishes |
 | --- | --- |
 | **7,000 original-PHP comparisons** | Bounded pricing, context, shipping-tax, rule and comparison behavior against reviewed Shopware sources. [Parity matrix](docs/shopware-parity.md). |
-| **26 extracted production policies · 55 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
+| **27 extracted production policies · 58 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
 | **1,000,000 products + 1,000,000 translations** | Dated local commerce workloads with retained raw measurements and failures; not production capacity or a Shopware speed ratio. [Benchmarks](docs/benchmarks.md). |
 | **Continuous verification** | Source ownership, localization, Rust/frontend checks, real PostgreSQL integration, original PHP comparisons and Lean/mutation gates. [CI](https://github.com/sthamann/vendune/actions) · [Testing](docs/testing.md). |
 
@@ -234,7 +234,7 @@ bounded fuel/memory and no network/filesystem access.
 | Area | Current scope |
 | --- | --- |
 | **Production readiness** | Working prototype. Recovery/MFA, distributed quotas, automatic relocation/failover, legal compliance and full-system coverage remain additional work. |
-| **Payments & connected services** | Simulated/manual payments and a configured PayPal Orders v2 Sandbox/Live adapter. Local provider fixtures are tested; real PSP transactions and external delivery require observed account-side results. Shopware Payments/Storyfront need their private services. |
+| **Payments & connected services** | Simulated/manual payments, native PayPal Orders v2 and a versioned [provider API](docs/payment-provider-api.md) for isolated payment apps: onboarding, redirect/embedded checkout, capture/authorize/void/refund, signed callbacks and Flow/MCP actions. App Studio edits the same contract. Local fixtures are tested; real PSP outcomes and the private Shopware Payments service require approved provider configuration. |
 | **Tenant isolation** | Scoped API/MCP operations, critical composite foreign keys and forced RLS for managed app tables. Core-wide RLS is absent; the local DB role is a superuser. [Exact isolation boundary](docs/tenant-isolation.md). |
 | **Shopware & protocols** | Selected native behavior ports and HTTP/MCP/UCP capabilities; complete DAL/CMS/plugin compatibility and full protocol conformance are outside this slice. |
 | **Custom apps & hosting** | Declarative packages plus separately deployed services. Arbitrary source builds, bundle signing and hostile-code microVM containment are not implemented. Deployment/health availability does not certify production checkout. |

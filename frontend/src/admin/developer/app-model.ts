@@ -202,6 +202,22 @@ export function problems(m: Manifest) {
     ...(m.views ?? []).map((v) => v.id),
   ];
   return (
+    (m.paymentProvider !== undefined &&
+      (m.runtime !== "service" ||
+        m.category !== "payment" ||
+        !m.permissions.includes("payments.provider") ||
+        m.paymentProvider.apiVersion !== "1" ||
+        m.paymentProvider.methods.length === 0 ||
+        m.paymentProvider.methods.length > 32 ||
+        new Set(m.paymentProvider.methods.map((v) => v.id)).size !==
+          m.paymentProvider.methods.length ||
+        m.paymentProvider.methods.some(
+          (v) =>
+            !/^[a-z][a-z0-9_]{0,31}$/.test(v.id) ||
+            !v.currencies.length ||
+            v.currencies.some((c) => !/^[A-Z]{3}$/.test(c)) ||
+            !v.capabilities.includes(v.intent),
+        ))) ||
     ids.some((id) => !/^[a-z][a-z0-9_]{0,31}$/.test(id)) ||
     !/^\d+\.\d+\.\d+$/.test(m.version) ||
     m.entities.length > 12 ||

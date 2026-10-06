@@ -20,6 +20,8 @@ import { useAssistantText } from "../../shared/i18n/app-assistant-i18n";
 import AppCanvas from "./AppCanvas";
 import AppInspector from "./AppInspector";
 import AppDataEditor from "./AppDataEditor";
+import AppEditorNavigation from "./AppEditorNavigation";
+import AppPayments from "./AppPayments";
 import AppConnections from "./AppConnections";
 import AppAgentPanel from "./AppAgentPanel";
 import AppVersions from "./AppVersions";
@@ -80,7 +82,6 @@ export default function DeveloperView({
     setSelected("");
     setSection("design");
   };
-  const tabs = ["design", "data", "connect", "agent", "versions"] as const;
   return (
     <div className="studio-page app-studio">
       <div className="app-studio-intro">
@@ -229,34 +230,11 @@ export default function DeveloperView({
               <button className="studio-secondary">{w("newStage")}</button>
             </form>
           )}
-          <nav className="app-studio-tabs" aria-label={a("studio")}>
-            {tabs.map((key) => (
-              <button
-                key={key}
-                aria-current={section === key ? "page" : undefined}
-                className={section === key ? "active" : ""}
-                onClick={() => setSection(key)}
-              >
-                <Icon
-                  name={
-                    key === "design"
-                      ? "layers"
-                      : key === "data"
-                        ? "box"
-                        : key === "connect"
-                          ? "graph"
-                          : key === "agent"
-                            ? "spark"
-                            : "truck"
-                  }
-                  size={17}
-                />
-                {a(key)}
-                {key === "versions" && <span>{studio.builds.length}</span>}
-              </button>
-            ))}
-            <span className="app-tabs-caption">{a("pending")}</span>
-          </nav>
+          <AppEditorNavigation
+            section={section}
+            onSelect={setSection}
+            versions={studio.builds.length}
+          />
           <ContentLanguage
             locales={
               preview && canPreview && previewLanguages
@@ -362,6 +340,13 @@ export default function DeveloperView({
                 onFlows={onFlows}
               />
             )}{" "}
+            {section === "payments" && (
+              <AppPayments
+                manifest={m}
+                onChange={studio.edit}
+                request={request}
+              />
+            )}
             {section === "agent" && (
               <AppAgentPanel studio={studio} request={request} />
             )}{" "}

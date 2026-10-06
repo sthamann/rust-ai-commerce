@@ -221,13 +221,21 @@ This lists every checked-in source module in these roots, including files with n
 | [src/order_checkout.rs](../src/order_checkout.rs) | Atomic checkout, stock locks, extension policy and idempotency. |
 | [src/order_routes.rs](../src/order_routes.rs) | Merchant order read adapter. |
 | [src/outbox.rs](../src/outbox.rs) | Durable outbox and audit projection worker. |
+| [src/payments/accounts.rs](../src/payments/accounts.rs) | Merchant-authorized onboarding bridge; only authenticated provider responses establish account bindings. |
+| [src/payments/app_commands.rs](../src/payments/app_commands.rs) | App/Flow/MCP payment actions enqueue core jobs; provider-bound attempts prevent cross-app command authority. |
+| [src/payments/contract.rs](../src/payments/contract.rs) | Versioned app-owned payment methods; declarations never grant financial authority. |
+| [src/payments/generic_receipts.rs](../src/payments/generic_receipts.rs) | Provider-neutral receipt admission and atomic allocation; verified evidence owns ledger transitions. |
 | [src/payments/mod.rs](../src/payments/mod.rs) | Provider-independent payment ledger and durable workers; the PayPal adapter supports explicit Sandbox/Live environments. |
 | [src/payments/operations.rs](../src/payments/operations.rs) | Durable idempotent payment commands, customer context binding and serial refund admission. |
 | [src/payments/paypal.rs](../src/payments/paypal.rs) | Native PayPal Orders v2 sandbox wire adapter; credentials never enter prompts or browser responses. |
 | [src/payments/provider.rs](../src/payments/provider.rs) | Payment provider identity, tenant account configuration and immutable wire context. |
+| [src/payments/provider_webhooks.rs](../src/payments/provider_webhooks.rs) | Version-pinned HMAC notifications enqueue reconciliation; external event payloads never write monetary state. |
 | [src/payments/receipt_guard.rs](../src/payments/receipt_guard.rs) | Bind integer provider receipt amounts and status to the formally checked exact-match predicate. |
+| [src/payments/registry.rs](../src/payments/registry.rs) | Installed payment registry and immutable account/version snapshots; no remote calls inside checkout SQL. |
+| [src/payments/remote.rs](../src/payments/remote.rs) | Dedicated payment RPC, pinned service version and operator-owned egress; never ordinary app-action receipts. |
 | [src/payments/return_urls.rs](../src/payments/return_urls.rs) | Provider return/cancel URLs preserve the tenant and sales channel; navigation is never payment evidence. |
 | [src/payments/routes.rs](../src/payments/routes.rs) | Customer payment status/capture and merchant refund operations share the durable command API. |
+| [src/payments/sessions.rs](../src/payments/sessions.rs) | Customer-bound, short-lived provider UI sessions; iframe messages are never ledger receipts. |
 | [src/payments/storage.rs](../src/payments/storage.rs) | Transactional provider receipts and order state updates; external responses cannot invent amounts or tenants. |
 | [src/payments/webhooks.rs](../src/payments/webhooks.rs) | PayPal verifies webhook signatures before inbox insertion; provider reconciliation confirms monetary state. |
 | [src/payments/worker.rs](../src/payments/worker.rs) | Leased payment jobs; network runs after claim commit, fenced receipts prevent duplicate local effects. |
@@ -290,6 +298,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/apps/EmailPanel.tsx](../frontend/src/admin/apps/EmailPanel.tsx) | Native email app settings, localized templates, safe previews and durable delivery receipts. |
 | [frontend/src/admin/apps/EmailProviderFields.tsx](../frontend/src/admin/apps/EmailProviderFields.tsx) | EmailProviderFields: focused connector-settings view with explicit typed inputs and callbacks. |
 | [frontend/src/admin/apps/PaymentManager.tsx](../frontend/src/admin/apps/PaymentManager.tsx) | Payment ledger, adapter readiness and explicit refund approval. |
+| [frontend/src/admin/apps/ProviderAccount.tsx](../frontend/src/admin/apps/ProviderAccount.tsx) | Shared installed-provider onboarding and channel connection controls for merchant Apps and App Studio. |
 | [frontend/src/admin/apps/app-types.ts](../frontend/src/admin/apps/app-types.ts) | Installed package metadata used by app administration views. |
 | [frontend/src/admin/apps/email-languages.ts](../frontend/src/admin/apps/email-languages.ts) | Supported transactional email template languages. |
 | [frontend/src/admin/apps/library-model.ts](../frontend/src/admin/apps/library-model.ts) | Shared app discovery metadata, safe artwork sources and localized search independent of rendering. |
@@ -362,9 +371,11 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/developer/AppConnections.tsx](../frontend/src/admin/developer/AppConnections.tsx) | Route, tool, grounding and Flow Builder switches modify the shared executable manifest directly. |
 | [frontend/src/admin/developer/AppContextBinding.tsx](../frontend/src/admin/developer/AppContextBinding.tsx) | Native UI bindings connect the open host object to an indexed app field, never to a global JS context. |
 | [frontend/src/admin/developer/AppDataEditor.tsx](../frontend/src/admin/developer/AppDataEditor.tsx) | Managed app models expose typed fields and opt-in public reads; removal cleans dependent bindings. |
+| [frontend/src/admin/developer/AppEditorNavigation.tsx](../frontend/src/admin/developer/AppEditorNavigation.tsx) | Consistent navigation between visual definitions, provider contracts and immutable versions. |
 | [frontend/src/admin/developer/AppFieldOptions.tsx](../frontend/src/admin/developer/AppFieldOptions.tsx) | Core references and typed choice fields remain owned app data with a single content-language editor. |
 | [frontend/src/admin/developer/AppInspector.tsx](../frontend/src/admin/developer/AppInspector.tsx) | One content language edits app/view/block metadata; changing bindings updates the actual manifest. |
 | [frontend/src/admin/developer/AppLibrary.tsx](../frontend/src/admin/developer/AppLibrary.tsx) | Saved app cards with explicit editing and recoverable project removal, independent of installed package/data lifecycle. |
+| [frontend/src/admin/developer/AppPayments.tsx](../frontend/src/admin/developer/AppPayments.tsx) | Visual payment contracts use the same manifest as coding agents; onboarding uses the protected API. |
 | [frontend/src/admin/developer/AppVersions.tsx](../frontend/src/admin/developer/AppVersions.tsx) | Saved version inspection, digest-approved stage install and conflict-aware package-only live release. |
 | [frontend/src/admin/developer/AppViewTabs.tsx](../frontend/src/admin/developer/AppViewTabs.tsx) | Native view navigation and creation are separate from workspace orchestration. |
 | [frontend/src/admin/developer/DeveloperView.tsx](../frontend/src/admin/developer/DeveloperView.tsx) | Visual App Studio orchestrates modular editors over the same executable schema used by coding agents. |
@@ -455,6 +466,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/markdown-editor.css](../frontend/src/admin/styles/markdown-editor.css) | Shared visual/Markdown product editor treatment using existing Studio theme tokens. |
 | [frontend/src/admin/styles/media-workspace.css](../frontend/src/admin/styles/media-workspace.css) | Gallery workspace: airy tiles, focused image inspector and accessible upload surfaces using Studio theme tokens. |
 | [frontend/src/admin/styles/operations.css](../frontend/src/admin/styles/operations.css) | Operational screens share the studio's light surface and clear focus states. |
+| [frontend/src/admin/styles/provider-account.css](../frontend/src/admin/styles/provider-account.css) | Shared provider onboarding layout works independently of the lazy-loaded visual App Studio. |
 | [frontend/src/admin/styles/sales-channels.css](../frontend/src/admin/styles/sales-channels.css) | Sales-channel cards, onboarding and scoped settings use the same responsive, accessible Studio design. |
 | [frontend/src/admin/styles/settings.css](../frontend/src/admin/styles/settings.css) | Independent settings navigation, grouped native forms and save feedback in Studio theme tokens. |
 | [frontend/src/admin/styles/studio/01-studio.css](../frontend/src/admin/styles/studio/01-studio.css) | studio: studio styles. Source order is preserved by the entry stylesheet. |
@@ -552,6 +564,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/locales/shop-es.ts](../frontend/src/shared/i18n/locales/shop-es.ts) | Storefront and operational interface strings: es. |
 | [frontend/src/shared/i18n/locales/shop-fr.ts](../frontend/src/shared/i18n/locales/shop-fr.ts) | Storefront and operational interface strings: fr. |
 | [frontend/src/shared/i18n/operations-i18n.ts](../frontend/src/shared/i18n/operations-i18n.ts) | Operational commerce labels in all supported languages. |
+| [frontend/src/shared/i18n/payment-provider-i18n.ts](../frontend/src/shared/i18n/payment-provider-i18n.ts) | Payment contract editor and account onboarding vocabulary. |
 | [frontend/src/shared/i18n/platform-i18n.ts](../frontend/src/shared/i18n/platform-i18n.ts) | Operator console translations. Every visible control has an explicit translation in all supported locales. |
 | [frontend/src/shared/i18n/shop-i18n.ts](../frontend/src/shared/i18n/shop-i18n.ts) | Shared shop text hook; dictionaries live in focused locale files. |
 | [frontend/src/shared/i18n/studio-ui-i18n.ts](../frontend/src/shared/i18n/studio-ui-i18n.ts) | Studio navigation and settings guidance in all four supported interface languages. |
@@ -586,6 +599,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/checkout/CheckoutProgress.tsx](../frontend/src/storefront/checkout/CheckoutProgress.tsx) | Readable checkout progress reflects reviewed server state; it never implies payment confirmation. |
 | [frontend/src/storefront/checkout/CheckoutPurchase.tsx](../frontend/src/storefront/checkout/CheckoutPurchase.tsx) | Shared explicit purchase button: mobile dock and desktop review use the same form and server-review state. |
 | [frontend/src/storefront/checkout/CheckoutSummary.tsx](../frontend/src/storefront/checkout/CheckoutSummary.tsx) | Sticky order review presents authoritative totals and discounts beside the purchase action. |
+| [frontend/src/storefront/checkout/EmbeddedPayment.tsx](../frontend/src/storefront/checkout/EmbeddedPayment.tsx) | A scoped provider frame receives a short-lived token; messages only trigger server reconciliation. |
 | [frontend/src/storefront/checkout/OrderCompletion.tsx](../frontend/src/storefront/checkout/OrderCompletion.tsx) | Dedicated completion page renders the accepted order snapshot and honest provider state, with no ID-only reads. |
 | [frontend/src/storefront/checkout/OrderConfetti.tsx](../frontend/src/storefront/checkout/OrderConfetti.tsx) | Finite CSS celebration after an accepted order; no timers, libraries or motion for reduced-motion users. |
 | [frontend/src/storefront/checkout/PaymentSession.tsx](../frontend/src/storefront/checkout/PaymentSession.tsx) | Provider handoff and bounded durable-status polling; only verified server receipts confirm payment. |
@@ -701,6 +715,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/marketing_accounts.py](../scripts/marketing_accounts.py) | Real isolated shops: customer authority, limited coupons, event flows, channels and selected releases. No paid models. |
 | [scripts/mcp_stdio.py](../scripts/mcp_stdio.py) | Line-delimited MCP stdio bridge for Claude Desktop and other local clients. |
 | [scripts/merchant_operations.py](../scripts/merchant_operations.py) | Real HTTP/PostgreSQL CRM, receipt, scoped-access and paid-download regressions. No PSP traffic. |
+| [scripts/payment_providers.py](../scripts/payment_providers.py) | Provider-neutral financial ledger through real HTTP/PostgreSQL and a local private-service fixture. |
 | [scripts/payments.py](../scripts/payments.py) | PayPal wire-contract and real Rust/PostgreSQL state tests. Local fixture, never real provider traffic. |
 | [scripts/platform.py](../scripts/platform.py) | Real PostgreSQL/HTTP operator control-plane regression; synthetic accounts only, no paid providers. |
 | [scripts/platform_admin.py](../scripts/platform_admin.py) | Grant/revoke an existing personal operator offline. Credentials remain in environment; no signup can grant this role. |

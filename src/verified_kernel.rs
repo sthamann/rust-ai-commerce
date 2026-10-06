@@ -149,3 +149,12 @@ pub fn shop_request_admissible(
 ) -> bool {
     settlement || active || paused && read_only
 }
+
+/// Uncaptured stock can be restored; an authorization requires provider-confirmed void evidence.
+pub fn reservation_release_admissible(
+    uncaptured: bool,
+    authorized: bool,
+    void_confirmed: bool,
+) -> bool {
+    uncaptured || authorized && void_confirmed
+}

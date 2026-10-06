@@ -81,4 +81,7 @@ def checkout_review_admissible (revision_matches : Bool) (expected_total : Nat) 
 def shop_request_admissible (active : Bool) (paused : Bool) (read_only : Bool) (settlement : Bool) : Bool :=
   ((settlement || active) || (paused && read_only))
 
+def reservation_release_admissible (uncaptured : Bool) (authorized : Bool) (void_confirmed : Bool) : Bool :=
+  (uncaptured || (authorized && void_confirmed))
+
 end CommerceKernel

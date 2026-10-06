@@ -116,7 +116,15 @@ pub(crate) fn validate_config(s: &Settings) -> Result<()> {
         }
         if !["manual", "simulated", "app"].contains(&v.mode.as_str())
             || v.name.len() > 200
-            || (v.mode == "app" && !["paypal-sandbox", "paypal-live"].contains(&v.id.as_str()))
+            || (v.mode == "app"
+                && !["paypal-sandbox", "paypal-live"].contains(&v.id.as_str())
+                && (v
+                    .provider
+                    .as_deref()
+                    .is_none_or(|p| !crate::apps::identifier(p))
+                    || v.provider_method
+                        .as_deref()
+                        .is_none_or(|p| !crate::apps::identifier(p))))
         {
             return Err(bad("Unsupported payment mode"));
         }

@@ -45,7 +45,7 @@ export default function PaymentManager({
     <section className="studio-card app-card">
       <h2>{a("sandbox")}</h2>
       <p>
-        {data?.providers.find((p) => p.id === "paypal")?.configured
+        {data?.providers.some((p) => p.configured)
           ? a("connected")
           : a("missing")}
       </p>

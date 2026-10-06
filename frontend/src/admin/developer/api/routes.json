@@ -615,6 +615,16 @@
     "source": "src/translations/mod.rs"
   },
   {
+    "path": "/api/payment-providers",
+    "method": "GET",
+    "source": "src/payments/routes.rs"
+  },
+  {
+    "path": "/api/payment-providers/{id}/onboarding",
+    "method": "POST",
+    "source": "src/payments/routes.rs"
+  },
+  {
     "path": "/api/payments",
     "method": "GET",
     "source": "src/payments/routes.rs"
@@ -985,12 +995,22 @@
     "source": "src/assets/mod.rs"
   },
   {
+    "path": "/store-api/payment-providers/{id}/webhooks",
+    "method": "POST",
+    "source": "src/payments/routes.rs"
+  },
+  {
     "path": "/store-api/payments/paypal/webhooks",
     "method": "POST",
     "source": "src/payments/routes.rs"
   },
   {
     "path": "/store-api/payments/{id}",
+    "method": "GET",
+    "source": "src/payments/routes.rs"
+  },
+  {
+    "path": "/store-api/payments/{id}/session",
     "method": "GET",
     "source": "src/payments/routes.rs"
   },

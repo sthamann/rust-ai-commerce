@@ -102,7 +102,8 @@ pub(crate) fn permission(name: &str) -> Option<&'static str> {
         "merchant.order.transition" | "merchant.order.note" => "orders.write",
         "merchant.receipts" => "documents.read",
         "merchant.receipt.create" => "documents.create",
-        "merchant.payment" => "payments.manage",
+        "merchant.payment" | "merchant.payment.onboarding" => "payments.manage",
+        "merchant.payment.providers" => "payments.read",
         "merchant.products"
         | "merchant.categories"
         | "merchant.product.assets"
@@ -248,9 +249,23 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
         "merchant.receipt.create" => {
             receipts::create(State(a.clone()), h.clone(), Path(id()?), Json(v.clone())).await?
         }
+        "merchant.payment.providers" => {
+            payments::providers_route(State(a.clone()), h.clone()).await?
+        }
+        "merchant.payment.onboarding" => Json(payments::onboarding(a, h, &id()?, v).await?),
         "merchant.payment" => {
             let op = v["operation"].as_str().ok_or(bad("operation required"))?;
-            if !["capture", "refund", "reconcile", "cancel"].contains(&op) || v["approve"] != true {
+            if ![
+                "capture",
+                "authorize",
+                "void",
+                "refund",
+                "reconcile",
+                "cancel",
+            ]
+            .contains(&op)
+                || v["approve"] != true
+            {
                 return Err(bad("Payment operation and approval required"));
             }
             Json(
