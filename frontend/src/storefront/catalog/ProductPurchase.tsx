@@ -95,11 +95,7 @@ export default function ProductPurchase({
       {groups.map((group) => (
         <fieldset className="variant-group" key={group}>
           <legend>
-            {s(group)}{" "}
-            <span>
-              {s(p.options[group])}
-              {group === "size" ? " ml" : ""}
-            </span>
+            {s(group)} <span>{s(p.options[group])}</span>
           </legend>
           <div>
             {[...new Set(data.variants.map((v) => v.options[group]))].map(
@@ -125,7 +121,6 @@ export default function ProductPurchase({
                       <i className={`swatch swatch-${option}`} />
                     )}{" "}
                     {s(option)}
-                    {group === "size" ? " ml" : ""}
                   </button>
                 );
               },
