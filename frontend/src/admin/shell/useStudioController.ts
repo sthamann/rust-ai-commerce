@@ -41,7 +41,7 @@ export function useStudioController({
       hostnameShop() ??
       new URLSearchParams(location.search).get("shop") ??
       sessionStorage.getItem("rac-user-workspace") ??
-      "atelier",
+      "nord-atelier",
   );
   useEffect(() => {
     if (token && !new URLSearchParams(location.search).has("shop")) {

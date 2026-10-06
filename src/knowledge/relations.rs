@@ -27,14 +27,33 @@ pub async fn sync_product(
 }
 pub async fn seed_relations(db: &PgPool, tenant: &str) -> Result<(), sqlx::Error> {
     let mut tx = db.begin().await?;
-    for (id, needs) in [
-        ("chair", vec!["reading", "work", "small-space"]),
-        ("desk", vec!["work", "small-space"]),
-        ("lamp", vec!["reading", "work", "warm-light"]),
-        ("mug", vec!["coffee", "reading"]),
-        ("notebook", vec!["notes", "work"]),
-        ("shelf", vec!["storage", "work", "small-space"]),
-    ] {
+    let fashion: bool = sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM products WHERE tenant=$1 AND id='coat' AND extra->'demo'->>'catalogVersion'='nord-atelier-v1')").bind(tenant).fetch_one(&mut *tx).await?;
+    let needs = if fashion {
+        vec![
+            ("coat", vec!["layering", "cold-weather"]),
+            ("knit", vec!["layering", "everyday"]),
+            ("shirt", vec!["work", "everyday"]),
+            ("trousers", vec!["work"]),
+            ("dress", vec!["occasion"]),
+            ("blazer", vec!["work", "layering"]),
+            ("tee", vec!["everyday", "layering"]),
+            ("jeans", vec!["everyday"]),
+            ("skirt", vec!["everyday", "work"]),
+            ("sneakers", vec!["everyday"]),
+            ("bag", vec!["everyday", "work"]),
+            ("scarf", vec!["layering", "cold-weather"]),
+        ]
+    } else {
+        vec![
+            ("chair", vec!["reading", "work", "small-space"]),
+            ("desk", vec!["work", "small-space"]),
+            ("lamp", vec!["reading", "work", "warm-light"]),
+            ("mug", vec!["coffee", "reading"]),
+            ("notebook", vec!["notes", "work"]),
+            ("shelf", vec!["storage", "work", "small-space"]),
+        ]
+    };
+    for (id, needs) in needs {
         for need in needs {
             edge(
                 &mut tx,
@@ -47,13 +66,27 @@ pub async fn seed_relations(db: &PgPool, tenant: &str) -> Result<(), sqlx::Error
             .await?;
         }
     }
-    for (left, right) in [
-        ("desk", "chair"),
-        ("chair", "lamp"),
-        ("desk", "lamp"),
-        ("desk", "notebook"),
-        ("desk", "shelf"),
-    ] {
+    let pairs = if fashion {
+        vec![
+            ("coat", "knit"),
+            ("coat", "scarf"),
+            ("shirt", "trousers"),
+            ("blazer", "trousers"),
+            ("tee", "jeans"),
+            ("jeans", "sneakers"),
+            ("skirt", "knit"),
+            ("dress", "bag"),
+        ]
+    } else {
+        vec![
+            ("desk", "chair"),
+            ("chair", "lamp"),
+            ("desk", "lamp"),
+            ("desk", "notebook"),
+            ("desk", "shelf"),
+        ]
+    };
+    for (left, right) in pairs {
         edge(
             &mut tx,
             tenant,

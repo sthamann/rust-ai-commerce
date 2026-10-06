@@ -52,6 +52,9 @@ env.update({
     "BIND_ADDR": f"127.0.0.1:{port}",
     "MERCHANT_TOKEN": "quality-only-synthetic-bootstrap-credential",
     "APP_SERVICES": "{}", "SEED_DEMO": "true", "PROCESS_ROLE": "all",
+    # Existing differential cases intentionally use the versioned furniture fixture.
+    # The fashion_demo provider suite starts a separate server with the shipping default.
+    "DEMO_CATALOG": "legacy-furniture",
     "COMMERCE_PUBLIC_ORIGIN": "https://studio.example.test",
     "OLLAMA_URL": "http://127.0.0.1:1", "TEST_PERSONAL": "1",
     "PLATFORM_SECRET_KEY": "07"*32, "INFERENCE_ALLOW_LOOPBACK": "true",

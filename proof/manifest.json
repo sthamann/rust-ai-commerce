@@ -494,8 +494,8 @@
     },
     "src/auth/provision.rs": {
       "status": "unproved",
-      "sha256": "3d278b791156c860be5ffafb94282df1dae7070877b0746bebf054e88891ad4b",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "6975a76cca46af9413a024777560957b25b91699f489382911ee2a073bc70bf8",
+      "review": "Reviewed tenant-scoped fashion fixture provisioning, opt-in idempotent demo seeding and curated catalog-specific links; Rust lint and units pass, actual signup/locale/variant/image/isolated checkout/fresh-process HTTP regressions pass. No business-policy or proof-boundary changes."
     },
     "src/auth/registration.rs": {
       "status": "unproved",
@@ -579,8 +579,8 @@
     },
     "src/bootstrap.rs": {
       "status": "unproved",
-      "sha256": "cb655595fccd66b2c311fa09dd2a7f49ae955f1cf8aec1c370d1bde24cf0009b",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "dc33a2a6250e28dac312df860c24ae96d66145a486f3271a8f117401b18ae54d",
+      "review": "Reviewed tenant-scoped fashion fixture provisioning, opt-in idempotent demo seeding and curated catalog-specific links; Rust lint and units pass, actual signup/locale/variant/image/isolated checkout/fresh-process HTTP regressions pass. No business-policy or proof-boundary changes."
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
@@ -784,8 +784,8 @@
     },
     "src/commerce/product_edit.rs": {
       "status": "unproved",
-      "sha256": "117de0f26d6f0c175e8596ac8ce1268147791371a90cbd144f49564d5243b43f",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "c2a2c7113876743a9e405c53923f66b6115abe8f977d1820d0db2d063d7ffb55",
+      "review": "Reviewed optional generated-demo provenance preservation in product metadata. Real fashion_demo HTTP test edits the coat through the merchant API and reads the changed price and retained provenance; existing transaction, translation and history behavior unchanged. No production policy changes; SQL/async product adapters remain unproved."
     },
     "src/commerce/product_fields.rs": {
       "status": "unproved",
@@ -881,6 +881,11 @@
       "status": "unproved",
       "sha256": "758b744773b37cff7fe7a986fb14ed74167f767b07e11c4afbefdd28eddc2a6d",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/demo_catalog.rs": {
+      "status": "unproved",
+      "sha256": "a8a9a36caddeb749c3fc7cfb0121f856b66ae4376e1070359b5abeeb059c2328",
+      "review": "Reviewed tenant-scoped fashion fixture provisioning, opt-in idempotent demo seeding and curated catalog-specific links; Rust lint and units pass, actual signup/locale/variant/image/isolated checkout/fresh-process HTTP regressions pass. No business-policy or proof-boundary changes."
     },
     "src/developer/archive.rs": {
       "status": "unproved",
@@ -1029,8 +1034,8 @@
     },
     "src/knowledge/relations.rs": {
       "status": "unproved",
-      "sha256": "8288c4e6dff67acfedab586edf82886a7f092c9383ea33e0414c77802d247be9",
-      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+      "sha256": "0070745318d1d8cd4a4d95a563a231a75602e8e6c2c1a7ce4d3b667247a3e5c3",
+      "review": "Reviewed tenant-scoped fashion fixture provisioning, opt-in idempotent demo seeding and curated catalog-specific links; Rust lint and units pass, actual signup/locale/variant/image/isolated checkout/fresh-process HTTP regressions pass. No business-policy or proof-boundary changes."
     },
     "src/knowledge/search.rs": {
       "status": "unproved",
@@ -1059,8 +1064,8 @@
     },
     "src/main.rs": {
       "status": "unproved",
-      "sha256": "f117af69af4b65f470f82ceeebc19f753ec95efd3f8f829e06512e52eb12290c",
-      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
+      "sha256": "73b20327ea05a61eacd31e360e235af26edb192e42aef4116715d72cb1785d78",
+      "review": "Reviewed tenant-scoped fashion fixture provisioning, opt-in idempotent demo seeding and curated catalog-specific links; Rust lint and units pass, actual signup/locale/variant/image/isolated checkout/fresh-process HTTP regressions pass. No business-policy or proof-boundary changes."
     },
     "src/marketing/app_flows.rs": {
       "status": "reviewed-binding",
@@ -1576,6 +1581,14 @@
     "fixtures/demo-settings.json": {
       "sha256": "5643d788382735e13ea732da3e0fc9d732feecf0835e92df2d41b0b271304167",
       "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+    },
+    "fixtures/fashion-artwork.json": {
+      "sha256": "9e0f479d0ee6f6b55ebb22f61d5f5195e57d125becc25b2b8e255c24d7b9583e",
+      "review": "Reviewed tenant-scoped fashion fixture provisioning, opt-in idempotent demo seeding and curated catalog-specific links; Rust lint and units pass, actual signup/locale/variant/image/isolated checkout/fresh-process HTTP regressions pass. No business-policy or proof-boundary changes."
+    },
+    "fixtures/fashion-catalog.json": {
+      "sha256": "0472891f8bcf7dbc55f79575f53d33c046baba10899fa768512d24e197c6569d",
+      "review": "Reviewed tenant-scoped fashion fixture provisioning, opt-in idempotent demo seeding and curated catalog-specific links; Rust lint and units pass, actual signup/locale/variant/image/isolated checkout/fresh-process HTTP regressions pass. No business-policy or proof-boundary changes."
     },
     "fixtures/geography.json": {
       "sha256": "8b882d4e9ff3e8ce14f091d7d9a824d692754b8a9771949c9ae60873f3aacd85",

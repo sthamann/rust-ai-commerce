@@ -96,6 +96,7 @@ mod mcp;
 pub(crate) use mcp::*;
 mod ucp;
 pub(crate) use ucp::*;
+mod demo_catalog;
 mod seed;
 pub(crate) use seed::*;
 mod bootstrap;

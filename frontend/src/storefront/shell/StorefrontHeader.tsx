@@ -22,22 +22,30 @@ export default function StorefrontHeader() {
     adaptation,
     setAdaptation,
     shopTenant,
+    products,
     setRanked,
     setPersonalized,
     setViewed,
     setBag,
   } = useStorefront();
+  const displayName =
+    company.brandName ||
+    company.name ||
+    (shopTenant === "nord-atelier" &&
+    products.some((p) => p.media[0]?.url.startsWith("/media/demo/fashion/"))
+      ? s("fashionBrand")
+      : shopTenant);
   return (
     <header className="shop-nav">
       <a href="#" className="shop-brand">
         {company.logoUrl && (
           <img
             src={company.logoUrl}
-            alt={company.brandName || company.name || shopTenant}
+            alt={displayName}
             className="company-brand-logo"
           />
         )}
-        {company.brandName || company.name || shopTenant}
+        {displayName}
         <span> / </span>
       </a>
       <nav>

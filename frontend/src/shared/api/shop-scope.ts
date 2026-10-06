@@ -13,7 +13,7 @@ export function shopScope(): string {
   return (
     hostnameShop() ??
     new URLSearchParams(location.search).get("shop") ??
-    "atelier"
+    "nord-atelier"
   );
 }
 export function storefrontURL(id: string, studio = false): string {

@@ -380,3 +380,7 @@ App assistants compile the shared Manifest in `frontend/src/admin/developer/assi
 | `frontend/src/platform/{AdminHub,PlatformAI,PlatformShopDetail,PlatformInfrastructure}.tsx` | Public service directory and independent operator workspaces | `platform-control.test.tsx`, real browser review, build/architecture/localization |
 | `src/shop_domains.rs`, `frontend/src/shared/api/shop-scope.ts` | Canonical shop links and actual hostname admission; protected URLs retain origin | HTTP Host regressions + `shop-scope.test.ts` |
 | `src/channel_metrics.rs`, `src/studio.rs` | Bounded diagnostic counters and measured HTTP timings | Rust unit tests + actual persisted timing fixture |
+
+## Default fashion fixture
+
+`src/demo_catalog.rs` copies the public Nord Atelier fixture into newly provisioned tenants and seeds an opt-in built-in demo once. `src/auth/provision.rs` controls whether catalog insertion is requested. `src/knowledge/relations.rs` chooses catalog-specific curated links. `scripts/fashion_demo.py` checks signup, localized names/navigation, actual images, all three coat sizes, tenant-separated stock, simulated checkout and a fresh-process restart. See [the complete demo contract](fashion-demo.md).

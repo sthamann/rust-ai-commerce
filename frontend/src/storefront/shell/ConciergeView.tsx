@@ -19,11 +19,16 @@ export default function ConciergeView() {
     advice,
     products,
   } = useStorefront();
+  const prompt = products.some((p) =>
+    p.media[0]?.url.startsWith("/media/demo/fashion/"),
+  )
+    ? "fashionWish"
+    : "wish";
   return (
     <section className="shop-concierge">
       <div>
         <p className="shop-kicker">{s("ask")}</p>
-        <p>{s("wish")}</p>
+        <p>{s(prompt)}</p>
       </div>
       <form
         onSubmit={(e) => {
@@ -45,7 +50,7 @@ export default function ConciergeView() {
           aria-label={s("ask")}
           value={wish}
           onChange={(e) => setWish(e.target.value)}
-          placeholder={s("wish")}
+          placeholder={s(prompt)}
         />
         <button disabled={busy || !wish} className="shop-secondary">
           {busy ? s("thinking") : s("ask")} ↗

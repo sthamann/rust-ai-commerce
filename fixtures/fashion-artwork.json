@@ -1,0 +1,95 @@
+{
+  "tool": "built-in image_gen",
+  "date": "2026-10-06",
+  "useCase": "product-mockup",
+  "sharedPrompt": "Individual photorealistic ecommerce product photograph for fictional Nord Atelier; centered full product, warm ivory seamless studio backdrop, soft light, realistic texture; invisible mannequin for clothing; no people, text, logos, watermark, collage or props. Square composition.",
+  "subjects": {
+    "coat": "camel wool-blend knee-length coat",
+    "knit": "oatmeal crew-neck knitted sweater",
+    "shirt": "ivory cotton poplin shirt",
+    "trousers": "charcoal straight-leg tailored trousers",
+    "dress": "black sleeveless midi dress",
+    "blazer": "sand single-breasted two-button blazer",
+    "tee": "chalk white heavyweight cotton crew-neck T-shirt",
+    "jeans": "indigo straight-leg five-pocket jeans",
+    "skirt": "olive A-line midi skirt",
+    "sneakers": "white leather low-top sneakers, cream soles",
+    "bag": "cognac structured leather tote",
+    "scarf": "warm gray fringed wool scarf"
+  },
+  "conversion": "cwebp q84, 1000x1000; original generated PNGs retained locally",
+  "assets": [
+    {
+      "id": "coat",
+      "path": "frontend/public/media/demo/fashion/coat.webp",
+      "sha256": "786d4e0dbdac35a92f4db59ccd5630f0028a71e2f45d08fae101dfb38fb85e0f",
+      "generated": true
+    },
+    {
+      "id": "knit",
+      "path": "frontend/public/media/demo/fashion/knit.webp",
+      "sha256": "22d8b3118018d50d01633f1a34e44db3fab958ad1d786750f740ec673fb1dc0d",
+      "generated": true
+    },
+    {
+      "id": "shirt",
+      "path": "frontend/public/media/demo/fashion/shirt.webp",
+      "sha256": "5d73a765e31ab013c652a500b146b61e8ec0497342e0b3ba02856bcdc85d7d12",
+      "generated": true
+    },
+    {
+      "id": "trousers",
+      "path": "frontend/public/media/demo/fashion/trousers.webp",
+      "sha256": "65a20d1630afd89db1e9bde884fa66560b51262fb9c76e8af3e68350de7e2f6c",
+      "generated": true
+    },
+    {
+      "id": "dress",
+      "path": "frontend/public/media/demo/fashion/dress.webp",
+      "sha256": "f84f43df6a376cafd4e9b64d00decc03f667696e1ae86632db3ca77d3dd3bc57",
+      "generated": true
+    },
+    {
+      "id": "blazer",
+      "path": "frontend/public/media/demo/fashion/blazer.webp",
+      "sha256": "6104a4d72585cbe143559dc3f4bf558cfc9a9de0675f0480deb463616c01bf17",
+      "generated": true
+    },
+    {
+      "id": "tee",
+      "path": "frontend/public/media/demo/fashion/tee.webp",
+      "sha256": "a2ab957e7c638110535da7af1138893789e0969926960a87736aa1da5a4138ae",
+      "generated": true
+    },
+    {
+      "id": "jeans",
+      "path": "frontend/public/media/demo/fashion/jeans.webp",
+      "sha256": "eee9b4f72b0e926ae87eaacb12cc995cbbda3e959b9cb8d0841339a5662e45ad",
+      "generated": true
+    },
+    {
+      "id": "skirt",
+      "path": "frontend/public/media/demo/fashion/skirt.webp",
+      "sha256": "c27fecc1525c51fa5be12ba5e8198b877e6a4bb096bf0c6c9a6230a851521006",
+      "generated": true
+    },
+    {
+      "id": "sneakers",
+      "path": "frontend/public/media/demo/fashion/sneakers.webp",
+      "sha256": "1c43a13e8dfc5e370501d014670db544d929722a075bca28731407c3e4277c78",
+      "generated": true
+    },
+    {
+      "id": "bag",
+      "path": "frontend/public/media/demo/fashion/bag.webp",
+      "sha256": "5a53470231180594ed5f7907989cc36f6bb0bb7b09d9e4d6913275c21c9256f4",
+      "generated": true
+    },
+    {
+      "id": "scarf",
+      "path": "frontend/public/media/demo/fashion/scarf.webp",
+      "sha256": "5e1c3957f76ce2528f9eacc36c57b205d10169b97bf664c7e0b149d1a8d84c37",
+      "generated": true
+    }
+  ]
+}

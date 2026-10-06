@@ -45,24 +45,8 @@ pub(crate) async fn provision_shop(
         .bind(slug)
         .execute(&mut **tx)
         .await?;
-    // Every relation, including variant stock, translations and rules, is copied under the NEW tenant.
-    let template: Value =
-        serde_json::from_str(include_str!("../../fixtures/demo-catalog.json")).unwrap();
-    for p in template["products"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .filter(|_| seed_catalog)
-    {
-        sqlx::query("INSERT INTO products(tenant,id,name,category,description,price,tax_rate,stock,revision,list_price,regulation_price,reference_price,advanced_prices,min_purchase,purchase_steps,max_purchase,parent_id,options,media,properties,delivery_days) VALUES($1,$2,$3,$4,$5,$6,$7,$8,1,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20)").bind(slug).bind(p["id"].as_str()).bind(p["name"].as_str()).bind(p["category"].as_str()).bind(p["description"].as_str()).bind(p["price"].as_f64()).bind(p["tax_rate"].as_f64()).bind(p["stock"].as_i64().unwrap() as i32).bind(p["list_price"].as_f64()).bind(p["regulation_price"].as_f64()).bind(p["reference_price"].as_object().map(|_|p["reference_price"].clone())).bind(&p["advanced_prices"]).bind(p["min_purchase"].as_i64().unwrap() as i32).bind(p["purchase_steps"].as_i64().unwrap() as i32).bind(p["max_purchase"].as_i64().map(|v|v as i32)).bind(p["parent_id"].as_str()).bind(&p["options"]).bind(&p["media"]).bind(&p["properties"]).bind(p["delivery_days"].as_i64().unwrap() as i32).execute(&mut **tx).await?;
-    }
-    for tr in template["translations"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .filter(|_| seed_catalog)
-    {
-        sqlx::query("INSERT INTO product_translations(tenant,product_id,language_id,name,description) VALUES($1,$2,$3,$4,$5)").bind(slug).bind(tr["product_id"].as_str()).bind(tr["language_id"].as_str()).bind(tr["name"].as_str()).bind(tr["description"].as_str()).execute(&mut **tx).await?;
+    if seed_catalog {
+        demo_catalog::insert(tx, slug).await?;
     }
     let settings: Value =
         serde_json::from_str(include_str!("../../fixtures/demo-settings.json")).unwrap();
@@ -73,7 +57,7 @@ pub(crate) async fn provision_shop(
         .await?;
     sqlx::query("INSERT INTO experiences(tenant,data) VALUES($1,$2)")
         .bind(slug)
-        .bind(json!({"mode":"balanced","headline":"Objects for a more considered everyday."}))
+        .bind(json!({"mode":"balanced","headline":"A considered wardrobe. Made for everyday."}))
         .execute(&mut **tx)
         .await?;
     for variant in ["discovery", "comparison"] {
@@ -100,6 +84,9 @@ pub(crate) async fn provision_shop(
         .execute(&mut **tx)
         .await?;
     categories::seed(tx, slug).await?;
+    if seed_catalog {
+        demo_catalog::categories(tx, slug).await?;
+    }
     Ok(sandbox)
 }
 pub(crate) async fn create_workspace(

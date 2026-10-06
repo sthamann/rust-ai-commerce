@@ -14,7 +14,8 @@ current = [ROOT / 'README.md', ROOT / 'frontend/index.html']
 current += list((ROOT / 'frontend/src').rglob('*')) + list((ROOT / 'site').rglob('*'))
 for path in current:
     if path.is_file() and path.suffix in {'.md', '.ts', '.tsx', '.html', '.json', '.txt', '.svg', '.css'}:
-        assert not STALE.search(path.read_text()), f'Stale current branding: {path.relative_to(ROOT)}'
+        # Nord Atelier is the deliberately named fashion DEMO brand, not the product's former identity.
+        assert not STALE.search(path.read_text().replace('Nord Atelier', 'fashion demo')), f'Stale current branding: {path.relative_to(ROOT)}'
 
 assert re.search(r'^name = "vendune"$', (ROOT / 'Cargo.toml').read_text(), re.M)
 lock_names = re.findall(r'^name = "([^"]+)"$', (ROOT / 'Cargo.lock').read_text(), re.M)
