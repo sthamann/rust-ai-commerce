@@ -46,13 +46,16 @@ content authored for this prototype. No merchant/customer data is included.
 Rust/npm dependencies retain their respective licenses. Model weights and
 their licenses must be obtained separately through the chosen model provider.
 
-## Open database stack
+## Database and search stack
 
 - PostgreSQL: PostgreSQL License, https://www.postgresql.org/about/licence/
 - Apache AGE: Apache License 2.0, https://github.com/apache/age/blob/PG17/LICENSE
 - pgvector: PostgreSQL License, https://github.com/pgvector/pgvector/blob/v0.8.6/LICENSE
 
-The Dockerfile builds AGE at commit `502f2c1fa32a04497dc286237186e58ac4956a53`
+Fresh installations use standard PostgreSQL and Qdrant v1.16.3
+(Apache 2.0, https://github.com/qdrant/qdrant/blob/v1.16.3/LICENSE).
+AGE and pgvector are legacy dependencies retained for migration.
+The legacy `database/Dockerfile` builds AGE at commit `502f2c1fa32a04497dc286237186e58ac4956a53`
 and pgvector at tag `v0.8.6`. No BSL/SSPL database or proprietary edition is
 required. Model-provider APIs remain optional external services.
 

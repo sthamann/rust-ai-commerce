@@ -6,7 +6,7 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `CustomersManager.tsx`
+- [`CustomersManager.tsx`](CustomersManager.tsx): CRM list and editable customer profile with linked order history.
 
 ## Verification
 

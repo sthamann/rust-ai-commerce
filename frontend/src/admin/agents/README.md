@@ -6,7 +6,7 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `AgentsView.tsx`
+- [`AgentsView.tsx`](AgentsView.tsx): AgentsView renders verified shop state and typed user actions.
 
 ## Verification
 

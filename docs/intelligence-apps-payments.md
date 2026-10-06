@@ -9,7 +9,7 @@ flowchart LR
   Order[Order or confirmed sandbox capture] --> Event[Transactional outbox]
   Event --> Worker[Receipt-based projection worker]
   Worker --> Evidence[Order association with event and simulation provenance]
-  Evidence --> Graph[AGE relationship and persistent hypothesis]
+  Evidence --> Graph[PostgreSQL relationship and persistent hypothesis]
   Graph --> Merchant[Shop intelligence and grounded merchant chat]
   Merchant --> Review[Explicit merchant decision]
   Review --> Public[Product recommendations and customer concierge]
@@ -106,8 +106,7 @@ reconciliation. This follows the [Orders API](https://developer.paypal.com/api/r
 Configure server-only `PAYPAL_ACCOUNTS` (or legacy `PAYPAL_SANDBOX_ACCOUNTS`) as a JSON object keyed by exact
 workspace ID, with `clientId`, `clientSecret`, `webhookId`, explicit private `bnCode`,
 `environment` and optionally `merchantId`.
-Install the PayPal app in that shop and enable its Sandbox method in Sales &
-delivery. Set `PUBLIC_BASE_URL` to the browser-accessible origin. No credential is
+Install the PayPal app in that shop and enable its configured method in **Settings → Payment methods**. Set `PUBLIC_BASE_URL` to the browser-accessible origin. No credential is
 returned to the browser or sent to a model. The return flow relies on the original
 browser's cart context; hosted-agent handoff still needs a secure transfer token.
 
@@ -136,8 +135,10 @@ or refund reservations; they require reconciliation rather than guessed success.
 
 ## Process scaling and measured boundaries
 
-`PROCESS_ROLE` selects `all` (local default), `http` (HTTP and core outbox),
-`memory-worker`, `payment-worker` or `app-worker`. Worker roles do not bind an HTTP
+`PROCESS_ROLE` selects `all` (local default), `http` (HTTP and diagnostic
+counter flushing), `memory-worker` (core outbox and projections), `payment-worker`,
+`app-worker` (flows, schedules and app deliveries), `translation-worker` or
+`media-worker`. The HTTP-only role does not consume the durable outbox. Worker roles do not bind an HTTP
 port. Shared SQL leases/receipts coordinate replicas. Example configuration and
 an independently running SQLite service are in [extensions/README.md](../extensions/README.md).
 
@@ -148,11 +149,13 @@ stream-limited to 64 KiB. API compute, local inference and remote payments can
 therefore progress independently.
 
 These changes remove concrete bottlenecks; they do not establish a speedup over
-Shopware. Catalog listing/cart hydration and bootstrap still contain whole-catalog
-operations, vectors rank exactly, graph migrations/bootstrap are not online
-production rollout machinery, and global inference admission is not distributed.
-Million-product catalogs, thousands of merchants, tail latency and HA remain
-unmeasured. The next performance gate is comparable release-build workloads with
+Shopware. Catalog/detail/cart reads are now bounded and serving is separated
+from migrations. [Million-product commerce probes](benchmarks.md) and
+[small-fixture read-context comparisons](read-performance.md) are measured
+separately. Private Qdrant search replaces exact pgvector ranking; semantic
+quality/scale, sustained many-tenant capacity and HA remain unmeasured. Historical
+aggregates and some searches still grow with matching data. Global inference
+admission is per process, not distributed. The next performance gate is comparable release-build workloads with
 identical cart semantics, database and catalog size; report p50/p95/p99, throughput,
 CPU/memory and model latency separately.
 

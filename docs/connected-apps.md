@@ -45,7 +45,7 @@ flowchart LR
   G[Gmail / GA4 API] --> A[OAuth app service]
   A --> E[Incremental encrypted exports]
   E --> P[Private app_evidence in PostgreSQL]
-  P --> K[AGE source and product provenance]
+  P --> K[PostgreSQL source and product provenance]
   P --> M[Merchant model prompt with source IDs and digests]
   P --> MCP[knowledge.external MCP tool]
   E --> O[app.APP.source_imported event]
@@ -53,7 +53,7 @@ flowchart LR
   F --> S[Slack app action]
 ```
 
-`GET /api/knowledge/external?query=…` returns private sources and their AGE provenance.
+`GET /api/knowledge/external?query=…` returns private sources and their SQL provenance.
 `knowledge.external` exposes the same authorized source data through MCP. The merchant
 planner actually includes these sources in its model prompt and persisted task evidence.
 Source text is marked untrusted data, never instructions. The local wire test inspects
@@ -165,7 +165,7 @@ python3 scripts/rule_differential.py
 ```
 
 The integration suite uses real local HTTP OAuth/provider fixtures plus the actual Rust
-API, PostgreSQL, AGE, outbox, flow worker and model request adapter. It makes no paid AI
+API, PostgreSQL, Qdrant, outbox, flow worker and model request adapter. It makes no paid AI
 call and sends no message to a real Slack workspace. Live account authorization and
 Google/Slack deployment verification remain separate from these protocol tests.
 

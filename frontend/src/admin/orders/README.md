@@ -6,11 +6,11 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `OrderDetail.tsx`
-- `OrderPaymentDelivery.tsx`
-- `OrderWorkflow.tsx`
-- `OrdersManager.tsx`
-- `ReceiptPanel.tsx`
+- [`OrderDetail.tsx`](OrderDetail.tsx): Order workspace: server actions, exact-once commands, provider progress and visible event history.
+- [`OrderPaymentDelivery.tsx`](OrderPaymentDelivery.tsx): Payment jobs are observed until confirmation. Delivery actions share the server state machine.
+- [`OrderWorkflow.tsx`](OrderWorkflow.tsx): Server-owned transitions: one source for permitted actions, labels and business guards.
+- [`OrdersManager.tsx`](OrdersManager.tsx): Order operations UI. All changes call the same domain endpoints exposed through MCP.
+- [`ReceiptPanel.tsx`](ReceiptPanel.tsx): Seller configuration and version-bound receipt creation/download.
 
 ## Verification
 

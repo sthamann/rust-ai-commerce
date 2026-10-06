@@ -8,8 +8,8 @@
     <meta name="robots" content="index,follow" />
     <meta name="theme-color" content="#0c0e11" />
     <link rel="canonical" href="{{canonical}}" />
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="{{root}}favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="{{root}}style.css" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="{{title}}" />
     <meta property="og:description" content="{{description}}" />
@@ -26,14 +26,14 @@
   <body>
     <a class="skip" href="#main">Skip to content</a>
     <header class="header wrap">
-      <a class="brand" href="index.html"
-        ><img class="mark" src="favicon.svg" alt="" /> Vendune</a
+      <a class="brand" href="{{root}}index.html"
+        ><img class="mark" src="{{root}}favicon.svg" alt="" /> Vendune</a
       >
       <nav aria-label="Main navigation">
-        <a href="index.html#demo">Demos</a
-        ><a href="playground.html">Try it</a
-        ><a href="benchmarks.html">Benchmarks</a
-        ><a href="quickstart.html">Docs</a
+        <a href="{{root}}index.html#demo">Demos</a
+        ><a href="{{root}}playground.html">Try it</a
+        ><a href="{{root}}benchmarks.html">Benchmarks</a
+        ><a href="{{root}}docs/index.html">Docs</a
         ><a class="github" href="https://github.com/sthamann/vendune"
           >GitHub ↗</a
         >
@@ -41,18 +41,18 @@
     </header>
     <main id="main" class="wrap">{{content}}</main>
     <footer class="wrap footer">
-      <span>Source available. Merchant control. <a href="https://github.com/sthamann/vendune/blob/main/docs/licensing.md">Sustainable Use License</a>.</span>
+      <span>Source available. Merchant control. <a href="{{root}}docs/licensing.html">Sustainable Use License</a>.</span>
       <div>
         <a
-          href="https://github.com/sthamann/vendune/blob/main/CONTRIBUTING.md"
+          href="{{root}}docs/repository/CONTRIBUTING.html"
           >Contribute</a
         ><a
-          href="https://github.com/sthamann/vendune/blob/main/docs/security.md"
+          href="{{root}}docs/security.html"
           >Security & scope</a
-        ><a href="sitemap.xml">Sitemap</a>
+        ><a href="{{root}}sitemap.xml">Sitemap</a>
       </div>
       <p>
-        Experimental prototype · Simulated/manual/Sandbox payments · No
+        Experimental prototype · Provider transactions unverified · No
         production-readiness claim
       </p>
     </footer>

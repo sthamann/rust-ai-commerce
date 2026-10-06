@@ -3,8 +3,8 @@
 The prototype now runs Lean 4.29.1 proofs for **25 policies used in production
 Rust paths**. Fifty-three theorems cover the properties below. This is **not a
 certificate that the entire commerce core is correct or bug-free**. The current
-inventory contains 251 Rust modules: one extracted policy module, 21 reviewed
-binding modules, one comparison driver and 228 unproved modules. Binding review
+inventory contains 253 Rust modules: one extracted policy module, 21 reviewed
+binding modules, one comparison driver and 230 unproved modules. Binding review
 is not a proof of those modules.
 
 ## Connection to the real application
@@ -60,6 +60,12 @@ they do not prove the translator correct for every program.
 | `rule_authenticated` | A guest cannot satisfy the authenticated-customer condition; both Boolean branches match exactly | `src/marketing/rule_match.rs` |
 | `rule_boolean_comparison` | Equality, inequality and emptiness select the exact Boolean result | `src/rule_comparison.rs` |
 | `app_flow_admissible` | Only explicitly eligible private mutation actions can be flow targets | `src/marketing/app_flows.rs` |
+| `rule_xor_count` | XOR matches exactly one child; no matches cannot satisfy it | `src/automation_rules/evaluation.rs` |
+| `flow_delay_admissible` | Durable delays are positive and at most thirty days | `src/marketing/pipeline.rs` |
+| `destination_tax_admissible` | Condition, country, state, postcode and date guards must all match | `src/commerce/tax_rules.rs` |
+| `customer_group_net` | Net basis requires a configured business group; unknown groups cannot claim it | `src/commerce/customer_groups.rs` |
+| `app_tool_admissible` | Tool admission requires explicit enablement and current authorization | `src/apps/gateway.rs` |
+| `app_core_reference_admissible` | Product references may be public; customer/order references require private data | `src/apps/editor_contract.rs` |
 
 Every policy also has an exact acceptance theorem. This proves that valid
 inputs are accepted as well as unsafe inputs rejected; replacing a policy with

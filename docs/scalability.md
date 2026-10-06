@@ -6,7 +6,9 @@ counters, versioned setup and a pure HTTP process role. A real local database wi
 **1,000,000 synthetic root products and 1,000,000 German translations** is used for
 [the reproducible measurement](benchmarks.md). This demonstrates the measured
 requests on one local database; thousands of tenants, production capacity and the
-fleet load targets below remain proposed work.
+fleet load targets below remain proposed work. Later bounded private cloud
+workloads are described in [cloud releases](cloud-releases.md); these do not
+establish sustained fleet capacity.
 
 The following sections distinguish delivered work from the remaining roadmap.
 
@@ -77,7 +79,7 @@ use PostgreSQL, so export them to a dedicated metrics system for production.
 versioned tenant-policy caches, resumable catalog/AI projection jobs and resource
 isolation under competing workloads. `DB_POOL_MAX` is now configurable per process;
 its default 20 connections are still not a fleet-wide budget. Validate pooler
-compatibility with AGE and prepared statements.
+compatibility with transaction-local context, prepared statements and advisory locks.
 The initial 014 migration builds indexes transactionally; plan its upgrade window
 for an existing large database. It is not an online index build.
 
@@ -162,12 +164,12 @@ bounded database batches and a versioned publication step. Rebuild only changed
 documents and model versions; avoid redundant embeddings for identical variant
 descriptions within their authorized scope.
 
-[Semantic retrieval](../src/knowledge.rs) uses exact tenant-filtered vector
-ranking. At scale, evaluate tenant-aware ANN indexes or search partitions before
-introducing a separate search service. A shared ANN index can change another
-tenant's recall and latency; measure both relevance and isolation. The
-[pgvector documentation](https://github.com/pgvector/pgvector#multitenancy)
-describes this interaction and the speed/recall tradeoff. Validate retrieved
+[Semantic retrieval](../src/knowledge.rs) now uses private Qdrant with
+tenant/model filtering and authoritative PostgreSQL hydration. Source vectors
+and durable synchronization remain in PostgreSQL. [Managed hosting](managed-hosting.md)
+describes this delivered boundary and the legacy pgvector conversion. At scale,
+measure ANN recall, tenant interference, index freshness and failure recovery;
+the current integration tests do not establish million-product semantic capacity. Validate retrieved
 products and current commercial data against the tenant's authoritative records.
 
 One million 1,024-component float32 embeddings alone contain about 4.096 GB of

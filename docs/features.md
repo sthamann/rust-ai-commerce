@@ -65,18 +65,19 @@ billing, tenant lifecycle, core-wide RLS, physical separation and failover remai
 ## Vendune Studio · v0.5
 
 The light workspace uses Shopware-inspired blue accents and a large assistant.
-An optional slate-blue theme remains available. Seven integrated views provide:
+An optional slate-blue theme remains available. Dedicated workspaces provide:
 
 | View | Actual shop operation |
 |---|---|
 | Assistant | Persistent conversations, grounded proposals and explicit approval |
 | Shop today | API-backed orders, inventory, proposals and real recorded activity |
-| Shop intelligence | AGE product/need graph, complementary products, semantic retrieval and observed learning counts |
+| Shop intelligence | PostgreSQL product/need relations, complementary products, Qdrant retrieval and observed learning counts |
 | Agent commerce | Customer journey, actual adapter call counters and separate ChatGPT/Claude connection status |
 | Orders / Customers | Order detail, guarded workflow actions, customer fields/address books and immutable PDFs |
 | Settings | Structured company/address/legal metadata, safe logos, per-channel inheritance and selective releases; countries, taxes, shipping and payment methods |
 | Product content | One product workspace for translations, descriptions, specifications, assets and reviews |
-| Rules & flows | Source-named conditions, connected branches/actions/delays, campaigns and sales channels |
+| Rules & flows | Source-named conditions, connected branches/actions/delays and campaigns |
+| Sales channels | Editable main storefront, guided storefront/headless creation, inherited settings and dependency-safe lifecycle |
 | Storyfronts / Developers / Staging | Catalog/checkout integration, reviewed app drafts and selected private releases |
 | Team & access | Personal sign-in, workspace creation, invitations, roles and shop switching |
 | Apps | Categories and separate app detail/settings pages, managed records and app-owned UI |
@@ -90,7 +91,7 @@ also demonstrates Swiss German → German → system-language fallback.
 
 ## Intelligence and optional OpenAI/Claude
 
-The model receives current catalog state, bounded conversation history, AGE
+The model receives current catalog state, bounded conversation history, SQL
 relationships, real retrieval results and verified order/policy/channel facts.
 It returns an allowlisted typed proposal. The server attaches authoritative
 revisions, stores its evidence and requires an authorized merchant's explicit
@@ -119,35 +120,36 @@ small epsilon-greedy discovery/comparison policy with observed views and
 **simulated-order** rewards. These are contextual/policy memories. They are not
 online LLM weight training or evidence of causal sales uplift.
 
-## Fully open graph/vector/transactional storage
+## Transactional knowledge and private search storage
 
-PostgreSQL 17 + Apache AGE + pgvector are built from source in
-[database/Dockerfile](../database/Dockerfile):
+Fresh installations use ordinary PostgreSQL 17 and Qdrant v1.16.3 in
+[compose.yaml](../compose.yaml):
 
-- Real Cypher product/need/complement relationships with tenant and provenance.
-- Persisted vectors joined to live authoritative prices/inventory.
+- Tenant-scoped SQL product/need/complement relationships with provenance.
+- Persisted source vectors and a durable queue synchronizing the private search index.
+- Qdrant candidates hydrated against current PostgreSQL prices, stock, ownership and digests.
 - Atomic stock/order/idempotency/outbox transactions.
 - Durable users, memberships, conversations, proposals and experience counters.
 
-Licenses are PostgreSQL License / Apache 2.0 / PostgreSQL License. No commercial
+Licenses are PostgreSQL License and Apache 2.0. No commercial
 database edition, BSL/SSPL service or paid database account is required.
 [Attribution](../THIRD_PARTY.md) records source versions and licenses. The graph
 adds semantic structure to a transactional ledger; relational storage remains
 part of the architecture.
 
-AGE is source-commit pinned and pgvector is pinned to v0.8.6. Migrations are
-additive and retain the existing prototype volume; do not delete that volume
-when updating. Existing orders/prices/stock are preserved. The graph's template
-relationships are curated demo facts. Vector ranking is exact on the small
-catalog; million-product capacity, ANN recall, distributed graph sharding and
-production multi-tenant performance remain **unmeasured**. Bounded synthetic
-HTTP/catalog measurements on one million products are recorded separately in
-[benchmarks.md](benchmarks.md); they do not measure distributed AGE/ANN capacity.
+The [legacy Dockerfile](../database/Dockerfile) retains pinned AGE/pgvector for
+conversion of existing volumes. Additive migration 033 preserves existing ledger
+data and copies knowledge relations/vectors; never replace a legacy database image
+before its conversion/export. [Managed storage and migration](managed-hosting.md)
+documents the procedure. Template relationships remain curated demo facts.
+Million-product semantic quality, ANN recall and distributed search capacity are
+unmeasured. The bounded [commerce benchmark](benchmarks.md) measures HTTP/catalog,
+cart and order workloads independently of vector-search capacity.
 
 ## Evidence-driven shop intelligence and full app examples
 
 Orders now project into **durable, evidence-linked co-purchase relationships** in
-AGE. Shop intelligence shows what was observed, simulation provenance and ideas
+PostgreSQL. Shop intelligence shows what was observed, simulation provenance and ideas
 for review. A merchant-approved association is consumed on the product page and
 in customer advice. This changes operational memory; model weights remain fixed
 and observed correlation does not prove sales uplift.
@@ -270,18 +272,18 @@ flowchart TD
   API --> AUTH[Personal sessions / workspace roles]
   AUTH --> CORE[Shared commerce operations]
   AUTH --> PLAN[Local / OpenAI / Claude planning]
-  GRAPH[AGE graph / pgvector retrieval] --> PLAN
+  GRAPH[SQL relations / private Qdrant retrieval] --> PLAN
   PLAN --> PREVIEW[Stored proposal + verified facts]
   PREVIEW --> APPROVAL[Authorized explicit approval]
   APPROVAL --> CORE
   CORE --> WASM[Persisted bounded Wasm policy]
-  CORE --> DB[(Open PostgreSQL + AGE + pgvector)]
+  CORE --> DB[(PostgreSQL ledger and knowledge)]
   GRAPH --> DB
   CORE --> APPS[Registered app actions / own typed entities]
   APPS --> SERVICE[Independent app service and iframe SDK]
-  DB --> PAY[Leased payment worker / Sandbox provider]
+  DB --> PAY[Leased payment worker / configured provider]
   DB --> MEMORY[Shop conversations / observations / outbox]
-  MEMORY --> EVIDENCE[AGE co-purchase evidence / hypotheses]
+  MEMORY --> EVIDENCE[SQL co-purchase evidence / hypotheses]
   EVIDENCE --> APPROVED[Merchant-approved customer recommendations]
   MEMORY --> UI
   REF[Original Shopware PHP] --> DIFF[Differential migration gates]
@@ -315,7 +317,9 @@ shop directory, global and per-shop statistics, staging exclusion, four-language
 UI, immediate revocation and production-mode bootstrap are implemented.
 `platform.py` and `platform_setup.py` exercise actual PostgreSQL/HTTP behavior.
 [Exact metrics and limits](platform.md), [deployment status](deployment.md).
-No public host, custom-domain provisioning, billing or failover is claimed.
+The experimental public Studio is deployed; its dated checks are in
+[cloud releases](cloud-releases.md). Automatic domain provisioning, billing and
+tested failover remain unimplemented.
 
 Full apps now add own admin modules, storefront pages/panels, namespaced API routes, selected AI context and independent storage. See [app-platform.md](app-platform.md) for connected examples and tested boundaries.
 

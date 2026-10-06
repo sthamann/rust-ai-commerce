@@ -8,10 +8,15 @@ cell architecture, delivery order and proposed capacity/economics tests.
 
 ## One transactional core, independently deployable workers
 
-Start with one Rust/Axum process and PostgreSQL 17 with Apache AGE and pgvector. This is the smallest unit that
-can prove checkout behavior, protocol reuse and tenant isolation together.
-The v0.5 runtime can separately deploy HTTP, memory/outbox, payment and app-event
-roles. SQL leases and receipts coordinate their work. Inference still uses an
+Fresh installations use Rust/Axum, ordinary PostgreSQL 17 and private Qdrant
+v1.16.3. PostgreSQL owns commerce records, knowledge relations, source vectors
+and the durable synchronization queue; Qdrant supplies rebuildable vector search.
+Candidates are hydrated and checked against current PostgreSQL state. AGE and
+pgvector are retained for legacy conversion, not required for a fresh install.
+See [managed hosting](managed-hosting.md) for migration and index-consistency boundaries.
+The runtime can separately deploy HTTP, memory/outbox, payment, app-event,
+translation and media roles. HTTP-only deployments need workers for queued work.
+SQL leases and receipts coordinate their work. Inference still uses an
 external Ollama/provider service and process-local admission. Prices,
 reservations and order placement share a database transaction initially.
 
@@ -67,12 +72,17 @@ unimplemented portions are documented rather than claiming all agentic
 standards are one interchangeable interface.
 
 Primary protocol sources checked during implementation:
+
 - https://ucp.dev/specification/shopping/checkout/rest/
 - https://ucp.dev/2026-08-25/schemas/shopping/checkout.json
 - https://modelcontextprotocol.io/specification/2026-07-28/server/tools
 - https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
 
-## v0.2: one open data engine, three representations
+## Historical v0.2: one data engine, three representations
+
+This section records the original AGE/pgvector implementation. The current
+PostgreSQL/Qdrant replacement is described above; the extension requirements
+and exact-vector search details below apply to the earlier version.
 
 PostgreSQL owns orders, stock, revision checks, outbox, conversations and
 proposals. Apache AGE owns explicit Product/Need nodes and SERVES/PAIRS_WITH
@@ -91,7 +101,11 @@ performance is claimed. A production system needs bounded graph neighborhoods,
 tenant partitioning and retrieval before model context construction; the
 six-product demo still passes the full bounded catalog to the planner.
 
-## v0.2: persisted conversations and provider boundaries
+## Historical v0.2: persisted conversations and provider boundaries
+
+The transaction-held inference described here was later replaced with short
+conversation leases and network calls outside database transactions; see
+[the current inference path](intelligence-apps-payments.md#process-scaling-and-measured-boundaries).
 
 The merchant chat reads current catalog, graph, experience state, recent
 conversation and verified simulated-order aggregates. Ollama (explicitly disabling optional thinking for bounded structured operations), OpenAI Responses
@@ -113,7 +127,7 @@ the prototype does not imply local endpoints are reachable from hosted clients.
 Cold restart checks include graph relations, exact stored vector digests,
 conversations and approval state, alongside the earlier ledger/policy checks.
 
-## v0.3: merchant visibility and language context
+## Historical v0.3: merchant visibility and language context
 
 Vendune Studio reads one tenant-scoped overview containing actual order
 aggregates, seven-day counts, inventory, AGE relations, vector-index metadata,

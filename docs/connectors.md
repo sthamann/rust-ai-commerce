@@ -13,8 +13,8 @@ ANTHROPIC_API_KEY=your-api-key
 ANTHROPIC_MODEL=claude-sonnet-5-5
 ```
 
-In `/#merchant`, connect using the local merchant credential and open
-**Einstellungen / Settings**. Choose Local, OpenAI, or Claude. You can override
+In `/#merchant`, sign in with a personal member account and open the assistant
+model settings. Choose Local, OpenAI, or Claude. You can override
 the model ID per turn. The server uses OpenAI **Responses** with structured
 outputs, or Anthropic **Messages** with `output_config.format`. No subscription
 cookies, ChatGPT browser automation, or Claude subscription tokens are used.
@@ -52,8 +52,9 @@ the absolute checkout path. Preserve existing entries in your config.
 ```
 
 This configuration exposes the customer/read tools. For merchant planning and
-approval, set `MERCHANT_TOKEN` privately in that entry or the client's inherited
-environment. Do not commit a filled credential/config. The tool sequence is
+approval, set `COMMERCE_SESSION_TOKEN` privately to a personal member session
+and `COMMERCE_TENANT` to its shop. A scoped integration key is another option
+through the same authenticated server path. Do not commit a filled credential/config. The tool sequence is
 `merchant.plan` → inspect the stored preview → `merchant.apply` with explicit
 approval. `knowledge.graph` and `knowledge.search` expose the actual graph and
 retrieval route. The bridge is transport, not another commerce implementation.
@@ -83,7 +84,7 @@ MCP app in Developer Mode. Account availability and authentication requirements
 depend on the product/plan. This repository does not register an app in your
 ChatGPT/Claude account or implement a full OAuth authorization server.
 For a remote UI connector that requires OAuth, an OAuth gateway is still needed;
-the local prototype's shared token is not a production replacement for it.
+a personal session or integration key is not a replacement for that OAuth gateway.
 
 [ChatGPT developer-mode setup and secure-tunnel guidance](https://help.openai.com/en/articles/12584461-developer-mode-and-full-mcp-connectors-in-chatgpt)
 and [OpenAI remote MCP API](https://developers.openai.com/api/docs/guides/tools-connectors-mcp).

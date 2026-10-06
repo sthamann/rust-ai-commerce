@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
-"""Build the public documentation site using Python's standard library only."""
+"""Build marketing pages and the complete Markdown documentation for GitHub Pages."""
 import html
 import json
 import shutil
+import os
+import re
 from pathlib import Path
+
+from site_markdown import build_documents
 
 ROOT = Path(__file__).resolve().parents[1]
 DEST = ROOT / '.site'
@@ -82,41 +86,48 @@ def build():
         if asset.is_file():
             shutil.copyfile(asset, DEST / 'assets' / asset.name)
     urls = []
-    for page in pages:
-        url = BASE + ('' if page['file'] == 'index.html' else page['file'])
+
+    def write_page(path, title, description, content):
+        filename = path.as_posix()
+        url = BASE + ('' if filename == 'index.html' else filename)
         schema = {
             '@context': 'https://schema.org',
-            '@type': 'SoftwareSourceCode' if page['file'] == 'index.html' else 'TechArticle',
-            'name': page['title'], 'description': page['description'], 'url': url,
+            '@type': 'SoftwareSourceCode' if filename == 'index.html' else 'TechArticle',
+            'name': title, 'description': description, 'url': url,
         }
-        if page['file'] == 'index.html':
+        if filename == 'index.html':
             schema.update(codeRepository=REPO, programmingLanguage=['Rust', 'TypeScript'],
                           license=REPO + '/blob/main/LICENSE')
         else:
-            schema.update(headline=page['title'], author={'@type': 'Person', 'name': 'Stefan Hamann'})
+            schema.update(headline=title, author={'@type': 'Person', 'name': 'Stefan Hamann'})
         fields = {
-            'title': html.escape(page['title']),
-            'description': html.escape(page['description'], quote=True),
+            'title': html.escape(title),
+            'description': html.escape(description, quote=True),
             'canonical': url,
             'image': BASE + 'assets/vendune-studio-en.jpg',
             'schema': json.dumps(schema, ensure_ascii=False).replace('<', '\\u003c'),
-            'content': (ROOT / 'site/pages' / page['file']).read_text(),
-            **evidence,
+            'content': content,
+            'root': '' if path.parent == Path('.') else os.path.relpath('.', path.parent) + '/',
         }
-        document = template
-        for key, value in fields.items():
-            document = document.replace('{{' + key + '}}', value)
-        if '{{' in document:
-            raise ValueError('Unresolved template placeholder: ' + page['file'])
-        (DEST / page['file']).write_text(document)
+        # Substitute only the shell: code examples in a guide may contain {{literal}}.
+        document = re.sub(r'\{\{(\w+)\}\}', lambda match: fields[match[1]], template)
+        output = DEST / path
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_text(document)
         urls.append(url)
+
+    for page in pages:
+        content = (ROOT / 'site/pages' / page['file']).read_text()
+        content = re.sub(r'\{\{(\w+)\}\}', lambda match: evidence[match[1]], content)
+        write_page(Path(page['file']), page['title'], page['description'], content)
+    documents = build_documents(DEST, write_page)
     (DEST / 'sitemap.xml').write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         ''.join('<url><loc>' + html.escape(url) + '</loc></url>\n' for url in urls) + '</urlset>\n')
     shutil.copyfile(ROOT / 'site/llms.txt', DEST / 'llms.txt')
     (DEST / '.nojekyll').touch()
-    print(f'Built {len(pages)} pages in {DEST}')
+    print(f'Built {len(urls)} pages ({documents} Markdown documents) in {DEST}')
 
 
 if __name__ == '__main__':

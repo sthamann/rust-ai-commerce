@@ -14,7 +14,7 @@ Frankfurt: one Managed PostgreSQL addon, one Rust Core replica and one private Q
 
 `SHOP_DOMAIN_SUFFIX=vendune.ai` binds shop hostnames to tenant scope. Unknown shops and conflicting tenant headers are rejected. `app.vendune.ai` or `/#platform` opens the operator console; `SHOP.vendune.ai` opens that shop, and `/?shop=SHOP#merchant` opens its Studio on the operator origin. Before DNS is ready the same paths work on the default Northflank HTTPS origin. Creating a shop is a database transaction, not a new container, database or certificate.
 
-Estimated continuous monthly resources: Core $12, PostgreSQL $12, Qdrant $12, PostgreSQL 6 GB $0.90, Qdrant 6 GB $0.90, retained inactive legacy 20 GB volume $3 = $40.80. Example 10 GB egress adds $0.60. Jobs/builds, backup storage, AI APIs and taxes are additional. This single-instance test topology has no HA guarantee. Qdrant's attached single-writer volume requires recreate deployment and cannot be scaled by simply increasing replicas.
+Recorded test-topology estimate (October 2026; not a live pricing quotation): Core $12, PostgreSQL $12, Qdrant $12, PostgreSQL 6 GB $0.90, Qdrant 6 GB $0.90, retained inactive legacy 20 GB volume $3 = $40.80. Example 10 GB egress adds $0.60. Jobs/builds, backup storage, AI APIs and taxes are additional. This single-instance test topology has no HA guarantee. Qdrant's attached single-writer volume requires recreate deployment and cannot be scaled by simply increasing replicas.
 
 ## Growing into database islands
 

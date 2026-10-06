@@ -2,7 +2,7 @@
 
 Vendune Studio now owns one **Products** workspace. The **Products** tab provides a server-filtered, cursor-paginated list; **Categories** provides the translated category tree. Select a product to edit the complete native aggregate, or choose **Create product**. A new product starts inactive. Set its number, name, price, stock and assignments, then save. Activation makes it available through the same Store API consumed by the storefront.
 
-The interface and content editor support English, German, French and Spanish. Change **Content language** to edit the corresponding name, short description, rich description, specifications and SEO fields. Empty translated names initially use the entered name as a fallback; this is not an AI translation. Existing rich descriptions remain language-specific. Changing the Studio interface language keeps the selected product, content language and unsaved draft open; switching shops or environments starts a separate scoped workspace.
+The interface supports English, German, French and Spanish. Content editors use every enabled shop content language. Change **Content language** to edit the corresponding name, short description, rich description, specifications and SEO fields. Missing/null fields inherit the shop main language; an explicitly empty description stays empty. Viewing a fallback never saves a fabricated translation. Existing rich descriptions remain language-specific. Changing the Studio interface language keeps the selected product, content language and unsaved draft open; switching shops or environments starts a separate scoped workspace.
 
 ## Product detail workspace
 

@@ -6,11 +6,11 @@ The Studio, customer storefront and SaaS operator console are independent React 
 src/
   application/ root routing and lazy-load recovery
   admin/       shell, assistant, dashboard, catalog, orders, customers,
-               intelligence, automation, apps, settings, team,
+               intelligence, automation, channels, apps, settings, team,
                storyfronts, developer, environments, preview, styles
   storefront/  shell, catalog, checkout, account, analytics, styles
   platform/    operator login, shops and aggregate statistics
-  shared/      api, apps, customer, content, ui, i18n, styles
+  shared/      api, apps, customer, content, geography, history, ui, i18n, styles
 ```
 
 Every feature folder has a README and every source file has a responsibility comment. The [complete module inventory](../docs/module-inventory.md) is checked in CI. The Rust module/test mapping remains in [the source map](../docs/source-map.md).
@@ -37,6 +37,6 @@ npm run test:coverage
 
 Unit/component tests use Testing Library and the real components/transports, with explicit synthetic HTTP fixtures and no external providers. Their coverage includes **all TS/TSX source files**, including untouched files. `npm run test:coverage:full` deliberately fails until all measured frontend statements, lines, branches and functions reach 100%; the current result must not be advertised as 100%.
 
-See [the cross-language testing guide](../docs/testing.md) for actual PostgreSQL/AGE integration, original Shopware comparisons, Lean scope, reports and CI gates. UI integration fixtures are not proof that all products, accounts or provider configurations work in production.
+See [the cross-language testing guide](../docs/testing.md) for actual PostgreSQL/Qdrant integration and legacy conversion checks, original Shopware comparisons, Lean scope, reports and CI gates. UI integration fixtures are not proof that all products, accounts or provider configurations work in production.
 
 Local in-place builds retain content-addressed chunks for already-open sessions. Deployment packaging should start in a fresh directory. Application and Studio workspace error boundaries offer an explicit reload if a chunk was removed by a deployment.

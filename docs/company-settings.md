@@ -57,7 +57,8 @@ invoice compliance or the completeness of a shop's legal disclosures.
 For example, the basis can contain one seller/address/logo while a second brand
 changes only `brandName.de`, `email` and `logoId`. A different legal seller may
 also override `name`, address and register details. Tax, shipping and payment
-configuration remain the existing shop-wide commerce aggregate: company
+configuration has its own shared basis and sparse channel overrides; see
+[settings scopes](settings-media.md#shared-basis-and-sales-channel-settings). Company
 identity overrides do not silently change tax calculation or provider accounts.
 Other domains should adopt explicitly typed override contracts and connect their
 actual consumers; a generic JSON settings bag is insufficient for those rules.
@@ -79,8 +80,8 @@ Writes require `settings.write`, reads require `settings.read`; company MCP tool
 use the same tenant admission and permissions. Channel writes require both the
 observed override revision and basis revision. Stale writes return 409 and leave
 the client draft intact. Basis changes also validate all resulting dependent
-channel addresses. The persisted main `default` channel uses the shared basis;
-configured channels have independent sparse overrides. Each update emits
+channel addresses. The main `default` channel and additional channels inherit the shared basis
+until explicitly overridden; each has an independent sparse override record. Each update emits
 `settings.master_data_changed` through the normal outbox.
 
 ## Logo and public identity

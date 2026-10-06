@@ -6,13 +6,13 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 
 ## Modules
 
-- `ImagePlaceholder.tsx`: translated empty-media state for new products.
-- `MemoryRecommendations.tsx`
-- `ProductAttachments.tsx`
-- `ProductPage.tsx`
-- `ProductPurchase.tsx`
-- `ProductQuestion.tsx`
-- `ProductReviews.tsx`
+- [`ImagePlaceholder.tsx`](ImagePlaceholder.tsx): Honest empty-media state for newly created products; never invent a product photograph.
+- [`MemoryRecommendations.tsx`](MemoryRecommendations.tsx): Public consumer of merchant-approved learned associations, hydrated with current product state.
+- [`ProductAttachments.tsx`](ProductAttachments.tsx): Public attachment list follows the active storefront tenant and channel; private downloads are never listed.
+- [`ProductPage.tsx`](ProductPage.tsx): Product family, gallery, context pricing and moderated customer reviews.
+- [`ProductPurchase.tsx`](ProductPurchase.tsx): ProductPurchase: focused pdp-purchase view with explicit typed inputs and callbacks.
+- [`ProductQuestion.tsx`](ProductQuestion.tsx): Read-only product questions cite only tenant-owned, explicitly published source documents.
+- [`ProductReviews.tsx`](ProductReviews.tsx): ProductReviews: focused pdp-reviews view with explicit typed inputs and callbacks.
 
 ## Verification
 

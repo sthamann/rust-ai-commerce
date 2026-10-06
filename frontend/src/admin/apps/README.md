@@ -6,19 +6,19 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `AppLibrary.tsx` — installed/discover search, filters and actionable cards
-- `AppArtwork.tsx` — provided assets, independent fallbacks and generated vector covers
-- `AppInterfaces.tsx` — permission-filtered registered native/external admin surfaces
-- `library-model.ts` — builtin catalog, categories and localized content resolution
-- `AppDetails.tsx`
-- `AppEntity.tsx`
-- `AppsManager.tsx`
-- `ConnectorPanel.tsx`
-- `EmailPanel.tsx`
-- `EmailProviderFields.tsx`
-- `PaymentManager.tsx`
-- `app-types.ts`
-- `email-languages.ts`
+- [`AppArtwork.tsx`](AppArtwork.tsx): Passive app artwork with independent failed-image fallbacks and deterministic local category covers.
+- [`AppDetails.tsx`](AppDetails.tsx): AppDetails: Installed app details, activation, version, data and isolated interface.
+- [`AppEntity.tsx`](AppEntity.tsx): Managed entity editor renders fields from the installed app contract.
+- [`AppInterfaces.tsx`](AppInterfaces.tsx): Open registered native/isolated admin surfaces through the existing permission-filtered registry.
+- [`AppLibrary.tsx`](AppLibrary.tsx): Searchable installed/discovery app cards with category/status filters and real lifecycle actions.
+- [`AppsManager.tsx`](AppsManager.tsx): Installed package workspace: lifecycle, generated entities and shared agent actions.
+- [`ConnectorPanel.tsx`](ConnectorPanel.tsx): Native app workspace: OAuth, provider settings, durable jobs and private sources.
+- [`EmailPanel.tsx`](EmailPanel.tsx): Native email app settings, localized templates, safe previews and durable delivery receipts.
+- [`EmailProviderFields.tsx`](EmailProviderFields.tsx): EmailProviderFields: focused connector-settings view with explicit typed inputs and callbacks.
+- [`PaymentManager.tsx`](PaymentManager.tsx): Payment ledger, adapter readiness and explicit refund approval.
+- [`app-types.ts`](app-types.ts): Installed package metadata used by app administration views.
+- [`email-languages.ts`](email-languages.ts): Supported transactional email template languages.
+- [`library-model.ts`](library-model.ts): Shared app discovery metadata, safe artwork sources and localized search independent of rendering.
 
 ## Verification
 

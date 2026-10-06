@@ -73,7 +73,7 @@ checking **Orders → Documents**. Browser reloads do not discard persisted jobs
 
 ## Try the other workspaces
 
-- **Product content:** select one product, maintain its four translations,
+- **Products:** select one product, maintain its enabled content languages,
   specifications, rich description/media blocks, SEO metadata and cross-selling.
 - **Shop knowledge:** upload a UTF-8 data sheet or searchable PDF, assign a product
   and explicitly publish it. Product questions then use that eligible source when
@@ -118,7 +118,7 @@ backend; localhost cannot serve a remote ChatGPT/Claude account directly.
 
 This tour covers the implemented prototype. Disabled rules, complete original
 FlowSequence import/export, all upstream triggers/configurations, production
-identity recovery, Shopware Payments and a public commerce deployment remain
+identity recovery, Shopware Payments and production checkout certification remain
 outside it. [Automation contracts](automation.md), [feature inventory](features.md)
 and [the Shopware parity matrix](shopware-parity.md) give precise boundaries.
 
@@ -133,7 +133,7 @@ The suite uses no paid provider, mail delivery or live payment account.
 Open **Products** in Studio. Search by name or product number, filter status,
 category or low stock, then select a row. Use **Create product**, enter a unique
 number/name, price/stock and category, and save. New products start inactive;
-activate deliberately to expose them in the Store API. Edit four content languages
+activate deliberately to expose them in the Store API. Edit enabled content languages
 and rich descriptions in the same detail view. Under **Categories**, manage the
 translated tree; the storefront category bar uses those real assignments.
 [Full product guide and scope](product-management.md).

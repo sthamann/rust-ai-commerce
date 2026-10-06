@@ -102,8 +102,9 @@ customer registration/address checkout and own order access before promoting it.
 Use `?shop=SHOP_ID` and optionally `&channel=CHANNEL_ID` for storefronts.
 `/#platform` opens the operator console; `?shop=SHOP_ID#merchant` opens a shop's
 merchant studio. Staging previews use the existing private merchant session.
-Custom domains and host-to-tenant provisioning are not implemented by this
-query-parameter prototype.
+`SHOP_DOMAIN_SUFFIX` supports operator-configured shop subdomains with trusted
+host-to-tenant binding; see [managed hosting](managed-hosting.md). Automatic
+DNS/certificate provisioning for arbitrary merchant domains remains unimplemented.
 
 ## Local release checks
 
@@ -119,7 +120,7 @@ actual shop creation and closed signup/bootstrap gates. It is distinct from a
 public HTTPS/Vercel deployment. `platform.py` and `platform_setup.py` are mandatory
 HTTP/PostgreSQL CI tests.
 
-Public experimentation still needs a selected host/domain and operator identity.
+Additional public deployments need their own host/domain and operator identity.
 Broader production SaaS requires recovery/email verification, rate limits/abuse
 controls, core-wide RLS, per-tenant inference budgets, signed app trust, billing,
 large-catalog staged branches, backups/restores and measured failover. The

@@ -6,7 +6,7 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `EnvironmentManager.tsx`
+- [`EnvironmentManager.tsx`](EnvironmentManager.tsx): Private environment creation and digest-bound selective release.
 
 ## Verification
 

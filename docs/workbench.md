@@ -1,8 +1,9 @@
 # Merchant workbench, knowledge and selective releases
 
 The workbench connects merchant chat, Storyfront, app development and private
-shop environments. It is a working prototype with four supported locales:
-English (`en-GB`), German (`de-DE`), French (`fr-FR`) and Spanish (`es-ES`).
+shop environments. Interface labels support English (`en-GB`), German (`de-DE`),
+French (`fr-FR`) and Spanish (`es-ES`). Content editors use the enabled shop
+languages and per-field inheritance from the shop main language.
 
 ## One merchant, several shops
 
@@ -21,7 +22,7 @@ Channel IDs do not grant merchant authorization.
 
 ## Develop and release an app
 
-1. Open **Environments**, name a private sandbox and create it.
+1. Open **Staging & releases**, name a private sandbox and create it.
 2. Open **Developers**, choose that sandbox, provider and model, and describe the
    feature. Local Ollama, OpenAI API and Anthropic API use the same structured
    generation contract. Providers need operator-configured credentials.
@@ -31,7 +32,7 @@ Channel IDs do not grant merchant authorization.
    authorized API actions and native admin/storefront slots in that private shop.
 5. Select the sandbox in the workbench header. Use **Apps** to edit
    app records, and **Preview** to inspect its shopper UI.
-6. Return to **Environments**. Review before/after data, select exact changes and
+6. Return to **Staging & releases**. Review before/after data, select exact changes and
    publish. App installation and individual app records are separate selections.
 
 Codex and Claude Code can use the exported task, schema and local MCP bridge.
@@ -66,12 +67,14 @@ because arbitrary app records can contain customer or order data. The prototype 
 
 Selectable units are `product:ID`, `app:ID`, `appdata:APP:ENTITY:RECORD`,
 `document:ID`, `rule:ID`, `promotion:ID`, `flow:ID`, `channel:ID`, `settings` and
-`experience`. The entire selected release is transactional. Staged digests and
+`experience`, `category:ID`, `company`, `company-channel:ID`,
+`settings-channel:ID` and `order-workflow`. The entire selected release is transactional. Staged digests and
 current live content are checked against the baseline; a conflicting live edit
 rejects the release. A release receipt records actor, selections and time.
-No partial success is silently reported. Product creation/deletion, destructive
-schema changes, automatic conflict merging and one-click rollback are outside
-this release contract. A new sandbox can be created after a conflict.
+No partial success is silently reported. New products/categories can be
+selectively released in dependency order; live stock remains live-owned. Product
+deletion, destructive schema changes, automatic conflict merging and one-click
+rollback are outside this release contract. A new sandbox can be created after a conflict.
 
 ## Product knowledge and intelligence
 
@@ -81,15 +84,16 @@ CPU/time limits (and a 512 MiB address-space limit on Linux); no OCR is provided
 not a microVM or protection against every parser vulnerability.
 
 Documents are private initially. An explicit revision-bound publication makes a
-source available to product questions. Content hashes, chunks and actual AGE
-`Product → HAS_DOCUMENT → Document` relations retain provenance. Published
+source available to product questions. Content hashes, chunks and transactional
+PostgreSQL product/document relations retain provenance. Published
 relations are shown in the knowledge view. Private source content is excluded
 from customer retrieval. A source can also be prepared/published through a
 selected staging release.
 
 A customer asks a question on the product detail page. The model receives the
 current product snapshot and up to eight eligible chunks. Retrieval merges
-lexical and optional local pgvector similarity ranks; an unavailable embedding
+lexical and optional private Qdrant similarity ranks, hydrated against current
+PostgreSQL ownership, publication and source digests; an unavailable embedding
 service falls back to lexical search. The answer returns validated source IDs,
 exact excerpts and hashes. Unsupported claims/citations are rejected where
 structurally detectable; factual answer quality still depends on the model.
@@ -104,8 +108,8 @@ universal hyper-personalization. Shipping and price are recalculated by the core
 
 ## Rules, flows, campaigns and customers
 
-**Rules & flows** has rule, campaign, connected event-flow and sales-channel
-workspaces. Typed source conditions and nested AND/OR/NOT/XOR trees are editable
+**Rules & flows** has rule, campaign and connected event-flow workspaces.
+**Sales channels** is a separate Studio workspace. Typed source conditions and nested AND/OR/NOT/XOR trees are editable
 in the graphical builder; exact JSON is available for inspection. The reflected
 catalog has 114 production rule classes, 108 native scope bindings and 16 Core
 action names. 432 direct PHP cases cover 74 original conditions; registration is
@@ -135,7 +139,7 @@ identity/group. Customers cannot self-assign a group; history excludes reusable
 cart tokens. Email changes/verification/recovery and account deletion still need
 production identity work.
 
-Product metadata supports four-language names/descriptions, SEO metadata,
+Product metadata supports enabled-shop-language names/descriptions, SEO metadata,
 translated specifications, cross-selling IDs and a free-shipping flag consumed
 by checkout. Existing SKU quantity prices and delivery timing remain shared
 between detail and cart. SEO slugs are metadata, not yet separate server-rendered

@@ -6,15 +6,19 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 
 ## Modules
 
-- `CollectionView.tsx`
-- `ConciergeView.tsx`
-- `Storefront.tsx`
-- `StorefrontContext.ts`
-- `StorefrontHeader.tsx`
-- `StorefrontHome.tsx`
-- `useCatalog.ts`
-- `usePersonalization.ts`
-- `useStorefrontController.ts`
+- [`CatalogNavigation.tsx`](CatalogNavigation.tsx): Public category navigation uses the same tenant/channel tree as the listing API, with translated names.
+- [`CollectionView.tsx`](CollectionView.tsx): CollectionView: storefront view composed from the scoped cart/controller.
+- [`CompanyLegalPage.tsx`](CompanyLegalPage.tsx): Directly reachable channel legal page; renders only the server's explicit public projection as text.
+- [`ConciergeView.tsx`](ConciergeView.tsx): ConciergeView: storefront view composed from the scoped cart/controller.
+- [`Storefront.tsx`](Storefront.tsx): Storefront composition root: cart context, routes, customer account and checkout.
+- [`StorefrontContext.ts`](StorefrontContext.ts): Local storefront context, scoped to the mounted tenant and sales channel.
+- [`StorefrontHeader.tsx`](StorefrontHeader.tsx): StorefrontHeader: storefront view composed from the scoped cart/controller.
+- [`StorefrontHome.tsx`](StorefrontHome.tsx): StorefrontHome: storefront view composed from the scoped cart/controller.
+- [`StorefrontLanguage.tsx`](StorefrontLanguage.tsx): Shop-configured content languages, including custom locales; the interface keeps its supported language vocabulary.
+- [`useCatalog.ts`](useCatalog.ts): Cursor catalogue loading, debounced filters and stale-response protection.
+- [`useCompanyIdentity.ts`](useCompanyIdentity.ts): Channel-scoped public brand/legal identity; stale responses cannot leak across tenants or languages.
+- [`usePersonalization.ts`](usePersonalization.ts): Opt-in behavior signals and stable product ordering; no authoritative prices are changed.
+- [`useStorefrontController.ts`](useStorefrontController.ts): Cart lifecycle, authoritative checkout commands and storefront coordination.
 
 ## Verification
 

@@ -27,6 +27,8 @@ unimplemented protocol or production capability in documentation.
 For documentation/site changes:
 
 ```sh
+python3 -m pip install -r site/requirements.txt
+python3 -m pip install -r site/requirements.txt
 python3 scripts/build_site.py
 python3 scripts/check_site.py
 ```

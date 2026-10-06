@@ -6,7 +6,8 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 
 ## Modules
 
-- `RichDescription.tsx`
+- [`RichDescription.tsx`](RichDescription.tsx): Safe rich blocks with native image/video rendering; no HTML interpretation or script execution.
+- [`rich-document.tsx`](rich-document.tsx): Safe structured editor rendering. Only known nodes/marks produce elements; URLs are never executable.
 
 ## Verification
 

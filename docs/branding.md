@@ -3,7 +3,7 @@
 **Product:** Vendune. **Merchant workspace:** Vendune Studio.
 **Operator console:** Vendune Platform.
 **Canonical repository:** https://github.com/sthamann/vendune.
-**Documentation:** https://sthamann.github.io/vendune/.
+**Documentation:** https://sthamann.github.io/vendune/docs/.
 
 The V mark combines a folded V with a dune contour, using azure `#2459ef` and
 cyan `#18b9d9`. The mark is a small, dependency-free SVG. UI and site favicons use
@@ -20,8 +20,9 @@ README product images remain unedited captures of the actual English prototype.
 ## Package and deployment naming
 
 The Rust crate and HTTP binary are `vendune`; Rust imports use `vendune::`.
-The frontend package is `vendune-experience`. Docker images use `vendune` and
-`vendune-db`; fresh local installations use Compose project `vendune` and
+The frontend package is `vendune-experience`. The application image uses `vendune`; fresh local database/search containers use
+standard PostgreSQL and Qdrant images. The legacy `vendune-db` image is retained
+for existing AGE/pgvector conversions. Fresh local installations use Compose project `vendune` and
 container `vendune-postgres-1`. Start and worker commands, differential runners,
 MCP examples, deployment files and CI use these names consistently.
 

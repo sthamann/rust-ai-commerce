@@ -32,7 +32,7 @@ flowchart LR
 | Ambient-C `apps/storefront/src/pages/api/v1/commerce.json.ts` | Same-origin intent admission, own-manifest product check, mapping to authoritative commerce SKU |
 | Ambient-C `packages/runtime-api/src/rust-commerce.ts` | Operator-controlled destinations, bounded HTTP requests and checkout transfer |
 | Rust `src/checkout_handoff.rs` | Generic single-use cart transfer, expiry, tenant scope and token rotation |
-| Rust `frontend/src/storefront/shell/Storefront.tsx` | Consume transfer and open the existing checkout review dialog |
+| Rust `frontend/src/storefront/shell/Storefront.tsx` | Consume transfer and open the existing one-page checkout review |
 
 The shopper sends only `{ "items": [{ "id": "mug-terracotta-500", "quantity": 1 }] }`
 to the Storyfront endpoint. The merchant scope and destination come from server
@@ -82,7 +82,7 @@ APP_SERVICES={"storyfront":{"url":"https://storyfront-app.example","uiUrl":"http
 ```
 
 Preserve other configured app services when adding this entry. Install **Storyfront**
-from **Apps & payments**, then choose **Generate / refresh shop**. Polling shows the
+from **Apps**, then choose **Generate / refresh shop**. Polling shows the
 actual job status and the generated product/image counts. **Open shop** leads to the
 operator-configured storefront. The same capabilities are available through the
 existing authenticated HTTP/MCP app gateway. A viewer cannot schedule generation.
@@ -101,8 +101,8 @@ bun scripts/connect-rust-commerce.ts my-storyfront 'My Shop'
 A connected checkout persists an actual order in the Rust database, updates stock,
 and uses the existing idempotency and event paths. This is more than the old local
 Storyfront bag. Payment behavior still depends on the configured Rust payment
-adapter. The default demo payment is simulated. The PayPal adapter is Sandbox only;
-no live payment was charged in this verification. This connector does not turn a
+adapter. The default demo payment is simulated. The native PayPal adapter supports explicitly configured Sandbox/Live;
+no actual PSP transaction was performed in this verification. This connector does not turn a
 simulated payment into a real settlement.
 
 Catalog publication generates the catalog-based Storyfront, not a reviewed AI story

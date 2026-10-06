@@ -6,7 +6,7 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 
 ## Modules
 
-- `platform.css`
+- [`platform.css`](platform.css): Ordered platform stylesheet entry; domain rules live in the adjacent folder.
 
 ## Verification
 

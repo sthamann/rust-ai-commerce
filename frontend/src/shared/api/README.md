@@ -6,21 +6,12 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 
 ## Modules
 
-- `download.ts`
-- `shop-scope.ts`
-- `shop-api.ts`
-- `types.ts`
-- `request-json.ts`: shares only simultaneous identical core reads. The complete
-  shop/channel/locale/cart/customer/merchant headers are part of the key. Entries
-  disappear after completion or failure; writes clear admission before and after
-  execution. Custom app gateway calls and aborted requests are not shared.
-- `merchant-session.ts`: privately reports authoritative merchant-authentication
-  rejections to the active Studio. Customer/provider errors, login failures and
-  platform-operator requests do not invalidate merchant identity.
-
-Both Studio and storefront transports use this helper. Each caller gets a separate
-parsed object, so editing one response cannot corrupt another component's state.
-There is no time-based frontend cache or persisted merchant/customer response.
+- [`download.ts`](download.ts): Authenticated binary download, never placing session credentials in a URL.
+- [`merchant-session.ts`](merchant-session.ts): Private merchant-session rejection signals shared by all JSON transports.
+- [`request-json.ts`](request-json.ts): Coalesce simultaneous identical core reads with complete identity; no persisted response cache.
+- [`shop-api.ts`](shop-api.ts): shop api: Typed commerce contracts, merchant/store transports and binary download helper.
+- [`shop-scope.ts`](shop-scope.ts): Canonical browser shop scope for storefront URLs and tenant-isolated customer storage.
+- [`types.ts`](types.ts): Common JSON/multipart request contract for app surfaces and merchant operations.
 
 ## Verification
 

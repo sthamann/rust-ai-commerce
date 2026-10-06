@@ -6,9 +6,9 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `AccessManager.tsx`
-- `PersonalAccountForm.tsx`
-- `UsersManager.tsx`
+- [`AccessManager.tsx`](AccessManager.tsx): Fine-grained team overrides, revocable invitations and personal session inventory.
+- [`PersonalAccountForm.tsx`](PersonalAccountForm.tsx): PersonalAccountForm: focused account-form view with explicit typed inputs and callbacks.
+- [`UsersManager.tsx`](UsersManager.tsx): Users Manager: Personal accounts, memberships, roles, invitations and scoped developer access..
 
 ## Verification
 
