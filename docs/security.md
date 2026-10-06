@@ -46,7 +46,10 @@ and conversation state together, with a translated sign-in action. A late
 rejection for a previous token cannot disconnect a renewed session. Customer,
 provider, login and operator errors are separate; 403/5xx/network failures do
 not silently sign out a merchant. This UI handling does not extend session TTL,
-restore a revoked credential or relax server authorization.
+restore a revoked credential or relax server authorization. The current blocking
+reauthentication dialog retains drafts and requires the same account and active
+membership before resuming; failed writes are never replayed.
+[Current Studio session behavior](studio-api-and-channels.md#studio-login-and-session-expiry).
 
 Native object handlers bind tenant scope in HTTP, graph/vector and MCP paths.
 The adversarial [tenant isolation suite](tenant-isolation.md) tests ID/header
@@ -57,10 +60,13 @@ tenant, preventing wrong-shop order/payment/event/staging associations. Database
 tables have forced RLS; the local DB account is a superuser, which bypasses it.
 A restricted-identity regression proves the policy, not production containment. These
 application checks and small HTTP tests do not prove production containment
-against a compromised server/database identity. Production provisioning,
-billing, quotas, tenant deletion/export, backup isolation and domain routing
-remain required. Storefront selection is `?shop=<workspace-id>`; customer
-cart tokens remain independently scoped and rotate on B2B demo login.
+against a compromised server/database identity. Operator provisioning, configured shop-subdomain routing and recoverable
+pause/trash/restore are implemented; see [the platform guide](platform.md).
+Production billing, distributed quotas, physical tenant erasure/export, isolated
+backups and automated failover remain additional work. Local storefront selection
+uses `?shop=<workspace-id>`; configured public subdomains derive scope from the
+stored host mapping. Customer cart tokens remain independently scoped and rotate
+on B2B demo login.
 
 ## Commerce, agents and extensions
 
@@ -148,3 +154,12 @@ admission policy; its external `readOnly` fact remains trusted metadata. Service
 calls use per-process admission limits, five-second timeouts and 64 KiB payload
 bounds. The runnable container adds explicit resources but does not provide
 microVM security. See [the app contract and remaining production gaps](app-platform.md).
+
+## Optional trusted experience identity
+
+The server-to-server identity/inference broker, one-use personal Studio handoff
+and restricted public frontend mount are opt-in. Signing keys delegate verified
+identity authority and stay in the trusted service/Core runtime; browser clients
+receive neither these keys nor provider credentials. Replay/expiry/ownership and
+proxy scope checks are distinct from deployed OAuth, recovery or external email
+verification. [Exact trust and deployment boundary](experience-integration.md).

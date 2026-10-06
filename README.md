@@ -13,7 +13,7 @@
 [![License: Sustainable Use](https://img.shields.io/badge/license-Sustainable_Use-18b9d9)](LICENSE)
 [![Self-hosted](https://img.shields.io/badge/deployment-self_hosted-14233f)](docs/quickstart.md)
 
-[**Get started**](#get-started) · [**Explore the playground**](docs/playground.md) · [**Build an app**](docs/app-studio.md) · [**Connect an agent**](docs/connectors.md) · [**Documentation**](https://sthamann.github.io/vendune/docs/)
+[**Get started**](#get-started) · [**Explore the playground**](docs/playground.md) · [**Build an app**](docs/app-studio.md) · [**Connect an agent**](docs/connectors.md) · [**Illustrated feature tour**](docs/features.md) · [**Documentation**](https://sthamann.github.io/vendune/docs/)
 
 </div>
 
@@ -30,7 +30,7 @@ merchants require a separate license. [See the usage guide](docs/licensing.md).
 > Complete Shopware parity, production payment support and database-wide SaaS
 > isolation are still being built. [Read the exact boundaries](#current-boundaries).
 
-[![Vendune Studio — searchable products, variants and categories in one workspace](docs/assets/vendune-studio-en.jpg)](docs/product-management.md)
+[![Vendune Studio — searchable products, variants and categories in one workspace](docs/assets/feature-tour/products.jpg)](docs/product-management.md)
 
 **A shop worth trying.** New demo shops start with [Nord Atelier](docs/fashion-demo.md): 12 fashion products, 34 size SKUs, four content languages and individually generated product photographs. The catalog is shared by the native storefront and the private Experience integration; checkout uses the actual commerce API.
 
@@ -75,13 +75,13 @@ inherited AI providers, inspect each shop and pause/restore operations.
 [Operator guide](docs/platform.md).
 
 
-[![One-page checkout with real server quote and synthetic customer details](docs/assets/vendune-checkout-en.png)](docs/checkout.md)
+[![One-page checkout with real server quote and synthetic customer details](docs/assets/feature-tour/checkout.gif)](docs/checkout.md)
 
-| Visual + Markdown editing | API + MCP explorer | Sales channels |
+| Visual + Markdown editing | API + MCP explorer | Current storefront |
 | :---: | :---: | :---: |
-| [![Product editor](docs/assets/studio-editor-en.png)](docs/studio-api-and-channels.md#products--description) | [![API explorer](docs/assets/studio-api-en.png)](docs/studio-api-and-channels.md#developer--api--integrations) | [![Sales channels](docs/assets/studio-channels-en.jpg)](docs/studio-api-and-channels.md#sales-channels) |
+| [![Product editor](docs/assets/feature-tour/product-editor.jpg)](docs/studio-api-and-channels.md#products--description) | [![API explorer](docs/assets/feature-tour/identity-explorer.jpg)](docs/studio-api-and-channels.md#developer--api--integrations) | [![Current storefront](docs/assets/feature-tour/collection.jpg)](docs/features.md#storefront-and-shopping) |
 
-Screenshots show the running synthetic playground with English UI, not mockups.
+Screenshots and GIFs show the actual isolated Nord Atelier demo with English UI. [Capture provenance](docs/assets/feature-tour/README.md).
 
 
 ## Get started
@@ -105,9 +105,17 @@ take several minutes. No model is downloaded. Private credentials are generated
 in ignored `.env`. Keep the terminal open; Ctrl+C stops the app without deleting
 the database. [Requirements, restarts and troubleshooting](docs/quickstart.md).
 
-### Your first connected shop
+### Current illustrated tour and legacy playground
 
-After creating your merchant account:
+[Follow the complete feature guide with real screenshots and GIFs](docs/features.md)
+for the current Nord Atelier storefront, all Studio workspaces and platform controls.
+
+The CLI below retains the mug/lamp **legacy furniture** walkthrough. Set
+`DEMO_CATALOG=legacy-furniture` in your private `.env` and restart the local
+server before creating its playground; existing catalogs remain unchanged.
+Keep the normal `DEMO_CATALOG=fashion` default for new fashion shops.
+
+After creating your merchant account on the compatibility instance:
 
 ```sh
 python3 scripts/playground.py --email your-personal-merchant@example.test

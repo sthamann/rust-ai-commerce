@@ -1,5 +1,12 @@
 # Try the connected commerce playground
 
+This is the **legacy furniture compatibility walkthrough**. The shipping default
+is now [Nord Atelier](fashion-demo.md); see [the current illustrated feature tour](features.md)
+for its coats, size variants and photographs. The setup CLI below still uses
+fixed mug/lamp/chair IDs and needs `DEMO_CATALOG=legacy-furniture` in the local
+server configuration **before** creating this playground. It does not translate
+a fashion shop into the legacy catalog or rewrite an existing shop.
+
 The playground is a separate synthetic shop under your personal merchant account.
 It has its own catalog, inventory, orders, apps, rules and settings. Its active
 order flow needs no AI model, mail provider or real payment account. Setup creates
@@ -7,7 +14,8 @@ no orders; you place them through the storefront.
 
 ## Create your playground
 
-1. Start the app with `./scripts/dev.sh` and open `http://127.0.0.1:8787/#merchant`.
+1. Set `DEMO_CATALOG=legacy-furniture` in the private `.env`, then start/restart
+   the app with `./scripts/dev.sh` and open `http://127.0.0.1:8787/#merchant`.
 2. Create a personal merchant account using **Create shop** on the Studio login page, or sign
    in to your existing account. Merchant accounts and customer accounts differ.
 3. In another terminal, from the repository root, run:

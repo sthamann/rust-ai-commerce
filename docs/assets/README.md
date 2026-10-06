@@ -58,3 +58,11 @@ request was used. Provider fields are real environment defaults, and the local
 Ollama test endpoint is intentionally unreachable. “Configured” is not provider
 health. macOS has no Linux cgroup counters, so CPU/RAM display —; the PostgreSQL
 and Qdrant probes are actual local requests, not production benchmarks.
+
+## Current illustrated feature tour
+
+The [6 October 2026 capture set](feature-tour/README.md) accompanies
+[the complete current feature guide](../features.md). Its screenshots and twelve
+GIFs come from real isolated Nord Atelier/empty lifecycle shops. Recording
+provenance distinguishes unchanged UI captures at `036b36a` from the reviewed
+`5e4f8b5` integration additions; no response or DOM mocking is used.

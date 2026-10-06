@@ -1,0 +1,114 @@
+[
+  {
+    "file": "variants-cart.gif",
+    "sourceRecordings": [
+      "variants-cart"
+    ],
+    "capturedFrames": 27,
+    "bytes": 770235,
+    "sha256": "e944db9eeb1b362d4f010db23d16b70a45b39e77110dc9f326a65300f2de15bd"
+  },
+  {
+    "file": "checkout.gif",
+    "sourceRecordings": [
+      "checkout-review",
+      "checkout-place"
+    ],
+    "capturedFrames": 117,
+    "bytes": 166513,
+    "sha256": "25278333897e05fc29e3805eaeb6566f27765c0414790cb8dc99cd1561612522"
+  },
+  {
+    "file": "product-languages.gif",
+    "sourceRecordings": [
+      "product-languages"
+    ],
+    "capturedFrames": 10,
+    "bytes": 183038,
+    "sha256": "2ebc12302224c8abf0ee6490c97207533c34fb8e96c5789c54e3d0570c6bac50"
+  },
+  {
+    "file": "flow-canvas.gif",
+    "sourceRecordings": [
+      "flow-canvas"
+    ],
+    "capturedFrames": 41,
+    "bytes": 1047802,
+    "sha256": "ab5981693fd583a260e5031545f9950872d5c69a56905add1d0b16feb7ee3aa1"
+  },
+  {
+    "file": "channel-wizard.gif",
+    "sourceRecordings": [
+      "channel-wizard"
+    ],
+    "capturedFrames": 15,
+    "bytes": 194774,
+    "sha256": "8b3ca59e9a0e250f31250507a7715711dba65a25c5d414882cdb1526e1dfcbc2"
+  },
+  {
+    "file": "app-design.gif",
+    "sourceRecordings": [
+      "app-design"
+    ],
+    "capturedFrames": 23,
+    "bytes": 275438,
+    "sha256": "da1a96c27512ff599b408e532b29b11686dada7fa820bec39f913f122aa22a60"
+  },
+  {
+    "file": "app-preview.gif",
+    "sourceRecordings": [
+      "app-preview"
+    ],
+    "capturedFrames": 7,
+    "bytes": 141034,
+    "sha256": "d4e1d382da40b4aca40cb632ab871f997d90d84559681d3ad55bf03b9e9f975f"
+  },
+  {
+    "file": "selective-release.gif",
+    "sourceRecordings": [
+      "selective-release"
+    ],
+    "capturedFrames": 11,
+    "bytes": 179170,
+    "sha256": "dd9bd29e36d460cc2a762ef3e53136b4e1e83f0c0d6154731b0b03fd84e74e2f"
+  },
+  {
+    "file": "knowledge-publication.gif",
+    "sourceRecordings": [
+      "knowledge-publish",
+      "knowledge-confirm"
+    ],
+    "capturedFrames": 13,
+    "bytes": 316995,
+    "sha256": "1c8c8ceb1a1a70564cdbb603a87c23b2767d6786f3bc97637e9fe0a499cfa8a0"
+  },
+  {
+    "file": "shop-lifecycle.gif",
+    "sourceRecordings": [
+      "shop-pause",
+      "shop-trash",
+      "shop-restore"
+    ],
+    "capturedFrames": 16,
+    "bytes": 347565,
+    "sha256": "1afea4cd29a4793629d4c6a0fdf743149665be029fcf014027a93947c40bd741"
+  },
+  {
+    "file": "history-restore.gif",
+    "sourceRecordings": [
+      "history-restore"
+    ],
+    "capturedFrames": 6,
+    "bytes": 136270,
+    "sha256": "3160d069ba25326b7ec82d32cc6369ec933d8af2eb36af7694fd33be7924ee51"
+  },
+  {
+    "file": "variant-generator.gif",
+    "sourceRecordings": [
+      "variant-generator"
+    ],
+    "capturedFrames": 8,
+    "bytes": 163255,
+    "sha256": "183bf6934edaa2d5dd569fcb325c076002d436cfa9337d42b33d3b07bacf0641"
+  }
+]
