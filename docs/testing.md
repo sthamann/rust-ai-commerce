@@ -263,7 +263,7 @@ checks are behavioral evidence, not 100% endpoint/authorization coverage.
 
 ## Checkout verification (6 October 2026)
 
-The checkout change passes 222 frontend tests across 34 files (including eight
+The checkout change passes 226 frontend tests across 34 files (including twelve
 checkout regressions) and 96 Rust unit tests. Frontend whole-source line coverage
 is 60.78%; statements 59.70%, branches 53.50%, functions 49.32%. These figures are
 frontend-only and do not replace the older full-stack baseline report.
