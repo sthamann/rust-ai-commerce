@@ -8,6 +8,8 @@ import Icon from "../../shared/ui/Icon";
 import CheckoutDetails from "./CheckoutDetails";
 import CheckoutSummary from "./CheckoutSummary";
 import PaymentSession from "./PaymentSession";
+import CheckoutPurchase from "./CheckoutPurchase";
+import CheckoutProgress from "./CheckoutProgress";
 export default function CheckoutPanel({
   cart,
   order,
@@ -31,7 +33,7 @@ export default function CheckoutPanel({
   onBuy: () => Promise<void>;
   onCoupons: (codes: string[]) => Promise<void>;
 }) {
-  const { s } = useShopText();
+  const { s, money } = useShopText();
   const { x } = useCheckoutText();
   const ref = useRef<HTMLDialogElement>(null);
   const [selection, setSelection] = useState<Selection>(
@@ -95,6 +97,7 @@ export default function CheckoutPanel({
     >
       <header className="bag-heading">
         <div>
+          <p className="checkout-security">{x("secure")}</p>
           <h2 id="bag-title">{x("title")}</h2>
           <p>{x("subtitle")}</p>
         </div>
@@ -107,6 +110,7 @@ export default function CheckoutPanel({
           <Icon name="close" />
         </button>
       </header>
+      <CheckoutProgress reviewed={reviewed} complete={!!order} />
       <div className="bag-body">
         <AppSurfaceSlot
           location="cart.summary"
@@ -157,12 +161,32 @@ export default function CheckoutPanel({
               busy={locked}
               reviewed={reviewed}
               onQuantity={onQuantity}
-              onCoupons={onCoupons}
+              onCoupons={async (codes) => {
+                setSaving(true);
+                try {
+                  await onCoupons(codes);
+                } finally {
+                  setSaving(false);
+                }
+              }}
               onClose={close}
             />
           </div>
         )}
       </div>
+      {!order && cart?.lineItems.length ? (
+        <footer className="checkout-mobile-action">
+          <div>
+            <small>{s("total")}</small>
+            <strong>{money(cart.price.totalPrice)}</strong>
+          </div>
+          <CheckoutPurchase
+            busy={locked}
+            reviewed={reviewed}
+            total={cart.price.totalPrice}
+          />
+        </footer>
+      ) : null}
     </dialog>
   );
 }

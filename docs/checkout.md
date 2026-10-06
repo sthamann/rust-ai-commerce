@@ -71,3 +71,39 @@ If an order-create reply is lost, the browser reads the same cart once and resto
 No actual PSP transaction or live-money charge is claimed. Accelerated wallets,
 advanced cards, vaulting, authorize/void, disputes and full original payment parity
 remain open. Mobile/browser checks use synthetic fixtures without paid AI calls.
+
+## Responsive storefront and order receipt
+
+The standard storefront uses a light editorial palette, fluid type, flexible navigation,
+and mobile catalog/product layouts. Checkout owns its form styles directly instead of
+relying on loading account styles. A single persistent purchase dock works on desktop
+and mobile; review and purchase remain separate explicit actions. Inputs use 16px text,
+clear label spacing, visible focus and full-width narrow-screen layout.
+
+After the server accepts an order, `#order-confirmed` displays the immutable order
+snapshot, addresses, total, delivery and actual payment state. Finite CSS confetti
+celebrates order creation, never asserts settlement. Reduced-motion preference disables
+celebration. Reload recovery uses the tenant/channel-scoped completed cart token;
+there is no public order-ID lookup. Starting another cart creates a fresh cart token.
+
+## Optional Google address suggestions
+
+Set `VITE_GOOGLE_MAPS_API_KEY` **at frontend build time**. This is a public browser
+key: restrict HTTP referrers to the storefront domains, enable only Maps JavaScript
+and Places API (New), and configure quotas. Never reuse a server credential.
+See Google's [new autocomplete widget](https://developers.google.com/maps/documentation/javascript/place-autocomplete-new)
+and [address-form example](https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform).
+
+The provider script loads only after the shopper activates the translated Google
+address button. Only address components are requested; contact/apartment details are
+preserved. House numbers, postal towns, ZIP suffixes and US state codes are mapped.
+Unsupported destinations, provider failure and stale replies retain the manual editor;
+all applied fields stay editable. No browser key means no provider UI or network call.
+The current test deployment has no configured Google browser key, so external Google
+responses were tested with synthetic replies, not a live paid Google lookup.
+
+`frontend/tests/unit/checkout-experience.test.tsx` covers address mapping, explicit
+activation, unsupported destinations, provider failure, stale replies and receipt data.
+The actual local browser path created simulated order RAC-74ab58ea (249 EUR), reloaded
+its receipt and checked a 390px viewport without horizontal overflow. Screenshots and
+browser checks are development evidence, not a conversion-rate claim or live payment.

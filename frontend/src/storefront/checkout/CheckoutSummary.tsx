@@ -3,7 +3,6 @@ import type { Cart } from "../../shared/api/shop-api";
 import { useShopText } from "../../shared/i18n/shop-i18n";
 import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
 import { useCheckoutText } from "../../shared/i18n/checkout-i18n";
-import { useCustomerText } from "../../shared/i18n/customer-i18n";
 import { useState } from "react";
 export default function CheckoutSummary({
   cart,
@@ -20,7 +19,6 @@ export default function CheckoutSummary({
   onQuantity: (id: string, q: number) => void;
   onClose: () => void;
 }) {
-  const { c } = useCustomerText();
   const { s, money, locale } = useShopText();
   const { w } = useWorkbenchText();
   const { x } = useCheckoutText();
@@ -163,18 +161,6 @@ export default function CheckoutSummary({
           {cart.deliveries[0].deliveryDate.latest}
         </p>
       )}
-      <button
-        form="checkout-details"
-        type="submit"
-        className="shop-primary checkout-purchase"
-        disabled={busy || saving || !cart.lineItems.length}
-      >
-        {busy
-          ? s("processing")
-          : reviewed
-            ? `${c("placeOrder")} · ${money(cart.price.totalPrice)}`
-            : x("review")}
-      </button>
       <p className="checkout-note" role="status">
         {x(reviewed ? "reviewed" : "quoteHint")}
       </p>

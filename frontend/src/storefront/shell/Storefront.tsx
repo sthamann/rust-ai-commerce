@@ -11,6 +11,7 @@ import Icon from "../../shared/ui/Icon";
 import CustomerAccount from "../account/CustomerAccount";
 import ShopAnalytics from "../analytics/ShopAnalytics";
 import ProductPage from "../catalog/ProductPage";
+import OrderCompletion from "../checkout/OrderCompletion";
 import CheckoutPanel from "../checkout/CheckoutPanel";
 import PaymentSession from "../checkout/PaymentSession";
 import "../styles/shop.css";
@@ -83,10 +84,17 @@ export default function Storefront(props: { onMerchant: () => void }) {
               </button>
             </div>
           )}
-          {location.hash.startsWith("#payment/") &&
-          localStorage.getItem(
-            `rac-payment-token:${location.hash.slice(9)}`,
-          ) ? (
+          {appPath === "#order-confirmed" && order ? (
+            <OrderCompletion
+              order={order}
+              onBack={() => {
+                location.hash = "";
+              }}
+            />
+          ) : location.hash.startsWith("#payment/") &&
+            localStorage.getItem(
+              `rac-payment-token:${location.hash.slice(9)}`,
+            ) ? (
             <main className="shop-content">
               <PaymentSession
                 id={location.hash.slice(9)}

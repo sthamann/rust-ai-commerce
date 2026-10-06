@@ -1,0 +1,174 @@
+/** Order receipt page and finite transform-only celebration; honors reduced motion. */
+.order-completion {
+  max-width: 1080px;
+  margin: auto;
+  padding: 40px clamp(20px, 4vw, 48px) 64px;
+  position: relative;
+}
+.order-completion .checkout-progress {
+  background: transparent;
+  border: 0;
+  max-width: 620px;
+  margin: auto;
+}
+.order-completion-hero {
+  text-align: center;
+  padding: 40px 0;
+}
+.order-success-mark {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--shop-soft);
+  color: var(--blue);
+  margin: 0 auto 20px;
+}
+.order-completion h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 400;
+  letter-spacing: -1.5px;
+  margin: 16px 0;
+}
+.order-completion-hero > p:not(.shop-kicker) {
+  line-height: 1.7;
+  color: var(--muted);
+}
+.order-reference {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 20px;
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  font-size: 14px;
+}
+.order-completion-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.completion-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 28px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.completion-card h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 20px;
+}
+.completion-card h2:not(:first-child) {
+  margin-top: 28px;
+}
+.completion-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+.completion-item img {
+  object-fit: cover;
+  border-radius: 12px;
+  background: var(--shop-surface);
+}
+.completion-item > div {
+  display: grid;
+  gap: 8px;
+  flex: 1;
+}
+.completion-item small {
+  color: var(--muted);
+}
+.completion-back {
+  display: flex;
+  margin: 28px auto 0;
+}
+.order-completion .customer-address-card {
+  display: grid;
+  gap: 5px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.order-confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 40;
+}
+.order-confetti i {
+  display: none;
+  position: absolute;
+  left: var(--x);
+  top: -20px;
+  width: 9px;
+  height: 15px;
+  background: var(--blue);
+}
+.order-confetti i:nth-child(3n) {
+  background: #c9a271;
+}
+.order-confetti i:nth-child(3n + 1) {
+  background: #97b0a2;
+  border-radius: 50%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .order-confetti i {
+    display: block;
+    animation: receipt-confetti 2.4s var(--delay) ease-in forwards;
+  }
+  .order-success-mark {
+    animation: receipt-check 300ms ease-out;
+  }
+}
+@keyframes receipt-confetti {
+  from {
+    opacity: 1;
+    transform: translateY(-20px) rotate(0);
+  }
+  to {
+    opacity: 0;
+    transform: translate(var(--drift), 105dvh) rotate(var(--turn));
+  }
+}
+@keyframes receipt-check {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (max-width: 760px) {
+  .order-completion {
+    padding-top: 20px;
+  }
+  .order-completion-grid {
+    grid-template-columns: 1fr;
+  }
+  .order-completion-hero {
+    padding: 28px 0;
+  }
+  .completion-card {
+    padding: 24px;
+  }
+  .order-completion .checkout-progress {
+    padding-inline: 0;
+  }
+  .completion-back {
+    width: 100%;
+  }
+}

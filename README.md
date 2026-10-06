@@ -33,6 +33,11 @@ SKUs, seven categories and four content languages**, with individually generated
 product photographs included. Choose a size, add it to your bag and follow the
 real checkout. [Explore the collection](docs/fashion-demo.md).
 
+The responsive checkout includes touch-sized controls, a fixed order action,
+address validation and optional opt-in Google Places completion. Accepted orders
+open a durable confirmation page with a finite, reduced-motion-aware confetti
+animation. [Checkout setup and limits](docs/checkout.md).
+
 > **Working prototype.** The captures use isolated synthetic shops and simulated
 > payments. Current capabilities and remaining production work are described
 > [below](#current-boundaries) and in the [complete feature guide](docs/features.md).

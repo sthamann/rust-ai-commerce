@@ -131,6 +131,7 @@ export default function CheckoutDetails({
         {selector("billing")}
         <h4>{c("billingAddress")}</h4>
         <AddressFields
+          googleAutocomplete
           autoCompleteSection="billing"
           value={selection.billingAddress}
           countries={cart.availableCountries}
@@ -171,6 +172,7 @@ export default function CheckoutDetails({
             {selector("shipping")}
             <h4>{c("shippingAddress")}</h4>
             <AddressFields
+              googleAutocomplete
               autoCompleteSection="shipping"
               value={selection.address}
               countries={cart.availableCountries}

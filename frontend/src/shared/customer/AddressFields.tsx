@@ -1,4 +1,5 @@
 /** Structured accessible address editor; no hidden JSON or storefront-only duplicate model. */
+import GoogleAddressSearch from "./GoogleAddressSearch";
 import CountryPicker from "../geography/CountryPicker";
 import EntityPicker from "../geography/EntityPicker";
 import { displayName } from "../geography/geography-types";
@@ -16,6 +17,7 @@ export default function AddressFields({
   disabled = false,
   request,
   autoCompleteSection,
+  googleAutocomplete = false,
 }: {
   value?: Address | null;
   onChange: (a: Address) => void;
@@ -23,6 +25,7 @@ export default function AddressFields({
   disabled?: boolean;
   request?: GeographyRequest;
   autoCompleteSection?: "billing" | "shipping";
+  googleAutocomplete?: boolean;
 }) {
   const { c, locale } = useCustomerText();
   const { i } = useInternationalText();
@@ -58,6 +61,7 @@ export default function AddressFields({
         disabled={disabled}
         required={required}
         maxLength={160}
+        type={key === "phoneNumber" ? "tel" : "text"}
         value={a[key] ?? ""}
         autoComplete={
           [
@@ -79,6 +83,14 @@ export default function AddressFields({
   );
   return (
     <fieldset className="customer-address-fields" disabled={disabled}>
+      {googleAutocomplete && (
+        <GoogleAddressSearch
+          value={a}
+          onChange={onChange}
+          countries={countries}
+          disabled={disabled}
+        />
+      )}
       <div className="customer-field-grid">
         {input("firstName", true)}
         {input("lastName", true)}

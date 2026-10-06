@@ -26,7 +26,7 @@ export default function StorefrontHeader() {
     setRanked,
     setPersonalized,
     setViewed,
-    setBag,
+    openBag,
   } = useStorefront();
   const displayName =
     company.brandName ||
@@ -99,10 +99,14 @@ export default function StorefrontHeader() {
       >
         {w(adaptation ? "adaptationOn" : "adaptationOff")}
       </button>
-      <button className="shop-bag-button" onClick={() => setBag(true)}>
+      <button className="shop-bag-button" disabled={busy} onClick={openBag}>
         <Icon name="box" size={18} />
         {s("bag")}{" "}
-        <b>{cart?.lineItems.reduce((n, i) => n + i.quantity, 0) ?? 0}</b>
+        <b>
+          {cart?.status === "completed"
+            ? 0
+            : (cart?.lineItems.reduce((n, i) => n + i.quantity, 0) ?? 0)}
+        </b>
       </button>
     </header>
   );

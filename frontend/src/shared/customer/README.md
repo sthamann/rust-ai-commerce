@@ -12,6 +12,9 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 - [`CustomerFields.tsx`](CustomerFields.tsx): Contact fields mirror the account API while access, identity and pricing remain separate.
 - [`customer-types.ts`](customer-types.ts): Shared customer/address contracts; merchant and customer sessions use distinct request adapters.
 
+- [`GoogleAddressSearch.tsx`](GoogleAddressSearch.tsx): explicitly activated optional Places widget with stale-reply and destination guards.
+- [`google-address.ts`](google-address.ts): lazy provider loader and international address mapping.
+
 ## Verification
 
 Run `npm run build`, `npm test`, `npm run test:coverage` and `npm run architecture` from `frontend/`. Coverage includes untested source files. See [testing and limitations](../../../../docs/testing.md); file presence does not mean full test coverage.

@@ -1,15 +1,16 @@
 /* One-page checkout: calm responsive workspace with a sticky, readable order review. */
+@import "./checkout-fields.css";
 .shop-bag.vendune-checkout {
   width: min(1120px, calc(100vw - 40px));
   max-width: none;
-  height: min(880px, calc(100dvh - 40px));
+  height: min(940px, calc(100dvh - 40px));
   max-height: none;
   margin: auto;
   inset: 0;
   border: 1px solid #dfe5ee;
   border-radius: 24px;
   box-shadow: 0 32px 100px #15284433;
-  color: #192a43;
+  color: var(--ink);
   background: #fff;
 }
 .vendune-checkout[open] {
@@ -25,14 +26,14 @@
   flex-shrink: 0;
   padding: 26px 32px;
   background: #fff;
-  border-bottom: 1px solid #e7ecf3;
+  border-bottom: 1px solid var(--line);
 }
 .vendune-checkout .bag-heading h2 {
   font-size: 28px;
   letter-spacing: -0.8px;
 }
 .vendune-checkout .bag-heading p {
-  color: #60718a;
+  color: var(--muted);
   font-size: 14px;
   margin: 6px 0 0;
 }
@@ -67,7 +68,7 @@
 .checkout-details h4 {
   margin: 0;
   font-size: 14px;
-  color: #60718a;
+  color: var(--muted);
 }
 .checkout-details .customer-field-grid {
   gap: 14px;
@@ -75,16 +76,16 @@
 .checkout-details input:not([type="checkbox"]):not([type="radio"]),
 .checkout-details select,
 .checkout-coupon input {
-  min-height: 48px;
+  min-height: 54px;
   background: #fff;
-  border: 1px solid #d6deeb;
-  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
   font-size: 16px;
 }
 .checkout-details input:focus,
 .checkout-details select:focus {
-  outline: 3px solid #dbeafe;
-  border-color: #2563eb;
+  outline: 3px solid var(--shop-focus);
+  border-color: var(--blue);
 }
 .checkout-details .customer-checkbox {
   display: flex;
@@ -114,22 +115,22 @@
   flex-direction: row;
   align-items: center;
   gap: 12px;
-  border: 1px solid #dce3ef;
+  border: 1px solid var(--line);
   border-radius: 12px;
   min-height: 64px;
   padding: 14px;
   cursor: pointer;
-  color: #192a43;
+  color: var(--ink);
 }
 .checkout-method.selected {
-  background: #f3f7ff;
-  border-color: #2563eb !important;
-  box-shadow: 0 0 0 1px #2563eb;
+  background: var(--shop-soft);
+  border-color: var(--blue) !important;
+  box-shadow: 0 0 0 1px var(--blue);
 }
 .checkout-method input {
   width: 18px;
   height: 18px;
-  accent-color: #2563eb;
+  accent-color: var(--blue);
 }
 .checkout-method span {
   flex: 1;
@@ -138,7 +139,7 @@
 }
 .checkout-method small {
   font-size: 12px;
-  color: #60718a;
+  color: var(--muted);
 }
 .checkout-summary {
   position: sticky;
@@ -146,9 +147,9 @@
   max-height: calc(100dvh - 156px);
   overflow: auto;
   padding: 30px;
-  background: #f6f8fc;
+  background: var(--shop-surface);
   min-width: 0;
-  border-left: 1px solid #e7ecf3;
+  border-left: 1px solid var(--line);
 }
 .checkout-summary h3 {
   display: flex;
@@ -181,10 +182,10 @@
   color: inherit;
 }
 .checkout-item a:hover strong {
-  color: #2563eb;
+  color: var(--blue);
 }
 .checkout-item small {
-  color: #60718a;
+  color: var(--muted);
   font-size: 12px;
 }
 .checkout-item .shop-stepper {
@@ -223,7 +224,7 @@
 .checkout-summary .grand-total {
   padding-top: 18px;
   margin-top: 8px;
-  border-top: 1px solid #dce3ef;
+  border-top: 1px solid var(--line);
   font-size: 21px;
 }
 .checkout-summary .checkout-purchase {
@@ -232,12 +233,12 @@
   margin-top: 18px;
   justify-content: center;
   border-radius: 12px;
-  background: #2563eb;
+  background: var(--blue);
   color: white;
 }
 .checkout-note,
 .checkout-summary .delivery-estimate {
-  color: #60718a;
+  color: var(--muted);
   font-size: 12px;
   line-height: 1.7;
 }
@@ -248,9 +249,9 @@
 }
 .payment-session {
   padding: 26px;
-  background: #f6f8fc;
+  background: var(--shop-surface);
   border-radius: 16px;
-  border: 1px solid #dce3ef;
+  border: 1px solid var(--line);
   display: grid;
   gap: 14px;
 }
@@ -283,8 +284,8 @@
     max-height: none;
     overflow: visible;
     border-left: 0;
-    border-top: 1px solid #e7ecf3;
-    padding: 24px 20px;
+    border-top: 1px solid var(--line);
+    padding: 24px 20px calc(28px + env(safe-area-inset-bottom));
   }
   .checkout-success {
     padding: 24px;
