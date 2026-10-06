@@ -90,6 +90,8 @@ export default function ApiExplorer({
         {t("search")}
         <input
           type="search"
+          name="vendune-api-route-filter"
+          autoComplete="off"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -144,7 +146,8 @@ export default function ApiExplorer({
             {t("key")}
             <input
               type="password"
-              autoComplete="off"
+              name="vendune-api-test-credential"
+              autoComplete="new-password"
               value={key}
               onChange={(e) => setKey(e.target.value)}
             />
