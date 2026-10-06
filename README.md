@@ -83,8 +83,8 @@ cd vendune
 ```
 
 Open [the storefront](http://127.0.0.1:8787/) or
-[Vendune Studio](http://127.0.0.1:8787/#merchant). In Studio, choose
-**Team & access → Create shop** to create your personal owner account and a
+[Vendune Studio](http://127.0.0.1:8787/#merchant). On the Studio login page, choose
+**Create shop** to create your personal owner account and a
 separate synthetic shop. Try a product variant, quantity price, cart and simulated
 checkout before adding AI.
 

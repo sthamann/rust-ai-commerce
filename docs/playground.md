@@ -8,7 +8,7 @@ no orders; you place them through the storefront.
 ## Create your playground
 
 1. Start the app with `./scripts/dev.sh` and open `http://127.0.0.1:8787/#merchant`.
-2. Create a personal merchant account in **Team & access → Create shop**, or sign
+2. Create a personal merchant account using **Create shop** on the Studio login page, or sign
    in to your existing account. Merchant accounts and customer accounts differ.
 3. In another terminal, from the repository root, run:
 

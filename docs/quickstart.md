@@ -26,7 +26,9 @@ The storefront, SKU selection, quantity pricing, cart and simulated checkout
 work without a running LLM. Chat planning and vector indexing require their
 respective model services and report errors when unavailable.
 
-In Vendune Studio (`/#merchant`), select **Team & access → Create shop**.
+Open Vendune Studio (`/#merchant`). The login page offers **Create shop** for
+a new personal owner account, **Sign in** for an existing account and invitation
+acceptance. Select **Create shop** for the first local tour.
 Create a personal owner account and a synthetic shop. One identity can belong
 to multiple shops. The generated global `MERCHANT_TOKEN` is an instance bootstrap
 credential, not an invitation or a merchant credential to distribute.
