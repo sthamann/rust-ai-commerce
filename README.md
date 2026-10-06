@@ -65,7 +65,7 @@ merchants require a separate license. [See the usage guide](docs/licensing.md).
 
 | Visual + Markdown editing | API + MCP explorer | Sales channels |
 | :---: | :---: | :---: |
-| [![Product editor](docs/assets/studio-editor-en.png)](docs/studio-api-and-channels.md#products--description) | [![API explorer](docs/assets/studio-api-en.png)](docs/studio-api-and-channels.md#developer--api--integrations) | [![Sales channels](docs/assets/studio-channels-en.png)](docs/studio-api-and-channels.md#sales-channels) |
+| [![Product editor](docs/assets/studio-editor-en.png)](docs/studio-api-and-channels.md#products--description) | [![API explorer](docs/assets/studio-api-en.png)](docs/studio-api-and-channels.md#developer--api--integrations) | [![Sales channels](docs/assets/studio-channels-en.jpg)](docs/studio-api-and-channels.md#sales-channels) |
 
 Screenshots show the running synthetic playground with English UI, not mockups.
 
