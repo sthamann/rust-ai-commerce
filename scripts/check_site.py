@@ -34,6 +34,9 @@ class Page(HTMLParser):
 
 
 def check():
+    for asset in SITE.rglob('*'):
+        assert not {'.git', '.github'}.intersection(asset.relative_to(SITE).parts), (
+            asset, 'GitHub Pages artifact upload excludes this directory')
     pages = {}
     titles, canonicals = set(), set()
     for file in SITE.rglob('*.html'):
