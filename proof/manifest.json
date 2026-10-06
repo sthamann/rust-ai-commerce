@@ -1468,8 +1468,8 @@
     },
     "src/performance/admission.rs": {
       "status": "unproved",
-      "sha256": "001a22be80204855ed866374cd77ed74b4559fee2b20b4126ff762a26fdfb5f9",
-      "review": "Reviewed all changed Rust, append-only schemas, build/extraction and Lean inputs: lease hooks bind new/reused connections and reset on release; strict runtime rejects owner/bypass/TRUNCATE and preserves app-schema ownership; two-replica non-owner PostgreSQL tests deny forged foreign writes, enforce operator quotas and parent-stage daily usage, release persisted allocation quantities once despite corrupted snapshots, and distinguish commit from rollback invalidation. Money retains legacy EUR rounding with explicit scale and original Shopware differential; receipt-backed state admission is monotonic with late capture/refund. Async SQL/provider code remains unproved. Rust 113 tests, staging/app/automation/settings and strict checkout/CRM/tenant regressions passed; 274 frontend tests and production build passed."
+      "sha256": "9da1b6e233f135a62d3590efa3ffd261a7087e73c9c2915e053515737d3516f0",
+      "review": "Reviewed the final product-question admission correction: the real storefront route is /store-api/product/{id}/questions, now classified as interactive AI alongside ask/chat/plan. The unit classifier and strict two-replica fixture explicitly exercise this route without a provider call. Previous non-owner SQL, corrupt inventory, commit-only eviction and operator quota regressions passed. Price arithmetic stays behind original Shopware comparison gates; 30 extracted policies and 65 properties cover only named pure decisions."
     },
     "src/performance/cache.rs": {
       "status": "unproved",

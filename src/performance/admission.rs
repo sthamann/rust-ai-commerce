@@ -113,6 +113,7 @@ fn class(path: &str) -> &'static str {
         || path == "/api/experience"
         || path.starts_with("/api/agent/") && ["/chat", "/plan"].iter().any(|s| path.ends_with(s))
         || path.ends_with("/ask")
+        || path.ends_with("/questions")
     {
         "ai"
     } else if path.starts_with("/store-api/checkout/")
@@ -201,5 +202,6 @@ mod tests {
         );
         assert_eq!(class("/store-api/checkout/order"), "checkout");
         assert_eq!(class("/api/agent/chat"), "ai");
+        assert_eq!(class("/store-api/product/mug/questions"), "ai");
     }
 }

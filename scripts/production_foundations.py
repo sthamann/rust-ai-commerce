@@ -151,7 +151,7 @@ try:
     stage = call(one, '/api/environments', {'name':'Quota fixture'}, ai_h)['id']
     for index in range(3):
         # Missing message is rejected by handler, after quota reservation, without provider calls.
-        call(bases[index%2], '/api/agent/chat', {}, {**ai_h,'x-tenant':stage if index==1 else sessions[0]['workspace']}, expected=400)
+        call(bases[index%2], '/store-api/product/lamp/questions' if index==2 else '/api/agent/chat', {}, {**ai_h,'x-tenant':stage if index==1 else sessions[0]['workspace']}, expected=400)
     call(two, '/api/agent/chat', {}, ai_h, expected=429)
     assert scoped(sessions[0]['workspace'], 'SELECT attempts FROM tenant_ai_usage').splitlines()[-1] == '3'
     print('PASS daily interactive AI quota is atomic and shared across replicas')

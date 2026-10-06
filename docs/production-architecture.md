@@ -207,7 +207,7 @@ Failures count once admitted; a timeout may already have consumed provider resou
 Platform operators configure a shop through `GET/PUT /api/platform/shops/{id}/quotas`:
 `{ "revision": 1, "dailyAi": 200 }`. Revisions reject lost updates; changes are audited.
 This quota counts `/api/experience`, `/api/concierge`, agent chat/plan and product
-`/ask` HTTP routes, not tokens, actual
+`/questions` and `/ask` HTTP routes, not tokens, actual
 provider spend, every MCP-derived AI action, background translation/image jobs or
 identity-broker usage on behalf of another shop. Those need dedicated admission at
 the provider/job boundary before claiming a complete tenant AI cost cap.
