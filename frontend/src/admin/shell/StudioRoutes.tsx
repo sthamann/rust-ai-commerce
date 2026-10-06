@@ -8,10 +8,13 @@ import { AppSurfaceView } from "../../shared/apps/AppSurfaces";
 import "../../shared/styles/workbench.css";
 import Icon from "../../shared/ui/Icon";
 const AppsManager = lazy(() => import("../apps/AppsManager"));
+const SalesChannelsWorkspace = lazy(
+  () => import("../channels/SalesChannelsWorkspace"),
+);
 const AutomationView = lazy(() => import("../automation/AutomationView"));
 const ProductDataView = lazy(() => import("../catalog/ProductDataView"));
 const CustomersManager = lazy(() => import("../customers/CustomersManager"));
-const DeveloperView = lazy(() => import("../developer/DeveloperView"));
+const DeveloperView = lazy(() => import("../developer/DeveloperWorkspace"));
 const EnvironmentManager = lazy(
   () => import("../environments/EnvironmentManager"),
 );
@@ -106,7 +109,18 @@ export default function StudioRoutes() {
       onEntityBack={entityTarget ? entityBack : undefined}
     />
   ) : tab === "automation" ? (
-    <AutomationView request={request} role={role} />
+    <AutomationView
+      request={request}
+      role={role}
+      onChannels={() => selectTab("channels")}
+    />
+  ) : tab === "channels" ? (
+    <SalesChannelsWorkspace
+      key={environment || workspace}
+      request={request}
+      workspace={environment || workspace}
+      onTeam={() => selectTab("users")}
+    />
   ) : tab === "productData" ? (
     connected ? (
       <ProductDataView
@@ -129,6 +143,7 @@ export default function StudioRoutes() {
   ) : tab === "developers" ? (
     <DeveloperView
       key={workspace}
+      workspace={workspace}
       sandboxRequest={sandboxRequest}
       onRefresh={refreshEnvironments}
       onFlows={() => selectTab("automation")}

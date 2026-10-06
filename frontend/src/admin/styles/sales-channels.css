@@ -1,0 +1,121 @@
+/* Sales-channel cards, onboarding and scoped settings use the same responsive, accessible Studio design. */
+.sales-channel-workspace {
+  display: grid;
+  gap: 24px;
+}
+.channel-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+.channel-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+.channel-avatar {
+  display: grid;
+  place-items: center;
+  min-width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--hover);
+  color: var(--accent);
+  font-weight: 800;
+}
+.channel-editor-heading {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.channel-editor-heading h2 {
+  margin: 0 0 4px;
+}
+.channel-editor-heading > div {
+  flex: 1;
+}
+.channel-editor fieldset {
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.channel-kind-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.channel-kind {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  text-align: left;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+.channel-kind[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--hover);
+}
+.channel-steps {
+  display: flex;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+}
+.channel-steps li {
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--muted);
+}
+.channel-steps li[aria-current] {
+  background: var(--hover);
+  color: var(--accent);
+  font-weight: 700;
+}
+.channel-review {
+  padding: 24px;
+  background: var(--panel);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+.channel-product-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0;
+}
+.channel-product-results {
+  max-height: 260px;
+  overflow: auto;
+  margin-bottom: 18px;
+}
+.channel-product-results .search-hit {
+  min-height: 48px;
+}
+.channel-editor footer {
+  margin-top: 24px;
+}
+@media (max-width: 700px) {
+  .channel-kind-grid {
+    grid-template-columns: 1fr;
+  }
+  .channel-steps {
+    flex-direction: column;
+  }
+  .channel-editor-heading {
+    align-items: flex-start;
+  }
+}
+
+.channel-editor > fieldset > label {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0;
+}

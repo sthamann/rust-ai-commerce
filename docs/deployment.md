@@ -1,8 +1,10 @@
 # Vercel frontend + self-hosted Rust / PostgreSQL
 
 **Current status:** the operator console and deployment package are implemented
-and tested locally. No public Rust backend or Vercel commerce deployment has been
-verified. The server/SSH target and public backend domain are still required.
+and tested locally. The managed Rust Studio and `/health` are reachable at
+`https://app.vendune.ai/` (checked 2026-10-06). The root `vendune.ai` currently fails
+TLS hostname negotiation. Public Vercel commerce deployment and production checkout
+remain unverified; see [managed hosting](managed-hosting.md) for the active topology.
 GitHub Pages hosts documentation, not the Rust commerce service.
 
 ## Prepare the private host configuration
@@ -83,6 +85,10 @@ configure the same rewrites in the deployment's committed environment-specific
 configuration; it is ignored by this generic source repository and must be
 supplied before a Git-based build. Do not import a project with placeholder
 rewrites and call it a working deployment.
+
+Set `COMMERCE_PUBLIC_ORIGIN` on Rust to the HTTPS origin of the Studio browser.
+MCP validates this configured origin; a proxy Host header cannot grant browser access.
+For a separate Vercel Studio, use its real public origin rather than the internal Rust host.
 
 Generated configuration proxies `/api`, `/store-api`, `/mcp`, `/ucp`,
 `/.well-known`, `/media` and `/health` to the backend and serves the SPA. It contains

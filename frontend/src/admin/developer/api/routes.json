@@ -1,0 +1,1012 @@
+[
+  {
+    "path": "/.well-known/ucp",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/agent/chat",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/agent/conversations",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/agent/conversations/{id}",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/agent/plan",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/agent/providers",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/agent/tasks",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/agent/tasks/{id}/apply",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/apps",
+    "method": "GET",
+    "source": "src/apps/routes.rs"
+  },
+  {
+    "path": "/api/apps",
+    "method": "POST",
+    "source": "src/apps/routes.rs"
+  },
+  {
+    "path": "/api/apps/surfaces",
+    "method": "GET",
+    "source": "src/apps/surfaces.rs"
+  },
+  {
+    "path": "/api/apps/{id}",
+    "method": "PUT",
+    "source": "src/apps/routes.rs"
+  },
+  {
+    "path": "/api/apps/{id}/actions/{action}",
+    "method": "POST",
+    "source": "src/apps/routes.rs"
+  },
+  {
+    "path": "/api/apps/{id}/entities/{entity}",
+    "method": "GET",
+    "source": "src/apps/routes.rs"
+  },
+  {
+    "path": "/api/apps/{id}/entities/{entity}",
+    "method": "POST",
+    "source": "src/apps/routes.rs"
+  },
+  {
+    "path": "/api/apps/{id}/http/{route}",
+    "method": "GET",
+    "source": "src/apps/surfaces.rs"
+  },
+  {
+    "path": "/api/apps/{id}/http/{route}",
+    "method": "POST",
+    "source": "src/apps/surfaces.rs"
+  },
+  {
+    "path": "/api/auth/accept",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/auth/access",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/auth/login",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/auth/logout",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/auth/register",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/auth/session",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/auth/sessions",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/auth/sessions/{id}",
+    "method": "DELETE",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/automation",
+    "method": "GET",
+    "source": "src/marketing/routes.rs"
+  },
+  {
+    "path": "/api/automation/catalog",
+    "method": "GET",
+    "source": "src/marketing/catalog.rs"
+  },
+  {
+    "path": "/api/automation/entities/{entity}/{id}",
+    "method": "PUT",
+    "source": "src/marketing/metadata.rs"
+  },
+  {
+    "path": "/api/automation/executions",
+    "method": "GET",
+    "source": "src/marketing/routes.rs"
+  },
+  {
+    "path": "/api/automation/import-condition",
+    "method": "POST",
+    "source": "src/marketing/catalog.rs"
+  },
+  {
+    "path": "/api/automation/rules/preview",
+    "method": "POST",
+    "source": "src/marketing/routes.rs"
+  },
+  {
+    "path": "/api/automation/{kind}/{id}",
+    "method": "PUT",
+    "source": "src/marketing/routes.rs"
+  },
+  {
+    "path": "/api/capabilities",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/concierge",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/developer",
+    "method": "GET",
+    "source": "src/developer/routes.rs"
+  },
+  {
+    "path": "/api/developer/apps/{id}",
+    "method": "DELETE",
+    "source": "src/developer/routes.rs"
+  },
+  {
+    "path": "/api/developer/apps/{id}/restore",
+    "method": "POST",
+    "source": "src/developer/routes.rs"
+  },
+  {
+    "path": "/api/developer/builds/{id}/stage",
+    "method": "POST",
+    "source": "src/developer/routes.rs"
+  },
+  {
+    "path": "/api/developer/generate",
+    "method": "POST",
+    "source": "src/developer/routes.rs"
+  },
+  {
+    "path": "/api/developer/import",
+    "method": "POST",
+    "source": "src/developer/routes.rs"
+  },
+  {
+    "path": "/api/developer/schema",
+    "method": "GET",
+    "source": "src/developer/routes.rs"
+  },
+  {
+    "path": "/api/developer/task",
+    "method": "POST",
+    "source": "src/developer/routes.rs"
+  },
+  {
+    "path": "/api/environments",
+    "method": "GET",
+    "source": "src/staging/mod.rs"
+  },
+  {
+    "path": "/api/environments",
+    "method": "POST",
+    "source": "src/staging/mod.rs"
+  },
+  {
+    "path": "/api/environments/{id}/diff",
+    "method": "GET",
+    "source": "src/staging/mod.rs"
+  },
+  {
+    "path": "/api/environments/{id}/release",
+    "method": "POST",
+    "source": "src/staging/mod.rs"
+  },
+  {
+    "path": "/api/experience",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/extensions",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/extensions/activate",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/history/{entity}/{id}",
+    "method": "GET",
+    "source": "src/history/mod.rs"
+  },
+  {
+    "path": "/api/history/{entity}/{id}/{version}",
+    "method": "GET",
+    "source": "src/history/mod.rs"
+  },
+  {
+    "path": "/api/history/{entity}/{id}/{version}/restore",
+    "method": "POST",
+    "source": "src/history/mod.rs"
+  },
+  {
+    "path": "/api/intelligence",
+    "method": "GET",
+    "source": "src/cognition/routes.rs"
+  },
+  {
+    "path": "/api/intelligence/hypotheses/{id}",
+    "method": "PUT",
+    "source": "src/cognition/routes.rs"
+  },
+  {
+    "path": "/api/knowledge",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/knowledge/documents",
+    "method": "GET",
+    "source": "src/documents/mod.rs"
+  },
+  {
+    "path": "/api/knowledge/documents",
+    "method": "POST",
+    "source": "src/documents/mod.rs"
+  },
+  {
+    "path": "/api/knowledge/documents/upload",
+    "method": "POST",
+    "source": "src/documents/mod.rs"
+  },
+  {
+    "path": "/api/knowledge/documents/{id}",
+    "method": "GET",
+    "source": "src/documents/mod.rs"
+  },
+  {
+    "path": "/api/knowledge/documents/{id}",
+    "method": "PATCH",
+    "source": "src/documents/mod.rs"
+  },
+  {
+    "path": "/api/knowledge/documents/{id}",
+    "method": "PUT",
+    "source": "src/documents/mod.rs"
+  },
+  {
+    "path": "/api/knowledge/documents/{id}/index",
+    "method": "POST",
+    "source": "src/documents/mod.rs"
+  },
+  {
+    "path": "/api/knowledge/documents/{id}/lifecycle",
+    "method": "POST",
+    "source": "src/documents/mod.rs"
+  },
+  {
+    "path": "/api/knowledge/external",
+    "method": "GET",
+    "source": "src/apps/evidence_routes.rs"
+  },
+  {
+    "path": "/api/knowledge/preview",
+    "method": "POST",
+    "source": "src/documents/mod.rs"
+  },
+  {
+    "path": "/api/knowledge/product/{id}",
+    "method": "GET",
+    "source": "src/documents/mod.rs"
+  },
+  {
+    "path": "/api/knowledge/reindex",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/knowledge/search",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/knowledge/status",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/knowledge/workspace",
+    "method": "GET",
+    "source": "src/documents/mod.rs"
+  },
+  {
+    "path": "/api/merchant/assets/{id}",
+    "method": "PUT",
+    "source": "src/assets/mod.rs"
+  },
+  {
+    "path": "/api/merchant/categories",
+    "method": "GET",
+    "source": "src/categories/mod.rs"
+  },
+  {
+    "path": "/api/merchant/categories",
+    "method": "POST",
+    "source": "src/categories/mod.rs"
+  },
+  {
+    "path": "/api/merchant/categories/{id}",
+    "method": "PUT",
+    "source": "src/categories/mod.rs"
+  },
+  {
+    "path": "/api/merchant/commerce",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/merchant/commerce",
+    "method": "PUT",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/merchant/commerce/channels/{channel}",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/merchant/commerce/channels/{channel}",
+    "method": "PUT",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/merchant/commerce/methods/{area}/{id}/dependencies",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/merchant/customer-groups",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/customers",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/customers/{email}",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/customers/{email}",
+    "method": "PUT",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/customers/{email}/addresses",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/customers/{email}/addresses",
+    "method": "POST",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/customers/{email}/addresses/{id}",
+    "method": "DELETE",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/customers/{email}/addresses/{id}",
+    "method": "PUT",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/media/jobs/{id}",
+    "method": "GET",
+    "source": "src/assets/mod.rs"
+  },
+  {
+    "path": "/api/merchant/media/jobs/{id}/apply",
+    "method": "POST",
+    "source": "src/assets/mod.rs"
+  },
+  {
+    "path": "/api/merchant/media/provider",
+    "method": "GET",
+    "source": "src/assets/mod.rs"
+  },
+  {
+    "path": "/api/merchant/order-state-machine",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/order-state-machine",
+    "method": "PUT",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/orders",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/orders/{id}",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/orders/{id}/notes",
+    "method": "POST",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/orders/{id}/receipts",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/orders/{id}/receipts",
+    "method": "POST",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/orders/{id}/transition",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/merchant/overview",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/merchant/products",
+    "method": "GET",
+    "source": "src/commerce/product_admin.rs"
+  },
+  {
+    "path": "/api/merchant/products",
+    "method": "POST",
+    "source": "src/commerce/product_admin.rs"
+  },
+  {
+    "path": "/api/merchant/products/{id}",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/merchant/products/{id}",
+    "method": "PUT",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/merchant/products/{id}/assets",
+    "method": "GET",
+    "source": "src/assets/mod.rs"
+  },
+  {
+    "path": "/api/merchant/products/{id}/assets",
+    "method": "POST",
+    "source": "src/assets/mod.rs"
+  },
+  {
+    "path": "/api/merchant/products/{id}/media/jobs",
+    "method": "GET",
+    "source": "src/assets/mod.rs"
+  },
+  {
+    "path": "/api/merchant/products/{id}/media/jobs",
+    "method": "POST",
+    "source": "src/assets/mod.rs"
+  },
+  {
+    "path": "/api/merchant/quote",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/merchant/receipts/settings",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/receipts/settings",
+    "method": "PUT",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/receipts/{id}/pdf",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/reviews/{id}",
+    "method": "PUT",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/merchant/translations",
+    "method": "GET",
+    "source": "src/translations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/translations",
+    "method": "POST",
+    "source": "src/translations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/translations/{id}",
+    "method": "GET",
+    "source": "src/translations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/translations/{id}",
+    "method": "PUT",
+    "source": "src/translations/mod.rs"
+  },
+  {
+    "path": "/api/merchant/translations/{id}/apply",
+    "method": "POST",
+    "source": "src/translations/mod.rs"
+  },
+  {
+    "path": "/api/payments",
+    "method": "GET",
+    "source": "src/payments/routes.rs"
+  },
+  {
+    "path": "/api/payments/jobs/{id}",
+    "method": "GET",
+    "source": "src/payments/routes.rs"
+  },
+  {
+    "path": "/api/payments/{id}/{operation}",
+    "method": "POST",
+    "source": "src/payments/routes.rs"
+  },
+  {
+    "path": "/api/platform/audit",
+    "method": "GET",
+    "source": "src/platform/mod.rs"
+  },
+  {
+    "path": "/api/platform/overview",
+    "method": "GET",
+    "source": "src/platform/mod.rs"
+  },
+  {
+    "path": "/api/platform/session",
+    "method": "GET",
+    "source": "src/platform/mod.rs"
+  },
+  {
+    "path": "/api/platform/shops",
+    "method": "GET",
+    "source": "src/platform/mod.rs"
+  },
+  {
+    "path": "/api/platform/shops",
+    "method": "POST",
+    "source": "src/platform/mod.rs"
+  },
+  {
+    "path": "/api/platform/shops/{id}",
+    "method": "GET",
+    "source": "src/platform/mod.rs"
+  },
+  {
+    "path": "/api/policy",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/runtime",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/search/order",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/search/product",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/settings/company-logo",
+    "method": "POST",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/settings/company-logo/{id}",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/settings/master-data",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/settings/master-data",
+    "method": "PUT",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/settings/master-data/channels/{id}",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/settings/master-data/channels/{id}",
+    "method": "PUT",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/workspace/integrations",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/workspace/integrations",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/workspace/integrations/{id}",
+    "method": "DELETE",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/workspace/invitations",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/workspace/invitations/{id}",
+    "method": "DELETE",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/workspace/members",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/workspace/members/{id}",
+    "method": "PUT",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/workspaces",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/health",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/mcp",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/mcp",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/account/addresses",
+    "method": "GET",
+    "source": "src/accounts/mod.rs"
+  },
+  {
+    "path": "/store-api/account/addresses",
+    "method": "POST",
+    "source": "src/accounts/mod.rs"
+  },
+  {
+    "path": "/store-api/account/addresses/{id}",
+    "method": "DELETE",
+    "source": "src/accounts/mod.rs"
+  },
+  {
+    "path": "/store-api/account/addresses/{id}",
+    "method": "PUT",
+    "source": "src/accounts/mod.rs"
+  },
+  {
+    "path": "/store-api/account/downloads",
+    "method": "GET",
+    "source": "src/assets/mod.rs"
+  },
+  {
+    "path": "/store-api/account/login",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/account/logout",
+    "method": "POST",
+    "source": "src/accounts/mod.rs"
+  },
+  {
+    "path": "/store-api/account/orders",
+    "method": "GET",
+    "source": "src/accounts/mod.rs"
+  },
+  {
+    "path": "/store-api/account/password",
+    "method": "POST",
+    "source": "src/accounts/mod.rs"
+  },
+  {
+    "path": "/store-api/account/profile",
+    "method": "GET",
+    "source": "src/accounts/mod.rs"
+  },
+  {
+    "path": "/store-api/account/profile",
+    "method": "PUT",
+    "source": "src/accounts/mod.rs"
+  },
+  {
+    "path": "/store-api/account/register",
+    "method": "POST",
+    "source": "src/accounts/mod.rs"
+  },
+  {
+    "path": "/store-api/apps/analytics.js",
+    "method": "GET",
+    "source": "src/apps/routes.rs"
+  },
+  {
+    "path": "/store-api/apps/slots",
+    "method": "GET",
+    "source": "src/apps/routes.rs"
+  },
+  {
+    "path": "/store-api/apps/surfaces",
+    "method": "GET",
+    "source": "src/apps/surfaces.rs"
+  },
+  {
+    "path": "/store-api/apps/{id}/actions/{action}",
+    "method": "POST",
+    "source": "src/apps/routes.rs"
+  },
+  {
+    "path": "/store-api/apps/{id}/configure",
+    "method": "POST",
+    "source": "src/apps/routes.rs"
+  },
+  {
+    "path": "/store-api/apps/{id}/http/{route}",
+    "method": "GET",
+    "source": "src/apps/surfaces.rs"
+  },
+  {
+    "path": "/store-api/apps/{id}/http/{route}",
+    "method": "POST",
+    "source": "src/apps/surfaces.rs"
+  },
+  {
+    "path": "/store-api/assets/{id}",
+    "method": "GET",
+    "source": "src/assets/mod.rs"
+  },
+  {
+    "path": "/store-api/checkout/cart",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/checkout/cart",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/checkout/cart",
+    "method": "PUT",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/checkout/cart/line-item",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/checkout/context",
+    "method": "PUT",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/checkout/coupons",
+    "method": "PUT",
+    "source": "src/marketing/routes.rs"
+  },
+  {
+    "path": "/store-api/checkout/handoff",
+    "method": "POST",
+    "source": "src/checkout_handoff.rs"
+  },
+  {
+    "path": "/store-api/checkout/handoff/consume",
+    "method": "POST",
+    "source": "src/checkout_handoff.rs"
+  },
+  {
+    "path": "/store-api/checkout/options",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/checkout/order",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/company",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/store-api/company-logo/{id}",
+    "method": "GET",
+    "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/store-api/context",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/countries",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/intelligence/recommendations/{id}",
+    "method": "GET",
+    "source": "src/cognition/routes.rs"
+  },
+  {
+    "path": "/store-api/navigation",
+    "method": "GET",
+    "source": "src/categories/mod.rs"
+  },
+  {
+    "path": "/store-api/navigation",
+    "method": "POST",
+    "source": "src/categories/mod.rs"
+  },
+  {
+    "path": "/store-api/orders/{order}/downloads/{asset}",
+    "method": "GET",
+    "source": "src/assets/mod.rs"
+  },
+  {
+    "path": "/store-api/payments/paypal/webhooks",
+    "method": "POST",
+    "source": "src/payments/routes.rs"
+  },
+  {
+    "path": "/store-api/payments/{id}",
+    "method": "GET",
+    "source": "src/payments/routes.rs"
+  },
+  {
+    "path": "/store-api/payments/{id}/{operation}",
+    "method": "POST",
+    "source": "src/payments/routes.rs"
+  },
+  {
+    "path": "/store-api/personalization",
+    "method": "DELETE",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/personalization/events",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/product",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/product/{id}",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/product/{id}",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/product/{id}/attachments",
+    "method": "GET",
+    "source": "src/assets/mod.rs"
+  },
+  {
+    "path": "/store-api/product/{id}/questions",
+    "method": "POST",
+    "source": "src/documents/mod.rs"
+  },
+  {
+    "path": "/store-api/product/{id}/reviews",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/ucp/v1/checkout-sessions",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/ucp/v1/checkout-sessions/{id}",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/ucp/v1/checkout-sessions/{id}",
+    "method": "PUT",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/ucp/v1/checkout-sessions/{id}/cancel",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/ucp/v1/checkout-sessions/{id}/complete",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/webhooks/apps/{tenant}/{app}/{webhook}",
+    "method": "POST",
+    "source": "src/apps/webhooks.rs"
+  }
+]

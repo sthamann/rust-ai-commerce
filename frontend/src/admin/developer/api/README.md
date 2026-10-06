@@ -1,0 +1,7 @@
+# Developer API console
+
+`IntegrationKeys` uses the existing personal-account integration-key lifecycle. Keys are hashed server-side, valid from creation for 1–90 days, revocable and bound to one live workspace plus its owned staging environments. Each request intersects explicit scopes with the creator's current membership. The browser keeps a newly created plaintext key only in component memory.
+
+`ApiExplorer` uses `routes.json`, generated from Rust `.route` declarations by `scripts/api_catalogue.py`. The mandatory CI structure check rejects catalogue drift. It lists static method/path/source pairs; installed app declarations are loaded separately for the current shop. This is a route catalogue, not an OpenAPI schema generator. Parameter inputs are encoded and reject path/query escapes. Live tests are same-origin GET reads (asset downloads and operator APIs excluded) and MCP `tools/list`; mutation routes remain visible but cannot be executed in the read tester. An optional supplied integration key is used only for that test, without replacing the merchant session. Request errors are caught locally.
+
+`api-i18n` supplies all EN/DE/FR/ES interface text. `api-console.test.tsx` checks scope selection, expiry bounds, one-time display, revocation confirmation, no-management access and read-only testing. Existing `merchant_operations` and `tenant_isolation` integration suites test real key containment and revocation.

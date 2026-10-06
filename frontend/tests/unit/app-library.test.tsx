@@ -250,3 +250,19 @@ it("keeps a failed activation visible for retry without changing the displayed a
   );
   expect(screen.getByRole("dialog")).toBeVisible();
 });
+it("shows built-in apps immediately for a fresh hosted shop without installing external integrations", async () => {
+  const request = vi.fn(async (_path: string, _body?: unknown) => ({
+    packages: [],
+    mainLocale: "en-GB",
+  }));
+  render(
+    <LocaleProvider>
+      <AppsManager request={request} role="owner" token="fixture" />
+    </LocaleProvider>,
+  );
+  expect(await screen.findByText("PayPal")).toBeVisible();
+  expect(
+    screen.getAllByRole("button", { name: "Install" }).length,
+  ).toBeGreaterThan(5);
+  expect(request.mock.calls.every((call) => call[1] === undefined)).toBe(true);
+});

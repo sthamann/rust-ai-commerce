@@ -158,10 +158,32 @@ pub(crate) fn tool_schema(name: &str) -> Value {
     json!({"type":"object","properties":props,"required":required,"additionalProperties":false})
 }
 pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Response {
-    if let Some(origin) = header(&h, "origin")
-        && !["http://127.0.0.1:8787", "http://localhost:8787"].contains(&origin)
-    {
-        return Error(StatusCode::FORBIDDEN, "Origin rejected".into()).into_response();
+    if let Some(origin) = header(&h, "origin") {
+        // Trust only explicit deployment configuration, never Host or forwarded headers.
+        let public = env::var("COMMERCE_PUBLIC_ORIGIN").ok().and_then(|v| {
+            reqwest::Url::parse(&v)
+                .ok()
+                .filter(|u| {
+                    u.scheme() == "https"
+                        && u.username().is_empty()
+                        && u.password().is_none()
+                        && u.path() == "/"
+                        && u.query().is_none()
+                        && u.fragment().is_none()
+                })
+                .map(|u| u.origin().ascii_serialization())
+        });
+        let bind = env::var("BIND_ADDR").unwrap_or_else(|_| "127.0.0.1:8787".into());
+        let local = bind
+            .parse::<std::net::SocketAddr>()
+            .ok()
+            .filter(|b| b.ip().is_loopback());
+        let loopback = local.is_some_and(|b| {
+            origin == format!("http://{}", b) || origin == format!("http://localhost:{}", b.port())
+        });
+        if public.as_deref() != Some(origin) && !loopback {
+            return Error(StatusCode::FORBIDDEN, "Origin rejected".into()).into_response();
+        }
     }
     if v["jsonrpc"] != "2.0" {
         return bad("JSON-RPC 2.0 required").into_response();

@@ -12,11 +12,13 @@
     "test:coverage": "vitest run --coverage",
     "test:coverage:full": "vitest run --coverage --coverage.thresholds.100",
     "architecture": "node scripts/architecture.mjs",
-    "localization": "node scripts/localization.mjs"
+    "localization": "node scripts/localization.mjs",
+    "api:check": "python3 ../scripts/api_catalogue.py --check"
   },
   "dependencies": {
     "@tiptap/core": "^3.31.4",
     "@tiptap/extension-image": "^3.31.4",
+    "@tiptap/markdown": "3.31.4",
     "@tiptap/pm": "^3.31.4",
     "@tiptap/react": "^3.31.4",
     "@tiptap/starter-kit": "^3.31.4",

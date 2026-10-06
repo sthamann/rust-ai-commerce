@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Real HTTP/PostgreSQL catalog creation, categories, multilingual editor, visibility and staging regressions. Synthetic isolated shops only."""
-import base64,copy,json,os,time,urllib.request,urllib.error,uuid
+import base64,copy,json,os,time,urllib.request,urllib.error,uuid,concurrent.futures
 BASE=os.environ.get('BASE_URL','http://127.0.0.1:8787');public={};merchant={};checks=[]
 def req(path,body=None,h=None,method=None,expected=200):
  r=urllib.request.Request(BASE+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**public,**(h or {})},method=method or ('POST' if body is not None else 'GET'))
@@ -24,6 +24,14 @@ draft['translations']={l:{'name':'Catalog test '+l,'description':'Created throug
 draft['commerce'].update({'price':39.9,'stock':7,'media':[],'properties':{'material':'oak'}})
 draft['extra']={**{'seo':{},'specifications':{},'crossSelling':[],'shippingFree':False,'digital':False,'automation':{}},**draft['extra']}
 draft['extra'].update({'richDescription':{'de':[{'type':'document','doc':{'type':'doc','content':[{'type':'heading','attrs':{'level':2},'content':[{'type':'text','text':'Visuell'}]},{'type':'paragraph','content':[{'type':'text','text':'Formatted description','marks':[{'type':'bold'}]}]}]}}]},'identity':{'manufacturer':'Synthetic brand','ean':'1234567890123'}})
+# Actual TipTap Markdown transport shape, including numbered lists, code, quotes and links.
+draft['extra']['richDescription']['en']=[{'type':'document','doc':{'type':'doc','content':[
+ {'type':'orderedList','attrs':{'start':1},'content':[{'type':'listItem','content':[{'type':'paragraph','content':[{'type':'text','text':'First'}]}]}]},
+ {'type':'codeBlock','attrs':{'language':'rust'},'content':[{'type':'text','text':'let x = 1;'}]},
+ {'type':'blockquote','content':[{'type':'paragraph','content':[{'type':'text','text':'Care guide'}]}]},
+ {'type':'paragraph','content':[{'type':'text','text':'Guide','marks':[{'type':'link','attrs':{'href':'https://example.test/guide','target':'_blank','rel':'noopener noreferrer nofollow'}}]}]},
+ {'type':'horizontalRule'}]}}]
+
 req('/api/merchant/products',draft,expected=401)
 created=req('/api/merchant/products',draft,merchant);pid=created['id'];assert created['revision']==1
 assert req('/store-api/product/'+pid,{})['product']['product_number']==draft['catalog']['productNumber']
@@ -59,9 +67,33 @@ assert len(req('/store-api/navigation',{},ch)['elements'])==2;check('per-product
 variant=copy.deepcopy(draft);variant['catalog'].update({'productNumber':'VAR-'+suffix,'parentId':pid,'options':{'size':'M'},'active':True,'salesChannelIds':[]});vid=req('/api/merchant/products',variant,merchant)['id']
 assert req('/api/merchant/products?parentId='+pid,h=merchant)['elements'][0]['id']==vid
 assert any(v['id']==vid for v in req('/store-api/product/'+pid,{})['variants']);check('created variants have a native family and independent product records')
+# The real aggregate rejects duplicate combinations and rolls back conflicting edits.
+duplicate=copy.deepcopy(variant);duplicate['catalog']['productNumber']='DUP-'+suffix
+req('/api/merchant/products',duplicate,merchant,expected=409)
+assert len(req('/api/merchant/products?parentId='+pid,h=merchant)['elements'])==1
+second=copy.deepcopy(variant);second['catalog'].update({'productNumber':'VAR2-'+suffix,'options':{'size':'L'}})
+second_id=req('/api/merchant/products',second,merchant)['id']
+second_saved=req('/api/merchant/products/'+second_id,h=merchant);before=copy.deepcopy(second_saved)
+for key in ['id','channels','mainLocale','availableLocales']:second_saved.pop(key,None)
+second_saved['catalog']['options']={'size':'M'}
+req('/api/merchant/products/'+second_id,second_saved,merchant,'PUT',expected=409)
+assert req('/api/merchant/products/'+second_id,h=merchant)==before
+second_saved['catalog']['options']={}
+req('/api/merchant/products/'+second_id,second_saved,merchant,'PUT',expected=400)
+check('duplicate variant creation and editing are rejected atomically; empty options cannot erase a family')
+def competing_variant(number):
+ payload=copy.deepcopy(variant);payload['catalog'].update({'productNumber':number+'-'+suffix,'options':{'size':'XL'}})
+ request=urllib.request.Request(BASE+'/api/merchant/products',data=json.dumps(payload).encode(),headers={'Content-Type':'application/json',**merchant},method='POST')
+ try:
+  with urllib.request.urlopen(request,timeout=30) as response:return response.status
+ except urllib.error.HTTPError as e:return e.code
+with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:assert sorted(pool.map(competing_variant,['RACE1','RACE2']))==[200,409]
+check('concurrent variant creation serializes duplicate option combinations')
 # Cross-tenant category/product IDs cannot be attached by a second owner.
 w2=req('/api/auth/register',{'workspaceId':'catalog-other-'+suffix,'workspaceName':'Other catalog','name':'Synthetic Other','email':'catalog-other-'+suffix+'@example.test','password':'Synthetic-catalog-2026!'})
-other={'x-tenant':w2['workspace'],'Authorization':'Bearer '+w2['token']};req('/api/merchant/products/'+pid,h=other,expected=404)
+other={'x-tenant':w2['workspace'],'Authorization':'Bearer '+w2['token']};
+foreign_variant=copy.deepcopy(variant);foreign_variant['catalog'].update({'categoryIds':[],'productNumber':'FOREIGN-'+suffix});req('/api/merchant/products',foreign_variant,other,expected=400);
+req('/api/merchant/products/'+pid,h=other,expected=404)
 invalid=copy.deepcopy(draft);invalid['catalog']['productNumber']='OTHER';req('/api/merchant/products',invalid,other,expected=400);check('tenant boundary protects product reads and category assignments')
 stage=req('/api/environments',{'name':'Catalog staging'},merchant)['id'];sh={**merchant,'x-tenant':stage}
 assert any(c['id']==child for c in req('/api/merchant/categories',h=sh)['elements'])

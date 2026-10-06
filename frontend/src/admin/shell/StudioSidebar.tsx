@@ -40,7 +40,10 @@ export default function StudioSidebar() {
       tabs: ["assistant", "overview", "knowledge", "agents"],
     },
     { label: u("commerce"), tabs: ["productData", "orders", "customers"] },
-    { label: u("experiences"), tabs: ["storyfronts", "automation", "apps"] },
+    {
+      label: u("experiences"),
+      tabs: ["storyfronts", "channels", "automation", "apps"],
+    },
     {
       label: u("workspace"),
       tabs: ["developers", "environments", "users", "commerce"],

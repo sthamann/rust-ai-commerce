@@ -297,6 +297,8 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/automation/source-rules.ts](../frontend/src/admin/automation/source-rules.ts) | Convert source condition nodes for the graphical editor without losing original payload fields. |
 | [frontend/src/admin/catalog/AiImageStudio.tsx](../frontend/src/admin/catalog/AiImageStudio.tsx) | Optional image-provider jobs create private previews; applying a reviewed image is explicit and revision checked. |
 | [frontend/src/admin/catalog/CategoriesWorkspace.tsx](../frontend/src/admin/catalog/CategoriesWorkspace.tsx) | Localized category tree editor; parent moves and revisions are validated in the API. |
+| [frontend/src/admin/catalog/EditorBuffer.ts](../frontend/src/admin/catalog/EditorBuffer.ts) | Unsaved Markdown source participates in the aggregate's save/navigation guard without becoming product content. |
+| [frontend/src/admin/catalog/MarkdownSource.tsx](../frontend/src/admin/catalog/MarkdownSource.tsx) | Live Markdown buffer updates the same structured product document; no raw HTML is rendered or persisted. |
 | [frontend/src/admin/catalog/MediaDropzone.tsx](../frontend/src/admin/catalog/MediaDropzone.tsx) | Accessible multi-file upload with drag/drop, visible progress and the same validated asset API as attachments. |
 | [frontend/src/admin/catalog/PairFields.tsx](../frontend/src/admin/catalog/PairFields.tsx) | Accessible key/value rows for product properties, specifications and variant options. |
 | [frontend/src/admin/catalog/ProductAssets.tsx](../frontend/src/admin/catalog/ProductAssets.tsx) | Bounded upload and explicit digest-bound publication of attachments and paid files. |
@@ -307,16 +309,29 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/catalog/ProductMediaWorkspace.tsx](../frontend/src/admin/catalog/ProductMediaWorkspace.tsx) | One product-media workspace: cover, ordered gallery, multilingual image metadata, drag/drop and optional reviewed AI drafts. |
 | [frontend/src/admin/catalog/ProductPanels.tsx](../frontend/src/admin/catalog/ProductPanels.tsx) | Native commerce, media, translated SEO/specifications and category panels for one editable product. |
 | [frontend/src/admin/catalog/ProductTextFields.tsx](../frontend/src/admin/catalog/ProductTextFields.tsx) | Product text uses the shared single-language editor and field inheritance; product number stays language independent. |
-| [frontend/src/admin/catalog/ProductVariants.tsx](../frontend/src/admin/catalog/ProductVariants.tsx) | Variant creation writes real child products through the same validated product aggregate API. |
+| [frontend/src/admin/catalog/ProductVariants.tsx](../frontend/src/admin/catalog/ProductVariants.tsx) | Native variant family browser with cursor pagination, explicit editing and a bounded creation wizard. |
 | [frontend/src/admin/catalog/ReferencePriceFields.tsx](../frontend/src/admin/catalog/ReferencePriceFields.tsx) | Native reference-unit inputs feed the same server-calculated unit price displayed on product pages. |
 | [frontend/src/admin/catalog/RelatedProducts.tsx](../frontend/src/admin/catalog/RelatedProducts.tsx) | Search-backed related-product selection, avoiding comma-separated opaque IDs. |
 | [frontend/src/admin/catalog/ReviewModeration.tsx](../frontend/src/admin/catalog/ReviewModeration.tsx) | Product-scoped review publication; authoritative authorization stays in the API. |
 | [frontend/src/admin/catalog/RichEditor.tsx](../frontend/src/admin/catalog/RichEditor.tsx) | Actual Tiptap WYSIWYG editor with structured safe content, media, formatting and per-language drafts. |
 | [frontend/src/admin/catalog/TaxClassSelect.tsx](../frontend/src/admin/catalog/TaxClassSelect.tsx) | Assign a product to an actual tenant tax class; legacy standard/reduced mapping remains explicit. |
+| [frontend/src/admin/catalog/VariantGenerator.tsx](../frontend/src/admin/catalog/VariantGenerator.tsx) | Reviewable, bounded batch creation uses saved parent data and keeps successful rows on partial failure. |
 | [frontend/src/admin/catalog/catalog-i18n.ts](../frontend/src/admin/catalog/catalog-i18n.ts) | Complete four-language catalog workspace vocabulary, separate from commerce data translations. |
 | [frontend/src/admin/catalog/catalog-model.ts](../frontend/src/admin/catalog/catalog-model.ts) | Editable native product aggregate and defaults shared by creation, detail and variant workflows. |
+| [frontend/src/admin/catalog/editor-document.ts](../frontend/src/admin/catalog/editor-document.ts) | Canonical transport drops editor-only null attributes; description headings remain within the native H2/H3 contract. |
+| [frontend/src/admin/catalog/editor-i18n.ts](../frontend/src/admin/catalog/editor-i18n.ts) | Four-language controls for visual/Markdown editing without changing content-language inheritance. |
+| [frontend/src/admin/catalog/markdown-content.ts](../frontend/src/admin/catalog/markdown-content.ts) | Markdown admission shares the public rich-document node/URL boundary; rich-only features never silently disappear. |
 | [frontend/src/admin/catalog/media-model.ts](../frontend/src/admin/catalog/media-model.ts) | Pure gallery operations preserve order, explicit alt translations and upload bounds without fabricating language values. |
 | [frontend/src/admin/catalog/rich-conversion.ts](../frontend/src/admin/catalog/rich-conversion.ts) | Lossless import of legacy blocks into structured WYSIWYG content, preserving inline emphasis. |
+| [frontend/src/admin/catalog/variant-family.ts](../frontend/src/admin/catalog/variant-family.ts) | Cursor-based family lookup for duplicate review, bounded independently of the 50-row creation limit. |
+| [frontend/src/admin/catalog/variant-i18n.ts](../frontend/src/admin/catalog/variant-i18n.ts) | Guided variant creation and editing vocabulary; content still follows shop language inheritance. |
+| [frontend/src/admin/catalog/variant-model.ts](../frontend/src/admin/catalog/variant-model.ts) | Bounded option combinations and metadata-free child payloads shared by the guided variant creator. |
+| [frontend/src/admin/channels/ChannelEditor.tsx](../frontend/src/admin/channels/ChannelEditor.tsx) | Guided channel creation/editing reuses the native revisioned API and shared content-language inheritance. |
+| [frontend/src/admin/channels/ChannelProducts.tsx](../frontend/src/admin/channels/ChannelProducts.tsx) | Search-based channel product assignment, preserving selected IDs across server-filtered result pages. |
+| [frontend/src/admin/channels/ChannelSettings.tsx](../frontend/src/admin/channels/ChannelSettings.tsx) | Channel settings embed existing revision-aware identity and checkout editors with the channel selected. |
+| [frontend/src/admin/channels/SalesChannelsWorkspace.tsx](../frontend/src/admin/channels/SalesChannelsWorkspace.tsx) | Discover and create channels separately from rules; shared settings and independent SaaS shops remain explicit. |
+| [frontend/src/admin/channels/channel-i18n.ts](../frontend/src/admin/channels/channel-i18n.ts) | Sales-channel onboarding and inherited settings vocabulary in all interface languages. |
+| [frontend/src/admin/channels/channel-model.ts](../frontend/src/admin/channels/channel-model.ts) | Existing sales-channel contract and safe storefront URLs; independent tenants remain a separate concept. |
 | [frontend/src/admin/customers/CustomersManager.tsx](../frontend/src/admin/customers/CustomersManager.tsx) | CRM list and editable customer profile with linked order history. |
 | [frontend/src/admin/dashboard/OverviewView.tsx](../frontend/src/admin/dashboard/OverviewView.tsx) | OverviewView renders verified shop state and typed user actions. |
 | [frontend/src/admin/developer/AppActionAccess.tsx](../frontend/src/admin/developer/AppActionAccess.tsx) | Team permissions and MCP visibility are independent from public storefront reads and AI grounding. |
@@ -333,8 +348,12 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/developer/AppVersions.tsx](../frontend/src/admin/developer/AppVersions.tsx) | Saved version inspection, digest-approved stage install and conflict-aware package-only live release. |
 | [frontend/src/admin/developer/AppViewTabs.tsx](../frontend/src/admin/developer/AppViewTabs.tsx) | Native view navigation and creation are separate from workspace orchestration. |
 | [frontend/src/admin/developer/DeveloperView.tsx](../frontend/src/admin/developer/DeveloperView.tsx) | Visual App Studio orchestrates modular editors over the same executable schema used by coding agents. |
+| [frontend/src/admin/developer/DeveloperWorkspace.tsx](../frontend/src/admin/developer/DeveloperWorkspace.tsx) | Dedicated app and API workspaces retain App Studio state while switching the developer console. |
 | [frontend/src/admin/developer/SandboxContextPicker.tsx](../frontend/src/admin/developer/SandboxContextPicker.tsx) | Bounded server search selects an owned object for testing editor-bound apps in a private sandbox. |
 | [frontend/src/admin/developer/SandboxPreview.tsx](../frontend/src/admin/developer/SandboxPreview.tsx) | Preview resolves the installed registry first; a newer staged package cannot masquerade as an older build. |
+| [frontend/src/admin/developer/api/ApiExplorer.tsx](../frontend/src/admin/developer/api/ApiExplorer.tsx) | Source-derived static route explorer, runtime app discovery and isolated same-origin read tests. |
+| [frontend/src/admin/developer/api/IntegrationKeys.tsx](../frontend/src/admin/developer/api/IntegrationKeys.tsx) | Personal, expiring, least-privilege integration keys; plaintext stays in component memory and is never reloaded. |
+| [frontend/src/admin/developer/api/api-i18n.ts](../frontend/src/admin/developer/api/api-i18n.ts) | Four-language developer API console vocabulary; no credentials are persisted in UI storage. |
 | [frontend/src/admin/developer/app-model.ts](../frontend/src/admin/developer/app-model.ts) | Pure schema edits preserve unsupported extension properties; compilation binds native UI to real actions. |
 | [frontend/src/admin/developer/assistant-model.ts](../frontend/src/admin/developer/assistant-model.ts) | Assistants compile to the public manifest contract, with no hidden runtime or provider code. |
 | [frontend/src/admin/developer/useAppStudio.ts](../frontend/src/admin/developer/useAppStudio.ts) | Tenant-scoped build lifecycle; immutable saved snapshots gate sandbox previews and selected app-only releases. |
@@ -390,6 +409,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/shell/useStudioController.ts](../frontend/src/admin/shell/useStudioController.ts) | Studio session/controller: authentication context, tenant/staging state and chat commands. |
 | [frontend/src/admin/shell/useStudioSession.ts](../frontend/src/admin/shell/useStudioSession.ts) | Revalidate visible Studio sessions and route authenticated failures to the active controller. |
 | [frontend/src/admin/storyfronts/StoryfrontView.tsx](../frontend/src/admin/storyfronts/StoryfrontView.tsx) | Dedicated merchant integration surface for the independently deployed Storyfront service. |
+| [frontend/src/admin/styles/api-console.css](../frontend/src/admin/styles/api-console.css) | Responsive developer key management and bounded API explorer using Studio theme tokens. |
 | [frontend/src/admin/styles/app-artwork.css](../frontend/src/admin/styles/app-artwork.css) | Category cover and app icon artwork, with local deterministic fallbacks. |
 | [frontend/src/admin/styles/app-assistant.css](../frontend/src/admin/styles/app-assistant.css) | Guided extension workspace: restrained colour, clear choices and responsive setup. |
 | [frontend/src/admin/styles/app-catalog.css](../frontend/src/admin/styles/app-catalog.css) | App library/detail presentation: bounded cards, passive artwork, accessible filters and theme-aware forms. |
@@ -409,8 +429,10 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/knowledge-evidence.css](../frontend/src/admin/styles/knowledge-evidence.css) | Product evidence, retrieval excerpts, observed pairs and responsive knowledge layouts. |
 | [frontend/src/admin/styles/knowledge-sources.css](../frontend/src/admin/styles/knowledge-sources.css) | Knowledge source library/editor layouts: single-language forms and lifecycle controls. |
 | [frontend/src/admin/styles/knowledge.css](../frontend/src/admin/styles/knowledge.css) | Unified knowledge workspace: evidence-first hierarchy, accessible cards and theme-aware responsive layouts. |
+| [frontend/src/admin/styles/markdown-editor.css](../frontend/src/admin/styles/markdown-editor.css) | Shared visual/Markdown product editor treatment using existing Studio theme tokens. |
 | [frontend/src/admin/styles/media-workspace.css](../frontend/src/admin/styles/media-workspace.css) | Gallery workspace: airy tiles, focused image inspector and accessible upload surfaces using Studio theme tokens. |
 | [frontend/src/admin/styles/operations.css](../frontend/src/admin/styles/operations.css) | Operational screens share the studio's light surface and clear focus states. |
+| [frontend/src/admin/styles/sales-channels.css](../frontend/src/admin/styles/sales-channels.css) | Sales-channel cards, onboarding and scoped settings use the same responsive, accessible Studio design. |
 | [frontend/src/admin/styles/settings.css](../frontend/src/admin/styles/settings.css) | Independent settings navigation, grouped native forms and save feedback in Studio theme tokens. |
 | [frontend/src/admin/styles/studio/01-studio.css](../frontend/src/admin/styles/studio/01-studio.css) | studio: studio styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/admin/styles/studio/02-workspace-switch.css](../frontend/src/admin/styles/studio/02-workspace-switch.css) | studio: workspace-switch styles. Source order is preserved by the entry stylesheet. |
@@ -423,6 +445,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/studio/09-responsive.css](../frontend/src/admin/styles/studio/09-responsive.css) | studio: responsive styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/admin/styles/studio/10-studio-mobile-preview-button.css](../frontend/src/admin/styles/studio/10-studio-mobile-preview-button.css) | studio: studio-mobile-preview-button styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/admin/styles/studio.css](../frontend/src/admin/styles/studio.css) | Ordered studio stylesheet entry; domain rules live in the adjacent folder. |
+| [frontend/src/admin/styles/variants.css](../frontend/src/admin/styles/variants.css) | Variant family and review table share the catalog's responsive theme and focus treatment. |
 | [frontend/src/admin/styles/workspace-polish.css](../frontend/src/admin/styles/workspace-polish.css) | Consistent Studio density, readable hierarchy and independently scrollable navigation across workspaces. |
 | [frontend/src/admin/team/AccessManager.tsx](../frontend/src/admin/team/AccessManager.tsx) | Fine-grained team overrides, revocable invitations and personal session inventory. |
 | [frontend/src/admin/team/PersonalAccountForm.tsx](../frontend/src/admin/team/PersonalAccountForm.tsx) | PersonalAccountForm: focused account-form view with explicit typed inputs and callbacks. |
@@ -580,6 +603,7 @@ This lists every checked-in source module in these roots, including files with n
 
 | Module | Responsibility |
 |---|---|
+| [scripts/api_catalogue.py](../scripts/api_catalogue.py) | Generate a drift-checked static HTTP route catalogue from the compiled Rust router declarations. |
 | [scripts/app_assistants.py](../scripts/app_assistants.py) | Real assistant packages: editor context, rights, MCP opt-out, cron, signed webhooks, flows and local service fixtures. |
 | [scripts/app_inference.py](../scripts/app_inference.py) | Opt-in real local model proposes a registered app operation; approval exercises the same managed writer. |
 | [scripts/app_studio.py](../scripts/app_studio.py) | Native App Studio exercised through real HTTP/PostgreSQL: shared IR, version isolation, data, routes, MCP and selective release. |

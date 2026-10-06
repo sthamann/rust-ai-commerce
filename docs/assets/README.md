@@ -42,3 +42,11 @@ synthetic Commerce Playground, with English UI and no mocked data or image
 editing. Cover illustrations are generated inline vectors, not official provider
 logos or AI photographs. No app installation, live deactivation or provider call
 was performed to capture them.
+
+The `studio-editor-en.png`, `studio-api-en.png` and `studio-channels-en.png`
+captures were recorded on 2026-10-06 from the running synthetic Commerce
+Playground. They show applied Markdown in the visual editor, real MCP discovery
+in the API explorer and native channel cards. Product and channel test drafts
+were discarded; no existing product, channel or app was changed for these
+captures. No layout edits, generated screenshots or mocked responses were used.
+The displayed milliseconds measure one local test, not a performance benchmark.

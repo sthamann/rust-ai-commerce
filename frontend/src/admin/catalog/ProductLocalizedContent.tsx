@@ -1,7 +1,9 @@
 /** Consistent main-language inheritance for product rich documents, specification groups and individual SEO fields. */
 import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
 import LocalizedField from "../../shared/i18n/LocalizedField";
-import RichEditor from "./RichEditor";
+import { lazy, Suspense, useState } from "react";
+import { useEditorBuffer } from "./EditorBuffer";
+const RichEditor = lazy(() => import("./RichEditor"));
 import PairFields from "./PairFields";
 import { useCatalogText } from "./catalog-i18n";
 import { useInternationalText } from "../../shared/i18n/international-i18n";
@@ -17,7 +19,9 @@ function source(d: ProductDraft) {
   return d.translations[main] ? main : main.split("-")[0];
 }
 export function ProductRich({ draft: d, lang, onChange }: Props) {
+  const [reset, setReset] = useState(0);
   const { i } = useInternationalText();
+  const buffer = useEditorBuffer();
   const main = source(d),
     map = d.extra.richDescription ?? {},
     inherited = lang !== main && map[lang] == null;
@@ -28,6 +32,7 @@ export function ProductRich({ draft: d, lang, onChange }: Props) {
       {lang !== main && (
         <button
           type="button"
+          disabled={buffer.pending}
           className="intl-inherit"
           aria-pressed={inherited}
           onClick={() => {
@@ -35,23 +40,26 @@ export function ProductRich({ draft: d, lang, onChange }: Props) {
             if (inherited) next[lang] = structuredClone(map[main] ?? []);
             else delete next[lang];
             set(next);
+            setReset((n) => n + 1);
           }}
         >
           {i(inherited ? "inheritedFrom" : "customText")}{" "}
           {inherited ? d.mainLocale : ""} ↗
         </button>
       )}
-      <RichEditor
-        key={`${lang}:${inherited}`}
-        language={lang}
-        fallback={
-          d.translations[lang]?.description ??
-          d.translations[main]?.description ??
-          ""
-        }
-        value={inherited ? { ...map, [lang]: map[main] ?? [] } : map}
-        onChange={set}
-      />
+      <Suspense fallback={<p role="status">{i("loading")}</p>}>
+        <RichEditor
+          key={`${lang}:${reset}`}
+          language={lang}
+          fallback={
+            d.translations[lang]?.description ??
+            d.translations[main]?.description ??
+            ""
+          }
+          value={inherited ? { ...map, [lang]: map[main] ?? [] } : map}
+          onChange={set}
+        />
+      </Suspense>
     </div>
   );
 }

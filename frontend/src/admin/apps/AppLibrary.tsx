@@ -1,5 +1,5 @@
 /** Searchable installed/discovery app cards with category/status filters and real lifecycle actions. */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Package } from "./app-types";
 import { useAppText } from "../../shared/i18n/app-i18n";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
@@ -41,6 +41,9 @@ export default function AppLibrary({
     [query, setQuery] = useState(""),
     [category, setCategory] = useState("all"),
     [state, setState] = useState("all");
+  useEffect(() => {
+    if (!loading && packages.length === 0) setView("discover");
+  }, [loading, packages.length]);
   const name = (b: (typeof builtIns)[number]) =>
     b.id === "engraving"
       ? a("engraving")

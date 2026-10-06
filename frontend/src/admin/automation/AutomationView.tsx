@@ -17,9 +17,11 @@ import type { Message, RequestFn } from "../shell/studio-types";
 export default function AutomationView({
   request,
   role,
+  onChannels,
 }: {
   request: RequestFn;
   role: string;
+  onChannels?: () => void;
 }) {
   const { x } = useConnectedText();
   const [languages, setLanguages] = useState<{
@@ -207,7 +209,9 @@ export default function AutomationView({
             <button
               key={k}
               className={kind === k ? "studio-primary" : "studio-secondary"}
-              onClick={() => fresh(k)}
+              onClick={() =>
+                k === "channels" && onChannels ? onChannels() : fresh(k)
+              }
             >
               {w(k)}
             </button>

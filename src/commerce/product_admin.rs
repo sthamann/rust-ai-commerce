@@ -19,10 +19,9 @@ impl CatalogFields {
             || self.product_number.len() > 100
             || self.category_ids.len() > 100
             || self.options.len() > 40
-            || self
-                .options
-                .iter()
-                .any(|(k, v)| k.is_empty() || k.len() > 100 || v.is_empty() || v.len() > 200)
+            || self.options.iter().any(|(k, v)| {
+                k.trim().is_empty() || k.len() > 100 || v.trim().is_empty() || v.len() > 200
+            })
         {
             return Err(bad("Invalid product identity or options"));
         }
@@ -32,6 +31,18 @@ impl CatalogFields {
         let duplicate:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM products WHERE tenant=$1 AND product_number=$2 AND id<>$3)").bind(t).bind(&self.product_number).bind(id).fetch_one(&mut *tx).await?;
         if duplicate {
             return Err(conflict("Product number already exists"));
+        }
+        if let Some(parent) = &self.parent_id {
+            if self.options.is_empty() {
+                return Err(bad("Variant options required"));
+            }
+            // The product aggregate's tenant advisory lock serializes creation and editing.
+            let duplicate: bool = sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM products WHERE tenant=$1 AND parent_id=$2 AND id<>$3 AND options=$4)")
+                .bind(t).bind(parent).bind(id).bind(json!(self.options))
+                .fetch_one(&mut *tx).await?;
+            if duplicate {
+                return Err(conflict("Variant option combination already exists"));
+            }
         }
         sqlx::query(
             "UPDATE products SET active=$1,product_number=$2,options=$3 WHERE tenant=$4 AND id=$5",
