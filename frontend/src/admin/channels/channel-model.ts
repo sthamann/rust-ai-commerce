@@ -1,4 +1,5 @@
 /** Existing sales-channel contract and safe storefront URLs; independent tenants remain a separate concept. */
+import { storefrontURL } from "../../shared/api/shop-scope";
 export type Channel = {
   id: string;
   revision: number;
@@ -24,5 +25,9 @@ export const freshChannel = (mainLocale: string): Channel => ({
   },
 });
 export function channelUrl(shop: string, channel: string) {
-  return `/?shop=${encodeURIComponent(shop)}&channel=${encodeURIComponent(channel)}#`;
+  const url = new URL(storefrontURL(shop), location.origin);
+  url.searchParams.set("channel", channel);
+  return url.origin === location.origin
+    ? `${url.pathname}${url.search}#`
+    : `${url.href}#`;
 }

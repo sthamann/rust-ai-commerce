@@ -3,6 +3,11 @@ use crate::*;
 
 pub(crate) fn router(a: App) -> Router {
     Router::new()
+        .route("/products/{id}", get(storefront_pages::product_page))
+        .route(
+            "/products/{id}/{slug}",
+            get(storefront_pages::product_page_slug),
+        )
         .merge(platform::router())
         .merge(shop_domains::frontends::router())
         .route("/api/identity/exchange", post(auth::broker::exchange))

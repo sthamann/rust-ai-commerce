@@ -140,7 +140,9 @@ async fn authenticate_scoped(State(a): State<App>, mut request: Request, next: N
     let method = request.method().to_string();
     // Public image subrequests cannot carry frontend custom headers. Resolve only the scoped asset URL
     // before sandbox/session admission; private shops still require the same merchant credential.
-    if (path.starts_with("/store-api/assets/") || path.starts_with("/store-api/company-logo/"))
+    if (path.starts_with("/store-api/assets/")
+        || path.starts_with("/store-api/company-logo/")
+        || path.starts_with("/products/"))
         && header(request.headers(), "x-tenant").is_none()
         && let Ok(url) = reqwest::Url::parse(&format!("http://local{}", request.uri()))
         && let Some((_, shop)) = url.query_pairs().find(|(k, _)| k == "shop")

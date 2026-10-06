@@ -107,7 +107,7 @@ it("switches gallery/variants, applies normalized quantity and displays authorit
   await user.click(screen.getByRole("button", { name: /Add to/i }));
   expect(onAdd).toHaveBeenCalledWith("lamp", 4);
   await user.click(screen.getByRole("button", { name: "red" }));
-  expect(location.hash).toBe("#product/red-lamp");
+  expect(location.pathname).toBe("/products/red-lamp");
 });
 it("submits a review using checkout identity and confirms pending moderation", async () => {
   const fetcher = fixture(detail);

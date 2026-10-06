@@ -24,7 +24,7 @@ it.each(["#merchant", "#login", "#platform", "#studio-content"])(
 );
 it.each([
   "https://app.vendune.ai/?shop=my-shop&sandbox=1",
-  "https://app.vendune.ai/?shop=my-shop&studio=developers",
+  "https://app.vendune.ai/?shop=my-shop&studio=developers#merchant",
   "http://127.0.0.1:8787/?shop=my-shop",
   "https://my-shop.vendune.ai/",
   "https://admin.vendune.ai/",
@@ -47,3 +47,24 @@ it("retains local scope and permits DNS-safe IDs", () => {
   expect(shopScope()).toBe("unit-shop");
   expect(validShopId("my-shop-2026")).toBe(true);
 });
+
+it("drops stale Studio context on a legacy product bookmark", () => {
+  expect(
+    canonicalShopURL(
+      new URL(
+        "https://app.vendune.ai/?shop=sth-test&studio=productData#product/chair",
+      ),
+    ),
+  ).toBe("https://sth-test.vendune.ai/#product/chair");
+});
+it("reserves the experience service hostname", () =>
+  expect(validShopId("experience")).toBe(false));
+
+it("canonicalizes clean product routes with stale Studio context", () =>
+  expect(
+    canonicalShopURL(
+      new URL(
+        "https://app.vendune.ai/products/chair?shop=sth-test&studio=productData",
+      ),
+    ),
+  ).toBe("https://sth-test.vendune.ai/products/chair"));

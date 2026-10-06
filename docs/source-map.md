@@ -398,3 +398,6 @@ App assistants compile the shared Manifest in `frontend/src/admin/developer/assi
 ## Trusted private experience boundary
 
 `src/auth/{broker,broker_inference,handoff}.rs` owns route-bound signatures, one-use personal login and inherited inference. `src/shop_domains/frontends.rs` owns guarded public mounts and credential-stripping proxying. `src/commerce/product_create.rs` accepts stable import IDs through the normal product save pipeline. `scripts/identity_broker.py` covers actual HTTP/PostgreSQL ownership, replay, scope, paused-shop and restart behavior. See [configuration and trust boundaries](experience-integration.md).
+
+- `src/storefront_pages.rs`: direct product URL HTML admission using existing tenant/channel policy.
+- `frontend/src/storefront/catalog/product-url.ts`: localized product URLs, legacy SKU routes and collection navigation.

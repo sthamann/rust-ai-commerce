@@ -815,6 +815,16 @@
     "source": "src/routes.rs"
   },
   {
+    "path": "/products/{id}",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/products/{id}/{slug}",
+    "method": "GET",
+    "source": "src/routes.rs"
+  },
+  {
     "path": "/store-api/account/addresses",
     "method": "GET",
     "source": "src/accounts/mod.rs"

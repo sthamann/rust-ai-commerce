@@ -1,4 +1,5 @@
 /** StorefrontHeader: storefront view composed from the scoped cart/controller. */
+import { collectionURL } from "../catalog/product-url";
 import { shopApi, type Cart } from "../../shared/api/shop-api";
 import { StorefrontAppNavigation } from "../../shared/apps/AppSurfaces";
 import StorefrontLanguage from "./StorefrontLanguage";
@@ -37,7 +38,7 @@ export default function StorefrontHeader() {
       : shopTenant);
   return (
     <header className="shop-nav">
-      <a href="#" className="shop-brand">
+      <a href={collectionURL()} className="shop-brand">
         {company.logoUrl && (
           <img
             src={company.logoUrl}
@@ -49,7 +50,7 @@ export default function StorefrontHeader() {
         <span> / </span>
       </a>
       <nav>
-        <a href="#">{s("collection")}</a>
+        <a href={collectionURL()}>{s("collection")}</a>
         <StorefrontAppNavigation />
         <button
           disabled={busy || !cart}

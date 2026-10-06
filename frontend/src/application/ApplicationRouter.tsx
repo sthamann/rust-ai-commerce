@@ -2,7 +2,11 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useLocale } from "../shared/i18n/i18n";
 import WorkspaceBoundary from "../shared/ui/WorkspaceBoundary";
-import { canonicalShopURL } from "../shared/api/shop-scope";
+import {
+  shopScope,
+  storefrontURL,
+  canonicalShopURL,
+} from "../shared/api/shop-scope";
 const AdminHub = lazy(() => import("../platform/AdminHub"));
 const Merchant = lazy(() => import("../admin/shell/Merchant"));
 const Storefront = lazy(() => import("../storefront/shell/Storefront"));
@@ -54,16 +58,14 @@ export default function ApplicationRouter() {
   ) : admin ? (
     <Merchant
       onExit={() => {
-        location.hash = "";
-        setAdmin(false);
+        location.assign(storefrontURL(shopScope()));
       }}
       onChanged={async () => {}}
     />
   ) : (
     <Storefront
       onMerchant={() => {
-        location.hash = "merchant";
-        setAdmin(true);
+        location.assign(storefrontURL(shopScope(), true));
       }}
     />
   );

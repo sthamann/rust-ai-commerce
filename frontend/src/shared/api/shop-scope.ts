@@ -1,5 +1,13 @@
 /** Canonical shop hosts; Studio identity remains on the shared origin. Reserved service hosts never become tenant IDs. */
-const reserved = ["app", "www", "admin", "api", "platform", "mail"];
+const reserved = [
+  "app",
+  "www",
+  "admin",
+  "api",
+  "platform",
+  "mail",
+  "experience",
+];
 export function validShopId(id: string): boolean {
   return /^[a-z0-9][a-z0-9-]{0,46}[a-z0-9]$/.test(id) && !reserved.includes(id);
 }
@@ -34,7 +42,6 @@ export function canonicalShopURL(url: URL): string | undefined {
   if (
     !id ||
     !validShopId(id) ||
-    url.searchParams.has("studio") ||
     url.searchParams.has("sandbox") ||
     ["#merchant", "#studio-content", "#login", "#platform"].includes(url.hash)
   )
@@ -42,5 +49,6 @@ export function canonicalShopURL(url: URL): string | undefined {
   const target = new URL(url.href);
   target.hostname = `${id}.vendune.ai`;
   target.searchParams.delete("shop");
+  target.searchParams.delete("studio");
   return target.href;
 }

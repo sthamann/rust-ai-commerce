@@ -145,7 +145,7 @@ export function ProductSeo({ draft: d, lang, onChange }: Props) {
               d.translations[lang]?.name ??
               d.translations[main]?.name}
           </strong>
-          <small>/{seo.slug ?? fallback.slug ?? d.id}</small>
+          <small>{`/products/${d.id}${(seo.slug ?? fallback.slug) ? `/${seo.slug ?? fallback.slug}` : ""}`}</small>
           <p>
             {seo.description ??
               fallback.description ??

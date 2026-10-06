@@ -1,4 +1,5 @@
 /** Product family, gallery, context pricing and moderated customer reviews. */
+import { productURL, collectionURL } from "./product-url";
 import { BRAND } from "../../shared/ui/Brand";
 import RichDescription from "../../shared/content/RichDescription";
 import ImagePlaceholder from "./ImagePlaceholder";
@@ -90,9 +91,30 @@ export default function ProductPage({
     return () => window.removeEventListener("commerce:analytics-ready", emit);
   }, [data]);
   useEffect(() => {
+    if (
+      data &&
+      (!location.hash ||
+        location.hash === "#" ||
+        location.hash.startsWith("#product/"))
+    ) {
+      const canonical = productURL(data.product);
+      if (
+        `${location.pathname}${location.search}${location.hash}` !== canonical
+      )
+        history.replaceState(null, "", canonical);
+      let link = document.querySelector<HTMLLinkElement>(
+        'link[rel="canonical"]',
+      );
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = "canonical";
+        document.head.append(link);
+      }
+      link.href = new URL(canonical, location.origin).href;
+    }
     const seo = data?.product.extra?.seo?.[contentLanguage];
     if (seo) {
-      document.title = seo.title;
+      document.title = seo.title ?? data?.product.name ?? "Vendune";
       let meta = document.querySelector<HTMLMetaElement>(
         'meta[name="description"]',
       );
@@ -101,13 +123,13 @@ export default function ProductPage({
         meta.name = "description";
         document.head.append(meta);
       }
-      meta.content = seo.description;
+      meta.content = seo.description ?? data?.product.description ?? "";
     }
   }, [data, locale]);
   if (!data)
     return (
       <main className="shop-content" aria-busy={!error}>
-        <a href="#">← {s("back")}</a>
+        <a href={collectionURL()}>← {s("back")}</a>
         <p role={error ? "alert" : "status"}>{error || s("loading")}</p>
       </main>
     );
@@ -133,7 +155,7 @@ export default function ProductPage({
   ];
   return (
     <main className="shop-content pdp">
-      <a className="shop-back" href="#">
+      <a className="shop-back" href={collectionURL()}>
         ← {s("back")}
       </a>
       <div className="pdp-main">
@@ -226,7 +248,7 @@ export default function ProductPage({
       {p.extra?.crossSelling?.length ? (
         <section className="app-slot">
           {p.extra.crossSelling.map((id) => (
-            <a key={id} href={`#product/${encodeURIComponent(id)}`}>
+            <a key={id} href={productURL({ id })}>
               {id} ↗
             </a>
           ))}

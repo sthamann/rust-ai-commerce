@@ -1,4 +1,5 @@
 /** ProductPurchase: focused pdp-purchase view with explicit typed inputs and callbacks. */
+import { productURL } from "./product-url";
 import { BRAND } from "../../shared/ui/Brand";
 import { useShopText } from "../../shared/i18n/shop-i18n";
 
@@ -114,7 +115,10 @@ export default function ProductPurchase({
                     title={!match ? s("invalidOption") : undefined}
                     disabled={!match}
                     onClick={() => {
-                      if (match) location.hash = `product/${match.id}`;
+                      if (match) {
+                        history.pushState(null, "", productURL(match));
+                        window.dispatchEvent(new PopStateEvent("popstate"));
+                      }
                     }}
                   >
                     {group === "color" && (

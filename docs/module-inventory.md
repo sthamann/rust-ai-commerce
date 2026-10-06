@@ -282,6 +282,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/staging/mod.rs](../src/staging/mod.rs) | Private cloned shops, scope admission and selective atomic release of reviewed changes. |
 | [src/staging/release.rs](../src/staging/release.rs) | Selected units publish in one transaction with staged digests and live baseline conflict checks. |
 | [src/staging/snapshot.rs](../src/staging/snapshot.rs) | Fixed publishable units: product content/translations, settings, experience and app packages. |
+| [src/storefront_pages.rs](../src/storefront_pages.rs) | Deep-link HTML transport for stable SKU URLs with optional localized SEO slugs. |
 | [src/studio.rs](../src/studio.rs) | Verified merchant overview facts consumed by the chat and activity views. |
 | [src/tenant_scope.rs](../src/tenant_scope.rs) | Database lease context: unknown tasks fail closed; trusted workers explicitly retain their scope. |
 | [src/translations/apply.rs](../src/translations/apply.rs) | Apply at most 50 reviewed drafts per request; stale products become conflicts rather than being overwritten. |
@@ -602,6 +603,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/catalog/ProductPurchase.tsx](../frontend/src/storefront/catalog/ProductPurchase.tsx) | ProductPurchase: focused pdp-purchase view with explicit typed inputs and callbacks. |
 | [frontend/src/storefront/catalog/ProductQuestion.tsx](../frontend/src/storefront/catalog/ProductQuestion.tsx) | Read-only product questions cite only tenant-owned, explicitly published source documents. |
 | [frontend/src/storefront/catalog/ProductReviews.tsx](../frontend/src/storefront/catalog/ProductReviews.tsx) | ProductReviews: focused pdp-reviews view with explicit typed inputs and callbacks. |
+| [frontend/src/storefront/catalog/product-url.ts](../frontend/src/storefront/catalog/product-url.ts) | Stable, collision-free product addresses: SKU identity plus the inherited localized SEO slug. |
 | [frontend/src/storefront/checkout/CheckoutDetails.tsx](../frontend/src/storefront/checkout/CheckoutDetails.tsx) | Address book, guest contact and delivery/payment selection share the authoritative cart context API. |
 | [frontend/src/storefront/checkout/CheckoutIdentity.tsx](../frontend/src/storefront/checkout/CheckoutIdentity.tsx) | Inline guest/login/registration step rotates the cart on authentication and refreshes owning defaults. |
 | [frontend/src/storefront/checkout/CheckoutMethods.tsx](../frontend/src/storefront/checkout/CheckoutMethods.tsx) | Method cards keep delivery and payment discoverable without concealing country restrictions. |
@@ -750,6 +752,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/settings_scopes.py](../scripts/settings_scopes.py) | Real tenant/channel settings, immutable order dependencies, localized gallery and selective staging regressions. |
 | [scripts/site_markdown.py](../scripts/site_markdown.py) | Render every tracked Markdown document with repository-aware links and search. |
 | [scripts/staging.py](../scripts/staging.py) | Real PG proof: private sandbox, immutable app versions, selective release and conflicts. No paid inference. |
+| [scripts/storefront_urls.py](../scripts/storefront_urls.py) | Real HTTP product deep links and host isolation in disposable shops. |
 | [scripts/structure.py](../scripts/structure.py) | Guard the documented Rust domain split and public extension examples. |
 | [scripts/studio.py](../scripts/studio.py) | Actual Studio API, localization and original-kernel consumer checks. |
 | [scripts/tenant_isolation.py](../scripts/tenant_isolation.py) | Adversarial two-shop API/MCP/UCP/object and schema isolation with real personal/customer sessions. |

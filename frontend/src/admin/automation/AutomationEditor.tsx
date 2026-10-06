@@ -1,4 +1,5 @@
 /** AutomationEditor: focused form view with explicit typed inputs and callbacks. */
+import { channelUrl } from "../channels/channel-model";
 import PromotionSchedule from "./PromotionSchedule";
 import { shopScope } from "../../shared/api/shop-scope";
 import { useConnectedText } from "../../shared/i18n/connected-i18n";
@@ -299,7 +300,7 @@ export default function AutomationEditor({
             </select>
           </label>
           <a
-            href={`/?shop=${shopScope()}&channel=${id}#`}
+            href={channelUrl(shopScope(), id)}
             target="_blank"
             rel="noreferrer"
           >

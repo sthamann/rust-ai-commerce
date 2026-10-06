@@ -11,6 +11,7 @@ import Icon from "../../shared/ui/Icon";
 import CustomerAccount from "../account/CustomerAccount";
 import ShopAnalytics from "../analytics/ShopAnalytics";
 import ProductPage from "../catalog/ProductPage";
+import { collectionURL } from "../catalog/product-url";
 import OrderCompletion from "../checkout/OrderCompletion";
 import CheckoutPanel from "../checkout/CheckoutPanel";
 import PaymentSession from "../checkout/PaymentSession";
@@ -88,7 +89,8 @@ export default function Storefront(props: { onMerchant: () => void }) {
             <OrderCompletion
               order={order}
               onBack={() => {
-                location.hash = "";
+                history.pushState(null, "", collectionURL());
+                window.dispatchEvent(new PopStateEvent("popstate"));
               }}
             />
           ) : location.hash.startsWith("#payment/") &&

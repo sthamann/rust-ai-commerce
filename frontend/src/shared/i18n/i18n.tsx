@@ -36,6 +36,11 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, set] = useState<Locale>(getLocale);
   const setLocale = (l: Locale) => {
     localStorage.setItem("rac-locale", l);
+    if (location.pathname.startsWith("/products/")) {
+      const url = new URL(location.href);
+      url.searchParams.set("language", l);
+      history.replaceState(null, "", url);
+    }
     set(l);
   };
   useEffect(() => {
