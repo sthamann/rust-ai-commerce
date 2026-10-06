@@ -79,7 +79,7 @@ Writes require `settings.write`, reads require `settings.read`; company MCP tool
 use the same tenant admission and permissions. Channel writes require both the
 observed override revision and basis revision. Stale writes return 409 and leave
 the client draft intact. Basis changes also validate all resulting dependent
-channel addresses. The virtual `default` channel uses the shared basis;
+channel addresses. The persisted main `default` channel uses the shared basis;
 configured channels have independent sparse overrides. Each update emits
 `settings.master_data_changed` through the normal outbox.
 
