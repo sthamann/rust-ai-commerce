@@ -95,7 +95,21 @@ impl Inference {
     ) -> Result<Output, String> {
         let runtime = self.resolved().await?;
         runtime
-            .structured_resolved(choice, system, user, schema)
+            .structured_resolved(choice, system, user, schema, &[])
+            .await
+    }
+    /// Multimodal input uses the same centrally inherited settings and bounded provider output.
+    pub async fn structured_with_images(
+        &self,
+        choice: Option<&Choice>,
+        system: &str,
+        user: &str,
+        schema: &Value,
+        images: &[String],
+    ) -> Result<Output, String> {
+        self.resolved()
+            .await?
+            .structured_resolved(choice, system, user, schema, images)
             .await
     }
     async fn structured_resolved(
@@ -104,6 +118,7 @@ impl Inference {
         system: &str,
         user: &str,
         schema: &Value,
+        images: &[String],
     ) -> Result<Output, String> {
         let provider = match choice.map(|c| c.provider.clone()) {
             Some(Provider::Platform) | None => self.default_provider.clone(),
@@ -134,18 +149,34 @@ impl Inference {
         {
             return Err("Invalid model identifier".into());
         }
+        let mut visual = vec![json!({"type":"input_text","text":user})];
+        visual.extend(
+            images
+                .iter()
+                .map(|s| json!({"type":"input_image","image_url":s})),
+        );
+        let mut claude = vec![json!({"type":"text","text":user})];
+        for image in images {
+            let (mime, data) = image
+                .strip_prefix("data:")
+                .and_then(|s| s.split_once(";base64,"))
+                .ok_or("Invalid image data")?;
+            claude.push(
+                json!({"type":"image","source":{"type":"base64","media_type":mime,"data":data}}),
+            );
+        }
         let (request, path) = match provider {
             Provider::Platform => return Err("Invalid platform provider".into()),
             Provider::Ollama => (
-                json!({"model":model,"stream":false,"think":false,"format":schema,"options":{"temperature":0,"num_predict":2000},"messages":[{"role":"system","content":system},{"role":"user","content":user}]}),
+                json!({"model":model,"stream":false,"think":false,"format":schema,"options":{"temperature":0,"num_predict":2000},"messages":[{"role":"system","content":system},{"role":"user","content":user,"images":images.iter().filter_map(|s|s.split_once(";base64,").map(|(_,b)|b)).collect::<Vec<_>>()}]}),
                 format!("{}/api/chat", self.ollama.trim_end_matches('/')),
             ),
             Provider::Openai => (
-                json!({"model":model,"store":false,"instructions":system,"input":user,"max_output_tokens":8192,"text":{"format":{"type":"json_schema","name":"commerce_result","strict":true,"schema":strict_schema(schema.clone())}}}),
+                json!({"model":model,"store":false,"instructions":system,"input":[{"role":"user","content":visual}],"max_output_tokens":8192,"text":{"format":{"type":"json_schema","name":"commerce_result","strict":true,"schema":strict_schema(schema.clone())}}}),
                 format!("{}/responses", self.openai_url.trim_end_matches('/')),
             ),
             Provider::Anthropic => (
-                json!({"model":model,"max_tokens":8192,"system":system,"messages":[{"role":"user","content":user}],"output_config":{"format":{"type":"json_schema","schema":schema}}}),
+                json!({"model":model,"max_tokens":8192,"system":system,"messages":[{"role":"user","content":claude}],"output_config":{"format":{"type":"json_schema","schema":schema}}}),
                 format!("{}/messages", self.anthropic_url.trim_end_matches('/')),
             ),
         };

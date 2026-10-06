@@ -69,14 +69,7 @@ pub(crate) async fn edit_product(
 ) -> Result<Json<Value>> {
     save_product(a, h, id, v, false).await
 }
-pub(crate) async fn create_product(
-    State(a): State<App>,
-    h: HeaderMap,
-    Json(v): Json<Value>,
-) -> Result<Json<Value>> {
-    save_product(a, h, Uuid::new_v4().to_string(), v, true).await
-}
-async fn save_product(
+pub(super) async fn save_product(
     a: App,
     h: HeaderMap,
     id: String,
@@ -203,7 +196,10 @@ async fn save_product(
                 return Err(bad("Variant parent and options required"));
             }
         }
-        sqlx::query("INSERT INTO products(tenant,id,name,description,category,price,tax_rate,stock,revision,parent_id) VALUES($1,$2,$3,$4,'objects',0,19,0,0,$5)").bind(&t).bind(&id).bind(&main_name).bind(&main_description).bind(&fields.parent_id).execute(&mut *tx).await?;
+        let inserted=sqlx::query("INSERT INTO products(tenant,id,name,description,category,price,tax_rate,stock,revision,parent_id) VALUES($1,$2,$3,$4,'objects',0,19,0,0,$5) ON CONFLICT(tenant,id) DO NOTHING").bind(&t).bind(&id).bind(&main_name).bind(&main_description).bind(&fields.parent_id).execute(&mut *tx).await?.rows_affected();
+        if inserted == 0 {
+            return Err(conflict("Product already exists"));
+        }
     }
     if !create {
         let row = sqlx::query(

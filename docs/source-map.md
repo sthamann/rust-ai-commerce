@@ -384,3 +384,7 @@ App assistants compile the shared Manifest in `frontend/src/admin/developer/assi
 ## Default fashion fixture
 
 `src/demo_catalog.rs` copies the public Nord Atelier fixture into newly provisioned tenants and seeds an opt-in built-in demo once. `src/auth/provision.rs` controls whether catalog insertion is requested. `src/knowledge/relations.rs` chooses catalog-specific curated links. `scripts/fashion_demo.py` checks signup, localized names/navigation, actual images, all three coat sizes, tenant-separated stock, simulated checkout and a fresh-process restart. See [the complete demo contract](fashion-demo.md).
+
+## Trusted private experience boundary
+
+`src/auth/{broker,broker_inference,handoff}.rs` owns route-bound signatures, one-use personal login and inherited inference. `src/shop_domains/frontends.rs` owns guarded public mounts and credential-stripping proxying. `src/commerce/product_create.rs` accepts stable import IDs through the normal product save pipeline. `scripts/identity_broker.py` covers actual HTTP/PostgreSQL ownership, replay, scope, paused-shop and restart behavior. See [configuration and trust boundaries](experience-integration.md).

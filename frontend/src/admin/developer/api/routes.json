@@ -95,12 +95,22 @@
     "source": "src/routes.rs"
   },
   {
+    "path": "/api/auth/handoff",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
     "path": "/api/auth/login",
     "method": "POST",
     "source": "src/routes.rs"
   },
   {
     "path": "/api/auth/logout",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/auth/redeem",
     "method": "POST",
     "source": "src/routes.rs"
   },
@@ -268,6 +278,16 @@
     "path": "/api/history/{entity}/{id}/{version}/restore",
     "method": "POST",
     "source": "src/history/mod.rs"
+  },
+  {
+    "path": "/api/identity/exchange",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/identity/inference",
+    "method": "POST",
+    "source": "src/routes.rs"
   },
   {
     "path": "/api/intelligence",
@@ -688,6 +708,16 @@
     "path": "/api/settings/company-logo/{id}",
     "method": "GET",
     "source": "src/operations/mod.rs"
+  },
+  {
+    "path": "/api/settings/frontends",
+    "method": "GET",
+    "source": "src/shop_domains/frontends.rs"
+  },
+  {
+    "path": "/api/settings/frontends",
+    "method": "PUT",
+    "source": "src/shop_domains/frontends.rs"
   },
   {
     "path": "/api/settings/master-data",

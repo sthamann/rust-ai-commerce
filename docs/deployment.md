@@ -138,3 +138,7 @@ hex key before saving provider API keys in the operator console. All replicas an
 AI workers need the same key; back it up separately. Do not rotate it without
 re-encrypting existing credentials. `INFERENCE_ALLOW_LOOPBACK` stays false in
 public deployments. [Control-plane behavior and boundaries](platform.md).
+
+## Optional private experience service
+
+The generic trusted broker, one-use Studio handoff and hosted frontend mount are opt-in. Configure the exact private service issuer/origin and matching runtime-only shared keys; see [experience integration](experience-integration.md). The private service and Storyfront never belong in this public build or repository.

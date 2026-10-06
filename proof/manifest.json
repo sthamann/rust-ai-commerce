@@ -457,10 +457,25 @@
       "sha256": "6d8fbda166a28851dd3abc85cc0d93d3c61ae2cd7e1035359a6feb14e031c8f3",
       "review": "Reviewed shared content-language validation, regional key preservation, shop-main flow fallback and asset labels; existing state/price/permission contracts remain intact."
     },
+    "src/auth/broker.rs": {
+      "status": "unproved",
+      "sha256": "3957a67fd2cb93ddcca7337abac750f0fc442f216c0f4838bfab00f37d145dee",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
+    },
+    "src/auth/broker_inference.rs": {
+      "status": "unproved",
+      "sha256": "fdbde57d5f0869791841db7ef485f9544a22433628741b5b6f19d17a6a2eddb1",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
+    },
     "src/auth/credentials.rs": {
       "status": "unproved",
       "sha256": "1f6ca274555dac7694c22c5fb95592257eecdd6dfc525ed949cc2331f3f84471",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/auth/handoff.rs": {
+      "status": "unproved",
+      "sha256": "82d0fa24db31f45128f3488c3493f054669381702a794eaf3363701ab4c26b37",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
     },
     "src/auth/integrations.rs": {
       "status": "unproved",
@@ -479,13 +494,13 @@
     },
     "src/auth/middleware.rs": {
       "status": "unproved",
-      "sha256": "bc1e84939fa82f19c6a6e4a5a265b1edf24c0d6fcbc41e12ab93423ae58e00dd",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "fa6d761a26a42eb2ca9d8523b0f06a6f1aac5136d7521f05067f713acea74e01",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
     },
     "src/auth/mod.rs": {
       "status": "unproved",
-      "sha256": "ea9dc94792cfe1dbaa8899991fd4ab3437ba4ba926a5945a2e051ed331a7c9ba",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "b994650cd289e7f0c7981e55881a4e2d73246ab375e953290449cfa2fad2a981",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
     },
     "src/auth/permissions.rs": {
       "status": "reviewed-binding",
@@ -494,8 +509,8 @@
     },
     "src/auth/provision.rs": {
       "status": "unproved",
-      "sha256": "6975a76cca46af9413a024777560957b25b91699f489382911ee2a073bc70bf8",
-      "review": "Reviewed tenant-scoped fashion fixture provisioning, opt-in idempotent demo seeding and curated catalog-specific links; Rust lint and units pass, actual signup/locale/variant/image/isolated checkout/fresh-process HTTP regressions pass. No business-policy or proof-boundary changes."
+      "sha256": "dbd13c373c46c792bdac316f1b0feee7394799613bbeb8c9fd3946a56cbd6c51",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
     },
     "src/auth/registration.rs": {
       "status": "unproved",
@@ -754,8 +769,8 @@
     },
     "src/commerce/mod.rs": {
       "status": "unproved",
-      "sha256": "4c2239311917384554253dd7fc068897805183da7584f01e673d27fb85b6a1d8",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "1097ee91fff3b2349944c042b44699685fe3508b4cc29fddef131dccff26f83a",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
     },
     "src/commerce/order_fields.rs": {
       "status": "unproved",
@@ -782,10 +797,15 @@
       "sha256": "e599f13d73c103420f42e801f9884031ae78bc26fe0ac3b9167db7cfdac687c3",
       "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
     },
+    "src/commerce/product_create.rs": {
+      "status": "unproved",
+      "sha256": "e98d7b50f611b6b3c2480144f005005e2bcdfa74d83737153deeb547d46895d0",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
+    },
     "src/commerce/product_edit.rs": {
       "status": "unproved",
-      "sha256": "c2a2c7113876743a9e405c53923f66b6115abe8f977d1820d0db2d063d7ffb55",
-      "review": "Reviewed optional generated-demo provenance preservation in product metadata. Real fashion_demo HTTP test edits the coat through the merchant API and reads the changed price and retained provenance; existing transaction, translation and history behavior unchanged. No production policy changes; SQL/async product adapters remain unproved."
+      "sha256": "ed2f006def58df9d699056d30dc205276ab1871bf21fb7ea4003b780dab5ba73",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
     },
     "src/commerce/product_fields.rs": {
       "status": "unproved",
@@ -1029,8 +1049,8 @@
     },
     "src/inference.rs": {
       "status": "unproved",
-      "sha256": "801da26b75642732e1fba578e4cf0b59133cc6314cfa862e7b5c6217cb686b1a",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "5f3f79093cc3c78d3b7e2de3a6fde87ee18dd80b52401a979a74e5ba84157c3b",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
     },
     "src/knowledge/relations.rs": {
       "status": "unproved",
@@ -1214,8 +1234,8 @@
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "d457161cfe40ccd1f4519d5dbfa28b2ad28c7212cf13ffb8311b9ad7b9743cb9",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "1de39313076eab230860a8c526180169fdf971103860b764f752228f8fb8c246",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -1444,8 +1464,8 @@
     },
     "src/routes.rs": {
       "status": "unproved",
-      "sha256": "32bf43d6dcd831f80779624620ead4bc0e0a4cf8c3f43919c3e0ae25c73168f0",
-      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
+      "sha256": "b02d164c0adadc4d71030b3234b65e94098aa3cb447c9362015fc025f372e387",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
     },
     "src/rule_comparison.rs": {
       "status": "reviewed-binding",
@@ -1462,10 +1482,15 @@
       "sha256": "dc9a936dee659568e48871fab187ff75e746dd65206e54d1d3b06371cb48d32d",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/shop_domains/frontends.rs": {
+      "status": "unproved",
+      "sha256": "fc95765a033eed04d1f553ab6617ebb37498cefa559b2e51fd4a070fd79e4ec6",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
+    },
     "src/shop_domains.rs": {
       "status": "unproved",
-      "sha256": "e68f25b68997e8eeb29b99fa54af8076693d8c101dfd56191fb4ae1fb4970723",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "ae305f5f8092fab4585db21be4bdbd1ff389ec6428e8c40fb881b165bdd473f4",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
     },
     "src/staging/assets.rs": {
       "status": "unproved",
@@ -1773,6 +1798,10 @@
     "migrations/041-platform-control.sql": {
       "sha256": "cf2abe43288ed82eb517ad1dd3f9c23a3ebb6f8c79db03ad046db12ea11bcba5",
       "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+    },
+    "migrations/042-identity-frontends.sql": {
+      "sha256": "abd99904333af5d473c169efc8400427aa45d7dcdbce7bf335d8b91cce5f7038",
+      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "c36491be78fb50051ce832318574e95ce36530dc20baa804bfe85086b8ed6f38",

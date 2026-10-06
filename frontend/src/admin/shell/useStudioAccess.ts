@@ -110,6 +110,18 @@ export function useStudioAccess(
     setExpired(false);
     setError("");
   };
+  useEffect(() => {
+    const url = new URL(location.href);
+    const ticket = url.searchParams.get("login_ticket");
+    if (!ticket) return;
+    url.searchParams.delete("login_ticket");
+    history.replaceState(null, "", url);
+    setChecking(true);
+    void shopApi<Session>("/api/auth/redeem", { ticket })
+      .then(accept)
+      .catch((e) => setError(e.message))
+      .finally(() => setChecking(false));
+  }, []);
   const logout = () => {
     sessionStorage.removeItem("rac-user-token");
     sessionStorage.removeItem("rac-user-workspace");
