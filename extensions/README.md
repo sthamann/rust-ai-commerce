@@ -64,7 +64,7 @@ installed packages with their own data, actions and UI. See
 | Native care studio | Visual-builder-compatible admin form/table, public product-detail cards, own translated records, HTTP/MCP and flow actions | [manifest](apps/care-studio/manifest.json), [guide](apps/care-studio/README.md) |
 | Product personalization | Own price-rule entity; HTTP/MCP read/write; product form; server-taxed per-unit cart surcharge; order configuration view; agent preview/approval | [manifest](apps/engraving/manifest.json) |
 | Workshop notes | Own notes/tickets tables and tenant foreign reference; admin forms; native MCP actions; external service action, opaque iframe UI and durable SQLite event inbox | [manifest](apps/service-example/manifest.json), [service](apps/service-example/server.py), [browser SDK](sdk/browser.js) |
-| PayPal Sandbox | Native provider adapter, checkout handoff, paid/refund ledger and app administration | [manifest](apps/paypal/manifest.json), [`src/payments`](../src/payments) |
+| PayPal Sandbox/Live | Native provider adapter, checkout handoff, paid/refund ledger and app administration | [manifest](apps/paypal/manifest.json), [`src/payments`](../src/payments) |
 | Shopware Payments readiness | Explicit connector status in admin; cannot process payment until its official standalone contract is verified | [manifest](apps/shopware-payments/manifest.json) |
 
 Install built-ins with `POST /api/apps` and `{"builtIn":"engraving"}`, `paypal` or

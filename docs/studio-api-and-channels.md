@@ -14,8 +14,10 @@ Agents     → MCP / UCP ┤                                                    
 Apps       → actions ──┘
 ```
 
-Studio requests use `Authorization: Bearer <personal session or integration key>`,
-`x-tenant` and `x-commerce-locale`. Customer requests use `sw-context-token`,
+Studio requests use `Authorization: Bearer <personal session>`, `x-tenant` and
+`x-commerce-locale`. External Admin API and MCP clients may also use scoped
+integration keys; these do not replace Studio login. Customer account requests
+additionally use `x-customer-token`; cart requests use `sw-context-token`,
 `x-tenant`, `sw-sales-channel-id` and the selected locale. The headers select a
 context; they do not grant access. Authentication resolves active membership,
 scopes and object ownership on the server. Customers cannot access another

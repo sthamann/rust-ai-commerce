@@ -6,11 +6,11 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 
 ## Modules
 
-- `AddressBook.tsx`
-- `AddressCard.tsx`
-- `AddressFields.tsx`
-- `CustomerFields.tsx`
-- `customer-types.ts`
+- [`AddressBook.tsx`](AddressBook.tsx): Tenant-owned address cards, defaults and revision-aware CRUD shared by account and CRM.
+- [`AddressCard.tsx`](AddressCard.tsx): Human-readable address used in order snapshots and address books.
+- [`AddressFields.tsx`](AddressFields.tsx): Structured accessible address editor; no hidden JSON or storefront-only duplicate model.
+- [`CustomerFields.tsx`](CustomerFields.tsx): Contact fields mirror the account API while access, identity and pricing remain separate.
+- [`customer-types.ts`](customer-types.ts): Shared customer/address contracts; merchant and customer sessions use distinct request adapters.
 
 ## Verification
 

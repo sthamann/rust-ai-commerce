@@ -66,8 +66,9 @@ cart tokens remain independently scoped and rotate on B2B demo login.
 
 Core mutation paths bind SQL/Cypher parameters and use row locks, persisted
 idempotency and optimistic revisions. Completed quotes are immutable. Payment
-methods are simulated/manual or Sandbox. PayPal credentials stay on the server;
-no card data or live-money charges are handled.
+methods are simulated/manual or explicitly configured PayPal Sandbox/Live.
+PayPal credentials stay on the server; card data is handled by the provider.
+Actual PSP transactions remain unverified; local tests use protocol fixtures.
 Fulfillment records are internal states, not a dispatched physical shipment.
 Tax rates and calendars are prototype configuration, not jurisdiction advice.
 

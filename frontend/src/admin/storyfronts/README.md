@@ -6,7 +6,7 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `StoryfrontView.tsx`
+- [`StoryfrontView.tsx`](StoryfrontView.tsx): Dedicated merchant integration surface for the independently deployed Storyfront service.
 
 ## Verification
 

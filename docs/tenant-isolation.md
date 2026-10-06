@@ -54,7 +54,7 @@ canonical object IDs. Its write/index overhead is not yet benchmarked at SaaS sc
 
 ```sh
 QDRANT_URL=http://127.0.0.1:16333 python3 scripts/verify_integration.py \
-  --container rust-ai-commerce-postgres-1 --only tenant_isolation
+  --container vendune-postgres-1 --only tenant_isolation
 ```
 
 The single integration registry runs this automatically in CI. It creates two

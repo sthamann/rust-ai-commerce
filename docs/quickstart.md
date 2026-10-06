@@ -8,7 +8,7 @@ Start with commerce, then add AI or an MCP client when you need it.
 - Node.js 22 or newer and npm
 - Docker with Docker Compose and a running daemon
 - Python 3
-- Free ports 8787 (application) and 15487 (database)
+- Free ports 8787 (application), 15487 (database) and 16333 (private Qdrant)
 
 Ollama and API credentials are optional for the initial commerce tour.
 
@@ -20,19 +20,23 @@ cd vendune
 ./scripts/dev.sh
 ```
 
-The first start compiles the database image, frontend and Rust application.
+The first start pulls PostgreSQL/Qdrant images and builds the frontend and Rust application.
 Keep the terminal open while the server runs. Open http://127.0.0.1:8787/.
 The storefront, SKU selection, quantity pricing, cart and simulated checkout
 work without a running LLM. Chat planning and vector indexing require their
 respective model services and report errors when unavailable.
 
-In Vendune Studio (`/#merchant`), select **Team & access → Create shop**.
+Open Vendune Studio (`/#merchant`). The login page offers **Create shop** for
+a new personal owner account, **Sign in** for an existing account and invitation
+acceptance. Select **Create shop** for the first local tour.
 Create a personal owner account and a synthetic shop. One identity can belong
 to multiple shops. The generated global `MERCHANT_TOKEN` is an instance bootstrap
 credential, not an invitation or a merchant credential to distribute.
 
 The synthetic B2B customer is `buyer@example.test` / `demo-business`. It is
-separate from merchant accounts. Payment processing is simulated/manual only.
+separate from merchant accounts. The default tour uses simulated/manual payments.
+A separately configured native PayPal adapter supports Sandbox/Live;
+actual PSP transactions remain unverified.
 
 Stop the app with Ctrl+C. Restart with `./scripts/dev.sh`; database data is
 retained. Stop the database with `docker compose -p vendune stop`.
@@ -91,12 +95,13 @@ Remote hosted clients cannot connect directly to localhost; their setup remains 
 Use a different Compose project and database/application ports on a fresh checkout:
 
 ```sh
-DB_PORT=15489 BIND_ADDR=127.0.0.1:8789 \
+DB_PORT=15489 QDRANT_PORT=16335 BIND_ADDR=127.0.0.1:8789 \
 COMPOSE_PROJECT_NAME=vendune-second ./scripts/dev.sh
 ```
 
 `DB_PORT` is used when generating a new `.env`. For an existing `.env`, update
-its `DATABASE_URL` to the chosen port. Use the same project name/port when
+its `DATABASE_URL` to the chosen port and keep `QDRANT_URL` consistent with
+`QDRANT_PORT` if it is already configured. Use the same project name/ports when
 restarting; stop its database with `docker compose -p vendune-second stop`.
 Never point a test run at a shop whose data you need to preserve.
 
@@ -106,7 +111,7 @@ Never point a test run at a shop whose data you need to preserve.
 - **Cannot connect to Docker:** start Docker and check that `docker info` succeeds.
 - **Port already allocated:** use the separate-instance settings above.
 - **AI unavailable:** commerce still works; check the chosen provider and model service.
-- **First build is slow:** database extensions and Rust dependencies are compiled locally.
+- **First build is slow:** images are downloaded and Rust/frontend dependencies are built.
 
 [Project overview](../README.md) · [Full feature tour](features.md) · [Security scope](security.md)
 
@@ -122,6 +127,8 @@ BOOTSTRAP_MODE=serve PROCESS_ROLE=http target/release/vendune
 BOOTSTRAP_MODE=serve PROCESS_ROLE=memory-worker target/release/vendune
 BOOTSTRAP_MODE=serve PROCESS_ROLE=payment-worker target/release/vendune
 BOOTSTRAP_MODE=serve PROCESS_ROLE=app-worker target/release/vendune
+BOOTSTRAP_MODE=serve PROCESS_ROLE=translation-worker target/release/vendune
+BOOTSTRAP_MODE=serve PROCESS_ROLE=media-worker target/release/vendune
 ```
 
 The HTTP role does not consume the durable outbox. The memory worker creates

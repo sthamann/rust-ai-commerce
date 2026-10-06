@@ -6,14 +6,16 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `KnowledgeOverview.tsx`: whole-shop census, explanation and useful next actions
-- `KnowledgeSources.tsx`, `SourceEditor.tsx`: cursor library, inherited editor and guarded lifecycle
-- `ExternalKnowledge.tsx`: active merchant-private app evidence and provenance
-- `KnowledgeExplorer.tsx`, `KnowledgeFacts.tsx`: product-centred relationships and authoritative facts
-- `KnowledgePreview.tsx`: no-model retrieval and explicit customer/merchant scope
-- `knowledge-types.ts`: typed read models and source-kind contract
-- `KnowledgeView.tsx`
-- `MemoryView.tsx`
+- [`ExternalKnowledge.tsx`](ExternalKnowledge.tsx): Private connected-app evidence browser shows active-source provenance without exposing it to shoppers.
+- [`KnowledgeExplorer.tsx`](KnowledgeExplorer.tsx): Product-centred evidence inspector reads canonical facts and graph relationships beyond overview sampling.
+- [`KnowledgeFacts.tsx`](KnowledgeFacts.tsx): Canonical catalogue facts shown alongside graph evidence; prices and inventory come from current product state.
+- [`KnowledgeOverview.tsx`](KnowledgeOverview.tsx): Whole-shop knowledge census, operational next steps and provenance activity; examples never masquerade as learned facts.
+- [`KnowledgePreview.tsx`](KnowledgePreview.tsx): No-model evidence preview makes customer/private retrieval boundaries and missing facts inspectable.
+- [`KnowledgeSources.tsx`](KnowledgeSources.tsx): Searchable cursor source library, guarded lifecycle decisions and single-language source editing.
+- [`KnowledgeView.tsx`](KnowledgeView.tsx): Unified knowledge workspace connects sources, product evidence, observations and no-model retrieval previews.
+- [`MemoryView.tsx`](MemoryView.tsx): Durable co-purchase evidence and revision-bound merchant decisions, with simulation labels and explicit confirmation.
+- [`SourceEditor.tsx`](SourceEditor.tsx): Single-language source editor with inherited fields, product lookup and private-first API/file ingestion.
+- [`knowledge-types.ts`](knowledge-types.ts): Typed knowledge read models preserve source ownership, revisions, sampling and privacy boundaries.
 
 ## Verification
 

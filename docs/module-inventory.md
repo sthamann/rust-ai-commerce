@@ -631,7 +631,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/automation_registry.py](../scripts/automation_registry.py) | Rebuild the native rule catalog from pinned PHP reflection and explicitly reviewed scope bindings. |
 | [scripts/benchmark.py](../scripts/benchmark.py) | Reproducible local HTTP + PostgreSQL benchmark, with response validation. |
 | [scripts/branding.py](../scripts/branding.py) | Keep the public Vendune identity, shared vector assets and executable package/deployment paths consistent. |
-| [scripts/build_site.py](../scripts/build_site.py) | Build the public documentation site using Python's standard library only. |
+| [scripts/build_site.py](../scripts/build_site.py) | Build marketing pages and the complete Markdown documentation for GitHub Pages. |
 | [scripts/catalog_management.py](../scripts/catalog_management.py) | Real HTTP/PostgreSQL catalog creation, categories, multilingual editor, visibility and staging regressions. Synthetic isolated shops only. |
 | [scripts/check_site.py](../scripts/check_site.py) | Check the generated documentation's links and discovery metadata. |
 | [scripts/checkout_handoff.py](../scripts/checkout_handoff.py) | Exercise actual PostgreSQL checkout transfer, isolation, replay and durable ordering. |
@@ -690,6 +690,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/security/tenant_schema.py](../scripts/security/tenant_schema.py) | Database adversarial checks: reject cross-shop links even when API predicates are accidentally omitted. |
 | [scripts/services.py](../scripts/services.py) | Standalone app process, opaque UI SDK transport, own SQLite inbox and independent durable worker. |
 | [scripts/settings_scopes.py](../scripts/settings_scopes.py) | Real tenant/channel settings, immutable order dependencies, localized gallery and selective staging regressions. |
+| [scripts/site_markdown.py](../scripts/site_markdown.py) | Render every tracked Markdown document with repository-aware links and search. |
 | [scripts/staging.py](../scripts/staging.py) | Real PG proof: private sandbox, immutable app versions, selective release and conflicts. No paid inference. |
 | [scripts/structure.py](../scripts/structure.py) | Guard the documented Rust domain split and public extension examples. |
 | [scripts/studio.py](../scripts/studio.py) | Actual Studio API, localization and original-kernel consumer checks. |

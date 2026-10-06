@@ -13,7 +13,7 @@
 [![License: Sustainable Use](https://img.shields.io/badge/license-Sustainable_Use-18b9d9)](LICENSE)
 [![Self-hosted](https://img.shields.io/badge/deployment-self_hosted-14233f)](docs/quickstart.md)
 
-[**Get started**](#get-started) · [**Explore the playground**](docs/playground.md) · [**Build an app**](docs/app-studio.md) · [**Connect an agent**](docs/connectors.md) · [**Documentation**](https://sthamann.github.io/vendune/)
+[**Get started**](#get-started) · [**Explore the playground**](docs/playground.md) · [**Build an app**](docs/app-studio.md) · [**Connect an agent**](docs/connectors.md) · [**Documentation**](https://sthamann.github.io/vendune/docs/)
 
 </div>
 
@@ -83,12 +83,12 @@ cd vendune
 ```
 
 Open [the storefront](http://127.0.0.1:8787/) or
-[Vendune Studio](http://127.0.0.1:8787/#merchant). In Studio, choose
-**Team & access → Create shop** to create your personal owner account and a
+[Vendune Studio](http://127.0.0.1:8787/#merchant). On the Studio login page, choose
+**Create shop** to create your personal owner account and a
 separate synthetic shop. Try a product variant, quantity price, cart and simulated
 checkout before adding AI.
 
-The first start builds the database image, frontend and Rust application; it can
+The first start pulls PostgreSQL/Qdrant images and builds the frontend and Rust application; it can
 take several minutes. No model is downloaded. Private credentials are generated
 in ignored `.env`. Keep the terminal open; Ctrl+C stops the app without deleting
 the database. [Requirements, restarts and troubleshooting](docs/quickstart.md).

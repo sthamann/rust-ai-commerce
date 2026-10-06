@@ -10,7 +10,7 @@ under 120. Every Rust source starts with a responsibility comment.
 
 The table lists **executable behavioral coverage**, not percentage line coverage.
 Pure rules use Rust tests; API/domain/storage modules are exercised against real
-PostgreSQL, AGE and (where enabled) the real local model. Tests include rejected
+PostgreSQL, Qdrant and (where enabled) the real local model. Tests include rejected
 inputs and state effects. A module's presence does not count as a test.
 
 The maintained full inventory, including all newly added Rust files, frontend feature folders, independent services and SDKs, is [module-inventory.md](module-inventory.md). Coverage percentages and explicit remaining gaps are in [testing.md](testing.md). The tables below describe selected behavioral suites and must not be read as 100% coverage.
@@ -127,10 +127,10 @@ See [international commerce](international-commerce.md) for the exact contract.
 
 | File/group | Responsibility | Verification |
 |---|---|---|
-| `main.tsx` | Hash routing and language context | Production typecheck/build; browser navigation |
+| `application/ApplicationRouter.tsx` | Application routing and lazy entry recovery | Production typecheck/build; browser navigation |
 | `Storefront.tsx` | Catalog, adaptive display and cart orchestration | Browser collection→detail→cart flow; underlying HTTP suites |
 | `ProductPage.tsx` | Gallery, SKU option matrix, server tiers/properties/reviews | Browser variant/image/quantity/sold-out checks; commerce.py |
-| `CheckoutPanel.tsx` | Native modal, address/country/methods and authoritative totals | Browser selection, empty/filled cart and simulated order; commerce.py |
+| `storefront/checkout/CheckoutPanel.tsx` | One-page address/delivery/payment, server quote review and explicit order placement | Browser selection, empty/filled cart and simulated order; commerce.py |
 | `shop-api.ts`, `shop-i18n.ts`, `shop.css` | Typed shop contracts, four-language text, scoped styles | Typecheck, browser language switching and layout inspection |
 | `Merchant.tsx` | Merchant workspace/session and chat orchestration | Browser personal sign-in/navigation/reload; users.py + real chat HTTP tests |
 | `SettingsDialog.tsx`, `ProposalCard.tsx`, `PreviewDialog.tsx`, `MessageText.tsx` | Focused merchant interactions | Build, browser interactions; proposal execution through HTTP tests |
@@ -147,7 +147,8 @@ work; do not infer those from screenshots or typechecking.
 App frontend modules: `AppsManager`/`AppEntity` manage lifecycle/data;
 `AppFrame` provides the constrained iframe SDK bridge; `AppSlot` personalizes
 products; `PaymentSession`/`PaymentManager` display customer/provider state;
-`MemoryView`/`MemoryRecommendations` connect evidence to approved suggestions.
+`admin/intelligence/KnowledgeView` and `MemoryRecommendations` connect
+evidence to approved suggestions.
 `app-i18n` supplies four-language host vocabulary; `apps.css` scopes their layout.
 Verification: strict build plus actual browser navigation/data/configuration,
 backed by `apps.py`, `services.py`, `payments.py` and `providers.py`. No automated
@@ -270,7 +271,7 @@ reviewed bindings, not whole-module proofs. See the
 | `extensions/services/connectors/{server,oauth,transport,store,providers}.py` | Independent app runtime, provider OAuth/API, encrypted private state and durable jobs |
 | `extensions/apps/{gmail,google-analytics,slack}/manifest.json` | Versioned app API/MCP capabilities and scopes |
 | `src/apps/evidence.rs`, `src/apps/evidence_routes.rs` | Tenant-private incremental imports, retrieval, polling and purge fences |
-| `src/knowledge.rs` | Private AGE source and product provenance, separated from public graph |
+| `src/knowledge.rs` | Private PostgreSQL source and product provenance, separated from public graph |
 | `src/planner.rs` | Actual private-source model context and persisted task evidence |
 | `src/marketing/{rules,rule_match,rule_fields,catalog,app_flows,flows}.rs` | Condition schema, original comparison/facts, upstream import, app-aware durable flow execution |
 | `frontend/src/admin/apps/ConnectorPanel.tsx`, `admin/automation/{RuleBuilder,FlowBuilder}.tsx`, `storefront/analytics/ShopAnalytics.tsx` | Multilingual app details, recursive graphical automation, consent and commerce events |

@@ -6,8 +6,8 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 
 ## Modules
 
-- `01-platform-console.css`
-- `02-platform-shop-stats-span.css`
+- [`01-platform-console.css`](01-platform-console.css): platform: platform-console styles. Source order is preserved by the entry stylesheet.
+- [`02-platform-shop-stats-span.css`](02-platform-shop-stats-span.css): platform: platform-shop-stats-span styles. Source order is preserved by the entry stylesheet.
 
 ## Verification
 

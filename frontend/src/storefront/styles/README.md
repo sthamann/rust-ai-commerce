@@ -6,7 +6,9 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 
 ## Modules
 
-- `shop.css`
+- [`checkout.css`](checkout.css): One-page checkout: calm responsive workspace with a sticky, readable order review.
+- [`company-identity.css`](company-identity.css): Public company branding and readable legal identity across storefront channels.
+- [`shop.css`](shop.css): Ordered shop stylesheet entry; domain rules live in the adjacent folder.
 
 ## Verification
 

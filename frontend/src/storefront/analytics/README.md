@@ -6,7 +6,7 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 
 ## Modules
 
-- `ShopAnalytics.tsx`
+- [`ShopAnalytics.tsx`](ShopAnalytics.tsx): Customer consent and real GA4 ecommerce events; absent apps produce no external script.
 
 ## Verification
 

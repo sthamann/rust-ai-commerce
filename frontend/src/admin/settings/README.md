@@ -6,11 +6,25 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `useSettingsDraft.ts`: canonical record/revision, dirty draft, cancellation and save lifecycle. Locale changes keep unsaved edits.
-- `SettingsSaveBar.tsx`: shared accessible busy, dirty, success and read-only feedback.
-- `CommerceSettings.tsx`
-- `MasterDataSettings.tsx`
-- `SettingsWorkspace.tsx`
+- [`CommerceSettings.tsx`](CommerceSettings.tsx): One revisioned international settings aggregate: drafts survive navigation between countries, taxes, methods and languages.
+- [`CompanyField.tsx`](CompanyField.tsx): One factual field with visible channel inheritance, an explicit reset and searchable geographic selection.
+- [`CompanyLogo.tsx`](CompanyLogo.tsx): Private logo preview and bounded upload; attaching/removing is a draft change until the profile is saved.
+- [`CompanyTranslations.tsx`](CompanyTranslations.tsx): Brand and legal text use one content-language selector and independent language/channel inheritance.
+- [`CountriesSettings.tsx`](CountriesSettings.tsx): Delivery-country selection and editable catalogue definitions, including tenant-owned subdivisions.
+- [`CountryDefinition.tsx`](CountryDefinition.tsx): Country metadata and subdivision editing with multilingual names; custom definitions cannot invent ISO assignment.
+- [`CustomerGroupsSettings.tsx`](CustomerGroupsSettings.tsx): Customer groups share the translation/inheritance editor and revisioned settings aggregate.
+- [`DestinationRuleEditor.tsx`](DestinationRuleEditor.tsx): Geographical tax rule editor: country, subdivisions, postcode constraints, date window and persisted Rule Builder condition.
+- [`LanguageSettings.tsx`](LanguageSettings.tsx): Shop main language and enabled locales with resumable provider-backed bulk product translation drafts.
+- [`MasterDataSettings.tsx`](MasterDataSettings.tsx): Structured company profile with single-language content, inherited channel scopes, logo drafts and revision-bound saves.
+- [`MethodRemoval.tsx`](MethodRemoval.tsx): Dependency preflight is advisory; aggregate save repeats it under the checkout configuration lock.
+- [`MethodSettings.tsx`](MethodSettings.tsx): Master/detail shipping and payment configuration, translated content and searchable country availability.
+- [`SettingsSaveBar.tsx`](SettingsSaveBar.tsx): Consistent settings save feedback, dirty state and permission-aware controls.
+- [`SettingsWorkspace.tsx`](SettingsWorkspace.tsx): Independent settings workspace: grouped navigation, explicit dirty-draft guards and native API forms.
+- [`TaxSettings.tsx`](TaxSettings.tsx): Editable tax classes and explicit fallback/country rates with destination rules using native Rule Builder references.
+- [`TranslationJobs.tsx`](TranslationJobs.tsx): Start catalogue translations, poll durable progress, review paginated drafts and apply bounded revision-checked batches.
+- [`company-types.ts`](company-types.ts): Typed company metadata and sparse per-channel inheritance contract; statutory facts are never auto-translated.
+- [`useCompanyContext.ts`](useCompanyContext.ts): Load enabled content languages, countries and channel choices without overwriting an edited draft on locale refresh.
+- [`useSettingsDraft.ts`](useSettingsDraft.ts): Revisioned settings drafts survive locale refreshes, reject late loads and keep failed saves editable.
 
 ## Verification
 

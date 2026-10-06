@@ -6,12 +6,12 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `PlatformConsole.tsx`
-- `PlatformDashboard.tsx`
-- `PlatformLanguage.tsx`
-- `PlatformShops.tsx`
-- `PlatformSignIn.tsx`
-- `platform-api.ts`
+- [`PlatformConsole.tsx`](PlatformConsole.tsx): Independent platform control plane: personal operator access, bounded statistics and audited shop creation.
+- [`PlatformDashboard.tsx`](PlatformDashboard.tsx): Aggregate statistics from PostgreSQL; recorded orders and confirmed money remain visibly separate.
+- [`PlatformLanguage.tsx`](PlatformLanguage.tsx): Locale selector shared by operator sign-in and the workspace.
+- [`PlatformShops.tsx`](PlatformShops.tsx): Searchable shop directory and server-validated provisioning form.
+- [`PlatformSignIn.tsx`](PlatformSignIn.tsx): Personal sign-in verifies the current operator grant before retaining a browser session.
+- [`platform-api.ts`](platform-api.ts): Tenant-independent operator API; credentials stay in the current browser session.
 
 ## Verification
 

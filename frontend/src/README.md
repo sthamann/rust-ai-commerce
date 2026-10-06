@@ -1,4 +1,4 @@
-# .
+# Frontend application entry
 
 Only the application entry lives here; merchant, store and operator roots load independently.
 
@@ -6,7 +6,7 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `main.tsx`
+- [`main.tsx`](main.tsx): Browser bootstrap only; application selection and error recovery live in application/.
 
 ## Verification
 

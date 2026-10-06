@@ -1,12 +1,12 @@
 # Testing, coverage and maintenance contracts
 
-The prototype has automated behavior checks, actual PostgreSQL/AGE integration,
+The prototype has automated behavior checks, actual PostgreSQL/Qdrant integration (plus legacy conversion checks),
 original Shopware comparisons and partial Lean contracts. **It is not fully tested
 at 100%, and neither coverage nor the Lean subset proves the entire system bug-free.**
 
 ## Source architecture
 
-- Rust: 251 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
+- Rust: 253 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
 - Frontend: separate `admin/`, `storefront/`, `platform/` and `shared/` ownership. Views/controllers and styles are limited to 400 lines; locale data has a documented 700-line allowance. Runtime cycles, unresolved local imports, crossing application boundaries, missing folder contracts and undocumented source files fail CI.
 - Independent Python services, app examples and browser SDKs remain under `extensions/`; test tooling lives under `scripts/`. [The generated inventory](module-inventory.md) covers all these sources and is checked for drift.
 - Studio workspaces load lazily. Root application routing is isolated in `frontend/src/application/`; error boundaries keep workspace failures inside the current view and provide reload recovery for rejected cached module imports. The removed `CommerceManager` had no call site and duplicated old operational UI. Order state management remains in `admin/orders/OrderWorkflow.tsx`; product review moderation lives in `admin/catalog/ReviewModeration.tsx`.
@@ -42,8 +42,9 @@ from the process or the local `.env`. CI alone passes `--existing-database` for 
 already-disposable database. Failures remain failures, and child processes stop
 before database cleanup. SIGINT flushes optional Rust coverage profiles.
 
-`testing/suites.json` is the single registry for 29 HTTP suites, four local
-provider/connector suites, four browser contracts and verification-tool tests.
+[scripts/testing/suites.json](../scripts/testing/suites.json) is the single
+registry for 33 HTTP suites, seven local provider/connector suites, four browser
+contracts and two verification-tool commands.
 The local server uses an offline model URL; live model checks are separate, opt-in
 checks. Credentials, payments, mail and Slack are exercised against loopback
 protocol fixtures. Passing these does not demonstrate a real provider account.
@@ -72,7 +73,7 @@ fixtures, jsdom and Testing Library. Fetches fail by default unless explicitly
 supplied by a test. Cases include:
 
 - merchant authentication, chat failures, language changes, uploads and separate live/staging transports;
-- navigation through all 14 lazy Studio workspaces and a signed-out login path;
+- navigation through permission-filtered lazy Studio workspaces and a signed-out login path;
 - catalogue filtering, cursor pages, stale responses, customer-session expiry and forbidden operation replay;
 - independent default addresses, linked customer/order/product back paths, configured translated groups, lazy history and confirmed revision-bound restoration with retained failed drafts;
 - opt-in personalization, ranking, consent withdrawal and failed signals;

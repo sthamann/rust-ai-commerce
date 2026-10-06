@@ -118,14 +118,14 @@ content-review decision, not a mechanism for sharing an entire mailbox.
 - `retrieval.rs`, `preview.rs`, `questions.rs`: shared source/language/archive scope,
   deterministic evidence preview and cited real product answers.
 - `tools.rs`, `capabilities/catalog.rs`, `mcp.rs`: HTTP/MCP parity and permission filtering.
-- `src/knowledge.rs`: transactional AGE document reassignment and public graph filtering.
+- `src/knowledge.rs`: transactional SQL document reassignment and public graph filtering.
 - `src/marketing/flows.rs`, `catalog.rs`: shared native trigger registry, non-order source event admission and durable execution.
 - `src/planner.rs`: document passages actually feed and persist with merchant proposals.
 - `src/staging/documents.rs`: clone/diff/release metadata and chunks as one unit.
 - `frontend/src/admin/intelligence/`: small workspace, source editor/library, product
   explorer/facts, observations and preview modules; UI vocabulary in shared i18n.
 
-`scripts/knowledge_workspace.py` checks real PostgreSQL/AGE APIs: privacy, hashes,
+`scripts/knowledge_workspace.py` checks real PostgreSQL/Qdrant APIs: privacy, hashes,
 translation and non-English fallback, explicit empty values, tenant/role isolation,
 revision conflicts, graph reassignment, archive/restore, >50-source pagination,
 multilingual upload, selective staging release, MCP parity and an actual

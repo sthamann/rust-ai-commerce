@@ -6,10 +6,11 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 
 ## Modules
 
-- `app-surfaces.css`
-- `apps.css`
-- `customers.css`
-- `workbench.css`
+- [`app-surfaces.css`](app-surfaces.css): app surfaces: Shared customer, app and workbench styles; application workspaces must not import each other..
+- [`apps.css`](apps.css): apps: Shared customer, app and workbench styles; application workspaces must not import each other..
+- [`customers.css`](customers.css): Shared light account/address workspace, responsive and keyboard-accessible.
+- [`native-app.css`](native-app.css): Native app layouts share commerce design tokens; tables/forms remain bounded and responsive.
+- [`workbench.css`](workbench.css): Merchant workbench uses the studio's light-blue design tokens and responsive review panels.
 
 ## Verification
 

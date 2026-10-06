@@ -6,7 +6,7 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `OverviewView.tsx`
+- [`OverviewView.tsx`](OverviewView.tsx): OverviewView renders verified shop state and typed user actions.
 
 ## Verification
 

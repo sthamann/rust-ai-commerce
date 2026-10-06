@@ -6,8 +6,8 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 
 ## Modules
 
-- `CustomerAccount.tsx`
-- `CustomerSignIn.tsx`
+- [`CustomerAccount.tsx`](CustomerAccount.tsx): Shopper account overlay uses its own scoped session; merchant credentials never authenticate a customer.
+- [`CustomerSignIn.tsx`](CustomerSignIn.tsx): CustomerSignIn: focused form view with explicit typed inputs and callbacks.
 
 ## Verification
 

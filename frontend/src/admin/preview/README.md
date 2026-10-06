@@ -6,8 +6,8 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `PreviewDialog.tsx`
-- `PreviewPanel.tsx`
+- [`PreviewDialog.tsx`](PreviewDialog.tsx): PreviewDialog keeps merchant interaction separate from workspace orchestration.
+- [`PreviewPanel.tsx`](PreviewPanel.tsx): PreviewPanel renders verified shop state and typed user actions.
 
 ## Verification
 

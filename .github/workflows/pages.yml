@@ -2,9 +2,7 @@ name: Publish documentation
 on:
   push:
     branches: [main]
-    paths: ['site/**', 'docs/assets/**', 'scripts/build_site.py', 'scripts/check_site.py', '.github/workflows/pages.yml']
   pull_request:
-    paths: ['site/**', 'docs/assets/**', 'scripts/build_site.py', 'scripts/check_site.py', '.github/workflows/pages.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -19,6 +17,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+      - run: python3 -m pip install -r site/requirements.txt
       - run: python3 scripts/build_site.py && python3 scripts/check_site.py
       - uses: actions/upload-pages-artifact@v3
         with:

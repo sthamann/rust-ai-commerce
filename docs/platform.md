@@ -68,8 +68,10 @@ customer passwords. Settings, membership and audit commit in one transaction.
 The shop uses simulated payments until explicitly configured for a provider.
 
 The directory opens `/?shop=ID` and `/?shop=ID#merchant`. One frontend serves many
-shops and selected sales channels; this does not implement custom-domain routing,
-merchant billing, resource quotas or automatic Storyfront-service provisioning.
+shops and selected sales channels. The configured `SHOP_DOMAIN_SUFFIX` can bind
+known shop subdomains to tenant scope; see [managed hosting](managed-hosting.md).
+Automatic DNS/certificate provisioning for arbitrary merchant domains, billing,
+resource quotas and automatic Storyfront-service provisioning remain absent.
 The directory uses keyset pagination (default 50, maximum 100); searches and
 statistics periods are bounded. Sample-catalogue graph indexing is reported as
 `knowledgeIndexed`, independent of the already committed shop.

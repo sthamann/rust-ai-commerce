@@ -6,9 +6,9 @@ Files and their individual responsibilities are listed in [the generated source 
 
 ## Modules
 
-- `MessageText.tsx`
-- `ProposalCard.tsx`
-- `SettingsDialog.tsx`
+- [`MessageText.tsx`](MessageText.tsx): MessageText keeps merchant interaction separate from workspace orchestration.
+- [`ProposalCard.tsx`](ProposalCard.tsx): ProposalCard keeps merchant interaction separate from workspace orchestration.
+- [`SettingsDialog.tsx`](SettingsDialog.tsx): SettingsDialog keeps merchant interaction separate from workspace orchestration.
 
 ## Verification
 

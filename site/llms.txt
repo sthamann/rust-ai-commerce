@@ -12,18 +12,23 @@
 
 - [Connected playground](https://sthamann.github.io/vendune/playground.html)
 
+## Full HTML documentation
+- [All guides and developer notes](https://sthamann.github.io/vendune/docs/)
+- [Shop knowledge](https://sthamann.github.io/vendune/docs/knowledge-workspace.html)
+- [App Studio](https://sthamann.github.io/vendune/docs/app-studio.html)
+
 ## Original documentation
 - [Repository](https://github.com/sthamann/vendune)
-- [Feature matrix](https://github.com/sthamann/vendune/blob/main/docs/shopware-parity.md)
+- [Feature matrix](https://sthamann.github.io/vendune/docs/shopware-parity.html)
 - [Recorded verification](https://github.com/sthamann/vendune/blob/main/docs/verification.json)
-- [Security and SaaS boundaries](https://github.com/sthamann/vendune/blob/main/docs/security.md)
+- [Security and SaaS boundaries](https://sthamann.github.io/vendune/docs/security.html)
 
-- [Rules and durable flows](https://github.com/sthamann/vendune/blob/main/docs/automation.md)
-- [Full app contract](https://github.com/sthamann/vendune/blob/main/docs/app-platform.md)
-- [Measured test coverage](https://github.com/sthamann/vendune/blob/main/docs/testing.md)
+- [Rules and durable flows](https://sthamann.github.io/vendune/docs/automation.html)
+- [Full app contract](https://sthamann.github.io/vendune/docs/app-platform.html)
+- [Measured test coverage](https://sthamann.github.io/vendune/docs/testing.html)
 
 ## Limits
-Working prototype. Payments simulated/manual/Sandbox; no real money is charged.
+Working prototype. The tour uses simulated/manual payments. Configured PayPal Sandbox/Live is supported; actual PSP transactions remain unverified.
 Not a full Shopware replacement or validated production SaaS.
 MCP/UCP are partial bindings. Hosted accounts and production OAuth are not configured.
 Live cloud quality, production scale and causal sales uplift are unverified.
@@ -33,4 +38,4 @@ Own-business storefronts are permitted. Commercial shop platforms, managed hosti
 white-label or embedded commerce SaaS for independent merchants need separate written permission.
 Previously distributed MIT versions retain their terms. Third-party licenses remain intact.
 - [License](https://github.com/sthamann/vendune/blob/main/LICENSE)
-- [Usage guide](https://github.com/sthamann/vendune/blob/main/docs/licensing.md)
+- [Usage guide](https://sthamann.github.io/vendune/docs/licensing.html)
