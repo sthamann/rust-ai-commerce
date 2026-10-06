@@ -114,7 +114,7 @@ it("live tests the existing scoped request and prevents path escape and write te
   ]) {
     await user.clear(screen.getByRole("searchbox"));
     await user.type(screen.getByRole("searchbox"), path);
-    await user.click(screen.getByRole("button", { name: path, exact: true }));
+    await user.click(screen.getByRole("button", { name: path }));
     expect(
       screen.getByRole("button", { name: "Run read request" }),
     ).toBeDisabled();
