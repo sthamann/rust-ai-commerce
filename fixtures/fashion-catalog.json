@@ -1,0 +1,2687 @@
+{
+  "provenance": "Synthetic Nord Atelier demo v1. Fictional brand and products; AI-generated product photos; illustrative prices, stock and tax configuration, not legal or inventory claims. No real customers.",
+  "brand": {
+    "name": "Nord Atelier",
+    "palette": {
+      "primary": "#23332D",
+      "surface": "#F5F1E9",
+      "accent": "#AD7753",
+      "muted": "#D8D1C5"
+    }
+  },
+  "categories": [
+    {
+      "id": "outerwear",
+      "translations": {
+        "en": {
+          "name": "Outerwear"
+        },
+        "de": {
+          "name": "Jacken & Mäntel"
+        },
+        "fr": {
+          "name": "Vestes et manteaux"
+        },
+        "es": {
+          "name": "Chaquetas y abrigos"
+        }
+      }
+    },
+    {
+      "id": "knitwear",
+      "translations": {
+        "en": {
+          "name": "Knitwear"
+        },
+        "de": {
+          "name": "Strick"
+        },
+        "fr": {
+          "name": "Maille"
+        },
+        "es": {
+          "name": "Punto"
+        }
+      }
+    },
+    {
+      "id": "tops",
+      "translations": {
+        "en": {
+          "name": "Tops"
+        },
+        "de": {
+          "name": "Oberteile"
+        },
+        "fr": {
+          "name": "Hauts"
+        },
+        "es": {
+          "name": "Tops"
+        }
+      }
+    },
+    {
+      "id": "bottoms",
+      "translations": {
+        "en": {
+          "name": "Trousers & skirts"
+        },
+        "de": {
+          "name": "Hosen & Röcke"
+        },
+        "fr": {
+          "name": "Pantalons et jupes"
+        },
+        "es": {
+          "name": "Pantalones y faldas"
+        }
+      }
+    },
+    {
+      "id": "dresses",
+      "translations": {
+        "en": {
+          "name": "Dresses"
+        },
+        "de": {
+          "name": "Kleider"
+        },
+        "fr": {
+          "name": "Robes"
+        },
+        "es": {
+          "name": "Vestidos"
+        }
+      }
+    },
+    {
+      "id": "shoes",
+      "translations": {
+        "en": {
+          "name": "Shoes"
+        },
+        "de": {
+          "name": "Schuhe"
+        },
+        "fr": {
+          "name": "Chaussures"
+        },
+        "es": {
+          "name": "Zapatos"
+        }
+      }
+    },
+    {
+      "id": "accessories",
+      "translations": {
+        "en": {
+          "name": "Accessories"
+        },
+        "de": {
+          "name": "Accessoires"
+        },
+        "fr": {
+          "name": "Accessoires"
+        },
+        "es": {
+          "name": "Accesorios"
+        }
+      }
+    }
+  ],
+  "products": [
+    {
+      "id": "coat",
+      "name": "Harbor Wool Coat",
+      "description": "A camel wool-blend coat with a tie belt and a relaxed knee-length silhouette.",
+      "category": "outerwear",
+      "price": 249.0,
+      "tax_rate": 19.0,
+      "stock": 30,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": null,
+      "options": {
+        "size": "M",
+        "color": "camel"
+      },
+      "media": [
+        {
+          "id": "coat-studio",
+          "url": "/media/demo/fashion/coat.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "wool-blend",
+        "brand": "Nord Atelier",
+        "color": "camel"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "coat-s",
+      "name": "Harbor Wool Coat · S",
+      "description": "A camel wool-blend coat with a tie belt and a relaxed knee-length silhouette.",
+      "category": "outerwear",
+      "price": 249.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "coat",
+      "options": {
+        "size": "S",
+        "color": "camel"
+      },
+      "media": [
+        {
+          "id": "coat-studio",
+          "url": "/media/demo/fashion/coat.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "wool-blend",
+        "brand": "Nord Atelier",
+        "color": "camel"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "coat-l",
+      "name": "Harbor Wool Coat · L",
+      "description": "A camel wool-blend coat with a tie belt and a relaxed knee-length silhouette.",
+      "category": "outerwear",
+      "price": 249.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "coat",
+      "options": {
+        "size": "L",
+        "color": "camel"
+      },
+      "media": [
+        {
+          "id": "coat-studio",
+          "url": "/media/demo/fashion/coat.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "wool-blend",
+        "brand": "Nord Atelier",
+        "color": "camel"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "knit",
+      "name": "Cloud Knit",
+      "description": "An oatmeal crew-neck knit with a relaxed fit and ribbed cuffs.",
+      "category": "knitwear",
+      "price": 119.0,
+      "tax_rate": 19.0,
+      "stock": 30,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": null,
+      "options": {
+        "size": "M",
+        "color": "oatmeal"
+      },
+      "media": [
+        {
+          "id": "knit-studio",
+          "url": "/media/demo/fashion/knit.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "wool-blend",
+        "brand": "Nord Atelier",
+        "color": "oatmeal"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "knit-s",
+      "name": "Cloud Knit · S",
+      "description": "An oatmeal crew-neck knit with a relaxed fit and ribbed cuffs.",
+      "category": "knitwear",
+      "price": 119.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "knit",
+      "options": {
+        "size": "S",
+        "color": "oatmeal"
+      },
+      "media": [
+        {
+          "id": "knit-studio",
+          "url": "/media/demo/fashion/knit.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "wool-blend",
+        "brand": "Nord Atelier",
+        "color": "oatmeal"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "knit-l",
+      "name": "Cloud Knit · L",
+      "description": "An oatmeal crew-neck knit with a relaxed fit and ribbed cuffs.",
+      "category": "knitwear",
+      "price": 119.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "knit",
+      "options": {
+        "size": "L",
+        "color": "oatmeal"
+      },
+      "media": [
+        {
+          "id": "knit-studio",
+          "url": "/media/demo/fashion/knit.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "wool-blend",
+        "brand": "Nord Atelier",
+        "color": "oatmeal"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "shirt",
+      "name": "Daylight Poplin Shirt",
+      "description": "An ivory cotton poplin shirt with a pointed collar and long sleeves.",
+      "category": "tops",
+      "price": 89.0,
+      "tax_rate": 19.0,
+      "stock": 30,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": null,
+      "options": {
+        "size": "M",
+        "color": "ivory"
+      },
+      "media": [
+        {
+          "id": "shirt-studio",
+          "url": "/media/demo/fashion/shirt.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "cotton",
+        "brand": "Nord Atelier",
+        "color": "ivory"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "shirt-s",
+      "name": "Daylight Poplin Shirt · S",
+      "description": "An ivory cotton poplin shirt with a pointed collar and long sleeves.",
+      "category": "tops",
+      "price": 89.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "shirt",
+      "options": {
+        "size": "S",
+        "color": "ivory"
+      },
+      "media": [
+        {
+          "id": "shirt-studio",
+          "url": "/media/demo/fashion/shirt.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "cotton",
+        "brand": "Nord Atelier",
+        "color": "ivory"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "shirt-l",
+      "name": "Daylight Poplin Shirt · L",
+      "description": "An ivory cotton poplin shirt with a pointed collar and long sleeves.",
+      "category": "tops",
+      "price": 89.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "shirt",
+      "options": {
+        "size": "L",
+        "color": "ivory"
+      },
+      "media": [
+        {
+          "id": "shirt-studio",
+          "url": "/media/demo/fashion/shirt.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "cotton",
+        "brand": "Nord Atelier",
+        "color": "ivory"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "trousers",
+      "name": "Frame Tailored Trousers",
+      "description": "Charcoal tailored trousers with a straight leg and subtle front pleats.",
+      "category": "bottoms",
+      "price": 129.0,
+      "tax_rate": 19.0,
+      "stock": 30,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": null,
+      "options": {
+        "size": "M",
+        "color": "charcoal"
+      },
+      "media": [
+        {
+          "id": "trousers-studio",
+          "url": "/media/demo/fashion/trousers.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "woven-blend",
+        "brand": "Nord Atelier",
+        "color": "charcoal"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "trousers-s",
+      "name": "Frame Tailored Trousers · S",
+      "description": "Charcoal tailored trousers with a straight leg and subtle front pleats.",
+      "category": "bottoms",
+      "price": 129.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "trousers",
+      "options": {
+        "size": "S",
+        "color": "charcoal"
+      },
+      "media": [
+        {
+          "id": "trousers-studio",
+          "url": "/media/demo/fashion/trousers.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "woven-blend",
+        "brand": "Nord Atelier",
+        "color": "charcoal"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "trousers-l",
+      "name": "Frame Tailored Trousers · L",
+      "description": "Charcoal tailored trousers with a straight leg and subtle front pleats.",
+      "category": "bottoms",
+      "price": 129.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "trousers",
+      "options": {
+        "size": "L",
+        "color": "charcoal"
+      },
+      "media": [
+        {
+          "id": "trousers-studio",
+          "url": "/media/demo/fashion/trousers.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "woven-blend",
+        "brand": "Nord Atelier",
+        "color": "charcoal"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "dress",
+      "name": "Evening Midi Dress",
+      "description": "A sleeveless black midi dress with a clean neckline and a flowing skirt.",
+      "category": "dresses",
+      "price": 159.0,
+      "tax_rate": 19.0,
+      "stock": 30,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": null,
+      "options": {
+        "size": "M",
+        "color": "black"
+      },
+      "media": [
+        {
+          "id": "dress-studio",
+          "url": "/media/demo/fashion/dress.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "woven-blend",
+        "brand": "Nord Atelier",
+        "color": "black"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "dress-s",
+      "name": "Evening Midi Dress · S",
+      "description": "A sleeveless black midi dress with a clean neckline and a flowing skirt.",
+      "category": "dresses",
+      "price": 159.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "dress",
+      "options": {
+        "size": "S",
+        "color": "black"
+      },
+      "media": [
+        {
+          "id": "dress-studio",
+          "url": "/media/demo/fashion/dress.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "woven-blend",
+        "brand": "Nord Atelier",
+        "color": "black"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "dress-l",
+      "name": "Evening Midi Dress · L",
+      "description": "A sleeveless black midi dress with a clean neckline and a flowing skirt.",
+      "category": "dresses",
+      "price": 159.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "dress",
+      "options": {
+        "size": "L",
+        "color": "black"
+      },
+      "media": [
+        {
+          "id": "dress-studio",
+          "url": "/media/demo/fashion/dress.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "woven-blend",
+        "brand": "Nord Atelier",
+        "color": "black"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "blazer",
+      "name": "Contour Blazer",
+      "description": "A sand-colored single-breasted blazer with two buttons and notched lapels.",
+      "category": "outerwear",
+      "price": 179.0,
+      "tax_rate": 19.0,
+      "stock": 30,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": null,
+      "options": {
+        "size": "M",
+        "color": "sand"
+      },
+      "media": [
+        {
+          "id": "blazer-studio",
+          "url": "/media/demo/fashion/blazer.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "woven-blend",
+        "brand": "Nord Atelier",
+        "color": "sand"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "blazer-s",
+      "name": "Contour Blazer · S",
+      "description": "A sand-colored single-breasted blazer with two buttons and notched lapels.",
+      "category": "outerwear",
+      "price": 179.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "blazer",
+      "options": {
+        "size": "S",
+        "color": "sand"
+      },
+      "media": [
+        {
+          "id": "blazer-studio",
+          "url": "/media/demo/fashion/blazer.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "woven-blend",
+        "brand": "Nord Atelier",
+        "color": "sand"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "blazer-l",
+      "name": "Contour Blazer · L",
+      "description": "A sand-colored single-breasted blazer with two buttons and notched lapels.",
+      "category": "outerwear",
+      "price": 179.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "blazer",
+      "options": {
+        "size": "L",
+        "color": "sand"
+      },
+      "media": [
+        {
+          "id": "blazer-studio",
+          "url": "/media/demo/fashion/blazer.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "woven-blend",
+        "brand": "Nord Atelier",
+        "color": "sand"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "tee",
+      "name": "Essential Heavy Tee",
+      "description": "A chalk-white heavyweight cotton T-shirt with a boxy fit and crew neck.",
+      "category": "tops",
+      "price": 39.0,
+      "tax_rate": 19.0,
+      "stock": 30,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": null,
+      "options": {
+        "size": "M",
+        "color": "chalk"
+      },
+      "media": [
+        {
+          "id": "tee-studio",
+          "url": "/media/demo/fashion/tee.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "cotton",
+        "brand": "Nord Atelier",
+        "color": "chalk"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "tee-s",
+      "name": "Essential Heavy Tee · S",
+      "description": "A chalk-white heavyweight cotton T-shirt with a boxy fit and crew neck.",
+      "category": "tops",
+      "price": 39.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "tee",
+      "options": {
+        "size": "S",
+        "color": "chalk"
+      },
+      "media": [
+        {
+          "id": "tee-studio",
+          "url": "/media/demo/fashion/tee.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "cotton",
+        "brand": "Nord Atelier",
+        "color": "chalk"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "tee-l",
+      "name": "Essential Heavy Tee · L",
+      "description": "A chalk-white heavyweight cotton T-shirt with a boxy fit and crew neck.",
+      "category": "tops",
+      "price": 39.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "tee",
+      "options": {
+        "size": "L",
+        "color": "chalk"
+      },
+      "media": [
+        {
+          "id": "tee-studio",
+          "url": "/media/demo/fashion/tee.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "cotton",
+        "brand": "Nord Atelier",
+        "color": "chalk"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "jeans",
+      "name": "Raw Straight Jeans",
+      "description": "Indigo straight-leg jeans with a classic five-pocket design.",
+      "category": "bottoms",
+      "price": 109.0,
+      "tax_rate": 19.0,
+      "stock": 30,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": null,
+      "options": {
+        "size": "M",
+        "color": "indigo"
+      },
+      "media": [
+        {
+          "id": "jeans-studio",
+          "url": "/media/demo/fashion/jeans.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "denim",
+        "brand": "Nord Atelier",
+        "color": "indigo"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "jeans-s",
+      "name": "Raw Straight Jeans · S",
+      "description": "Indigo straight-leg jeans with a classic five-pocket design.",
+      "category": "bottoms",
+      "price": 109.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "jeans",
+      "options": {
+        "size": "S",
+        "color": "indigo"
+      },
+      "media": [
+        {
+          "id": "jeans-studio",
+          "url": "/media/demo/fashion/jeans.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "denim",
+        "brand": "Nord Atelier",
+        "color": "indigo"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "jeans-l",
+      "name": "Raw Straight Jeans · L",
+      "description": "Indigo straight-leg jeans with a classic five-pocket design.",
+      "category": "bottoms",
+      "price": 109.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "jeans",
+      "options": {
+        "size": "L",
+        "color": "indigo"
+      },
+      "media": [
+        {
+          "id": "jeans-studio",
+          "url": "/media/demo/fashion/jeans.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "denim",
+        "brand": "Nord Atelier",
+        "color": "indigo"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "skirt",
+      "name": "Olive Midi Skirt",
+      "description": "An olive A-line midi skirt with a clean waistband and soft drape.",
+      "category": "bottoms",
+      "price": 99.0,
+      "tax_rate": 19.0,
+      "stock": 30,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": null,
+      "options": {
+        "size": "M",
+        "color": "olive"
+      },
+      "media": [
+        {
+          "id": "skirt-studio",
+          "url": "/media/demo/fashion/skirt.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "woven-blend",
+        "brand": "Nord Atelier",
+        "color": "olive"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "skirt-s",
+      "name": "Olive Midi Skirt · S",
+      "description": "An olive A-line midi skirt with a clean waistband and soft drape.",
+      "category": "bottoms",
+      "price": 99.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "skirt",
+      "options": {
+        "size": "S",
+        "color": "olive"
+      },
+      "media": [
+        {
+          "id": "skirt-studio",
+          "url": "/media/demo/fashion/skirt.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "woven-blend",
+        "brand": "Nord Atelier",
+        "color": "olive"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "skirt-l",
+      "name": "Olive Midi Skirt · L",
+      "description": "An olive A-line midi skirt with a clean waistband and soft drape.",
+      "category": "bottoms",
+      "price": 99.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "skirt",
+      "options": {
+        "size": "L",
+        "color": "olive"
+      },
+      "media": [
+        {
+          "id": "skirt-studio",
+          "url": "/media/demo/fashion/skirt.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "woven-blend",
+        "brand": "Nord Atelier",
+        "color": "olive"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "sneakers",
+      "name": "Studio Low Sneakers",
+      "description": "Minimal white leather low-top sneakers with cream-colored soles.",
+      "category": "shoes",
+      "price": 139.0,
+      "tax_rate": 19.0,
+      "stock": 30,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": null,
+      "options": {
+        "size": "40",
+        "color": "white"
+      },
+      "media": [
+        {
+          "id": "sneakers-studio",
+          "url": "/media/demo/fashion/sneakers.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "leather",
+        "brand": "Nord Atelier",
+        "color": "white"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "sneakers-38",
+      "name": "Studio Low Sneakers · 38",
+      "description": "Minimal white leather low-top sneakers with cream-colored soles.",
+      "category": "shoes",
+      "price": 139.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "sneakers",
+      "options": {
+        "size": "38",
+        "color": "white"
+      },
+      "media": [
+        {
+          "id": "sneakers-studio",
+          "url": "/media/demo/fashion/sneakers.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "leather",
+        "brand": "Nord Atelier",
+        "color": "white"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "sneakers-39",
+      "name": "Studio Low Sneakers · 39",
+      "description": "Minimal white leather low-top sneakers with cream-colored soles.",
+      "category": "shoes",
+      "price": 139.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "sneakers",
+      "options": {
+        "size": "39",
+        "color": "white"
+      },
+      "media": [
+        {
+          "id": "sneakers-studio",
+          "url": "/media/demo/fashion/sneakers.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "leather",
+        "brand": "Nord Atelier",
+        "color": "white"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "sneakers-41",
+      "name": "Studio Low Sneakers · 41",
+      "description": "Minimal white leather low-top sneakers with cream-colored soles.",
+      "category": "shoes",
+      "price": 139.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "sneakers",
+      "options": {
+        "size": "41",
+        "color": "white"
+      },
+      "media": [
+        {
+          "id": "sneakers-studio",
+          "url": "/media/demo/fashion/sneakers.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "leather",
+        "brand": "Nord Atelier",
+        "color": "white"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "sneakers-42",
+      "name": "Studio Low Sneakers · 42",
+      "description": "Minimal white leather low-top sneakers with cream-colored soles.",
+      "category": "shoes",
+      "price": 139.0,
+      "tax_rate": 19.0,
+      "stock": 18,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": "sneakers",
+      "options": {
+        "size": "42",
+        "color": "white"
+      },
+      "media": [
+        {
+          "id": "sneakers-studio",
+          "url": "/media/demo/fashion/sneakers.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "leather",
+        "brand": "Nord Atelier",
+        "color": "white"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "bag",
+      "name": "Everyday Leather Tote",
+      "description": "A structured cognac leather tote with two handles and visible natural grain.",
+      "category": "accessories",
+      "price": 169.0,
+      "tax_rate": 19.0,
+      "stock": 30,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": null,
+      "options": {
+        "size": "one-size",
+        "color": "cognac"
+      },
+      "media": [
+        {
+          "id": "bag-studio",
+          "url": "/media/demo/fashion/bag.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "leather",
+        "brand": "Nord Atelier",
+        "color": "cognac"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    },
+    {
+      "id": "scarf",
+      "name": "Soft Wool Scarf",
+      "description": "A warm-gray wool scarf with a soft texture and fringed ends.",
+      "category": "accessories",
+      "price": 59.0,
+      "tax_rate": 19.0,
+      "stock": 30,
+      "revision": 1,
+      "list_price": null,
+      "regulation_price": null,
+      "reference_price": null,
+      "advanced_prices": [
+        {
+          "rule_id": "business",
+          "quantity_start": 5,
+          "quantity_end": null,
+          "discount": 0.1
+        }
+      ],
+      "min_purchase": 1,
+      "purchase_steps": 1,
+      "max_purchase": null,
+      "parent_id": null,
+      "options": {
+        "size": "one-size",
+        "color": "warm-gray"
+      },
+      "media": [
+        {
+          "id": "scarf-studio",
+          "url": "/media/demo/fashion/scarf.webp",
+          "view": "front",
+          "source": "ai-generated-demo"
+        }
+      ],
+      "properties": {
+        "material": "wool",
+        "brand": "Nord Atelier",
+        "color": "warm-gray"
+      },
+      "delivery_days": 3,
+      "extra": {
+        "demo": {
+          "synthetic": true,
+          "brand": "Nord Atelier",
+          "imageSource": "ai-generated",
+          "catalogVersion": "nord-atelier-v1"
+        }
+      }
+    }
+  ],
+  "translations": [
+    {
+      "product_id": "coat",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Harbor Wool Coat",
+      "description": "A camel wool-blend coat with a tie belt and a relaxed knee-length silhouette."
+    },
+    {
+      "product_id": "coat",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Harbor Wollmantel",
+      "description": "Ein camelfarbener Wollmix-Mantel mit Bindegürtel und entspannter, knielanger Silhouette."
+    },
+    {
+      "product_id": "coat",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Manteau en laine Harbor",
+      "description": "Un manteau camel en laine mélangée avec ceinture à nouer et coupe décontractée jusqu’au genou."
+    },
+    {
+      "product_id": "coat",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Abrigo de lana Harbor",
+      "description": "Un abrigo camel de mezcla de lana con cinturón y una silueta relajada hasta la rodilla."
+    },
+    {
+      "product_id": "coat-s",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Harbor Wool Coat · S",
+      "description": "A camel wool-blend coat with a tie belt and a relaxed knee-length silhouette."
+    },
+    {
+      "product_id": "coat-s",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Harbor Wollmantel · S",
+      "description": "Ein camelfarbener Wollmix-Mantel mit Bindegürtel und entspannter, knielanger Silhouette."
+    },
+    {
+      "product_id": "coat-s",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Manteau en laine Harbor · S",
+      "description": "Un manteau camel en laine mélangée avec ceinture à nouer et coupe décontractée jusqu’au genou."
+    },
+    {
+      "product_id": "coat-s",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Abrigo de lana Harbor · S",
+      "description": "Un abrigo camel de mezcla de lana con cinturón y una silueta relajada hasta la rodilla."
+    },
+    {
+      "product_id": "coat-l",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Harbor Wool Coat · L",
+      "description": "A camel wool-blend coat with a tie belt and a relaxed knee-length silhouette."
+    },
+    {
+      "product_id": "coat-l",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Harbor Wollmantel · L",
+      "description": "Ein camelfarbener Wollmix-Mantel mit Bindegürtel und entspannter, knielanger Silhouette."
+    },
+    {
+      "product_id": "coat-l",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Manteau en laine Harbor · L",
+      "description": "Un manteau camel en laine mélangée avec ceinture à nouer et coupe décontractée jusqu’au genou."
+    },
+    {
+      "product_id": "coat-l",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Abrigo de lana Harbor · L",
+      "description": "Un abrigo camel de mezcla de lana con cinturón y una silueta relajada hasta la rodilla."
+    },
+    {
+      "product_id": "knit",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Cloud Knit",
+      "description": "An oatmeal crew-neck knit with a relaxed fit and ribbed cuffs."
+    },
+    {
+      "product_id": "knit",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Cloud Strickpullover",
+      "description": "Ein Rundhals-Strickpullover in Hafer mit entspannter Passform und Rippbündchen."
+    },
+    {
+      "product_id": "knit",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Pull Cloud",
+      "description": "Un pull col rond couleur avoine, coupe décontractée et poignets côtelés."
+    },
+    {
+      "product_id": "knit",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Jersey Cloud",
+      "description": "Un jersey de cuello redondo color avena, corte relajado y puños de canalé."
+    },
+    {
+      "product_id": "knit-s",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Cloud Knit · S",
+      "description": "An oatmeal crew-neck knit with a relaxed fit and ribbed cuffs."
+    },
+    {
+      "product_id": "knit-s",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Cloud Strickpullover · S",
+      "description": "Ein Rundhals-Strickpullover in Hafer mit entspannter Passform und Rippbündchen."
+    },
+    {
+      "product_id": "knit-s",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Pull Cloud · S",
+      "description": "Un pull col rond couleur avoine, coupe décontractée et poignets côtelés."
+    },
+    {
+      "product_id": "knit-s",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Jersey Cloud · S",
+      "description": "Un jersey de cuello redondo color avena, corte relajado y puños de canalé."
+    },
+    {
+      "product_id": "knit-l",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Cloud Knit · L",
+      "description": "An oatmeal crew-neck knit with a relaxed fit and ribbed cuffs."
+    },
+    {
+      "product_id": "knit-l",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Cloud Strickpullover · L",
+      "description": "Ein Rundhals-Strickpullover in Hafer mit entspannter Passform und Rippbündchen."
+    },
+    {
+      "product_id": "knit-l",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Pull Cloud · L",
+      "description": "Un pull col rond couleur avoine, coupe décontractée et poignets côtelés."
+    },
+    {
+      "product_id": "knit-l",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Jersey Cloud · L",
+      "description": "Un jersey de cuello redondo color avena, corte relajado y puños de canalé."
+    },
+    {
+      "product_id": "shirt",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Daylight Poplin Shirt",
+      "description": "An ivory cotton poplin shirt with a pointed collar and long sleeves."
+    },
+    {
+      "product_id": "shirt",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Daylight Popelinhemd",
+      "description": "Ein elfenbeinfarbenes Baumwoll-Popelinhemd mit spitzem Kragen und langen Ärmeln."
+    },
+    {
+      "product_id": "shirt",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Chemise en popeline Daylight",
+      "description": "Une chemise ivoire en popeline de coton avec col pointu et manches longues."
+    },
+    {
+      "product_id": "shirt",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Camisa de popelina Daylight",
+      "description": "Una camisa marfil de popelina de algodón con cuello en punta y manga larga."
+    },
+    {
+      "product_id": "shirt-s",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Daylight Poplin Shirt · S",
+      "description": "An ivory cotton poplin shirt with a pointed collar and long sleeves."
+    },
+    {
+      "product_id": "shirt-s",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Daylight Popelinhemd · S",
+      "description": "Ein elfenbeinfarbenes Baumwoll-Popelinhemd mit spitzem Kragen und langen Ärmeln."
+    },
+    {
+      "product_id": "shirt-s",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Chemise en popeline Daylight · S",
+      "description": "Une chemise ivoire en popeline de coton avec col pointu et manches longues."
+    },
+    {
+      "product_id": "shirt-s",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Camisa de popelina Daylight · S",
+      "description": "Una camisa marfil de popelina de algodón con cuello en punta y manga larga."
+    },
+    {
+      "product_id": "shirt-l",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Daylight Poplin Shirt · L",
+      "description": "An ivory cotton poplin shirt with a pointed collar and long sleeves."
+    },
+    {
+      "product_id": "shirt-l",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Daylight Popelinhemd · L",
+      "description": "Ein elfenbeinfarbenes Baumwoll-Popelinhemd mit spitzem Kragen und langen Ärmeln."
+    },
+    {
+      "product_id": "shirt-l",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Chemise en popeline Daylight · L",
+      "description": "Une chemise ivoire en popeline de coton avec col pointu et manches longues."
+    },
+    {
+      "product_id": "shirt-l",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Camisa de popelina Daylight · L",
+      "description": "Una camisa marfil de popelina de algodón con cuello en punta y manga larga."
+    },
+    {
+      "product_id": "trousers",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Frame Tailored Trousers",
+      "description": "Charcoal tailored trousers with a straight leg and subtle front pleats."
+    },
+    {
+      "product_id": "trousers",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Frame Anzughose",
+      "description": "Eine anthrazitfarbene Anzughose mit geradem Bein und dezenten Bundfalten."
+    },
+    {
+      "product_id": "trousers",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Pantalon tailleur Frame",
+      "description": "Un pantalon tailleur anthracite, jambe droite et plis discrets sur le devant."
+    },
+    {
+      "product_id": "trousers",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Pantalón de vestir Frame",
+      "description": "Un pantalón de vestir antracita con pernera recta y discretos pliegues delanteros."
+    },
+    {
+      "product_id": "trousers-s",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Frame Tailored Trousers · S",
+      "description": "Charcoal tailored trousers with a straight leg and subtle front pleats."
+    },
+    {
+      "product_id": "trousers-s",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Frame Anzughose · S",
+      "description": "Eine anthrazitfarbene Anzughose mit geradem Bein und dezenten Bundfalten."
+    },
+    {
+      "product_id": "trousers-s",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Pantalon tailleur Frame · S",
+      "description": "Un pantalon tailleur anthracite, jambe droite et plis discrets sur le devant."
+    },
+    {
+      "product_id": "trousers-s",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Pantalón de vestir Frame · S",
+      "description": "Un pantalón de vestir antracita con pernera recta y discretos pliegues delanteros."
+    },
+    {
+      "product_id": "trousers-l",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Frame Tailored Trousers · L",
+      "description": "Charcoal tailored trousers with a straight leg and subtle front pleats."
+    },
+    {
+      "product_id": "trousers-l",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Frame Anzughose · L",
+      "description": "Eine anthrazitfarbene Anzughose mit geradem Bein und dezenten Bundfalten."
+    },
+    {
+      "product_id": "trousers-l",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Pantalon tailleur Frame · L",
+      "description": "Un pantalon tailleur anthracite, jambe droite et plis discrets sur le devant."
+    },
+    {
+      "product_id": "trousers-l",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Pantalón de vestir Frame · L",
+      "description": "Un pantalón de vestir antracita con pernera recta y discretos pliegues delanteros."
+    },
+    {
+      "product_id": "dress",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Evening Midi Dress",
+      "description": "A sleeveless black midi dress with a clean neckline and a flowing skirt."
+    },
+    {
+      "product_id": "dress",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Evening Midikleid",
+      "description": "Ein ärmelloses schwarzes Midikleid mit klarem Ausschnitt und fließendem Rock."
+    },
+    {
+      "product_id": "dress",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Robe midi Evening",
+      "description": "Une robe midi noire sans manches, encolure sobre et jupe fluide."
+    },
+    {
+      "product_id": "dress",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Vestido midi Evening",
+      "description": "Un vestido midi negro sin mangas, escote sencillo y falda fluida."
+    },
+    {
+      "product_id": "dress-s",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Evening Midi Dress · S",
+      "description": "A sleeveless black midi dress with a clean neckline and a flowing skirt."
+    },
+    {
+      "product_id": "dress-s",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Evening Midikleid · S",
+      "description": "Ein ärmelloses schwarzes Midikleid mit klarem Ausschnitt und fließendem Rock."
+    },
+    {
+      "product_id": "dress-s",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Robe midi Evening · S",
+      "description": "Une robe midi noire sans manches, encolure sobre et jupe fluide."
+    },
+    {
+      "product_id": "dress-s",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Vestido midi Evening · S",
+      "description": "Un vestido midi negro sin mangas, escote sencillo y falda fluida."
+    },
+    {
+      "product_id": "dress-l",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Evening Midi Dress · L",
+      "description": "A sleeveless black midi dress with a clean neckline and a flowing skirt."
+    },
+    {
+      "product_id": "dress-l",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Evening Midikleid · L",
+      "description": "Ein ärmelloses schwarzes Midikleid mit klarem Ausschnitt und fließendem Rock."
+    },
+    {
+      "product_id": "dress-l",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Robe midi Evening · L",
+      "description": "Une robe midi noire sans manches, encolure sobre et jupe fluide."
+    },
+    {
+      "product_id": "dress-l",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Vestido midi Evening · L",
+      "description": "Un vestido midi negro sin mangas, escote sencillo y falda fluida."
+    },
+    {
+      "product_id": "blazer",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Contour Blazer",
+      "description": "A sand-colored single-breasted blazer with two buttons and notched lapels."
+    },
+    {
+      "product_id": "blazer",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Contour Blazer",
+      "description": "Ein sandfarbener Einreiher mit zwei Knöpfen und fallendem Revers."
+    },
+    {
+      "product_id": "blazer",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Blazer Contour",
+      "description": "Un blazer sable à boutonnage simple, deux boutons et revers crantés."
+    },
+    {
+      "product_id": "blazer",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Americana Contour",
+      "description": "Una americana color arena de dos botones y solapas de muesca."
+    },
+    {
+      "product_id": "blazer-s",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Contour Blazer · S",
+      "description": "A sand-colored single-breasted blazer with two buttons and notched lapels."
+    },
+    {
+      "product_id": "blazer-s",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Contour Blazer · S",
+      "description": "Ein sandfarbener Einreiher mit zwei Knöpfen und fallendem Revers."
+    },
+    {
+      "product_id": "blazer-s",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Blazer Contour · S",
+      "description": "Un blazer sable à boutonnage simple, deux boutons et revers crantés."
+    },
+    {
+      "product_id": "blazer-s",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Americana Contour · S",
+      "description": "Una americana color arena de dos botones y solapas de muesca."
+    },
+    {
+      "product_id": "blazer-l",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Contour Blazer · L",
+      "description": "A sand-colored single-breasted blazer with two buttons and notched lapels."
+    },
+    {
+      "product_id": "blazer-l",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Contour Blazer · L",
+      "description": "Ein sandfarbener Einreiher mit zwei Knöpfen und fallendem Revers."
+    },
+    {
+      "product_id": "blazer-l",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Blazer Contour · L",
+      "description": "Un blazer sable à boutonnage simple, deux boutons et revers crantés."
+    },
+    {
+      "product_id": "blazer-l",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Americana Contour · L",
+      "description": "Una americana color arena de dos botones y solapas de muesca."
+    },
+    {
+      "product_id": "tee",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Essential Heavy Tee",
+      "description": "A chalk-white heavyweight cotton T-shirt with a boxy fit and crew neck."
+    },
+    {
+      "product_id": "tee",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Essential Heavy T-Shirt",
+      "description": "Ein kreideweißes T-Shirt aus schwerer Baumwolle mit geradem Schnitt und Rundhalsausschnitt."
+    },
+    {
+      "product_id": "tee",
+      "language_id": "22222222222222222222222222222222",
+      "name": "T-shirt épais Essential",
+      "description": "Un t-shirt blanc craie en coton épais, coupe droite et col rond."
+    },
+    {
+      "product_id": "tee",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Camiseta gruesa Essential",
+      "description": "Una camiseta blanco tiza de algodón grueso, corte recto y cuello redondo."
+    },
+    {
+      "product_id": "tee-s",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Essential Heavy Tee · S",
+      "description": "A chalk-white heavyweight cotton T-shirt with a boxy fit and crew neck."
+    },
+    {
+      "product_id": "tee-s",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Essential Heavy T-Shirt · S",
+      "description": "Ein kreideweißes T-Shirt aus schwerer Baumwolle mit geradem Schnitt und Rundhalsausschnitt."
+    },
+    {
+      "product_id": "tee-s",
+      "language_id": "22222222222222222222222222222222",
+      "name": "T-shirt épais Essential · S",
+      "description": "Un t-shirt blanc craie en coton épais, coupe droite et col rond."
+    },
+    {
+      "product_id": "tee-s",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Camiseta gruesa Essential · S",
+      "description": "Una camiseta blanco tiza de algodón grueso, corte recto y cuello redondo."
+    },
+    {
+      "product_id": "tee-l",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Essential Heavy Tee · L",
+      "description": "A chalk-white heavyweight cotton T-shirt with a boxy fit and crew neck."
+    },
+    {
+      "product_id": "tee-l",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Essential Heavy T-Shirt · L",
+      "description": "Ein kreideweißes T-Shirt aus schwerer Baumwolle mit geradem Schnitt und Rundhalsausschnitt."
+    },
+    {
+      "product_id": "tee-l",
+      "language_id": "22222222222222222222222222222222",
+      "name": "T-shirt épais Essential · L",
+      "description": "Un t-shirt blanc craie en coton épais, coupe droite et col rond."
+    },
+    {
+      "product_id": "tee-l",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Camiseta gruesa Essential · L",
+      "description": "Una camiseta blanco tiza de algodón grueso, corte recto y cuello redondo."
+    },
+    {
+      "product_id": "jeans",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Raw Straight Jeans",
+      "description": "Indigo straight-leg jeans with a classic five-pocket design."
+    },
+    {
+      "product_id": "jeans",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Raw Straight Jeans",
+      "description": "Indigoblaue Jeans mit geradem Bein und klassischem Five-Pocket-Design."
+    },
+    {
+      "product_id": "jeans",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Jean droit Raw",
+      "description": "Un jean indigo à jambe droite et coupe classique à cinq poches."
+    },
+    {
+      "product_id": "jeans",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Vaqueros rectos Raw",
+      "description": "Unos vaqueros índigo de pernera recta y diseño clásico de cinco bolsillos."
+    },
+    {
+      "product_id": "jeans-s",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Raw Straight Jeans · S",
+      "description": "Indigo straight-leg jeans with a classic five-pocket design."
+    },
+    {
+      "product_id": "jeans-s",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Raw Straight Jeans · S",
+      "description": "Indigoblaue Jeans mit geradem Bein und klassischem Five-Pocket-Design."
+    },
+    {
+      "product_id": "jeans-s",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Jean droit Raw · S",
+      "description": "Un jean indigo à jambe droite et coupe classique à cinq poches."
+    },
+    {
+      "product_id": "jeans-s",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Vaqueros rectos Raw · S",
+      "description": "Unos vaqueros índigo de pernera recta y diseño clásico de cinco bolsillos."
+    },
+    {
+      "product_id": "jeans-l",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Raw Straight Jeans · L",
+      "description": "Indigo straight-leg jeans with a classic five-pocket design."
+    },
+    {
+      "product_id": "jeans-l",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Raw Straight Jeans · L",
+      "description": "Indigoblaue Jeans mit geradem Bein und klassischem Five-Pocket-Design."
+    },
+    {
+      "product_id": "jeans-l",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Jean droit Raw · L",
+      "description": "Un jean indigo à jambe droite et coupe classique à cinq poches."
+    },
+    {
+      "product_id": "jeans-l",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Vaqueros rectos Raw · L",
+      "description": "Unos vaqueros índigo de pernera recta y diseño clásico de cinco bolsillos."
+    },
+    {
+      "product_id": "skirt",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Olive Midi Skirt",
+      "description": "An olive A-line midi skirt with a clean waistband and soft drape."
+    },
+    {
+      "product_id": "skirt",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Olive Midirock",
+      "description": "Ein olivgrüner A-Linien-Midirock mit schlichtem Bund und weichem Fall."
+    },
+    {
+      "product_id": "skirt",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Jupe midi Olive",
+      "description": "Une jupe midi olive évasée, ceinture sobre et tombé souple."
+    },
+    {
+      "product_id": "skirt",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Falda midi Olive",
+      "description": "Una falda midi verde oliva de línea evasé, cintura sencilla y caída suave."
+    },
+    {
+      "product_id": "skirt-s",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Olive Midi Skirt · S",
+      "description": "An olive A-line midi skirt with a clean waistband and soft drape."
+    },
+    {
+      "product_id": "skirt-s",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Olive Midirock · S",
+      "description": "Ein olivgrüner A-Linien-Midirock mit schlichtem Bund und weichem Fall."
+    },
+    {
+      "product_id": "skirt-s",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Jupe midi Olive · S",
+      "description": "Une jupe midi olive évasée, ceinture sobre et tombé souple."
+    },
+    {
+      "product_id": "skirt-s",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Falda midi Olive · S",
+      "description": "Una falda midi verde oliva de línea evasé, cintura sencilla y caída suave."
+    },
+    {
+      "product_id": "skirt-l",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Olive Midi Skirt · L",
+      "description": "An olive A-line midi skirt with a clean waistband and soft drape."
+    },
+    {
+      "product_id": "skirt-l",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Olive Midirock · L",
+      "description": "Ein olivgrüner A-Linien-Midirock mit schlichtem Bund und weichem Fall."
+    },
+    {
+      "product_id": "skirt-l",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Jupe midi Olive · L",
+      "description": "Une jupe midi olive évasée, ceinture sobre et tombé souple."
+    },
+    {
+      "product_id": "skirt-l",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Falda midi Olive · L",
+      "description": "Una falda midi verde oliva de línea evasé, cintura sencilla y caída suave."
+    },
+    {
+      "product_id": "sneakers",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Studio Low Sneakers",
+      "description": "Minimal white leather low-top sneakers with cream-colored soles."
+    },
+    {
+      "product_id": "sneakers",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Studio Low Sneaker",
+      "description": "Minimalistische weiße Leder-Sneaker mit niedrigem Schaft und cremefarbenen Sohlen."
+    },
+    {
+      "product_id": "sneakers",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Baskets Studio Low",
+      "description": "Des baskets basses minimalistes en cuir blanc avec semelles crème."
+    },
+    {
+      "product_id": "sneakers",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Zapatillas Studio Low",
+      "description": "Unas zapatillas bajas minimalistas de piel blanca con suelas color crema."
+    },
+    {
+      "product_id": "sneakers-38",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Studio Low Sneakers · 38",
+      "description": "Minimal white leather low-top sneakers with cream-colored soles."
+    },
+    {
+      "product_id": "sneakers-38",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Studio Low Sneaker · 38",
+      "description": "Minimalistische weiße Leder-Sneaker mit niedrigem Schaft und cremefarbenen Sohlen."
+    },
+    {
+      "product_id": "sneakers-38",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Baskets Studio Low · 38",
+      "description": "Des baskets basses minimalistes en cuir blanc avec semelles crème."
+    },
+    {
+      "product_id": "sneakers-38",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Zapatillas Studio Low · 38",
+      "description": "Unas zapatillas bajas minimalistas de piel blanca con suelas color crema."
+    },
+    {
+      "product_id": "sneakers-39",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Studio Low Sneakers · 39",
+      "description": "Minimal white leather low-top sneakers with cream-colored soles."
+    },
+    {
+      "product_id": "sneakers-39",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Studio Low Sneaker · 39",
+      "description": "Minimalistische weiße Leder-Sneaker mit niedrigem Schaft und cremefarbenen Sohlen."
+    },
+    {
+      "product_id": "sneakers-39",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Baskets Studio Low · 39",
+      "description": "Des baskets basses minimalistes en cuir blanc avec semelles crème."
+    },
+    {
+      "product_id": "sneakers-39",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Zapatillas Studio Low · 39",
+      "description": "Unas zapatillas bajas minimalistas de piel blanca con suelas color crema."
+    },
+    {
+      "product_id": "sneakers-41",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Studio Low Sneakers · 41",
+      "description": "Minimal white leather low-top sneakers with cream-colored soles."
+    },
+    {
+      "product_id": "sneakers-41",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Studio Low Sneaker · 41",
+      "description": "Minimalistische weiße Leder-Sneaker mit niedrigem Schaft und cremefarbenen Sohlen."
+    },
+    {
+      "product_id": "sneakers-41",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Baskets Studio Low · 41",
+      "description": "Des baskets basses minimalistes en cuir blanc avec semelles crème."
+    },
+    {
+      "product_id": "sneakers-41",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Zapatillas Studio Low · 41",
+      "description": "Unas zapatillas bajas minimalistas de piel blanca con suelas color crema."
+    },
+    {
+      "product_id": "sneakers-42",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Studio Low Sneakers · 42",
+      "description": "Minimal white leather low-top sneakers with cream-colored soles."
+    },
+    {
+      "product_id": "sneakers-42",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Studio Low Sneaker · 42",
+      "description": "Minimalistische weiße Leder-Sneaker mit niedrigem Schaft und cremefarbenen Sohlen."
+    },
+    {
+      "product_id": "sneakers-42",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Baskets Studio Low · 42",
+      "description": "Des baskets basses minimalistes en cuir blanc avec semelles crème."
+    },
+    {
+      "product_id": "sneakers-42",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Zapatillas Studio Low · 42",
+      "description": "Unas zapatillas bajas minimalistas de piel blanca con suelas color crema."
+    },
+    {
+      "product_id": "bag",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Everyday Leather Tote",
+      "description": "A structured cognac leather tote with two handles and visible natural grain."
+    },
+    {
+      "product_id": "bag",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Everyday Ledertasche",
+      "description": "Eine strukturierte cognacfarbene Ledertasche mit zwei Henkeln und sichtbarer natürlicher Narbung."
+    },
+    {
+      "product_id": "bag",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Cabas en cuir Everyday",
+      "description": "Un cabas structuré en cuir cognac, deux anses et grain naturel apparent."
+    },
+    {
+      "product_id": "bag",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Bolso de piel Everyday",
+      "description": "Un bolso estructurado de piel coñac con dos asas y grano natural visible."
+    },
+    {
+      "product_id": "scarf",
+      "language_id": "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
+      "name": "Soft Wool Scarf",
+      "description": "A warm-gray wool scarf with a soft texture and fringed ends."
+    },
+    {
+      "product_id": "scarf",
+      "language_id": "11111111111111111111111111111111",
+      "name": "Soft Wollschal",
+      "description": "Ein warmgrauer Wollschal mit weicher Struktur und Fransen an den Enden."
+    },
+    {
+      "product_id": "scarf",
+      "language_id": "22222222222222222222222222222222",
+      "name": "Écharpe en laine Soft",
+      "description": "Une écharpe en laine gris chaud, texture douce et extrémités frangées."
+    },
+    {
+      "product_id": "scarf",
+      "language_id": "33333333333333333333333333333333",
+      "name": "Bufanda de lana Soft",
+      "description": "Una bufanda de lana gris cálido, textura suave y extremos con flecos."
+    }
+  ]
+}

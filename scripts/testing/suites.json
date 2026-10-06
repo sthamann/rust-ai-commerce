@@ -41,7 +41,8 @@
     "image_jobs",
     "managed_search",
     "app_assistants",
-    "read_performance"
+    "read_performance",
+    "fashion_demo"
   ],
   "browser_contracts": [
     "analytics",

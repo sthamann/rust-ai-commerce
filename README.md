@@ -32,6 +32,12 @@ merchants require a separate license. [See the usage guide](docs/licensing.md).
 
 [![Vendune Studio — searchable products, variants and categories in one workspace](docs/assets/vendune-studio-en.jpg)](docs/product-management.md)
 
+**A shop worth trying.** New demo shops start with [Nord Atelier](docs/fashion-demo.md): 12 fashion products, 34 size SKUs, four content languages and individually generated product photographs. The catalog is shared by the native storefront and the private Experience integration; checkout uses the actual commerce API.
+
+| Harbor Wool Coat | Cloud Knit | Everyday Leather Tote |
+| :---: | :---: | :---: |
+| ![Generated demo coat](frontend/public/media/demo/fashion/coat.webp) | ![Generated demo knit](frontend/public/media/demo/fashion/knit.webp) | ![Generated demo leather tote](frontend/public/media/demo/fashion/bag.webp) |
+
 ## Why Vendune?
 
 - **Commerce with one source of truth.** Browser, API and agent clients use shared

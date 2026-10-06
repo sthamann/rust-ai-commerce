@@ -58,6 +58,9 @@ pub(crate) async fn bootstrap() -> App {
     if let Some(setup) = setup {
         if env::var("SEED_DEMO").as_deref() != Ok("false") {
             migrations::seed_demo(&a, &setup).await;
+            demo_catalog::seed_builtin(&a)
+                .await
+                .expect("fashion demo seed");
         }
         setup.close().await;
     }

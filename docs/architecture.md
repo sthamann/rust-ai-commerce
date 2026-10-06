@@ -173,3 +173,5 @@ Shopware interpreter, DAL, trigger set or FlowSequence protocol. See
 [playground](playground.md) creates a separate shop through personal-owner APIs
 and seeds repeatable provider-free configurations; it does not bypass production
 handlers or add a second business-logic implementation.
+
+The standard synthetic catalog lives in `src/demo_catalog.rs` and `fixtures/fashion-catalog.json`. New shops receive the Nord Atelier fashion template when demo catalog seeding is requested; `scripts/fashion_demo.py` tests the actual signup, variants, translations, images, isolated checkout and process restart. See [Fashion demo](fashion-demo.md).
