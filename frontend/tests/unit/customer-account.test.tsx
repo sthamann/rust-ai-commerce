@@ -135,3 +135,30 @@ it.each([
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   },
 );
+
+it("explains an existing registration and keeps the entered information without attempting a login", async () => {
+  const fetcher = vi.fn(async () =>
+    response({ errors: [{ detail: "Account already exists" }] }, 409),
+  );
+  vi.stubGlobal("fetch", fetcher);
+  render(<CustomerAccount cart={cart} onCart={() => {}} onClose={() => {}} />, {
+    wrapper: LocaleProvider,
+  });
+  const user = userEvent.setup();
+  await user.click(screen.getByRole("button", { name: "Create account" }));
+  await user.type(screen.getByLabelText("First name"), "Unit");
+  await user.type(screen.getByLabelText("Last name"), "Customer");
+  await user.type(screen.getByLabelText("Email"), "exists@example.test");
+  await user.type(
+    screen.getByLabelText("Password"),
+    "Synthetic-existing-2026!",
+  );
+  await user.click(
+    screen.getAllByRole("button", { name: "Create account" }).at(-1)!,
+  );
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "An account with this email already exists. Sign in instead.",
+  );
+  expect(screen.getByLabelText("Email")).toHaveValue("exists@example.test");
+  expect(fetcher.mock.calls).toHaveLength(1);
+});
