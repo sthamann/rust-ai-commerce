@@ -25,9 +25,15 @@ def sources():
                    if name and name.lower().endswith(b'.md') and (ROOT / os.fsdecode(name)).is_file()})
 
 
+def public_path(source):
+    # Pages artifact upload excludes .github/.git directories even inside docs.
+    path = (Path('docs') / source.relative_to('docs') if source.parts[0] == 'docs'
+            else Path('docs/repository') / source)
+    return Path(*(f'dot-{part[1:]}' if part.startswith('.') else part for part in path.parts))
+
+
 def destination(source):
-    return (Path('docs') / source.relative_to('docs') if source.parts[0] == 'docs'
-            else Path('docs/repository') / source).with_suffix('.html')
+    return public_path(source).with_suffix('.html')
 
 
 def slug(value, separator):
@@ -63,8 +69,7 @@ class Document(HTMLParser):
         if relative in self.known:
             mapped = destination(relative)
         elif target.is_file() and target.suffix.lower() in MEDIA:
-            mapped = (Path('docs') / relative.relative_to('docs') if relative.parts[0] == 'docs'
-                      else Path('docs/repository') / relative)
+            mapped = public_path(relative)
             if self.copy_assets:
                 output = self.dest / mapped
                 output.parent.mkdir(parents=True, exist_ok=True)

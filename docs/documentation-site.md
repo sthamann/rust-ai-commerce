@@ -2,7 +2,10 @@
 
 The [documentation website](https://sthamann.github.io/vendune/docs/) publishes
 every tracked Markdown file in this repository. Guides under `docs/` appear at
-`docs/NAME.html`; repository and module notes appear under `docs/repository/`.
+`docs/NAME.html`; repository and module notes appear under `docs/repository/`. Hidden source directories use a `dot-` prefix in public
+paths (for example `.github/` becomes `dot-github/`), because [GitHub Pages artifact
+upload](https://github.com/actions/upload-pages-artifact/blob/v3/action.yml)
+excludes `.github` directories. The source link retains the original path.
 The Docs link in the public navigation opens the full directory. Full-text search
 includes guide bodies and module notes; browsing and reading work without JavaScript.
 
