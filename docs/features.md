@@ -163,15 +163,35 @@ Specifications expose localized merchant properties and dimensions; SEO stores t
 
 ![Actual translated category tree](assets/feature-tour/categories.jpg)
 
-![Category assignment and explicit channel visibility in the product editor](assets/feature-tour/product-visibility.jpg)
+### Category and channel assignment
 
-![Localized specification rows and physical dimensions](assets/feature-tour/product-specifications.jpg)
+Assign one product to multiple categories and select its permitted sales channels. This connects category navigation to actual product visibility; the parent inclusion rule and each channel's navigation root remain explicit.
+
+![Category assignment in the native Categories & channels tab](assets/feature-tour/product-visibility.jpg)
+
+### Specifications and physical properties
+
+Add translated specification rows and maintain named property/value entries such as the bundled Nord Atelier brand. Weight, width, height and length are independent physical fields used by the native product contract. Content-language changes follow the same inheritance rules as the description.
+
+![Localized specification rows and native property values](assets/feature-tour/product-specifications.jpg)
+
+### SEO metadata
+
+Maintain the selected language's meta title, meta description and URL slug, with the product preview shown underneath. These fields are persisted product metadata; they do not claim automatic search-engine ranking or a complete CMS route generator.
 
 ![Localized SEO metadata and slug controls](assets/feature-tour/product-seo.jpg)
 
+### Cross-selling
+
+Search the current shop's catalog and select the related products explicitly. The linked recommendations belong to this product and are separate from merchant-approved observed co-purchase relationships in Shop intelligence.
+
 ![Cross-selling selects only current products from this shop](assets/feature-tour/product-cross-selling.jpg)
 
-![Product review moderation with publication/hiding controls and actual review count](assets/feature-tour/product-reviews.jpg)
+### Review moderation
+
+Open Reviews to inspect customer submissions and their status. Publish or hide actual submissions deliberately; only published reviews contribute to the public rating. The captured coat has no submitted reviews, so its moderation list is empty.
+
+![The actual empty Reviews tab for the synthetic coat](assets/feature-tour/product-reviews.jpg)
 
 ![Product-specific files and downloads workspace](assets/feature-tour/product-downloads.jpg)
 
