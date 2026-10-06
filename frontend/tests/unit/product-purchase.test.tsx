@@ -52,11 +52,9 @@ test.each(["M", "42", "350 ml"])(
   "renders %s without inventing a unit",
   (size) => {
     purchase(size);
+    expect(screen.getByRole("button", { name: size })).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: size, exact: true }),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: size + " ml", exact: true }),
+      screen.queryByRole("button", { name: size + " ml" }),
     ).not.toBeInTheDocument();
   },
 );
