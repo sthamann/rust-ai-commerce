@@ -35,7 +35,9 @@ export default function LegalSettings({
   rights?: string[];
 }) {
   const { l, locale } = useLegalText();
-  const [channel, setChannel] = useState(initialChannel),
+  const [channel, setChannel] = useState(
+      initialChannel === "default" ? "" : initialChannel,
+    ),
     [tab, setTab] = useState<"overview" | "documents" | "consent" | "requests">(
       "overview",
     ),

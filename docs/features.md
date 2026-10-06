@@ -79,7 +79,7 @@ The sidebar groups **15 workspaces**. The shell provides a shop switcher, live/p
 | Intelligence | Shop today | Actual orders, value, inventory, activity and review counts |
 | Intelligence | Shop intelligence | Sources, connections, observations and decisions |
 | Intelligence | Agent commerce | Public shopping journey, adapters and connection boundaries |
-| Commerce | Products | Product list, ten editor tabs and category tree |
+| Commerce | Products | Product list, eleven editor tabs and category tree |
 | Commerce | Orders | Workflow, payment, fulfillment, documents and notes |
 | Commerce | Customers | Profiles, address books, groups and linked orders |
 | Experiences | Storyfronts | Configured catalog publication and checkout integration |
@@ -107,7 +107,7 @@ Search by name/product number and filter active status, category or low stock. T
 
 ![Search, status/category filters, actual prices, inventory and child-variant counts](assets/feature-tour/products.jpg)
 
-### Ten connected editor tabs
+### Eleven connected editor tabs
 
 | Tab | What you can maintain |
 | --- | --- |
@@ -121,10 +121,11 @@ Search by name/product number and filter active status, category or low stock. T
 | Cross-selling | Search and assign other products belonging to the same shop |
 | Attachments & downloads | Immutable product files and paid digital access |
 | Reviews | Inspect and publish/hide customer submissions |
+| Safety & compliance | Translated manufacturer/responsible-person contacts, warnings and sector-specific product facts |
 
 Each editor uses one **Content language**. Inherited values are distinguishable from explicit translations; a missing/null value inherits, while an intentional empty description remains empty. Saving binds the product revision and updates its relevant translations/associations atomically. [Full field contracts](product-management.md).
 
-![Current central product editor with all ten tabs and one content-language selector](assets/feature-tour/product-editor.jpg)
+![Recorded central product editor with one content-language selector; the current release also adds Safety & compliance](assets/feature-tour/product-editor.jpg)
 
 ### Pricing, quantities and inventory
 
