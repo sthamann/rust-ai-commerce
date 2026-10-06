@@ -162,6 +162,14 @@ protected profile/address/order reads unless the form persisted the exact
 tenant session key. This reproduces the former React-reserved `key` prop bug;
 backend address/customer isolation is separately exercised over real HTTP.
 
+Studio session regressions reproduce a product 401 after a previously loaded
+overview, verify that all private controller state is cleared, and reconnect with
+a renewed token. Shared merchant calls and focus revalidation exercise the same
+path. Negative cases cover 403/5xx, customer/provider/operator errors, invalid
+login attempts, old-token replies after reauthentication, coalesced reads, hidden
+tabs, overlapping checks and timer/listener cleanup. Browser verification uses
+the existing personal test account; no expiry bypass or new privileges are added.
+
 ## International configuration regression scope (2026-10-05)
 
 New PostgreSQL suites cover complete bundled geography, custom countries/regions,

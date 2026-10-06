@@ -39,6 +39,15 @@ sessionStorage, so same-origin XSS could steal them. Production needs an
 appropriate cookie/token gateway, strict CSP, TLS, origins/CSRF, OIDC/MFA,
 password recovery, verified email, abuse/rate controls and session management.
 
+Studio validates a visible connected session once per minute and on return to
+the tab. An authoritative merchant-authentication rejection from either JSON
+transport clears the active credential and the loaded private overview, rights
+and conversation state together, with a translated sign-in action. A late
+rejection for a previous token cannot disconnect a renewed session. Customer,
+provider, login and operator errors are separate; 403/5xx/network failures do
+not silently sign out a merchant. This UI handling does not extend session TTL,
+restore a revoked credential or relax server authorization.
+
 Native object handlers bind tenant scope in HTTP, graph/vector and MCP paths.
 The adversarial [tenant isolation suite](tenant-isolation.md) tests ID/header
 swaps and unchanged victim state; it is not an exhaustive endpoint audit.

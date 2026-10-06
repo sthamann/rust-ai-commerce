@@ -1,4 +1,5 @@
 /** Coalesce simultaneous identical core reads with complete identity; no persisted response cache. */
+import { reportMerchantSessionFailure } from "./merchant-session";
 type JsonResponse = {
   value: any;
   ok: boolean;
@@ -42,8 +43,15 @@ export async function requestJson(
   if (existing) return structuredClone(await existing);
   const operation = (async () => {
     const response = await fetch(path, init);
+    const value = await response.json();
+    reportMerchantSessionFailure(
+      path,
+      init.headers,
+      response.status,
+      value.errors?.[0]?.detail,
+    );
     return {
-      value: await response.json(),
+      value,
       ok: response.ok,
       status: response.status,
       statusText: response.statusText,

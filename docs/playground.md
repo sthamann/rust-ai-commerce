@@ -25,6 +25,12 @@ no orders; you place them through the storefront.
    merchant account. Sign-in selects the account's default shop; select
    **Commerce Playground** in the shop picker / **Team & access → Workspace**.
 
+Merchant sessions expire after 12 hours. Studio offers **Sign in to Studio** when
+the server rejects the current session and clears previously loaded shop data
+across workspaces. Use the same personal account, then select **Commerce Playground**
+again if the account's default workspace differs. Session validation also runs
+when returning to the visible Studio; it does not use a shared demo credential.
+
 The script accepts loopback HTTP origins only. For a separate local instance use
 `--base-url http://127.0.0.1:8789`. A second independent playground uses another
 `--state .run/playground-second.json`. Re-running with the same state resumes

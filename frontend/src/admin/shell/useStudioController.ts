@@ -15,6 +15,8 @@ import { useEntityNavigation } from "./useEntityNavigation";
 import { useStudioNavigation } from "./navigation";
 import { useStudioRequests } from "./requests";
 import { useServerHealth } from "./useServerHealth";
+import { useStudioSession } from "./useStudioSession";
+import { responseError } from "../../shared/i18n/errors-i18n";
 export function useStudioController({
   onChanged,
   onExit,
@@ -47,6 +49,7 @@ export function useStudioController({
   }, [token, workspace]);
   const [workspaceName, setWorkspaceName] = useState(workspace);
   const [connected, setConnected] = useState(false);
+  const [sessionExpired, setSessionExpired] = useState(false);
   const connectionScope = useRef("");
   const [role, setRole] = useState("viewer");
   const [providers, setProviders] = useState<Provider[]>([]);
@@ -93,11 +96,41 @@ export function useStudioController({
     environment,
     locale,
   );
+  const expireSession = useCallback((detail: string) => {
+    sessionStorage.removeItem("rac-user-token");
+    connectionScope.current = "";
+    setToken("");
+    setConnected(false);
+    setSessionExpired(true);
+    setData(undefined);
+    setAccess([]);
+    setEnvironments([]);
+    setEnvironment("");
+    setProviders([]);
+    setConversations([]);
+    setMessages([]);
+    setId(undefined);
+    setUpdated("");
+    setRole("viewer");
+    setSettings(false);
+    setPreviewOpen(false);
+    setNotice(undefined);
+    setError(responseError(detail, 401).message);
+  }, []);
+  useStudioSession(token, connected, liveRequest, expireSession);
   useEffect(() => {
+    let active = true;
     if (token)
       void request("/api/auth/access")
-        .then((v) => setAccess(v.permissions))
-        .catch(() => setAccess([]));
+        .then((v) => {
+          if (active) setAccess(v.permissions);
+        })
+        .catch(() => {
+          if (active) setAccess([]);
+        });
+    return () => {
+      active = false;
+    };
   }, [token, request]);
   const refreshEnvironments = useCallback(
     async () =>
@@ -165,12 +198,13 @@ export function useStudioController({
         );
         setUpdated(new Date().toISOString());
         setConnected(true);
+        setSessionExpired(false);
         setError("");
       })
       .catch((e) => {
         if (active) {
           setConnected(false);
-          setError(String(e));
+          setError(e instanceof Error ? e.message : String(e));
           setData(undefined);
         }
       });
@@ -271,6 +305,7 @@ export function useStudioController({
     setWorkspaceName,
     connected,
     setConnected,
+    sessionExpired,
     role,
     setRole,
     providers,

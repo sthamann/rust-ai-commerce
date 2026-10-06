@@ -62,6 +62,7 @@ export const en = {
   close: "Close",
   cancel: "Cancel",
   failure: "This request could not be completed.",
+  sessionExpired: "Your Studio session has expired. Sign in again to continue.",
   details: "Technical details",
   connectFirst: "Sign in to Studio to see shop data and use the assistant.",
   shopPulse: "Your shop, at a glance.",
