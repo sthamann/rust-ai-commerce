@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check the generated documentation's links and discovery metadata."""
 import json
+import hashlib
 import re
 from html.parser import HTMLParser
 from pathlib import Path
@@ -17,9 +18,11 @@ class Page(HTMLParser):
         super().__init__()
         self.links, self.ids, self.h1 = [], set(), 0
         self.metas, self.canonical = {}, None
+        self.elements = []
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        self.elements.append((tag, attrs))
         if 'id' in attrs:
             assert attrs['id'] not in self.ids, 'Duplicate id'
             self.ids.add(attrs['id'])
@@ -87,6 +90,30 @@ def check():
         assert xml.find('{*}title') is not None and xml.find('{*}desc') is not None
         assert f'assets/architecture/{name}.svg' in architecture
     assert 'DATABASE_RUNTIME_URL' in architecture and 'DB_RLS_REQUIRED' in architecture
+
+    showcase = json.loads((ROOT / 'docs/assets/showcase/manifest.json').read_text())
+    elements = pages['index.html'].elements
+    tabs = [a for tag, a in elements if a.get('role') == 'tab']
+    panels = [a for tag, a in elements if a.get('role') == 'tabpanel']
+    videos = [a for tag, a in elements if tag == 'video']
+    tracks = [a for tag, a in elements if tag == 'track']
+    assert len(tabs) == len(panels) == len(videos) == len(tracks) == 6
+    assert {a['aria-controls'] for a in tabs} == {a['id'] for a in panels}
+    assert {a['aria-labelledby'] for a in panels} == {a['id'] for a in tabs}
+    assert all('autoplay' not in a and 'controls' in a and a.get('preload') == 'none' for a in videos)
+    for key, row in showcase['clips'].items():
+        file = SITE / f'docs/assets/showcase/{key}.mp4'
+        assert hashlib.sha256(file.read_bytes()).hexdigest() == row['sha256'], key
+        assert file.stat().st_size == row['bytes'] and row['source'], key
+        caption = SITE / f'docs/assets/showcase/{key}.vtt'
+        source = caption.read_text()
+        assert source.startswith('WEBVTT\n') and '-->' in source, key
+        times = re.findall(r'(\d{2}):(\d{2}):(\d{2})\.(\d{3})', source)
+        seconds = [int(h)*3600 + int(m)*60 + int(s) + int(ms)/1000 for h,m,s,ms in times]
+        assert all(a <= b for a,b in zip(seconds, seconds[1:])), key
+        assert seconds[-1] <= row['durationSeconds'] + .001, key
+    for name, row in showcase['screenshots'].items():
+        assert hashlib.sha256((SITE / 'docs/assets/showcase' / name).read_bytes()).hexdigest() == row['sha256'], name
 
     print(f'PASS: {len(pages)} pages, all {len(expected)} Markdown sources, {links} local links/assets, '
           'unique titles, metadata, JSON-LD, full-text search and sitemap')

@@ -26,6 +26,10 @@ def evidence_fields():
     assert not any(row['errors'] for row in after['summaries']), 'Do not promote failed benchmark runs'
     fields = {key + '_duration': str(round(value['durationSeconds'])) + ' sec'
               for key, value in demos['clips'].items()}
+    showcase = json.loads((ROOT / 'docs/assets/showcase/manifest.json').read_text())
+    fields.update({key.replace('-', '_') + '_showcase_duration':
+                   str(round(value['durationSeconds'])) + ' sec'
+                   for key, value in showcase['clips'].items()})
     catalog = new['catalog-1000/c16']
     fields.update(catalog_rps=f"{catalog['medianRequestsPerSecond']:,.0f}",
                   catalog_p95=f"{catalog['medianP95Ms']:.1f}",
@@ -82,9 +86,12 @@ def build():
     (DEST / 'assets').mkdir(parents=True)
     shutil.copyfile(ROOT / 'site/style.css', DEST / 'style.css')
     shutil.copyfile(ROOT / 'site/favicon.svg', DEST / 'favicon.svg')
+    for asset in ['showcase.css', 'showcase.js']:
+        shutil.copyfile(ROOT / 'site' / asset, DEST / asset)
     for asset in (ROOT / 'docs/assets').iterdir():
         if asset.is_file():
             shutil.copyfile(asset, DEST / 'assets' / asset.name)
+    shutil.copytree(ROOT / 'docs/assets/showcase', DEST / 'docs/assets/showcase')
     urls = []
 
     def write_page(path, title, description, content):
@@ -104,10 +111,13 @@ def build():
             'title': html.escape(title),
             'description': html.escape(description, quote=True),
             'canonical': url,
-            'image': BASE + 'assets/vendune-studio-en.jpg',
+            'image': BASE + ('docs/assets/showcase/storefront.webp' if filename == 'index.html'
+                             else 'assets/vendune-studio-en.jpg'),
             'schema': json.dumps(schema, ensure_ascii=False).replace('<', '\\u003c'),
             'content': content,
             'root': '' if path.parent == Path('.') else os.path.relpath('.', path.parent) + '/',
+            'page_assets': ('<link rel="stylesheet" href="showcase.css" />'
+                            '<script src="showcase.js" defer></script>') if filename == 'index.html' else '',
         }
         # Substitute only the shell: code examples in a guide may contain {{literal}}.
         document = re.sub(r'\{\{(\w+)\}\}', lambda match: fields[match[1]], template)
