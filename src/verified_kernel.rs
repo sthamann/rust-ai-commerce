@@ -140,3 +140,12 @@ pub fn checkout_review_admissible(
 ) -> bool {
     revision_matches && expected_total == actual_total && methods_confirmed
 }
+/// Availability fence: paused merchant reads and existing payment settlement may continue.
+pub fn shop_request_admissible(
+    active: bool,
+    paused: bool,
+    read_only: bool,
+    settlement: bool,
+) -> bool {
+    settlement || active || paused && read_only
+}

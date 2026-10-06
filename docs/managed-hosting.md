@@ -12,7 +12,7 @@ A collection is isolated by object kind and embedding model hash; points use det
 
 Frankfurt: one Managed PostgreSQL addon, one Rust Core replica and one private Qdrant replica with `/qdrant/storage` on a 6 GB persistent volume. Core port 8787 exposes the UI and same-origin APIs over HTTPS. PostgreSQL and Qdrant ports stay private. `BOOTSTRAP_MODE=migrate` runs as a controlled setup job before `serve` is started. `SEED_DEMO`, `ALLOW_PUBLIC_SIGNUP`, `ALLOW_BOOTSTRAP_AUTH` are false. Personal-only hosting needs no shared merchant token. Initial operator credentials are restricted to the setup job; remove that password from cloud setup secrets after successful bootstrap. Merchant sessions use personal accounts.
 
-`SHOP_DOMAIN_SUFFIX=vendune.ai` binds shop hostnames to tenant scope. Unknown shops and conflicting tenant headers are rejected. `app.vendune.ai` or `/#platform` opens the operator console; `SHOP.vendune.ai` opens that shop, and `/?shop=SHOP#merchant` opens its Studio on the operator origin. Before DNS is ready the same paths work on the default Northflank HTTPS origin. Creating a shop is a database transaction, not a new container, database or certificate.
+`SHOP_DOMAIN_SUFFIX=vendune.ai` binds shop hostnames to tenant scope. Unknown shops and conflicting tenant headers are rejected. `admin.vendune.ai` opens the service directory (merchant/platform login and docs), `admin.vendune.ai/#platform` opens the operator console; `SHOP.vendune.ai` opens that shop, and `/?shop=SHOP#merchant` opens its Studio on the operator origin. Before DNS is ready the same paths work on the default Northflank HTTPS origin. Creating a shop is a database transaction, not a new container, database or certificate.
 
 Recorded test-topology estimate (October 2026; not a live pricing quotation): Core $12, PostgreSQL $12, Qdrant $12, PostgreSQL 6 GB $0.90, Qdrant 6 GB $0.90, retained inactive legacy 20 GB volume $3 = $40.80. Example 10 GB egress adds $0.60. Jobs/builds, backup storage, AI APIs and taxes are additional. This single-instance test topology has no HA guarantee. Qdrant's attached single-writer volume requires recreate deployment and cannot be scaled by simply increasing replicas.
 
@@ -45,3 +45,13 @@ Import into a new unpublished shop and compare real catalog/search/cart totals, 
 Qdrant searches; it does not generate embeddings or run language models. Existing model adapters call operator-configured Ollama or external OpenAI/Anthropic endpoints. The current embedding contract is an Ollama-compatible `/api/embed` endpoint returning 1024 finite dimensions. No model/GPU is hosted in the $40.80 infrastructure estimate, and live model credentials have not been verified by the synthetic transport tests.
 
 Run embeddings and batch enrichment as durable background jobs with tenant quotas, bounded concurrency, cancellation and retry limits. Pin model identity; model changes create a separate collection and trigger controlled reindexing. Merchant AI uses canonical data + approved source documents, prepares changes and executes only through existing authorization/approval transactions. Keep private app evidence outside public retrieval. Start with external inference usage billing; introduce a separate GPU inference service only after measured usage justifies its persistent cost. Do not put an unbounded inference server inside the small Core replica.
+
+## Platform provider key storage
+
+Keep `PLATFORM_SECRET_KEY` (64 random hexadecimal characters) in the private
+runtime secret group, never in build arguments or repository files. Share the
+same key with every HTTP/worker replica that resolves central AI settings and
+retain a separate protected backup. The key encrypts provider credentials saved
+by operators; it grants no HTTP access. Set `INFERENCE_ALLOW_LOOPBACK=false` on
+public hosting. See [the operator guide](platform.md) for inheritance, reversible
+shop lifecycle and real infrastructure metrics.

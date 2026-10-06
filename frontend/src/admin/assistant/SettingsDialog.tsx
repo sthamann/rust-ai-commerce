@@ -1,4 +1,5 @@
 /** SettingsDialog keeps merchant interaction separate from workspace orchestration. */
+import { useControlText } from "../../shared/i18n/control-i18n";
 import { useEffect, useRef } from "react";
 import { useLocale } from "../../shared/i18n/i18n";
 import Icon from "../../shared/ui/Icon";
@@ -24,6 +25,7 @@ export default function SettingsDialog({
   onIndex: () => void;
   busy: boolean;
 }) {
+  const c = useControlText();
   const { t } = useLocale();
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -65,7 +67,11 @@ export default function SettingsDialog({
                 ]
             ).map((p) => (
               <option key={p.id} value={p.id}>
-                {p.id === "ollama" ? t("local") : p.name}
+                {p.id === "platform"
+                  ? c("platformDefault")
+                  : p.id === "ollama"
+                    ? t("local")
+                    : p.name}
                 {p.configured ? "" : ` · ${t("missingKey")}`}
               </option>
             ))}

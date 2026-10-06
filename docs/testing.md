@@ -6,7 +6,7 @@ at 100%, and neither coverage nor the Lean subset proves the entire system bug-f
 
 ## Source architecture
 
-- Rust: 253 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
+- Rust: 260 source modules, each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
 - Frontend: separate `admin/`, `storefront/`, `platform/` and `shared/` ownership. Views/controllers and styles are limited to 400 lines; locale data has a documented 700-line allowance. Runtime cycles, unresolved local imports, crossing application boundaries, missing folder contracts and undocumented source files fail CI.
 - Independent Python services, app examples and browser SDKs remain under `extensions/`; test tooling lives under `scripts/`. [The generated inventory](module-inventory.md) covers all these sources and is checked for drift.
 - Studio workspaces load lazily. Root application routing is isolated in `frontend/src/application/`; error boundaries keep workspace failures inside the current view and provide reload recovery for rejected cached module imports. The removed `CommerceManager` had no call site and duplicated old operational UI. Order state management remains in `admin/orders/OrderWorkflow.tsx`; product review moderation lives in `admin/catalog/ReviewModeration.tsx`.
@@ -276,3 +276,23 @@ synthetic order after explicit review; 390-pixel emulation had no checkout conte
 overflow. No paid model/PSP calls were used. The public Studio's origin fix was
 verified separately with allowed-origin 200, foreign-origin 403 and a fresh
 merchant-owned test shop with products, eight discoverable apps and browser MCP.
+
+## Platform control-plane regressions (6 October 2026)
+
+`platform.py` runs `platform_control.py` against disposable PostgreSQL shops and
+a local synthetic model service. Sixteen combined checks include independent
+operator grants, two-shop/fresh-process encrypted provider inheritance, stale
+revisions, pause/background deferral, reversible trash, Host-based routing and
+persisted measured-call latency. No external model or payment call is made.
+
+`shop-scope.test.ts` covers public subdomain upgrades and protected/local URL
+exceptions. `platform-control.test.tsx` covers independent entry links, write-only
+key editing and typed-ID/reason confirmation before trash. The complete frontend
+unit run passed 38 files / 261 tests; Rust passed 100 tests. Affected provider,
+transaction/payment, app/flow/staging, translation/image/document/search and
+tenant-isolation integration suites also run through their real local paths.
+These checks are not live provider capability or a full-system security proof.
+
+`managed_search.py` allocates its own loopback port, so an open local Studio
+fixture cannot accidentally satisfy its readiness check. Qdrant-backed suites
+require the actual configured local Qdrant address.

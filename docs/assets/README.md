@@ -50,3 +50,11 @@ in the API explorer and native channel cards. Product and channel test drafts
 were discarded; no existing product, channel or app was changed for these
 captures. No layout edits, generated screenshots or mocked responses were used.
 The displayed milliseconds measure one local test, not a performance benchmark.
+
+The `platform-ai-en.png` and `platform-infrastructure-en.png` captures were
+recorded on 6 October 2026 from the actual local control-plane build, English UI
+and an isolated synthetic PostgreSQL shop. No response/layout mocking or model
+request was used. Provider fields are real environment defaults, and the local
+Ollama test endpoint is intentionally unreachable. “Configured” is not provider
+health. macOS has no Linux cgroup counters, so CPU/RAM display —; the PostgreSQL
+and Qdrant probes are actual local requests, not production benchmarks.

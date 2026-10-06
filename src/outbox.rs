@@ -12,7 +12,7 @@ pub(crate) async fn runtime(State(a): State<App>, h: HeaderMap) -> Result<Json<V
 }
 pub(crate) async fn consume_once(a: &App) -> Result<()> {
     let mut tx = a.db.begin().await?;
-    let rows=sqlx::query("SELECT * FROM outbox WHERE delivered_at IS NULL ORDER BY id LIMIT 50 FOR UPDATE SKIP LOCKED").fetch_all(&mut *tx).await?;
+    let rows=sqlx::query("SELECT * FROM outbox WHERE delivered_at IS NULL AND EXISTS(SELECT 1 FROM tenants t WHERE t.id=coalesce((SELECT live_tenant FROM shop_environments WHERE tenant=outbox.tenant),outbox.tenant) AND t.status='active') ORDER BY id LIMIT 50 FOR UPDATE SKIP LOCKED").fetch_all(&mut *tx).await?;
     for r in rows {
         let id = r.get::<i64, _>("id");
         let t = r.get::<String, _>("tenant");

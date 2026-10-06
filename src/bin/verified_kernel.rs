@@ -171,6 +171,12 @@ fn eval(j: &Value) -> Result<Value, String> {
                 .as_bool()
                 .ok_or("Invalid methods_confirmed")?
         ))),
+        Some("shop_request_admissible") => Ok(json!(shop_request_admissible(
+            args["active"].as_bool().ok_or("Invalid active")?,
+            args["paused"].as_bool().ok_or("Invalid paused")?,
+            args["read_only"].as_bool().ok_or("Invalid read_only")?,
+            args["settlement"].as_bool().ok_or("Invalid settlement")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

@@ -5,6 +5,8 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("shop_request_admissible","paused && read_only","paused || read_only"),
+ ("shop_request_admissible","settlement ||","true ||"),
  ("checkout_review_admissible","expected_total == actual_total","true"),
  ("checkout_review_admissible","revision_matches &&","true &&"),
  ("checkout_review_admissible","&& methods_confirmed","&& true"),

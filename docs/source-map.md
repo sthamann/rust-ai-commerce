@@ -370,3 +370,13 @@ See [history boundaries](entity-history.md).
 ## Guided app extension path
 
 App assistants compile the shared Manifest in `frontend/src/admin/developer/assistant-model.ts`. Product/customer/order mounts reuse the native renderer with explicit object context. `src/apps/editor_contract.rs` owns field/context and direct-route scopes; `src/apps/planning.rs` filters merchant grounding and rechecks app proposal access at bind/apply. `src/apps/schedules.rs` and `webhooks.rs` persist emitted events/receipts via migration 036. `scripts/app_assistants.py` and `app_surfaces.py` exercise actual private stages, public/MCP boundaries, service fixtures, event/Flow writes, restart and scope rejection; frontend assistant tests cover editing and regional language inheritance. See [guide and upstream extension requirements](app-assistants.md).
+
+## Platform control plane
+
+| Modules | Responsibility | Verification |
+|---|---|---|
+| `src/platform/{ai,lifecycle,shop_detail,infrastructure,resources}.rs` | Encrypted shared inference settings, reversible shop admission, dossiers and actual diagnostics | `platform.py` → `platform_control.py`; resources/crypto Rust tests; availability policy extracted to Lean |
+| `src/inference/{settings,tests}.rs` | Replica cache, authenticated encryption, inherited provider readiness and native protocol contracts | Rust tests + two-shop/fresh-process local provider fixture + provider/document/image/translation suites |
+| `frontend/src/platform/{AdminHub,PlatformAI,PlatformShopDetail,PlatformInfrastructure}.tsx` | Public service directory and independent operator workspaces | `platform-control.test.tsx`, real browser review, build/architecture/localization |
+| `src/shop_domains.rs`, `frontend/src/shared/api/shop-scope.ts` | Canonical shop links and actual hostname admission; protected URLs retain origin | HTTP Host regressions + `shop-scope.test.ts` |
+| `src/channel_metrics.rs`, `src/studio.rs` | Bounded diagnostic counters and measured HTTP timings | Rust unit tests + actual persisted timing fixture |

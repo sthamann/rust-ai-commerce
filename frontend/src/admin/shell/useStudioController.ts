@@ -56,7 +56,7 @@ export function useStudioController({
   const connectionScope = useRef("");
   const [role, setRole] = useState("viewer");
   const [providers, setProviders] = useState<Provider[]>([]);
-  const [provider, setProvider] = useState("ollama");
+  const [provider, setProvider] = useState("platform");
   const [model, setModel] = useState("");
   const [conversations, setConversations] = useState<
     { id: string; title: string }[]

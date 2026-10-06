@@ -1,3 +1,5 @@
 /* Ordered platform stylesheet entry; domain rules live in the adjacent folder. */
 @import "./platform/01-platform-console.css";
 @import "./platform/02-platform-shop-stats-span.css";
+
+@import "./platform/03-control.css";

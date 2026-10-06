@@ -610,7 +610,22 @@
     "source": "src/payments/routes.rs"
   },
   {
+    "path": "/api/platform/ai",
+    "method": "GET",
+    "source": "src/platform/mod.rs"
+  },
+  {
+    "path": "/api/platform/ai",
+    "method": "PUT",
+    "source": "src/platform/mod.rs"
+  },
+  {
     "path": "/api/platform/audit",
+    "method": "GET",
+    "source": "src/platform/mod.rs"
+  },
+  {
+    "path": "/api/platform/infrastructure",
     "method": "GET",
     "source": "src/platform/mod.rs"
   },
@@ -637,6 +652,11 @@
   {
     "path": "/api/platform/shops/{id}",
     "method": "GET",
+    "source": "src/platform/mod.rs"
+  },
+  {
+    "path": "/api/platform/shops/{id}/status",
+    "method": "POST",
     "source": "src/platform/mod.rs"
   },
   {

@@ -84,7 +84,7 @@ pub async fn query(
 }
 pub async fn drain(db: &PgPool) -> Result<usize, String> {
     let mut tx = db.begin().await.map_err(|_| "Index transaction")?;
-    let rows=sqlx::query("SELECT tenant,kind,object_id FROM vector_index_queue ORDER BY updated_at,tenant,kind,object_id LIMIT 16 FOR UPDATE SKIP LOCKED").fetch_all(&mut *tx).await.map_err(|_|"Index queue")?;
+    let rows=sqlx::query("SELECT tenant,kind,object_id FROM vector_index_queue WHERE EXISTS(SELECT 1 FROM tenants t WHERE t.id=coalesce((SELECT live_tenant FROM shop_environments WHERE tenant=vector_index_queue.tenant),vector_index_queue.tenant) AND t.status='active') ORDER BY updated_at,tenant,kind,object_id LIMIT 16 FOR UPDATE SKIP LOCKED").fetch_all(&mut *tx).await.map_err(|_|"Index queue")?;
     for row in &rows {
         let tenant: String = row.get("tenant");
         let kind: String = row.get("kind");

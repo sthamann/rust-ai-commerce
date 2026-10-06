@@ -1,16 +1,23 @@
 //! Optional OpenAI Images adapter; bounded responses and decoded PNG output, no remote user URLs or leaked provider errors.
 use crate::*;
 use base64::{Engine, engine::general_purpose::STANDARD};
-pub(super) fn configured() -> bool {
-    env::var("OPENAI_API_KEY").is_ok_and(|v| !v.is_empty())
-        && env::var("IMAGE_GENERATION_ENABLED").as_deref() == Ok("true")
+pub(super) async fn configured(a: &App) -> bool {
+    env::var("IMAGE_GENERATION_ENABLED").as_deref() == Ok("true")
+        && a.inference
+            .connection("openai")
+            .await
+            .is_ok_and(|(_, key, _)| key.is_some())
 }
 pub(super) fn model() -> String {
     env::var("OPENAI_IMAGE_MODEL").unwrap_or("gpt-image-2.5-sunburst".into())
 }
-pub(super) async fn create(prompt: &str, source: Option<(String, Vec<u8>)>) -> Result<Vec<u8>> {
-    let key = env::var("OPENAI_API_KEY").map_err(|_| bad("Image provider not configured"))?;
-    let base = env::var("OPENAI_BASE_URL").unwrap_or("https://api.openai.com/v1".into());
+pub(super) async fn create(
+    a: &App,
+    prompt: &str,
+    source: Option<(String, Vec<u8>)>,
+) -> Result<Vec<u8>> {
+    let (base, key, _) = a.inference.connection("openai").await.map_err(bad)?;
+    let key = key.ok_or(bad("Image provider not configured"))?;
     let http = reqwest::Client::builder()
         .redirect(reqwest::redirect::Policy::none())
         .timeout(std::time::Duration::from_secs(180))

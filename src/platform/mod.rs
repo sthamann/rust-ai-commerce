@@ -3,7 +3,13 @@ use crate::*;
 mod auth;
 mod bootstrap;
 pub(crate) use bootstrap::bootstrap_operator;
+mod ai;
+mod infrastructure;
+mod lifecycle;
 mod metrics;
+mod resources;
+mod shop_detail;
+pub(crate) use lifecycle::admit;
 mod provision;
 pub(crate) use auth::authenticate;
 pub(crate) fn router() -> Router<App> {
@@ -14,7 +20,13 @@ pub(crate) fn router() -> Router<App> {
             "/api/platform/shops",
             get(metrics::shops).post(provision::create),
         )
-        .route("/api/platform/shops/{id}", get(metrics::detail))
+        .route("/api/platform/shops/{id}", get(shop_detail::detail))
+        .route("/api/platform/shops/{id}/status", post(lifecycle::change))
+        .route("/api/platform/ai", get(ai::get).put(ai::save))
+        .route(
+            "/api/platform/infrastructure",
+            get(infrastructure::snapshot),
+        )
         .route("/api/platform/audit", get(audit))
 }
 async fn session(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {

@@ -161,6 +161,8 @@ This lists every checked-in source module in these roots, including files with n
 | [src/history/restore.rs](../src/history/restore.rs) | Restore snapshots by replaying validated entity edits; financial effects and publication are never copied from historical state. |
 | [src/history/routes.rs](../src/history/routes.rs) | History summaries are bounded and permission-filtered; full snapshots and restore targets stay inside the owning shop. |
 | [src/http_limits.rs](../src/http_limits.rs) | Bounded streaming responses for extension services and payment providers. |
+| [src/inference/settings.rs](../src/inference/settings.rs) | Shared operator settings; AES-GCM secrets are never part of merchant/operator read responses. |
+| [src/inference/tests.rs](../src/inference/tests.rs) | Provider response contracts, strict schemas and truncation rejection. |
 | [src/inference.rs](../src/inference.rs) | Provider adapters. Credentials stay on the server; domain validation is separate. |
 | [src/knowledge/relations.rs](../src/knowledge/relations.rs) | Keep knowledge provenance and relations in the same transaction as canonical commerce data. |
 | [src/knowledge/search.rs](../src/knowledge/search.rs) | Qdrant candidates are rechecked against tenant/model/content revision in authoritative PostgreSQL. |
@@ -230,11 +232,16 @@ This lists every checked-in source module in these roots, including files with n
 | [src/performance/pool.rs](../src/performance/pool.rs) | Explicit per-process database budgets and bounded queue waits; invalid deployment values fail fast. |
 | [src/performance/settings.rs](../src/performance/settings.rs) | One MVCC snapshot validates base/override UUIDs; warm reads avoid transmitting or decoding JSON. |
 | [src/planner.rs](../src/planner.rs) | Grounded model planning, recorded inputs and proposed changes. |
+| [src/platform/ai.rs](../src/platform/ai.rs) | Operator-only inference administration: optimistic revision, encrypted write-only keys and audit without secrets. |
 | [src/platform/auth.rs](../src/platform/auth.rs) | Independent platform authorization: live personal sessions, current grants, no integration/bootstrap escalation. |
 | [src/platform/bootstrap.rs](../src/platform/bootstrap.rs) | Offline first-operator setup: migration-only process, supplied strong credentials, password proof for existing accounts. |
+| [src/platform/infrastructure.rs](../src/platform/infrastructure.rs) | Live control-plane telemetry: database probes and pool/cache diagnostics, explicit process-only scope. |
+| [src/platform/lifecycle.rs](../src/platform/lifecycle.rs) | Audited, reversible lifecycle; preserved commerce records and current revision prevent accidental overwrites. |
 | [src/platform/metrics.rs](../src/platform/metrics.rs) | Aggregate-only control-plane reads: real tenants, bounded pages, explicit currencies and simulated/confirmed amounts. |
 | [src/platform/mod.rs](../src/platform/mod.rs) | Global SaaS control plane: operator-only aggregate statistics and audited shop provisioning. |
 | [src/platform/provision.rs](../src/platform/provision.rs) | Operator shop creation commits ownership, settings and audit atomically; never issues another user's credentials. |
+| [src/platform/resources.rs](../src/platform/resources.rs) | Linux container resource readings; unavailable fields stay null on other hosts and the first CPU sample. |
+| [src/platform/shop_detail.rs](../src/platform/shop_detail.rs) | Operator shop dossier: registration, business identity, access roster, channels and measured HTTP activity. |
 | [src/pricing.rs](../src/pricing.rs) | Behavioral port of Shopware 6.7.14.2 quantity calculators. |
 | [src/proposal_apply.rs](../src/proposal_apply.rs) | Transactional application of approved, revision-bound proposals. |
 | [src/proposal_model.rs](../src/proposal_model.rs) | Typed proposals and validation before persistence or execution. |
@@ -463,20 +470,25 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/team/UsersManager.tsx](../frontend/src/admin/team/UsersManager.tsx) | Users Manager: Personal accounts, memberships, roles, invitations and scoped developer access.. |
 | [frontend/src/application/ApplicationRouter.tsx](../frontend/src/application/ApplicationRouter.tsx) | Select independent lazy applications; contain failed imports and reset boundaries on navigation. |
 | [frontend/src/main.tsx](../frontend/src/main.tsx) | Browser bootstrap only; application selection and error recovery live in application/. |
+| [frontend/src/platform/AdminHub.tsx](../frontend/src/platform/AdminHub.tsx) | Public service directory. Links select a login surface without granting operator or merchant permissions. |
+| [frontend/src/platform/PlatformAI.tsx](../frontend/src/platform/PlatformAI.tsx) | Central inference editor; write-only secrets, optimistic revisions and explicit environment fallback. |
 | [frontend/src/platform/PlatformConsole.tsx](../frontend/src/platform/PlatformConsole.tsx) | Independent platform control plane: personal operator access, bounded statistics and audited shop creation. |
 | [frontend/src/platform/PlatformDashboard.tsx](../frontend/src/platform/PlatformDashboard.tsx) | Aggregate statistics from PostgreSQL; recorded orders and confirmed money remain visibly separate. |
+| [frontend/src/platform/PlatformInfrastructure.tsx](../frontend/src/platform/PlatformInfrastructure.tsx) | Real infrastructure probes, bounded lifetime traffic and process-local resource counters. |
 | [frontend/src/platform/PlatformLanguage.tsx](../frontend/src/platform/PlatformLanguage.tsx) | Locale selector shared by operator sign-in and the workspace. |
+| [frontend/src/platform/PlatformShopDetail.tsx](../frontend/src/platform/PlatformShopDetail.tsx) | Connected shop dossier and reversible lifecycle controls; confirmations are explicit and revision guarded. |
 | [frontend/src/platform/PlatformShops.tsx](../frontend/src/platform/PlatformShops.tsx) | Searchable shop directory and server-validated provisioning form. |
 | [frontend/src/platform/PlatformSignIn.tsx](../frontend/src/platform/PlatformSignIn.tsx) | Personal sign-in verifies the current operator grant before retaining a browser session. |
 | [frontend/src/platform/platform-api.ts](../frontend/src/platform/platform-api.ts) | Tenant-independent operator API; credentials stay in the current browser session. |
 | [frontend/src/platform/styles/platform/01-platform-console.css](../frontend/src/platform/styles/platform/01-platform-console.css) | platform: platform-console styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/platform/styles/platform/02-platform-shop-stats-span.css](../frontend/src/platform/styles/platform/02-platform-shop-stats-span.css) | platform: platform-shop-stats-span styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/platform/styles/platform/03-control.css](../frontend/src/platform/styles/platform/03-control.css) | Service hub and operational editors share the same accessible light workspace. |
 | [frontend/src/platform/styles/platform.css](../frontend/src/platform/styles/platform.css) | Ordered platform stylesheet entry; domain rules live in the adjacent folder. |
 | [frontend/src/shared/api/download.ts](../frontend/src/shared/api/download.ts) | Authenticated binary download, never placing session credentials in a URL. |
 | [frontend/src/shared/api/merchant-session.ts](../frontend/src/shared/api/merchant-session.ts) | Private merchant-session rejection signals shared by all JSON transports. |
 | [frontend/src/shared/api/request-json.ts](../frontend/src/shared/api/request-json.ts) | Coalesce simultaneous identical core reads with complete identity; no persisted response cache. |
 | [frontend/src/shared/api/shop-api.ts](../frontend/src/shared/api/shop-api.ts) | shop api: Typed commerce contracts, merchant/store transports and binary download helper. |
-| [frontend/src/shared/api/shop-scope.ts](../frontend/src/shared/api/shop-scope.ts) | Canonical browser shop scope for storefront URLs and tenant-isolated customer storage. |
+| [frontend/src/shared/api/shop-scope.ts](../frontend/src/shared/api/shop-scope.ts) | Canonical shop hosts; Studio identity remains on the shared origin. Reserved service hosts never become tenant IDs. |
 | [frontend/src/shared/api/types.ts](../frontend/src/shared/api/types.ts) | Common JSON/multipart request contract for app surfaces and merchant operations. |
 | [frontend/src/shared/apps/AppFrame.tsx](../frontend/src/shared/apps/AppFrame.tsx) | Opaque-origin app UI. Its SDK can invoke only this app's declared, server-authorized actions. |
 | [frontend/src/shared/apps/AppSlot.tsx](../frontend/src/shared/apps/AppSlot.tsx) | Generic registered product configuration slot. App packages own labels, input names and business rules. |
@@ -515,6 +527,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/company-i18n.ts](../frontend/src/shared/i18n/company-i18n.ts) | Company identity, field inheritance and legal storefront vocabulary in four interface languages. |
 | [frontend/src/shared/i18n/connected-i18n.ts](../frontend/src/shared/i18n/connected-i18n.ts) | Four-language vocabulary for connected apps, consent and visual automation. |
 | [frontend/src/shared/i18n/content-language.ts](../frontend/src/shared/i18n/content-language.ts) | Resolve editable translation keys without merging distinct regional locales or fabricating inherited values. |
+| [frontend/src/shared/i18n/control-i18n.ts](../frontend/src/shared/i18n/control-i18n.ts) | Complete vocabulary for the platform control plane and service hub. Technical provider/service IDs stay stable. |
 | [frontend/src/shared/i18n/crm-i18n.ts](../frontend/src/shared/i18n/crm-i18n.ts) | Complete CRM/history vocabulary shared by settings, customer account and entity editors. |
 | [frontend/src/shared/i18n/customer-i18n.ts](../frontend/src/shared/i18n/customer-i18n.ts) | Account and address labels share four complete locales across storefront and studio. |
 | [frontend/src/shared/i18n/email-i18n.ts](../frontend/src/shared/i18n/email-i18n.ts) | Complete mail workspace vocabulary in English, German, French and Spanish. |
@@ -674,6 +687,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/payments.py](../scripts/payments.py) | PayPal wire-contract and real Rust/PostgreSQL state tests. Local fixture, never real provider traffic. |
 | [scripts/platform.py](../scripts/platform.py) | Real PostgreSQL/HTTP operator control-plane regression; synthetic accounts only, no paid providers. |
 | [scripts/platform_admin.py](../scripts/platform_admin.py) | Grant/revoke an existing personal operator offline. Credentials remain in environment; no signup can grant this role. |
+| [scripts/platform_control.py](../scripts/platform_control.py) | Control-plane regressions on the real HTTP/database path; disposable synthetic shops and local model wire fixtures only. |
 | [scripts/platform_setup.py](../scripts/platform_setup.py) | Isolated production-mode bootstrap test. Creates/drops only a uniquely named synthetic database. |
 | [scripts/playground.py](../scripts/playground.py) | Create an isolated local shop through personal-owner APIs; reruns preserve merchant edits and never call providers. |
 | [scripts/port.py](../scripts/port.py) | Named, reviewable port gates; never marks an untested unit as complete. |

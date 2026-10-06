@@ -1,4 +1,5 @@
 /** Coding agents receive the current Manifest IR and authoritative schema; imported edits round-trip to the canvas. */
+import { useControlText } from "../../shared/i18n/control-i18n";
 import { useState } from "react";
 import { useAppStudioText } from "../../shared/i18n/app-studio-i18n";
 import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
@@ -23,10 +24,11 @@ export default function AppAgentPanel({
   studio: AppStudio;
   request: RequestFn;
 }) {
+  const c = useControlText();
   const { a } = useAppStudioText(),
     { w } = useWorkbenchText();
   const [prompt, setPrompt] = useState(""),
-    [provider, setProvider] = useState("ollama"),
+    [provider, setProvider] = useState("platform"),
     [model, setModel] = useState(""),
     [agent, setAgent] = useState("codex"),
     [task, setTask] = useState(""),
@@ -74,7 +76,7 @@ export default function AppAgentPanel({
               >
                 {studio.providers.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.id}
+                    {p.id === "platform" ? c("platformDefault") : p.name}
                   </option>
                 ))}
               </select>

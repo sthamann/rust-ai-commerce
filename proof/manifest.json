@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "25 extracted production policies; surrounding modules remain unproved",
+  "claim": "26 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -37,7 +37,9 @@
       "bindings": [
         "src/commerce/fulfillment.rs",
         "src/translations/apply.rs",
-        "src/order_checkout.rs"
+        "src/order_checkout.rs",
+        "src/platform/ai.rs",
+        "src/platform/lifecycle.rs"
       ],
       "theorems": [
         "revision_exact",
@@ -233,6 +235,15 @@
       "theorems": [
         "checkout_review_exact"
       ]
+    },
+    "shop_request_admissible": {
+      "bindings": [
+        "src/platform/lifecycle.rs"
+      ],
+      "theorems": [
+        "shop_availability_exact",
+        "shop_archived_denied"
+      ]
     }
   },
   "sources": {
@@ -283,8 +294,8 @@
     },
     "src/agent.rs": {
       "status": "unproved",
-      "sha256": "65a1a452c56c8d2f551486d09ce1e3e7782a5385d3a7ba03c4b135a3e6d965e8",
-      "review": "Reviewed assistant contracts, required tenant references, additive choices, MCP-only ingress and authorized grounding/selected app proposals. Merchant/chat/flow authority reaches both bind and approval; local model fixtures reject scope bypass and private grounding. Async adapters remain unproved."
+      "sha256": "8e1d2f43665e65dccb857ffb51f6ec7afeb21fd69e6b978742c9f8b0cdf347e3",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/apps/cart_contributions.rs": {
       "status": "unproved",
@@ -313,8 +324,8 @@
     },
     "src/apps/events.rs": {
       "status": "unproved",
-      "sha256": "8c33a80ca7dbe7a47b99af00ae4639ea792b9d8e296808745becdc253fde1c9c",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "2ccc4b53d9938a2b75ec4cf7cc7c2d64a135bb54ec11ea76f61bba2907642017",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/apps/evidence.rs": {
       "status": "unproved",
@@ -388,8 +399,8 @@
     },
     "src/apps/schedules.rs": {
       "status": "unproved",
-      "sha256": "05aed1be296e006200e2dc06e94b471610ee7e1bc51ae97444ab2ef836beb06f",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "eabe484e221b853eda763f6508e5642fc57a9f365d63829f1105342793f55d7b",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/apps/service_limits.rs": {
       "status": "unproved",
@@ -418,13 +429,13 @@
     },
     "src/assets/image_jobs.rs": {
       "status": "unproved",
-      "sha256": "ffabc03cdd345bbb4dd0ac8d53ded615fb2764689165523544053cbaadb159d8",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "ceeadb8089c54827d0c22f6a6784b6e5b87f8c3ef2cb7b4546e02f5794370442",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/assets/image_provider.rs": {
       "status": "unproved",
-      "sha256": "bf0f9c60f40e2f7154b51f4e39cfcd1378095a3d788ddaa3fff51b75142b09d6",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "c002cb23c473ed78bc6da293c757661745561971bd8df495dab8010307b1d8b1",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/assets/mod.rs": {
       "status": "unproved",
@@ -468,8 +479,8 @@
     },
     "src/auth/middleware.rs": {
       "status": "unproved",
-      "sha256": "137a5357e50babef6c62e2201494592012607a92ce27b0cf4bbaf9fc5177adc4",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "bc1e84939fa82f19c6a6e4a5a265b1edf24c0d6fcbc41e12ab93423ae58e00dd",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/auth/mod.rs": {
       "status": "unproved",
@@ -483,8 +494,8 @@
     },
     "src/auth/provision.rs": {
       "status": "unproved",
-      "sha256": "20a800cbbd9c08ffa2d20c8a23734037918736e330363695dbbfe970295b4b4c",
-      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
+      "sha256": "3d278b791156c860be5ffafb94282df1dae7070877b0746bebf054e88891ad4b",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/auth/registration.rs": {
       "status": "unproved",
@@ -493,8 +504,8 @@
     },
     "src/auth/sessions.rs": {
       "status": "unproved",
-      "sha256": "16ea1362829b09724ea6e80aea32e4cb7a03911115fd40431dda2e86162d99c9",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "4b792c006b48aab1381120404b974e6d74b627f49abd9b945c1d9fcd3c498ccb",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/automation_rules/comparison.rs": {
       "status": "unproved",
@@ -563,13 +574,13 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "4d22e0b4a1052d41a5b89febf05e59587ee3a5be6b4ee8e7b224120117debae8",
-      "review": "Reviewed checkout quote admission and exact-price Lean equivalence; provider approval creates one durable capture job, scoped return URLs and customer job status. Real SQL review/replay/isolation and local PayPal forged-return, lost-reply, refund, cancellation and restart regressions pass; live providers and Shopware Payments remain unverified."
+      "sha256": "305e6f528c5472b555911697f62445c612465ba1dfb947817a3e1da200d8d1b5",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
-      "sha256": "ea1f390b15e65457283f255294e4d24270344f56770e6bede91996c8cfdd27ae",
-      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
+      "sha256": "cb655595fccd66b2c311fa09dd2a7f49ae955f1cf8aec1c370d1bde24cf0009b",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
@@ -638,8 +649,8 @@
     },
     "src/channel_metrics.rs": {
       "status": "unproved",
-      "sha256": "8cf3a57385ecea1e0808eead5cb3720822f74e8d894d514d03bafdbf9c5caf2c",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "9858f4a5b4d4b29ff7bbe75d2f5f82b17db569f5b9972252203054c4bbc90b30",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/chat_lease.rs": {
       "status": "unproved",
@@ -893,8 +904,8 @@
     },
     "src/developer/routes.rs": {
       "status": "unproved",
-      "sha256": "67e4414b2dc25249c54e260b13631de2838377040e15c18e7eccd4eb0b6690bf",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "cd65d2ed895dc6126d750c82891127ff38a34812b4500cbdbeac8d0cb785790d",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/discount.rs": {
       "status": "reviewed-binding",
@@ -943,8 +954,8 @@
     },
     "src/documents/retrieval.rs": {
       "status": "unproved",
-      "sha256": "a4ca472967969b18978e0f57bd3f9b94d033324ec26ff6d4572923b4c9c68be0",
-      "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
+      "sha256": "2b7caacc3662b59e132d7a917e2e08632e7469dfe7166f7ad42ee8795c970aa9",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/documents/tools.rs": {
       "status": "unproved",
@@ -968,8 +979,8 @@
     },
     "src/foundation.rs": {
       "status": "unproved",
-      "sha256": "e416de7ccef30c9daf699c7326595af566237009f5dbb133cd6d32ca329e923b",
-      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
+      "sha256": "b1453271b5cf8dca984d8538fb844a79bd4163cec0ed17c1bb296c82dbbf6a77",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/history/capability.rs": {
       "status": "unproved",
@@ -1001,10 +1012,20 @@
       "sha256": "6085e1f3f2e6cb7b8dadc039c99dc925dd061a2e74c1ce55e363fa9db3bc12d2",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/inference/settings.rs": {
+      "status": "unproved",
+      "sha256": "9c963768dbeecb38334ad928a21fd8762ad88984733cf2fc1b99e8f750927de7",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+    },
+    "src/inference/tests.rs": {
+      "status": "unproved",
+      "sha256": "b621a75bcf698db5df7b066c931adfb84dac7d7c57fea2345adefd9552240e6e",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+    },
     "src/inference.rs": {
       "status": "unproved",
-      "sha256": "663d744f195b4c3afb2e9132b7f9a77b942b2a291ddb4d9eddece9b58fe7d41e",
-      "review": "Reviewed optional passive app presentation bounds and legacy digest preservation, main-locale list metadata, configured-locale generation schema, and strict provider compatibility: summaries are required objects within optional presentation while icon/cover accept nullable provider output. 84 Rust tests and real app/developer PostgreSQL suites exercise parsing, unsafe assets, immutable versions and tenant isolation."
+      "sha256": "801da26b75642732e1fba578e4cf0b59133cc6314cfa862e7b5c6217cb686b1a",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/knowledge/relations.rs": {
       "status": "unproved",
@@ -1018,13 +1039,13 @@
     },
     "src/knowledge/vectors.rs": {
       "status": "unproved",
-      "sha256": "0cc8f9f717121445fdfb4f3ed63ba11778d05d464b4b12cfaa4ebde93b1f6855",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "3b742ebf6ef1bcce9569cf69f4a41763fb96933c2c78e2de6f7c274ce58d3fda",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/knowledge.rs": {
       "status": "unproved",
-      "sha256": "03fa77773667f5efa3aa586979fcee666f079cbce4382a62d7b4cd6b44d4e98d",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "fa9026a4e3c0f08fd79f7e345a67bee152f11e435d1174f34dccf54520dd9771",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/lib.rs": {
       "status": "unproved",
@@ -1098,8 +1119,8 @@
     },
     "src/marketing/flows.rs": {
       "status": "unproved",
-      "sha256": "937bea24dbf98c9e82be5b2f5c24232beadef72f0b9acf5f72a2dafed8b62ef6",
-      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
+      "sha256": "56de0a7e7d3a689cfd84e7289c4a9edf28da133f0ed1e379c2eaeab6fb96aa94",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/marketing/gateway.rs": {
       "status": "unproved",
@@ -1188,8 +1209,8 @@
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "41b0edef5d7be204d5bae72a4672402d70aa9286adf79dfe64d8312b44c867cf",
-      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
+      "sha256": "d457161cfe40ccd1f4519d5dbfa28b2ad28c7212cf13ffb8311b9ad7b9743cb9",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -1263,8 +1284,8 @@
     },
     "src/outbox.rs": {
       "status": "unproved",
-      "sha256": "5b8fbdf4ed3862af3cb24da7d444c06cabbf752ac8617a1cd6f00cddf4a746e1",
-      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
+      "sha256": "db3c4a5e8b8e40c0775eadd3b5d906a0e9e836a252657f3c3185dcfa3af6e45a",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/payments/mod.rs": {
       "status": "unproved",
@@ -1346,6 +1367,11 @@
       "sha256": "108d52285f2d11d5c3b4f39976114d35dd64f933e8829881340f2a00d5904094",
       "review": "Reviewed assistant contracts, required tenant references, additive choices, MCP-only ingress and authorized grounding/selected app proposals. Merchant/chat/flow authority reaches both bind and approval; local model fixtures reject scope bypass and private grounding. Async adapters remain unproved."
     },
+    "src/platform/ai.rs": {
+      "status": "reviewed-binding",
+      "sha256": "6a3cbcc6130d3fefe412b3e2334f1eea2d3e78ebd16b973ee4293c7adf42f96f",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+    },
     "src/platform/auth.rs": {
       "status": "reviewed-binding",
       "sha256": "92742eee29ac6d56037dd71b6c33539bec3c9dd3649d46e668fd54879e42067e",
@@ -1356,20 +1382,40 @@
       "sha256": "03f2ebb9948db2e7f3296c07a3efdaec344d66c7815a4e5dc0f37cc993b022a8",
       "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
     },
+    "src/platform/infrastructure.rs": {
+      "status": "unproved",
+      "sha256": "da6cddec6b7aff70c9e6d2087e30466c15b4c0e1917d55516130351dfb713b4b",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+    },
+    "src/platform/lifecycle.rs": {
+      "status": "reviewed-binding",
+      "sha256": "be341df8631557eb0f0560a9f2423e1a62dd5c0c082779a1424a0b67f90f68ee",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+    },
     "src/platform/metrics.rs": {
       "status": "unproved",
-      "sha256": "da030632cbfd1aed8dadf4c1158880f6f49bfc557f0e0a5dd78a1e0bf5b15294",
-      "review": "Reviewed automation lifecycle SQL and controllers, tenant serialization and foreign keys, actual default channel language inheritance and persisted-channel metrics; these integration paths remain outside the Lean policy proof boundary."
+      "sha256": "ed250f3021ec126ecd5891b08733bcb6b1055fcba94439b34bff03504c561f44",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/platform/mod.rs": {
       "status": "unproved",
-      "sha256": "d280331a1c7c261650ce28c4976e17cb988da443fe35a8b3d8dbdf798a9d5548",
-      "review": "Reviewed operator session grant binding and bootstrap/signup restrictions; additive migration 024; atomic ownership/audit provisioning without demo accounts; bounded aggregate SQL excludes staging and separates simulated/confirmed currency amounts. platform.py 10 HTTP/PG groups and platform_setup.py 4 fresh production-mode bootstrap groups passed; existing Rust 48 unit tests/clippy/structure passed. SQL, async setup and hosting adapters remain unproved."
+      "sha256": "dd1b8d43745ec60dbbbfb6b633d8d96a2ae21883f2dd58c255d6e3b1af81e69b",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/platform/provision.rs": {
       "status": "unproved",
-      "sha256": "3b515ec4220c5b8158a3e1350366f34534f9a9f072a0ae388f6aea5975bbe7ef",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "d8587256e1d73cde05e26d8a23588d9da547e2ec94078ce76f3380347e45710e",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+    },
+    "src/platform/resources.rs": {
+      "status": "unproved",
+      "sha256": "f69c5ac63b3ce7d000badbc17360d8dc4952f3ed1895562675d49023ffe06b65",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+    },
+    "src/platform/shop_detail.rs": {
+      "status": "unproved",
+      "sha256": "79cb1620046e89fd4c36db71a6e0fa64284607248d432c8c7ac01e73cd8048e1",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/pricing.rs": {
       "status": "unproved",
@@ -1413,8 +1459,8 @@
     },
     "src/shop_domains.rs": {
       "status": "unproved",
-      "sha256": "16a97a355aa834d44c33b41af8389031728fb260304726d18a2c93a4fd3fd2fb",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "e68f25b68997e8eeb29b99fa54af8076693d8c101dfd56191fb4ae1fb4970723",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/staging/assets.rs": {
       "status": "unproved",
@@ -1458,8 +1504,8 @@
     },
     "src/studio.rs": {
       "status": "unproved",
-      "sha256": "1cb89f646570196831bdc9c4281822617816e1fb96f241177953fee35fc1f98b",
-      "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
+      "sha256": "e4d8f0de5c4f036045c22a394a788af4b1c4bde22b9698b4ad027cc180186283",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/translations/apply.rs": {
       "status": "reviewed-binding",
@@ -1483,8 +1529,8 @@
     },
     "src/translations/worker.rs": {
       "status": "unproved",
-      "sha256": "13195d1904a32e7463fe19e63380b33b8bd5f3fa8685a32fdc4355a2a4d238e9",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "7429a86d168ca28ab0b668e9251b9ab67ebe61fbac8a0d08d5789a0ad5e1c21a",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/ucp.rs": {
       "status": "unproved",
@@ -1493,8 +1539,8 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "36b38c6f0736f18e796b0e783253450978c979589befa2dcd9bded5e0cd7288d",
-      "review": "Reviewed checkout quote admission and exact-price Lean equivalence; provider approval creates one durable capture job, scoped return URLs and customer job status. Real SQL review/replay/isolation and local PayPal forged-return, lost-reply, refund, cancellation and restart regressions pass; live providers and Shopware Payments remain unverified."
+      "sha256": "84d63d71941c7159284f2b49c8309e7d3e2c4cef1aa43fdb9163645c4c528bdb",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "src/workers.rs": {
       "status": "unproved",
@@ -1508,12 +1554,12 @@
       "review": "Reviewed the CI OS-label retry after GitHub cancelled queued jobs because no hosted runner acquired them: verify.yml pins supported ubuntu-24.04 instead of the changing ubuntu-latest alias. All test commands, coverage floors, permissions, dependency/proof setup and required verify check remain unchanged. The documentation workflow uses the same fixed image; no successful GitHub run or capacity fix is claimed from this metadata change."
     },
     "Cargo.lock": {
-      "sha256": "1654201807ccbe44f5dd55507de8a84f90adebd8f81b94172f8a222a112b25f3",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "63ea7828df4cb620cbbea65d384f1c4321d44a1b3a32fed65671f2fe706d5fe8",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "Cargo.toml": {
-      "sha256": "fc3cf00c733637383ce532494aad5334729ad47c13bf4d77608cc335355ec1f3",
-      "review": "Reviewed Cargo.toml license metadata only: MIT declaration replaced by license-file pointing at the explicit commerce sustainable-use terms. Dependencies, targets, runtime code, schema and kernel contracts are unchanged. Package license paths and current public docs/links validated; original third-party MIT notices preserved."
+      "sha256": "b5ab1d764def118f63e06044e11d53ac8cbbe2a15c2e25bbcbebd0fd3660dffa",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "fixtures/app-studio-schema.json": {
       "sha256": "fe7909b926f092266e58cb822dab36a41a86b4d77f31b9a54af55195ee850200",
@@ -1711,9 +1757,13 @@
       "sha256": "39a79c1374c46d4b56488c43ee0d3db3bc4138fb07ee932877d9c4fc95d2aaef",
       "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
     },
+    "migrations/041-platform-control.sql": {
+      "sha256": "cf2abe43288ed82eb517ad1dd3f9c23a3ebb6f8c79db03ad046db12ea11bcba5",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+    },
     "proof/Commerce/Claims.lean": {
-      "sha256": "8382f3ec37f01a2bf5f585b222cbbedc1d92f80aa4a2494eb83f227032f99dd6",
-      "review": "Reviewed checkout quote admission and exact-price Lean equivalence; provider approval creates one durable capture job, scoped return URLs and customer job status. Real SQL review/replay/isolation and local PayPal forged-return, lost-reply, refund, cancellation and restart regressions pass; live providers and Shopware Payments remain unverified."
+      "sha256": "c36491be78fb50051ce832318574e95ce36530dc20baa804bfe85086b8ed6f38",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -1748,8 +1798,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "7e4b684ff0eb0d511aa7b3a3681d1aeb6f3e810d85f877a6fec30343f640fde4",
-      "review": "Reviewed checkout quote admission and exact-price Lean equivalence; provider approval creates one durable capture job, scoped return URLs and customer job status. Real SQL review/replay/isolation and local PayPal forged-return, lost-reply, refund, cancellation and restart regressions pass; live providers and Shopware Payments remain unverified."
+      "sha256": "2540f236796060b08101ee86cb985b46ec520d1d24abb81cc00cdd1c54be51c4",
+      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
     },
     "scripts/formal/registry.py": {
       "sha256": "3b554637854314cffd45018b3e5adc568d24e0ab145d7d6fa75350d2f80f5900",

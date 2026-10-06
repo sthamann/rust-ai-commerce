@@ -8,7 +8,7 @@ pub(super) fn choice(v: &Value) -> Result<Option<Choice>> {
 }
 pub(super) async fn model_providers(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     merchant(&a, &h)?;
-    Ok(Json(a.inference.providers()))
+    Ok(Json(a.inference.public_providers().await.map_err(bad)?))
 }
 pub(super) async fn knowledge_graph(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     Ok(Json(knowledge::graph(&a.db, &tenant(&h)?).await?))
@@ -28,6 +28,7 @@ pub(super) async fn retrieve(a: &App, t: &str, q: &str) -> Result<Value> {
     if q.is_empty() || q.len() > 2000 {
         return Err(bad("Query must contain 1..2000 characters"));
     }
+    let (endpoint, key, _) = a.inference.connection("ollama").await.unwrap_or_default();
     let model = embedding_model();
     let count: i64 = sqlx::query_scalar(
         "SELECT count(*) FROM semantic_products WHERE tenant=$1 AND embedding_model=$2",
@@ -36,10 +37,11 @@ pub(super) async fn retrieve(a: &App, t: &str, q: &str) -> Result<Value> {
     .bind(&model)
     .fetch_one(&a.db)
     .await?;
-    let vector = if count > 0 {
+    let vector = if count > 0 && !endpoint.is_empty() {
         knowledge::embedding(
             &a.http,
-            &a.ollama,
+            &endpoint,
+            key.as_deref(),
             &model,
             &format!("Instruct: Retrieve suitable commerce products.\nQuery: {q}"),
         )
@@ -64,6 +66,7 @@ pub(super) async fn semantic_search(
 }
 pub(super) async fn reindex(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
+    let (endpoint, key, _) = a.inference.connection("ollama").await.map_err(bad)?;
     let model = embedding_model();
     let mut count = 0;
     let ps = prototype_products(&a, &t).await?;
@@ -77,7 +80,7 @@ pub(super) async fn reindex(State(a): State<App>, h: HeaderMap) -> Result<Json<V
         if current {
             continue;
         }
-        let embedding = knowledge::embedding(&a.http, &a.ollama, &model, &doc)
+        let embedding = knowledge::embedding(&a.http, &endpoint, key.as_deref(), &model, &doc)
             .await
             .map_err(|e| Error(StatusCode::BAD_GATEWAY, e))?;
         sqlx::query("INSERT INTO semantic_products(tenant,product_id,revision,embedding,embedding_model,content_hash) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(tenant,product_id) DO UPDATE SET revision=EXCLUDED.revision,embedding=EXCLUDED.embedding,embedding_model=EXCLUDED.embedding_model,content_hash=EXCLUDED.content_hash,updated_at=now()").bind(&t).bind(&p.id).bind(p.revision).bind(embedding).bind(&model).bind(digest).execute(&a.db).await?;

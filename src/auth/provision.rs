@@ -27,6 +27,9 @@ pub(crate) async fn provision_shop(
     seed_catalog: bool,
     demo_customer: bool,
 ) -> Result<Sandbox> {
+    if ["app", "www", "api", "admin", "mail", "platform"].contains(&slug) {
+        return Err(bad("Reserved shop ID"));
+    }
     if sqlx::query("INSERT INTO tenants(id,name) VALUES($1,$2) ON CONFLICT DO NOTHING")
         .bind(slug)
         .bind(shop_name)

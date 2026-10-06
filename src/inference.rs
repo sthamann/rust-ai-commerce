@@ -2,11 +2,13 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::env;
+pub mod settings;
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Provider {
     #[default]
+    Platform,
     Ollama,
     Openai,
     Anthropic,
@@ -19,6 +21,11 @@ pub struct Choice {
 }
 #[derive(Clone)]
 pub struct Inference {
+    db: Option<sqlx::PgPool>,
+    settings: std::sync::Arc<tokio::sync::Mutex<Option<(std::time::Instant, Value)>>>,
+    default_provider: Provider,
+    disabled: Vec<String>,
+    ollama_key: Option<String>,
     http: reqwest::Client,
     ollama: String,
     local_model: String,
@@ -39,6 +46,11 @@ impl Inference {
     pub fn from_env(http: reqwest::Client) -> Self {
         let key = |name| env::var(name).ok().filter(|s| !s.is_empty());
         Self {
+            db: None,
+            settings: Default::default(),
+            default_provider: Provider::Ollama,
+            disabled: vec![],
+            ollama_key: None,
             http,
             ollama: env::var("OLLAMA_URL").unwrap_or("http://127.0.0.1:11434".into()),
             local_model: env::var("OLLAMA_MODEL").unwrap_or("qwen3.6:35b".into()),
@@ -52,11 +64,27 @@ impl Inference {
         }
     }
     pub fn providers(&self) -> Value {
+        let current = match self.default_provider {
+            Provider::Openai => &self.openai_model,
+            Provider::Anthropic => &self.anthropic_model,
+            _ => &self.local_model,
+        };
+        let configured = match self.default_provider {
+            Provider::Openai => self.openai_key.is_some(),
+            Provider::Anthropic => self.anthropic_key.is_some(),
+            _ => true,
+        } && !self.disabled.iter().any(|v| {
+            Some(v.as_str())
+                == serde_json::to_value(&self.default_provider)
+                    .unwrap()
+                    .as_str()
+        });
         json!({"providers":[
-            {"id":"ollama","name":"Local / open weights","model":self.local_model,"configured":true},
-            {"id":"openai","name":"OpenAI","model":self.openai_model,"configured":self.openai_key.is_some()},
-            {"id":"anthropic","name":"Claude","model":self.anthropic_model,"configured":self.anthropic_key.is_some()}
-        ],"credentials":"server-environment-only"})
+            {"id":"platform","name":"Platform default","model":current,"configured":configured},
+            {"id":"ollama","name":"Local / open weights","model":self.local_model,"configured":!self.disabled.iter().any(|v|v=="ollama")},
+            {"id":"openai","name":"OpenAI","model":self.openai_model,"configured":self.openai_key.is_some() && !self.disabled.iter().any(|v|v=="openai")},
+            {"id":"anthropic","name":"Claude","model":self.anthropic_model,"configured":self.anthropic_key.is_some() && !self.disabled.iter().any(|v|v=="anthropic")}
+        ],"defaultProvider":self.default_provider,"credentials":"platform-inherited-server-only"})
     }
     pub async fn structured(
         &self,
@@ -65,13 +93,38 @@ impl Inference {
         user: &str,
         schema: &Value,
     ) -> Result<Output, String> {
-        let provider = choice.map(|c| c.provider.clone()).unwrap_or_default();
+        let runtime = self.resolved().await?;
+        runtime
+            .structured_resolved(choice, system, user, schema)
+            .await
+    }
+    async fn structured_resolved(
+        &self,
+        choice: Option<&Choice>,
+        system: &str,
+        user: &str,
+        schema: &Value,
+    ) -> Result<Output, String> {
+        let provider = match choice.map(|c| c.provider.clone()) {
+            Some(Provider::Platform) | None => self.default_provider.clone(),
+            Some(value) => value,
+        };
+        let id = serde_json::to_value(&provider).unwrap();
+        if self
+            .disabled
+            .iter()
+            .any(|v| Some(v.as_str()) == id.as_str())
+        {
+            return Err("Provider disabled by platform operator".into());
+        }
         let default_model = match provider {
             Provider::Ollama => &self.local_model,
             Provider::Openai => &self.openai_model,
             Provider::Anthropic => &self.anthropic_model,
+            Provider::Platform => return Err("Invalid platform provider".into()),
         };
         let model = choice
+            .filter(|c| !matches!(c.provider, Provider::Platform))
             .and_then(|c| c.model.as_ref())
             .unwrap_or(default_model);
         if model.is_empty()
@@ -82,6 +135,7 @@ impl Inference {
             return Err("Invalid model identifier".into());
         }
         let (request, path) = match provider {
+            Provider::Platform => return Err("Invalid platform provider".into()),
             Provider::Ollama => (
                 json!({"model":model,"stream":false,"think":false,"format":schema,"options":{"temperature":0,"num_predict":2000},"messages":[{"role":"system","content":system},{"role":"user","content":user}]}),
                 format!("{}/api/chat", self.ollama.trim_end_matches('/')),
@@ -97,7 +151,14 @@ impl Inference {
         };
         let mut req = self.http.post(path).json(&request);
         req = match provider {
-            Provider::Ollama => req,
+            Provider::Platform => return Err("Invalid platform provider".into()),
+            Provider::Ollama => {
+                if let Some(key) = &self.ollama_key {
+                    req.bearer_auth(key)
+                } else {
+                    req
+                }
+            }
             Provider::Openai => req.bearer_auth(
                 self.openai_key
                     .as_ref()
@@ -160,6 +221,7 @@ fn strict_schema(mut v: Value) -> Value {
 }
 fn parse(provider: &Provider, raw: &Value) -> Result<Value, String> {
     let text = match provider {
+        Provider::Platform => return Err("Unresolved platform provider".into()),
         Provider::Ollama => {
             if raw["done_reason"] == "length" {
                 return Err("Local model output was truncated".into());
@@ -195,57 +257,4 @@ fn parse(provider: &Provider, raw: &Value) -> Result<Value, String> {
     serde_json::from_str(&text).map_err(|_| "Model did not return valid structured output".into())
 }
 #[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn provider_protocols_and_incomplete_output() {
-        assert!(
-            parse(
-                &Provider::Ollama,
-                &json!({"done_reason":"length","message":{"content":"{}"}})
-            )
-            .is_err()
-        );
-        assert_eq!(parse(&Provider::Openai,&json!({"status":"completed","output":[{"type":"reasoning"},{"content":[{"type":"output_text","text":"{\"answer\":1}"}]}]})).unwrap(),json!({"answer":1}));
-        assert_eq!(parse(&Provider::Anthropic,&json!({"content":[{"type":"thinking","thinking":"private"},{"type":"text","text":"{\"answer\":2}"}]})).unwrap(),json!({"answer":2}));
-        assert!(
-            parse(
-                &Provider::Openai,
-                &json!({"status":"incomplete","output":[]})
-            )
-            .is_err()
-        );
-        assert!(
-            parse(
-                &Provider::Anthropic,
-                &json!({"stop_reason":"max_tokens","content":[]})
-            )
-            .is_err()
-        );
-    }
-    #[test]
-    fn app_presentation_schema_supports_strict_provider_generation() {
-        let bundled: Value =
-            serde_json::from_str(include_str!("../fixtures/app-studio-schema.json")).unwrap();
-        let schema = strict_schema(bundled);
-        let p = &schema["properties"]["manifest"]["properties"]["presentation"]["anyOf"][0];
-        assert_eq!(p["required"], json!(["cover", "description", "icon"]));
-        assert_eq!(p["properties"]["description"]["type"], "object");
-        assert!(p["properties"]["description"].get("anyOf").is_none());
-        assert_eq!(
-            p["properties"]["description"]["additionalProperties"],
-            false
-        );
-    }
-    #[test]
-    fn optional_nested_schema_is_nullable_and_required() {
-        let schema = strict_schema(
-            json!({"type":"object","properties":{"change":{"type":"object","properties":{"price":{"type":"number"}},"required":[]}},"required":[]}),
-        );
-        assert_eq!(schema["required"], json!(["change"]));
-        assert_eq!(
-            schema["properties"]["change"]["anyOf"][0]["required"],
-            json!(["price"])
-        );
-    }
-}
+mod tests;

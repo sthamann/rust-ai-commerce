@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Real PostgreSQL/Qdrant synchronization; synthetic embeddings test transport, not AI quality."""
-import hashlib, json, os, pathlib, subprocess, threading, time, urllib.error, urllib.request
+import hashlib, json, os, pathlib, socket, subprocess, threading, time, urllib.error, urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 root=pathlib.Path(__file__).resolve().parents[1]
 state={"outage":False}
@@ -25,8 +25,10 @@ class Embed(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps({'embeddings':[[1.0]+[0.0]*1023]}).encode())
 fixture=ThreadingHTTPServer(('127.0.0.1',0),Embed)
 threading.Thread(target=fixture.serve_forever,daemon=True).start()
-env={**os.environ,'BIND_ADDR':'127.0.0.1:8793','SHOP_DOMAIN_SUFFIX':'vendune.ai','OLLAMA_URL':f'http://127.0.0.1:{fixture.server_port}','EMBEDDING_MODEL':'synthetic-managed-contract','QDRANT_URL':f'http://127.0.0.1:{fixture.server_port}'}
-base='http://127.0.0.1:8793'; token=os.environ['MERCHANT_TOKEN']
+with socket.socket() as probe:
+    probe.bind(('127.0.0.1',0)); port=probe.getsockname()[1]
+env={**os.environ,'BIND_ADDR':f'127.0.0.1:{port}','SHOP_DOMAIN_SUFFIX':'vendune.ai','OLLAMA_URL':f'http://127.0.0.1:{fixture.server_port}','EMBEDDING_MODEL':'synthetic-managed-contract','QDRANT_URL':f'http://127.0.0.1:{fixture.server_port}'}
+base=f'http://127.0.0.1:{port}'; token=os.environ['MERCHANT_TOKEN']
 def call(path,body=None,tenant='atelier',host=None,status=200):
     headers={'Content-Type':'application/json','Authorization':'Bearer '+token,'x-tenant':tenant}
     if host: headers['Host']=host

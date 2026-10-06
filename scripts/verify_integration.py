@@ -54,6 +54,8 @@ env.update({
     "APP_SERVICES": "{}", "SEED_DEMO": "true", "PROCESS_ROLE": "all",
     "COMMERCE_PUBLIC_ORIGIN": "https://studio.example.test",
     "OLLAMA_URL": "http://127.0.0.1:1", "TEST_PERSONAL": "1",
+    "PLATFORM_SECRET_KEY": "07"*32, "INFERENCE_ALLOW_LOOPBACK": "true",
+    "SHOP_DOMAIN_SUFFIX": "vendune.ai",
 })
 for key in ("LIVE_STUDIO", "LIVE_MODEL", "OPENAI_API_KEY", "ANTHROPIC_API_KEY"):
     env.pop(key, None)
