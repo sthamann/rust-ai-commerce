@@ -12,6 +12,7 @@ import { useState } from "react";
 import "../../shared/styles/apps.css";
 import AppEntity from "./AppEntity";
 import ConnectorPanel from "./ConnectorPanel";
+import ProviderAccount from "./ProviderAccount";
 import EmailPanel from "./EmailPanel";
 export type AppDetailsProps = {
   p: Package;
@@ -159,6 +160,15 @@ export default function AppDetails({
         {detailTab === "appDetails" && p.active && p.id === "email" && (
           <EmailPanel request={request} manage={manage} />
         )}
+        {detailTab === "appDetails" &&
+          p.active &&
+          p.manifest.paymentProvider && (
+            <ProviderAccount
+              provider={p.id}
+              request={request}
+              canWrite={manage}
+            />
+          )}
         {detailTab === "appDetails" && (
           <div className="app-contract-summary">
             <details>

@@ -298,6 +298,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/apps/EmailPanel.tsx](../frontend/src/admin/apps/EmailPanel.tsx) | Native email app settings, localized templates, safe previews and durable delivery receipts. |
 | [frontend/src/admin/apps/EmailProviderFields.tsx](../frontend/src/admin/apps/EmailProviderFields.tsx) | EmailProviderFields: focused connector-settings view with explicit typed inputs and callbacks. |
 | [frontend/src/admin/apps/PaymentManager.tsx](../frontend/src/admin/apps/PaymentManager.tsx) | Payment ledger, adapter readiness and explicit refund approval. |
+| [frontend/src/admin/apps/ProviderAccount.tsx](../frontend/src/admin/apps/ProviderAccount.tsx) | Shared installed-provider onboarding and channel connection controls for merchant Apps and App Studio. |
 | [frontend/src/admin/apps/app-types.ts](../frontend/src/admin/apps/app-types.ts) | Installed package metadata used by app administration views. |
 | [frontend/src/admin/apps/email-languages.ts](../frontend/src/admin/apps/email-languages.ts) | Supported transactional email template languages. |
 | [frontend/src/admin/apps/library-model.ts](../frontend/src/admin/apps/library-model.ts) | Shared app discovery metadata, safe artwork sources and localized search independent of rendering. |

@@ -7,6 +7,7 @@ export type Package = {
   active: boolean;
   revision: number;
   manifest: {
+    paymentProvider?: import("../../shared/apps/native/types").Manifest["paymentProvider"];
     name: Record<string, string>;
     category?: string;
     presentation?: {
