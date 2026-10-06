@@ -55,12 +55,16 @@ Native object handlers bind tenant scope in HTTP, graph/vector and MCP paths.
 The adversarial [tenant isolation suite](tenant-isolation.md) tests ID/header
 swaps and unchanged victim state; it is not an exhaustive endpoint audit.
 Migration 038 additionally scopes 22 critical foreign-key relationships by
-tenant, preventing wrong-shop order/payment/event/staging associations. Database tables share one PostgreSQL application identity;
-**core-wide RLS and physically isolated tenants are not implemented**. Managed app
-tables have forced RLS; the local DB account is a superuser, which bypasses it.
-A restricted-identity regression proves the policy, not production containment. These
-application checks and small HTTP tests do not prove production containment
-against a compromised server/database identity. Operator provisioning, configured shop-subdomain routing and recoverable
+tenant, preventing wrong-shop order/payment/event/staging associations. Migration
+044 adds core FORCE RLS, connection-bound tenant context and strict runtime role
+checks. Managed app tables retain their forced policy. Enable the separate
+non-owner runtime with `DATABASE_RUNTIME_URL` and `DB_RLS_REQUIRED=true`; a
+superuser still bypasses the policies. Two actual restricted-runtime replicas
+exercise direct foreign SQL, pooled reuse and native checkout/CRM APIs.
+[Deployment and privileged exceptions](production-architecture.md) are explicit.
+These checks do not prove containment against SQL injection or a compromised
+server/database identity; physical tenant isolation remains additional work.
+Operator provisioning, configured shop-subdomain routing and recoverable
 pause/trash/restore are implemented; see [the platform guide](platform.md).
 Production billing, distributed quotas, physical tenant erasure/export, isolated
 backups and automated failover remain additional work. Local storefront selection

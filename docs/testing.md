@@ -6,7 +6,7 @@ at 100%, and neither coverage nor the Lean subset proves the entire system bug-f
 
 ## Source architecture
 
-- Rust: 266 source modules (reviewed at `5e4f8b5`, 6 October 2026), each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
+- Rust: 284 source modules (production foundation inventory, 6 October 2026), each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
 - Frontend: separate `admin/`, `storefront/`, `platform/` and `shared/` ownership. Views/controllers and styles are limited to 400 lines; locale data has a documented 700-line allowance. Runtime cycles, unresolved local imports, crossing application boundaries, missing folder contracts and undocumented source files fail CI.
 - Independent Python services, app examples and browser SDKs remain under `extensions/`; test tooling lives under `scripts/`. [The generated inventory](module-inventory.md) covers all these sources and is checked for drift.
 - Studio workspaces load lazily. Root application routing is isolated in `frontend/src/application/`; error boundaries keep workspace failures inside the current view and provide reload recovery for rejected cached module imports. The removed `CommerceManager` had no call site and duplicated old operational UI. Order state management remains in `admin/orders/OrderWorkflow.tsx`; product review moderation lives in `admin/catalog/ReviewModeration.tsx`.
@@ -58,6 +58,7 @@ python3 scripts/delivery_differential.py
 python3 scripts/rule_differential.py
 python3 scripts/automation_registry.py
 python3 scripts/automation_differential.py
+python3 scripts/money_boundary_differential.py
 ```
 
 The automation suite also executes `scripts/playground.py` as documented: a new
@@ -65,6 +66,17 @@ owner-owned shop, repeat setup after an edited rule, both checkout branches and
 actual invoice records. `tooling_tests.py` has 12 tests, including refusal of
 remote credential destinations and unsafe state-file symlinks. See
 [the manual tour](playground.md) for the corresponding browser steps.
+
+## Production boundary regressions
+
+`production_foundations` runs two non-owner, non-bypass PostgreSQL replicas and
+repeats native checkout, CRM and adversarial tenant checks. It rejects unsafe
+TRUNCATE grants, omitted/forged tenant predicates, stale operator quotas and
+corrupted stock snapshots; it tests commit-only cache eviction and daily AI usage
+shared across live/staging. The 32-client scalability fixture explicitly configures
+32 tenant permits. Production defaults and saturation policies remain configurable.
+The [architecture guide](production-architecture.md) explains exactly what these
+checks and the Lean subset establish.
 
 ## Component regressions
 
