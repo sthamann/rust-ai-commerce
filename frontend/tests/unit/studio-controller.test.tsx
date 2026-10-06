@@ -5,6 +5,7 @@ import { useStudioController } from "../../src/admin/shell/useStudioController";
 import { LocaleProvider } from "../../src/shared/i18n/i18n";
 import { overview, providers, session } from "./fixtures";
 import type { Message } from "../../src/admin/shell/studio-types";
+import { shopApi } from "../../src/shared/api/shop-api";
 function network() {
   const messages: Message[] = [
     {
@@ -151,6 +152,99 @@ it("keeps an authenticated editor mounted while changing UI language and disconn
   await act(async () => reject(new Error("Session expired")));
   expect(result.current.connected).toBe(false);
   expect(result.current.data).toBeUndefined();
+});
+
+it("expires the whole Studio when a product request rejects the current session", async () => {
+  sessionStorage.setItem("rac-user-token", "unit-token");
+  const { fetcher, messages } = network();
+  const { result } = renderHook(
+    () => useStudioController({ onChanged: vi.fn(), onExit: vi.fn() }),
+    { wrapper: LocaleProvider },
+  );
+  await waitFor(() => expect(result.current.connected).toBe(true));
+  act(() => result.current.setMessages(messages));
+  const original = fetcher.getMockImplementation()!;
+  fetcher.mockImplementation((path, options) =>
+    String(path).startsWith("/api/merchant/products")
+      ? Promise.resolve({
+          ok: false,
+          status: 401,
+          json: async () => ({
+            errors: [
+              { detail: "Session or integration key expired or invalid" },
+            ],
+          }),
+        })
+      : original(path, options),
+  );
+  await act(async () => {
+    await expect(
+      result.current.request("/api/merchant/products?limit=25"),
+    ).rejects.toMatchObject({ status: 401 });
+  });
+  expect(result.current.connected).toBe(false);
+  expect(result.current.token).toBe("");
+  expect(sessionStorage.getItem("rac-user-token")).toBeNull();
+  expect(result.current.data).toBeUndefined();
+  expect(result.current.access).toEqual([]);
+  expect(result.current.conversations).toEqual([]);
+  expect(result.current.messages).toEqual([]);
+  expect(result.current.updated).toBe("");
+  expect(result.current.error).toBe("Please sign in again.");
+  sessionStorage.setItem("rac-user-token", "renewed-token");
+  act(() => result.current.setToken("renewed-token"));
+  await waitFor(() => expect(result.current.connected).toBe(true));
+  expect(result.current.data).toEqual(overview);
+});
+
+it("also expires shared merchant requests and revalidates on returning to Studio", async () => {
+  sessionStorage.setItem("rac-user-token", "unit-token");
+  const { fetcher } = network();
+  const { result } = renderHook(
+    () => useStudioController({ onChanged: vi.fn(), onExit: vi.fn() }),
+    { wrapper: LocaleProvider },
+  );
+  await waitFor(() => expect(result.current.connected).toBe(true));
+  const original = fetcher.getMockImplementation()!;
+  fetcher.mockImplementation((path, options) =>
+    String(path) === "/api/auth/session"
+      ? Promise.resolve({
+          ok: false,
+          status: 401,
+          json: async () => ({
+            errors: [
+              { detail: "Session or integration key expired or invalid" },
+            ],
+          }),
+        })
+      : original(path, options),
+  );
+  await act(async () => window.dispatchEvent(new Event("focus")));
+  await waitFor(() => expect(result.current.connected).toBe(false));
+  expect(result.current.data).toBeUndefined();
+  fetcher.mockImplementation(original);
+  sessionStorage.setItem("rac-user-token", "renewed-token");
+  act(() => result.current.setToken("renewed-token"));
+  await waitFor(() => expect(result.current.connected).toBe(true));
+  fetcher.mockImplementationOnce(async () => ({
+    ok: false,
+    status: 401,
+    json: async () => ({
+      errors: [{ detail: "Session or integration key expired or invalid" }],
+    }),
+  }));
+  await act(async () => {
+    await expect(
+      shopApi(
+        "/api/workspace/members",
+        undefined,
+        undefined,
+        undefined,
+        "renewed-token",
+      ),
+    ).rejects.toMatchObject({ status: 401 });
+  });
+  expect(result.current.connected).toBe(false);
 });
 
 it.each([

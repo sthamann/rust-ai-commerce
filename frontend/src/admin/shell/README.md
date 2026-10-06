@@ -18,6 +18,14 @@ Files and their individual responsibilities are listed in [the generated source 
 - `studio-types.ts`
 - `useServerHealth.ts`
 - `useStudioController.ts`
+- `useStudioSession.ts`: validates visible connected sessions once per minute and
+  on focus/visibility restoration. It deduplicates checks, releases listeners and
+  timers on unmount, and ignores failures belonging to an older login token.
+
+An authoritative session rejection clears the active Studio token, permissions,
+overview, conversations and messages together. It presents a translated sign-in
+action instead of retaining an apparently connected overview beside failing
+editors. The server's expiry and tenant/permission checks remain unchanged.
 
 ## Verification
 

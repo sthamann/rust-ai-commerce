@@ -151,3 +151,53 @@ it("keeps merchant credentials absent when signed out and shows a login path", a
     ),
   ).toBe(true);
 });
+
+it("offers one shared sign-in path instead of stale shop overview after product authentication expires", async () => {
+  sessionStorage.setItem("rac-user-token", "unit-token");
+  let expired = false;
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (path: string) => ({
+      ok: !(expired && path.startsWith("/api/merchant/products")),
+      status: expired && path.startsWith("/api/merchant/products") ? 401 : 200,
+      json: async () =>
+        expired && path.startsWith("/api/merchant/products")
+          ? {
+              errors: [
+                { detail: "Session or integration key expired or invalid" },
+              ],
+            }
+          : api(path),
+    })),
+  );
+  render(<Merchant onChanged={async () => {}} onExit={() => {}} />, {
+    wrapper: LocaleProvider,
+  });
+  const navigation = screen.getByRole("navigation", { name: "Vendune Studio" });
+  const user = userEvent.setup();
+  await within(navigation).findByRole("button", {
+    name: "Products",
+  });
+  await user.click(
+    within(navigation).getByRole("button", { name: "Shop today" }),
+  );
+  await screen.findByRole("heading", { name: "Your shop, at a glance." });
+  expired = true;
+  await user.click(
+    within(navigation).getByRole("button", { name: "Products" }),
+  );
+  const notice = await screen.findByRole("alert");
+  expect(notice).toHaveTextContent("Your Studio session has expired.");
+  await user.click(
+    within(navigation).getByRole("button", { name: "Shop today" }),
+  );
+  expect(screen.getByRole("main")).toHaveTextContent(
+    "Sign in to Studio to see shop data",
+  );
+  expect(
+    screen.queryByRole("heading", { name: "Your shop, at a glance." }),
+  ).not.toBeInTheDocument();
+  expect(sessionStorage.getItem("rac-user-token")).toBeNull();
+  await user.click(within(notice).getByRole("button", { name: /sign in/i }));
+  expect(await screen.findByRole("textbox", { name: "Email" })).toBeVisible();
+});

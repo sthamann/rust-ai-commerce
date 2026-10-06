@@ -42,6 +42,8 @@ export default function Merchant(props: {
     setNotice,
     selected,
     connected,
+    sessionExpired,
+    selectTab,
     intent,
     serverReady,
     x,
@@ -111,7 +113,17 @@ export default function Merchant(props: {
                     <div>
                       {error ? (
                         <>
-                          <b>{t("failure")}</b>
+                          <b>
+                            {t(sessionExpired ? "sessionExpired" : "failure")}
+                          </b>
+                          {sessionExpired && (
+                            <button
+                              className="studio-primary"
+                              onClick={() => selectTab("users")}
+                            >
+                              {x("studioSignIn")}
+                            </button>
+                          )}
                           <details>
                             <summary>{t("details")}</summary>
                             {error}

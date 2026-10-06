@@ -63,6 +63,8 @@ export const de: Dictionary = {
   close: "Schließen",
   cancel: "Abbrechen",
   failure: "Die Anfrage konnte nicht abgeschlossen werden.",
+  sessionExpired:
+    "Deine Studio-Sitzung ist abgelaufen. Melde dich erneut an, um fortzufahren.",
   details: "Technische Details",
   connectFirst:
     "Melde dich im Studio an, um Shopdaten zu sehen und den Assistenten zu nutzen.",

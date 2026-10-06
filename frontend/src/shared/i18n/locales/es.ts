@@ -63,6 +63,8 @@ export const es: Dictionary = {
   close: "Cerrar",
   cancel: "Cancelar",
   failure: "No se pudo completar la solicitud.",
+  sessionExpired:
+    "Tu sesión de Studio ha caducado. Vuelve a iniciar sesión para continuar.",
   details: "Detalles técnicos",
   connectFirst:
     "Inicia sesión en Studio para ver los datos y usar el asistente.",

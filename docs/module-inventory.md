@@ -388,6 +388,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/shell/useEntityNavigation.ts](../frontend/src/admin/shell/useEntityNavigation.ts) | Linked entity navigation keeps native editors, browser deep links and back paths in the same tenant scope. |
 | [frontend/src/admin/shell/useServerHealth.ts](../frontend/src/admin/shell/useServerHealth.ts) | Public server health is independent of the personal Studio session. |
 | [frontend/src/admin/shell/useStudioController.ts](../frontend/src/admin/shell/useStudioController.ts) | Studio session/controller: authentication context, tenant/staging state and chat commands. |
+| [frontend/src/admin/shell/useStudioSession.ts](../frontend/src/admin/shell/useStudioSession.ts) | Revalidate visible Studio sessions and route authenticated failures to the active controller. |
 | [frontend/src/admin/storyfronts/StoryfrontView.tsx](../frontend/src/admin/storyfronts/StoryfrontView.tsx) | Dedicated merchant integration surface for the independently deployed Storyfront service. |
 | [frontend/src/admin/styles/app-artwork.css](../frontend/src/admin/styles/app-artwork.css) | Category cover and app icon artwork, with local deterministic fallbacks. |
 | [frontend/src/admin/styles/app-assistant.css](../frontend/src/admin/styles/app-assistant.css) | Guided extension workspace: restrained colour, clear choices and responsive setup. |
@@ -438,6 +439,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/platform/styles/platform/02-platform-shop-stats-span.css](../frontend/src/platform/styles/platform/02-platform-shop-stats-span.css) | platform: platform-shop-stats-span styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/platform/styles/platform.css](../frontend/src/platform/styles/platform.css) | Ordered platform stylesheet entry; domain rules live in the adjacent folder. |
 | [frontend/src/shared/api/download.ts](../frontend/src/shared/api/download.ts) | Authenticated binary download, never placing session credentials in a URL. |
+| [frontend/src/shared/api/merchant-session.ts](../frontend/src/shared/api/merchant-session.ts) | Private merchant-session rejection signals shared by all JSON transports. |
 | [frontend/src/shared/api/request-json.ts](../frontend/src/shared/api/request-json.ts) | Coalesce simultaneous identical core reads with complete identity; no persisted response cache. |
 | [frontend/src/shared/api/shop-api.ts](../frontend/src/shared/api/shop-api.ts) | shop api: Typed commerce contracts, merchant/store transports and binary download helper. |
 | [frontend/src/shared/api/shop-scope.ts](../frontend/src/shared/api/shop-scope.ts) | Canonical browser shop scope for storefront URLs and tenant-isolated customer storage. |
