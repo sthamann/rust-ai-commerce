@@ -1,11 +1,13 @@
 /** Stable, collision-free product addresses: SKU identity plus the inherited localized SEO slug. */
 import { getContentLocale, type Product } from "../../shared/api/shop-api";
+import { hostnameShop, shopScope } from "../../shared/api/shop-scope";
 export function productURL(product: Pick<Product, "id" | "extra">): string {
   const locale = getContentLocale();
   const seo = product.extra?.seo;
   const slug = seo?.[locale]?.slug ?? seo?.[locale.split("-")[0]]?.slug;
   const query = new URLSearchParams(location.search);
   query.delete("studio");
+  if (!hostnameShop()) query.set("shop", shopScope());
   query.set("language", locale);
   const path = `/products/${encodeURIComponent(product.id)}${slug ? `/${encodeURIComponent(slug)}` : ""}`;
   return `${path}?${query}`;

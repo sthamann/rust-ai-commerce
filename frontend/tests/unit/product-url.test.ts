@@ -4,6 +4,12 @@ import {
   productURL,
   routeProductId,
 } from "../../src/storefront/catalog/product-url";
+it("retains the implicit demo tenant when opening a reloadable product URL", () => {
+  history.replaceState(null, "", "/?language=de-DE");
+  const url = new URL(productURL({ id: "tee" }), location.origin);
+  expect(url.searchParams.get("shop")).toBe("nord-atelier");
+  expect(url.pathname).toBe("/products/tee");
+});
 it("builds a localized product address and discards merchant context", () => {
   history.replaceState(
     null,
