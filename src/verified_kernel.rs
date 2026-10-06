@@ -131,3 +131,12 @@ pub fn app_tool_admissible(enabled: bool, authorized: bool) -> bool {
 pub fn app_core_reference_admissible(product: bool, private_data: bool) -> bool {
     product || private_data
 }
+
+pub fn checkout_review_admissible(
+    revision_matches: bool,
+    expected_total: u64,
+    actual_total: u64,
+    methods_confirmed: bool,
+) -> bool {
+    revision_matches && expected_total == actual_total && methods_confirmed
+}

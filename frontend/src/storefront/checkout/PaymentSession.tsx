@@ -1,105 +1,171 @@
-/** Customer payment handoff; browser navigation never marks a payment as captured. */
-import { shopScope } from "../../shared/api/shop-scope";
-import { useEffect, useState } from "react";
+/** Provider handoff and bounded durable-status polling; only verified server receipts confirm payment. */
+import { useEffect, useRef, useState } from "react";
 import { shopApi } from "../../shared/api/shop-api";
-import { useAppText } from "../../shared/i18n/app-i18n";
+import { useCheckoutText } from "../../shared/i18n/checkout-i18n";
+import { useShopText } from "../../shared/i18n/shop-i18n";
 type Status = {
   state: string;
   approvalUrl?: string;
   amountMinor: number;
   currency: string;
+  environment: string;
+  job?: { state: string; operation: string } | null;
 };
-export default function PaymentSession({
-  id,
-  token,
-}: {
-  id: string;
-  token: string;
-}) {
-  const { a, money } = useAppText();
+const terminal = new Set([
+  "captured",
+  "captured_late",
+  "cancelled",
+  "expired",
+  "refunded",
+  "partially_refunded",
+]);
+type PaymentProps = { id: string; token: string; autoRedirect?: boolean };
+export default function PaymentSession(props: PaymentProps) {
+  return <PaymentStatus key={`${props.id}:${props.token}`} {...props} />;
+}
+function PaymentStatus({ id, token, autoRedirect = false }: PaymentProps) {
+  const { x } = useCheckoutText();
+  const { s } = useShopText();
   const [data, setData] = useState<Status>();
   const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
-  const load = () =>
-    shopApi<Status>(`/store-api/payments/${id}`, undefined, token).then(
-      setData,
-    );
+  const [delayed, setDelayed] = useState(false);
+  const [generation, setGeneration] = useState(0);
+  const action = useRef<Promise<unknown> | null>(null);
+  const returned = new URLSearchParams(location.search).get("paymentReturn");
   useEffect(() => {
     let active = true;
-    const tick = () =>
-      shopApi<Status>(`/store-api/payments/${id}`, undefined, token)
-        .then((v) => {
-          if (active) setData(v);
-        })
-        .catch((e) => {
-          if (active) setError(e.message);
-        });
+    let timer: ReturnType<typeof setTimeout>;
+    let count = 0;
+    setDelayed(false);
+    setError("");
+    const tick = async () => {
+      try {
+        // A forged return flag can only request reconciliation, never fabricate payment approval.
+        if (returned && !action.current)
+          action.current = shopApi(
+            `/store-api/payments/${id}/${returned === "cancelled" ? "cancel" : "reconcile"}`,
+            {
+              requestKey: `${id}:return:${returned === "cancelled" ? "cancel" : "check"}:${generation}`,
+            },
+            token,
+          );
+        if (action.current) await action.current;
+        const next = await shopApi<Status>(
+          `/store-api/payments/${id}`,
+          undefined,
+          token,
+        );
+        if (!active) return;
+        setData(next);
+        count++;
+        if (terminal.has(next.state)) return;
+        if (
+          count >= 40 ||
+          ["failed", "uncertain"].includes(next.job?.state ?? "")
+        ) {
+          setDelayed(true);
+          return;
+        }
+        timer = setTimeout(() => void tick(), count < 8 ? 1500 : 5000);
+      } catch (e) {
+        if (active) {
+          setError((e as Error).message);
+          setDelayed(true);
+        }
+      }
+    };
     void tick();
-    const timer = setInterval(() => void tick(), 2500);
     return () => {
       active = false;
-      clearInterval(timer);
+      clearTimeout(timer);
     };
-  }, [id, token]);
-  const command = async (op: string) => {
-    setBusy(true);
-    setError("");
-    try {
-      const r = await fetch(`/store-api/payments/${id}/${op}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "sw-context-token": token,
-          "x-tenant": shopScope(),
-          "Idempotency-Key": `${id}:${op}:${crypto.randomUUID()}`,
-        },
-        body: "{}",
-      });
-      const v = await r.json();
-      if (!r.ok) throw new Error(v.errors?.[0]?.detail);
-      await load();
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
+  }, [id, token, returned, generation]);
+  const redirected = useRef(false);
+  useEffect(() => {
+    if (
+      autoRedirect &&
+      !returned &&
+      data?.state === "ready" &&
+      data.approvalUrl &&
+      !redirected.current
+    ) {
+      redirected.current = true;
+      window.location.assign(data.approvalUrl);
     }
+  }, [autoRedirect, returned, data?.state, data?.approvalUrl]);
+  const retry = () => {
+    action.current = shopApi(
+      `/store-api/payments/${id}/${data?.state === "approved" ? "capture" : "reconcile"}`,
+      { requestKey: `${id}:retry:${generation + 1}` },
+      token,
+    );
+    setGeneration((n) => n + 1);
   };
+  const paid =
+    data &&
+    ["captured", "captured_late", "partially_refunded", "refunded"].includes(
+      data.state,
+    );
   return (
-    <section className="app-slot payment-session">
-      <strong>{a("sandbox")}</strong>
-      <h3>{a(data?.state ?? "pending")}</h3>
-      {data && <p>{money(data.amountMinor / 100)}</p>}
-      {data?.approvalUrl && ["ready", "approved"].includes(data.state) && (
+    <section
+      className="payment-session"
+      aria-live="polite"
+      aria-busy={!data || (!terminal.has(data.state) && !delayed)}
+    >
+      <small>{x(data?.environment === "live" ? "live" : "test")}</small>
+      <h3>
+        {paid
+          ? x("paid")
+          : data && ["cancelled", "expired"].includes(data.state)
+            ? x("cancelled")
+            : x(
+                data?.state === "approved" || returned === "approved"
+                  ? "checking"
+                  : "pending",
+              )}
+      </h3>
+      {data && (
+        <strong>
+          {new Intl.NumberFormat(document.documentElement.lang || "en", {
+            style: "currency",
+            currency: data.currency,
+          }).format(data.amountMinor / 100)}
+        </strong>
+      )}
+      {paid && <p>{x("paidHint")}</p>}
+      {data?.approvalUrl && data.state === "ready" && !returned && (
         <a className="shop-primary" href={data.approvalUrl}>
-          {a("pay")}
+          {x("continuePay")}
         </a>
       )}
-      {data && ["ready", "approved"].includes(data.state) && (
-        <button
-          className="shop-secondary"
-          disabled={busy}
-          onClick={() => void command("capture")}
-        >
-          {a("capture")}
-        </button>
-      )}
-      <button
-        className="shop-secondary"
-        disabled={busy}
-        onClick={() => void command("reconcile")}
-      >
-        {a("refresh")}
-      </button>
-      {data && ["pending", "ready", "approved"].includes(data.state) && (
-        <button
-          className="shop-secondary"
-          disabled={busy}
-          onClick={() => void command("cancel")}
-        >
-          {a("cancel")}
-        </button>
+      {delayed && !paid && (
+        <>
+          <p>{x("delayed")}</p>
+          <button className="shop-secondary" onClick={retry}>
+            {x("retry")}
+          </button>
+        </>
       )}
       {error && <p role="alert">{error}</p>}
+      {data && !terminal.has(data.state) && !returned && (
+        <button
+          className="shop-text-button"
+          onClick={async () => {
+            try {
+              await shopApi(
+                `/store-api/payments/${id}/cancel`,
+                { requestKey: `${id}:customer-cancel` },
+                token,
+              );
+              retry();
+            } catch (e) {
+              setError((e as Error).message);
+            }
+          }}
+        >
+          {s("cancel")}
+        </button>
+      )}
     </section>
   );
 }

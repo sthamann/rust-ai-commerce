@@ -127,6 +127,7 @@ export type Cart = {
   lineItems: {
     id: string;
     label: string;
+    media?: Product["media"];
     quantity: number;
     minPurchase: number;
     purchaseSteps: number;
@@ -134,6 +135,8 @@ export type Cart = {
     price: Price;
   }[];
   shippingCosts: { totalPrice: number };
+  shippingMethodOptions?: Shipping[];
+  paymentMethodOptions?: Payment[];
   availableShippingMethods: Shipping[];
   availablePaymentMethods: Payment[];
   deliveries: { deliveryDate: { earliest: string; latest: string } }[];

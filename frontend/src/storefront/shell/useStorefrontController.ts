@@ -11,13 +11,14 @@ import {
   type Order,
   type Selection,
 } from "../../shared/api/shop-api";
-import { responseError } from "../../shared/i18n/errors-i18n";
+import { placeCheckoutOrder } from "../checkout/checkout-order";
 import { useShopText } from "../../shared/i18n/shop-i18n";
 import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
 import "../../shared/styles/apps.css";
 import "../../shared/styles/workbench.css";
 import { commerceEvent } from "../analytics/ShopAnalytics";
 import "../styles/shop.css";
+import "../styles/checkout.css";
 
 const session = localStorage.getItem("rac-session") || crypto.randomUUID();
 localStorage.setItem("rac-session", session);
@@ -222,39 +223,33 @@ export function useStorefrontController({
       );
     });
   const selection = async (checkout: Selection) => {
-    if (!cart) return;
-    save(
-      await shopApi<Cart>(
-        "/store-api/checkout/context",
-        { revision: cart.revision, checkout },
-        cart.token,
-        "PUT",
-      ),
+    if (!cart) throw new Error(s("empty"));
+    const next = await shopApi<Cart>(
+      "/store-api/checkout/context",
+      { revision: cart.revision, checkout },
+      cart.token,
+      "PUT",
     );
+    save(next);
+    return next;
   };
-  const buy = () =>
-    run(async () => {
-      if (!cart) return;
-      const r = await fetch("/store-api/checkout/order", {
-        method: "POST",
-        headers: {
-          "sw-context-token": cart.token,
-          "Idempotency-Key": `browser-${cart.id}`,
-          "x-commerce-locale": locale,
-          "x-tenant": shopTenant,
-          "sw-sales-channel-id": salesChannel,
-          ...(new URLSearchParams(location.search).get("sandbox") === "1"
-            ? {
-                Authorization: `Bearer ${sessionStorage.getItem("rac-user-token")}`,
-              }
-            : {}),
-        },
-      });
-      const o = await r.json();
-      if (!r.ok)
-        throw responseError(o.errors?.[0]?.detail ?? "Order failed", r.status);
+  const buy = async () => {
+    if (!cart || busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      const o = await placeCheckoutOrder(
+        cart,
+        locale,
+        shopTenant,
+        salesChannel,
+      );
       setOrder(o);
       if (o.payment.attemptId) {
+        localStorage.setItem(
+          `rac-payment-token:${o.payment.attemptId}`,
+          cart.token,
+        );
         setCart(
           await shopApi<Cart>(
             "/store-api/checkout/cart",
@@ -262,15 +257,25 @@ export function useStorefrontController({
             cart.token,
           ),
         );
-        localStorage.setItem(
-          `rac-payment-token:${o.payment.attemptId}`,
-          cart.token,
+      } else save(await shopApi<Cart>("/store-api/checkout/cart", { session }));
+    } catch (e) {
+      // Refresh a stale quote before a second explicit purchase. Never retry a charge silently.
+      try {
+        save(
+          await shopApi<Cart>(
+            "/store-api/checkout/cart",
+            undefined,
+            cart.token,
+          ),
         );
-        return;
+      } catch {
+        /* preserve the current cart for recovery */
       }
-      const next = await shopApi<Cart>("/store-api/checkout/cart", { session });
-      save(next);
-    });
+      throw e;
+    } finally {
+      setBusy(false);
+    }
+  };
 
   return {
     company,

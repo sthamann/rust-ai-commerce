@@ -154,13 +154,15 @@ antivirus or production object-storage pipeline.
 
 The PayPal wallet Orders v2 adapter supports configured Sandbox or Live
 create/approval/capture/reconcile/refund, webhook verification, durable pending
-refund lookup and amount/tenant/idempotency checks. The official public
-`shopwareAG_Cart_Shopware6_PPCP` attribution header is pinned in the adapter and
-attempts. Test fixtures verify that header on wire requests. This **does not**
-prove actual PayPal partner attribution or a real-money account transaction.
-Live mode requires a public HTTPS commerce origin and server-only per-shop
-credentials. Read [the original attribution constants](https://github.com/shopware/SwagPayPal/blob/8a1ba382ae1a770f76e415870f68103cd87faa96/src/RestApi/PartnerAttributionId.php)
-and [PayPal's request guidance](https://developer.paypal.com/api/make-api-requests/).
+refund lookup and amount/tenant/idempotency checks. Provider attribution must be explicitly configured per shop as server-only `bnCode`.
+The public adapter contains no active vendor-code fallback; released migration
+016 remains historical, while additive migration 039 removes its SQL default.
+Existing attempt snapshots retain their original attribution for reconciliation.
+Local fixtures use synthetic attribution and verify it on wire requests; they do
+not prove partner attribution or a real-money transaction. Live mode requires a
+public HTTPS commerce origin and private credentials. The proprietary connector
+and vendor-specific implementation belong in the private
+`sthamann/vendune-shopware-payments` repository. See [checkout](checkout.md).
 
 Advanced cards, vaulting, alternative methods, authorize/void, disputes and
 partner onboarding are not full ports. **Shopware Payments remains unconnected**:

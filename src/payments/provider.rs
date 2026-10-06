@@ -34,7 +34,8 @@ pub(crate) fn account(t: &str) -> Result<Account> {
         merchant: v["merchantId"].as_str().map(str::to_string),
         bn_code: v["bnCode"]
             .as_str()
-            .unwrap_or("shopwareAG_Cart_Shopware6_PPCP")
+            .filter(|s| !s.is_empty())
+            .ok_or(bad("Provider attribution configuration missing"))?
             .to_string(),
     })
 }

@@ -12,6 +12,7 @@
     "providers",
     "apps",
     "checkout_handoff",
+    "checkout_review",
     "payments",
     "services",
     "app_surfaces",

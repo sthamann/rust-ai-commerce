@@ -84,8 +84,8 @@ configuration records remain in that cart until the cart is discarded.
 
 `payments/provider.rs::PaymentProvider` is the native adapter boundary. The core
 owns amounts, order/cart authorization, idempotency, inventory and ledger states.
-The provider owns wire calls. The first adapter is PayPal **Sandbox Orders v2**,
-not Shopware Payments and not a live-payment integration.
+The provider owns wire calls. The first adapter is PayPal **Orders v2**, with configured Sandbox or Live environments.
+This is not Shopware Payments. Actual PSP account traffic remains unverified.
 
 Checkout atomically creates an immutable EUR-cent attempt, decrements and records
 reserved SKU quantities, and queues a create job. A separate worker performs
@@ -103,21 +103,23 @@ reconciliation. This follows the [Orders API](https://developer.paypal.com/api/r
 [idempotency](https://developer.paypal.com/api/rest/reference/idempotency/) and
 [webhook verification](https://developer.paypal.com/api/rest/webhooks/rest/) contracts.
 
-Configure server-only `PAYPAL_SANDBOX_ACCOUNTS` as a JSON object keyed by exact
-workspace ID, with `clientId`, `clientSecret`, `webhookId` and optionally `merchantId`.
+Configure server-only `PAYPAL_ACCOUNTS` (or legacy `PAYPAL_SANDBOX_ACCOUNTS`) as a JSON object keyed by exact
+workspace ID, with `clientId`, `clientSecret`, `webhookId`, explicit private `bnCode`,
+`environment` and optionally `merchantId`.
 Install the PayPal app in that shop and enable its Sandbox method in Sales &
 delivery. Set `PUBLIC_BASE_URL` to the browser-accessible origin. No credential is
 returned to the browser or sent to a model. The return flow relies on the original
 browser's cart context; hosted-agent handoff still needs a secure transfer token.
 
 ```text
-{"my-shop":{"clientId":"...","clientSecret":"...","webhookId":"...","merchantId":"..."}}
+{"my-shop":{"clientId":"...","clientSecret":"...","webhookId":"...","merchantId":"...","bnCode":"your-authorized-private-attribution","environment":"sandbox"}}
 ```
 
-The API origin is fixed to `https://api-m.sandbox.paypal.com`. Only an explicit
+The environment chooses `https://api-m.sandbox.paypal.com` or
+`https://api-m.paypal.com`; Live additionally requires HTTPS return URLs. Only an explicit
 loopback override is allowed for contract tests; such attempts are permanently
 labelled `contract-fixture`. Environment/version mismatches require the original
-adapter for reconciliation. No live PayPal endpoint is enabled.
+adapter for reconciliation. No actual Sandbox or Live transaction was run.
 
 Shopware's [Payments documentation](https://docs.shopware.com/en/shopware-6-en/shopware-services/shopware-payments)
 requires a valid Shopware installation and onboarding. A standalone integration
@@ -153,3 +155,5 @@ Million-product catalogs, thousands of merchants, tail latency and HA remain
 unmeasured. The next performance gate is comparable release-build workloads with
 identical cart semantics, database and catalog size; report p50/p95/p99, throughput,
 CPU/memory and model latency separately.
+
+[One-page checkout, approval return and the private Shopware Payments boundary](checkout.md).

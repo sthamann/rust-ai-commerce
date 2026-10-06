@@ -140,6 +140,10 @@ const SCHEMA: &[(&str, &str)] = &[
         "038-tenant-references",
         include_str!("../migrations/038-tenant-references.sql"),
     ),
+    (
+        "039-explicit-payment-attribution",
+        include_str!("../migrations/039-explicit-payment-attribution.sql"),
+    ),
 ];
 
 pub(crate) async fn apply(pool: &PgPool) {

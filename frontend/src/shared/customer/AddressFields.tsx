@@ -15,12 +15,14 @@ export default function AddressFields({
   countries,
   disabled = false,
   request,
+  autoCompleteSection,
 }: {
   value?: Address | null;
   onChange: (a: Address) => void;
   countries: string[];
   disabled?: boolean;
   request?: GeographyRequest;
+  autoCompleteSection?: "billing" | "shipping";
 }) {
   const { c, locale } = useCustomerText();
   const { i } = useInternationalText();
@@ -58,18 +60,19 @@ export default function AddressFields({
         maxLength={160}
         value={a[key] ?? ""}
         autoComplete={
-          (
-            {
-              firstName: "given-name",
-              lastName: "family-name",
-              street: "address-line1",
-              postalCode: "postal-code",
-              city: "address-level2",
-              phoneNumber: "tel",
-              company: "organization",
-            } as Record<string, string>
-          )[key]
+          [
+            "firstName",
+            "lastName",
+            "street",
+            "postalCode",
+            "city",
+            "phoneNumber",
+            "company",
+          ].includes(key)
+            ? `${autoCompleteSection ? `section-${autoCompleteSection} ${autoCompleteSection} ` : ""}${({ firstName: "given-name", lastName: "family-name", street: "address-line1", postalCode: "postal-code", city: "address-level2", phoneNumber: "tel", company: "organization" } as Record<string, string>)[key]}`
+            : undefined
         }
+        name={autoCompleteSection ? `${autoCompleteSection}-${key}` : key}
         onChange={(e) => set(key, e.target.value)}
       />
     </label>

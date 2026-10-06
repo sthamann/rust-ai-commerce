@@ -1,10 +1,10 @@
 # Lean-checked commerce contracts
 
-The prototype now runs Lean 4.29.1 proofs for **24 policies used in production
-Rust paths**. Fifty-two theorems cover the properties below. This is **not a
+The prototype now runs Lean 4.29.1 proofs for **25 policies used in production
+Rust paths**. Fifty-three theorems cover the properties below. This is **not a
 certificate that the entire commerce core is correct or bug-free**. The current
-inventory contains 245 Rust modules: one extracted policy module, 21 reviewed
-binding modules, one comparison driver and 222 unproved modules. Binding review
+inventory contains 251 Rust modules: one extracted policy module, 21 reviewed
+binding modules, one comparison driver and 228 unproved modules. Binding review
 is not a proof of those modules.
 
 ## Connection to the real application
@@ -52,6 +52,7 @@ they do not prove the translator correct for every program.
 | `cancellation_admissible` | Cancellation requires open deliveries and no external payment/refund constraint | `src/commerce/order_workflow.rs` |
 | `manual_payment_admissible` | Manual payment cannot confirm an external provider; it requires a pending payment and nonterminal order | `src/commerce/fulfillment.rs` |
 | `download_admissible` | Blocked orders grant no download; admitted downloads require payment or explicit simulated authorization | `src/assets/download.rs` |
+| `checkout_review_admissible` | Exact revision and amount equality plus confirmed methods are required when a client supplies the review headers | `src/order_checkout.rs` |
 | `checkout_contact_admissible` | Financial checkout requires email and billing data; simulated checkout has an explicit exception | `src/order_checkout.rs` |
 | `receipt_admissible` | Accepted provider receipts match amount and currency and confirm the outcome | `src/payments/receipt_guard.rs` |
 | `platform_admissible` | Operator access requires a personal identity, active grant and account | `src/platform/auth.rs` |
@@ -83,13 +84,13 @@ The existing **Verify prototype / verify** job now also:
    verification workflow also require an explicit recorded review after changes.
 3. Builds proofs with the pinned Lean toolchain and rechecks compiled declarations
    using bundled `leanchecker`.
-4. Audits all 52 required theorems' transitive axioms. Only Lean's standard
+4. Audits all 53 required theorems' transitive axioms. Only Lean's standard
    `propext`, `Quot.sound` and `Classical.choice` foundations are allowed. `sorry`,
    `admit`, custom axioms, `native_decide` and missing theorem audits fail.
-5. Executes compiled Rust and Lean functions on **4,168** identical inputs:
+5. Executes compiled Rust and Lean functions on **4,914** identical inputs:
    exhaustive Boolean assignments plus numeric boundaries/random cases, including
    `u64::MAX`. Their output types and values must match.
-6. Requires Lean to reject **49** deliberately broken policy variants. Also
+6. Requires Lean to reject **61** deliberately broken policy variants. Also
    rejects 14 unsupported grammar examples, three stale/unclassified/disconnected
    inventory cases and nine proof-shortcut/axiom/missing-audit examples.
 7. Runs existing Rust, PHP-reference and real PostgreSQL HTTP regressions.
@@ -205,3 +206,5 @@ Their real HTTP/PostgreSQL and component regressions are documented in
 ## App assistant access policies (2026-10-05)
 
 Two production-bound decisions add four theorems: MCP tool exposure requires both explicit enablement and current action authorization; customer/order core references must be private, while product references may be public. The real MCP ingress and manifest validator consume these functions. The async scheduler, HMAC parser, SQL receipt transactions, native renderer and provider integrations are not proved. Real disposable PostgreSQL/HTTP tests cover owned references, team scopes, MCP opt-out, webhook-to-flow effects and cold-restored cron/replay receipts.
+
+The checkout review theorem covers the exact pure admission predicate. Header parsing, SQL/cart pricing, provider jobs and the browser remain unproved adapters. Real HTTP tests reject stale/partial/malformed reviews without orders or stock writes and preserve committed-order replay. See [checkout](checkout.md).

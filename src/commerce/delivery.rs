@@ -103,6 +103,31 @@ pub(crate) fn enrich(
     q["checkout"] = json!(selected);
     q["configurationRevision"] = json!(revision);
     q["availableCountries"] = json!(s.countries);
+    // Candidates support country edits on one page. They are not an admission decision.
+    q["shippingMethodOptions"] = json!(
+        s.shipping
+            .iter()
+            .filter(|v| v.active)
+            .map(|v| super::method_text::localized_shipping(v, &c.data.locale, s))
+            .collect::<Vec<_>>()
+    );
+    q["paymentMethodOptions"] = json!(
+        s.payments
+            .iter()
+            .filter(|v| v.active && (!v.business_only || s.is_business(&c.data.group)))
+            .map(|v| {
+                let mut method = super::method_text::localized_payment(v, &c.data.locale, s);
+                method["countries"] = json!(
+                    s.countries
+                        .iter()
+                        .filter(|country| v.available_in(country))
+                        .collect::<Vec<_>>()
+                );
+                method["restrictedCountries"] = json!(true);
+                method
+            })
+            .collect::<Vec<_>>()
+    );
     q["availableShippingMethods"] = json!(
         s.shipping
             .iter()

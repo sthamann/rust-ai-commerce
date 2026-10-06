@@ -1,8 +1,9 @@
-//! Provider-independent payment ledger and durable workers; the first adapter is explicitly PayPal Sandbox.
+//! Provider-independent payment ledger and durable workers; the PayPal adapter supports explicit Sandbox/Live environments.
 use crate::*;
 mod operations;
 mod paypal;
 mod provider;
+mod return_urls;
 mod routes;
 mod storage;
 mod webhooks;

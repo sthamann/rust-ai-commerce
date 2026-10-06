@@ -75,4 +75,7 @@ def app_tool_admissible (enabled : Bool) (authorized : Bool) : Bool :=
 def app_core_reference_admissible (product : Bool) (private_data : Bool) : Bool :=
   (product || private_data)
 
+def checkout_review_admissible (revision_matches : Bool) (expected_total : Nat) (actual_total : Nat) (methods_confirmed : Bool) : Bool :=
+  ((revision_matches && (decide (expected_total = actual_total))) && methods_confirmed)
+
 end CommerceKernel

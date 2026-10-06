@@ -77,21 +77,20 @@ pub(crate) async fn execute(
 ) -> Result<Value> {
     match op {
         "create" => {
-            let origin = env::var("COMMERCE_PUBLIC_ORIGIN")
-                .or_else(|_| env::var("PUBLIC_BASE_URL"))
-                .unwrap_or("http://127.0.0.1:8787".into());
-            let origin_url =
-                reqwest::Url::parse(&origin).map_err(|_| bad("Invalid commerce public origin"))?;
-            if environment() == "live" && origin_url.scheme() != "https" {
-                return Err(bad("Live payment return URL requires HTTPS"));
-            }
-            let url = format!(
-                "{}/?shop={}#payment/{}",
-                origin.trim_end_matches('/'),
-                p.tenant,
-                p.id
-            );
-            let body = json!({"intent":"CAPTURE","purchase_units":[{"reference_id":p.id,"custom_id":p.id,"invoice_id":p.order,"amount":{"currency_code":p.currency,"value":amount_string(p.amount)}}],"payment_source":{"paypal":{"experience_context":{"user_action":"PAY_NOW","return_url":url,"cancel_url":url}}}});
+            let channel: Option<String> = sqlx::query_scalar(
+                "SELECT c.data->>'sales_channel' FROM orders o JOIN carts c ON c.tenant=o.tenant AND c.id=o.cart_id WHERE o.tenant=$1 AND o.id=$2",
+            )
+            .bind(&p.tenant)
+            .bind(&p.order)
+            .fetch_one(&a.db)
+            .await?;
+            let (return_url, cancel_url) = super::return_urls::urls(
+                &p.tenant,
+                channel.as_deref().unwrap_or("default"),
+                &p.id,
+                environment() == "live",
+            )?;
+            let body = json!({"intent":"CAPTURE","purchase_units":[{"reference_id":p.id,"custom_id":p.id,"invoice_id":p.order,"amount":{"currency_code":p.currency,"value":amount_string(p.amount)}}],"payment_source":{"paypal":{"experience_context":{"user_action":"PAY_NOW","return_url":return_url,"cancel_url":cancel_url}}}});
             wire(
                 a,
                 &p.tenant,

@@ -1,6 +1,12 @@
 /** Localized request guidance across all transports; original diagnostics remain available to developer tools. */
 import { getLocale } from "./i18n";
 const messages: Record<string, readonly string[]> = {
+  "Checkout changed; review your order again": [
+    "The price or checkout changed. Review your order again before placing it.",
+    "Preis oder Checkout haben sich geändert. Prüfe die Bestellung vor dem Abschluss erneut.",
+    "Le prix ou la commande a changé. Vérifiez avant de commander.",
+    "El precio o el pedido cambió. Revisa antes de realizar el pedido.",
+  ],
   "Database capacity busy; retry later": [
     "The shop is busy. Please try again shortly.",
     "Der Shop ist gerade ausgelastet. Bitte versuche es gleich erneut.",

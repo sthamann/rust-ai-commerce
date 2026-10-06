@@ -34,8 +34,10 @@ async fn customer_status(
 }
 pub(crate) async fn read(a: &App, t: &str, id: &str) -> Result<Value> {
     let r=sqlx::query("SELECT state,approval_url,amount_minor,currency,refunded_minor,revision,environment FROM payment_attempts WHERE tenant=$1 AND id=$2").bind(t).bind(id).fetch_optional(&a.db).await?.ok_or(Error(StatusCode::NOT_FOUND,"Payment not found".into()))?;
+    let job = sqlx::query("SELECT id,operation,state FROM payment_jobs WHERE tenant=$1 AND attempt_id=$2 ORDER BY created_at DESC,id DESC LIMIT 1")
+        .bind(t).bind(id).fetch_optional(&a.db).await?.map(|j| json!({"id":j.get::<String,_>("id"),"operation":j.get::<String,_>("operation"),"state":j.get::<String,_>("state")}));
     Ok(
-        json!({"id":id,"state":r.get::<String,_>("state"),"approvalUrl":r.get::<Option<String>,_>("approval_url"),"amountMinor":r.get::<i64,_>("amount_minor"),"currency":r.get::<String,_>("currency"),"refundedMinor":r.get::<i64,_>("refunded_minor"),"revision":r.get::<i64,_>("revision"),"environment":r.get::<String,_>("environment"),"realMoneyCharged":r.get::<String,_>("environment")=="live" && ["captured","captured_late","partially_refunded","refunded"].contains(&r.get::<String,_>("state").as_str())}),
+        json!({"job":job,"id":id,"state":r.get::<String,_>("state"),"approvalUrl":r.get::<Option<String>,_>("approval_url"),"amountMinor":r.get::<i64,_>("amount_minor"),"currency":r.get::<String,_>("currency"),"refundedMinor":r.get::<i64,_>("refunded_minor"),"revision":r.get::<i64,_>("revision"),"environment":r.get::<String,_>("environment"),"realMoneyCharged":r.get::<String,_>("environment")=="live" && ["captured","captured_late","partially_refunded","refunded"].contains(&r.get::<String,_>("state").as_str())}),
     )
 }
 async fn customer_command(

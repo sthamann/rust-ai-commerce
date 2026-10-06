@@ -49,6 +49,8 @@ merchants require a separate license. [See the usage guide](docs/licensing.md).
 
 ## New in Studio
 
+- **One-page checkout.** Address, delivery and payment together; review the server quote, then place one explicit order. Price changes require a fresh review. [Checkout contract](docs/checkout.md).
+
 - **Write visually or in Markdown.** One safe product document, one content language, guarded drafts.
 - **Review variants before creation.** Option groups, combinations, individual SKUs/prices/stock and duplicate protection.
 - **Connect with precise access.** Developer → API & integrations: scoped keys valid for 1–90 days, source-derived endpoint explorer and live read tests.
@@ -56,6 +58,8 @@ merchants require a separate license. [See the usage guide](docs/licensing.md).
 - **Discover standard apps immediately.** Fresh shops see the bundled catalog without silently activating external integrations.
 
 [Explore the Studio integration guide](docs/studio-api-and-channels.md).
+
+[![One-page checkout with real server quote and synthetic customer details](docs/assets/vendune-checkout-en.png)](docs/checkout.md)
 
 | Visual + Markdown editing | API + MCP explorer | Sales channels |
 | :---: | :---: | :---: |
@@ -181,7 +185,7 @@ can contribute to the real cart, including engraving or gift-message fees.
 | **Gmail** | Import a support label into private merchant knowledge | [Connected apps](docs/connected-apps.md) |
 | **Slack** | Order notifications and rule-bound flow actions | [Connected apps](docs/connected-apps.md) |
 | **SMTP / Resend / SendGrid** | Configurable transactional templates, previews and durable delivery queue | [Email delivery](docs/email-delivery.md) |
-| **PayPal Sandbox** | Prototype external payment adapter and local protocol fixtures | [Payment scope](docs/intelligence-apps-payments.md) |
+| **PayPal Orders v2** | Prototype external payment adapter and local protocol fixtures | [Payment scope](docs/intelligence-apps-payments.md) |
 
 Provider credentials and account authorization are separate setup steps. Default
 installation sends no external emails or Slack messages. Provider fixtures verify
@@ -238,7 +242,7 @@ repeated reads; checkout keeps authoritative transactional reads.
   are checked against original Shopware **6.7.14.2** PHP classes. The
   [feature matrix](docs/shopware-parity.md) distinguishes native behavior,
   partial ports and missing features.
-- **Partial formal verification:** **24 extracted production policies and 52
+- **Partial formal verification:** **25 extracted production policies and 53
   Lean-proved properties**, with Rust/Lean conformance and negative mutations.
   [Exact proof boundary](docs/formal-verification.md); no entire-core certificate.
 - **Measured performance:** recorded local tests use **1,000,000 products and
@@ -254,11 +258,11 @@ repeated reads; checkout keeps authoritative transactional reads.
 
 | Area | Current scope |
 | --- | --- |
-| **Payments** | Simulated/manual or prototype PayPal Sandbox. No real money charged; supported Shopware Payments and live payment validation are missing. |
+| **Payments** | Simulated/manual or configured PayPal Sandbox/Live Orders v2. Local protocol fixtures are verified; actual PSP transactions remain unverified. Shopware Payments requires its private connector and official integration access. |
 | **SaaS isolation** | Tenant-scoped API/MCP operations and 22 composite relationship constraints are tested. Core-wide RLS is absent; the local database role is a superuser. [Actual guarantees and remaining work](docs/tenant-isolation.md). |
 | **Shopware compatibility** | Selected behavior ports, not complete DAL/Admin API/Store API, CMS, Rule/Flow or extension compatibility. |
 | **Agents and models** | Selected MCP/UCP capabilities; not full protocol conformance. Hosted client setup, production OAuth, live model quality and causal learning gains remain separate work. |
-| **Hosting** | Public Studio and health endpoint reachable at [app.vendune.ai](https://app.vendune.ai/#merchant); Northflank deployment and prepared Vercel/self-hosted paths. Root vendune.ai currently has a TLS configuration issue. This is not a production checkout certification. |
+| **Hosting** | Public Studio and health endpoint reachable at [app.vendune.ai](https://app.vendune.ai/#merchant); Northflank deployment and prepared Vercel/self-hosted paths. Browser MCP admits the configured `app.vendune.ai` origin and rejects foreign origins. This is not a production checkout certification. |
 | **Apps** | Executable declarative packages and separately deployed services. Automatic arbitrary compilation, bundle signing and hostile-code microVM isolation are not implemented. |
 
 Use synthetic data for the playground. Deployment instructions do not establish
