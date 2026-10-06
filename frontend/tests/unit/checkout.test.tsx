@@ -10,7 +10,7 @@ import userEvent from "@testing-library/user-event";
 import { useState, StrictMode } from "react";
 import { describe, it, expect, vi } from "vitest";
 import { cart as base } from "./fixtures";
-import type { Cart } from "../../src/shared/api/shop-api";
+import type { Cart, Order } from "../../src/shared/api/shop-api";
 import { LocaleProvider } from "../../src/shared/i18n/i18n";
 import CheckoutPanel from "../../src/storefront/checkout/CheckoutPanel";
 import PaymentSession from "../../src/storefront/checkout/PaymentSession";
@@ -172,7 +172,50 @@ describe("One-page purchase", () => {
       "Idempotency-Key": "browser-unit-cart",
     });
   });
+  it("recovers a committed order after a lost reply without another purchase", async () => {
+    const committed = { id: "committed-order" } as Order;
+    const fetch = vi.fn().mockRejectedValue(new Error("Connection lost"));
+    vi.stubGlobal("fetch", fetch);
+    api.mockReset().mockResolvedValue({
+      ...fixture(),
+      status: "completed",
+      order: committed,
+    });
+    await expect(
+      placeCheckoutOrder(fixture(), "en-GB", "tenant-a", "default"),
+    ).resolves.toEqual(committed);
+    expect(fetch).toHaveBeenCalledOnce();
+    expect(api).toHaveBeenCalledExactlyOnceWith(
+      "/store-api/checkout/cart",
+      undefined,
+      fixture().token,
+    );
+  });
+  it.each(["active", "foreign", "unavailable"])(
+    "preserves the original failure for %s recovery without a purchase retry",
+    async (mode) => {
+      const failure = new Error("Connection lost");
+      const fetch = vi.fn().mockRejectedValue(failure);
+      vi.stubGlobal("fetch", fetch);
+      api.mockReset();
+      if (mode === "unavailable")
+        api.mockRejectedValue(new Error("Read failed"));
+      else
+        api.mockResolvedValue({
+          ...fixture(),
+          status: mode === "active" ? "active" : "completed",
+          id: mode === "foreign" ? "other-cart" : fixture().id,
+          order: { id: "committed-order" },
+        });
+      await expect(
+        placeCheckoutOrder(fixture(), "en-GB", "tenant-a", "default"),
+      ).rejects.toBe(failure);
+      expect(fetch).toHaveBeenCalledOnce();
+      expect(api).toHaveBeenCalledOnce();
+    },
+  );
   it("surfaces a changed price without retrying the financial command", async () => {
+    api.mockReset().mockResolvedValue(fixture());
     const fetch = vi.fn().mockResolvedValue({
       ok: false,
       status: 409,

@@ -62,4 +62,8 @@ restored public browser MCP: allowed origin 200, foreign origin 403. An authenti
 merchant created fresh synthetic shops; on the current loaded Studio the new shop
 retained its session immediately. Products, eight discoverable standard apps and
 MCP tools/list worked. Reload tabs opened before the release to load its new bundle.
+The subsequent `75bd24a` checkout release completed its backup, migration and
+readiness workflow. Its public one-page checkout saved synthetic order
+`RAC-7cdc9432` with structured address, standard shipping and explicitly simulated
+payment (EUR 79.80). No real payment was made.
 This check does not certify actual payments or production SaaS security.

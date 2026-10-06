@@ -60,11 +60,13 @@ existing attempt snapshots remain intact for reconciliation/refunds.
 ## Verification
 
 `frontend/tests/unit/checkout.test.tsx` checks quote review, preserved drafts,
-validation, amount/revision transport, failed review, StrictMode return/recovery
+validation, amount/revision transport, failed review, lost order-create reply, StrictMode return/recovery
 and terminal polling. `scripts/checkout_review.py` exercises real PostgreSQL/HTTP
 rejections, unchanged stock/orders, tenant ownership and committed replay.
 `scripts/payments.py` uses a local wire provider for forged return, automatic
 approval capture, lost reply, refunds, webhook verification and restart.
+
+If an order-create reply is lost, the browser reads the same cart once and restores its committed order. Active or different carts and failed reads preserve the original error. It never repeats the purchase command as a recovery action.
 
 No actual PSP transaction or live-money charge is claimed. Accelerated wallets,
 advanced cards, vaulting, authorize/void, disputes and full original payment parity
