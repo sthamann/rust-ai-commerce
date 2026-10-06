@@ -177,7 +177,6 @@ it("offers one shared sign-in path instead of stale shop overview after product 
   const user = userEvent.setup();
   await within(navigation).findByRole("button", {
     name: "Products",
-    exact: true,
   });
   await user.click(
     within(navigation).getByRole("button", { name: "Shop today" }),
@@ -185,7 +184,7 @@ it("offers one shared sign-in path instead of stale shop overview after product 
   await screen.findByRole("heading", { name: "Your shop, at a glance." });
   expired = true;
   await user.click(
-    within(navigation).getByRole("button", { name: "Products", exact: true }),
+    within(navigation).getByRole("button", { name: "Products" }),
   );
   const notice = await screen.findByRole("alert");
   expect(notice).toHaveTextContent("Your Studio session has expired.");
@@ -200,7 +199,5 @@ it("offers one shared sign-in path instead of stale shop overview after product 
   ).not.toBeInTheDocument();
   expect(sessionStorage.getItem("rac-user-token")).toBeNull();
   await user.click(within(notice).getByRole("button", { name: /sign in/i }));
-  expect(
-    await screen.findByRole("textbox", { name: "Email", exact: true }),
-  ).toBeVisible();
+  expect(await screen.findByRole("textbox", { name: "Email" })).toBeVisible();
 });
