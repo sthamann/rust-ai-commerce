@@ -242,6 +242,9 @@ bounded fuel/memory and no network/filesystem access.
 [Security](docs/security.md) · [Managed hosting](docs/managed-hosting.md) ·
 [Complete feature scope](docs/features.md).
 
+Adding another settlement rail requires invoice-bound server verification and
+ledger integration. [Payment provider requirements and current limits](docs/payment-provider-contributions.md).
+
 ## License and contributions
 
 **Source available under the [Vendune Sustainable Use License 1.0](LICENSE).**

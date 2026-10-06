@@ -107,3 +107,9 @@ activation, unsupported destinations, provider failure, stale replies and receip
 The actual local browser path created simulated order RAC-74ab58ea (249 EUR), reloaded
 its receipt and checked a 390px viewport without horizontal overflow. Screenshots and
 browser checks are development evidence, not a conversion-rate claim or live payment.
+
+## Additional payment methods
+
+See [payment provider contributions](payment-provider-contributions.md) for the
+current native adapter boundary, invoice/receipt requirements and the deferred
+Nano/XNO proposal. Declaring an app payment method alone cannot mark orders paid.
