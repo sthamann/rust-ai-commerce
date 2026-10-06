@@ -1,6 +1,12 @@
 /** Localized request guidance across all transports; original diagnostics remain available to developer tools. */
 import { getLocale } from "./i18n";
 const messages: Record<string, readonly string[]> = {
+  "Account already exists": [
+    "An account with this email already exists. Sign in instead.",
+    "Für diese E-Mail besteht bereits ein Konto. Bitte melde dich an.",
+    "Un compte existe déjà avec cette adresse e-mail. Connectez-vous.",
+    "Ya existe una cuenta con este correo. Inicia sesión.",
+  ],
   "Checkout changed; review your order again": [
     "The price or checkout changed. Review your order again before placing it.",
     "Preis oder Checkout haben sich geändert. Prüfe die Bestellung vor dem Abschluss erneut.",

@@ -5,6 +5,7 @@ mod image_jobs;
 mod image_provider;
 mod rich;
 mod rich_document;
+pub(crate) use rich_document::safe_url;
 mod upload;
 pub(crate) use image_jobs::image_once;
 pub(crate) use rich::validate_rich;

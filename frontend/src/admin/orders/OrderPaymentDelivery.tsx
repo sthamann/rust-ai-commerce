@@ -1,4 +1,6 @@
 /** Payment jobs are observed until confirmation. Delivery actions share the server state machine. */
+import { safeRichUrl } from "../../shared/content/rich-document";
+import { useAccountText } from "../../shared/i18n/account-i18n";
 import { useState } from "react";
 import { useOperationsText } from "../../shared/i18n/operations-i18n";
 import { usePaymentProviderText } from "../../shared/i18n/payment-provider-i18n";
@@ -15,12 +17,14 @@ export default function OrderPaymentDelivery({
   order: any;
   busy: boolean;
   rights: string[];
-  onAction: (a: OrderAction, tracking?: string) => void;
+  onAction: (a: OrderAction, tracking?: string, trackingUrl?: string) => void;
   onPayment: (operation: string, amount?: number) => Promise<boolean>;
   pendingJob: boolean;
   onCheck: () => void;
 }) {
   const { o } = useOperationsText();
+  const { a: accountText } = useAccountText();
+  const [links, setLinks] = useState<Record<number, string>>({});
   const paymentText = usePaymentProviderText();
   const [tracking, setTracking] = useState<Record<number, string>>({});
   const [refund, setRefund] = useState("");
@@ -119,6 +123,16 @@ export default function OrderPaymentDelivery({
               <span className="operation-status">{o(d.state)}</span>
             </div>
             {d.trackingCode && <p>{d.trackingCode}</p>}
+            {d.trackingUrl?.startsWith("https://") &&
+              safeRichUrl(d.trackingUrl) && (
+                <a
+                  href={d.trackingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {accountText("trackShipment")}
+                </a>
+              )}
             {rights.includes("orders.write") &&
               actions
                 .filter(
@@ -128,24 +142,43 @@ export default function OrderPaymentDelivery({
                 .map((a: OrderAction) => (
                   <div key={a.id}>
                     {a.state === "shipped" && (
-                      <label>
-                        {o("tracking")}
-                        <input
-                          value={tracking[index] ?? ""}
-                          onChange={(e) =>
-                            setTracking({
-                              ...tracking,
-                              [index]: e.target.value,
-                            })
-                          }
-                          maxLength={100}
-                        />
-                      </label>
+                      <>
+                        <label>
+                          {o("tracking")}
+                          <input
+                            value={tracking[index] ?? ""}
+                            onChange={(e) =>
+                              setTracking({
+                                ...tracking,
+                                [index]: e.target.value,
+                              })
+                            }
+                            maxLength={100}
+                          />
+                        </label>
+                        <label>
+                          {accountText("trackingUrl")}
+                          <input
+                            type="url"
+                            maxLength={2000}
+                            value={links[index] ?? ""}
+                            onChange={(e) =>
+                              setLinks({ ...links, [index]: e.target.value })
+                            }
+                          />
+                        </label>
+                      </>
                     )}
                     <button
                       disabled={busy || !a.enabled}
                       className="studio-primary"
-                      onClick={() => onAction(a, tracking[index] ?? "")}
+                      onClick={() =>
+                        onAction(
+                          a,
+                          tracking[index] ?? "",
+                          links[index] ?? d.trackingUrl ?? "",
+                        )
+                      }
                     >
                       {label(a)}
                     </button>

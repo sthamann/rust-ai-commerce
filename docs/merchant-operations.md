@@ -40,7 +40,9 @@ it does not map every original Shopware UUID or DAL association.
 | `PUT/DELETE /store-api/account/addresses/{id}` | Revision-checked edits/deletion; composite foreign keys preserve customer/tenant ownership |
 | `PUT /store-api/checkout/context` | Contact, billing/shipping addresses or owning address IDs; method/country eligibility and cart revision checks |
 | `POST /store-api/checkout/order` | Idempotent stock-locked order; copied customer and addresses, prices/taxes, delivery and payment records |
-| `GET /store-api/account/orders` | Own order history, no shopper context tokens |
+| `GET /store-api/account/orders` | Own cursor-paginated orders; explicit shopper projection excludes context tokens, checkout credentials and internal automation/notes |
+| `GET /store-api/account/orders/{id}` | Same customer/tenant ownership predicate, immutable addresses, current payment/delivery, translated workflow state labels and issued document metadata |
+| `GET /store-api/account/orders/{order}/receipts/{id}/pdf` | Owned-order plus tenant/order/receipt binding; same immutable PDF renderer as Studio |
 | `POST /store-api/account/password` / `logout` | Password changes revoke previous sessions; logout revokes its session and invalidates the supplied open authenticated cart |
 
 Customer requests use `x-tenant` and `x-customer-token`. Cart requests additionally
@@ -181,3 +183,41 @@ workflow/flow/app events and selective staging. `payments.py` uses a local provi
 wire fixture; `services.py` runs a separate real app process with durable inbox.
 These are meaningful behavioral tests, not a claim of 100% line coverage or
 complete upstream feature/API equivalence.
+
+## Storefront account experience
+
+The responsive account dialog separates sign-in and registration and keeps profile,
+address book, purchases, downloads and password management in dedicated views.
+Sign-in creates an open cart context when necessary and rotates it after credential
+verification. Expired account sessions remove private data and reopen sign-in.
+A password change revokes previous account sessions. Contact/address changes never
+rewrite an existing purchase or an issued invoice.
+
+```mermaid
+flowchart LR
+  Login[Sign in / register] --> Session[Tenant-scoped customer session]
+  Session --> Profile[Profile and address defaults]
+  Session --> Orders[Owned purchases]
+  Orders --> Detail[Order snapshot + current fulfillment]
+  Detail --> Receipts[Issued immutable PDFs]
+  Detail --> Tracking[Validated HTTPS tracking link]
+  Session --> Downloads[Paid digital entitlements]
+  Studio[Studio / MCP delivery transition] --> Detail
+```
+
+Receipt creation remains a merchant operation; shoppers download documents already
+issued by the shop. Tracking links are supplied by merchants as `trackingUrl` alongside
+`trackingCode` in delivery transitions, through the existing revision/idempotency/event
+path. URLs must be HTTPS without embedded credentials, backslashes or control lines;
+no carrier is guessed from a tracking number. The storefront defensively checks them
+again and opens links with `noopener noreferrer`. Tracking does not poll carriers.
+Downloads remain server-authorized paid entitlements, including the explicitly simulated
+payment fixture; the interface does not unlock files based on its own displayed status.
+Guest purchases are not attached to registered accounts merely by matching email.
+
+Real HTTP regressions include anonymous, other-customer and foreign-shop order/receipt
+access; mismatched order/receipt IDs; immutable PDF equality; unsafe tracking rejection
+without a revision mutation; and the latest delivery state returned to the customer.
+Selected extracted Lean policies still cover only their documented production decisions,
+not these complete async/SQL/UI paths. Email changes, password-recovery email workflows
+and carrier push integrations are separate future capabilities.

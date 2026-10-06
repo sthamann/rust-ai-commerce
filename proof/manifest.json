@@ -318,13 +318,18 @@
     },
     "src/accounts/mod.rs": {
       "status": "unproved",
-      "sha256": "2abeba2552625dd124ef830bfd7eb644bdf7ddaa5196b09ec314a8a538095d21",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "830abaf201e4ece0b1984e9a515c2d01e9f60ec57406b8ab4191e0e71acdc9cb",
+      "review": "Reviewed customer order ownership reuse and shopper projection, customer receipts bound to tenant/order/receipt through the same immutable PDF renderer, HTTPS tracking validation reusing existing rich URL policy, and MCP tracking schema. Real customer HTTP tests reject anonymous/foreign/mismatched IDs, compare customer and merchant PDF bytes, reject unsafe URLs without revision changes and observe live delivery updates. Async SQL and UI paths remain explicitly unproved."
     },
     "src/accounts/order_snapshot.rs": {
       "status": "unproved",
       "sha256": "80217419109b1e8684b7a5cf913660f766ad422917c2c9c5c82f1f25d87b5e8a",
       "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+    },
+    "src/accounts/orders.rs": {
+      "status": "unproved",
+      "sha256": "9884374d5178b46cbaddbddfb2b13ff606434a5e0d6ff816306ea409b458754c",
+      "review": "Reviewed shared customer/tenant order ownership for list/detail/PDF, shopper-only projection, immutable receipt renderer, HTTPS tracking via existing URL policy and MCP schema. Cursor pagination validates its boundary through the same ownership path and uses created_at/id ordering for tied timestamps; SQL and UI remain explicitly unproved. Real HTTP tests cover foreign/anonymous IDs, byte-equal PDFs, unsafe links without writes, password/session revocation and tied cursor pages."
     },
     "src/accounts/profile.rs": {
       "status": "unproved",
@@ -478,8 +483,8 @@
     },
     "src/assets/mod.rs": {
       "status": "unproved",
-      "sha256": "debc44bf6e25520cdb40e09a19e5098d75d9836dc33fef91f8dd2b794160bcf8",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "ba0fa3a9b8c2a510e518a3d85ccf47bb33b9669ff83ce6348d6bc9b27760430b",
+      "review": "Reviewed customer order ownership reuse and shopper projection, customer receipts bound to tenant/order/receipt through the same immutable PDF renderer, HTTPS tracking validation reusing existing rich URL policy, and MCP tracking schema. Real customer HTTP tests reject anonymous/foreign/mismatched IDs, compare customer and merchant PDF bytes, reject unsafe URLs without revision changes and observe live delivery updates. Async SQL and UI paths remain explicitly unproved."
     },
     "src/assets/rich.rs": {
       "status": "unproved",
@@ -488,8 +493,8 @@
     },
     "src/assets/rich_document.rs": {
       "status": "unproved",
-      "sha256": "c3c24c03ab56edd55dbc55eef9ba5e9863fd4b2910c1d67a57c9bfeafbcb6fff",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "a91f1eba45e24f8e0e3c532853785f7292c4ff71abbcb582f47b169217e5fbcb",
+      "review": "Reviewed customer order ownership reuse and shopper projection, customer receipts bound to tenant/order/receipt through the same immutable PDF renderer, HTTPS tracking validation reusing existing rich URL policy, and MCP tracking schema. Real customer HTTP tests reject anonymous/foreign/mismatched IDs, compare customer and merchant PDF bytes, reject unsafe URLs without revision changes and observe live delivery updates. Async SQL and UI paths remain explicitly unproved."
     },
     "src/assets/upload.rs": {
       "status": "unproved",
@@ -783,8 +788,8 @@
     },
     "src/commerce/fulfillment.rs": {
       "status": "reviewed-binding",
-      "sha256": "69eafd8e9f077513ff922a31516bf9dfacfa23964036acf33c55e82ce1982e0b",
-      "review": "Reviewed all changed Rust, append-only schemas, build/extraction and Lean inputs: lease hooks bind new/reused connections and reset on release; strict runtime rejects owner/bypass/TRUNCATE and preserves app-schema ownership; two-replica non-owner PostgreSQL tests deny forged foreign writes, enforce operator quotas and parent-stage daily usage, release persisted allocation quantities once despite corrupted snapshots, and distinguish commit from rollback invalidation. Money retains legacy EUR rounding with explicit scale and original Shopware differential; receipt-backed state admission is monotonic with late capture/refund. Async SQL/provider code remains unproved. Rust 113 tests, staging/app/automation/settings and strict checkout/CRM/tenant regressions passed; 274 frontend tests and production build passed."
+      "sha256": "60543374e319af636736d5646660a092bd6a5e9f55c2845541dc2af80a9559b3",
+      "review": "Reviewed customer order ownership reuse and shopper projection, customer receipts bound to tenant/order/receipt through the same immutable PDF renderer, HTTPS tracking validation reusing existing rich URL policy, and MCP tracking schema. Real customer HTTP tests reject anonymous/foreign/mismatched IDs, compare customer and merchant PDF bytes, reject unsafe URLs without revision changes and observe live delivery updates. Async SQL and UI paths remain explicitly unproved."
     },
     "src/commerce/geography.rs": {
       "status": "unproved",
@@ -1278,8 +1283,8 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "1722899bc04e6ef8da9d61f9214813bccaa6831a1bd2c8767c44f5a906f8b4cd",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "d8c5216ed8adf7f6596dfc01a4f44160f0a5beaf89d340983e39f6c5f470f005",
+      "review": "Reviewed customer order ownership reuse and shopper projection, customer receipts bound to tenant/order/receipt through the same immutable PDF renderer, HTTPS tracking validation reusing existing rich URL policy, and MCP tracking schema. Real customer HTTP tests reject anonymous/foreign/mismatched IDs, compare customer and merchant PDF bytes, reject unsafe URLs without revision changes and observe live delivery updates. Async SQL and UI paths remain explicitly unproved."
     },
     "src/migrations/schema.rs": {
       "status": "unproved",
@@ -1328,8 +1333,8 @@
     },
     "src/operations/mod.rs": {
       "status": "unproved",
-      "sha256": "9657ab8112897108f70e1d36795d977c864c447190f2a910090eb9aa900e971e",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "eede84fd1b3d8a072f3daf1df26171b2028d07a35e6cf8e96551d39141f3582b",
+      "review": "Reviewed customer order ownership reuse and shopper projection, customer receipts bound to tenant/order/receipt through the same immutable PDF renderer, HTTPS tracking validation reusing existing rich URL policy, and MCP tracking schema. Real customer HTTP tests reject anonymous/foreign/mismatched IDs, compare customer and merchant PDF bytes, reject unsafe URLs without revision changes and observe live delivery updates. Async SQL and UI paths remain explicitly unproved."
     },
     "src/operations/orders.rs": {
       "status": "unproved",
@@ -1348,8 +1353,8 @@
     },
     "src/operations/receipts.rs": {
       "status": "unproved",
-      "sha256": "bade9ad0afa3e8cb7ee7ca45717c3e2c24718367beddb4d6f443f137e7997626",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "1220b42a95f9dce6c030fa15474a621f4776c62fad61ad65f7c7bb63fcd5f6c2",
+      "review": "Reviewed customer order ownership reuse and shopper projection, customer receipts bound to tenant/order/receipt through the same immutable PDF renderer, HTTPS tracking validation reusing existing rich URL policy, and MCP tracking schema. Real customer HTTP tests reject anonymous/foreign/mismatched IDs, compare customer and merchant PDF bytes, reject unsafe URLs without revision changes and observe live delivery updates. Async SQL and UI paths remain explicitly unproved."
     },
     "src/operations/workflow.rs": {
       "status": "unproved",

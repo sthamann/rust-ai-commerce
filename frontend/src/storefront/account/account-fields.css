@@ -1,0 +1,233 @@
+/* Account form controls have explicit label spacing, consistent actions and shared address-editor integration. */
+.customer-account button {
+  font: inherit;
+  cursor: pointer;
+  min-height: 44px;
+}
+.customer-account button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.customer-account .shop-primary,
+.customer-account .studio-primary {
+  padding: 13px 22px;
+  width: auto;
+  border: 1px solid var(--account-accent);
+  background: var(--account-accent);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.customer-account .shop-primary:hover:not(:disabled) {
+  background: #174533;
+}
+.customer-account .shop-secondary,
+.customer-account .studio-secondary {
+  padding: 11px 16px;
+  width: auto;
+  border: 1px solid var(--account-line);
+  border-radius: 10px;
+  color: var(--account-ink);
+  background: #fff;
+  font-size: 12px;
+}
+.customer-account .shop-secondary:hover:not(:disabled),
+.customer-account .studio-secondary:hover:not(:disabled) {
+  border-color: #a3bfae;
+  background: #f6faf5;
+}
+.customer-account fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.customer-account form label {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 0 0 19px;
+  font-size: 12px;
+  font-weight: 550;
+  color: #4a5b50;
+  min-width: 0;
+}
+.customer-account input:not([type="checkbox"]),
+.customer-account select,
+.customer-account textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #d5ded7;
+  border-radius: 9px;
+  color: var(--account-ink);
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+  box-shadow: 0 1px 3px #17352205;
+}
+.customer-account input:hover,
+.customer-account select:hover {
+  border-color: #9db8a5;
+}
+.customer-account input:focus,
+.customer-account select:focus,
+.customer-account textarea:focus {
+  border-color: #71957e;
+}
+.customer-account input:disabled {
+  background: #f5f7f4;
+  color: #77867a;
+}
+.customer-account form > small,
+.customer-account fieldset > small {
+  display: block;
+  margin: -9px 0 22px;
+}
+.account-identity {
+  padding: 18px 20px;
+  border: 1px solid var(--account-line);
+  border-radius: 12px;
+  display: grid;
+  gap: 5px;
+  margin: 24px 0;
+  overflow-wrap: anywhere;
+}
+.account-security {
+  max-width: 490px;
+}
+.account-security form {
+  margin-top: 24px;
+}
+.account-password {
+  position: relative;
+  display: block;
+}
+.customer-account .account-password input {
+  padding-right: 54px;
+}
+.customer-account .account-reveal {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  min-height: 42px;
+  width: 42px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--account-muted);
+  font-size: 23px;
+  border-radius: 8px;
+}
+.customer-account .account-submit {
+  width: 100%;
+  margin: 4px 0 12px;
+  display: flex;
+  justify-content: space-between;
+}
+.customer-account .customer-field-grid {
+  gap: 0 16px;
+}
+.customer-account .customer-address-book {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.customer-account .customer-address-book .section-heading {
+  margin: 22px 0;
+}
+.customer-account .customer-address-book .section-heading h2 {
+  font-size: 18px;
+  margin: 0;
+}
+.customer-account .customer-address-grid article {
+  background: #fff;
+  border-color: var(--account-line);
+  border-radius: 14px;
+}
+.customer-account .customer-address-card {
+  font-size: 13px;
+  color: var(--account-ink);
+}
+.customer-account .customer-address-badges {
+  gap: 6px;
+}
+.customer-account .customer-address-badges span {
+  color: #315e46;
+  background: #edf3ec;
+  border-color: #d8e5d8;
+  font-size: 10px;
+}
+.customer-account .customer-actions {
+  gap: 8px;
+}
+.customer-account .customer-actions button {
+  padding: 10px 12px;
+}
+.customer-account .customer-address-book form {
+  margin: 20px 0;
+  padding: 20px;
+  border: 1px solid var(--account-line);
+  border-radius: 14px;
+  background: #f9fbf7;
+}
+.customer-account .customer-address-fields details {
+  margin-top: 0;
+}
+.customer-account .customer-address-fields summary {
+  color: var(--account-accent);
+  font-size: 12px;
+}
+.customer-account .customer-defaults input[type="checkbox"] {
+  accent-color: var(--account-accent);
+}
+@media (max-width: 620px) {
+  .customer-account input,
+  .customer-account select,
+  .customer-account textarea {
+    font-size: 16px !important;
+  }
+  .customer-account .customer-address-book form {
+    padding: 16px;
+  }
+  .customer-account .customer-address-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.account-auth {
+  max-width: 420px;
+  margin: 0 auto;
+}
+.customer-account .account-auth h2 {
+  margin: 28px 0 10px;
+}
+.account-auth > p {
+  color: var(--account-muted);
+  margin-bottom: 26px;
+}
+.account-auth-tabs {
+  display: flex;
+  padding: 4px;
+  border-radius: 12px;
+  background: #f0f4ef;
+  border: 1px solid #e2e9e0;
+  gap: 4px;
+}
+.customer-account .account-auth-tabs button {
+  flex: 1;
+  padding: 12px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #68756a;
+  font-size: 13px;
+}
+.customer-account .account-auth-tabs button[aria-current] {
+  background: #fff;
+  color: var(--account-accent);
+  box-shadow: 0 2px 8px #1e342511;
+  font-weight: 650;
+}

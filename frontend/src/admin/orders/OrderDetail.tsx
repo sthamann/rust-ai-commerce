@@ -72,9 +72,14 @@ export default function OrderDetail({
       setBusy(false);
     }
   };
-  const transition = (a: OrderAction, tracking = "") =>
+  const transition = (a: OrderAction, tracking = "", trackingUrl = "") =>
     void run(async () => {
-      const signature = JSON.stringify({ id, action: a.id, tracking });
+      const signature = JSON.stringify({
+        id,
+        action: a.id,
+        tracking,
+        trackingUrl,
+      });
       if (retry.current?.signature !== signature)
         retry.current = {
           signature,
@@ -86,6 +91,7 @@ export default function OrderDetail({
             action: a.kind === "order" ? a.id : undefined,
             deliveryIndex: a.deliveryIndex,
             trackingCode: tracking,
+            trackingUrl: a.kind === "delivery" ? trackingUrl : undefined,
           },
         };
       const current = retry.current;

@@ -1,301 +1,270 @@
-/** Shopper account overlay uses its own scoped session; merchant credentials never authenticate a customer. */
-import { shopScope } from "../../shared/api/shop-scope";
-import { useCallback } from "react";
+/** Responsive customer workspace separates authentication, address care and protected purchase details. */
+import { useEffect, useRef, useState } from "react";
+import type { Cart } from "../../shared/api/shop-api";
 import { AppSurfaceSlot } from "../../shared/apps/AppSurfaces";
 import AddressBook from "../../shared/customer/AddressBook";
-import type { Contact } from "../../shared/customer/customer-types";
-import CustomerFields from "../../shared/customer/CustomerFields";
+import { useAccountText } from "../../shared/i18n/account-i18n";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
 import "../../shared/styles/customers.css";
+import "./account.css";
+import type { AccountPage } from "./account-types";
+import { useCustomerAccount } from "./useCustomerAccount";
 import CustomerSignIn from "./CustomerSignIn";
-
-import { useEffect, useRef, useState } from "react";
-import { downloadFile } from "../../shared/api/download";
-import { shopApi, type Cart, type Order } from "../../shared/api/shop-api";
-import { useOperationsText } from "../../shared/i18n/operations-i18n";
-import { useShopText } from "../../shared/i18n/shop-i18n";
-import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
+import AccountOverview from "./AccountOverview";
+import AccountProfile, { AccountSecurity } from "./AccountProfile";
+import AccountOrderList from "./AccountOrderList";
+import AccountOrderDetail from "./AccountOrderDetail";
+import AccountDownloads from "./AccountDownloads";
+const pages: AccountPage[] = [
+  "overview",
+  "orders",
+  "addresses",
+  "downloads",
+  "profile",
+  "security",
+];
 export default function CustomerAccount({
   cart,
   onCart,
   onClose,
 }: {
   cart?: Cart;
-  onCart: (c: Cart) => void;
+  onCart: (cart: Cart) => void;
   onClose: () => void;
 }) {
-  const ref = useRef<HTMLDialogElement>(null);
+  const dialog = useRef<HTMLDialogElement>(null),
+    content = useRef<HTMLDivElement>(null);
+  const { a } = useAccountText(),
+    { c } = useCustomerText();
+  const account = useCustomerAccount(cart, onCart);
+  const [page, setPage] = useState<AccountPage>("overview"),
+    [orderId, setOrderId] = useState<string>();
   useEffect(() => {
-    ref.current?.showModal();
+    const node = dialog.current;
+    const previous = document.activeElement;
+    node?.showModal();
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      node?.close();
+      document.body.style.overflow = overflow;
+      if (previous instanceof HTMLElement) previous.focus();
+    };
   }, []);
-  const { s, money } = useShopText();
-  const { w } = useWorkbenchText();
-  const { o, locale } = useOperationsText();
-  const [downloads, setDownloads] = useState<any[]>([]);
-  const key = `rac-customer:${shopScope()}`;
-  const [signed, setSigned] = useState(!!localStorage.getItem(key));
-  const [register, setRegister] = useState(false);
-  const { c } = useCustomerText();
-  const [options, setOptions] = useState<{
-    countries: string[];
-    payments: any[];
-  }>();
-  const request = useCallback(
-    async (path: string, body?: unknown, method?: string) =>
-      shopApi<any>(path, body, undefined, method),
-    [],
-  );
-  const [profile, setProfile] = useState<{
-    email: string;
-    profile: Contact;
-    customerNumber: string;
-    revision: number;
-  }>();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-  const load = async () => {
-    setProfile(await shopApi("/store-api/account/profile"));
-    setOptions(
-      await shopApi("/store-api/checkout/options", undefined, cart?.token),
-    );
-    setDownloads((await shopApi<any>("/store-api/account/downloads")).elements);
-    setOrders(
-      (await shopApi<{ elements: Order[] }>("/store-api/account/orders"))
-        .elements,
-    );
-  };
   useEffect(() => {
-    if (signed)
-      void load().catch((e) => {
-        setError(e.message);
-        if (e.status === 401) {
-          localStorage.removeItem(key);
-          setSigned(false);
-        }
-      });
-  }, [signed]);
-  const run = async (fn: () => Promise<void>) => {
-    setBusy(true);
-    setError("");
-    try {
-      await fn();
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
+    content.current?.scrollTo?.({ top: 0 });
+  }, [page, orderId, account.signed]);
+  const navigate = (next: AccountPage) => {
+    setOrderId(undefined);
+    setPage(next);
   };
+  const onOrder = (id: string) => {
+    setPage("orders");
+    setOrderId(id);
+  };
+  const name =
+    account.profile?.profile.firstName ||
+    account.profile?.profile.name ||
+    account.profile?.email;
   return (
     <dialog
-      ref={ref}
-      className="shop-bag"
+      ref={dialog}
+      className={`customer-account ${account.signed ? "is-signed" : "is-auth"}`}
+      aria-labelledby="account-title"
       onCancel={onClose}
       onClick={(e) => {
-        if (e.target === ref.current) onClose();
+        if (e.target === dialog.current) onClose();
       }}
     >
-      <section
-        className="bag-body"
-        role="dialog"
-        aria-modal="true"
-        aria-label={w("account")}
-      >
-        <AppSurfaceSlot location="account.overview" />
-        <header>
-          <h2>{w("account")}</h2>
-          <button className="shop-secondary" onClick={onClose}>
-            {s("close")}
-          </button>
-        </header>
-        {!signed ? (
-          <CustomerSignIn
-            run={run}
-            register={register}
-            cart={cart}
-            sessionKey={key}
-            onCart={onCart}
-            setSigned={setSigned}
-            w={w}
-            c={c}
-            s={s}
-            busy={busy}
-            setRegister={setRegister}
-          />
-        ) : (
-          <>
-            <p>
-              {profile?.email} · {c("customerNumber")}:{" "}
-              {profile?.customerNumber}
-            </p>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                void run(async () => {
-                  await shopApi(
-                    "/store-api/account/profile",
-                    {
-                      ...profile?.profile,
-                      address: null,
-                    },
-                    undefined,
-                    "PUT",
-                  );
-                  await load();
-                });
-              }}
-            >
-              <h3>{w("customerData")}</h3>
-              {profile && (
-                <CustomerFields
-                  value={profile.profile}
-                  onChange={(p) => setProfile({ ...profile, profile: p })}
-                  disabled={busy}
-                />
-              )}
-              <label>
-                {c("preferredPayment")}
-                <select
-                  value={profile?.profile.defaultPaymentMethodId ?? ""}
-                  onChange={(e) =>
-                    setProfile((p) =>
-                      p
-                        ? {
-                            ...p,
-                            profile: {
-                              ...p.profile,
-                              defaultPaymentMethodId: e.target.value || null,
-                            },
-                          }
-                        : p,
-                    )
-                  }
+      <header className="account-header">
+        <div>
+          <small>{a("welcome")}</small>
+          <h1 id="account-title">{a("title")}</h1>
+        </div>
+        <button
+          className="account-close"
+          onClick={onClose}
+          aria-label={a("close")}
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+      </header>
+      <div className="account-workspace">
+        {account.signed && (
+          <aside className="account-sidebar">
+            <div className="account-person">
+              <span className="account-avatar" aria-hidden="true">
+                {name?.slice(0, 1).toUpperCase() ?? "◇"}
+              </span>
+              <strong>{name}</strong>
+              <small>{account.profile?.email}</small>
+              <small>
+                {c("customerNumber")}: {account.profile?.customerNumber}
+              </small>
+            </div>
+            <nav aria-label={a("title")}>
+              {pages.map((next) => (
+                <button
+                  key={next}
+                  aria-current={page === next ? "page" : undefined}
+                  disabled={account.busy}
+                  onClick={() => navigate(next)}
                 >
-                  <option value="">{c("noPreference")}</option>
-                  {options?.payments.map((v) => (
-                    <option key={v.id} value={v.id}>
-                      {s(v.name)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <button className="shop-primary" disabled={busy}>
-                {w("saveProfile")}
-              </button>
-            </form>
-            <AddressBook
-              request={request}
-              path="/store-api/account/addresses"
-              countries={options?.countries ?? ["DE", "FR", "ES"]}
-              onChange={() => void load()}
-            />
-            <details>
-              <summary>{w("changePassword")}</summary>
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const f = new FormData(e.currentTarget);
-                  void run(async () => {
-                    const v = await shopApi<{ customerToken: string }>(
-                      "/store-api/account/password",
-                      {
-                        oldPassword: f.get("oldPassword"),
-                        newPassword: f.get("newPassword"),
-                      },
-                    );
-                    localStorage.setItem(key, v.customerToken);
-                  });
-                }}
-              >
-                <label>
-                  {w("currentPassword")}
-                  <input
-                    name="oldPassword"
-                    type="password"
-                    required
-                    autoComplete="current-password"
-                  />
-                </label>
-                <label>
-                  {w("newPassword")}
-                  <input
-                    name="newPassword"
-                    type="password"
-                    required
-                    minLength={12}
-                    maxLength={128}
-                    autoComplete="new-password"
-                  />
-                </label>
-                <button className="shop-primary" disabled={busy}>
-                  {w("changePassword")}
+                  <span>{a(next)}</span>
+                  <span aria-hidden="true">{page === next ? "•" : "↗"}</span>
                 </button>
-              </form>
-            </details>
-            <h3>{o("assets")}</h3>
-            <p>{o("downloadHint")}</p>
-            {downloads.map((d) => (
-              <button
-                className="shop-secondary"
-                key={d.orderId + d.id}
-                onClick={() =>
-                  void run(() =>
-                    downloadFile(
-                      `/store-api/orders/${d.orderId}/downloads/${d.id}`,
-                      {
-                        "x-tenant": shopScope(),
-                        "x-customer-token": localStorage.getItem(key) ?? "",
-                      },
-                    ),
-                  )
-                }
-              >
-                {d.name ?? d.title[locale.slice(0, 2)] ?? d.title.en} ·{" "}
-                {d.filename}
-              </button>
-            ))}
-            <h3>{w("customerOrders")}</h3>
-            {!orders.length && <p>{w("noOrders")}</p>}
-            {orders.map((o) => (
-              <article key={o.id}>
-                <strong>
-                  {o.orderNumber} · {money(o.cart.price.totalPrice)}
-                </strong>
-                <p>
-                  {o.cart.lineItems
-                    .map((i) => `${i.quantity} × ${i.label}`)
-                    .join(", ")}
-                </p>
-                <small>
-                  {s(o.state)} ·{" "}
-                  {s(
-                    o.payment.state === "pending"
-                      ? "pending-payment"
-                      : o.payment.state,
-                  )}
-                </small>
-              </article>
-            ))}
+              ))}
+            </nav>
             <button
-              className="shop-secondary"
-              disabled={busy}
-              onClick={() =>
-                void run(async () => {
-                  await shopApi("/store-api/account/logout", {}, cart?.token);
-                  localStorage.removeItem(key);
-                  setSigned(false);
-                  setProfile(undefined);
-                  setOrders([]);
-                  onCart(await shopApi<Cart>("/store-api/checkout/cart", {}));
-                })
-              }
+              className="account-logout"
+              disabled={account.busy}
+              onClick={() => void account.logout()}
             >
-              {s("logout")}
+              {a("logout")}
             </button>
-          </>
+          </aside>
         )}
-        {error && <p role="alert">{error}</p>}
-      </section>
+        <div className="account-content" ref={content}>
+          {account.error && (
+            <p className="account-feedback is-error" role="alert">
+              {account.error}
+            </p>
+          )}
+          {account.feedback && (
+            <p className="account-feedback" role="status">
+              {account.feedback}
+            </p>
+          )}
+          {!account.signed ? (
+            <CustomerSignIn
+              cart={cart}
+              sessionKey={account.key}
+              onCart={onCart}
+              setSigned={account.setSigned}
+              run={account.run}
+              busy={account.busy}
+            />
+          ) : (
+            <>
+              {page !== "overview" && !orderId && (
+                <div className="account-section-toolbar">
+                  <h2>{a(page)}</h2>
+                  <button
+                    className="shop-secondary"
+                    disabled={account.busy || account.loading}
+                    onClick={() => void account.run(account.load)}
+                  >
+                    {a("refresh")}
+                  </button>
+                </div>
+              )}
+              {!account.profile && !account.loading && (
+                <button
+                  className="shop-secondary"
+                  disabled={account.busy}
+                  onClick={() => void account.run(account.load)}
+                >
+                  {a("refresh")}
+                </button>
+              )}
+              {account.loading && !account.profile ? (
+                <div className="account-loading" role="status">
+                  <span className="account-spinner" />
+                  {a("loading")}
+                </div>
+              ) : (
+                account.profile && (
+                  <>
+                    {page === "overview" && (
+                      <AccountOverview
+                        profile={account.profile}
+                        orders={account.orders}
+                        downloads={account.downloads.length}
+                        onPage={navigate}
+                        onOrder={onOrder}
+                        onShop={onClose}
+                      />
+                    )}
+                    {page === "profile" && (
+                      <AccountProfile
+                        profile={account.profile}
+                        setProfile={account.setProfile}
+                        options={account.options}
+                        busy={account.busy}
+                        run={account.run}
+                        reload={account.load}
+                      />
+                    )}
+                    {page === "security" && (
+                      <AccountSecurity
+                        sessionKey={account.key}
+                        busy={account.busy}
+                        run={account.run}
+                      />
+                    )}
+                    {page === "addresses" && (
+                      <>
+                        <p className="account-muted">{a("addressesHint")}</p>
+                        <AddressBook
+                          request={account.request}
+                          path="/store-api/account/addresses"
+                          countries={account.options?.countries ?? []}
+                          onChange={() =>
+                            void account.load().catch(account.failure)
+                          }
+                        />
+                      </>
+                    )}
+                    {page === "orders" &&
+                      (orderId ? (
+                        <AccountOrderDetail
+                          key={orderId}
+                          id={orderId}
+                          onBack={() => setOrderId(undefined)}
+                          onOrder={onOrder}
+                          downloads={account.downloads}
+                          download={account.download}
+                          busy={account.busy}
+                          run={account.run}
+                          onError={account.failure}
+                          reload={account.load}
+                        />
+                      ) : (
+                        <>
+                          <AccountOrderList
+                            orders={account.orders}
+                            onSelect={onOrder}
+                            onShop={onClose}
+                          />
+                          {account.nextCursor && (
+                            <button
+                              className="shop-secondary"
+                              disabled={account.busy}
+                              onClick={() => void account.moreOrders()}
+                            >
+                              {a("moreOrders")}
+                            </button>
+                          )}
+                        </>
+                      ))}
+                    {page === "downloads" && (
+                      <AccountDownloads
+                        downloads={account.downloads}
+                        busy={account.busy}
+                        download={account.download}
+                        onOrder={onOrder}
+                      />
+                    )}
+                  </>
+                )
+              )}
+              {page === "overview" && (
+                <AppSurfaceSlot location="account.overview" />
+              )}
+            </>
+          )}
+        </div>
+      </div>
     </dialog>
   );
 }

@@ -64,6 +64,31 @@ call('/api/settings/master-data',{'revision':0,'data':{'name':'Synthetic Seller'
 receipt=call('/api/merchant/orders/'+oid+'/receipts',{'revision':read['revision'],'kind':'invoice','locale':'de','requestKey':'addr-pdf-'+suffix},mh)
 pdf=call('/api/merchant/receipts/'+receipt['id']+'/pdf',h=mh,binary=True);assert billing['street'].encode()in pdf and shipping['street'].encode()not in pdf
 passed('Central master data and immutable billing snapshot feed the generated invoice')
+# Storefront purchase care: same ownership predicate for details and binary financial documents.
+detail=call('/store-api/account/orders/'+oid,h=ch)
+assert detail['id']==oid and detail['billingAddress']['street']==billing['street']
+assert detail['receipts'][0]['id']==receipt['id'] and detail['receipts'][0]['number']==receipt['number']
+assert 'automation' not in detail and 'activity' not in detail and 'token' not in detail['cart'] and 'checkout' not in detail['cart']
+customer_pdf=call(detail['receipts'][0]['pdfPath'],h=ch,binary=True)
+assert customer_pdf==pdf
+call('/store-api/account/orders/'+oid,h=public,expected=401)
+call('/store-api/account/orders/'+oid,h=oh,expected=404)
+call('/store-api/account/orders/'+oid,h={**ch,'x-tenant':foreign},expected=401)
+call(detail['receipts'][0]['pdfPath'],h=oh,expected=404)
+call('/store-api/account/orders/'+oid+'/receipts/not-owned/pdf',h=ch,expected=404)
+call('/store-api/account/orders/not-owned/receipts/'+receipt['id']+'/pdf',h=ch,expected=404)
+# Bad tracking URLs fail before committing a revision/event; valid HTTPS metadata follows the state machine.
+read=call('/api/merchant/orders/'+oid,h=mh)
+ship={'revision':read['revision'],'kind':'delivery','state':'shipped','trackingCode':'SYNTHETIC-TRACK','trackingUrl':'javascript:alert(1)'}
+call('/api/merchant/orders/'+oid+'/transition',ship,mh,expected=400)
+assert call('/api/merchant/orders/'+oid,h=mh)['revision']==read['revision']
+for invalid in ['https://user:secret@example.test/track','https://example.test/track\\bad','http://example.test/track']:
+    call('/api/merchant/orders/'+oid+'/transition',{**ship,'trackingUrl':invalid},mh,expected=400)
+call('/api/merchant/orders/'+oid+'/transition',{**ship,'trackingUrl':'https://tracking.example.test/parcel/SYNTHETIC-TRACK'},mh)
+detail=call('/store-api/account/orders/'+oid,h=ch)
+assert detail['deliveries'][0]['state']=='shipped' and detail['deliveries'][0]['trackingCode']=='SYNTHETIC-TRACK' and detail['deliveries'][0]['trackingUrl'].startswith('https://tracking.example.test/')
+passed('Customer order details, immutable PDF access and shipping links are owner/tenant scoped; unsafe tracking cannot mutate revisions')
+
 # Guest may use own typed addresses, but a matching email grants no account/address/order access.
 guest=call('/store-api/checkout/cart',{},public);gh={**public,'sw-context-token':guest['token']};guest=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'notebook','quantity':1}]},gh)
 gsel={**guest['checkout'],'customerEmail':email,'billingAddress':billing,'address':shipping,'billingAddressId':None,'shippingAddressId':None};guest=call('/store-api/checkout/context',{'revision':guest['revision'],'checkout':gsel},gh,'PUT');gorder=call('/store-api/checkout/order',{}, {**gh,'Idempotency-Key':'guest-order-'+suffix});assert gorder['orderCustomer']['guest'] and gorder['orderCustomer']['customerId'] is None
@@ -77,6 +102,34 @@ passed('Financial/manual checkout requires contact and billing data; complete gu
 def mcp(name,args,h):return call('/mcp',{'jsonrpc':'2.0','id':1,'method':'tools/call','params':{'name':name,'arguments':args}},h)['result']
 assert not mcp('merchant.customer.addresses',{'id':email},mh)['isError'];assert not mcp('merchant.customer.address.save',{'id':email,'address':billing},mh)['isError'];assert mcp('merchant.customer.addresses',{'id':email},fmh)['isError']
 passed('Address book operations are MCP-ready through the same tenant ownership and scoped permission path')
-fresh=call('/store-api/checkout/cart',{},ch);h['sw-context-token']=fresh['token'];call('/store-api/account/logout',{},h);call('/store-api/account/profile',h=ch,expected=401);call('/store-api/checkout/cart',h=h,expected=404)
+# Password rotation keeps the submitted replacement session and revokes every prior session.
+old_customer_token=ch['x-customer-token'];new_password='Synthetic-replacement-2026!'
+changed=call('/store-api/account/password',{'oldPassword':password,'newPassword':new_password},ch)
+call('/store-api/account/profile',h=ch,expected=401)
+ch['x-customer-token']=changed['customerToken'];assert call('/store-api/account/profile',h=ch)['email']==email
+fresh_login=call('/store-api/checkout/cart',{},public);login_headers={**public,'sw-context-token':fresh_login['token']}
+call('/store-api/account/login',{'email':email,'password':password},login_headers,expected=401)
+relogged=call('/store-api/account/login',{'email':email,'password':new_password},login_headers)
+assert relogged['customerToken']!=old_customer_token
+passed('Password rotation invalidates prior sessions and the old password; the replacement session and new login remain usable')
+# Equal-timestamp orders cross the page boundary without duplicates or foreign cursor admission.
+if os.getenv('TEST_DATABASE'):
+    import subprocess
+    sql=f"""BEGIN; SET LOCAL rac.system='on';
+    INSERT INTO carts(id,tenant,token,data,status)
+      SELECT 'page-cart-'||i::text||'-{suffix}',tenant,'page-token-'||i::text||'-{suffix}',data,'ordered'
+      FROM carts CROSS JOIN generate_series(1,100) i WHERE id=(SELECT cart_id FROM orders WHERE id='{oid}');
+    INSERT INTO orders(id,tenant,cart_id,idempotency_key,fingerprint,data,created_at)
+      SELECT 'page-order-'||i::text||'-{suffix}',tenant,'page-cart-'||i::text||'-{suffix}','page-key-'||i::text||'-{suffix}','fixture',
+      jsonb_set(data,'{{id}}',to_jsonb('page-order-'||i::text||'-{suffix}')),created_at-interval '1 minute'
+      FROM orders CROSS JOIN generate_series(1,100) i WHERE id='{oid}'; COMMIT;"""
+    subprocess.run(['docker','exec','-i',os.environ['TEST_DB_CONTAINER'],'psql','-U','commerce','-d',os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1'],input=sql,text=True,check=True,stdout=subprocess.DEVNULL)
+    first=call('/store-api/account/orders',h=ch);second=call('/store-api/account/orders?after='+first['nextCursor'],h=ch)
+    assert len(first['elements'])==100 and len(second['elements'])==1 and second['nextCursor'] is None
+    assert len({o['id']for o in first['elements']+second['elements']})==101
+    call('/store-api/account/orders?after='+oid,h=oh,expected=404)
+    call('/store-api/account/orders?after=missing',h=ch,expected=404)
+    passed('Account history paginates tied timestamps without duplicates and refuses another customer order as a cursor')
+fresh=call('/store-api/checkout/cart',{},ch);h['sw-context-token']=fresh['token'];h['x-customer-token']=ch['x-customer-token'];call('/store-api/account/logout',{},h);call('/store-api/account/profile',h=ch,expected=401);call('/store-api/checkout/cart',h=h,expected=404)
 passed('Logout revokes the independent customer session and invalidates its open authenticated cart')
 print(json.dumps({'passed':len(checks),'actualDatabase':True,'externalPayments':False}))

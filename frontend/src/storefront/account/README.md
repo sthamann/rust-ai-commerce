@@ -1,20 +1,35 @@
-# storefront/account
+# Customer account workspace
 
-Customer login, profile, addresses and own-order history.
+The native dialog gives shoppers six connected views: overview, orders, addresses,
+downloads, personal details and security. Sign-in and account creation use distinct
+forms. The account token is independent of Studio credentials and scoped to the shop.
 
-Each file starts with its responsibility. See [the source inventory](../../../../docs/module-inventory.md) for the full map.
+| File                     | Responsibility                                                           |
+| ------------------------ | ------------------------------------------------------------------------ |
+| `CustomerAccount.tsx`    | Dialog, focus restoration, scroll lock and account navigation            |
+| `CustomerSignIn.tsx`     | Separate auth modes, autofill and cart context creation/rotation         |
+| `useCustomerAccount.ts`  | Parallel reads, guarded mutations, feedback and expired-session recovery |
+| `account-types.ts`       | Shopper-safe response contracts                                          |
+| `AccountOverview.tsx`    | Recent purchases, counts and default-address shortcuts                   |
+| `AccountOrderList.tsx`   | Clickable purchase cards                                                 |
+| `AccountOrderDetail.tsx` | Immutable purchase addresses, current statuses, tracking and receipts    |
+| `AccountDownloads.tsx`   | Paid entitlements and authenticated binary retrieval                     |
+| `AccountProfile.tsx`     | Contact/preferences and password rotation                                |
+| `account.css`            | Dialog, navigation and responsive layout                                 |
+| `account-fields.css`     | Authentication and shared address/profile form controls                  |
+| `account-purchases.css`  | Purchase, delivery and document views                                    |
 
-## Modules
+Shared `AddressBook` supplies revision-checked create/edit/delete and independent
+billing/delivery defaults. All interface text lives in `shared/i18n/account-i18n.ts`
+and existing shared vocabularies, with English, German, French and Spanish support.
+Tracking links reuse the shared safe-URL renderer. Binary endpoints receive the
+customer credential in headers; never in URLs. Internal merchant notes are absent
+from account order responses.
 
-- [`CustomerAccount.tsx`](CustomerAccount.tsx): Shopper account overlay uses its own scoped session; merchant credentials never authenticate a customer.
-- [`CustomerSignIn.tsx`](CustomerSignIn.tsx): CustomerSignIn: focused form view with explicit typed inputs and callbacks.
-
-## Verification
-
-Run `npm run build`, `npm test`, `npm run test:coverage` and `npm run architecture` from `frontend/`. Coverage includes untested source files. See [testing and limitations](../../../../docs/testing.md); file presence does not mean full test coverage.
-
-Account login passes the tenant storage name as `sessionKey`, because React reserves
-`key` for reconciliation. `customer-account.test.tsx` exercises actual account
-composition for login and registration: the session must reach the protected
-profile/address/order requests before data is rendered. HTTP lifecycle and account
-isolation are additionally covered by `scripts/customer_accounts.py`.
+Component tests exercise actual `shopApi` requests, sign-in without an existing
+cart, registration, detail navigation, address defaults, PDF/download retrieval,
+unsafe links and expired-session recovery. `scripts/customer_accounts.py` checks
+real PostgreSQL ownership, immutable receipts and live delivery transitions.
+`developer_documents.py` additionally verifies paid digital entitlements and
+foreign/anonymous rejection. See [operations](../../../../docs/merchant-operations.md)
+and [testing](../../../../docs/testing.md) for boundaries and commands.

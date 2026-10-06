@@ -103,6 +103,18 @@ The **ten-tab product editor** brings visual/Markdown descriptions, translated
 content, prices/stock, reviewed variant combinations, galleries, category/channel
 visibility, specifications, SEO, cross-selling, downloads and reviews together. Public shops use their own subdomain; product links use stable SKU addresses with inherited localized SEO slugs and support direct reloads. [Explore commerce](docs/features.md#products-and-categories).
 
+### Stay connected after checkout
+
+A separate sign-in and registration leads to a responsive customer account:
+independent default billing/shipping addresses, cursor-paginated purchase history,
+immutable order details, current delivery and payment state, HTTPS tracking links,
+issued PDF documents and entitled digital downloads. The storefront uses customer
+sessions and ownership checks, never merchant credentials.
+
+[![Customer account — actual orders, default addresses and purchased downloads](docs/assets/showcase/customer-account.png)](docs/merchant-operations.md#storefront-account-experience)
+
+*Actual account interaction in an isolated Nord Atelier test shop; all purchases are simulated.*
+
 ### Give AI evidence. Review its changes.
 
 Products, uploaded text/PDF sources, curated relationships, observed purchases
@@ -188,7 +200,7 @@ remain operator-managed; this is not a deployed Google/Apple OAuth service.
 | Area | What is connected | Guide |
 | --- | --- | --- |
 | **Catalog & channels** | Search, ten editor tabs, translated category trees, variants and guided storefront/headless channels | [Products](docs/product-management.md) · [Channels](docs/studio-api-and-channels.md#sales-channels) |
-| **Customers & orders** | Accounts, address books, gross/net customer groups, fulfillment, payments, numbered PDFs and digital entitlements | [Operations](docs/merchant-operations.md) · [History](docs/entity-history.md) |
+| **Customers & orders** | Responsive customer workspace, separate sign-in/registration, default billing/delivery addresses, purchase details, HTTPS tracking, owned invoice PDFs and paid downloads; Studio fulfillment and customer groups | [Operations](docs/merchant-operations.md) · [History](docs/entity-history.md) |
 | **International settings** | Company/channel inheritance, enabled content locales, countries, destination taxes and eligible shipping/payment methods | [International commerce](docs/international-commerce.md) · [Settings](docs/settings-media.md) |
 | **Knowledge & automation** | Published/private sources, reviewed recommendations/proposals, coupons, rules, event graphs and durable workers | [Knowledge](docs/knowledge-workspace.md) · [Automation](docs/automation.md) |
 | **Apps & developers** | Eight bundled apps, nine builder assistants, typed storage, SDK surfaces, scoped API keys, HTTP/MCP tools, schedules and webhooks | [App library](docs/app-library.md) · [App contracts](docs/app-platform.md) |

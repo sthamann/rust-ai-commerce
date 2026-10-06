@@ -9,6 +9,7 @@ mod metadata;
 pub(crate) use metadata::decorate;
 mod demo;
 mod order_snapshot;
+mod orders;
 mod profile;
 pub(crate) use address_store::*;
 pub(crate) use contacts::*;
@@ -29,7 +30,12 @@ pub(crate) fn router() -> Router<App> {
             "/store-api/account/profile",
             get(profile::get).put(profile::save),
         )
-        .route("/store-api/account/orders", get(orders))
+        .route("/store-api/account/orders", get(orders::list))
+        .route("/store-api/account/orders/{id}", get(orders::detail))
+        .route(
+            "/store-api/account/orders/{order}/receipts/{id}/pdf",
+            get(orders::receipt),
+        )
         .route("/store-api/account/logout", post(logout))
         .route("/store-api/account/password", post(profile::password))
 }
@@ -117,13 +123,6 @@ async fn register(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> R
     tx.commit().await?;
     Ok(Json(
         json!({"customerToken":session(&a,&t,&email).await?,"email":email}),
-    ))
-}
-async fn orders(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
-    let (t, email) = identity(&a, &h).await?;
-    let rows=sqlx::query("SELECT o.data #- '{cart,token}' AS data,o.created_at::text AS time FROM orders o JOIN carts c ON c.id=o.cart_id AND c.tenant=o.tenant WHERE o.tenant=$1 AND ((o.data->'orderCustomer'->>'customerId')=(SELECT id FROM customers WHERE tenant=o.tenant AND email=$2) OR (NOT o.data ? 'orderCustomer' AND c.data->>'email'=$2)) ORDER BY o.created_at DESC LIMIT 100").bind(t).bind(email).fetch_all(&a.db).await?;
-    Ok(Json(
-        json!({"elements":rows.iter().map(|r|{let mut v:Value=r.get("data");commerce::order_fields(&mut v);v["createdAt"]=json!(r.get::<String,_>("time"));v}).collect::<Vec<_>>() }),
     ))
 }
 async fn logout(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
