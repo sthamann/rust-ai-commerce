@@ -4,10 +4,7 @@ import { useLocale } from "../../shared/i18n/i18n";
 import Icon from "../../shared/ui/Icon";
 import type { Provider } from "../shell/studio-types";
 export default function SettingsDialog({
-  token,
-  onToken,
   connected,
-  onConnect,
   providers,
   provider,
   model,
@@ -17,10 +14,7 @@ export default function SettingsDialog({
   onIndex,
   busy,
 }: {
-  token: string;
-  onToken: (s: string) => void;
   connected: boolean;
-  onConnect: () => void;
   providers: Provider[];
   provider: string;
   model: string;
@@ -51,32 +45,6 @@ export default function SettingsDialog({
           <Icon name="close" />
         </button>
       </div>
-      <details>
-        <summary>{t("token")}</summary>
-        <h3>
-          <Icon name="lock" size={18} />
-          {t("access")}
-        </h3>
-        <label>
-          {t("token")}
-          <input
-            autoComplete="off"
-            type="password"
-            value={token}
-            onChange={(e) => onToken(e.target.value)}
-            placeholder="MERCHANT_TOKEN"
-          />
-        </label>
-        <p>{t("tokenHint")}</p>
-        <button
-          className="studio-primary"
-          disabled={!token || busy}
-          onClick={onConnect}
-        >
-          <Icon name={connected ? "check" : "link"} size={18} />
-          {connected ? t("connected") : t("connect")}
-        </button>
-      </details>
       <section>
         <h3>
           <Icon name="spark" size={18} />

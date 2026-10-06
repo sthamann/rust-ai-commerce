@@ -154,7 +154,7 @@ it("keeps an authenticated editor mounted while changing UI language and disconn
   expect(result.current.data).toBeUndefined();
 });
 
-it("expires the whole Studio when a product request rejects the current session", async () => {
+it("suspends Studio in place when a product request rejects the current session", async () => {
   sessionStorage.setItem("rac-user-token", "unit-token");
   const { fetcher, messages } = network();
   const { result } = renderHook(
@@ -182,15 +182,14 @@ it("expires the whole Studio when a product request rejects the current session"
       result.current.request("/api/merchant/products?limit=25"),
     ).rejects.toMatchObject({ status: 401 });
   });
-  expect(result.current.connected).toBe(false);
-  expect(result.current.token).toBe("");
+  expect(result.current.connected).toBe(true);
+  expect(result.current.sessionExpired).toBe(true);
+  expect(result.current.token).toBe("unit-token");
   expect(sessionStorage.getItem("rac-user-token")).toBeNull();
-  expect(result.current.data).toBeUndefined();
-  expect(result.current.access).toEqual([]);
-  expect(result.current.conversations).toEqual([]);
-  expect(result.current.messages).toEqual([]);
-  expect(result.current.updated).toBe("");
-  expect(result.current.error).toBe("Please sign in again.");
+  expect(result.current.data).toEqual(overview);
+  expect(result.current.access).toEqual(["orders.read", "catalog.write"]);
+  expect(result.current.messages).toEqual(messages);
+  expect(result.current.auth.active).toBe(false);
   sessionStorage.setItem("rac-user-token", "renewed-token");
   act(() => result.current.setToken("renewed-token"));
   await waitFor(() => expect(result.current.connected).toBe(true));
@@ -220,8 +219,8 @@ it("also expires shared merchant requests and revalidates on returning to Studio
       : original(path, options),
   );
   await act(async () => window.dispatchEvent(new Event("focus")));
-  await waitFor(() => expect(result.current.connected).toBe(false));
-  expect(result.current.data).toBeUndefined();
+  await waitFor(() => expect(result.current.sessionExpired).toBe(true));
+  expect(result.current.data).toEqual(overview);
   fetcher.mockImplementation(original);
   sessionStorage.setItem("rac-user-token", "renewed-token");
   act(() => result.current.setToken("renewed-token"));
@@ -244,7 +243,7 @@ it("also expires shared merchant requests and revalidates on returning to Studio
       ),
     ).rejects.toMatchObject({ status: 401 });
   });
-  expect(result.current.connected).toBe(false);
+  expect(result.current.sessionExpired).toBe(true);
 });
 
 it.each([

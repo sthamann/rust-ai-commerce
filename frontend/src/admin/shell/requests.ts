@@ -1,6 +1,6 @@
 /** Authenticated Studio transport; staging changes only the tenant, never the principal. */
 import { requestJson } from "../../shared/api/request-json";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { responseError } from "../../shared/i18n/errors-i18n";
 import type { RequestFn } from "./studio-types";
 
@@ -41,13 +41,21 @@ export function useStudioRequests(
   environment: string,
   locale: string,
 ) {
+  const credential = useRef(token);
+  credential.current = token;
   return useMemo(() => {
-    const liveRequest = createStudioRequest(token, workspace, locale);
+    const scoped =
+      (tenant: string): RequestFn =>
+      (path, body, method) =>
+        createStudioRequest(credential.current, tenant, locale)(
+          path,
+          body,
+          method,
+        );
+    const liveRequest = scoped(workspace);
     return {
       liveRequest,
-      request: environment
-        ? createStudioRequest(token, environment, locale)
-        : liveRequest,
+      request: environment ? scoped(environment) : liveRequest,
     };
-  }, [token, workspace, environment, locale]);
+  }, [workspace, environment, locale]);
 }

@@ -15,8 +15,8 @@ import { useEntityNavigation } from "./useEntityNavigation";
 import { useStudioNavigation } from "./navigation";
 import { useStudioRequests } from "./requests";
 import { useServerHealth } from "./useServerHealth";
-import { useStudioSession } from "./useStudioSession";
-import { responseError } from "../../shared/i18n/errors-i18n";
+import { useStudioAccess } from "./useStudioAccess";
+
 export function useStudioController({
   onChanged,
   onExit,
@@ -44,12 +44,15 @@ export function useStudioController({
       "atelier",
   );
   useEffect(() => {
-    if (token && !new URLSearchParams(location.search).has("shop"))
-      history.replaceState(null, "", `?shop=${workspace}#merchant`);
+    if (token && !new URLSearchParams(location.search).has("shop")) {
+      const url = new URL(location.href);
+      url.searchParams.set("shop", workspace);
+      history.replaceState(null, "", url);
+    }
   }, [token, workspace]);
   const [workspaceName, setWorkspaceName] = useState(workspace);
   const [connected, setConnected] = useState(false);
-  const [sessionExpired, setSessionExpired] = useState(false);
+
   const connectionScope = useRef("");
   const [role, setRole] = useState("viewer");
   const [providers, setProviders] = useState<Provider[]>([]);
@@ -71,7 +74,7 @@ export function useStudioController({
   const [settings, setSettings] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const navigation = useEntityNavigation(
-    JSON.stringify([workspace, environment, token]),
+    JSON.stringify([workspace, environment]),
     nav.map((n) => n.id),
   );
   const { tab, setTab, entityTarget, openEntity, entityBack } = navigation;
@@ -80,7 +83,7 @@ export function useStudioController({
     setAppSurface(null);
     navigation.selectTab(id);
   };
-  useEffect(() => setAppSurface(null), [workspace, environment, token]);
+  useEffect(() => setAppSurface(null), [workspace, environment]);
   const [data, setData] = useState<Overview>();
   const [focus, setFocus] = useState("lamp");
   const [menu, setMenu] = useState(false);
@@ -96,31 +99,18 @@ export function useStudioController({
     environment,
     locale,
   );
-  const expireSession = useCallback((detail: string) => {
-    sessionStorage.removeItem("rac-user-token");
-    connectionScope.current = "";
-    setToken("");
-    setConnected(false);
-    setSessionExpired(true);
-    setData(undefined);
-    setAccess([]);
-    setEnvironments([]);
-    setEnvironment("");
-    setProviders([]);
-    setConversations([]);
-    setMessages([]);
-    setId(undefined);
-    setUpdated("");
-    setRole("viewer");
-    setSettings(false);
-    setPreviewOpen(false);
-    setNotice(undefined);
-    setError(responseError(detail, 401).message);
-  }, []);
-  useStudioSession(token, connected, liveRequest, expireSession);
+  const auth = useStudioAccess(
+    token,
+    setToken,
+    workspace,
+    setWorkspace,
+    connected,
+    liveRequest,
+  );
+  const sessionExpired = auth.expired;
   useEffect(() => {
     let active = true;
-    if (token)
+    if (auth.active)
       void request("/api/auth/access")
         .then((v) => {
           if (active) setAccess(v.permissions);
@@ -131,7 +121,7 @@ export function useStudioController({
     return () => {
       active = false;
     };
-  }, [token, request]);
+  }, [auth.active, request]);
   const refreshEnvironments = useCallback(
     async () =>
       setEnvironments((await liveRequest("/api/environments")).environments),
@@ -142,8 +132,8 @@ export function useStudioController({
     setEnvironments([]);
   }, [workspace]);
   useEffect(() => {
-    if (token) void refreshEnvironments().catch(() => {});
-  }, [token, refreshEnvironments]);
+    if (auth.active) void refreshEnvironments().catch(() => {});
+  }, [auth.active, refreshEnvironments]);
   const refresh = useCallback(async () => {
     setData(await request("/api/merchant/overview"));
     setConversations((await request("/api/agent/conversations")).conversations);
@@ -163,14 +153,10 @@ export function useStudioController({
   };
   useEffect(() => {
     let active = true;
-    if (!token) {
-      connectionScope.current = "";
-      setConnected(false);
-      return;
-    }
+    if (!auth.active) return;
     // Refresh translated context without unmounting open editors. Auth and
     // tenant/environment changes still require a newly verified connection.
-    const scope = JSON.stringify([token, workspace, environment]);
+    const scope = JSON.stringify([workspace, environment]);
     if (connectionScope.current !== scope) setConnected(false);
     connectionScope.current = scope;
     Promise.all([
@@ -198,11 +184,10 @@ export function useStudioController({
         );
         setUpdated(new Date().toISOString());
         setConnected(true);
-        setSessionExpired(false);
         setError("");
       })
       .catch((e) => {
-        if (active) {
+        if (active && (e as { status?: number }).status !== 401) {
           setConnected(false);
           setError(e instanceof Error ? e.message : String(e));
           setData(undefined);
@@ -211,7 +196,7 @@ export function useStudioController({
     return () => {
       active = false;
     };
-  }, [request, token, workspace, environment]);
+  }, [request, auth.active, workspace, environment]);
   useEffect(() => {
     if (tab === "assistant")
       bottom.current?.scrollIntoView({ block: "nearest" });
@@ -306,6 +291,7 @@ export function useStudioController({
     connected,
     setConnected,
     sessionExpired,
+    auth,
     role,
     setRole,
     providers,

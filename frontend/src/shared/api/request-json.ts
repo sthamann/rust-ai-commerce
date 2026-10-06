@@ -1,5 +1,8 @@
 /** Coalesce simultaneous identical core reads with complete identity; no persisted response cache. */
-import { reportMerchantSessionFailure } from "./merchant-session";
+import {
+  reportMerchantSessionFailure,
+  merchantRequestSuspended,
+} from "./merchant-session";
 type JsonResponse = {
   value: any;
   ok: boolean;
@@ -12,6 +15,15 @@ export async function requestJson(
   path: string,
   init: RequestInit,
 ): Promise<JsonResponse> {
+  if (merchantRequestSuspended(path, init.headers))
+    return {
+      ok: false,
+      status: 401,
+      statusText: "Unauthorized",
+      value: {
+        errors: [{ detail: "Session or integration key expired or invalid" }],
+      },
+    };
   const method = (init.method ?? "GET").toUpperCase();
   const read =
     !init.signal &&

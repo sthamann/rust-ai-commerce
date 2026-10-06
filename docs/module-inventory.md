@@ -408,11 +408,13 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/shell/StudioHeader.tsx](../frontend/src/admin/shell/StudioHeader.tsx) | StudioHeader: focused Studio view; state and commands come from the session-scoped controller. |
 | [frontend/src/admin/shell/StudioRoutes.tsx](../frontend/src/admin/shell/StudioRoutes.tsx) | StudioRoutes: focused Studio view; state and commands come from the session-scoped controller. |
 | [frontend/src/admin/shell/StudioSidebar.tsx](../frontend/src/admin/shell/StudioSidebar.tsx) | StudioSidebar: focused Studio view; state and commands come from the session-scoped controller. |
+| [frontend/src/admin/shell/StudioSignIn.tsx](../frontend/src/admin/shell/StudioSignIn.tsx) | Dedicated login page and blocking reauthentication dialog preserve mounted private editors. |
 | [frontend/src/admin/shell/navigation.ts](../frontend/src/admin/shell/navigation.ts) | Typed built-in Studio navigation and locale-specific labels. |
 | [frontend/src/admin/shell/requests.ts](../frontend/src/admin/shell/requests.ts) | Authenticated Studio transport; staging changes only the tenant, never the principal. |
 | [frontend/src/admin/shell/studio-types.ts](../frontend/src/admin/shell/studio-types.ts) | studio types: Studio layout, session/workspace controller, authenticated transport and lazy workspace navigation. |
 | [frontend/src/admin/shell/useEntityNavigation.ts](../frontend/src/admin/shell/useEntityNavigation.ts) | Linked entity navigation keeps native editors, browser deep links and back paths in the same tenant scope. |
 | [frontend/src/admin/shell/useServerHealth.ts](../frontend/src/admin/shell/useServerHealth.ts) | Public server health is independent of the personal Studio session. |
+| [frontend/src/admin/shell/useStudioAccess.ts](../frontend/src/admin/shell/useStudioAccess.ts) | Central Studio identity boundary: initial login, expiry suspension and same-account resume. |
 | [frontend/src/admin/shell/useStudioController.ts](../frontend/src/admin/shell/useStudioController.ts) | Studio session/controller: authentication context, tenant/staging state and chat commands. |
 | [frontend/src/admin/shell/useStudioSession.ts](../frontend/src/admin/shell/useStudioSession.ts) | Revalidate visible Studio sessions and route authenticated failures to the active controller. |
 | [frontend/src/admin/storyfronts/StoryfrontView.tsx](../frontend/src/admin/storyfronts/StoryfrontView.tsx) | Dedicated merchant integration surface for the independently deployed Storyfront service. |
@@ -452,6 +454,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/studio/08-responsive.css](../frontend/src/admin/styles/studio/08-responsive.css) | studio: responsive styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/admin/styles/studio/09-responsive.css](../frontend/src/admin/styles/studio/09-responsive.css) | studio: responsive styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/admin/styles/studio/10-studio-mobile-preview-button.css](../frontend/src/admin/styles/studio/10-studio-mobile-preview-button.css) | studio: studio-mobile-preview-button styles. Source order is preserved by the entry stylesheet. |
+| [frontend/src/admin/styles/studio-sign-in.css](../frontend/src/admin/styles/studio-sign-in.css) | Dedicated access surface: responsive Vendune login and native modal reauthentication. |
 | [frontend/src/admin/styles/studio.css](../frontend/src/admin/styles/studio.css) | Ordered studio stylesheet entry; domain rules live in the adjacent folder. |
 | [frontend/src/admin/styles/variants.css](../frontend/src/admin/styles/variants.css) | Variant family and review table share the catalog's responsive theme and focus treatment. |
 | [frontend/src/admin/styles/workspace-polish.css](../frontend/src/admin/styles/workspace-polish.css) | Consistent Studio density, readable hierarchy and independently scrollable navigation across workspaces. |

@@ -15,6 +15,7 @@ import { PreviewPanel } from "../preview/PreviewPanel";
 
 import { StudioContext } from "./StudioContext";
 import StudioHeader from "./StudioHeader";
+import StudioSignIn from "./StudioSignIn";
 import StudioRoutes from "./StudioRoutes";
 import StudioSidebar from "./StudioSidebar";
 import { useStudioController } from "./useStudioController";
@@ -27,7 +28,6 @@ export default function Merchant(props: {
     request,
     workspace,
     environment,
-    token,
     theme,
     t,
     menu,
@@ -52,10 +52,7 @@ export default function Merchant(props: {
     previewOpen,
     setPreviewOpen,
     settings,
-    setToken,
-    setConnected,
     run,
-    connect,
     providers,
     provider,
     model,
@@ -65,13 +62,15 @@ export default function Merchant(props: {
     busy,
     refresh,
   } = controller;
+  if (!controller.auth.identity)
+    return <StudioSignIn auth={controller.auth} onExit={props.onExit} />;
   return (
     <StudioContext.Provider value={controller}>
       <AppSurfaceProvider
         request={request}
-        scopeKey={`${workspace}:${environment}:${token}`}
+        scopeKey={`${workspace}:${environment}:${controller.auth.identity.user.id}`}
       >
-        <div className="studio" data-theme={theme}>
+        <div className="studio" data-theme={theme} inert={sessionExpired}>
           <a className="studio-skip" href="#studio-content">
             {t("assistant")}
           </a>
@@ -197,13 +196,7 @@ export default function Merchant(props: {
           )}
           {settings && (
             <SettingsDialog
-              token={token}
-              onToken={(s) => {
-                setToken(s);
-                setConnected(false);
-              }}
               connected={connected}
-              onConnect={() => run(connect)}
               providers={providers}
               provider={provider}
               model={model}
@@ -225,6 +218,9 @@ export default function Merchant(props: {
           )}
         </div>
       </AppSurfaceProvider>
+      {sessionExpired && (
+        <StudioSignIn auth={controller.auth} onExit={props.onExit} overlay />
+      )}
     </StudioContext.Provider>
   );
 }

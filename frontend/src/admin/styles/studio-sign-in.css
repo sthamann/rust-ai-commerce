@@ -1,0 +1,165 @@
+/* Dedicated access surface: responsive Vendune login and native modal reauthentication. */
+.studio-auth-page {
+  position: fixed;
+  inset: 0;
+  overflow: auto;
+  box-sizing: border-box;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+  background:
+    radial-gradient(ellipse at 25% 0%, #e0ebff, transparent 65%), #f6f8fc;
+  color: #172b48;
+}
+.studio-auth-card {
+  width: min(460px, 100%);
+  box-sizing: border-box;
+  padding: 36px;
+  border: 1px solid #e2e8f3;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 24px 80px #233e7020;
+  font-family: Inter, system-ui, sans-serif;
+}
+.studio-auth-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  color: #3266ee;
+}
+.studio-auth-mark strong {
+  font-size: 23px;
+  color: #172b48;
+  letter-spacing: -0.8px;
+}
+.studio-auth-mark span {
+  margin-left: auto;
+  font-size: 12px;
+  color: #6b7c94;
+}
+.studio-auth-card h1 {
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  margin: 0 0 14px;
+}
+.studio-auth-card p {
+  color: #677b95;
+  line-height: 1.6;
+}
+.studio-auth-card .account-form {
+  display: grid;
+  gap: 18px;
+  margin-top: 24px;
+}
+.studio-auth-card label {
+  display: grid;
+  gap: 8px;
+  color: #3c506c;
+  font-size: 14px;
+}
+.studio-auth-card input,
+.studio-auth-card select {
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #dbe3f1;
+  border-radius: 12px;
+  padding: 13px 14px;
+  font: inherit;
+  color: #172b48;
+  background: #fff;
+}
+.studio-auth-card input:focus-visible {
+  outline: 3px solid #386cf533;
+  border-color: #386cf5;
+}
+.studio-auth-card input[readonly] {
+  background: #f6f8fc;
+}
+.studio-auth-card .studio-primary {
+  border: 0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  background: #3266ee;
+  color: #fff;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+.studio-auth-card .studio-secondary {
+  border: 1px solid #dbe3f1;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  color: #435771;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+.studio-auth-card button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.studio-auth-card .account-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.studio-auth-card .account-tabs [aria-pressed="true"] {
+  color: #3266ee;
+  border-color: #3266ee;
+  background: #edf3ff;
+}
+.studio-auth-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f5f8fe;
+  color: #435771;
+  overflow-wrap: anywhere;
+}
+.studio-auth-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid #edf1f7;
+}
+.studio-auth-footer select {
+  width: auto;
+  font-size: 12px;
+}
+.studio-auth-dialog {
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  background: transparent;
+  color: #172b48;
+  width: min(460px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+}
+.studio-auth-dialog::backdrop {
+  background: #142a4560;
+  backdrop-filter: blur(5px);
+}
+.studio-auth-dialog .studio-auth-card {
+  box-shadow: none;
+}
+.studio-auth-card .commerce-error {
+  color: #b73547;
+}
+@media (max-width: 480px) {
+  .studio-auth-card {
+    padding: 24px;
+  }
+  .studio-auth-footer {
+    flex-wrap: wrap;
+  }
+}

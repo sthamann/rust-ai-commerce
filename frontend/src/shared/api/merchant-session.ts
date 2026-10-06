@@ -1,5 +1,27 @@
 /** Private merchant-session rejection signals shared by all JSON transports. */
 type SessionFailure = { token: string; detail: string };
+const suspended = new Set<string>();
+/** Pause later merchant operations after expiry; writes are never replayed. */
+export function suspendMerchantToken(token: string) {
+  if (suspended.size >= 64) suspended.delete(suspended.values().next().value!);
+  suspended.add(token);
+}
+export function resumeMerchantToken(token: string) {
+  suspended.delete(token);
+}
+export function merchantRequestSuspended(
+  path: string,
+  headers: HeadersInit | undefined,
+) {
+  if (
+    !path.startsWith("/api/") ||
+    path.startsWith("/api/platform/") ||
+    path.startsWith("/api/auth/")
+  )
+    return false;
+  const auth = new Headers(headers).get("Authorization");
+  return !!auth?.startsWith("Bearer ") && suspended.has(auth.slice(7));
+}
 const listeners = new Set<(failure: SessionFailure) => void>();
 const authFailures = new Set([
   "Session or integration key expired or invalid",

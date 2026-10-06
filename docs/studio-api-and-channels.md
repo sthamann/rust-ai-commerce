@@ -22,6 +22,29 @@ scopes and object ownership on the server. Customers cannot access another
 customer's addresses or orders by changing IDs. Sales channels share a tenant;
 unrelated SaaS merchants require separate tenants.
 
+## Studio login and session expiry
+
+Studio uses a personal merchant session. Without one, any protected tab goes to
+`#login`, with its shop/tab/entity target retained in the current same-origin
+URL. Stored credentials are verified before mounting protected views. Public
+product pages, browsing and checkout remain publicly accessible.
+
+After a verified session expires or is revoked, a blocking native login dialog
+opens over the current page. The private workspace becomes inert and later
+merchant operations using the rejected token are paused. Unsaved inputs, the
+selected entity and staging context stay in memory. Signing in with the same
+account and current shop membership resumes the page; logging into a different
+account cannot reveal the previous editor. **Leave Studio** discards its private
+in-memory state and returns to login. Reloading the page also loses in-memory
+drafts, as before. Failed writes are **not automatically replayed**.
+
+Visible sessions are checked every minute and when browser focus/visibility
+returns. A server 401 triggers the dialog immediately on the next authenticated
+operation. A 403 for insufficient rights, an unavailable network or a rejected
+external provider does not invalidate the merchant session. This frontend
+boundary improves navigation; server-side tenant, ownership and permission
+checks remain the security boundary for API and MCP clients.
+
 ## Developer → API & integrations
 
 Create a named integration key with explicit scopes and a lifetime of **1–90 days

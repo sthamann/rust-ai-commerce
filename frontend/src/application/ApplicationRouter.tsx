@@ -16,7 +16,7 @@ export default function ApplicationRouter() {
           location.hostname.endsWith(".code.run"))),
   );
   const [admin, setAdmin] = useState(
-    ["#merchant", "#studio-content"].includes(location.hash),
+    ["#merchant", "#studio-content", "#login"].includes(location.hash),
   );
   useEffect(() => {
     const change = () => {
@@ -28,7 +28,9 @@ export default function ApplicationRouter() {
               location.hostname === "app.vendune.ai" ||
               location.hostname.endsWith(".code.run"))),
       );
-      setAdmin(["#merchant", "#studio-content"].includes(location.hash));
+      setAdmin(
+        ["#merchant", "#studio-content", "#login"].includes(location.hash),
+      );
       window.scrollTo({ top: 0, behavior: "instant" });
     };
     window.addEventListener("hashchange", change);
