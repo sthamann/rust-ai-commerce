@@ -19,6 +19,8 @@ import "../../shared/styles/workbench.css";
 import { commerceEvent } from "../analytics/ShopAnalytics";
 import "../styles/shop.css";
 import "../styles/checkout.css";
+import "../styles/storefront-polish.css";
+import "../styles/order-completion.css";
 
 const session = localStorage.getItem("rac-session") || crypto.randomUUID();
 localStorage.setItem("rac-session", session);
@@ -142,7 +144,17 @@ export function useStorefrontController({
               token ? undefined : { session },
               token ?? undefined,
             );
-            if (c.status !== "open" && !location.hash.startsWith("#payment/"))
+            if (
+              c.status === "completed" &&
+              c.order &&
+              location.hash === "#order-confirmed"
+            )
+              setOrder(c.order);
+            if (
+              c.status !== "open" &&
+              !location.hash.startsWith("#payment/") &&
+              location.hash !== "#order-confirmed"
+            )
               c = await shopApi<Cart>("/store-api/checkout/cart", { session });
           } catch {
             c = await shopApi<Cart>("/store-api/checkout/cart", { session });
@@ -173,6 +185,14 @@ export function useStorefrontController({
       setBusy(false);
     }
   };
+  const openBag = () =>
+    run(async () => {
+      if (cart?.status === "completed") {
+        save(await shopApi<Cart>("/store-api/checkout/cart", { session }));
+        setOrder(undefined);
+      }
+      setBag(true);
+    });
   const add = (pid: string, q: number) =>
     run(async () => {
       if (!cart) return;
@@ -180,7 +200,10 @@ export function useStorefrontController({
         await shopApi<Cart>(
           "/store-api/checkout/cart/line-item",
           { items: [{ referencedId: pid, quantity: q }] },
-          cart.token,
+          (cart.status === "completed"
+            ? await shopApi<Cart>("/store-api/checkout/cart", { session })
+            : cart
+          ).token,
         ),
       );
       const item = products.find((p) => p.id === pid);
@@ -245,19 +268,15 @@ export function useStorefrontController({
         salesChannel,
       );
       setOrder(o);
-      if (o.payment.attemptId) {
+      if (o.payment.attemptId)
         localStorage.setItem(
           `rac-payment-token:${o.payment.attemptId}`,
           cart.token,
         );
-        setCart(
-          await shopApi<Cart>(
-            "/store-api/checkout/cart",
-            undefined,
-            cart.token,
-          ),
-        );
-      } else save(await shopApi<Cart>("/store-api/checkout/cart", { session }));
+      // Keep the scoped completed-cart token for reload recovery; the next add creates a new cart.
+      save({ ...o.cart, token: cart.token, status: "completed", order: o });
+      setBag(false);
+      location.hash = "order-confirmed";
     } catch (e) {
       // Refresh a stale quote before a second explicit purchase. Never retry a charge silently.
       try {
@@ -279,6 +298,7 @@ export function useStorefrontController({
 
   return {
     company,
+    openBag,
     onMerchant,
     s,
     t,

@@ -509,7 +509,9 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/customer/AddressCard.tsx](../frontend/src/shared/customer/AddressCard.tsx) | Human-readable address used in order snapshots and address books. |
 | [frontend/src/shared/customer/AddressFields.tsx](../frontend/src/shared/customer/AddressFields.tsx) | Structured accessible address editor; no hidden JSON or storefront-only duplicate model. |
 | [frontend/src/shared/customer/CustomerFields.tsx](../frontend/src/shared/customer/CustomerFields.tsx) | Contact fields mirror the account API while access, identity and pricing remain separate. |
+| [frontend/src/shared/customer/GoogleAddressSearch.tsx](../frontend/src/shared/customer/GoogleAddressSearch.tsx) | Opt-in Places widget fills editable address fields, rejects unsupported destinations and ignores stale replies. |
 | [frontend/src/shared/customer/customer-types.ts](../frontend/src/shared/customer/customer-types.ts) | Shared customer/address contracts; merchant and customer sessions use distinct request adapters. |
+| [frontend/src/shared/customer/google-address.ts](../frontend/src/shared/customer/google-address.ts) | Google Places adapter: lazy public browser key, bounded loader and international address mapping. |
 | [frontend/src/shared/geography/CountryPicker.tsx](../frontend/src/shared/geography/CountryPicker.tsx) | Locale-aware world catalogue adapter for the shared searchable entity picker. |
 | [frontend/src/shared/geography/EntityPicker.tsx](../frontend/src/shared/geography/EntityPicker.tsx) | Accessible searchable country/region combobox; chips and group actions replace checkbox walls. |
 | [frontend/src/shared/geography/TranslationFields.tsx](../frontend/src/shared/geography/TranslationFields.tsx) | Shared single-language fields for configurable object content; per-field null restores main-language inheritance. |
@@ -581,7 +583,11 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/checkout/CheckoutIdentity.tsx](../frontend/src/storefront/checkout/CheckoutIdentity.tsx) | Inline guest/login/registration step rotates the cart on authentication and refreshes owning defaults. |
 | [frontend/src/storefront/checkout/CheckoutMethods.tsx](../frontend/src/storefront/checkout/CheckoutMethods.tsx) | Method cards keep delivery and payment discoverable without concealing country restrictions. |
 | [frontend/src/storefront/checkout/CheckoutPanel.tsx](../frontend/src/storefront/checkout/CheckoutPanel.tsx) | One-page checkout: server-reviewed selection, explicit purchase and durable provider handoff. |
+| [frontend/src/storefront/checkout/CheckoutProgress.tsx](../frontend/src/storefront/checkout/CheckoutProgress.tsx) | Readable checkout progress reflects reviewed server state; it never implies payment confirmation. |
+| [frontend/src/storefront/checkout/CheckoutPurchase.tsx](../frontend/src/storefront/checkout/CheckoutPurchase.tsx) | Shared explicit purchase button: mobile dock and desktop review use the same form and server-review state. |
 | [frontend/src/storefront/checkout/CheckoutSummary.tsx](../frontend/src/storefront/checkout/CheckoutSummary.tsx) | Sticky order review presents authoritative totals and discounts beside the purchase action. |
+| [frontend/src/storefront/checkout/OrderCompletion.tsx](../frontend/src/storefront/checkout/OrderCompletion.tsx) | Dedicated completion page renders the accepted order snapshot and honest provider state, with no ID-only reads. |
+| [frontend/src/storefront/checkout/OrderConfetti.tsx](../frontend/src/storefront/checkout/OrderConfetti.tsx) | Finite CSS celebration after an accepted order; no timers, libraries or motion for reduced-motion users. |
 | [frontend/src/storefront/checkout/PaymentSession.tsx](../frontend/src/storefront/checkout/PaymentSession.tsx) | Provider handoff and bounded durable-status polling; only verified server receipts confirm payment. |
 | [frontend/src/storefront/checkout/checkout-order.ts](../frontend/src/storefront/checkout/checkout-order.ts) | Bind the purchase to the reviewed cart and total; the server remains the pricing authority. |
 | [frontend/src/storefront/shell/CatalogNavigation.tsx](../frontend/src/storefront/shell/CatalogNavigation.tsx) | Public category navigation uses the same tenant/channel tree as the listing API, with translated names. |
@@ -597,14 +603,17 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/shell/useCompanyIdentity.ts](../frontend/src/storefront/shell/useCompanyIdentity.ts) | Channel-scoped public brand/legal identity; stale responses cannot leak across tenants or languages. |
 | [frontend/src/storefront/shell/usePersonalization.ts](../frontend/src/storefront/shell/usePersonalization.ts) | Opt-in behavior signals and stable product ordering; no authoritative prices are changed. |
 | [frontend/src/storefront/shell/useStorefrontController.ts](../frontend/src/storefront/shell/useStorefrontController.ts) | Cart lifecycle, authoritative checkout commands and storefront coordination. |
+| [frontend/src/storefront/styles/checkout-fields.css](../frontend/src/storefront/styles/checkout-fields.css) | Checkout-owned form layout, independent of previously mounted account/admin stylesheets. |
 | [frontend/src/storefront/styles/checkout.css](../frontend/src/storefront/styles/checkout.css) | One-page checkout: calm responsive workspace with a sticky, readable order review. |
 | [frontend/src/storefront/styles/company-identity.css](../frontend/src/storefront/styles/company-identity.css) | Public company branding and readable legal identity across storefront channels. |
+| [frontend/src/storefront/styles/order-completion.css](../frontend/src/storefront/styles/order-completion.css) | Order receipt page and finite transform-only celebration; honors reduced motion. |
 | [frontend/src/storefront/styles/shop/01--root.css](../frontend/src/storefront/styles/shop/01--root.css) | shop: -root styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/storefront/styles/shop/02-shop-product-image.css](../frontend/src/storefront/styles/shop/02-shop-product-image.css) | shop: shop-product-image styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/storefront/styles/shop/03-availability-span.css](../frontend/src/storefront/styles/shop/03-availability-span.css) | shop: availability-span styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/storefront/styles/shop/04-shop-stepper.css](../frontend/src/storefront/styles/shop/04-shop-stepper.css) | shop: shop-stepper styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/storefront/styles/shop/05-shop-grid-comparison.css](../frontend/src/storefront/styles/shop/05-shop-grid-comparison.css) | shop: shop-grid-comparison styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/storefront/styles/shop.css](../frontend/src/storefront/styles/shop.css) | Ordered shop stylesheet entry; domain rules live in the adjacent folder. |
+| [frontend/src/storefront/styles/storefront-polish.css](../frontend/src/storefront/styles/storefront-polish.css) | Warm editorial surfaces and responsive navigation, catalogue and product pages. |
 
 ## Independent apps, services and SDK
 
