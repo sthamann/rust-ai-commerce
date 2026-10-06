@@ -144,6 +144,10 @@ const SCHEMA: &[(&str, &str)] = &[
         "039-explicit-payment-attribution",
         include_str!("../migrations/039-explicit-payment-attribution.sql"),
     ),
+    (
+        "040-automation-defaults",
+        include_str!("../migrations/040-automation-defaults.sql"),
+    ),
 ];
 
 pub(crate) async fn apply(pool: &PgPool) {
@@ -212,6 +216,23 @@ pub(crate) async fn seed_demo(a: &App, setup: &PgPool) {
     .expect("demo seed status");
     if ready {
         return;
+    }
+    for t in ["atelier", "workshop"] {
+        sqlx::query(
+            "INSERT INTO commerce_settings(tenant,data) VALUES($1,$2) ON CONFLICT DO NOTHING",
+        )
+        .bind(t)
+        .bind(
+            serde_json::from_str::<Value>(include_str!("../fixtures/demo-settings.json")).unwrap(),
+        )
+        .execute(&a.db)
+        .await
+        .expect("demo settings basis");
+        sqlx::query("SELECT public.seed_shop_automation($1)")
+            .bind(t)
+            .execute(&a.db)
+            .await
+            .expect("demo channel before customer creation");
     }
     seed(a).await.expect("demo seed");
     for source in [

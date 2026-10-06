@@ -1,9 +1,10 @@
 /** Guided channel creation/editing reuses the native revisioned API and shared content-language inheritance. */
+import AutomationDelete from "../automation/AutomationDelete";
+import { useLifecycleText } from "../automation/lifecycle-i18n";
 import { useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
 import type { Category } from "../catalog/catalog-model";
-import type { Channel } from "./channel-model";
-import { channelUrl } from "./channel-model";
+import { channelUrl, type Channel } from "./channel-model";
 import { useChannelText } from "./channel-i18n";
 import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
 import ContentLanguagePicker from "../../shared/i18n/ContentLanguagePicker";
@@ -24,6 +25,7 @@ export default function ChannelEditor({
   canWrite,
   onBack,
   onSaved,
+  onDeleted,
 }: {
   initial: Channel;
   request: RequestFn;
@@ -34,7 +36,9 @@ export default function ChannelEditor({
   canWrite: boolean;
   onBack: () => void;
   onSaved: (channel: Channel) => void;
+  onDeleted?: () => void;
 }) {
+  const life = useLifecycleText();
   const t = useChannelText(),
     { locale } = useLocale();
   const [draft, setDraft] = useState(initial),
@@ -47,6 +51,12 @@ export default function ChannelEditor({
     [scope, setScope] = useState(false),
     [scopeDirty, setScopeDirty] = useState(false),
     [confirm, setConfirm] = useState<"back" | "active" | null>(null);
+  const confirmKey =
+    confirm === "back"
+      ? "discard"
+      : draft.data.active
+        ? "deactivate"
+        : "activate";
   const dirty = JSON.stringify(draft) !== baseline || scopeDirty;
   const patch = (v: Partial<Channel["data"]>) => {
     setNotice(false);
@@ -106,7 +116,11 @@ export default function ChannelEditor({
             </button>
             <button
               className={scope ? "studio-primary" : "studio-secondary"}
-              disabled={busy || JSON.stringify(draft) !== baseline}
+              disabled={
+                draft.id === "default" ||
+                busy ||
+                JSON.stringify(draft) !== baseline
+              }
               onClick={() => setScope(true)}
             >
               {t("scope")}
@@ -121,7 +135,7 @@ export default function ChannelEditor({
             </a>
             <button
               className="studio-secondary"
-              disabled={!canWrite || dirty || busy}
+              disabled={draft.id === "default" || !canWrite || dirty || busy}
               onClick={() => setConfirm("active")}
             >
               {t(draft.data.active ? "deactivate" : "activate")}
@@ -168,6 +182,9 @@ export default function ChannelEditor({
                         type="button"
                         key={kind}
                         className="channel-kind"
+                        disabled={
+                          draft.id === "default" && kind !== "storefront"
+                        }
                         aria-pressed={draft.data.kind === kind}
                         onClick={() => patch({ kind })}
                       >
@@ -192,6 +209,7 @@ export default function ChannelEditor({
                       <button
                         type="button"
                         key={language}
+                        disabled={draft.id === "default"}
                         aria-pressed={draft.data.locales.includes(language)}
                         className={
                           draft.data.locales.includes(language)
@@ -346,24 +364,21 @@ export default function ChannelEditor({
             )}
           </>
         )}
+        {draft.id === "default" && <p>{life("inheritLanguages")}</p>}
+        <AutomationDelete
+          request={request}
+          kind="channels"
+          id={draft.id}
+          revision={draft.revision}
+          disabled={!canWrite || dirty || busy}
+          onDeleted={onDeleted ?? onBack}
+        />
         {notice && <p role="status">{t("saved")}</p>}
         {error && <p role="alert">{error}</p>}
         {confirm && (
           <ConfirmDialog
-            title={t(
-              confirm === "back"
-                ? "discard"
-                : draft.data.active
-                  ? "deactivate"
-                  : "activate",
-            )}
-            confirmLabel={t(
-              confirm === "back"
-                ? "discard"
-                : draft.data.active
-                  ? "deactivate"
-                  : "activate",
-            )}
+            title={t(confirmKey)}
+            confirmLabel={t(confirmKey)}
             disabled={busy}
             onCancel={() => setConfirm(null)}
             onConfirm={() => {

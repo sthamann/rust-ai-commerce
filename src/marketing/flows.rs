@@ -88,7 +88,7 @@ pub(crate) async fn project_flows(
     if !EVENTS.contains(&kind) && !valid_app_event(kind) {
         return Ok(());
     }
-    let rows = sqlx::query("SELECT id,data FROM commerce_flows WHERE tenant=$1 AND data->>'event'=$2 AND data->>'active'='true' ORDER BY id")
+    let rows = sqlx::query("SELECT id,data FROM commerce_flows WHERE tenant=$1 AND data->>'event'=$2 AND data->>'active'='true' ORDER BY id FOR SHARE")
         .bind(t)
         .bind(kind)
         .fetch_all(&mut *tx)

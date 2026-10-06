@@ -17,6 +17,29 @@ pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Res
             )
             .await?
         }
+        "automation.dependencies" => {
+            lifecycle::dependencies(
+                State(a.clone()),
+                h.clone(),
+                Path((
+                    v["kind"].as_str().ok_or(bad("Kind required"))?.into(),
+                    v["id"].as_str().ok_or(bad("ID required"))?.into(),
+                )),
+            )
+            .await?
+        }
+        "automation.delete" => {
+            lifecycle::delete(
+                State(a.clone()),
+                h.clone(),
+                Path((
+                    v["kind"].as_str().ok_or(bad("Kind required"))?.into(),
+                    v["id"].as_str().ok_or(bad("ID required"))?.into(),
+                )),
+                Json(v.clone()),
+            )
+            .await?
+        }
         "automation.preview" => {
             routes::preview(State(a.clone()), h.clone(), Json(v.clone())).await?
         }

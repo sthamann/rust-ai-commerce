@@ -2,11 +2,10 @@
 import { useEffect, useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
 import type { Category } from "../catalog/catalog-model";
-import Icon from "../../shared/ui/Icon";
 import { useLocale } from "../../shared/i18n/i18n";
 import { contentText } from "../../shared/i18n/content-language";
 import { useChannelText } from "./channel-i18n";
-import { freshChannel, channelUrl, type Channel } from "./channel-model";
+import { freshChannel, type Channel } from "./channel-model";
 import ChannelEditor from "./ChannelEditor";
 import "../styles/sales-channels.css";
 export default function SalesChannelsWorkspace({
@@ -39,7 +38,7 @@ export default function SalesChannelsWorkspace({
     ])
       .then(([a, c, k, p]) => {
         if (active) {
-          setChannels(a.channels.filter((c: Channel) => c.id !== "default"));
+          setChannels(a.channels);
           setSettings(c.data);
           setCategories(k.elements);
           setManage(p.permissions.includes("settings.write"));
@@ -81,25 +80,14 @@ export default function SalesChannelsWorkspace({
           canWrite={manage}
           onBack={() => setSelected(null)}
           onSaved={save}
+          onDeleted={() => {
+            setChannels((old) => old.filter((c) => c.id !== selected.id));
+            setSelected(null);
+          }}
         />
       ) : (
         <>
           <div className="channel-card-grid">
-            <article className="studio-card channel-card">
-              <span className="channel-avatar">
-                <Icon name="layers" />
-              </span>
-              <h2>{t("default")}</h2>
-              <p>{t("all")}</p>
-              <a
-                className="studio-secondary"
-                href={channelUrl(workspace, "default")}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {t("preview")} ↗
-              </a>
-            </article>
             {channels.map((c) => (
               <article className="studio-card channel-card" key={c.id}>
                 <span className="channel-avatar">
@@ -108,6 +96,9 @@ export default function SalesChannelsWorkspace({
                 <span className="soft-tag">
                   {t(c.data.active ? "active" : "inactive")}
                 </span>
+                {c.id === "default" && (
+                  <span className="soft-tag">{t("default")}</span>
+                )}
                 <h2>
                   {contentText(
                     c.data.name,

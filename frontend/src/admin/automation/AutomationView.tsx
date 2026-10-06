@@ -1,7 +1,10 @@
 /** Typed merchant rule/campaign/flow/channel forms with exact JSON available for advanced review. */
+import AutomationDefinitions from "./AutomationDefinitions";
+import AutomationDelete from "./AutomationDelete";
+import { useLifecycleText } from "./lifecycle-i18n";
+import "../styles/automation-lifecycle.css";
 import EntityHistory from "../../shared/history/EntityHistory";
 import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
-import { contentText } from "../../shared/i18n/content-language";
 import "../styles/international.css";
 import FlowExecution from "./FlowExecution";
 import { useConnectedText } from "../../shared/i18n/connected-i18n";
@@ -23,6 +26,7 @@ export default function AutomationView({
   role: string;
   onChannels?: () => void;
 }) {
+  const t = useLifecycleText();
   const { x } = useConnectedText();
   const [languages, setLanguages] = useState<{
     locales: string[];
@@ -90,11 +94,32 @@ export default function AutomationView({
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [advanced, setAdvanced] = useState("");
-  const manage = ["owner", "admin"].includes(role);
+  const [manage, setManage] = useState(false);
+  useEffect(() => {
+    request("/api/auth/access")
+      .then((v) => setManage(v.permissions.includes("settings.write")))
+      .catch(() => setManage(false));
+  }, [request]);
+  const choose = (r: Config, k: Kind = kind) => {
+    setKind(k);
+    setId(r.id);
+    setRevision(r.revision);
+    setData(r.data);
+    setAdvanced("");
+    setError("");
+  };
   const load = async () => {
     const v = await request("/api/automation");
     setRows(v);
     setJobs(v.jobs);
+    setCatalog((c) => ({
+      ...c,
+      rules: v.rules.map((r: Config) => ({
+        id: r.id,
+        name: r.data.name,
+        revision: r.revision,
+      })),
+    }));
   };
   useEffect(() => {
     let active = true;
@@ -103,6 +128,7 @@ export default function AutomationView({
         if (active) {
           setRows(v);
           setJobs(v.jobs);
+          if (v.rules[0]) choose(v.rules[0], "rules");
         }
       })
       .catch((e) => {
@@ -210,41 +236,33 @@ export default function AutomationView({
               key={k}
               className={kind === k ? "studio-primary" : "studio-secondary"}
               onClick={() =>
-                k === "channels" && onChannels ? onChannels() : fresh(k)
+                k === "channels" && onChannels
+                  ? onChannels()
+                  : rows[k][0]
+                    ? choose(rows[k][0], k)
+                    : fresh(k)
               }
             >
               {w(k)}
             </button>
           ))}
         </nav>
+        <aside className="automation-process-guide">
+          <h2>{t("processes")}</h2>
+          <p>{t("processHint")}</p>
+          <p className="muted">{t("coreHint")}</p>
+        </aside>
         <div
           className={`workbench-grid ${kind === "flows" ? "flow-workspace" : ""}`}
         >
-          <section className="studio-card">
-            <h2>{w(kind)}</h2>
-            {rows[kind].map((r) => (
-              <button
-                key={r.id}
-                className="search-hit"
-                onClick={() => {
-                  setId(r.id);
-                  setRevision(r.revision);
-                  setData(r.data);
-                  setAdvanced("");
-                }}
-              >
-                {contentText(
-                  r.data.name ?? {},
-                  locale,
-                  languages?.mainLocale ?? "en-GB",
-                ) || r.id}
-                <small>v{r.revision}</small>
-              </button>
-            ))}
-            <button className="studio-secondary" onClick={() => fresh(kind)}>
-              {w("newConfig")}
-            </button>
-          </section>
+          <AutomationDefinitions
+            rows={rows[kind]}
+            id={id}
+            mainLocale={languages?.mainLocale ?? "en-GB"}
+            manage={manage}
+            onCreate={() => fresh(kind)}
+            onSelect={(r) => choose(r)}
+          />
           <section className="studio-card">
             <AutomationEditor
               run={run}
@@ -267,6 +285,27 @@ export default function AutomationView({
               rows={rows}
               locale={locale}
               setAdvanced={setAdvanced}
+            />
+            <AutomationDelete
+              key={`${kind}:${id}`}
+              request={request}
+              kind={kind}
+              id={id}
+              revision={revision}
+              disabled={
+                !manage ||
+                busy ||
+                JSON.stringify(data) !==
+                  JSON.stringify(rows[kind].find((r) => r.id === id)?.data)
+              }
+              onReference={(k, i) => {
+                const r = rows[k].find((r) => r.id === i);
+                if (r) choose(r, k);
+              }}
+              onDeleted={async () => {
+                await load();
+                fresh(kind);
+              }}
             />
             {!!id && revision > 0 && (
               <EntityHistory

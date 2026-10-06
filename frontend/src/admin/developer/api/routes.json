@@ -156,7 +156,17 @@
   },
   {
     "path": "/api/automation/{kind}/{id}",
+    "method": "DELETE",
+    "source": "src/marketing/routes.rs"
+  },
+  {
+    "path": "/api/automation/{kind}/{id}",
     "method": "PUT",
+    "source": "src/marketing/routes.rs"
+  },
+  {
+    "path": "/api/automation/{kind}/{id}/dependencies",
+    "method": "GET",
     "source": "src/marketing/routes.rs"
   },
   {

@@ -57,7 +57,7 @@ invalid={**flow,'instruction':{}};config_result=call('/api/automation/flows/inva
 config('flows','order_note',flow);event_order=order(x,xh)
 for _ in range(100):
  jobs=call('/api/automation',h=mh)['jobs']
- completed=[j for j in jobs if j['state']=='completed' and j['result'].get('orderId')==event_order['id']]
+ completed=[j for j in jobs if j['flow']=='order_note' and j['state']=='completed' and j['result'].get('orderId')==event_order['id']]
  if completed:break
  time.sleep(.2)
 assert len(completed)==1 and completed[0]['result']['note']=='Nouvelle commande',jobs

@@ -1,4 +1,5 @@
 /** AutomationEditor: focused form view with explicit typed inputs and callbacks. */
+import PromotionSchedule from "./PromotionSchedule";
 import { shopScope } from "../../shared/api/shop-scope";
 import { useConnectedText } from "../../shared/i18n/connected-i18n";
 import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
@@ -196,12 +197,13 @@ export default function AutomationEditor({
         <label>
           {w("condition")}
           <select
-            value=""
+            value={data.rule?.type === "ruleReference" ? data.rule.ruleId : ""}
             onChange={(e) =>
               update(
-                kind === "promotions" ? "rule" : "condition",
-                rows.rules.find((r) => r.id === e.target.value)?.data
-                  .condition ?? { type: "alwaysValid" },
+                "rule",
+                e.target.value
+                  ? { type: "ruleReference", ruleId: e.target.value }
+                  : { type: "alwaysValid" },
               )
             }
           >
@@ -218,6 +220,9 @@ export default function AutomationEditor({
             catalog={catalog}
           />
         </label>
+      )}
+      {kind === "promotions" && (
+        <PromotionSchedule data={data} update={update} />
       )}
       {kind === "flows" && (
         <>

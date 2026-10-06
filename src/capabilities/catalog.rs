@@ -109,6 +109,14 @@ pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
         "Revision-bound rule, promotion, channel or flow graph write",
     ),
     (
+        "automation.dependencies",
+        "Inspect tenant-owned references and durable uses before deletion",
+    ),
+    (
+        "automation.delete",
+        "Revision-bound deletion of unused tenant configuration",
+    ),
+    (
         "automation.preview",
         "Evaluate a rule against an authoritative cart without effects",
     ),
