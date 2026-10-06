@@ -147,13 +147,16 @@ pub(super) async fn pdf(
             .fetch_optional(&a.db)
             .await?
             .ok_or(Error(StatusCode::NOT_FOUND, "Receipt not found".into()))?;
-    Ok((
+    Ok(receipt_response(&v))
+}
+pub(crate) fn receipt_response(v: &Value) -> Response {
+    (
         [
             ("content-type", "application/pdf"),
             ("cache-control", "private, no-store"),
             ("content-disposition", "attachment; filename=receipt.pdf"),
         ],
-        receipt_pdf::render(&receipt_text::lines(&v)),
+        receipt_pdf::render(&receipt_text::lines(v)),
     )
-        .into_response())
+        .into_response()
 }

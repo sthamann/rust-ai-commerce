@@ -154,10 +154,10 @@ export default function AddressBook({
             <article key={entry.id}>
               <div className="customer-address-badges">
                 {entry.id === list.defaultBillingAddressId && (
-                  <span>{c("billingAddress")}</span>
+                  <span>{c("defaultBilling")}</span>
                 )}
                 {entry.id === list.defaultShippingAddressId && (
-                  <span>{c("shippingAddress")}</span>
+                  <span>{c("defaultShipping")}</span>
                 )}
               </div>
               <AddressCard address={entry.address} />

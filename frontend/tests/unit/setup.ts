@@ -41,6 +41,12 @@ beforeEach(() => {
       this.setAttribute("open", "");
     },
   });
+  Object.defineProperty(HTMLDialogElement.prototype, "close", {
+    configurable: true,
+    value: function () {
+      this.removeAttribute("open");
+    },
+  });
   Object.defineProperty(window, "scrollTo", {
     configurable: true,
     value: vi.fn(),

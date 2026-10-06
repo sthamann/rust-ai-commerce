@@ -13,6 +13,7 @@ mod orders;
 mod receipt_pdf;
 mod receipt_text;
 mod receipts;
+pub(crate) use receipts::receipt_response;
 mod workflow;
 pub(crate) fn router() -> Router<App> {
     Router::new()

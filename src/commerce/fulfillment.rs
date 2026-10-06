@@ -118,11 +118,23 @@ pub(crate) async fn transition_order(
                 }
                 d["trackingCode"] = json!(track);
             }
+            if let Some(url) = v["trackingUrl"].as_str() {
+                if !url.is_empty()
+                    && (!url.starts_with("https://") || !crate::assets::safe_url(url))
+                {
+                    return Err(bad("Tracking link must be a safe HTTPS URL"));
+                }
+                d["trackingUrl"] = if url.is_empty() {
+                    Value::Null
+                } else {
+                    json!(url)
+                };
+            }
             d["state"] = json!(target);
         }
         _ => return Err(bad("Kind must be payment or delivery")),
     }
-    sqlx::query("INSERT INTO order_activity(tenant,order_id,actor,kind,data) VALUES($1,$2,$3,'transition',$4)").bind(&t).bind(&id).bind(header(&h,"x-rac-user").unwrap_or("unknown")).bind(json!({"kind":kind,"state":target,"revision":revision+1,"trackingCode":v["trackingCode"],"deliveryIndex":v["deliveryIndex"],"requestKey":request_key})).execute(&mut *tx).await?;
+    sqlx::query("INSERT INTO order_activity(tenant,order_id,actor,kind,data) VALUES($1,$2,$3,'transition',$4)").bind(&t).bind(&id).bind(header(&h,"x-rac-user").unwrap_or("unknown")).bind(json!({"kind":kind,"state":target,"revision":revision+1,"trackingCode":v["trackingCode"],"trackingUrl":v["trackingUrl"],"deliveryIndex":v["deliveryIndex"],"requestKey":request_key})).execute(&mut *tx).await?;
     o["revision"] = json!(revision + 1);
     crate::commerce::order_fields(&mut o);
     sqlx::query("UPDATE orders SET data=$1 WHERE tenant=$2 AND id=$3")

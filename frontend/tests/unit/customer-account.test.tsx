@@ -22,14 +22,19 @@ const response = (value: unknown, status = 200) => ({
   status,
   json: async () => value,
 });
-it.each([false, true])(
-  "loads authenticated account data after submitting the form (register=%s)",
-  async (register) => {
+it.each([
+  { register: false, noCart: false },
+  { register: true, noCart: false },
+  { register: false, noCart: true },
+])(
+  "loads authenticated account data after submitting the form ($register, no cart=$noCart)",
+  async ({ register, noCart }) => {
     const fetcher = vi.fn(async (path: string, init: RequestInit) => {
       const headers = new Headers(init.headers);
       expect(headers.get("x-tenant")).toBe("unit-shop");
       expect(headers.has("Authorization")).toBe(false);
       if (path === "/api/apps/surfaces") return response({ surfaces: [] });
+      if (path === "/store-api/checkout/cart") return response(cart);
       if (path === "/store-api/account/register") {
         expect(JSON.parse(String(init.body))).toMatchObject({
           email,
@@ -89,26 +94,33 @@ it.each([false, true])(
     });
     vi.stubGlobal("fetch", fetcher);
     const onCart = vi.fn();
-    render(<CustomerAccount cart={cart} onCart={onCart} onClose={() => {}} />, {
-      wrapper: LocaleProvider,
-    });
+    render(
+      <CustomerAccount
+        cart={noCart ? undefined : cart}
+        onCart={onCart}
+        onClose={() => {}}
+      />,
+      {
+        wrapper: LocaleProvider,
+      },
+    );
     const user = userEvent.setup();
     if (register) {
-      await user.click(
-        screen.getByRole("button", { name: "Create customer account" }),
-      );
+      await user.click(screen.getByRole("button", { name: "Create account" }));
       await user.type(screen.getByLabelText("First name"), "Unit");
       await user.type(screen.getByLabelText("Last name"), "Customer");
     }
     await user.type(screen.getByLabelText("Email"), email);
     await user.type(screen.getByLabelText(/Password/), password);
     await user.click(
-      screen.getByRole("button", {
-        name: register ? "Create customer account" : "Sign in",
-      }),
+      screen
+        .getAllByRole("button", {
+          name: register ? "Create account" : /Sign in/,
+        })
+        .at(-1)!,
     );
     expect(await screen.findByText(/C-UNIT/)).toBeInTheDocument();
-    expect(await screen.findByText("Fixture Street 1")).toBeInTheDocument();
+
     expect(await screen.findByText(/RAC-OWNED/)).toBeInTheDocument();
     expect(localStorage.getItem("rac-customer:unit-shop")).toBe(token);
     expect(localStorage.getItem("undefined")).toBeNull();

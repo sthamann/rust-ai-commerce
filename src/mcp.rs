@@ -78,7 +78,7 @@ pub(crate) fn tool_schema(name: &str) -> Value {
         }
         "merchant.customer.save" => json!({"id":{"type":"string"},"customer":{"type":"object"}}),
         "merchant.order.transition" => {
-            json!({"id":{"type":"string"},"revision":{"type":"integer"},"kind":{"type":"string","enum":["order","payment","delivery"]},"state":{"type":"string"},"trackingCode":{"type":"string"},"requestKey":{"type":"string"},"action":{"type":"string"},"deliveryIndex":{"type":"integer","minimum":0}})
+            json!({"id":{"type":"string"},"revision":{"type":"integer"},"kind":{"type":"string","enum":["order","payment","delivery"]},"state":{"type":"string"},"trackingCode":{"type":"string"},"trackingUrl":{"type":"string","format":"uri"},"requestKey":{"type":"string"},"action":{"type":"string"},"deliveryIndex":{"type":"integer","minimum":0}})
         }
         "merchant.order.note" => {
             json!({"id":{"type":"string"},"revision":{"type":"integer"},"text":{"type":"string","maxLength":4000}})

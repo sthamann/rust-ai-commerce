@@ -1,6 +1,6 @@
 //! Allow-listed editor JSON with bounded depth and content; HTML/handlers/styles cannot enter the renderer.
 use super::*;
-pub(super) fn safe_url(url: &str) -> bool {
+pub(crate) fn safe_url(url: &str) -> bool {
     if url.len() > 2000 || url.contains(['\\', '\n', '\r']) {
         return false;
     }

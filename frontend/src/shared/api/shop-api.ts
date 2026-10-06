@@ -103,6 +103,7 @@ export type Order = {
   deliveries?: {
     state: string;
     trackingCode?: string;
+    trackingUrl?: string;
     shippingMethod: Shipping;
     deliveryDate: { earliest: string; latest: string };
   }[];

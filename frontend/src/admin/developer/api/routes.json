@@ -865,6 +865,16 @@
     "source": "src/accounts/mod.rs"
   },
   {
+    "path": "/store-api/account/orders/{id}",
+    "method": "GET",
+    "source": "src/accounts/mod.rs"
+  },
+  {
+    "path": "/store-api/account/orders/{order}/receipts/{id}/pdf",
+    "method": "GET",
+    "source": "src/accounts/mod.rs"
+  },
+  {
     "path": "/store-api/account/password",
     "method": "POST",
     "source": "src/accounts/mod.rs"

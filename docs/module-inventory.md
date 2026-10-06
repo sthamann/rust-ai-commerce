@@ -16,6 +16,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/accounts/metadata.rs](../src/accounts/metadata.rs) | Standard customer read fields and indexed order metrics are derived from authoritative records. |
 | [src/accounts/mod.rs](../src/accounts/mod.rs) | Independent customer sessions, profile/password management and owning-account order history. |
 | [src/accounts/order_snapshot.rs](../src/accounts/order_snapshot.rs) | Checkout-owned immutable customer and address records; future account edits cannot rewrite an order. |
+| [src/accounts/orders.rs](../src/accounts/orders.rs) | Customer-owned order reads and receipts share one tenant/identity predicate and a public projection. |
 | [src/accounts/profile.rs](../src/accounts/profile.rs) | Typed customer-owned profile updates; price groups, email and merchant roles cannot be self-assigned. |
 | [src/agent.rs](../src/agent.rs) | Persistent grounded conversations and tenant-scoped semantic knowledge HTTP adapters. |
 | [src/apps/cart_contributions.rs](../src/apps/cart_contributions.rs) | Generic app contributions: configure a cart, bind package/data revisions and persist audited pricing inputs. |
@@ -547,6 +548,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/ContentLanguage.tsx](../frontend/src/shared/i18n/ContentLanguage.tsx) | One content-language selection per editor, distinct from interface language; no writes on selection or fallback. |
 | [frontend/src/shared/i18n/ContentLanguagePicker.tsx](../frontend/src/shared/i18n/ContentLanguagePicker.tsx) | Compact shared language switcher with explicit main-language context; selection never changes persisted content. |
 | [frontend/src/shared/i18n/LocalizedField.tsx](../frontend/src/shared/i18n/LocalizedField.tsx) | Single visible field for the editor's language, with main-language preview and explicit restore-to-inheritance. |
+| [frontend/src/shared/i18n/account-i18n.ts](../frontend/src/shared/i18n/account-i18n.ts) | Customer account vocabulary: one complete EN/DE/FR/ES contract for authentication and purchase care. |
 | [frontend/src/shared/i18n/app-assistant-i18n.ts](../frontend/src/shared/i18n/app-assistant-i18n.ts) | App assistants and extension permissions use the same EN/DE/FR/ES vocabulary. |
 | [frontend/src/shared/i18n/app-i18n.ts](../frontend/src/shared/i18n/app-i18n.ts) | App and evidence UI vocabulary, shared by store, merchant and payment components. |
 | [frontend/src/shared/i18n/app-library-i18n.ts](../frontend/src/shared/i18n/app-library-i18n.ts) | App library vocabulary and built-in summaries; no inferred connection or payment readiness. |
@@ -593,8 +595,18 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/ui/WorkspaceBoundary.tsx](../frontend/src/shared/ui/WorkspaceBoundary.tsx) | Contain a workspace render failure and let the user retry without losing the application shell. |
 | [frontend/src/shared/ui/brand.css](../frontend/src/shared/ui/brand.css) | Shared vector brand sizing and typography for Studio and the operator console. |
 | [frontend/src/shared/ui/confirm-dialog.css](../frontend/src/shared/ui/confirm-dialog.css) | Modal surface shared by settings, media and future destructive actions. |
-| [frontend/src/storefront/account/CustomerAccount.tsx](../frontend/src/storefront/account/CustomerAccount.tsx) | Shopper account overlay uses its own scoped session; merchant credentials never authenticate a customer. |
-| [frontend/src/storefront/account/CustomerSignIn.tsx](../frontend/src/storefront/account/CustomerSignIn.tsx) | CustomerSignIn: focused form view with explicit typed inputs and callbacks. |
+| [frontend/src/storefront/account/AccountDownloads.tsx](../frontend/src/storefront/account/AccountDownloads.tsx) | Paid download entitlements are fetched by the server and retrieved with customer headers, never URL tokens. |
+| [frontend/src/storefront/account/AccountOrderDetail.tsx](../frontend/src/storefront/account/AccountOrderDetail.tsx) | Purchase detail uses immutable addresses, current fulfillment, issued PDFs and paid order entitlements. |
+| [frontend/src/storefront/account/AccountOrderList.tsx](../frontend/src/storefront/account/AccountOrderList.tsx) | Clickable purchase cards show the live server status and lead to a protected order detail. |
+| [frontend/src/storefront/account/AccountOverview.tsx](../frontend/src/storefront/account/AccountOverview.tsx) | Account home connects recent purchases and default addresses to their dedicated management views. |
+| [frontend/src/storefront/account/AccountProfile.tsx](../frontend/src/storefront/account/AccountProfile.tsx) | Focused profile and password forms report persistence and keep account identity outside editable contact data. |
+| [frontend/src/storefront/account/CustomerAccount.tsx](../frontend/src/storefront/account/CustomerAccount.tsx) | Responsive customer workspace separates authentication, address care and protected purchase details. |
+| [frontend/src/storefront/account/CustomerSignIn.tsx](../frontend/src/storefront/account/CustomerSignIn.tsx) | Distinct sign-in and registration forms with correct autofill and an authenticated, rotated cart context. |
+| [frontend/src/storefront/account/account-fields.css](../frontend/src/storefront/account/account-fields.css) | Account form controls have explicit label spacing, consistent actions and shared address-editor integration. |
+| [frontend/src/storefront/account/account-purchases.css](../frontend/src/storefront/account/account-purchases.css) | Purchase cards, fulfillment, documents and financial detail use one readable account layout. |
+| [frontend/src/storefront/account/account-types.ts](../frontend/src/storefront/account/account-types.ts) | Shopper-only account responses deliberately exclude cart/session credentials and internal order activity. |
+| [frontend/src/storefront/account/account.css](../frontend/src/storefront/account/account.css) | Customer workspace: quiet fashion palette, clear purchase cards and an accessible mobile sheet. |
+| [frontend/src/storefront/account/useCustomerAccount.ts](../frontend/src/storefront/account/useCustomerAccount.ts) | Tenant-scoped account loading and mutation lifecycle; expired sessions clear private data and reopen sign-in. |
 | [frontend/src/storefront/analytics/ShopAnalytics.tsx](../frontend/src/storefront/analytics/ShopAnalytics.tsx) | Customer consent and real GA4 ecommerce events; absent apps produce no external script. |
 | [frontend/src/storefront/catalog/ImagePlaceholder.tsx](../frontend/src/storefront/catalog/ImagePlaceholder.tsx) | Honest empty-media state for newly created products; never invent a product photograph. |
 | [frontend/src/storefront/catalog/MemoryRecommendations.tsx](../frontend/src/storefront/catalog/MemoryRecommendations.tsx) | Public consumer of merchant-approved learned associations, hydrated with current product state. |
