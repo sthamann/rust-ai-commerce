@@ -57,3 +57,7 @@ built-in template defaults remain a separate fallback contract.
 restoring inheritance, explicit empty text, dynamic Italian, regional isolation
 and single-language attachment submissions. `localization-gate.test.ts` supplies
 a negative control for stacked translation fields.
+
+## Translator workflow
+
+See [the translation guide](../../../../docs/localization.md). `npm run translations -- export <file.json>` exports existing typed keys; `import` validates the complete document before changing string literals. `npm run localization` rejects untranslated rendered prose, incomplete catalogues and mismatched parameters, without a legacy exemption.

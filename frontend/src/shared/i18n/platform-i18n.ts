@@ -1,6 +1,7 @@
 /** Operator console translations. Every visible control has an explicit translation in all supported locales. */
 import { useLocale } from "./i18n";
 const en = {
+  shopSlugExample: "my-shop",
   title: "Vendune Platform",
   subtitle: "Every shop. One clear view.",
   overview: "Overview",
@@ -73,6 +74,7 @@ const en = {
   invalid: "Check your email and password.",
 };
 const de: typeof en = {
+  shopSlugExample: "mein-shop",
   title: "Vendune Plattform",
   subtitle: "Alle Shops. Ein klarer Überblick.",
   overview: "Übersicht",
@@ -145,6 +147,7 @@ const de: typeof en = {
   invalid: "E-Mail und Passwort prüfen.",
 };
 const fr: typeof en = {
+  shopSlugExample: "ma-boutique",
   title: "Plateforme Vendune",
   subtitle: "Toutes les boutiques. Une vue claire.",
   overview: "Vue d’ensemble",
@@ -216,6 +219,7 @@ const fr: typeof en = {
   invalid: "Vérifiez votre e-mail et mot de passe.",
 };
 const es: typeof en = {
+  shopSlugExample: "mi-tienda",
   title: "Plataforma Vendune",
   subtitle: "Todas las tiendas. Una vista clara.",
   overview: "Resumen",

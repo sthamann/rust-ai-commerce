@@ -103,7 +103,7 @@ export default function ProductDataView({
     <div className="studio-page catalog-workspace">
       <div className="catalog-heading">
         <div>
-          <p className="catalog-eyebrow">COMMERCE / {c("products")}</p>
+          <p className="catalog-eyebrow">{c("products")}</p>
           <h1>{c("products")}</h1>
           <p>{c("intro")}</p>
         </div>

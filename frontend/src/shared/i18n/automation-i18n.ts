@@ -3,6 +3,12 @@ import { useLocale } from "./i18n";
 import { sourceLabels } from "./automation-labels";
 import { fieldLabels } from "./automation-fields";
 const words: Record<string, readonly string[]> = {
+  headless: [
+    "Headless API",
+    "API ohne Shop-Oberfläche",
+    "API sans vitrine",
+    "API sin tienda visual",
+  ],
   pipeline: [
     "Flow canvas",
     "Flow-Arbeitsfläche",
