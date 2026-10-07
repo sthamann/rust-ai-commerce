@@ -56,6 +56,19 @@
 .checkout-form {
   padding: 28px 32px;
 }
+.checkout-form,
+.checkout-details,
+.checkout-identity,
+.checkout-details form {
+  min-width: 0;
+}
+.checkout-details :is(label, fieldset) {
+  min-width: 0;
+  max-width: 100%;
+}
+.checkout-identity .customer-connected {
+  overflow-wrap: anywhere;
+}
 .checkout-details form {
   display: grid;
   gap: 16px;
@@ -76,6 +89,9 @@
 .checkout-details input:not([type="checkbox"]):not([type="radio"]),
 .checkout-details select,
 .checkout-coupon input {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   min-height: 54px;
   background: #fff;
   border: 1px solid var(--line);
@@ -170,12 +186,13 @@
 }
 .checkout-item {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
   padding-bottom: 16px;
   border-bottom: 1px solid #e0e6ef;
 }
 .checkout-item a {
+  overflow-wrap: anywhere;
   display: grid;
   gap: 6px;
   text-decoration: none;
@@ -274,7 +291,7 @@
     font-size: 24px;
   }
   .checkout-layout {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .checkout-form {
     padding: 8px 20px 24px;

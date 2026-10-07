@@ -1,5 +1,6 @@
 /** StudioConversation: focused Studio view; state and commands come from the session-scoped controller. */
 import StudioComposer from "./StudioComposer";
+import { useExperienceUIText } from "../../shared/i18n/experience-ui-i18n";
 
 import "../../shared/styles/workbench.css";
 import Icon from "../../shared/ui/Icon";
@@ -10,11 +11,19 @@ import "../styles/studio.css";
 
 import { useStudio } from "./StudioContext";
 
-export default function StudioConversation() {
+export default function StudioConversation({
+  compact = false,
+  onProviderSettings,
+}: {
+  compact?: boolean;
+  onProviderSettings?: () => void;
+}) {
+  const { u } = useExperienceUIText();
   const {
     t,
     setSettings,
     provider,
+    providers,
     model,
     messages,
     pendingText,
@@ -35,18 +44,19 @@ export default function StudioConversation() {
           <Icon name="spark" size={15} />
           {t("assistant")}
         </span>
-        <button onClick={() => setSettings(true)}>
+        <button onClick={onProviderSettings ?? (() => setSettings(true))}>
           {provider === "ollama"
             ? t("local")
-            : provider === "anthropic"
-              ? "Claude"
-              : "OpenAI"}
+            : provider === "platform"
+              ? u("platformModel")
+              : (providers.find((entry) => entry.id === provider)?.name ??
+                t("assistant"))}
           <span>{model}</span>
           <Icon name="settings" size={15} />
         </button>
       </div>
       <div className="studio-messages">
-        {!messages.length && !pendingText ? (
+        {!messages.length && !pendingText && !compact ? (
           <div className="assistant-welcome">
             <div className="welcome-symbol">
               <Icon name="spark" size={32} />

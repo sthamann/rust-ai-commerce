@@ -7,8 +7,13 @@ import "../styles/operations.css";
 import "../styles/studio.css";
 
 import { useStudio } from "./StudioContext";
+import { useState } from "react";
+import { useExperienceUIText } from "../../shared/i18n/experience-ui-i18n";
+import WorkspaceCopilot from "../assistant/WorkspaceCopilot";
 
 export default function StudioHeader() {
+  const [copilot, setCopilot] = useState(false);
+  const { u } = useExperienceUIText();
   const {
     t,
     setMenu,
@@ -53,6 +58,21 @@ export default function StudioHeader() {
         </span>
       </div>
       <div className="topbar-actions">
+        <button
+          className="copilot-launch"
+          aria-label={u("copilot")}
+          aria-haspopup={
+            tab === "assistant" && !appSurface ? undefined : "dialog"
+          }
+          onClick={() =>
+            tab === "assistant" && !appSurface
+              ? document.getElementById("studio-message")?.focus()
+              : setCopilot(true)
+          }
+        >
+          <Icon name="spark" size={18} />
+          <span>{u("copilot")}</span>
+        </button>
         {connected && (
           <select
             className="environment-switch"
@@ -117,6 +137,7 @@ export default function StudioHeader() {
           )}
         </button>
       </div>
+      {copilot && <WorkspaceCopilot onClose={() => setCopilot(false)} />}
     </header>
   );
 }

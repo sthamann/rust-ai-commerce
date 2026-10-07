@@ -103,6 +103,14 @@ The **product editor** brings visual/Markdown descriptions, translated
 content, prices/stock, reviewed variant combinations, galleries, category/channel
 visibility, specifications, SEO, cross-selling, downloads and reviews together. Public shops use their own subdomain; product links use stable SKU addresses with inherited localized SEO slugs and support direct reloads. [Explore commerce](docs/features.md#products-and-categories).
 
+### Intelligence beside the work
+
+**Ask Vendune** opens beside products, orders, customers, settings and app workspaces. It prepares an editable question with the current workspace, staging environment and linked entity reference. The existing conversation, evidence and permission-checked proposals stay connected; opening help preserves the product editor.
+
+[![Contextual Studio assistance beside a selected product](docs/assets/showcase/workspace-copilot.png)](docs/ui-experience.md)
+
+*Actual local Studio screen; the question is prepared, with no model call or automatic change.*
+
 ### Stay connected after checkout
 
 A separate sign-in and registration leads to a responsive customer account:

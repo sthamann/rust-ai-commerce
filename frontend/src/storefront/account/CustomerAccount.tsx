@@ -7,6 +7,8 @@ import { useAccountText } from "../../shared/i18n/account-i18n";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
 import "../../shared/styles/customers.css";
 import "./account.css";
+import "./account-polish.css";
+import Icon, { type IconName } from "../../shared/ui/Icon";
 import type { AccountPage } from "./account-types";
 import { useCustomerAccount } from "./useCustomerAccount";
 import CustomerSignIn from "./CustomerSignIn";
@@ -23,6 +25,14 @@ const pages: AccountPage[] = [
   "profile",
   "security",
 ];
+const pageIcons: Record<AccountPage, IconName> = {
+  overview: "layers",
+  orders: "box",
+  addresses: "globe",
+  downloads: "arrow",
+  profile: "people",
+  security: "lock",
+};
 export default function CustomerAccount({
   cart,
   onCart,
@@ -86,7 +96,7 @@ export default function CustomerAccount({
           onClick={onClose}
           aria-label={a("close")}
         >
-          <span aria-hidden="true">×</span>
+          <Icon name="close" />
         </button>
       </header>
       <div className="account-workspace">
@@ -110,6 +120,7 @@ export default function CustomerAccount({
                   disabled={account.busy}
                   onClick={() => navigate(next)}
                 >
+                  <Icon name={pageIcons[next]} size={18} />
                   <span>{a(next)}</span>
                   <span aria-hidden="true">{page === next ? "•" : "↗"}</span>
                 </button>

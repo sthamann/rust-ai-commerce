@@ -4,6 +4,8 @@ Merchant conversation rendering, reviewed change proposals and model connection 
 
 Files and their individual responsibilities are listed in [the generated source inventory](../../../../docs/module-inventory.md). Each file starts with its contract summary.
 
+`WorkspaceCopilot.tsx` presents the same scoped conversation beside the current workspace, including staging and selected entity references. Opening help or selecting a question starter does not call a model; merchant submission and approval remain explicit.
+
 ## Modules
 
 - [`MessageText.tsx`](MessageText.tsx): MessageText keeps merchant interaction separate from workspace orchestration.

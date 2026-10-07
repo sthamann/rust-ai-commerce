@@ -123,6 +123,7 @@ export default function StudioRoutes() {
     connected ? (
       <ProductDataView
         request={request}
+        onEntity={openEntity}
         initialId={
           entityTarget?.tab === "productData" ? entityTarget.id : undefined
         }

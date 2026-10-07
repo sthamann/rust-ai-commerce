@@ -30,6 +30,8 @@ import "../styles/company-identity.css";
 import StorefrontHeader from "./StorefrontHeader";
 import StorefrontHome from "./StorefrontHome";
 import { useStorefrontController } from "./useStorefrontController";
+import "../styles/storefront-polish.css";
+import "../styles/experience-polish.css";
 export default function Storefront(props: { onMerchant: () => void }) {
   const { co } = useCompanyText();
   const { l } = useLegalText();

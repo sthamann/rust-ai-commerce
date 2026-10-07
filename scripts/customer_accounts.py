@@ -47,7 +47,11 @@ assert oldtoken!=cart['token'] and cart['customerId']==p['id'] and cart['checkou
 call('/store-api/checkout/cart',h={**public,'sw-context-token':oldtoken},expected=404)
 cart=call('/store-api/checkout/cart',{},ch);h['sw-context-token']=cart['token'];assert cart['customerId']==p['id'] and cart['checkout']['billingAddressId']==bid
 passed('Login rotates the context and applies saved addresses/payment defaults; an existing session restores the same account context')
-cart=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'mug','quantity':1}]},h)
+# Use an actual purchasable variant from the current default catalogue, not retired furniture demo IDs.
+first=call('/store-api/product',{'limit':1},public)['elements'][0]
+detail=call('/store-api/product/'+first['id'],h=public)
+sample_item=(detail.get('variants') or [detail['product']])[0]['id']
+cart=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':sample_item,'quantity':1}]},h)
 otheraddress=call('/store-api/account/addresses',{'address':{**billing,'name':'Other Buyer','firstName':'Other','lastName':'Buyer'}},oh)['id']
 selection={**cart['checkout'],'billingAddressId':otheraddress};call('/store-api/checkout/context',{'revision':cart['revision'],'checkout':selection},h,'PUT',404)
 call('/store-api/checkout/context',{'revision':cart['revision'],'checkout':cart['checkout']},{k:v for k,v in h.items()if k!='x-customer-token'},'PUT',401)
@@ -90,12 +94,12 @@ assert detail['deliveries'][0]['state']=='shipped' and detail['deliveries'][0]['
 passed('Customer order details, immutable PDF access and shipping links are owner/tenant scoped; unsafe tracking cannot mutate revisions')
 
 # Guest may use own typed addresses, but a matching email grants no account/address/order access.
-guest=call('/store-api/checkout/cart',{},public);gh={**public,'sw-context-token':guest['token']};guest=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'notebook','quantity':1}]},gh)
+guest=call('/store-api/checkout/cart',{},public);gh={**public,'sw-context-token':guest['token']};guest=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':sample_item,'quantity':1}]},gh)
 gsel={**guest['checkout'],'customerEmail':email,'billingAddress':billing,'address':shipping,'billingAddressId':None,'shippingAddressId':None};guest=call('/store-api/checkout/context',{'revision':guest['revision'],'checkout':gsel},gh,'PUT');gorder=call('/store-api/checkout/order',{}, {**gh,'Idempotency-Key':'guest-order-'+suffix});assert gorder['orderCustomer']['guest'] and gorder['orderCustomer']['customerId'] is None
 assert [o['id']for o in call('/store-api/account/orders',h=ch)['elements']]==[oid]
 passed('Guest checkout records contact and addresses without inheriting an existing customer identity or exposing orders to that email')
 config=call('/api/merchant/commerce',h=mh);config['data']['payments'].append({'id':'bank','name':'Bank transfer','active':True,'businessOnly':False,'mode':'manual'});call('/api/merchant/commerce',{'revision':config['revision'],'data':config['data']},mh,'PUT')
-cart=call('/store-api/checkout/cart',{},public);bh={**public,'sw-context-token':cart['token']};cart=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'notebook','quantity':1}]},bh);cart=call('/store-api/checkout/context',{'revision':cart['revision'],'checkout':{**cart['checkout'],'paymentMethodId':'bank'}},bh,'PUT');call('/store-api/checkout/order',{}, {**bh,'Idempotency-Key':'invalid-bank-'+suffix},expected=400)
+cart=call('/store-api/checkout/cart',{},public);bh={**public,'sw-context-token':cart['token']};cart=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':sample_item,'quantity':1}]},bh);cart=call('/store-api/checkout/context',{'revision':cart['revision'],'checkout':{**cart['checkout'],'paymentMethodId':'bank'}},bh,'PUT');call('/store-api/checkout/order',{}, {**bh,'Idempotency-Key':'invalid-bank-'+suffix},expected=400)
 cart=call('/store-api/checkout/context',{'revision':cart['revision'],'checkout':{**cart['checkout'],'customerEmail':'guest@example.test','billingAddress':billing}},bh,'PUT');paid=call('/store-api/checkout/order',{}, {**bh,'Idempotency-Key':'valid-bank-'+suffix});assert paid['payment']['state']=='pending' and paid['payment']['provider']=='manual'
 passed('Financial/manual checkout requires contact and billing data; complete guest checkout creates a pending native payment')
 # MCP uses identical address implementation and current per-user permissions.

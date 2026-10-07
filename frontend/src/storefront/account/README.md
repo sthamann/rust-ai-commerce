@@ -15,6 +15,7 @@ forms. The account token is independent of Studio credentials and scoped to the 
 | `AccountOrderDetail.tsx` | Immutable purchase addresses, current statuses, tracking and receipts    |
 | `AccountDownloads.tsx`   | Paid entitlements and authenticated binary retrieval                     |
 | `AccountProfile.tsx`     | Contact/preferences and password rotation                                |
+| `account-polish.css`     | Brand-aware orientation panel and small-screen interaction refinements   |
 | `account.css`            | Dialog, navigation and responsive layout                                 |
 | `account-fields.css`     | Authentication and shared address/profile form controls                  |
 | `account-purchases.css`  | Purchase, delivery and document views                                    |

@@ -3,6 +3,7 @@ import { updateCartQuantity } from "./cart-commands";
 import { routeProductId } from "../catalog/product-url";
 import { shopScope } from "../../shared/api/shop-scope";
 import { useCompanyIdentity } from "./useCompanyIdentity";
+import { useStorefrontAnchors } from "./useStorefrontAnchors";
 import { useCatalog } from "./useCatalog";
 import { useConsentedExperience } from "./useConsentedExperience";
 import { usePersonalization } from "./usePersonalization";
@@ -22,7 +23,6 @@ import "../../shared/styles/workbench.css";
 import { commerceEvent } from "../analytics/ShopAnalytics";
 import "../styles/shop.css";
 import "../styles/checkout.css";
-import "../styles/storefront-polish.css";
 import "../styles/order-completion.css";
 
 const session = localStorage.getItem("rac-session") || crypto.randomUUID();
@@ -151,6 +151,7 @@ export function useStorefrontController({
       document.removeEventListener("click", navigate);
     };
   }, []);
+  useStorefrontAnchors(id, appPath);
   useEffect(() => {
     let active = true;
     (async () => {
