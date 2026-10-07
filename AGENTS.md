@@ -1,8 +1,37 @@
-# Changes to the commerce prototype
+# Changes to Vendune
 
 Prefer the codebase-memory MCP graph for structural code discovery. Keep Rust
 modules small and give every source file a responsibility comment; the existing
 structure check is mandatory.
+
+## Understand the existing architecture before extending it
+
+Read [the source map](docs/source-map.md) for module ownership and
+[Rust services and language boundaries](docs/rust-services.md) for the actual
+service, queue and migration contracts. Follow the existing call path from the
+frontend/API/MCP/flow entry point to its production consumer before changing it.
+These documents describe one connected system, not alternative implementations.
+
+| Existing owner | Responsibility / entry points |
+| --- | --- |
+| Rust commerce binary | `src/main.rs` is process entry only; domain modules own commerce operations. Store/Admin APIs, MCP and implemented UCP routes reuse those operations, permissions and tenant checks. |
+| Rust connector binary | `src/bin/connectors.rs` and `src/connectors/` own bundled email delivery, Google Analytics, Gmail and Slack. This is a separate service reached through the permission-aware app gateway, not provider code embedded in checkout. |
+| Frontend | `frontend/src/` contains modular Studio/storefront clients of the existing APIs. Keep provider credentials and privileged gateway tokens server-side. |
+| Durable state and events | PostgreSQL owns commerce state, connector configuration and queues. Commerce outbox/Flow Builder events reach the connector through the existing app action/event contract. Qdrant supplies knowledge vector retrieval, not a second commerce ledger. |
+| External extensions | The language-neutral app gateway and documented extension contracts support independent services. Private Payments and Storyfront/Experience implementations stay in their separate repositories. |
+
+Do not create a parallel mailer, queue, settings store, pricing engine, provider
+registry, MCP command implementation or commerce API to avoid understanding an
+existing module. Extend its owner and shared contract. For example, order email
+delivery follows **Rust checkout → PostgreSQL outbox → Flow Builder → app gateway
+→ Rust connector → PostgreSQL delivery queue → provider**. Preserve its tenant
+identity, permissions, idempotency, quotas, lease fences and uncertainty handling;
+do not add direct SMTP calls to checkout or a Python fallback worker.
+
+Money/currency resolution already belongs to `src/currencies/` and the shared
+commerce calculation path; API/MCP/UI consumers must not implement their own FX
+calculator. See [multi-currency commerce](docs/currencies.md). A protocol adapter
+translates inputs/outputs; it does not become a second owner of business rules.
 
 ## Production contracts and Lean
 
@@ -72,9 +101,45 @@ The exact proof boundary and extension procedure are documented in
 
 ## First-party service language boundary
 
-Bundled production commerce/provider services must run in Rust. Keep provider logic
-out of the commerce process and retain the language-neutral app gateway. Durable
-notifications use PostgreSQL tenant quotas, lease fences and explicit ambiguity
-handling. Python is allowed for verification, offline migration and explicitly
-independent example/third-party apps, not as a hidden first-party serving dependency.
-Document and test both the actual consumer and migration path for any runtime port.
+**Bundled production commerce and standard provider services run in Rust.**
+Python remains for development tools, tests, documentation, the explicit one-time
+legacy-data migration and independent example apps. Its presence in the repository
+does not make it a supported first-party production runtime.
+
+| Python location / purpose | Allowed boundary |
+| --- | --- |
+| Verification, differential tests, source/coverage checks and site generation | Development/CI tools only; never required to serve a commerce request or deliver a notification. |
+| `scripts/connectors.py` | Local lifecycle tooling that launches the compiled Rust connector; it is not the email/provider implementation. |
+| `scripts/migrate_connector_state.py` | Explicit offline reader for the old SQLite/Fernet data. Stop the old worker and preserve its backup/key first; pipe records to Rust `connectors --import-legacy`, which validates and atomically re-encrypts/imports into PostgreSQL. Never import automatically during normal startup. |
+| `scripts/mcp_stdio.py` | Optional client-side JSON-RPC bridge. The hosted `/mcp` server and its commerce operations run in Rust; no hosted Python MCP backend. |
+| `reference/connectors-python/` | Archived comparison implementation for differential fixtures and migration understanding. Do not resurrect, import into serving code or package it as a production service. |
+| Independent Product Lab / service-example / third-party apps | Deliberately language-independent extension examples, reached through extension contracts. They must not become a required dependency of the core or bundled standard services. |
+
+The final runtime stages of `deploy/Dockerfile` (commerce) and
+`extensions/services/connectors/Dockerfile` (standard services) contain **no Python
+interpreter**. Keep this boundary when changing images or startup commands: no
+Python installation, `.py` entry point, runtime Python subprocess, archived worker
+or fallback provider implementation in either production image. Build/CI tools
+and optional independent app images are separate scopes.
+
+The former `email_config.py`, `email_templates.py`, `email_service.py` and
+`email_delivery.py` are reference code, not current service owners. Configuration,
+templates, actions, queues and delivery now belong to `src/connectors/`; use the
+module table in [the Rust service guide](docs/rust-services.md) to find each owner.
+Do not introduce SQLite, a filesystem spool or process-local authoritative queues
+beside the PostgreSQL connector queue. Preserve forced tenant RLS, the dedicated
+non-owner production role, encrypted credentials, bounded worker admission and
+explicit handling of uncertain external sends.
+
+For a runtime extension or port:
+
+1. Identify the existing module, API/app contract, event producer and actual consumer.
+2. Extend the Rust owner while keeping API, MCP, flow and frontend contracts aligned.
+   External apps can keep their own language; do not pull them into the public core.
+3. For persisted legacy data, document the explicit backup, stop, import and cutover
+   path. Never run old and new dispatchers simultaneously against the same workload.
+4. Verify the real path with isolated PostgreSQL tenants and local provider fixtures.
+   Use the registered `rust_connectors` / `email_tests` suites when changing these services;
+   preserve the original comparison fixtures, concurrency and migration checks.
+5. Update module ownership and service documentation. Check the final runtime image
+   and startup path, not merely whether Rust code exists or unit tests pass.
