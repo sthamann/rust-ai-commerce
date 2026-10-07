@@ -41,6 +41,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/apps/runtime.rs](../src/apps/runtime.rs) | Generic pure-Wasm contribution executor; the installed package supplies all business predicates. |
 | [src/apps/schedules.rs](../src/apps/schedules.rs) | Durable UTC cron ticks emit namespaced outbox events; replicas lock due rows and staging never runs them. |
 | [src/apps/service_limits.rs](../src/apps/service_limits.rs) | Non-queuing per-process bulkheads isolate slow apps without holding database connections. |
+| [src/apps/service_policy.rs](../src/apps/service_policy.rs) | Operator-owned private origins permit isolated service networking without relaxing public egress. |
 | [src/apps/surface_tests.rs](../src/apps/surface_tests.rs) | Contract counterexamples reject cross-scope UI actions, unsafe URLs and mutating GET routes. |
 | [src/apps/surfaces.rs](../src/apps/surfaces.rs) | App-owned UI surfaces and namespaced HTTP routes reuse the authorized action gateway. |
 | [src/apps/webhooks.rs](../src/apps/webhooks.rs) | Operator-signed incoming events: tenant-bound HMAC, five-minute freshness and atomic replay receipts. |

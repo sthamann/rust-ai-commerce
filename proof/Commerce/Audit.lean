@@ -5,6 +5,9 @@ import Commerce.Claims
 #print axioms CommerceKernel.app_flow_readonly_denied
 #print axioms CommerceKernel.app_read_exact
 #print axioms CommerceKernel.app_read_safe
+#print axioms CommerceKernel.app_service_transport_exact
+#print axioms CommerceKernel.app_service_transport_unapproved_denied
+#print axioms CommerceKernel.app_service_transport_unsafe_denied
 #print axioms CommerceKernel.app_tool_disabled
 #print axioms CommerceKernel.app_tool_exact
 #print axioms CommerceKernel.cancellation_exact

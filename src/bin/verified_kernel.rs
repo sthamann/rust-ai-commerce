@@ -213,6 +213,15 @@ fn eval(j: &Value) -> Result<Value, String> {
                 .ok_or("Invalid rate_limited")?,
             args["attempts"].as_u64().ok_or("Invalid attempts")?
         ))),
+        Some("app_service_transport_admissible") => Ok(json!(app_service_transport_admissible(
+            args["clean_url"].as_bool().ok_or("Invalid clean_url")?,
+            args["https"].as_bool().ok_or("Invalid https")?,
+            args["http"].as_bool().ok_or("Invalid http")?,
+            args["loopback"].as_bool().ok_or("Invalid loopback")?,
+            args["private_origin"]
+                .as_bool()
+                .ok_or("Invalid private_origin")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

@@ -308,6 +308,16 @@
         "notification_retry_exact",
         "notification_ambiguous_never_retry"
       ]
+    },
+    "app_service_transport_admissible": {
+      "bindings": [
+        "src/apps/service_policy.rs"
+      ],
+      "theorems": [
+        "app_service_transport_exact",
+        "app_service_transport_unapproved_denied",
+        "app_service_transport_unsafe_denied"
+      ]
     }
   },
   "sources": {
@@ -408,8 +418,8 @@
     },
     "src/apps/gateway.rs": {
       "status": "reviewed-binding",
-      "sha256": "011bb86a7b99d2dd0d9fc1fd15fea03147e52bcd1c0a212946784aa5a8520287",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "5a253f26a06d963fad7cc71744659f9049e88423a82ed9f495a8acef97166dd1",
+      "review": "Reviewed exact operator-owned private origin admission, forbidden URL credentials/query/fragment, redirect-disabled shared client and three URL parser regressions; extracted transport predicate adds exact admission and unsafe/unapproved denial claims with two mutations. Network parsing, DNS, TLS and PostgreSQL/provider adapters remain unproved."
     },
     "src/apps/manifest.rs": {
       "status": "unproved",
@@ -423,8 +433,8 @@
     },
     "src/apps/mod.rs": {
       "status": "unproved",
-      "sha256": "d22288573482088076ad2247d4654d46c12a19a5c62584a99bc7ac83a3a6ace7",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "ab76a87193240125161b8b1ed4bd3f297a83e75a596a9a8fddf85789dd244b8d",
+      "review": "Reviewed exact operator-owned private origin admission, forbidden URL credentials/query/fragment, redirect-disabled shared client and three URL parser regressions; extracted transport predicate adds exact admission and unsafe/unapproved denial claims with two mutations. Network parsing, DNS, TLS and PostgreSQL/provider adapters remain unproved."
     },
     "src/apps/native_data.rs": {
       "status": "unproved",
@@ -475,6 +485,11 @@
       "status": "unproved",
       "sha256": "e63296077d1627396eb01f0a56bd2d7ad5e2090ab4abc5bf5873e87a25fd86f3",
       "review": "Reviewed namespaced GET/POST and opaque app UI contracts, typed bounded JSON/indexed keyset reads, exact record revision binding, selected bounded AI context, staging imports and nonqueuing service admission; real PostgreSQL app/surface/service/staging/developer/user regressions and source/nonce SDK checks passed. GET policy excludes managed writes; external read-only behavior and SQL remain unproved."
+    },
+    "src/apps/service_policy.rs": {
+      "status": "reviewed-binding",
+      "sha256": "6063e466702a2408c50d63b28007e8f4f094967e95f13ce1c319f4256c4e7366",
+      "review": "Reviewed exact operator-owned private origin admission, forbidden URL credentials/query/fragment, redirect-disabled shared client and three URL parser regressions; extracted transport predicate adds exact admission and unsafe/unapproved denial claims with two mutations. Network parsing, DNS, TLS and PostgreSQL/provider adapters remain unproved."
     },
     "src/apps/surface_tests.rs": {
       "status": "unproved",
@@ -668,8 +683,8 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "907276837dc48ec64cffba20510332129eacb3e39c804f384e28997ed266ddec",
-      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+      "sha256": "0243ef1b6857a791d7c5ed338b634dcf444b7797cff57b3348e3269714b4c6f3",
+      "review": "Reviewed exact operator-owned private origin admission, forbidden URL credentials/query/fragment, redirect-disabled shared client and three URL parser regressions; extracted transport predicate adds exact admission and unsafe/unapproved denial claims with two mutations. Network parsing, DNS, TLS and PostgreSQL/provider adapters remain unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
@@ -1873,8 +1888,8 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "a9f15b4413bb4a1325a6ebcce0654b131f40f2449f8b63f42ac58ee5a7ce357e",
-      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+      "sha256": "4a84810d0834904489994ec1c2458c1565c4362336efe1e075aef9237a3347cb",
+      "review": "Reviewed exact operator-owned private origin admission, forbidden URL credentials/query/fragment, redirect-disabled shared client and three URL parser regressions; extracted transport predicate adds exact admission and unsafe/unapproved denial claims with two mutations. Network parsing, DNS, TLS and PostgreSQL/provider adapters remain unproved."
     },
     "src/workers.rs": {
       "status": "unproved",
@@ -2136,8 +2151,8 @@
       "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
     },
     "proof/Commerce/Claims.lean": {
-      "sha256": "f4a9d20907100f449b5870eb6b0f3efd132dbedc206d63959a9a8e1428b37983",
-      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+      "sha256": "45650673e549f97d4ee3e2347f1fc47937c922a9fbd9a29b322d6426ddaeb01f",
+      "review": "Reviewed exact operator-owned private origin admission, forbidden URL credentials/query/fragment, redirect-disabled shared client and three URL parser regressions; extracted transport predicate adds exact admission and unsafe/unapproved denial claims with two mutations. Network parsing, DNS, TLS and PostgreSQL/provider adapters remain unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -2172,8 +2187,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "8792d1a514376be6df1bc4e75232d1ecde92a1bb876dd39dbec1571b6c5ae52f",
-      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+      "sha256": "5c9d793b7349e0d1fb496c04dce60c2793cca393e7b1862954c3200dcf01be05",
+      "review": "Reviewed exact operator-owned private origin admission, forbidden URL credentials/query/fragment, redirect-disabled shared client and three URL parser regressions; extracted transport predicate adds exact admission and unsafe/unapproved denial claims with two mutations. Network parsing, DNS, TLS and PostgreSQL/provider adapters remain unproved."
     },
     "scripts/formal/registry.py": {
       "sha256": "3b554637854314cffd45018b3e5adc568d24e0ab145d7d6fa75350d2f80f5900",

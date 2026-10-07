@@ -102,4 +102,7 @@ def legal_checkout_admissible (strict : Bool) (current : Bool) (accepted : Bool)
 def notification_retry_admissible (rate_limited : Bool) (attempts : Nat) : Bool :=
   (rate_limited && (decide (attempts < 8)))
 
+def app_service_transport_admissible (clean_url : Bool) (https : Bool) (http : Bool) (loopback : Bool) (private_origin : Bool) : Bool :=
+  (clean_url && (https || (http && (loopback || private_origin))))
+
 end CommerceKernel

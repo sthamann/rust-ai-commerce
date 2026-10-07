@@ -41,6 +41,7 @@ it("sends a scoped token only to the fixed provider origin and rejects forged fr
     expiresIn: 300,
   });
   const changed = vi.fn();
+  const listening = vi.spyOn(window, "addEventListener");
   render(
     <EmbeddedPayment
       id="attempt"
@@ -54,6 +55,10 @@ it("sends a scoped token only to the fixed provider origin and rejects forged fr
     expect(f).toBeTruthy();
     return f!;
   });
+  // The iframe DOM can precede React's passive effect. Send exactly once after subscription.
+  await waitFor(() =>
+    expect(listening).toHaveBeenCalledWith("message", expect.any(Function)),
+  );
   expect(api).toHaveBeenCalledWith(
     `/store-api/payments/attempt/session?parentOrigin=${encodeURIComponent(window.location.origin)}`,
     undefined,
@@ -85,6 +90,9 @@ it("sends a scoped token only to the fixed provider origin and rejects forged fr
       ...event,
       data: { ...event.data, nonce: "forged" },
     }),
+  );
+  window.dispatchEvent(
+    new MessageEvent("message", { ...event, source: window }),
   );
   expect(changed).not.toHaveBeenCalled();
   window.dispatchEvent(new MessageEvent("message", event));
