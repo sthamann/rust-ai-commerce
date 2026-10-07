@@ -1850,15 +1850,20 @@
       "sha256": "dc9a936dee659568e48871fab187ff75e746dd65206e54d1d3b06371cb48d32d",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/shop_domains/frontend_transport.rs": {
+      "status": "unproved",
+      "sha256": "a9de0ce42c548765988acc5176ac144ff1d39086669a8a02c2440f57820b08fc",
+      "review": "Reviewed streaming backpressure and finite byte budget; parsed host-only opaque cookie policy; real HTTP fixture excludes merchant credentials and proves first SSE event before EOF. Generic network adapter remains unproved."
+    },
     "src/shop_domains/frontends.rs": {
       "status": "unproved",
-      "sha256": "fc95765a033eed04d1f553ab6617ebb37498cefa559b2e51fd4a070fd79e4ec6",
-      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
+      "sha256": "81b0e6279ff85dfd99bf43ffa87453bc5ba58c449977d83c3a8061a95ce60442",
+      "review": "Reviewed hosted frontend streaming, finite byte budget, opaque cookie allowlist and relative redirects; regression proves first event before EOF; network adapters remain unproved"
     },
     "src/shop_domains.rs": {
       "status": "unproved",
-      "sha256": "9002c7c671ece4adbe35c599b818cf271bf24d3b8a2c6e432fc9a11645df0a1d",
-      "review": "Reviewed all changed Rust, append-only schemas, build/extraction and Lean inputs: lease hooks bind new/reused connections and reset on release; strict runtime rejects owner/bypass/TRUNCATE and preserves app-schema ownership; two-replica non-owner PostgreSQL tests deny forged foreign writes, enforce operator quotas and parent-stage daily usage, release persisted allocation quantities once despite corrupted snapshots, and distinguish commit from rollback invalidation. Money retains legacy EUR rounding with explicit scale and original Shopware differential; receipt-backed state admission is monotonic with late capture/refund. Async SQL/provider code remains unproved. Rust 113 tests, staging/app/automation/settings and strict checkout/CRM/tenant regressions passed; 274 frontend tests and production build passed."
+      "sha256": "f9e827a5b520ad2795a3e93bc07443ab5868b2c4d22182f036e27d34a6dacc30",
+      "review": "Reviewed hosted frontend streaming, finite byte budget, opaque cookie allowlist and relative redirects; regression proves first event before EOF; network adapters remain unproved"
     },
     "src/staging/assets.rs": {
       "status": "unproved",
@@ -1967,12 +1972,12 @@
       "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
     },
     "Cargo.lock": {
-      "sha256": "c5445f8246076b27827ce9c7570009358ebf5add558ee0c7517572f987ddd55e",
-      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+      "sha256": "8e54138a6417c94d16966f5839dbb4eec1db7637ba748253743c8b7225d8e3f4",
+      "review": "Reviewed hosted frontend streaming, finite byte budget, opaque cookie allowlist and relative redirects; regression proves first event before EOF; network adapters remain unproved"
     },
     "Cargo.toml": {
-      "sha256": "0e85393c4e6b1aaf19ce385bacd4110369f35f311cefa43a317d13deaf8fe638",
-      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+      "sha256": "21d0e6c68419cb64a9b181dffe4b513c9e936a7e7862363f714bf7d956f51e30",
+      "review": "Reviewed hosted frontend streaming, finite byte budget, opaque cookie allowlist and relative redirects; regression proves first event before EOF; network adapters remain unproved"
     },
     "fixtures/app-studio-schema.json": {
       "sha256": "28b0ba7f2d800f73cc2cc46dfb55897c4c405c5b6208b5c3bdf965d82d6f29f0",
