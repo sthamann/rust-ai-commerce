@@ -1,68 +1,7 @@
 //! Revision-bound multilingual product metadata: specifications, SEO, cross-selling and free shipping.
+pub(super) use super::product_metadata::Translation;
+use super::product_metadata::*;
 use super::*;
-#[derive(Deserialize)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-struct Edit {
-    #[serde(default, rename = "id")]
-    _id: Option<String>,
-    #[serde(default, rename = "channels")]
-    _channels: Value,
-    #[serde(default, rename = "mainLocale")]
-    _main_locale: Value,
-    #[serde(default, rename = "availableLocales")]
-    _available_locales: Value,
-    revision: i64,
-    translations: HashMap<String, Translation>,
-    extra: Extra,
-    #[serde(default)]
-    commerce: Option<ProductFields>,
-    #[serde(default)]
-    catalog: Option<CatalogFields>,
-}
-#[derive(Deserialize)]
-#[serde(deny_unknown_fields)]
-pub(super) struct Translation {
-    #[serde(default)]
-    pub(super) name: Option<String>,
-    #[serde(default)]
-    pub(super) description: Option<String>,
-}
-#[derive(Deserialize, Serialize)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-struct Extra {
-    #[serde(default)]
-    demo: Value,
-    #[serde(default)]
-    automation: Value,
-    #[serde(default)]
-    tax_class_id: Option<String>,
-    #[serde(default)]
-    seo: HashMap<String, Seo>,
-    #[serde(default)]
-    specifications: HashMap<String, HashMap<String, String>>,
-    #[serde(default)]
-    cross_selling: Vec<String>,
-    #[serde(default)]
-    shipping_free: bool,
-    #[serde(default)]
-    digital: bool,
-    #[serde(default)]
-    rich_description: Value,
-    #[serde(default)]
-    identity: Value,
-    #[serde(default)]
-    compliance: Value,
-}
-#[derive(Deserialize, Serialize)]
-#[serde(deny_unknown_fields)]
-struct Seo {
-    #[serde(default)]
-    title: Option<String>,
-    #[serde(default)]
-    description: Option<String>,
-    #[serde(default)]
-    slug: Option<String>,
-}
 pub(crate) async fn edit_product(
     State(a): State<App>,
     h: HeaderMap,
@@ -89,6 +28,18 @@ pub(super) async fn save_product(
             .fetch_one(&mut *tx)
             .await?;
     let settings = decode_config(data)?;
+    if create && edit.extra.price_currency.is_none() {
+        edit.extra.price_currency = Some(settings.currencies.base_currency.clone());
+    }
+    if edit
+        .extra
+        .price_currency
+        .as_ref()
+        .is_some_and(|c| !settings.currencies.definitions.iter().any(|d| &d.code == c))
+    {
+        return Err(bad("Product price currency is not configured"));
+    }
+    currencies::validate_prices(&edit.extra.currency_prices, &settings.currencies)?;
     super::product_languages::validate(&edit.translations, &settings)?;
     crate::legal::validate_product(&edit.extra.compliance, &settings)?;
     let main_key = super::product_languages::key(&settings.main_locale, &settings);
@@ -312,6 +263,6 @@ pub(crate) async fn product_editor(
         .collect::<Vec<_>>();
     let category_ids:Vec<String>=sqlx::query_scalar("SELECT category_id FROM product_categories WHERE tenant=$1 AND product_id=$2 ORDER BY category_id").bind(&t).bind(&id).fetch_all(&a.db).await?;
     Ok(Json(
-        json!({"id":id,"mainLocale":settings.main_locale,"availableLocales":settings.locales,"channels":channels,"catalog":{"salesChannelIds":selected_channels,"active":r.get::<bool,_>("active"),"productNumber":r.get::<Option<String>,_>("product_number").unwrap_or_else(||id.clone()),"categoryIds":category_ids,"parentId":r.get::<Option<String>,_>("parent_id"),"options":r.get::<Value,_>("options")},"revision":r.get::<i64,_>("revision"),"translations":translations,"extra":r.get::<Value,_>("extra"),"commerce":editable_fields(&r)}),
+        json!({"id":id,"mainLocale":settings.main_locale,"availableLocales":settings.locales,"channels":channels,"catalog":{"salesChannelIds":selected_channels,"active":r.get::<bool,_>("active"),"productNumber":r.get::<Option<String>,_>("product_number").unwrap_or_else(||id.clone()),"categoryIds":category_ids,"parentId":r.get::<Option<String>,_>("parent_id"),"options":r.get::<Value,_>("options")},"revision":r.get::<i64,_>("revision"),"translations":translations,"extra":({let mut extra=r.get::<Value,_>("extra");if extra["priceCurrency"].is_null(){extra["priceCurrency"]=json!(settings.currencies.pricing_currency);}extra}),"commerce":editable_fields(&r)}),
     ))
 }

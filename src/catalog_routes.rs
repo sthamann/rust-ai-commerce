@@ -33,7 +33,12 @@ pub(crate) async fn catalog_page(
         categories::admit(&a, &h, id).await?;
     }
     criteria.channel_id = marketing::channel_id(&h).into();
-    criteria.product_ids = marketing::catalog_scope(&a, &h).await?;
+    let scope = marketing::catalog_scope(&a, &h).await?;
+    criteria.product_ids = match (criteria.product_ids.take(), scope) {
+        (Some(ids), Some(scope)) => Some(ids.into_iter().filter(|id| scope.contains(id)).collect()),
+        (Some(ids), None) => Some(ids),
+        (None, scope) => scope,
+    };
     let page = product_page(&a, &t, &chain, &criteria).await?;
     let ps = &page.products;
     let mut data = vec![];
@@ -43,6 +48,9 @@ pub(crate) async fn catalog_page(
         None
     };
     let (settings, _) = commerce::scoped_config(&a, &t, marketing::channel_id(&h)).await?;
+    let currency = settings
+        .currencies
+        .selected(&currencies::requested(&h, c.as_ref()))?;
     let selected = c
         .as_ref()
         .map(|c| commerce::selection(&c.data))
@@ -68,6 +76,7 @@ pub(crate) async fn catalog_page(
                 status: "preview".into(),
                 data: Cart {
                     coupons: vec![],
+                    currency: String::new(),
                     sales_channel: marketing::channel_id(&h).into(),
                     app_configurations: HashMap::new(),
                     items: vec![],
@@ -84,6 +93,7 @@ pub(crate) async fn catalog_page(
                 },
             }
         };
+        preview.data.currency = currency.code.clone();
         preview.data.items = vec![Item {
             id: p.id.clone(),
             quantity: p.min_purchase,
@@ -92,10 +102,17 @@ pub(crate) async fn catalog_page(
         // preview would turn catalog hydration into quadratic work.
         let q = quote(&preview, std::slice::from_ref(p), &settings)?;
         let mut v = json!(p);
+        v["price"] = json!(currencies::product_price(
+            p,
+            &settings.currencies,
+            currency
+        )?);
+        v["currency"] = json!(currency.code);
+        v["currencyScale"] = json!(currency.scale);
         v["calculated_price"] = q["lineItems"][0]["price"].clone();
         data.push(v);
     }
     Ok(Json(
-        json!({"elements":data,"total":if criteria.after.is_none() && page.next_cursor.is_none() {Some(ps.len())} else {None},"nextCursor":page.next_cursor,"hasMore":page.next_cursor.is_some(),"limit":page.limit,"locale":locale,"languageIdChain":chain}),
+        json!({"currencyContext":currencies::context(&settings.currencies,currency),"availableCurrencies":settings.currencies.enabled,"elements":data,"total":if criteria.after.is_none() && page.next_cursor.is_none() {Some(ps.len())} else {None},"nextCursor":page.next_cursor,"hasMore":page.next_cursor.is_some(),"limit":page.limit,"locale":locale,"languageIdChain":chain}),
     ))
 }

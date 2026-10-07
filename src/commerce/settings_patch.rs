@@ -118,7 +118,13 @@ pub(crate) fn resolve(base: &Settings, patch: Value) -> Result<Settings> {
     }
     let settings = decode_config(v)?;
     validate_config(&settings)?;
-    if settings.main_locale != base.main_locale
+    if settings.currencies.pricing_currency != base.currencies.pricing_currency
+        || settings.currencies.base_currency != base.currencies.base_currency
+        || settings.currencies.definitions != base.currencies.definitions
+        || settings.currencies.rate_source != base.currencies.rate_source
+        || settings.currencies.rate_date != base.currencies.rate_date
+        || settings.currencies.auto_refresh != base.currencies.auto_refresh
+        || settings.main_locale != base.main_locale
         || settings.locales != base.locales
         || json!(settings.country_definitions) != json!(base.country_definitions)
         || settings

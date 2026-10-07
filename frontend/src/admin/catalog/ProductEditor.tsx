@@ -70,6 +70,10 @@ export default function ProductEditor({
           if (active && v.data?.locales) {
             setDraft((old) => ({
               ...old,
+              extra: {
+                ...old.extra,
+                priceCurrency: v.data.currencies?.baseCurrency ?? "EUR",
+              },
               mainLocale: v.data.mainLocale,
               availableLocales: v.data.locales,
               translations: Object.fromEntries(
@@ -356,6 +360,7 @@ export default function ProductEditor({
                 />
               ) : (
                 <ProductPanels
+                  request={request}
                   tab={tab}
                   draft={draft}
                   lang={safeLang}

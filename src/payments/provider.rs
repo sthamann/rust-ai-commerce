@@ -93,7 +93,7 @@ pub(crate) async fn prepare(
     let id = uid();
     let bn = account(&c.tenant)?.bn_code;
     order["payment"] = json!({"method":order["cart"]["paymentMethod"],"provider":"paypal","state":"pending","attemptId":id,"environment":environment(),"realMoneyCharged":false,"bnCode":bn});
-    sqlx::query("INSERT INTO payment_attempts(id,tenant,order_id,provider,adapter_version,amount_minor,currency,environment,bn_code) VALUES($1,$2,$3,'paypal',$4,$5,'EUR',$6,$7)").bind(&id).bind(&c.tenant).bind(order["id"].as_str().unwrap()).bind(version).bind(minor).bind(environment()).bind(&bn).execute(&mut **tx).await?;
+    sqlx::query("INSERT INTO payment_attempts(id,tenant,order_id,provider,adapter_version,amount_minor,currency,environment,bn_code,provider_context,currency_scale) VALUES($1,$2,$3,'paypal',$4,$5,$8,$6,$7,$9,$10)").bind(&id).bind(&c.tenant).bind(order["id"].as_str().unwrap()).bind(version).bind(minor).bind(environment()).bind(&bn).bind(order["cart"]["price"]["currency"].as_str().unwrap_or("EUR")).bind(json!({"currencyScale":order["cart"]["price"]["currencyScale"]})).bind(order["cart"]["price"]["currencyScale"].as_i64().unwrap_or(2) as i16).execute(&mut **tx).await?;
     for item in &c.data.items {
         sqlx::query("INSERT INTO inventory_reservations(tenant,attempt_id,product_id,quantity) VALUES($1,$2,$3,$4)").bind(&c.tenant).bind(&id).bind(&item.id).bind(item.quantity as i32).execute(&mut **tx).await?;
     }
@@ -117,6 +117,7 @@ pub(crate) struct Attempt {
     pub order: String,
     pub amount: i64,
     pub currency: String,
+    pub currency_scale: i16,
     pub state: String,
     pub provider_order: Option<String>,
     pub capture: Option<String>,
@@ -134,6 +135,7 @@ pub(crate) fn attempt(r: &sqlx::postgres::PgRow) -> Attempt {
         order: r.get("order_id"),
         amount: r.get("amount_minor"),
         currency: r.get("currency"),
+        currency_scale: r.get("currency_scale"),
         state: r.get("state"),
         provider_order: r.get("provider_order"),
         capture: r.get("capture_id"),
@@ -143,9 +145,28 @@ pub(crate) fn attempt(r: &sqlx::postgres::PgRow) -> Attempt {
         bn_code: r.get("bn_code"),
     }
 }
+pub(crate) fn wire_currency(code: &str) -> Result<vendune::money::Currency> {
+    vendune::money::Currency::new(
+        code,
+        currencies::scale(code).ok_or(bad("Unsupported provider currency"))?,
+    )
+    .map_err(bad)
+}
+pub(crate) fn format_amount(minor: i64, code: &str) -> Result<String> {
+    Ok(vendune::money::Money::new(minor, wire_currency(code)?).decimal())
+}
+pub(crate) fn parse_amount(value: &str, code: &str) -> Result<i64> {
+    let money = vendune::money::Money::parse(value, wire_currency(code)?).map_err(bad)?;
+    if money.minor() < 0 || value.starts_with('-') {
+        return Err(bad("Invalid provider money amount"));
+    }
+    Ok(money.minor())
+}
+#[cfg(test)]
 pub(crate) fn amount_string(minor: i64) -> String {
     vendune::money::Money::new(minor, vendune::money::Currency::eur()).decimal()
 }
+#[cfg(test)]
 pub(crate) fn parse_minor(value: &str) -> Result<i64> {
     let amount =
         vendune::money::Money::parse(value, vendune::money::Currency::eur()).map_err(bad)?;
@@ -201,6 +222,14 @@ pub(crate) async fn dispatch(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn currency_wire_amounts_use_iso_precision() {
+        assert_eq!(format_amount(123, "JPY").unwrap(), "123");
+        assert_eq!(format_amount(7123, "KWD").unwrap(), "7.123");
+        assert_eq!(parse_amount("7.123", "KWD").unwrap(), 7123);
+        assert!(parse_amount("1.001", "USD").is_err());
+        assert!(parse_amount("1.00", "XXX").is_err());
+    }
     #[test]
     fn integer_money_roundtrips() {
         for n in [1, 99, 100, 7490, 1000000] {

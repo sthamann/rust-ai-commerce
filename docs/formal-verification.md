@@ -1,7 +1,7 @@
 # Lean-checked commerce contracts
 
-The prototype runs Lean 4.29.1 proofs for **34 policies used in production
-Rust paths**, with **72 named properties**. This is **not a certificate that the
+The prototype runs Lean 4.29.1 proofs for **35 policies used in production
+Rust paths**, with **74 named properties**. This is **not a certificate that the
 entire commerce core is correct or bug-free**. The Rust-standard-services review
 contains 314 Rust modules: one extracted policy module, 30 reviewed binding
 modules, one comparison driver and 282 unproved modules. Binding review is not a
@@ -105,7 +105,7 @@ The existing **Verify prototype / verify** job now also:
    verification workflow also require an explicit recorded review after changes.
 3. Builds proofs with the pinned Lean toolchain and rechecks compiled declarations
    using bundled `leanchecker`.
-4. Audits all 72 required theorems' transitive axioms. Only Lean's standard
+4. Audits all 74 required theorems' transitive axioms. Only Lean's standard
    `propext`, `Quot.sound` and `Classical.choice` foundations are allowed. `sorry`,
    `admit`, custom axioms, `native_decide` and missing theorem audits fail.
 5. Executes compiled Rust and Lean functions on **5,879** identical inputs:
@@ -266,3 +266,14 @@ These properties prove the extracted Boolean decision. URL parsing, DNS, hosting
 network isolation, HTTP/TLS execution and service authentication remain reviewed
 and tested adapter boundaries, not Lean proofs. See [Rust services](rust-services.md)
 for the private hosting configuration.
+
+## Multi-currency admission (2026-10-07)
+
+`currency_context_admissible` is consumed by `src/currencies/model.rs`: only a
+configured, channel-enabled currency with an admitted saved rate may be selected.
+Exact Boolean equivalence and stale-rate rejection bring the current manifest to
+35 policies and 74 named properties. Explicit mutations bypassing availability
+or freshness must fail. Rate retrieval/date parsing, rational FX, float taxation,
+job transactions, currency ledgers, UI and provider behavior remain outside these
+Lean proofs and are covered by separate unit/real integration checks.
+[Currency architecture and verification scope](currencies.md).

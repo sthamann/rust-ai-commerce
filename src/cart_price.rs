@@ -7,6 +7,10 @@ pub(crate) fn quote(
     settings: &commerce::Settings,
 ) -> Result<Value> {
     let b2b = settings.is_business(&c.data.group);
+    let cfg = &settings.currencies;
+    let currency = cfg.selected(&c.data.currency)?;
+    let decimals = currency.scale as i32;
+    let interval = 10_f64.powi(-decimals);
     let mut lines = vec![];
     let mut total = 0.;
     let mut taxes = 0.;
@@ -28,10 +32,11 @@ pub(crate) fn quote(
         });
         let tier = vendune::context::select_tier(&p.advanced_prices, &rule_ids, i.quantity);
         let discount = 1. - tier.map(|t| t.discount).unwrap_or(0.);
+        let gross = currencies::product_price(p, cfg, currency)?;
         let base = if b2b {
-            p.price / (1. + p.tax_rate / 100.)
+            gross / (1. + p.tax_rate / 100.)
         } else {
-            p.price
+            gross
         };
         let mut calc = calculate(&PriceInput {
             price: base * discount,
@@ -39,15 +44,19 @@ pub(crate) fn quote(
             tax_rate: p.tax_rate,
             gross: !b2b,
             calculated: true,
-            decimals: 2,
-            interval: 0.01,
+            decimals,
+            interval,
             round_for_net: false,
-            list_price: p
-                .list_price
+            list_price: currencies::ancillary(p, "listPrice", p.list_price, cfg, currency)?
                 .map(|v| if b2b { v / (1. + p.tax_rate / 100.) } else { v }),
-            regulation_price: p
-                .regulation_price
-                .map(|v| if b2b { v / (1. + p.tax_rate / 100.) } else { v }),
+            regulation_price: currencies::ancillary(
+                p,
+                "regulationPrice",
+                p.regulation_price,
+                cfg,
+                currency,
+            )?
+            .map(|v| if b2b { v / (1. + p.tax_rate / 100.) } else { v }),
             reference: p.reference_price.clone(),
             ..PriceInput::default()
         });
@@ -57,7 +66,7 @@ pub(crate) fn quote(
             .values()
             .filter(|v| v.product_id == i.id)
         {
-            let gross = config.fee_minor as f64 / 100.;
+            let gross = currencies::convert(config.fee_minor as f64 / 100., cfg, currency)?;
             let fee = calculate(&PriceInput {
                 price: if b2b {
                     gross / (1. + p.tax_rate / 100.)
@@ -65,13 +74,15 @@ pub(crate) fn quote(
                     gross
                 },
                 quantity: i.quantity,
+                decimals,
+                interval,
                 tax_rate: p.tax_rate,
                 gross: !b2b,
                 ..PriceInput::default()
             });
-            calc.unit_price = math_round(calc.unit_price + fee.unit_price, 2);
-            calc.total_price = math_round(calc.total_price + fee.total_price, 2);
-            calc.tax = math_round(calc.tax + fee.tax, 2);
+            calc.unit_price = math_round(calc.unit_price + fee.unit_price, decimals);
+            calc.total_price = math_round(calc.total_price + fee.total_price, decimals);
+            calc.tax = math_round(calc.tax + fee.tax, decimals);
             calc.calculated_taxes.extend(fee.calculated_taxes);
         }
         total += calc.total_price;
@@ -92,15 +103,15 @@ pub(crate) fn quote(
             line["appConfigurations"] = json!(configs);
         }
     }
-    let total = math_round(total, 2);
-    let taxes = math_round(taxes, 2);
+    let total = math_round(total, decimals);
+    let taxes = math_round(taxes, decimals);
     let payable = if b2b {
-        math_round(total + taxes, 2)
+        math_round(total + taxes, decimals)
     } else {
         total
     };
     Ok(
-        json!({"token":c.token,"id":c.id,"revision":c.revision,"status":c.status,"lineItems":lines,"customerGroup":c.data.group,"customerId":c.data.customer_id,"customerEmail":c.data.email,"company":c.data.company,"price":{"positionPrice":total,"totalPrice":payable,"netPrice":if b2b{total}else{math_round(total-taxes,2)},"tax":taxes,"taxStatus":if b2b{"net"}else{"gross"},"currency":"EUR"},"order":c.data.order}),
+        json!({"token":c.token,"id":c.id,"revision":c.revision,"status":c.status,"lineItems":lines,"customerGroup":c.data.group,"customerId":c.data.customer_id,"customerEmail":c.data.email,"company":c.data.company,"price":{"positionPrice":total,"totalPrice":payable,"netPrice":if b2b{total}else{math_round(total-taxes,decimals)},"tax":taxes,"taxStatus":if b2b{"net"}else{"gross"},"currency":currency.code,"currencyScale":currency.scale},"currencyContext":currencies::context(cfg,currency),"availableCurrencies":cfg.enabled,"order":c.data.order}),
     )
 }
 pub(crate) fn normalized_quantity(p: &Product, q: u32) -> Result<u32> {
@@ -140,6 +151,9 @@ pub(crate) async fn cart_json(a: &App, c: &StoredCart) -> Result<Value> {
     }
     let ps = commerce::cart_products(a, &c.tenant, &chain, &c.data.items).await?;
     let (config, revision) = commerce::scoped_config(a, &c.tenant, &c.data.sales_channel).await?;
+    let code = config.currencies.selected(&c.data.currency)?.code.clone();
+    let config =
+        payments::currency_methods(a, &c.tenant, &c.data.sales_channel, &code, config).await?;
     let original = commerce::selection(&c.data);
     let selected = commerce::resolve_selection(original.clone(), &c.data.group, &config);
     let changed = json!(original) != json!(selected);

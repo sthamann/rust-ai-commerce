@@ -6,6 +6,7 @@ export type Product = {
   category: string;
   media?: { id: string; url: string; view: string }[];
   price: number;
+  extra?: { priceCurrency?: string };
   stock: number;
   revision: number;
   tax_rate: number;
@@ -39,6 +40,7 @@ export type Overview = {
   tenant: string;
   locale: string;
   dataMode: string;
+  productCurrency?: string;
   products: Product[];
   productsPagination: {
     nextCursor: string | null;
@@ -48,7 +50,9 @@ export type Overview = {
   summary: {
     orders: number;
     ordersToday: number;
-    revenue: number;
+    revenue: number | null;
+    revenueByCurrency?: { currency: string; amount: string }[];
+    revenueCurrency?: string | null;
     pendingPlans: number;
     appliedPlans: number;
   };
@@ -56,11 +60,17 @@ export type Overview = {
     id: string;
     number: string;
     total: number;
+    currency?: string;
     time: string;
     channel: string;
     payment: string;
   }[];
-  timeline: { day: string; orders: number; revenue: number }[];
+  timeline: {
+    day: string;
+    orders: number;
+    revenue: number | null;
+    currency?: string;
+  }[];
   knowledge: {
     graph: Graph;
     indexedProducts: number;

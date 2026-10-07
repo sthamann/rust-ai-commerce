@@ -4,15 +4,41 @@ use super::*;
 pub(crate) async fn options(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let t = tenant(&h)?;
     let (s, revision) = scoped_config(&a, &t, marketing::channel_id(&h)).await?;
-    let business = if header(&h, "sw-context-token").is_some() {
-        s.is_business(&load_cart(&a, &h).await?.data.group)
+    let cart = if header(&h, "sw-context-token").is_some() {
+        Some(load_cart(&a, &h).await?)
     } else {
-        false
+        None
     };
-    let available = payments::registry::available(&a, &t, marketing::channel_id(&h)).await?;
+    let code = s
+        .currencies
+        .selected(&currencies::requested(&h, cart.as_ref()))?
+        .code
+        .clone();
+    let business = cart.as_ref().is_some_and(|c| s.is_business(&c.data.group));
+    let currency = s.currencies.selected(&code)?;
+    let shipping = s
+        .shipping
+        .iter()
+        .filter(|v| v.active)
+        .map(|v| {
+            let mut result = super::method_text::localized_shipping(
+                v,
+                header(&h, "x-commerce-locale").unwrap_or(&s.main_locale),
+                &s,
+            );
+            result["price"] = json!(currencies::convert(v.price, &s.currencies, currency)?);
+            result["freeAbove"] = json!(
+                v.free_above
+                    .map(|v| currencies::convert(v, &s.currencies, currency))
+                    .transpose()?
+            );
+            Ok(result)
+        })
+        .collect::<Result<Vec<Value>>>()?;
+    let available = payments::registry::available(&a, &t, marketing::channel_id(&h), &code).await?;
     let locale = header(&h, "x-commerce-locale").unwrap_or(&s.main_locale);
     Ok(Json(
-        json!({"mainLocale":s.main_locale,"locales":s.locales,"countries":s.countries,"shipping":s.shipping.iter().filter(|v|v.active).map(|v|super::method_text::localized_shipping(v,locale,&s)).collect::<Vec<_>>(),"payments":s.payments.iter().filter(|v|v.active&&(!v.business_only||business)&&v.provider.as_ref().is_none_or(|p|v.provider_method.as_ref().is_some_and(|m|available.contains(&(p.clone(),m.clone()))))).map(|v|super::method_text::localized_payment(v,locale,&s)).collect::<Vec<_>>(),"revision":revision}),
+        json!({"mainLocale":s.main_locale,"locales":s.locales,"countries":s.countries,"currencyContext":currencies::context(&s.currencies,currency),"shipping":shipping,"payments":s.payments.iter().filter(|v|v.active&&(!v.business_only||business)&&v.provider.as_ref().is_none_or(|p|v.provider_method.as_ref().is_some_and(|m|available.contains(&(p.clone(),m.clone()))))).map(|v|super::method_text::localized_payment(v,locale,&s)).collect::<Vec<_>>(),"revision":revision}),
     ))
 }
 pub(crate) async fn select_checkout(

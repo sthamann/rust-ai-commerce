@@ -81,7 +81,10 @@ export default function ProductPage({
       if (
         data &&
         tracked.current !== data.product.id &&
-        commerceEvent("view_item", { items: analyticsItems([data.product]) })
+        commerceEvent("view_item", {
+          currency: data.product.currency ?? "EUR",
+          items: analyticsItems([data.product]),
+        })
       ) {
         commerceEvent("page_view", {});
         tracked.current = data.product.id;

@@ -72,18 +72,19 @@ export default function ShopAnalytics({
       window.dispatchEvent(new Event("commerce:analytics-ready"));
   }, [configured, choice]);
   useEffect(() => {
-    const signature = products.map((p) => p.id).join(",");
+    const signature = `${cart?.price.currency}:${products.map((p) => p.id).join(",")}`;
     if (
       client.current?.enabled() &&
       products.length &&
       signature !== lastList.current
     ) {
       client.current.event("view_item_list", {
+        currency: cart?.price.currency ?? "EUR",
         items: analyticsItems(products),
       });
       lastList.current = signature;
     }
-  }, [products, choice, configured]);
+  }, [products, cart?.price.currency, choice, configured]);
   useEffect(() => {
     if (
       bag &&
@@ -92,6 +93,7 @@ export default function ShopAnalytics({
       client.current?.enabled()
     ) {
       client.current?.event("begin_checkout", {
+        currency: cart.price.currency ?? "EUR",
         value: cart.price.totalPrice,
         items: cart.lineItems.map((i) => ({
           item_id: i.id,
@@ -107,6 +109,7 @@ export default function ShopAnalytics({
     if (order)
       client.current?.event("purchase", {
         transaction_id: order.id,
+        currency: order.cart.price.currency ?? "EUR",
         value: order.cart.price.totalPrice,
         items: order.cart.lineItems.map((i) => ({
           item_id: i.id,

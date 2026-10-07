@@ -184,6 +184,11 @@ fn eval(j: &Value) -> Result<Value, String> {
                 .as_bool()
                 .ok_or("Invalid void_confirmed")?
         ))),
+        Some("currency_context_admissible") => Ok(json!(currency_context_admissible(
+            args["enabled"].as_bool().ok_or("Invalid enabled")?,
+            args["configured"].as_bool().ok_or("Invalid configured")?,
+            args["fresh"].as_bool().ok_or("Invalid fresh")?
+        ))),
         Some("currency_scale_admissible") => Ok(json!(currency_scale_admissible(
             args["scale"].as_u64().ok_or("Invalid scale")?
         ))),

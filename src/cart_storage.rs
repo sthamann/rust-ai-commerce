@@ -59,6 +59,7 @@ pub(crate) async fn new_cart(
         token: uid(),
         data: Cart {
             coupons: vec![],
+            currency: String::new(),
             sales_channel: "default".into(),
             app_configurations: HashMap::new(),
             items: vec![],
@@ -115,9 +116,17 @@ pub(crate) async fn new_cart_context(
     } else {
         None
     };
+    let (settings, _) = commerce::scoped_config(a, &t, channel).await?;
+    let selected_currency = settings
+        .currencies
+        .selected(header(h, "x-commerce-currency").unwrap_or(""))?
+        .code
+        .clone();
     let mut c = new_cart(a, &t, session, &locale, transport).await?;
     c.data.sales_channel = channel.into();
+    c.data.currency = selected_currency;
     let (settings, _) = commerce::scoped_config(a, &t, channel).await?;
+    c.data.currency = settings.currencies.selected(&c.data.currency)?.code.clone();
     c.data.checkout = Some(commerce::resolve_selection(
         commerce::selection(&c.data),
         &c.data.group,
@@ -151,6 +160,7 @@ pub(crate) async fn new_cart_context(
                 checkout.payment_method_id = id.into();
             }
             let (settings, _) = commerce::scoped_config(a, &t, channel).await?;
+            c.data.currency = settings.currencies.selected(&c.data.currency)?.code.clone();
             *checkout = commerce::resolve_selection(checkout.clone(), &c.data.group, &settings);
         }
     }

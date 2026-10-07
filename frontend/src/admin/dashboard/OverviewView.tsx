@@ -14,6 +14,10 @@ export function OverviewView({
   onProduct: (id: string) => void;
 }) {
   const { t, money, date, number } = useLocale();
+  const format = (n: number, currency = "EUR") =>
+    new Intl.NumberFormat(data.locale, { style: "currency", currency }).format(
+      n,
+    );
   const low = data.products.filter((p) => p.stock < 10);
   const maximum = Math.max(1, ...data.timeline.map((d) => d.orders));
   return (
@@ -35,7 +39,15 @@ export function OverviewView({
         <div className="metric">
           <Icon name="box" />
           <span>{t("revenue")}</span>
-          <strong>{money(data.summary.revenue)}</strong>
+          <strong>
+            {data.summary.revenueByCurrency?.length
+              ? data.summary.revenueByCurrency.map((v) => (
+                  <span key={v.currency} style={{ display: "block" }}>
+                    {format(Number(v.amount), v.currency)}
+                  </span>
+                ))
+              : money(data.summary.revenue ?? 0)}
+          </strong>
           <small>
             {t("simulated")} · {t("lifetime")}
           </small>
@@ -105,7 +117,12 @@ export function OverviewView({
               </div>
               <span>
                 {p.name}
-                <small>{money(p.price)}</small>
+                <small>
+                  {format(
+                    p.price,
+                    p.extra?.priceCurrency ?? data.productCurrency,
+                  )}
+                </small>
               </span>
               <b className={p.stock < 10 ? "stock-low" : ""}>{p.stock}</b>
               <Icon name="arrow" size={16} />
@@ -138,7 +155,7 @@ export function OverviewView({
                     ? t("unknown")
                     : o.channel.toUpperCase()}
                 </span>
-                <strong>{money(o.total)}</strong>
+                <strong>{format(o.total, o.currency)}</strong>
               </div>
             ))}
           </div>

@@ -127,6 +127,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/commerce/product_edit.rs](../src/commerce/product_edit.rs) | Revision-bound multilingual product metadata: specifications, SEO, cross-selling and free shipping. |
 | [src/commerce/product_fields.rs](../src/commerce/product_fields.rs) | Native product administration writes priced fields under the same revision and inventory row lock. |
 | [src/commerce/product_languages.rs](../src/commerce/product_languages.rs) | Enabled content languages, NULL field inheritance and stable global language registration. |
+| [src/commerce/product_metadata.rs](../src/commerce/product_metadata.rs) | Typed product edit payload and multilingual metadata including exact currency prices. |
 | [src/commerce/review_moderation.rs](../src/commerce/review_moderation.rs) | Merchant authorization and review publication. |
 | [src/commerce/reviews.rs](../src/commerce/reviews.rs) | Customer review submission with server-derived purchase verification. |
 | [src/commerce/selection.rs](../src/commerce/selection.rs) | Recover a quote after configuration changes without losing items or silently committing new choices. |
@@ -163,6 +164,14 @@ This lists every checked-in source module in these roots, including files with n
 | [src/connectors/tests.rs](../src/connectors/tests.rs) | Actual Rust parsers, encryption and template consumers reject escalation/injection and preserve language behavior. |
 | [src/connectors/worker.rs](../src/connectors/worker.rs) | Distributed delivery workers fence settings and leases, retry only proven rejection, and drain on shutdown. |
 | [src/context.rs](../src/context.rs) | Bounded behavioral ports of Shopware 6.7.14.2 context and product-cart selection. |
+| [src/currencies/capabilities.rs](../src/currencies/capabilities.rs) | Currency MCP operations reuse the native HTTP handlers and existing settings/catalog permissions. |
+| [src/currencies/jobs.rs](../src/currencies/jobs.rs) | Bounded restart-safe fixed-price materialization with frozen FX, product locks and atomic checkpoints across replicas. |
+| [src/currencies/mod.rs](../src/currencies/mod.rs) | Tenant currency configuration, channel contexts and durable price generation; no FX network calls in checkout. |
+| [src/currencies/model.rs](../src/currencies/model.rs) | Explicit currency scales and rational exchange-rate settings, inherited by sales-channel overrides. |
+| [src/currencies/pricing.rs](../src/currencies/pricing.rs) | Exact rational minor-unit FX conversion at the isolated legacy calculator boundary; fixed prices are explicit decimal strings. |
+| [src/currencies/rates.rs](../src/currencies/rates.rs) | Bounded ECB reference-rate retrieval with exact decimal parsing; refresh runs outside checkout and never invents rates. |
+| [src/currencies/routes.rs](../src/currencies/routes.rs) | Native currency discovery, revision-safe selection and authenticated FX/price job operations. |
+| [src/currencies/tests.rs](../src/currencies/tests.rs) | Currency conversion adversaries and immutable source-price semantics, independent of live rate providers. |
 | [src/customer.rs](../src/customer.rs) | Customer credential verification and context rotation. |
 | [src/demo_catalog.rs](../src/demo_catalog.rs) | Public synthetic fashion template; provisioning copies only this versioned fixture into a new tenant. |
 | [src/developer/archive.rs](../src/developer/archive.rs) | Recoverable App Studio project deletion; installed packages and app records retain their independent lifecycle. |
@@ -236,6 +245,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/marketing/rule_snapshot.rs](../src/marketing/rule_snapshot.rs) | Resolve only referenced tenant rule IDs with indexed batched reads; freeze active definitions and revisions into the event snapshot. |
 | [src/marketing/rule_tests.rs](../src/marketing/rule_tests.rs) | Regression cases for native rule facts and original container boundaries. |
 | [src/marketing/rules.rs](../src/marketing/rules.rs) | Bounded Shopware-style boolean/numeric rule AST. Unknown operators/conditions fail closed. |
+| [src/mcp/transport.rs](../src/mcp/transport.rs) | MCP visibility and shared read-scope memoization, independent of internal planning tools. |
 | [src/mcp.rs](../src/mcp.rs) | Typed MCP schemas and JSON-RPC transport. |
 | [src/migrations/schema.rs](../src/migrations/schema.rs) | Append-only ordered migration source catalogue; deployed checksums are never rewritten. |
 | [src/migrations.rs](../src/migrations.rs) | Versioned setup is separate from serving; no catalog-wide startup repair. |
@@ -313,6 +323,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/staging/release.rs](../src/staging/release.rs) | Selected units publish in one transaction with staged digests and live baseline conflict checks. |
 | [src/staging/snapshot.rs](../src/staging/snapshot.rs) | Fixed publishable units: product content/translations, settings, experience and app packages. |
 | [src/storefront_pages.rs](../src/storefront_pages.rs) | Deep-link HTML transport for stable SKU URLs with optional localized SEO slugs. |
+| [src/studio/revenue.rs](../src/studio/revenue.rs) | Merchant turnover remains separated by invoice currency; historical values are never repriced with today's FX. |
 | [src/studio.rs](../src/studio.rs) | Verified merchant overview facts consumed by the chat and activity views. |
 | [src/tenant_scope.rs](../src/tenant_scope.rs) | Database lease context: unknown tasks fail closed; trusted workers explicitly retain their scope. |
 | [src/translations/apply.rs](../src/translations/apply.rs) | Apply at most 50 reviewed drafts per request; stale products become conflicts rather than being overwritten. |
@@ -372,6 +383,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/catalog/MediaDropzone.tsx](../frontend/src/admin/catalog/MediaDropzone.tsx) | Accessible multi-file upload with drag/drop, visible progress and the same validated asset API as attachments. |
 | [frontend/src/admin/catalog/PairFields.tsx](../frontend/src/admin/catalog/PairFields.tsx) | Accessible key/value rows for product properties, specifications and variant options. |
 | [frontend/src/admin/catalog/ProductAssets.tsx](../frontend/src/admin/catalog/ProductAssets.tsx) | Bounded upload and explicit digest-bound publication of attachments and paid files. |
+| [frontend/src/admin/catalog/ProductCurrencyPrices.tsx](../frontend/src/admin/catalog/ProductCurrencyPrices.tsx) | Exact per-currency decimals live in the same revisioned product draft, including variants. |
 | [frontend/src/admin/catalog/ProductDataView.tsx](../frontend/src/admin/catalog/ProductDataView.tsx) | Central catalog workspace: server-filtered cursor list, product details and hierarchical categories. |
 | [frontend/src/admin/catalog/ProductEditor.tsx](../frontend/src/admin/catalog/ProductEditor.tsx) | Revision-aware product aggregate editor: one save, translation tabs and product-scoped linked capabilities. |
 | [frontend/src/admin/catalog/ProductEditorExtras.tsx](../frontend/src/admin/catalog/ProductEditorExtras.tsx) | Price-tax selection and permission-filtered extension slots attached to the product editor. |
@@ -458,6 +470,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/settings/CompanyTranslations.tsx](../frontend/src/admin/settings/CompanyTranslations.tsx) | Brand and legal text use one content-language selector and independent language/channel inheritance. |
 | [frontend/src/admin/settings/CountriesSettings.tsx](../frontend/src/admin/settings/CountriesSettings.tsx) | Delivery-country selection and editable catalogue definitions, including tenant-owned subdivisions. |
 | [frontend/src/admin/settings/CountryDefinition.tsx](../frontend/src/admin/settings/CountryDefinition.tsx) | Country metadata and subdivision editing with multilingual names; custom definitions cannot invent ISO assignment. |
+| [frontend/src/admin/settings/CurrencySettings.tsx](../frontend/src/admin/settings/CurrencySettings.tsx) | Shop currency registry and inherited channel availability. Actions use saved revisions and native job APIs. |
 | [frontend/src/admin/settings/CustomerGroupsSettings.tsx](../frontend/src/admin/settings/CustomerGroupsSettings.tsx) | Customer groups share the translation/inheritance editor and revisioned settings aggregate. |
 | [frontend/src/admin/settings/DestinationRuleEditor.tsx](../frontend/src/admin/settings/DestinationRuleEditor.tsx) | Geographical tax rule editor: country, subdivisions, postcode constraints, date window and persisted Rule Builder condition. |
 | [frontend/src/admin/settings/LanguageSettings.tsx](../frontend/src/admin/settings/LanguageSettings.tsx) | Shop main language and enabled locales with resumable provider-backed bulk product translation drafts. |
@@ -597,6 +610,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/content-language.ts](../frontend/src/shared/i18n/content-language.ts) | Resolve editable translation keys without merging distinct regional locales or fabricating inherited values. |
 | [frontend/src/shared/i18n/control-i18n.ts](../frontend/src/shared/i18n/control-i18n.ts) | Complete vocabulary for the platform control plane and service hub. Technical provider/service IDs stay stable. |
 | [frontend/src/shared/i18n/crm-i18n.ts](../frontend/src/shared/i18n/crm-i18n.ts) | Complete CRM/history vocabulary shared by settings, customer account and entity editors. |
+| [frontend/src/shared/i18n/currency-i18n.ts](../frontend/src/shared/i18n/currency-i18n.ts) | Complete currency settings vocabulary, shared by storefront and channel editors. |
 | [frontend/src/shared/i18n/customer-i18n.ts](../frontend/src/shared/i18n/customer-i18n.ts) | Account and address labels share four complete locales across storefront and studio. |
 | [frontend/src/shared/i18n/email-i18n.ts](../frontend/src/shared/i18n/email-i18n.ts) | Complete mail workspace vocabulary in English, German, French and Spanish. |
 | [frontend/src/shared/i18n/errors-i18n.ts](../frontend/src/shared/i18n/errors-i18n.ts) | Localized request guidance across all transports; original diagnostics remain available to developer tools. |
@@ -624,8 +638,10 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/legal/consent-store.ts](../frontend/src/shared/legal/consent-store.ts) | Live consent registry starts denied; only validated server receipts unlock integrations. No legacy grant is trusted. |
 | [frontend/src/shared/legal/legal-types.ts](../frontend/src/shared/legal/legal-types.ts) | Channel-scoped legal policy, explicit optional purposes and durable consumer requests. |
 | [frontend/src/shared/legal/requirements.ts](../frontend/src/shared/legal/requirements.ts) | Source-backed requirement catalogue; operational applicability is reviewed, never inferred as legal certification. |
+| [frontend/src/shared/money/fx-draft.ts](../frontend/src/shared/money/fx-draft.ts) | Draft-only FX preview matches the server rational/half-up boundary; checkout always uses its server quote. |
 | [frontend/src/shared/styles/app-surfaces.css](../frontend/src/shared/styles/app-surfaces.css) | app surfaces: Shared customer, app and workbench styles; application workspaces must not import each other.. |
 | [frontend/src/shared/styles/apps.css](../frontend/src/shared/styles/apps.css) | apps: Shared customer, app and workbench styles; application workspaces must not import each other.. |
+| [frontend/src/shared/styles/currencies.css](../frontend/src/shared/styles/currencies.css) | Currency cards use the Studio form grid, keyboard targets and responsive layouts. |
 | [frontend/src/shared/styles/customers.css](../frontend/src/shared/styles/customers.css) | Shared light account/address workspace, responsive and keyboard-accessible. |
 | [frontend/src/shared/styles/native-app.css](../frontend/src/shared/styles/native-app.css) | Native app layouts share commerce design tokens; tables/forms remain bounded and responsive. |
 | [frontend/src/shared/styles/workbench.css](../frontend/src/shared/styles/workbench.css) | Merchant workbench uses the studio's light-blue design tokens and responsive review panels. |
@@ -680,9 +696,11 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/shell/ConciergeView.tsx](../frontend/src/storefront/shell/ConciergeView.tsx) | ConciergeView: storefront view composed from the scoped cart/controller. |
 | [frontend/src/storefront/shell/Storefront.tsx](../frontend/src/storefront/shell/Storefront.tsx) | Storefront composition root: cart context, routes, customer account and checkout. |
 | [frontend/src/storefront/shell/StorefrontContext.ts](../frontend/src/storefront/shell/StorefrontContext.ts) | Local storefront context, scoped to the mounted tenant and sales channel. |
+| [frontend/src/storefront/shell/StorefrontCurrency.tsx](../frontend/src/storefront/shell/StorefrontCurrency.tsx) | Currency switching is a revision-bound server re-quote, scoped to tenant and sales channel. |
 | [frontend/src/storefront/shell/StorefrontHeader.tsx](../frontend/src/storefront/shell/StorefrontHeader.tsx) | StorefrontHeader: storefront view composed from the scoped cart/controller. |
 | [frontend/src/storefront/shell/StorefrontHome.tsx](../frontend/src/storefront/shell/StorefrontHome.tsx) | StorefrontHome: storefront view composed from the scoped cart/controller. |
 | [frontend/src/storefront/shell/StorefrontLanguage.tsx](../frontend/src/storefront/shell/StorefrontLanguage.tsx) | Shop-configured content languages, including custom locales; the interface keeps its supported language vocabulary. |
+| [frontend/src/storefront/shell/cart-commands.ts](../frontend/src/storefront/shell/cart-commands.ts) | Revision-bound quantity update, preserving SKU minimum and server pricing authority. |
 | [frontend/src/storefront/shell/useCatalog.ts](../frontend/src/storefront/shell/useCatalog.ts) | Cursor catalogue loading, debounced filters and stale-response protection. |
 | [frontend/src/storefront/shell/useCompanyIdentity.ts](../frontend/src/storefront/shell/useCompanyIdentity.ts) | Channel-scoped public brand/legal identity; stale responses cannot leak across tenants or languages. |
 | [frontend/src/storefront/shell/useConsentedExperience.ts](../frontend/src/storefront/shell/useConsentedExperience.ts) | Assign experiments only after current personalization consent; discard stale responses on withdrawal. |
@@ -749,6 +767,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/contention.py](../scripts/contention.py) | Sell the remaining workshop desks under contention; separate synthetic tenant. |
 | [scripts/context_differential.py](../scripts/context_differential.py) | Compare bounded context/tier/quantity ports with original Shopware methods. |
 | [scripts/crm_history.py](../scripts/crm_history.py) | Real CRM groups/defaults, transaction-coalesced history, validated restore, tenant/role/MCP isolation. |
+| [scripts/currencies.py](../scripts/currencies.py) | Real tenant/channel multi-currency, precision, immutable order and durable fixed-price tests; no paid providers. |
 | [scripts/customer_accounts.py](../scripts/customer_accounts.py) | Real registration/address/login/checkout lifecycle, ownership, CAS and immutable financial snapshots. |
 | [scripts/delivery_differential.py](../scripts/delivery_differential.py) | Compare the original PercentageTaxRuleBuilder with the live Rust port. |
 | [scripts/demo/fixtures.py](../scripts/demo/fixtures.py) | Four-language, provider-free commerce playground definitions; no credentials or real customer data. |

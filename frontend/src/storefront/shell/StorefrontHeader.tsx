@@ -3,6 +3,8 @@ import { openConsent } from "../../shared/legal/consent-store";
 import { collectionURL } from "../catalog/product-url";
 import { shopApi, type Cart } from "../../shared/api/shop-api";
 import { StorefrontAppNavigation } from "../../shared/apps/AppSurfaces";
+import StorefrontCurrency from "./StorefrontCurrency";
+import "../../shared/styles/currencies.css";
 import StorefrontLanguage from "./StorefrontLanguage";
 import "../../shared/styles/apps.css";
 import "../../shared/styles/workbench.css";
@@ -71,6 +73,7 @@ export default function StorefrontHeader() {
         <button onClick={onMerchant}>{s("studio")} ↗</button>
       </nav>
       <StorefrontLanguage />
+      <StorefrontCurrency />
       <button
         className="shop-text-button"
         aria-pressed={adaptation}

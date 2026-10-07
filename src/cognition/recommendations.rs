@@ -10,6 +10,7 @@ pub(crate) async fn recommendations(
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = tenant(&h)?;
+    marketing::admit_product(&a, &h, &id).await?;
     let pairs = public_pairs(&a, &t).await?;
     let ids = pairs
         .as_array()
@@ -26,9 +27,20 @@ pub(crate) async fn recommendations(
         })
         .take(8)
         .collect::<Vec<_>>();
-    let (_, chain) = language_context(&a, &h).await?;
-    let rows=sqlx::query("SELECT p.id,coalesce(tr.name,p.name) AS name,p.price,p.stock FROM products p LEFT JOIN LATERAL (SELECT name FROM product_translations WHERE tenant=p.tenant AND product_id=p.id AND language_id=ANY($3) AND name IS NOT NULL ORDER BY array_position($3,language_id) LIMIT 1) tr ON true WHERE p.tenant=$1 AND p.id=ANY($2) AND p.stock>0 ORDER BY p.id LIMIT 8").bind(t).bind(ids).bind(chain).fetch_all(&a.db).await?;
-    Ok(Json(
-        json!({"source":"merchant-approved-order-association","causalUpliftProven":false,"elements":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"name":r.get::<String,_>("name"),"price":r.get::<f64,_>("price"),"stock":r.get::<i32,_>("stock")})).collect::<Vec<_>>()}),
-    ))
+    let Json(mut result) = catalog_page(
+        State(a),
+        h,
+        CatalogCriteria {
+            product_ids: Some(ids),
+            limit: Some(8),
+            ..Default::default()
+        },
+    )
+    .await?;
+    if let Some(elements) = result["elements"].as_array_mut() {
+        elements.retain(|p| p["stock"].as_i64().unwrap_or(0) > 0);
+    }
+    result["source"] = json!("merchant-approved-order-association");
+    result["causalUpliftProven"] = json!(false);
+    Ok(Json(result))
 }

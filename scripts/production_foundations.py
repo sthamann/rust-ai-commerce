@@ -81,6 +81,45 @@ try:
     assert scoped('atelier', "UPDATE products SET stock=999 WHERE tenant='workshop' RETURNING id").splitlines()[-1] == 'atelier|off'
     # Forged same-ID write, not a SELECT that could merely hide a foreign row.
     sql(f"BEGIN; SET LOCAL ROLE {role}; SELECT set_config('rac.tenant','atelier',true); INSERT INTO products(tenant,id,name,category,description,price,tax_rate,stock) VALUES('workshop','rls-forged','forged','test','test',1,19,1);", fail=True)
+    sql("INSERT INTO currency_price_jobs(tenant,id,data,state) VALUES('atelier','currency-own','{}','completed'),('workshop','currency-foreign','{}','completed');")
+    assert scoped('atelier', 'SELECT count(*) FROM currency_price_jobs').splitlines()[-1] == '1'
+    assert scoped('atelier', "DELETE FROM currency_price_jobs WHERE tenant='workshop' RETURNING id").splitlines()[-1] == 'atelier|off'
+    sql(f"BEGIN; SET LOCAL ROLE {role}; SELECT set_config('rac.tenant','atelier',true); INSERT INTO currency_price_jobs(tenant,id,data) VALUES('workshop','forged','{{}}');",fail=True)
+    print('PASS currency job FORCE-RLS hides foreign jobs and rejects foreign delete and forged insert')
+    # Exercise a real checkpoint across worker shutdown/restart, not an in-memory queue.
+    sql("INSERT INTO products(tenant,id,name,category,description,price,tax_rate,stock) SELECT 'atelier','fx_bulk_'||lpad(n::text,3,'0'),'FX batch fixture','test','Synthetic bulk currency fixture',2.14,19,10 FROM generate_series(1,205)n;")
+    config = call(one, '/api/merchant/commerce', h=h)
+    config['data']['currencies']['definitions'].append({'code':'USD','scale':2,'rate':'1.25','strategy':'fixed'})
+    config['data']['currencies']['enabled'].append('USD')
+    saved = call(one, '/api/merchant/commerce', {'revision':config['revision'],'data':config['data']},h,'PUT')
+    job = call(one, '/api/merchant/currencies/price-jobs', {'revision':saved['revision'],'currency':'USD'},h)
+    # A later product sorts inside the ID ceiling; its creation time must exclude it.
+    sql("INSERT INTO products(tenant,id,name,category,description,price,tax_rate,stock) VALUES('atelier','fx_bulk_999','Future fixture','test','Created after job snapshot',2.14,19,10);")
+    for _ in range(200):
+        state = call(one, '/api/merchant/currencies/price-jobs/'+job['id'],h=h)
+        if state['processed'] >= 100: break
+        time.sleep(.03)
+    assert state['state']=='queued' and state['processed']==100,state
+    stop(processes[0][0])
+    resumed = {**env,'PROCESS_ROLE':'all','BASE_URL':one,'BIND_ADDR':one.removeprefix('http://')}
+    processes[0] = (serve(resumed,one,processes[0][1]),processes[0][1])
+    for _ in range(200):
+        state = call(one, '/api/merchant/currencies/price-jobs/'+job['id'],h=h)
+        if state['state']=='completed': break
+        time.sleep(.03)
+    assert state['state']=='completed' and state['processed']>=205,state
+    assert sql("SELECT count(*) FROM products WHERE tenant='atelier' AND id LIKE 'fx_bulk_%' AND id<>'fx_bulk_999' AND extra->'currencyPrices'->'USD'->>'price'='2.68';")=='205'
+    assert sql("SELECT extra->'currencyPrices'->'USD' IS NULL FROM products WHERE tenant='atelier' AND id='fx_bulk_999';")=='t'
+    print('PASS fixed-price worker resumes a committed 100-product checkpoint after restart; 205 midpoint prices are exact and post-snapshot products excluded')
+    sql("INSERT INTO knowledge_hypotheses(tenant,id,kind,evidence,state) VALUES('atelier','currency-recommendation','association','{\"left\":\"mug\",\"right\":\"fx_bulk_001\"}','published');")
+    rec = call(one, '/store-api/intelligence/recommendations/mug', h={'x-tenant':'atelier','x-commerce-currency':'USD'})
+    assert rec['currencyContext']['code']=='USD' and len(rec['elements'])==1,rec
+    assert rec['elements'][0]['price']==2.68 and rec['elements'][0]['currency']=='USD',rec
+    channel = {'name':{'en':'Restricted currency recommendations'},'kind':'storefront','active':True,'locales':['en-GB'],'productIds':['mug'],'navigationCategoryId':None}
+    call(one, '/api/automation/channels/fx_restricted', {'revision':0,'data':channel},h,'PUT')
+    rec = call(one, '/store-api/intelligence/recommendations/mug', h={'x-tenant':'atelier','x-commerce-currency':'USD','sw-sales-channel-id':'fx_restricted'})
+    assert rec['elements']==[],rec
+    print('PASS approved recommendations use shared currency prices and cannot leak products hidden by the sales channel')
     print('PASS core SQL denies unknown scope, foreign reads/writes and forged insertion without WHERE protection')
     def read(n):
         t = 'atelier' if n % 2 else 'workshop'

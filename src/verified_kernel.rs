@@ -159,6 +159,11 @@ pub fn reservation_release_admissible(
     uncaptured || authorized && void_confirmed
 }
 
+/// A quoted currency must be enabled, configured and have an admissible rate.
+pub fn currency_context_admissible(enabled: bool, configured: bool, fresh: bool) -> bool {
+    enabled && configured && fresh
+}
+
 // Supported explicit currency precision; larger scales must not overflow the decimal factor.
 pub fn currency_scale_admissible(scale: u64) -> bool {
     scale <= 6

@@ -83,7 +83,8 @@ pub(crate) async fn payment_once(a: &App) -> Result<()> {
                     .as_i64()
                     .ok_or(bad("Refund amount missing"))?;
                 if v["amount"]["currency_code"] != current.currency
-                    || parse_minor(v["amount"]["value"].as_str().unwrap_or(""))? != amount
+                    || parse_amount(v["amount"]["value"].as_str().unwrap_or(""), &p.currency)?
+                        != amount
                 {
                     return Err(bad("Pending refund amount mismatch"));
                 }

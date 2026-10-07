@@ -28,7 +28,7 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     {
         history::customer_context(&mut tx, email).await?;
     }
-    let mut purchase = json!({"items":c.data.items,"checkout":c.data.checkout,"group":c.data.group,"buyer":c.data.buyer,"coupons":c.data.coupons,"salesChannel":c.data.sales_channel});
+    let mut purchase = json!({"items":c.data.items,"checkout":c.data.checkout,"group":c.data.group,"buyer":c.data.buyer,"coupons":c.data.coupons,"salesChannel":c.data.sales_channel,"currency":c.data.currency});
     if !c.data.app_configurations.is_empty() {
         purchase["appConfigurations"] = json!(c.data.app_configurations);
     }
@@ -100,6 +100,14 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     // Configuration cannot change between this price calculation and order commit.
     let (config, settings_revision) =
         commerce::scoped_locked(&mut tx, &c.tenant, &c.data.sales_channel).await?;
+    let code = config.currencies.selected(&c.data.currency)?.code.clone();
+    if let Some(requested) = header(h, "x-commerce-currency")
+        && requested != code
+    {
+        return Err(conflict("Checkout currency changed; review again"));
+    }
+    let config =
+        payments::currency_methods(a, &c.tenant, &c.data.sales_channel, &code, config).await?;
     let legal_snapshot = legal::snapshot(&mut tx, &c, &config, &ps).await?;
     let selected = commerce::selection(&c.data);
     for address in [&selected.address, &selected.billing_address]
@@ -144,12 +152,14 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
             return Err(conflict("Insufficient stock"));
         }
     }
-    let money = vendune::money::Money::from_legacy_eur(
+    let currency = config.currencies.selected(&c.data.currency)?;
+    let money = currencies::amount(
         q["price"]["totalPrice"]
             .as_f64()
             .ok_or(bad("Invalid total"))?,
-    )
-    .map_err(bad)?;
+        &currency.code,
+        currency.scale,
+    )?;
     let minor = money.minor();
     // Legacy API clients may omit the pair. Browser checkout always binds its reviewed quote.
     match (
@@ -236,6 +246,7 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     // Explicit simulated authorization: no external money is charged.
     let mut order = json!({"id":id,"orderNumber":format!("RAC-{}",&id[..8]),"cart":q,"state":"placed","channel":c.data.channel,"revision":1,"deliveries":q["deliveries"],"payment":{"method":q["paymentMethod"],"provider":if q["paymentMethod"]["mode"]=="simulated"{"simulated"}else{"manual"},"state":if q["paymentMethod"]["mode"]=="simulated"{"authorized"}else{"pending"},"realMoneyCharged":false},"customerGroup":c.data.group});
     order["money"] = json!(money);
+    order["currencyContext"] = q["currencyContext"].clone();
     order["legal"] = legal_snapshot;
     order
         .as_object_mut()

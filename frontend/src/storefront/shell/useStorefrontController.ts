@@ -1,4 +1,5 @@
 /** Cart lifecycle, authoritative checkout commands and storefront coordination. */
+import { updateCartQuantity } from "./cart-commands";
 import { routeProductId } from "../catalog/product-url";
 import { shopScope } from "../../shared/api/shop-scope";
 import { useCompanyIdentity } from "./useCompanyIdentity";
@@ -35,7 +36,7 @@ export function useStorefrontController({
 }: {
   onMerchant: () => void;
 }) {
-  const { s, t, money, locale, setLocale } = useShopText();
+  const { s, t, locale, setLocale } = useShopText();
   const { w } = useWorkbenchText();
   const shopTenant = shopScope();
   const salesChannel =
@@ -49,6 +50,11 @@ export function useStorefrontController({
     null,
   );
   const [cart, setCart] = useState<Cart>();
+  const money = (n: number) =>
+    new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: cart?.price.currency ?? "EUR",
+    }).format(n);
   const [id, setId] = useState(productId);
   const [appPath, setAppPath] = useState(location.hash);
   const [busy, setBusy] = useState(false);
@@ -97,6 +103,11 @@ export function useStorefrontController({
   const save = (c: Cart) => {
     setCart(c);
     localStorage.setItem(cartKey, c.token);
+    if (c.price.currency)
+      localStorage.setItem(
+        `rac-currency:${shopTenant}:${salesChannel}`,
+        c.price.currency,
+      );
   };
   useEffect(() => {
     const hash = () => {
@@ -239,6 +250,7 @@ export function useStorefrontController({
       const item = products.find((p) => p.id === pid);
       const actual = cart.lineItems.find((i) => i.id === pid);
       commerceEvent("add_to_cart", {
+        currency: cart.price.currency ?? "EUR",
         items: [
           {
             item_id: pid,
@@ -257,23 +269,7 @@ export function useStorefrontController({
     });
   const quantity = (pid: string, q: number) =>
     run(async () => {
-      if (!cart) return;
-      save(
-        await shopApi<Cart>(
-          "/store-api/checkout/cart",
-          {
-            revision: cart.revision,
-            items: cart.lineItems
-              .map((i) => ({
-                id: i.id,
-                quantity: i.id === pid ? q : i.quantity,
-              }))
-              .filter((i) => i.quantity > 0),
-          },
-          cart.token,
-          "PUT",
-        ),
-      );
+      if (cart) save(await updateCartQuantity(cart, pid, q));
     });
   const selection = async (checkout: Selection) => {
     if (!cart) throw new Error(s("empty"));

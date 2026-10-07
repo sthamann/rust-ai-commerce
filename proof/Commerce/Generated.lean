@@ -84,6 +84,9 @@ def shop_request_admissible (active : Bool) (paused : Bool) (read_only : Bool) (
 def reservation_release_admissible (uncaptured : Bool) (authorized : Bool) (void_confirmed : Bool) : Bool :=
   (uncaptured || (authorized && void_confirmed))
 
+def currency_context_admissible (enabled : Bool) (configured : Bool) (fresh : Bool) : Bool :=
+  ((enabled && configured) && fresh)
+
 def currency_scale_admissible (scale : Nat) : Bool :=
   (decide (scale ≤ 6))
 

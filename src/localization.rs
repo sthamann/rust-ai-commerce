@@ -115,9 +115,18 @@ fn translated_field<'a>(
 
 pub(super) async fn context_info(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let (locale, chain) = language_context(&a, &h).await?;
-    let (settings, _) = commerce::config(&a, &tenant(&h)?).await?;
+    let (settings, _) =
+        commerce::scoped_config(&a, &tenant(&h)?, marketing::channel_id(&h)).await?;
+    let cart = if header(&h, "sw-context-token").is_some() {
+        Some(load_cart(&a, &h).await?)
+    } else {
+        None
+    };
+    let currency = settings
+        .currencies
+        .selected(&currencies::requested(&h, cart.as_ref()))?;
     Ok(Json(
-        json!({"locale":locale,"mainLocale":settings.main_locale,"languageIdChain":chain,"availableLocales":settings.locales,"currency":"EUR","taxStates":["gross","net"]}),
+        json!({"locale":locale,"mainLocale":settings.main_locale,"languageIdChain":chain,"availableLocales":settings.locales,"currency":currency.code,"currencyContext":currencies::context(&settings.currencies,currency),"currencies":settings.currencies.enabled,"taxStates":["gross","net"]}),
     ))
 }
 pub(super) async fn preview_quote(
@@ -160,6 +169,7 @@ pub(super) async fn preview_quote(
         status: "preview".into(),
         data: Cart {
             coupons: vec![],
+            currency: String::new(),
             sales_channel: "default".into(),
             app_configurations: HashMap::new(),
             items: vec![Item {

@@ -17,10 +17,15 @@ export default function OrderCompletion({
   onBack: () => void;
 }) {
   const { x } = useCheckoutText(),
-    { s, money } = useShopText(),
+    { s, locale } = useShopText(),
     { c } = useCustomerText();
   const heading = useRef<HTMLHeadingElement>(null);
   const snapshot = order.cart;
+  const money = (n: number) =>
+    new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: snapshot.price.currency ?? "EUR",
+    }).format(n);
   useEffect(() => {
     heading.current?.focus();
     window.scrollTo({ top: 0, behavior: "instant" });

@@ -94,6 +94,7 @@ pub(crate) async fn bootstrap() -> App {
     }
     if mode != "migrate" {
         workers::start(&a);
+        currencies::worker(&a);
         performance::start_invalidations(&a);
         if env::var("PROCESS_ROLE").unwrap_or("all".into()) == "all"
             || env::var("PROCESS_ROLE").as_deref() == Ok("memory-worker")

@@ -37,6 +37,19 @@ pub(crate) async fn promote(
     mut q: Value,
 ) -> Result<Value> {
     let b2b = q["price"]["taxStatus"] == "net";
+    let decimals = q["price"]["currencyScale"].as_i64().unwrap_or(2) as i32;
+    let factor = 10_f64.powi(decimals);
+    let pricing_rate = q["currencyContext"]["pricingFactor"]
+        .as_str()
+        .map(crate::currencies::rate_units)
+        .transpose()?
+        .unwrap_or(100_000_000) as f64;
+    let rate = q["currencyContext"]["factor"]
+        .as_str()
+        .map(crate::currencies::rate_units)
+        .transpose()?
+        .unwrap_or(100_000_000) as f64
+        / pricing_rate;
     let rows = sqlx::query(
         "SELECT id,data FROM commerce_promotions WHERE tenant=$1 ORDER BY id FOR UPDATE",
     )
@@ -96,11 +109,14 @@ pub(crate) async fn promote(
         .flat_map(|l| l["price"]["calculatedTaxes"].as_array().unwrap())
         .map(|t| t["tax"].as_f64().unwrap())
         .sum::<f64>();
-    let original = math_round(if b2b { positions + tax } else { positions }, 2);
-    q["price"]["positionPrice"] = json!(math_round(positions, 2));
+    let original = math_round(if b2b { positions + tax } else { positions }, decimals);
+    q["price"]["positionPrice"] = json!(math_round(positions, decimals));
     q["price"]["totalPrice"] = json!(original);
-    q["price"]["tax"] = json!(math_round(tax, 2));
-    q["price"]["netPrice"] = json!(math_round(if b2b { positions } else { positions - tax }, 2));
+    q["price"]["tax"] = json!(math_round(tax, decimals));
+    q["price"]["netPrice"] = json!(math_round(
+        if b2b { positions } else { positions - tax },
+        decimals
+    ));
     let mut discounts = vec![];
     for (id, p) in applicable {
         if p.kind == "free_shipping" {
@@ -114,16 +130,16 @@ pub(crate) async fn promote(
             let ratio = if p.kind == "percentage" {
                 p.amount / 100.
             } else {
-                (p.amount / total).min(1.)
+                (p.amount * rate / total).min(1.)
             };
             let totals = q["lineItems"]
                 .as_array()
                 .unwrap()
                 .iter()
-                .map(|l| (l["price"]["totalPrice"].as_f64().unwrap() * 100.).round() as i64)
+                .map(|l| (l["price"]["totalPrice"].as_f64().unwrap() * factor).round() as i64)
                 .collect::<Vec<_>>();
             let allocated =
-                vendune::discount::allocate(&totals, (total * ratio * 100.).round() as i64);
+                vendune::discount::allocate(&totals, (total * ratio * factor).round() as i64);
             let mut after = 0.;
             let mut tax = 0.;
             for (index, line) in q["lineItems"]
@@ -135,9 +151,11 @@ pub(crate) async fn promote(
                 let tax_rate = line["price"]["calculatedTaxes"][0]["taxRate"]
                     .as_f64()
                     .unwrap_or(0.);
-                let discounted = allocated[index] as f64 / 100.;
+                let discounted = allocated[index] as f64 / factor;
                 let calc = calculate(&PriceInput {
                     price: discounted,
+                    decimals,
+                    interval: 1. / factor,
                     quantity: 1,
                     tax_rate,
                     gross: !b2b,
@@ -145,7 +163,8 @@ pub(crate) async fn promote(
                 });
                 let quantity = line["quantity"].as_u64().unwrap_or(1) as f64;
                 line["price"]["totalPrice"] = json!(calc.total_price);
-                line["price"]["unitPrice"] = json!(math_round(calc.total_price / quantity, 2));
+                line["price"]["unitPrice"] =
+                    json!(math_round(calc.total_price / quantity, decimals));
                 line["price"]["calculatedTaxes"] = json!(
                     calc.calculated_taxes
                         .iter()
@@ -155,22 +174,22 @@ pub(crate) async fn promote(
                 after += calc.total_price;
                 tax += calc.tax;
             }
-            after = math_round(after, 2);
-            tax = math_round(tax, 2);
+            after = math_round(after, decimals);
+            tax = math_round(tax, decimals);
             q["price"]["positionPrice"] = json!(after);
             q["price"]["tax"] = json!(tax);
             q["price"]["netPrice"] = json!(if b2b {
                 after
             } else {
-                math_round(after - tax, 2)
+                math_round(after - tax, decimals)
             });
             q["price"]["totalPrice"] = json!(if b2b {
-                math_round(after + tax, 2)
+                math_round(after + tax, decimals)
             } else {
                 after
             });
             discounts.push(
-                json!({"id":id,"name":p.name,"kind":p.kind,"amount":math_round(total-after,2)}),
+                json!({"id":id,"name":p.name,"kind":p.kind,"amount":math_round(total-after,decimals)}),
             );
         }
         if p.exclusive {
@@ -180,7 +199,7 @@ pub(crate) async fn promote(
     q["discounts"] = json!(discounts);
     q["discountTotal"] = json!(math_round(
         original - q["price"]["totalPrice"].as_f64().unwrap(),
-        2
+        decimals
     ));
     q["couponCodes"] = json!(c.data.coupons);
     Ok(q)

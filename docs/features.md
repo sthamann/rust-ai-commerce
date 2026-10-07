@@ -531,3 +531,13 @@ Million-product commerce measurements are dated workload-specific observations; 
 ## Keep the guide current
 
 For a feature change, update its section and detailed guide, capture the real UI when it changes, and replace the relevant image/GIF. Keep provider configuration, local contract tests and observed external results distinguishable. Preserve dated evidence rather than relabeling old media as a new capture. Main-branch Pages builds render these Markdown sources and copy the media automatically. [Documentation publishing](documentation-site.md).
+
+## Multi-currency shops and channels
+
+Configure a shop currency registry and select offered/default currencies per sales
+channel. Customers switch currencies on a server-requoted cart. Merchants choose
+automatic saved-rate conversion, exact fixed product/variant prices or durable
+bulk generation. Payments, refunds, documents and order history retain original
+precision. Revenue reports separate invoice currencies. The same context is
+exposed through Store API, MCP and the implemented UCP checkout routes.
+[Currency settings, rates, API contract and limits](currencies.md).

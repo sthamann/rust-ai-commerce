@@ -1,4 +1,5 @@
 /** Independent settings workspace: grouped navigation, explicit dirty-draft guards and native API forms. */
+import { useCurrencyText } from "../../shared/i18n/currency-i18n";
 import { useCrmText } from "../../shared/i18n/crm-i18n";
 import LegalSettings from "../legal/LegalSettings";
 import { useLegalText } from "../../shared/i18n/legal-i18n";
@@ -21,6 +22,7 @@ type Area =
   | "shipping"
   | "payment"
   | "languages"
+  | "currencies"
   | "customerGroups"
   | "legal";
 export default function SettingsWorkspace({
@@ -41,6 +43,7 @@ export default function SettingsWorkspace({
     { w } = useWorkbenchText(),
     { u } = useStudioText(),
     { i } = useInternationalText();
+  const { c: ct } = useCurrencyText();
   const { r } = useCrmText();
   const { l } = useLegalText();
   const [area, setArea] = useState<Area>("masterData");
@@ -51,6 +54,7 @@ export default function SettingsWorkspace({
     else action();
   };
   const entries: { id: Area; label: string; hint: string; icon: IconName }[] = [
+    { id: "currencies", label: ct("title"), hint: ct("hint"), icon: "globe" },
     {
       id: "masterData",
       label: c("masterData"),

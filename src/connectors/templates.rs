@@ -127,12 +127,23 @@ pub fn order(v: &Value, s: &Settings) -> Result<Mail> {
             }
         }
     }
-    let price = &o["cart"]["price"]["totalPrice"];
-    let price = price
-        .as_f64()
-        .map(|x| format!("{x:.2}"))
-        .unwrap_or_else(|| price.as_str().unwrap_or("").into());
-    let vars = json!({"orderNumber":o.get("orderNumber").unwrap_or(&event["orderId"]),"firstName":c["firstName"].as_str().or(c["name"].as_str()).unwrap_or(""),"totalPrice":if locale=="en" {price}else{price.replace('.',",")},"currency":o["currencyId"].as_str().unwrap_or("EUR")});
+    let (price, currency) = if !o["money"].is_null() {
+        let money: crate::money::Money = serde_json::from_value(o["money"].clone())
+            .map_err(|_| Error::Invalid("Invalid order money snapshot"))?;
+        (money.decimal(), money.currency().code().to_owned())
+    } else {
+        let precision = o["cart"]["price"]["currencyScale"].as_u64().unwrap_or(2);
+        checked(precision <= 4, "Invalid order currency precision")?;
+        let price = &o["cart"]["price"]["totalPrice"];
+        (
+            price
+                .as_f64()
+                .map(|x| format!("{x:.precision$}", precision = precision as usize))
+                .unwrap_or_else(|| price.as_str().unwrap_or("").into()),
+            o["currencyId"].as_str().unwrap_or("EUR").into(),
+        )
+    };
+    let vars = json!({"orderNumber":o.get("orderNumber").unwrap_or(&event["orderId"]),"firstName":c["firstName"].as_str().or(c["name"].as_str()).unwrap_or(""),"totalPrice":if locale=="en" {price}else{price.replace('.',",")},"currency":currency});
     envelope(
         &json!({"to":c["email"],"subject":render(&text(&template,"subject"),&vars,false)?,"text":render(&text(&template,"text"),&vars,false)?,"html":render(&text(&template,"html"),&vars,true)?}),
         s,

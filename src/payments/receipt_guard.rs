@@ -6,7 +6,7 @@ pub(crate) fn receipt_matches(
     currency: &str,
     confirmed: bool,
 ) -> Result<bool> {
-    let received = parse_minor(amount["value"].as_str().unwrap_or(""))?;
+    let received = parse_amount(amount["value"].as_str().unwrap_or(""), currency)?;
     Ok(u64::try_from(expected)
         .ok()
         .zip(u64::try_from(received).ok())

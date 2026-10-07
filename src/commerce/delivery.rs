@@ -13,6 +13,18 @@ pub(crate) fn enrich(
     s: &Settings,
     revision: i64,
 ) -> Result<Value> {
+    let currency = s.currencies.selected(&c.data.currency)?;
+    let decimals = currency.scale as i32;
+    let shipping_view = |v: &Shipping| -> Result<Value> {
+        let mut result = super::method_text::localized_shipping(v, &c.data.locale, s);
+        result["price"] = json!(currencies::convert(v.price, &s.currencies, currency)?);
+        result["freeAbove"] = json!(
+            v.free_above
+                .map(|v| currencies::convert(v, &s.currencies, currency))
+                .transpose()?
+        );
+        Ok(result)
+    };
     let selected = selection(&c.data);
     let shipping = s
         .shipping
@@ -37,6 +49,8 @@ pub(crate) fn enrich(
     let gross_items = q["price"]["totalPrice"].as_f64().unwrap();
     let free = shipping
         .free_above
+        .map(|limit| currencies::convert(limit, &s.currencies, currency))
+        .transpose()?
         .is_some_and(|limit| gross_items >= limit);
     let all_free = !c.data.items.is_empty()
         && c.data.items.iter().all(|i| {
@@ -48,7 +62,7 @@ pub(crate) fn enrich(
     {
         0.
     } else {
-        shipping.price
+        currencies::convert(shipping.price, &s.currencies, currency)?
     };
     let mut taxes: Vec<vendune::pricing::CalculatedTax> = vec![];
     for line in q["lineItems"].as_array().unwrap() {
@@ -83,21 +97,23 @@ pub(crate) fn enrich(
     };
     let gross_calc = calculate(&PriceInput {
         price: gross,
+        decimals,
+        interval: 10_f64.powi(-decimals),
         quantity: 1,
         tax_rules: Some(rules.clone()),
         ..PriceInput::default()
     });
-    let shipping_net = math_round(gross - gross_calc.tax, 2);
+    let shipping_net = math_round(gross - gross_calc.tax, decimals);
     // Native method prices are gross amounts; explicit net component for B2B display.
     let cost = json!({"unitPrice":if s.is_business(&c.data.group){shipping_net}else{gross},"totalPrice":gross,"netPrice":shipping_net,"tax":gross_calc.tax,"calculatedTaxes":gross_calc.calculated_taxes});
-    q["price"]["totalPrice"] = json!(math_round(gross_items + gross, 2));
+    q["price"]["totalPrice"] = json!(math_round(gross_items + gross, decimals));
     q["price"]["netPrice"] = json!(math_round(
         q["price"]["netPrice"].as_f64().unwrap() + shipping_net,
-        2
+        decimals
     ));
     q["price"]["tax"] = json!(math_round(
         q["price"]["tax"].as_f64().unwrap() + gross_calc.tax,
-        2
+        decimals
     ));
     q["shippingCosts"] = cost.clone();
     q["checkout"] = json!(selected);
@@ -108,8 +124,8 @@ pub(crate) fn enrich(
         s.shipping
             .iter()
             .filter(|v| v.active)
-            .map(|v| super::method_text::localized_shipping(v, &c.data.locale, s))
-            .collect::<Vec<_>>()
+            .map(shipping_view)
+            .collect::<Result<Vec<_>>>()?
     );
     q["paymentMethodOptions"] = json!(
         s.payments
@@ -132,8 +148,8 @@ pub(crate) fn enrich(
         s.shipping
             .iter()
             .filter(|v| v.active && v.countries.contains(&selected.country))
-            .map(|v| super::method_text::localized_shipping(v, &c.data.locale, s))
-            .collect::<Vec<_>>()
+            .map(shipping_view)
+            .collect::<Result<Vec<_>>>()?
     );
     q["availablePaymentMethods"] = json!(
         s.payments
@@ -164,7 +180,7 @@ pub(crate) fn enrich(
         }) {
         json!([])
     } else {
-        json!([{"shippingMethod":super::method_text::localized_shipping(shipping,&c.data.locale,s),"shippingCosts":cost,"shippingLocation":{"country":selected.country,"address":selected.address},"positions":c.data.items.iter().filter(|i|!ps.iter().any(|p|p.id==i.id&&p.extra["digital"]==true)).collect::<Vec<_>>(),"state":"open","deliveryTime":{"minDays":min,"maxDays":max}}])
+        json!([{"shippingMethod":shipping_view(shipping)?,"shippingCosts":cost,"shippingLocation":{"country":selected.country,"address":selected.address},"positions":c.data.items.iter().filter(|i|!ps.iter().any(|p|p.id==i.id&&p.extra["digital"]==true)).collect::<Vec<_>>(),"state":"open","deliveryTime":{"minDays":min,"maxDays":max}}])
     };
     q["paymentMethod"] = super::method_text::localized_payment(payment, &c.data.locale, s);
     Ok(q)

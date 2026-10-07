@@ -49,6 +49,7 @@ mod studio;
 use studio::*;
 mod auth;
 mod commerce;
+mod currencies;
 mod foundation;
 mod legal;
 pub(crate) use foundation::*;

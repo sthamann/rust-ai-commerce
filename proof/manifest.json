@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "33 extracted production policies; surrounding modules remain unproved",
+  "claim": "34 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -317,6 +317,15 @@
         "app_service_transport_exact",
         "app_service_transport_unapproved_denied",
         "app_service_transport_unsafe_denied"
+      ]
+    },
+    "currency_context_admissible": {
+      "bindings": [
+        "src/currencies/model.rs"
+      ],
+      "theorems": [
+        "currency_context_exact",
+        "currency_context_stale_denied"
       ]
     }
   },
@@ -683,28 +692,28 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "0243ef1b6857a791d7c5ed338b634dcf444b7797cff57b3348e3269714b4c6f3",
-      "review": "Reviewed exact operator-owned private origin admission, forbidden URL credentials/query/fragment, redirect-disabled shared client and three URL parser regressions; extracted transport predicate adds exact admission and unsafe/unapproved denial claims with two mutations. Network parsing, DNS, TLS and PostgreSQL/provider adapters remain unproved."
+      "sha256": "8f7a4bd8a52b9f2c07df0613dbf7dfba14b9eb47b3508d8110910d475689be48",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
-      "sha256": "a1a311109fa03cc13d0095ca146ee1901ff20f64efd0eef21d1686a6ccf75634",
-      "review": "Reviewed all changed Rust, append-only schemas, build/extraction and Lean inputs: lease hooks bind new/reused connections and reset on release; strict runtime rejects owner/bypass/TRUNCATE and preserves app-schema ownership; two-replica non-owner PostgreSQL tests deny forged foreign writes, enforce operator quotas and parent-stage daily usage, release persisted allocation quantities once despite corrupted snapshots, and distinguish commit from rollback invalidation. Money retains legacy EUR rounding with explicit scale and original Shopware differential; receipt-backed state admission is monotonic with late capture/refund. Async SQL/provider code remains unproved. Rust 113 tests, staging/app/automation/settings and strict checkout/CRM/tenant regressions passed; 274 frontend tests and production build passed."
+      "sha256": "94346bbf2e50b2482f4a6aeda7fc56fc26beb8964dccbdcdb41186162161f214",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
-      "sha256": "848f5800395cb5cc1ab9c1a0201cea24be15d8c27b131e4f138ac64f3c71d179",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "3007857042350bb5f206f180074a9d9a93459f037f5ea52856ee43e520c3d456",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/capabilities.rs": {
       "status": "unproved",
-      "sha256": "f92d42d16f9cf4e211ed063278334fdfa7c744fceb9fc9f126992ebf5bd344bc",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "6cee128830b5d15c3085c20a8625f6eaf04c89a3a0419bc27b4370bf3ce2568d",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/cart_model.rs": {
       "status": "unproved",
-      "sha256": "844a0c471eac017abb019adf122c10f505b86c8189d98d489114b008120e098a",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "0093e04ba4c05aa2bd389afb209602f4211040f92cb9d9bce86c6cce56041d82",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/cart_mutation.rs": {
       "status": "unproved",
@@ -713,8 +722,8 @@
     },
     "src/cart_price.rs": {
       "status": "unproved",
-      "sha256": "af91a3d188e546f15a5250a7909ec7245533406808bc96876422796f9695a75f",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "d516067bb5287fcc0d0ca546d695d90505987addcfa6852bdfa3160cf4320f5c",
+      "review": "Reviewed multi-currency selected-context adapters, rational minor-unit prices, immutable order/payment scales, row-locked creation-bounded price jobs and exact order mail snapshots; API/tenant/restart/protocol fixtures passed."
     },
     "src/cart_routes.rs": {
       "status": "unproved",
@@ -723,8 +732,8 @@
     },
     "src/cart_storage.rs": {
       "status": "unproved",
-      "sha256": "38195f8f8e8f8d370d59510f894bf35534abc1378827eb3b9d67fbcc47f81691",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "83522f17cff9f8ab80527953fa68096dbb1793c7c4dd78bd1cb25625fd00a668",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/catalog_model.rs": {
       "status": "unproved",
@@ -738,8 +747,8 @@
     },
     "src/catalog_routes.rs": {
       "status": "unproved",
-      "sha256": "683a5a83ce3a1c810094f2585f5da03b8bd5385c9aa64d5f6a4438f69b764f1b",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "05d1a73ddf538ed443837e42e316f61d9d4d52e0937afdf4c93402905106058e",
+      "review": "Reviewed currency admission and shared bounded catalog resolver for approved recommendations, with sales-channel intersection and immutable checkout/provider/email money; tenant, currency and worker restart tests protect financial boundaries."
     },
     "src/categories/admin.rs": {
       "status": "unproved",
@@ -788,8 +797,8 @@
     },
     "src/cognition/recommendations.rs": {
       "status": "unproved",
-      "sha256": "2b51758d64616a7aab5349580f20709d6edeb971dead7c64fd17443d34031551",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "25e02b0eeb939c91c83b5cd41e5cd27a7884d52a32acf7c30e0228c01ede0f5a",
+      "review": "Reviewed currency admission and shared bounded catalog resolver for approved recommendations, with sales-channel intersection and immutable checkout/provider/email money; tenant, currency and worker restart tests protect financial boundaries."
     },
     "src/cognition/routes.rs": {
       "status": "unproved",
@@ -813,8 +822,8 @@
     },
     "src/commerce/context_routes.rs": {
       "status": "unproved",
-      "sha256": "f3cfb9660c8e584a3db03edfe558bb621223ebfd8b4683821543cb9c75181c82",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "89c3c9283f2b1f183ac0edd99d0605d3ee203e17f72e545a87e4c013fdafb104",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/commerce/customer_groups.rs": {
       "status": "reviewed-binding",
@@ -823,13 +832,13 @@
     },
     "src/commerce/delivery.rs": {
       "status": "unproved",
-      "sha256": "d274a2fe1cd66455c5cd278937e0dab852058dbd566f57b43fcb89b13f15d2a6",
-      "review": "Reviewed checkout quote admission and exact-price Lean equivalence; provider approval creates one durable capture job, scoped return URLs and customer job status. Real SQL review/replay/isolation and local PayPal forged-return, lost-reply, refund, cancellation and restart regressions pass; live providers and Shopware Payments remain unverified."
+      "sha256": "eb25a02cf0a1f47bfe9d6a3a01d7c26255a0ddd61cd5320d2e8063d4f5a32aad",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/commerce/detail.rs": {
       "status": "unproved",
-      "sha256": "b051ded0bb24a3b90eea52868ea67cb7755dd9911270d874733e0a22ee60e600",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "5b1bc973d78d2881639a75d9bf3c4e8ea8806669eea66981b72d3b39af65aa12",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/commerce/fulfillment.rs": {
       "status": "reviewed-binding",
@@ -868,13 +877,13 @@
     },
     "src/commerce/mod.rs": {
       "status": "unproved",
-      "sha256": "35b7f08e4012aaabca1dc61f2d15150285935919283ededb5e4f2336604a5bfd",
-      "review": "Reviewed all changed Rust, append-only schemas, build/extraction and Lean inputs: lease hooks bind new/reused connections and reset on release; strict runtime rejects owner/bypass/TRUNCATE and preserves app-schema ownership; two-replica non-owner PostgreSQL tests deny forged foreign writes, enforce operator quotas and parent-stage daily usage, release persisted allocation quantities once despite corrupted snapshots, and distinguish commit from rollback invalidation. Money retains legacy EUR rounding with explicit scale and original Shopware differential; receipt-backed state admission is monotonic with late capture/refund. Async SQL/provider code remains unproved. Rust 113 tests, staging/app/automation/settings and strict checkout/CRM/tenant regressions passed; 274 frontend tests and production build passed."
+      "sha256": "735b2c2b8914ed5f65bdc4e9be82eeec5db9c7ecc7ef5d9a60422464dc087cda",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/commerce/order_fields.rs": {
       "status": "unproved",
-      "sha256": "2edc88a4ede9e5b60120fc38f6e1a731046ba1f4e2d1547b29addb6761272886",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "df1b2068b3cc0b25eb5b6504e18c2ec12312a67d833f28aaf44bbcb21a2c3cf8",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/commerce/order_machine.rs": {
       "status": "unproved",
@@ -903,8 +912,8 @@
     },
     "src/commerce/product_edit.rs": {
       "status": "unproved",
-      "sha256": "e39c55107b53260533f67c5c5a93f4d15ae0a8a335ea24a7a2d23455869a865d",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "49ce4f0c6662b341e066eed766f80ec1e3b885adc17f56d61f409cd62c491213",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/commerce/product_fields.rs": {
       "status": "unproved",
@@ -915,6 +924,11 @@
       "status": "unproved",
       "sha256": "bafdb5f5ff9d30da116f4ed4c324a5309cb193da9a5a922a91749e6a56efb808",
       "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+    },
+    "src/commerce/product_metadata.rs": {
+      "status": "unproved",
+      "sha256": "03737e5cc47df810365238de1e10ed22fbc8ac59d0024bb90696308daf4557b6",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/commerce/review_moderation.rs": {
       "status": "unproved",
@@ -938,13 +952,13 @@
     },
     "src/commerce/settings_mutation.rs": {
       "status": "unproved",
-      "sha256": "7c993857fd26bcc9ec3020c67331bc5bf106654e6391cba2c51d8650081fec00",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "79a975026a388792d810e12d2f4788a483f563fe493704b28fdb8a35cb15dc06",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/commerce/settings_patch.rs": {
       "status": "unproved",
-      "sha256": "71b6d82299b0a59746c0a214be84ea27ac6e7194e2e185337a843425da7d21eb",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "bd08f09540f9df3b9d896d90e9461948011286d351c69d17a23e45989f80c838",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/commerce/settings_release.rs": {
       "status": "unproved",
@@ -963,13 +977,13 @@
     },
     "src/commerce/settings_validation.rs": {
       "status": "unproved",
-      "sha256": "c637b2f6d4723bb4034f1337955731da64a0595d6fbbd8d750eb2c49a9609a9c",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "0c26345453c56afe7f974767203966ae75ac1d6de6ff80f16a1b07375daecf96",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/commerce/tax.rs": {
       "status": "unproved",
-      "sha256": "95f5ffd526cbf3f2bd79173ce5c91f07b646476908bc7a1fa3cb6bc7e407003a",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "fc9b00ac4e4f927190cf3694fef40e1675ae7e95682598d9736c195109ffd68a",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/commerce/tax_context.rs": {
       "status": "unproved",
@@ -983,8 +997,8 @@
     },
     "src/commerce/types.rs": {
       "status": "unproved",
-      "sha256": "01871c5ad4bb85c2f15ef1f897da8331269d3a24b3c746223cafc46c0a95b5fe",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "f8c3a0d93a9cfd12bdb4cdf7ed3477aca2671f986daa45db86a6447fe0e97ba0",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/concierge.rs": {
       "status": "unproved",
@@ -1078,13 +1092,13 @@
     },
     "src/connectors/templates.rs": {
       "status": "unproved",
-      "sha256": "479d2213f396c3d17d558009877e4f94fbc5cafb48aa358ecd8a26b01cb014a9",
-      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+      "sha256": "e41ba1f63a4b53d2e47ff1a61a2652ce67f47947d65b6176b75cfd547939e2f2",
+      "review": "Reviewed multi-currency selected-context adapters, rational minor-unit prices, immutable order/payment scales, row-locked creation-bounded price jobs and exact order mail snapshots; API/tenant/restart/protocol fixtures passed."
     },
     "src/connectors/tests.rs": {
       "status": "unproved",
-      "sha256": "8a0c835bc0c8a183e1e9fcc298baec0c54e22d7f2f0918588e163c081bc66457",
-      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+      "sha256": "88084ef3557d398d1b27a69f1bff1780c521b1bf1b8da6f6e9ec95cb6fa01701",
+      "review": "Reviewed multi-currency selected-context adapters, rational minor-unit prices, immutable order/payment scales, row-locked creation-bounded price jobs and exact order mail snapshots; API/tenant/restart/protocol fixtures passed."
     },
     "src/connectors/worker.rs": {
       "status": "reviewed-binding",
@@ -1095,6 +1109,46 @@
       "status": "unproved",
       "sha256": "84eab6aca05be4f8760007d4457904765664b60ba8244575e4632633a36495c9",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/currencies/capabilities.rs": {
+      "status": "unproved",
+      "sha256": "58aae1442b554227f3146c7f08aa42b2eb6fe5089d33fd8d877dd056a847dcb6",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+    },
+    "src/currencies/jobs.rs": {
+      "status": "unproved",
+      "sha256": "6a5b7caed0709c6a724bb7e2142d271e65e7ce2a56e48b8915ec8f8aeeb3ccb2",
+      "review": "Reviewed native multi-currency admission, explicit minor-unit FX, immutable provider/order precision, exact multilingual email snapshots and creation-bounded row-locked price batches; local currency, provider, tenant and worker-restart behavior verified."
+    },
+    "src/currencies/mod.rs": {
+      "status": "unproved",
+      "sha256": "f1bf8fb0ef46c3d215f6329cbdbb100b7a8f9d52fa524ef5e3ed2068129c820d",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+    },
+    "src/currencies/model.rs": {
+      "status": "reviewed-binding",
+      "sha256": "ca589796d77574ce47cd94c302e344ae7aaf59cadde831bb7c7aba5e89de889d",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+    },
+    "src/currencies/pricing.rs": {
+      "status": "unproved",
+      "sha256": "8723c5a47b6b9360b299e9f091ef1052e5ba0b364d9d364e2b93ed0663a73c29",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+    },
+    "src/currencies/rates.rs": {
+      "status": "unproved",
+      "sha256": "0978da93510ae771df7a901e4105b0ff2b2cc6dcdb648fa095b8b2720821d0c4",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+    },
+    "src/currencies/routes.rs": {
+      "status": "unproved",
+      "sha256": "688529de835d71ab61da0ce3bbc97803f8fa6689925677cfeb1bc6ead36c300c",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+    },
+    "src/currencies/tests.rs": {
+      "status": "unproved",
+      "sha256": "87f80e37bbc4c967f7a3c78278ae21f9a65293b766ab4a70f3b4086ddbd4d9e9",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/customer.rs": {
       "status": "unproved",
@@ -1258,8 +1312,8 @@
     },
     "src/knowledge/search.rs": {
       "status": "unproved",
-      "sha256": "361fb8826ef04ccbe3e1c1464d32ad0bc342340a0d53964c94c3fd562d9dd313",
-      "review": "Reviewed managed-install variants and append-only legacy vector/relation conversion, SQL knowledge/app visibility joins, durable Qdrant queue with tenant/model/digest hydration and deletion, hostname scope before authentication, personal-only bootstrap and SIGTERM entry routing; verified fresh ordinary PostgreSQL operator/shop creation, real Qdrant isolation/deletion/outage retry, public document scope, legacy count/vector/checksum preservation and negative ledger drift. These SQL/network/hosting adapters remain unproved; verified kernel unchanged."
+      "sha256": "e48c48635dc8255fd19d7d88388f1c7fb8f155dc944f45f8e83edf2be04616d6",
+      "review": "Reviewed final multi-currency consumers, additive ledger precision and tenant job RLS, rational draft/server FX, source-currency-labelled knowledge prices, immutable invoice reporting and exact local adapter/refund evidence. Bounded policy proof only; no full-server certification."
     },
     "src/knowledge/vectors.rs": {
       "status": "unproved",
@@ -1313,13 +1367,13 @@
     },
     "src/localization.rs": {
       "status": "unproved",
-      "sha256": "70a606bc250d3f9880b30e1f08b7da3b9f728630a84e154f40c995a8555dec36",
-      "review": "Reviewed version-checked settings and language reads: atomic UUID stamps and payload/version snapshot, tenant-channel keys, read-only task memoization and unchanged locked checkout resolution; two warmed Rust replicas cover immediate edits, overrides/delete/recreate, no-revision direct SQL, transaction rollback, registry changes, revocation, cold restart and disabled fallback. Weighted eviction, HTTP cache policies and bounded pool overload/recovery are tested; async SQL/cache behavior remains outside Lean proofs."
+      "sha256": "85ae11da3c6b0e91897431a8e05b058f1fa11d0cac5fb13769549bef90665681",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/main.rs": {
       "status": "unproved",
-      "sha256": "babe8faa0ce7b99bf28a1fe6d7653f031371b25a7cff4ff0150b7a795282cf10",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "f184952d5786c86b1a1b85ef1004527eddfefee59bf155ef48cf550a3433bce4",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/marketing/app_flows.rs": {
       "status": "reviewed-binding",
@@ -1353,8 +1407,8 @@
     },
     "src/marketing/facts.rs": {
       "status": "unproved",
-      "sha256": "6a6a87dd21f35bc227005a43a1621b063ba99233feadc814a172a7c5741a978e",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "70468213c6f727de9f2d646574f21fd9c2afc56bb95ec9622b10383c81116e0a",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/marketing/flow_access.rs": {
       "status": "unproved",
@@ -1428,8 +1482,8 @@
     },
     "src/marketing/promotions.rs": {
       "status": "unproved",
-      "sha256": "0241b335066aff8488940b3da92a32622afb55b8f0e2f7ab62113de47822bc22",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "a5b192ac0de0f5e8d18f165d4ac323588eb00f6debe1b33ae36438a1c7e95639",
+      "review": "Reviewed multi-currency selected-context adapters, rational minor-unit prices, immutable order/payment scales, row-locked creation-bounded price jobs and exact order mail snapshots; API/tenant/restart/protocol fixtures passed."
     },
     "src/marketing/routes.rs": {
       "status": "unproved",
@@ -1461,15 +1515,20 @@
       "sha256": "220c9b190697cd8df3238aeeb15c5b3966dc3983e89547995484141dddbd37a9",
       "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
+    "src/mcp/transport.rs": {
+      "status": "unproved",
+      "sha256": "bd06330e7d26a30d051d35681476b64c82a83a0da4a3d5322b594ebdbdc305e2",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+    },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "c431f366f1a76462bbe187cb3a3f431c22e6f8077b69b90ff94a6a7e29013bfa",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "4b8f2cfe7cc33427787eeffa5c7c19a079fba1d37ed18857f67761d368708dd6",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/migrations/schema.rs": {
       "status": "unproved",
-      "sha256": "a94a1815c9069ff5f931f100c606e2fcfa4a4988b2657875a6a0b932b0b7d657",
-      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+      "sha256": "2addefc041e8fa601a40a29d0bba7a860fd7087971f8158ba1114d2e176901a6",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
@@ -1528,8 +1587,8 @@
     },
     "src/operations/receipt_text.rs": {
       "status": "unproved",
-      "sha256": "c3535bbedfad8a5e08624e447561052a8eebe947ebe59764410b778d5d46fc82",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "21027155dadbaa8bc445318dc9fcbd68bb3fcc58df7e3d9259dcb8bb8bd080ea",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/operations/receipts.rs": {
       "status": "unproved",
@@ -1543,8 +1602,8 @@
     },
     "src/order_checkout.rs": {
       "status": "reviewed-binding",
-      "sha256": "49dd73ca994f151c12ef3bc8145dc25c9b3352bce8b6a3f0e9d88d323a0d96eb",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "17ba47b76e4f47069aedfa7d96b60aba35502f8e836e521dd49bb5fa4a5e4fbc",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/order_routes.rs": {
       "status": "unproved",
@@ -1558,8 +1617,8 @@
     },
     "src/payments/accounts.rs": {
       "status": "unproved",
-      "sha256": "97af3583fd21024d2a67a2070b87eece7910179b000b7c9be38e268596139e2c",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "6c70818998b0cbc8200deac680826f6503980679b10345a0d886d410a62c618b",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/payments/app_commands.rs": {
       "status": "unproved",
@@ -1573,8 +1632,8 @@
     },
     "src/payments/generic_receipts.rs": {
       "status": "unproved",
-      "sha256": "c89e698b2c2c046643f469b0704297414064b304474c7e02ed2f0da715de94e5",
-      "review": "Reviewed all changed Rust, append-only schemas, build/extraction and Lean inputs: lease hooks bind new/reused connections and reset on release; strict runtime rejects owner/bypass/TRUNCATE and preserves app-schema ownership; two-replica non-owner PostgreSQL tests deny forged foreign writes, enforce operator quotas and parent-stage daily usage, release persisted allocation quantities once despite corrupted snapshots, and distinguish commit from rollback invalidation. Money retains legacy EUR rounding with explicit scale and original Shopware differential; receipt-backed state admission is monotonic with late capture/refund. Async SQL/provider code remains unproved. Rust 113 tests, staging/app/automation/settings and strict checkout/CRM/tenant regressions passed; 274 frontend tests and production build passed."
+      "sha256": "ec2b93f2c3fd4c264b103fc95d439441dc3e43e2149349f3dcddd35684560299",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/payments/mod.rs": {
       "status": "unproved",
@@ -1588,13 +1647,13 @@
     },
     "src/payments/paypal.rs": {
       "status": "unproved",
-      "sha256": "facd0515a6c486d27c0b52568fcfec8ed302bc98090968c0cbe66a23a3c292b1",
-      "review": "Reviewed checkout quote admission and exact-price Lean equivalence; provider approval creates one durable capture job, scoped return URLs and customer job status. Real SQL review/replay/isolation and local PayPal forged-return, lost-reply, refund, cancellation and restart regressions pass; live providers and Shopware Payments remain unverified."
+      "sha256": "06a5a1b0852c589d38a52acc7a039de733d129939b23c270c866c4a1f5294e61",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/payments/provider.rs": {
       "status": "unproved",
-      "sha256": "cab1b3204e3af771e68726757c57f57d11540ee4244d28e6ec8657421bdcd21b",
-      "review": "Reviewed all changed Rust, append-only schemas, build/extraction and Lean inputs: lease hooks bind new/reused connections and reset on release; strict runtime rejects owner/bypass/TRUNCATE and preserves app-schema ownership; two-replica non-owner PostgreSQL tests deny forged foreign writes, enforce operator quotas and parent-stage daily usage, release persisted allocation quantities once despite corrupted snapshots, and distinguish commit from rollback invalidation. Money retains legacy EUR rounding with explicit scale and original Shopware differential; receipt-backed state admission is monotonic with late capture/refund. Async SQL/provider code remains unproved. Rust 113 tests, staging/app/automation/settings and strict checkout/CRM/tenant regressions passed; 274 frontend tests and production build passed."
+      "sha256": "ba8182ed16dd92574e979bcc217f3ec8a7a806ea4d538f291168278efebe898a",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/payments/provider_webhooks.rs": {
       "status": "unproved",
@@ -1603,18 +1662,18 @@
     },
     "src/payments/receipt_guard.rs": {
       "status": "reviewed-binding",
-      "sha256": "27b3635cffff2fa49002be5cf912ecb4cfc83a9b98ffd81514320c79eb147f54",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "0b7621f6c271c6f39f9270739f9d7fd26a9c4f041dfaa632ce035a2177d61df4",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/payments/registry.rs": {
       "status": "unproved",
-      "sha256": "ba6bf730aa96d0f1fd836fe8ae728beac4216248fd97f102dcd7a74c043db822",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "ef66e22518114a815bdd01ec766e0f272d0d4515b670d0a80c9bfc34991457f0",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/payments/remote.rs": {
       "status": "unproved",
-      "sha256": "8eb5e744e6f66d768f1cc83ff18bdfab50de571ed49ed1228fdd24f9859ad8d9",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "af4b72fd98daa9b47d73c0ae97f3d43357c0a6a482cc414152a816c5631d1b78",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/payments/return_urls.rs": {
       "status": "unproved",
@@ -1623,8 +1682,8 @@
     },
     "src/payments/routes.rs": {
       "status": "unproved",
-      "sha256": "39bfb4cf03a788257d4f875ea770c94c2e4a0fad186a03ac852ff48774a25e7f",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "2d01de802199868f4cfc08649050d5f5018a0418d24472a224199e64993b6491",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/payments/sessions.rs": {
       "status": "unproved",
@@ -1648,8 +1707,8 @@
     },
     "src/payments/worker.rs": {
       "status": "unproved",
-      "sha256": "a08e3394ccbe175d8368c81d4d94d421c5be3e56f9bd1ef3cec6a9632fe6e1f9",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "d1f085a41a415794d44c8f3cec32e120b5e69bf0d5c711c02bda50923a626600",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/performance/admission.rs": {
       "status": "unproved",
@@ -1773,8 +1832,8 @@
     },
     "src/routes.rs": {
       "status": "unproved",
-      "sha256": "fd4f06d503c7bd86c6e46237c007f6b58b17edb5c6be1065fb161ccbf73faace",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "6a94bee169f2c238a7e54480dec7c91a4d27cf46f36ed56b38bdc09695b7bf18",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/rule_comparison.rs": {
       "status": "reviewed-binding",
@@ -1846,10 +1905,15 @@
       "sha256": "61ce47f7d31b21e46a664d5c5155aebb813b886ef9054245d6fe32db140cef37",
       "review": "Reviewed storefront_pages.rs SKU deep-link HTML admission and existing marketing tenant/channel policy, routes/main registration and auth middleware query scope for public product HTML; frontend identity/slug routing regression tests plus real HTTP cross-host/query/header and inactive-product regressions. No extracted business policy changed."
     },
+    "src/studio/revenue.rs": {
+      "status": "unproved",
+      "sha256": "f81bbb13192c4e863edd616e0b89c0d1f14af0b50f44b54d2a3f0be1b417048a",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+    },
     "src/studio.rs": {
       "status": "unproved",
-      "sha256": "e4d8f0de5c4f036045c22a394a788af4b1c4bde22b9698b4ad027cc180186283",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "c563efa8f991f4784aa6592279c625d3fe82b124c73e06619216f6541d5e2631",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/tenant_scope.rs": {
       "status": "unproved",
@@ -1883,13 +1947,13 @@
     },
     "src/ucp.rs": {
       "status": "unproved",
-      "sha256": "2d948ffa3a456cf18660ec1c209b57f96d6dc30b3f5fa7d01a8cbd8cb03533bc",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "97a1da963280a78c009716631b0f521946e16b4404f8f9d2c8bf3ac6634164a1",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "4a84810d0834904489994ec1c2458c1565c4362336efe1e075aef9237a3347cb",
-      "review": "Reviewed exact operator-owned private origin admission, forbidden URL credentials/query/fragment, redirect-disabled shared client and three URL parser regressions; extracted transport predicate adds exact admission and unsafe/unapproved denial claims with two mutations. Network parsing, DNS, TLS and PostgreSQL/provider adapters remain unproved."
+      "sha256": "d4889d87e0ef47ea21f617076b2a1f0b3f75f49566916b8f504a61298288e2fb",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "src/workers.rs": {
       "status": "unproved",
@@ -2150,9 +2214,17 @@
       "sha256": "ba24587e85ec86f9e9bc50aeb8356be9498dcf7f313c60559301ba54367098f2",
       "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
     },
+    "migrations/050-currency-price-jobs.sql": {
+      "sha256": "3e0fd1976b597ef7937f7d67792defb64c064c50ec38d2ae496d67ef82fa65f2",
+      "review": "Reviewed native multi-currency admission, explicit minor-unit FX, immutable provider/order precision, exact multilingual email snapshots and creation-bounded row-locked price batches; local currency, provider, tenant and worker-restart behavior verified."
+    },
+    "migrations/051-multi-currency-ledger.sql": {
+      "sha256": "353741f2bee549bea4842f007d006f6a14c663185cf96115220dd4ff228c29c2",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+    },
     "proof/Commerce/Claims.lean": {
-      "sha256": "45650673e549f97d4ee3e2347f1fc47937c922a9fbd9a29b322d6426ddaeb01f",
-      "review": "Reviewed exact operator-owned private origin admission, forbidden URL credentials/query/fragment, redirect-disabled shared client and three URL parser regressions; extracted transport predicate adds exact admission and unsafe/unapproved denial claims with two mutations. Network parsing, DNS, TLS and PostgreSQL/provider adapters remain unproved."
+      "sha256": "edf5e9ecb5799ce0ef121689cd1fa8be99c382e0e8327df38f9fec6577de474a",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -2187,8 +2259,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "5c9d793b7349e0d1fb496c04dce60c2793cca393e7b1862954c3200dcf01be05",
-      "review": "Reviewed exact operator-owned private origin admission, forbidden URL credentials/query/fragment, redirect-disabled shared client and three URL parser regressions; extracted transport predicate adds exact admission and unsafe/unapproved denial claims with two mutations. Network parsing, DNS, TLS and PostgreSQL/provider adapters remain unproved."
+      "sha256": "3938d9dcf215557abfdb608793446735ca62b1b2b7826e7cdd20fbac5eb5cf77",
+      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
     "scripts/formal/registry.py": {
       "sha256": "3b554637854314cffd45018b3e5adc568d24e0ab145d7d6fa75350d2f80f5900",

@@ -5,6 +5,8 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("currency_context_admissible","enabled &&","true &&"),
+ ("currency_context_admissible","&& fresh","&& true"),
  ("app_service_transport_admissible","clean_url &&","true &&"),
  ("app_service_transport_admissible","loopback || private_origin","true"),
  ("notification_retry_admissible","rate_limited &&","true &&"),

@@ -36,6 +36,7 @@ pub(crate) use selection::*;
 
 mod product_create;
 mod product_edit;
+mod product_metadata;
 pub(crate) use product_create::create_product;
 pub(crate) use product_edit::*;
 

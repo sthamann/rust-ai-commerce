@@ -71,6 +71,7 @@ pub(crate) async fn onboarding(a: &App, h: &HeaderMap, id: &str, input: &Value) 
             order: "".into(),
             amount: 0,
             currency: "EUR".into(),
+            currency_scale: 2,
             state: "".into(),
             provider_order: None,
             capture: None,

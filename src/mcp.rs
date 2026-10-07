@@ -1,7 +1,12 @@
 //! Typed MCP schemas and JSON-RPC transport.
 use crate::*;
+mod transport;
+use transport::invoke_transport;
 
 pub(crate) fn tool_schema(name: &str) -> Value {
+    if let Some(schema) = currencies::schema(name) {
+        return schema;
+    }
     if let Some(schema) = legal::schema(name) {
         return schema;
     }
@@ -216,6 +221,9 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
             let mut tools = CAPABILITIES
                 .iter()
                 .filter(|(n, _)| {
+                    if let Some(permission) = currencies::permission(n) {
+                        return merchant(&a, &h).is_ok() && auth::permit(&h, permission).is_ok();
+                    }
                     if let Some(permission) = legal::permission(n) {
                         return merchant(&a, &h).is_ok() && auth::permit(&h, permission).is_ok();
                     }
@@ -293,26 +301,4 @@ pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>
         Err(e) => json!({"jsonrpc":"2.0","id":id,"error":{"code":-32601,"message":e.1}}),
     })
     .into_response()
-}
-
-/// MCP opt-out is independent of a merchant's selected internal planning tools.
-async fn invoke_transport(a: &App, h: &HeaderMap, name: &str, input: &Value) -> Result<Value> {
-    if let Some(app) = name.strip_prefix("app.") {
-        let (id, action) = app
-            .split_once('.')
-            .ok_or(bad("Invalid app capability name"))?;
-        return apps::invoke_mcp(a, h, id, action, input).await;
-    }
-    if [
-        "catalog.search",
-        "catalog.detail",
-        "checkout.options",
-        "cart.quote",
-    ]
-    .contains(&name)
-    {
-        performance::read_scope(invoke(a, h, name, input)).await
-    } else {
-        invoke(a, h, name, input).await
-    }
 }

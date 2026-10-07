@@ -35,6 +35,24 @@ pub(crate) fn tax_products(
                 rate
             };
             let factor = (1. + rate / 100.) / (1. + p.tax_rate / 100.);
+            if factor != 1.
+                && let Some(prices) = p.extra["currencyPrices"].as_object_mut()
+            {
+                for (code, entry) in prices {
+                    if let Some(d) = s.currencies.definitions.iter().find(|d| d.code == *code) {
+                        for key in ["price", "listPrice", "regulationPrice"] {
+                            if let Some(text) = entry[key].as_str() {
+                                let value = text
+                                    .parse::<f64>()
+                                    .map_err(|_| bad("Invalid fixed currency price"))?;
+                                entry[key] = json!(
+                                    currencies::amount(value * factor, code, d.scale)?.decimal()
+                                );
+                            }
+                        }
+                    }
+                }
+            }
             p.price *= factor;
             p.list_price = p.list_price.map(|v| v * factor);
             p.regulation_price = p.regulation_price.map(|v| v * factor);

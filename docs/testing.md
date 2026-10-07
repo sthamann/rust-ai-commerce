@@ -6,7 +6,7 @@ at 100%, and neither coverage nor the Lean subset proves the entire system bug-f
 
 ## Source architecture
 
-- Rust: 284 source modules (production foundation inventory, 6 October 2026), each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
+- Rust: 326 source modules (multi-currency inventory, 7 October 2026), each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
 - Frontend: separate `admin/`, `storefront/`, `platform/` and `shared/` ownership. Views/controllers and styles are limited to 400 lines; locale data has a documented 700-line allowance. Runtime cycles, unresolved local imports, crossing application boundaries, missing folder contracts and undocumented source files fail CI.
 - Bundled Email/GA4/Gmail/Slack services are Rust modules in `src/connectors/`; independent app examples and browser SDKs remain under `extensions/`. Python test tooling lives under `scripts/` and the previous connector is an archived comparison oracle in `reference/`. [The generated inventory](module-inventory.md) covers runtime/tooling sources and is checked for drift.
 - Studio workspaces load lazily. Root application routing is isolated in `frontend/src/application/`; error boundaries keep workspace failures inside the current view and provide reload recovery for rejected cached module imports. The removed `CommerceManager` had no call site and duplicated old operational UI. Order state management remains in `admin/orders/OrderWorkflow.tsx`; product review moderation lives in `admin/catalog/ReviewModeration.tsx`.
@@ -32,7 +32,7 @@ npm --prefix frontend run localization
 npm --prefix frontend run test:coverage
 python3 scripts/formal.py
 python3 scripts/formal/mutations.py
-python3 scripts/verify_integration.py
+QDRANT_URL=http://127.0.0.1:16333 python3 scripts/verify_integration.py
 ```
 
 Local integration creates and removes its own uniquely named synthetic database;
@@ -43,11 +43,20 @@ already-disposable database. Failures remain failures, and child processes stop
 before database cleanup. SIGINT flushes optional Rust coverage profiles.
 
 [scripts/testing/suites.json](../scripts/testing/suites.json) is the single
-registry for 36 HTTP suites, eleven local provider/connector/integration suites, four browser
+registry for 37 HTTP suites, eleven local provider/connector/integration suites, four browser
 contracts and three verification-tool commands.
 The local server uses an offline model URL; live model checks are separate, opt-in
 checks. Credentials, payments, mail and Slack are exercised against loopback
 protocol fixtures. Passing these does not demonstrate a real provider account.
+
+The `currencies` suite exercises channel restrictions, Store API/MCP/UCP agreement,
+fixed and converted prices, shipping/coupon conversion, stale checkout reviews,
+immutable orders and grouped revenue. `payment_providers` tests create/capture/refund
+with EUR/USD, zero-decimal JPY and three-decimal KWD against a local protocol fixture.
+`production_foundations` denies cross-tenant currency-job SQL access using non-owner
+roles, then restarts a worker after its first 100-product batch and verifies completion,
+exact midpoint rounding and exclusion of products created after the job snapshot.
+See [multi-currency commerce](currencies.md) for the configuration and proof boundaries.
 
 The original-PHP comparisons and reflected automation catalog checks are:
 

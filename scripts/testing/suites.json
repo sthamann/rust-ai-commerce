@@ -35,7 +35,8 @@
     "knowledge_workspace",
     "crm_history",
     "tenant_isolation",
-    "legal_privacy"
+    "legal_privacy",
+    "currencies"
   ],
   "providers": [
     "email_tests",

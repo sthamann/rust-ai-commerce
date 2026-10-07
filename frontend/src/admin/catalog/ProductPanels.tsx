@@ -1,4 +1,6 @@
 /** Native commerce, media, translated SEO/specifications and category panels for one editable product. */
+import ProductCurrencyPrices from "./ProductCurrencyPrices";
+import type { RequestFn } from "../shell/studio-types";
 import { useCatalogText, type CatalogWord } from "./catalog-i18n";
 import type { Category, ProductDraft } from "./catalog-model";
 import PairFields from "./PairFields";
@@ -11,12 +13,14 @@ import {
 } from "./ProductLocalizedContent";
 import ProductTextFields from "./ProductTextFields";
 export default function ProductPanels({
+  request,
   tab,
   draft,
   lang,
   categories,
   onChange,
 }: {
+  request: RequestFn;
   tab: string;
   draft: ProductDraft;
   lang: string;
@@ -105,6 +109,11 @@ export default function ProductPanels({
           {field("regulationPrice", "regulationPrice", true)}
         </div>
         <ReferencePriceFields draft={draft} onChange={onChange} />
+        <ProductCurrencyPrices
+          request={request}
+          draft={draft}
+          onChange={onChange}
+        />
         <h2>{c("tiers")}</h2>
         {d.commerce.advancedPrices.map((tier: any, i: number) => (
           <div className="catalog-form-grid catalog-tier" key={i}>

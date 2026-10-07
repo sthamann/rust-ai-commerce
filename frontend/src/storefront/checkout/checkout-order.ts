@@ -16,9 +16,12 @@ export async function placeCheckoutOrder(
         "x-commerce-locale": locale,
         "x-tenant": tenant,
         "sw-sales-channel-id": channel,
+        "x-commerce-currency": cart.price.currency ?? "EUR",
         "x-commerce-cart-revision": String(cart.revision),
         "x-commerce-total-minor": String(
-          Math.round(cart.price.totalPrice * 100),
+          Math.round(
+            cart.price.totalPrice * 10 ** (cart.price.currencyScale ?? 2),
+          ),
         ),
         ...(new URLSearchParams(location.search).get("sandbox") === "1"
           ? {

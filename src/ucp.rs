@@ -32,7 +32,8 @@ pub(crate) fn ucp_items(v: &Value) -> Result<Vec<Item>> {
     Ok(items)
 }
 pub(crate) fn ucp_document(c: &StoredCart, q: &Value) -> Value {
-    let minor = |v: &Value| (v.as_f64().unwrap_or(0.) * 100.).round() as i64;
+    let factor = 10_f64.powi(q["price"]["currencyScale"].as_i64().unwrap_or(2) as i32);
+    let minor = |v: &Value| (v.as_f64().unwrap_or(0.) * factor).round() as i64;
     let status = if c.status == "completed" {
         "completed"
     } else if c.status == "cancelled" {
@@ -49,7 +50,7 @@ pub(crate) fn ucp_document(c: &StoredCart, q: &Value) -> Value {
     } else {
         "incomplete"
     };
-    let mut doc = json!({"ucp":ucp_meta(),"id":c.id,"status":status,"currency":"EUR","line_items":q["lineItems"].as_array().unwrap().iter().map(|l|json!({"id":l["id"],"item":{"id":l["referencedId"],"title":l["label"],"price":minor(&l["price"]["unitPrice"])},"quantity":l["quantity"],"totals":[{"type":"subtotal","amount":minor(&l["price"]["totalPrice"])},{"type":"total","amount":minor(&l["price"]["totalPrice"])}]})).collect::<Vec<_>>(),"totals":[{"type":"subtotal","amount":minor(&q["price"]["positionPrice"])},{"type":"total","amount":minor(&q["price"]["totalPrice"])}],"messages":if c.status=="open"{json!([{"type":"info","code":"requires_buyer_input","content":"Continue in merchant checkout. Payment is simulated in this prototype."}])}else{json!([])},"links":[],"payment":{"instruments":[]},"continue_url":"http://127.0.0.1:8787/","order":c.data.order.as_ref().map(|o|json!({"id":o["id"],"permalink_url":format!("http://127.0.0.1:8787/#order/{}",o["id"].as_str().unwrap())}))});
+    let mut doc = json!({"ucp":ucp_meta(),"id":c.id,"status":status,"currency":q["price"]["currency"],"line_items":q["lineItems"].as_array().unwrap().iter().map(|l|json!({"id":l["id"],"item":{"id":l["referencedId"],"title":l["label"],"price":minor(&l["price"]["unitPrice"])},"quantity":l["quantity"],"totals":[{"type":"subtotal","amount":minor(&l["price"]["totalPrice"])},{"type":"total","amount":minor(&l["price"]["totalPrice"])}]})).collect::<Vec<_>>(),"totals":[{"type":"subtotal","amount":minor(&q["price"]["positionPrice"])},{"type":"total","amount":minor(&q["price"]["totalPrice"])}],"messages":if c.status=="open"{json!([{"type":"info","code":"requires_buyer_input","content":"Continue in merchant checkout. Payment is simulated in this prototype."}])}else{json!([])},"links":[],"payment":{"instruments":[]},"continue_url":"http://127.0.0.1:8787/","order":c.data.order.as_ref().map(|o|json!({"id":o["id"],"permalink_url":format!("http://127.0.0.1:8787/#order/{}",o["id"].as_str().unwrap())}))});
     if let Some(o) = &c.data.order
         && o["payment"]["provider"] == "paypal"
         && !["captured", "partially_refunded", "refunded"]
@@ -84,6 +85,13 @@ pub(crate) async fn ucp_create(
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let items = ucp_items(&v)?;
+    let mut h = h;
+    if let Some(code) = v["currency"].as_str() {
+        h.insert(
+            "x-commerce-currency",
+            code.parse().map_err(|_| bad("Invalid currency"))?,
+        );
+    }
     let c = new_cart_context(&a, &h, v["session"].as_str().unwrap_or(""), "ucp").await?;
     let mut ch = h.clone();
     ch.insert("sw-context-token", c.token.parse().unwrap());
@@ -113,7 +121,19 @@ pub(crate) async fn ucp_update(
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
-    let c = ucp_load(&a, &h, &id).await?;
+    let mut c = ucp_load(&a, &h, &id).await?;
+    if let Some(code) = v["currency"].as_str()
+        && code != c.data.currency
+    {
+        currencies::invoke(
+            &a,
+            &h,
+            "currency.select",
+            &json!({"currency":code,"revision":c.revision}),
+        )
+        .await?;
+        c = ucp_load(&a, &h, &id).await?;
+    }
     let c = set_cart(
         &a,
         &h,

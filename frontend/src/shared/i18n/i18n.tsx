@@ -52,10 +52,13 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     </LocaleContext.Provider>
   );
 }
+export const CurrencyContext = createContext("EUR");
 export function useLocale() {
+  const currency = useContext(CurrencyContext);
   const { locale, setLocale } = useContext(LocaleContext);
   return {
     locale,
+    currency,
     setLocale,
     t: (key: Key, values: Record<string, string | number> = {}) =>
       Object.entries(values).reduce(
@@ -65,7 +68,7 @@ export function useLocale() {
     money: (n: number) =>
       new Intl.NumberFormat(locale, {
         style: "currency",
-        currency: "EUR",
+        currency,
       }).format(n),
     number: (n: number) => new Intl.NumberFormat(locale).format(n),
     date: (s: string) =>

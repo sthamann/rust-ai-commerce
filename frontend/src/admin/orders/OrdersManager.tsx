@@ -104,7 +104,7 @@ export default function OrdersManager({
                 <strong>
                   {new Intl.NumberFormat(locale, {
                     style: "currency",
-                    currency: "EUR",
+                    currency: row.cart.price.currency ?? "EUR",
                   }).format(row.cart.price.totalPrice)}
                 </strong>
               </button>

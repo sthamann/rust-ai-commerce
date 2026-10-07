@@ -90,7 +90,7 @@ pub(crate) async fn execute(
                 &p.id,
                 environment() == "live",
             )?;
-            let body = json!({"intent":"CAPTURE","purchase_units":[{"reference_id":p.id,"custom_id":p.id,"invoice_id":p.order,"amount":{"currency_code":p.currency,"value":amount_string(p.amount)}}],"payment_source":{"paypal":{"experience_context":{"user_action":"PAY_NOW","return_url":return_url,"cancel_url":cancel_url}}}});
+            let body = json!({"intent":"CAPTURE","purchase_units":[{"reference_id":p.id,"custom_id":p.id,"invoice_id":p.order,"amount":{"currency_code":p.currency,"value":format_amount(p.amount,&p.currency)?}}],"payment_source":{"paypal":{"experience_context":{"user_action":"PAY_NOW","return_url":return_url,"cancel_url":cancel_url}}}});
             wire(
                 a,
                 &p.tenant,
@@ -159,7 +159,7 @@ pub(crate) async fn execute(
                 reqwest::Method::POST,
                 &format!("/v2/payments/captures/{id}/refund"),
                 key,
-                Some(&json!({"amount":{"currency_code":p.currency,"value":amount_string(amount)}})),
+                Some(&json!({"amount":{"currency_code":p.currency,"value":format_amount(amount,&p.currency)?}})),
             )
             .await
         }
@@ -175,7 +175,7 @@ pub(crate) fn validate_order(p: &Attempt, v: &Value) -> Result<()> {
     if u["custom_id"] != p.id
         || u["invoice_id"] != p.order
         || u["amount"]["currency_code"] != p.currency
-        || parse_minor(u["amount"]["value"].as_str().unwrap_or(""))? != p.amount
+        || parse_amount(u["amount"]["value"].as_str().unwrap_or(""), &p.currency)? != p.amount
         || p.provider_order.as_ref().is_some_and(|id| v["id"] != *id)
     {
         return Err(bad("Provider order/amount/currency binding mismatch"));

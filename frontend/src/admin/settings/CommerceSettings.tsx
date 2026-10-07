@@ -1,4 +1,6 @@
 /** One revisioned international settings aggregate: drafts survive navigation between countries, taxes, methods and languages. */
+import CurrencySettings from "./CurrencySettings";
+import { useCurrencyText } from "../../shared/i18n/currency-i18n";
 import EntityHistory from "../../shared/history/EntityHistory";
 import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
 import ContentLanguagePicker from "../../shared/i18n/ContentLanguagePicker";
@@ -40,11 +42,13 @@ export default function CommerceSettings({
   initialChannel = "",
 }: {
   request: RequestFn;
-  area: "taxes" | "countries" | "shipping" | "payment" | "languages";
+  area:
+    "taxes" | "countries" | "shipping" | "payment" | "languages" | "currencies";
   canWrite: boolean;
   onDirty?: (dirty: boolean) => void;
   initialChannel?: string;
 }) {
+  const { c: ct } = useCurrencyText();
   const { i, locale } = useInternationalText();
   const { w } = useWorkspaceText();
   const [channel, setChannel] = useState(initialChannel);
@@ -126,17 +130,19 @@ export default function CommerceSettings({
       <section className="studio-card settings-panel intl-panel">
         <header className="settings-panel-header">
           <div>
-            <h2>{i(area)}</h2>
+            <h2>{area === "currencies" ? ct("title") : i(area)}</h2>
             <p>
-              {i(
-                area === "countries"
-                  ? "countriesHint"
-                  : area === "taxes"
-                    ? "ruleHint"
-                    : area === "languages"
-                      ? "languageHint"
-                      : "methodHint",
-              )}
+              {area === "currencies"
+                ? ct("hint")
+                : i(
+                    area === "countries"
+                      ? "countriesHint"
+                      : area === "taxes"
+                        ? "ruleHint"
+                        : area === "languages"
+                          ? "languageHint"
+                          : "methodHint",
+                  )}
             </p>
           </div>
           <span className="soft-tag">
@@ -218,7 +224,14 @@ export default function CommerceSettings({
               !canWrite || state.busy || (area === "languages" && !!channel)
             }
           >
-            {area === "countries" ? (
+            {area === "currencies" ? (
+              <CurrencySettings
+                {...props}
+                revision={state.value.revision}
+                dirty={state.dirty}
+                reload={state.reload}
+              />
+            ) : area === "countries" ? (
               <CountriesSettings {...props} />
             ) : area === "taxes" ? (
               <TaxSettings {...props} />
