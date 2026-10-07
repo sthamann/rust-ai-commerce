@@ -1,10 +1,10 @@
 # Lean-checked commerce contracts
 
-The prototype runs Lean 4.29.1 proofs for **32 policies used in production
-Rust paths**, with **67 named properties**. This is **not a certificate that the
-entire commerce core is correct or bug-free**. The European-operation review
-contains 293 Rust modules: one extracted policy module, 29 reviewed binding
-modules, one comparison driver and 262 unproved modules. Binding review is not a
+The prototype runs Lean 4.29.1 proofs for **33 policies used in production
+Rust paths**, with **69 named properties**. This is **not a certificate that the
+entire commerce core is correct or bug-free**. The Rust-standard-services review
+contains 314 Rust modules: one extracted policy module, 30 reviewed binding
+modules, one comparison driver and 282 unproved modules. Binding review is not a
 proof of those modules. The [manifest](../proof/manifest.json) and CI artifact are
 the authoritative per-revision inventory.
 
@@ -239,7 +239,15 @@ limits decimal precision, `resource_quota_admissible` admits positive bounded op
 limits, and `payment_transition_admissible` defines the monotonic ledger graph,
 including late capture. `src/money.rs`, `src/platform/quotas.rs` and
 `src/payments/state.rs` are their real consumers. The reviewed manifest now has
-32 policies and 67 named theorems; compiled Rust/Lean comparisons and negative
+33 policies and 69 named theorems; compiled Rust/Lean comparisons and negative
 mutations remain required. These proofs do not cover signed integer parsing,
 floating-point conversion, SQL hooks/transactions, provider evidence, or the whole
 server. [Architecture and executable checks](production-architecture.md).
+
+## Rust notification runtime
+
+`notification_retry_admissible` is extracted from the actual delivery worker: only
+an explicit HTTP 429 rejection before attempt eight permits a provider retry. Exact
+and ambiguous-result properties plus mutations protect this rule. Configuration locks,
+SQL claims/leases, SMTP/TLS, OAuth and external provider evidence remain unproved
+adapters with real integration regressions; the runtime is not wholly Lean-certified.

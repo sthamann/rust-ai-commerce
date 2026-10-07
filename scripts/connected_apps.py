@@ -8,7 +8,7 @@ import base64, copy, json, os, pathlib, socket, sqlite3, subprocess, sys, tempfi
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "extensions/services/connectors"))
+sys.path.insert(0, str(ROOT / "reference/connectors-python"))
 from cryptography.fernet import Fernet
 from server import Connector, Handler
 from store import Store

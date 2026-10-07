@@ -1,0 +1,18 @@
+{
+  "en": {
+    "subject": "Order {orderNumber} confirmed",
+    "text": "Hello {firstName},\nThank you for your order {orderNumber}. Total: {totalPrice} {currency}."
+  },
+  "de": {
+    "subject": "Bestellung {orderNumber} bestätigt",
+    "text": "Hallo {firstName},\nvielen Dank für deine Bestellung {orderNumber}. Gesamtbetrag: {totalPrice} {currency}."
+  },
+  "fr": {
+    "subject": "Commande {orderNumber} confirmée",
+    "text": "Bonjour {firstName},\nmerci pour votre commande {orderNumber}. Total : {totalPrice} {currency}."
+  },
+  "es": {
+    "subject": "Pedido {orderNumber} confirmado",
+    "text": "Hola {firstName},\ngracias por tu pedido {orderNumber}. Total: {totalPrice} {currency}."
+  }
+}

@@ -38,6 +38,7 @@ def evalRequest (j : Json) : Except String Json := do
   | "resource_quota_admissible" => pure (toJson (resource_quota_admissible ((← (args.getObjVal? "limit") >>= Json.getNat?))))
   | "consent_admissible" => pure (toJson (consent_admissible ((← (args.getObjVal? "enabled") >>= Json.getBool?)) ((← (args.getObjVal? "current") >>= Json.getBool?)) ((← (args.getObjVal? "fresh") >>= Json.getBool?)) ((← (args.getObjVal? "chosen") >>= Json.getBool?))))
   | "legal_checkout_admissible" => pure (toJson (legal_checkout_admissible ((← (args.getObjVal? "strict") >>= Json.getBool?)) ((← (args.getObjVal? "current") >>= Json.getBool?)) ((← (args.getObjVal? "accepted") >>= Json.getBool?)) ((← (args.getObjVal? "digital") >>= Json.getBool?)) ((← (args.getObjVal? "immediate") >>= Json.getBool?))))
+  | "notification_retry_admissible" => pure (toJson (notification_retry_admissible ((← (args.getObjVal? "rate_limited") >>= Json.getBool?)) ((← (args.getObjVal? "attempts") >>= Json.getNat?))))
   | _ => throw "Unknown policy"
 
 def main : IO Unit := do

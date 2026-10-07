@@ -31,6 +31,8 @@ import Commerce.Claims
 #print axioms CommerceKernel.legal_checkout_exact
 #print axioms CommerceKernel.manual_payment_exact
 #print axioms CommerceKernel.manual_payment_safe
+#print axioms CommerceKernel.notification_ambiguous_never_retry
+#print axioms CommerceKernel.notification_retry_exact
 #print axioms CommerceKernel.order_edit_exact
 #print axioms CommerceKernel.payment_pending_capture
 #print axioms CommerceKernel.payment_refunded_terminal

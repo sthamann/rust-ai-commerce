@@ -69,3 +69,12 @@ The exact proof boundary and extension procedure are documented in
   denied mutations leave victim state unchanged; UUIDs are not authorization.
 - Run the registered `tenant_isolation` suite. Do not describe foreign keys,
   app-only RLS or selected Lean policies as complete core/SaaS isolation.
+
+## First-party service language boundary
+
+Bundled production commerce/provider services must run in Rust. Keep provider logic
+out of the commerce process and retain the language-neutral app gateway. Durable
+notifications use PostgreSQL tenant quotas, lease fences and explicit ambiguity
+handling. Python is allowed for verification, offline migration and explicitly
+independent example/third-party apps, not as a hidden first-party serving dependency.
+Document and test both the actual consumer and migration path for any runtime port.

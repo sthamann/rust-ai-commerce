@@ -278,7 +278,7 @@ reviewed bindings, not whole-module proofs. See the
 
 | Files | Responsibility |
 |---|---|
-| `extensions/services/connectors/{server,oauth,transport,store,providers}.py` | Independent app runtime, provider OAuth/API, encrypted private state and durable jobs |
+| `src/connectors/{server,oauth,network,store,providers}.rs` | Independent app runtime, provider OAuth/API, encrypted private state and durable jobs |
 | `extensions/apps/{gmail,google-analytics,slack}/manifest.json` | Versioned app API/MCP capabilities and scopes |
 | `src/apps/evidence.rs`, `src/apps/evidence_routes.rs` | Tenant-private incremental imports, retrieval, polling and purge fences |
 | `src/knowledge.rs` | Private PostgreSQL source and product provenance, separated from public graph |

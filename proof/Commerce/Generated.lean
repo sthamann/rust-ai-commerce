@@ -99,4 +99,7 @@ def consent_admissible (enabled : Bool) (current : Bool) (fresh : Bool) (chosen 
 def legal_checkout_admissible (strict : Bool) (current : Bool) (accepted : Bool) (digital : Bool) (immediate : Bool) : Bool :=
   ((!strict) || ((current && accepted) && ((!digital) || immediate)))
 
+def notification_retry_admissible (rate_limited : Bool) (attempts : Nat) : Bool :=
+  (rate_limited && (decide (attempts < 8)))
+
 end CommerceKernel

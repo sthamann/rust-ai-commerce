@@ -1,13 +1,13 @@
 import signal
 #!/usr/bin/env python3
-"""Real SMTP/TLS and provider HTTP fixtures plus Rust/PostgreSQL/MCP/flow consumers. No external mail."""
+"""Archived differential SMTP/TLS fixtures plus actual Rust/PostgreSQL/MCP/flow consumers. No external mail."""
 
 import copy, json, os, pathlib, socket, socketserver, ssl, subprocess, sys, tempfile, threading, time, unittest, urllib.error, urllib.request, urllib.parse, uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from unittest.mock import patch
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "extensions/services/connectors"))
+sys.path.insert(0, str(ROOT / "reference/connectors-python"))
 from cryptography.fernet import Fernet
 from server import Connector, Handler
 import email_config, email_templates, email_delivery
@@ -80,6 +80,7 @@ class SMTP(socketserver.StreamRequestHandler):
                         break
                     lines.append(line)
                 self.server.messages.append((recipients, b"".join(lines)))
+                if getattr(self.server, "drop_after_data", False): return
                 reply("250 Message accepted")
             elif verb == "QUIT":
                 reply("221 Bye")
@@ -118,32 +119,20 @@ class Contracts(unittest.TestCase):
         cls.folder = tempfile.TemporaryDirectory()
         cert = pathlib.Path(cls.folder.name) / "cert.pem"
         key = cert.with_name("key.pem")
-        subprocess.run(
-            [
-                "openssl",
-                "req",
-                "-x509",
-                "-newkey",
-                "rsa:2048",
-                "-nodes",
-                "-keyout",
-                str(key),
-                "-out",
-                str(cert),
-                "-days",
-                "1",
-                "-subj",
-                "/CN=localhost",
-                "-addext",
-                "subjectAltName=DNS:localhost,IP:127.0.0.1",
-            ],
-            check=True,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
+        ca = cert.with_name("ca.pem")
+        ca_key = cert.with_name("ca.key")
+        csr = cert.with_name("leaf.csr")
+        extensions = cert.with_name("leaf.ext")
+        extensions.write_text("subjectAltName=DNS:localhost,IP:127.0.0.1\nbasicConstraints=critical,CA:FALSE\nkeyUsage=critical,digitalSignature,keyEncipherment\nextendedKeyUsage=serverAuth\nsubjectKeyIdentifier=hash\nauthorityKeyIdentifier=keyid,issuer\n")
+        for command in [
+            ["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-keyout", str(ca_key), "-out", str(ca), "-days", "1", "-subj", "/CN=Vendune synthetic CA", "-addext", "basicConstraints=critical,CA:TRUE", "-addext", "keyUsage=critical,keyCertSign,cRLSign"],
+            ["openssl", "req", "-newkey", "rsa:2048", "-nodes", "-keyout", str(key), "-out", str(csr), "-subj", "/CN=localhost"],
+            ["openssl", "x509", "-req", "-in", str(csr), "-CA", str(ca), "-CAkey", str(ca_key), "-CAcreateserial", "-out", str(cert), "-days", "1", "-extfile", str(extensions)],
+        ]:
+            subprocess.run(command, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         cls.context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         cls.context.load_cert_chain(cert, key)
-        cls.client_context = ssl.create_default_context(cafile=str(cert))
+        cls.client_context = ssl.create_default_context(cafile=str(ca))
         cls.smtp = socketserver.ThreadingTCPServer(("127.0.0.1", 0), SMTP)
         cls.smtp.daemon_threads = True
         cls.smtp.context = cls.context
@@ -418,18 +407,10 @@ class Contracts(unittest.TestCase):
     def test_rust_api_mcp_permissions_checkout_and_real_order_flow(self):
         if not os.getenv("DATABASE_URL"):
             self.skipTest("DATABASE_URL required for real Rust/PostgreSQL path")
-        service = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
-        service.connector = self.connector
-        thread = threading.Thread(target=service.serve_forever, daemon=True)
-        thread.start()
-        self.addCleanup(service.server_close)
-        self.addCleanup(service.shutdown)
-        stop = threading.Event()
-        worker = threading.Thread(
-            target=self.connector.loop, args=("email", stop), daemon=True
-        )
-        worker.start()
-        self.addCleanup(lambda: (stop.set(), worker.join(10)))
+        from types import SimpleNamespace
+        with socket.socket() as probe:
+            probe.bind(("127.0.0.1", 0))
+            service = SimpleNamespace(server_port=probe.getsockname()[1])
         with socket.socket() as sock:
             sock.bind(("127.0.0.1", 0))
             port = sock.getsockname()[1]
@@ -498,6 +479,23 @@ class Contracts(unittest.TestCase):
                 break
             except OSError:
                 time.sleep(0.1)
+        # The actual standard service is Rust/PostgreSQL, not the archived Python oracle.
+        service_env = {**env, **dict(self.env.in_dict), "CONNECTOR_DATABASE_URL": db_url,
+                       "CONNECTOR_PORT": str(service.server_port)}
+        service_env.pop("CONNECTOR_DATABASE", None)
+        mail_log = open(self.temp.name + "/rust-mail.log", "w")
+        self.addCleanup(mail_log.close)
+        mail_service = subprocess.Popen([str(ROOT / "target/debug/connectors")], cwd=ROOT,
+                                       env=service_env, stdout=mail_log, stderr=mail_log)
+        self.addCleanup(lambda: (mail_service.send_signal(signal.SIGINT), mail_service.wait(timeout=70)))
+        for _ in range(100):
+            try:
+                http("http://127.0.0.1:" + str(service.server_port) + "/health")
+                break
+            except OSError:
+                time.sleep(0.1)
+        else:
+            raise AssertionError("Rust connector did not start")
         suffix = uuid.uuid4().hex[:12]
         user = api(
             "/api/auth/register",

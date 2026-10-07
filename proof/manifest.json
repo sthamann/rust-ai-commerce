@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "32 extracted production policies; surrounding modules remain unproved",
+  "claim": "33 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -298,6 +298,15 @@
       ],
       "theorems": [
         "legal_checkout_exact"
+      ]
+    },
+    "notification_retry_admissible": {
+      "bindings": [
+        "src/connectors/worker.rs"
+      ],
+      "theorems": [
+        "notification_retry_exact",
+        "notification_ambiguous_never_retry"
       ]
     }
   },
@@ -627,6 +636,11 @@
       "sha256": "8d5994b0922f61cd5c209a7598f377fa664709704c4ea911bc3b7e33958d3d8e",
       "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
+    "src/bin/connectors.rs": {
+      "status": "unproved",
+      "sha256": "5fc665bd6dfe89d8eb37f2ffb95f965cc9e9f69a83d5a2e792fd5e9724fc3fd6",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
     "src/bin/context.rs": {
       "status": "unproved",
       "sha256": "78d283a37b639a820e611587baf609987c14281721fd05b3581ef04e0b5cbb22",
@@ -654,8 +668,8 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "a4c72073bab4d7fbbd8b8d61770f7d06ba66d0bac8dcfa0b74bf579a3a920816",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "907276837dc48ec64cffba20510332129eacb3e39c804f384e28997ed266ddec",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
@@ -962,6 +976,106 @@
       "sha256": "5bf14c0f163e2c1959417fa93a6ac8e91ccaeea063541b44b078bc6b03fa74e0",
       "review": "Reviewed Vendune crate rename: all production references use the same renamed library, with no business decision changes. HTTP/MCP identity and startup log use Vendune; authentication identities and immutable migrations remain unchanged. Cargo manifest/lock, runner generation and Docker executable paths agree. 80 Rust tests, 122 UI tests, Clippy and frontend build passed. Database volume compatibility and current-brand SVG checks are separately tested; no new correctness or performance claim."
     },
+    "src/connectors/actions.rs": {
+      "status": "unproved",
+      "sha256": "4fc1675610edaa858bfc5b03e721a2ff7c1295c2478034ff5f28bcbc208c2a2b",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/config.rs": {
+      "status": "unproved",
+      "sha256": "9ae03776d5b23af8caed7588a626c15d4d2366d484d5b63bd6ded7810625181d",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/crypto.rs": {
+      "status": "unproved",
+      "sha256": "4f5a4545098f27397af3b69290819b1828f852261d9a0a3bef26011095b9a624",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/email.rs": {
+      "status": "unproved",
+      "sha256": "6ea8e334254b0fbbed08e9460ef7bb8db9e8599bdbe21735f18a9bb63cb10f85",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/error.rs": {
+      "status": "unproved",
+      "sha256": "2975e5c728e508c966607676788e9d4e66fb06485f09c0769ccf70385daac821",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/exports.rs": {
+      "status": "unproved",
+      "sha256": "d900c1f18d411cdd04a82f253d70905469c464943d2d871509903e5a46c2f558",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/legacy.rs": {
+      "status": "unproved",
+      "sha256": "d968d2471b477fda3daa19ccb7422b61076257c405e3b9e1ee524312de2ccc6c",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/mod.rs": {
+      "status": "unproved",
+      "sha256": "a020519b1049f2e5411d0b0d0f040631373e6090f2d4b611a7084a1e151978aa",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/network.rs": {
+      "status": "unproved",
+      "sha256": "ab1711899efd6ac0b101b4373992372fe8ca8206de18175a53ad4942d692ebdd",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/oauth.rs": {
+      "status": "unproved",
+      "sha256": "fd627edf2e26a128d82e1628dbfb047159fd3b2305505c005962ec1351276d9e",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/providers/analytics.rs": {
+      "status": "unproved",
+      "sha256": "d4ee48aa8006b1ff98d1f1d7ff7b42ed27e1fcf38ecb4738c0c40dea642415ba",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/providers/gmail.rs": {
+      "status": "unproved",
+      "sha256": "f738292cc1e4fae6eda0c7e4c7df7040e3def293fcbd42cbd53b51308538220e",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/providers.rs": {
+      "status": "unproved",
+      "sha256": "5b5d41547875372043bc1cc48d43a546e4f047527c21afb361a4a3c7fbd063e5",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/queue.rs": {
+      "status": "unproved",
+      "sha256": "f8bcf7292dfb16beecd489e759d5a95e7d3dd5710357f5cdc1b95285e28b6313",
+      "review": "Reviewed Rust standard services and their actual app/flow consumers: encrypted PostgreSQL config/queue, lease fences, UTC quotas, bounded fair admission, SMTP TLS and explicit-only retry. SQL/provider adapters remain unproved; Rust fixtures cover two processes and offline migration."
+    },
+    "src/connectors/server.rs": {
+      "status": "unproved",
+      "sha256": "c4fd1831d7ee251ab4be987f5db8e22f6cb8aab1e09e325f1314cffb7ea4be69",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/smtp.rs": {
+      "status": "unproved",
+      "sha256": "b7e8178f283a8bee8533d313596097963d48cb664ea23713f5cd6a12aefb284b",
+      "review": "Reviewed Rust standard services and their actual app/flow consumers: encrypted PostgreSQL config/queue, lease fences, UTC quotas, bounded fair admission, SMTP TLS and explicit-only retry. SQL/provider adapters remain unproved; Rust fixtures cover two processes and offline migration."
+    },
+    "src/connectors/store.rs": {
+      "status": "unproved",
+      "sha256": "868146c2637f7d3579a113d89df2817313b0898d0efd73507beb0a0eb01c0c73",
+      "review": "Reviewed Rust standard services and their actual app/flow consumers: encrypted PostgreSQL config/queue, lease fences, UTC quotas, bounded fair admission, SMTP TLS and explicit-only retry. SQL/provider adapters remain unproved; Rust fixtures cover two processes and offline migration."
+    },
+    "src/connectors/templates.rs": {
+      "status": "unproved",
+      "sha256": "479d2213f396c3d17d558009877e4f94fbc5cafb48aa358ecd8a26b01cb014a9",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/tests.rs": {
+      "status": "unproved",
+      "sha256": "8a0c835bc0c8a183e1e9fcc298baec0c54e22d7f2f0918588e163c081bc66457",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
+    "src/connectors/worker.rs": {
+      "status": "reviewed-binding",
+      "sha256": "93df63a7df8be020004d2de307729c75bb1c71dd24c7f17fbc88d77d66a929c5",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
     "src/context.rs": {
       "status": "unproved",
       "sha256": "84eab6aca05be4f8760007d4457904765664b60ba8244575e4632633a36495c9",
@@ -1179,8 +1293,8 @@
     },
     "src/lib.rs": {
       "status": "unproved",
-      "sha256": "98a0a5bfb90ea2e12b6aa9cd1639993606dd1284f11bcfd73984c1109a1ab91f",
-      "review": "Reviewed all changed Rust, append-only schemas, build/extraction and Lean inputs: lease hooks bind new/reused connections and reset on release; strict runtime rejects owner/bypass/TRUNCATE and preserves app-schema ownership; two-replica non-owner PostgreSQL tests deny forged foreign writes, enforce operator quotas and parent-stage daily usage, release persisted allocation quantities once despite corrupted snapshots, and distinguish commit from rollback invalidation. Money retains legacy EUR rounding with explicit scale and original Shopware differential; receipt-backed state admission is monotonic with late capture/refund. Async SQL/provider code remains unproved. Rust 113 tests, staging/app/automation/settings and strict checkout/CRM/tenant regressions passed; 274 frontend tests and production build passed."
+      "sha256": "7be4d638636fbb821dfa1afc878936dc493620f3222ac0007672da9b76d5ebd6",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
     },
     "src/localization.rs": {
       "status": "unproved",
@@ -1339,8 +1453,8 @@
     },
     "src/migrations/schema.rs": {
       "status": "unproved",
-      "sha256": "a2067dfcaa9b8efb10f1ee6c9f325709b77ee97923ebc06ab30bf81431128659",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "a94a1815c9069ff5f931f100c606e2fcfa4a4988b2657875a6a0b932b0b7d657",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
@@ -1759,8 +1873,8 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "7b89601b2b8008000f6d1184039e5c4c84c465561a7aa4bcff201f6c7e32c252",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "a9f15b4413bb4a1325a6ebcce0654b131f40f2449f8b63f42ac58ee5a7ce357e",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
     },
     "src/workers.rs": {
       "status": "unproved",
@@ -1770,16 +1884,16 @@
   },
   "inputs": {
     ".github/workflows/verify.yml": {
-      "sha256": "ce14eaca901e70bf1a050299325a0814125612a7b85bb9f4a5c791f8f1d58bb2",
-      "review": "Reviewed the CI OS-label retry after GitHub cancelled queued jobs because no hosted runner acquired them: verify.yml pins supported ubuntu-24.04 instead of the changing ubuntu-latest alias. All test commands, coverage floors, permissions, dependency/proof setup and required verify check remain unchanged. The documentation workflow uses the same fixed image; no successful GitHub run or capacity fix is claimed from this metadata change."
+      "sha256": "950e37d634e24fa4362139d5ad301049e908ae42dc81dfc16d6fc19007b76824",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
     },
     "Cargo.lock": {
-      "sha256": "63ea7828df4cb620cbbea65d384f1c4321d44a1b3a32fed65671f2fe706d5fe8",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "c5445f8246076b27827ce9c7570009358ebf5add558ee0c7517572f987ddd55e",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
     },
     "Cargo.toml": {
-      "sha256": "b5ab1d764def118f63e06044e11d53ac8cbbe2a15c2e25bbcbebd0fd3660dffa",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "0e85393c4e6b1aaf19ce385bacd4110369f35f311cefa43a317d13deaf8fe638",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
     },
     "fixtures/app-studio-schema.json": {
       "sha256": "28b0ba7f2d800f73cc2cc46dfb55897c4c405c5b6208b5c3bdf965d82d6f29f0",
@@ -2017,9 +2131,13 @@
       "sha256": "2a7b2785c88355aa0d8dc0274da42edd105b93167f3338adbd68d2bbdf7af242",
       "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
     },
+    "migrations/049-rust-connectors.sql": {
+      "sha256": "ba24587e85ec86f9e9bc50aeb8356be9498dcf7f313c60559301ba54367098f2",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+    },
     "proof/Commerce/Claims.lean": {
-      "sha256": "e53ead16252f41ed7c175484e51dfef20fd621dde881ca0c2aaed0e9a3c23f10",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "f4a9d20907100f449b5870eb6b0f3efd132dbedc206d63959a9a8e1428b37983",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -2054,8 +2172,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "b54f443c1583293689aff4845dccb2f032d3e4d5c68d529773b3bd88e61c591d",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "8792d1a514376be6df1bc4e75232d1ecde92a1bb876dd39dbec1571b6c5ae52f",
+      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
     },
     "scripts/formal/registry.py": {
       "sha256": "3b554637854314cffd45018b3e5adc568d24e0ab145d7d6fa75350d2f80f5900",

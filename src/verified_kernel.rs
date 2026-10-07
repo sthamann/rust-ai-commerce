@@ -192,3 +192,8 @@ pub fn legal_checkout_admissible(
 ) -> bool {
     !strict || current && accepted && (!digital || immediate)
 }
+
+/// A notification may be retried only after an explicit rate-limit rejection and before attempt eight.
+pub fn notification_retry_admissible(rate_limited: bool, attempts: u64) -> bool {
+    rate_limited && attempts < 8
+}

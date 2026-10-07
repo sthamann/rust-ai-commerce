@@ -207,6 +207,12 @@ fn eval(j: &Value) -> Result<Value, String> {
             args["digital"].as_bool().ok_or("Invalid digital")?,
             args["immediate"].as_bool().ok_or("Invalid immediate")?
         ))),
+        Some("notification_retry_admissible") => Ok(json!(notification_retry_admissible(
+            args["rate_limited"]
+                .as_bool()
+                .ok_or("Invalid rate_limited")?,
+            args["attempts"].as_u64().ok_or("Invalid attempts")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

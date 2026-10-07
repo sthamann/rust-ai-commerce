@@ -39,6 +39,7 @@
   ],
   "providers": [
     "email_tests",
+    "rust_connectors",
     "connector_store_tests",
     "connected_apps",
     "image_jobs",
