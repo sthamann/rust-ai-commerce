@@ -69,7 +69,8 @@ services:
       context: ..
       dockerfile: extensions/services/connectors/Dockerfile
     environment:
-      CONNECTOR_DATABASE_URL: ${DATABASE_URL:?shared PostgreSQL URL required}
+      CONNECTOR_DATABASE_URL: ${CONNECTOR_DATABASE_URL:-${DATABASE_URL:?shared PostgreSQL URL required}}
+      DB_RLS_REQUIRED: ${DB_RLS_REQUIRED:-false}
       CONNECTOR_SECRET_KEY: ${CONNECTOR_SECRET_KEY:-}
       CONNECTOR_GATEWAY_TOKEN: ${CONNECTOR_GATEWAY_TOKEN:-}
       CONNECTOR_PUBLIC_URL: https://${COMMERCE_DOMAIN}/connected-apps

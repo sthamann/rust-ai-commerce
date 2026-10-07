@@ -1048,8 +1048,8 @@
     },
     "src/connectors/server.rs": {
       "status": "unproved",
-      "sha256": "c4fd1831d7ee251ab4be987f5db8e22f6cb8aab1e09e325f1314cffb7ea4be69",
-      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+      "sha256": "5edcae08b7e7ba72a2e906f3ba3fbfb931311870a11ab5f6b3f49ebfade8522b",
+      "review": "Reviewed connector strict non-owner runtime startup audit, dedicated least-privilege PostgreSQL service role, forced RLS and UTC transaction context. Two actual non-bypass replicas, tenant ownership, provider/flow/MCP protocols and migration are regression-tested; SQL and providers remain unproved."
     },
     "src/connectors/smtp.rs": {
       "status": "unproved",
@@ -1058,8 +1058,8 @@
     },
     "src/connectors/store.rs": {
       "status": "unproved",
-      "sha256": "868146c2637f7d3579a113d89df2817313b0898d0efd73507beb0a0eb01c0c73",
-      "review": "Reviewed Rust standard services and their actual app/flow consumers: encrypted PostgreSQL config/queue, lease fences, UTC quotas, bounded fair admission, SMTP TLS and explicit-only retry. SQL/provider adapters remain unproved; Rust fixtures cover two processes and offline migration."
+      "sha256": "945bce137963fbf7a342ff5f889fd21e20c3cc1255c139e481e243686143369c",
+      "review": "Reviewed connector strict non-owner runtime startup audit, dedicated least-privilege PostgreSQL service role, forced RLS and UTC transaction context. Two actual non-bypass replicas, tenant ownership, provider/flow/MCP protocols and migration are regression-tested; SQL and providers remain unproved."
     },
     "src/connectors/templates.rs": {
       "status": "unproved",

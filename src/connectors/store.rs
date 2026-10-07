@@ -9,6 +9,18 @@ pub struct Store {
 }
 pub type Tx<'a> = Transaction<'a, Postgres>;
 impl Store {
+    pub async fn verify_runtime(&self) -> Result<()> {
+        if env::var("DB_RLS_REQUIRED").as_deref() != Ok("true") {
+            return Ok(());
+        }
+        let unsafe_role: bool = sqlx::query_scalar("SELECT r.rolsuper OR r.rolbypassrls OR EXISTS(SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname LIKE 'connector_%' AND c.relkind='r' AND (pg_has_role(current_user,c.relowner,'MEMBER') OR has_table_privilege(current_user,c.oid,'TRUNCATE'))) FROM pg_roles r WHERE r.rolname=current_user").fetch_one(&self.pool).await?;
+        checked(
+            !unsafe_role,
+            "Connector runtime must not own tables, truncate or bypass RLS",
+        )?;
+        let unprotected: i64 = sqlx::query_scalar("SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname LIKE 'connector_%' AND c.relkind='r' AND (NOT c.relrowsecurity OR NOT c.relforcerowsecurity)").fetch_one(&self.pool).await?;
+        checked(unprotected == 0, "Connector tables require forced RLS")
+    }
     pub async fn tx(&self, tenant: &str) -> Result<Tx<'_>> {
         let mut tx = self.pool.begin().await?;
         sqlx::query("SELECT set_config('rac.tenant',$1,true),set_config('rac.system','off',true),set_config('TimeZone','UTC',true)")

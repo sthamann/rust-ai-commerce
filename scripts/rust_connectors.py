@@ -50,7 +50,7 @@ class Wire(BaseHTTPRequestHandler):
 
 with tempfile.TemporaryDirectory(prefix='vendune-rust-connectors-') as directory:
  Contracts.setUpClass()
- services=[];logs=[];core=None;provider=ThreadingHTTPServer(('127.0.0.1',0),Wire);provider.calls=[]
+ services=[];logs=[];core=None;runtime_role=None;provider=ThreadingHTTPServer(('127.0.0.1',0),Wire);provider.calls=[]
  threading.Thread(target=provider.serve_forever,daemon=True).start()
  try:
   gateway='fixture-gateway-'+uuid.uuid4().hex;key=base64.urlsafe_b64encode(bytes([7])*32).decode();p1,p2=port(),port();base='http://127.0.0.1:'+str(port());origin='http://127.0.0.1:'+str(provider.server_port)
@@ -58,6 +58,15 @@ with tempfile.TemporaryDirectory(prefix='vendune-rust-connectors-') as directory
   env={**os.environ,'BIND_ADDR':base.removeprefix('http://'),'APP_SERVICES':json.dumps(mappings),'PROCESS_ROLE':'all'}
   log=open(directory+'/core.log','w');logs.append(log);core=serve(env,base,log)
   ce={**env,'CONNECTOR_GATEWAY_TOKEN':gateway,'CONNECTOR_SECRET_KEY':key,'CONNECTOR_DATABASE_URL':env['DATABASE_URL'],'CONNECTOR_PUBLIC_URL':f'http://127.0.0.1:{p1}','GOOGLE_CLIENT_ID':'synthetic-google','GOOGLE_CLIENT_SECRET':'synthetic-secret','SLACK_CLIENT_ID':'synthetic-slack','SLACK_CLIENT_SECRET':'synthetic-secret','CONNECTOR_TEST_ENDPOINTS':json.dumps({n:origin+('/token' if n=='google_token' else '/oauth.v2.access' if n=='slack_token' else '/global' if n=='sendgrid' else '/eu' if n=='sendgrid_eu' else '') for n in ('resend','sendgrid','sendgrid_eu','google_token','gmail','analytics','slack','slack_token')}),'CONNECTOR_TENANT_DAILY':'20','EMAIL_TEST_SMTP':'1','EMAIL_TLS_CA_FILE':Contracts.folder.name+'/ca.pem'}
+  unsafe=subprocess.run([str(ROOT/'target/debug/connectors'),'--import-legacy'],input=json.dumps({'format':1,'configs':[],'jobs':[],'sources':[],'changes':[]}),text=True,env={**ce,'DB_RLS_REQUIRED':'true'},capture_output=True)
+  assert unsafe.returncode!=0
+  runtime_role='connector_runtime_'+uuid.uuid4().hex[:10];password=uuid.uuid4().hex
+  sql(f"CREATE ROLE {runtime_role} LOGIN NOSUPERUSER NOBYPASSRLS PASSWORD '{password}'; GRANT USAGE ON SCHEMA public TO {runtime_role}; GRANT SELECT ON tenants,commerce_migrations TO {runtime_role}; GRANT SELECT,INSERT,UPDATE,DELETE ON connector_config,connector_limits,connector_jobs,connector_oauth,connector_sources,connector_changes TO {runtime_role}; GRANT USAGE,SELECT,UPDATE ON SEQUENCE connector_changes_seq_seq TO {runtime_role};")
+  db=urllib.parse.urlsplit(env['DATABASE_URL']);ce['CONNECTOR_DATABASE_URL']=urllib.parse.urlunsplit(db._replace(netloc=f'{runtime_role}:{password}@{db.hostname}:{db.port}'));ce['DB_RLS_REQUIRED']='true'
+  sql(f'GRANT TRUNCATE ON connector_jobs TO {runtime_role};')
+  unsafe=subprocess.run([str(ROOT/'target/debug/connectors'),'--import-legacy'],input=json.dumps({'format':1,'configs':[],'jobs':[],'sources':[],'changes':[]}),text=True,env=ce,capture_output=True)
+  assert unsafe.returncode!=0
+  sql(f'REVOKE TRUNCATE ON connector_jobs FROM {runtime_role};')
   for p in (p1,p2):
    log=open(directory+f'/service-{p}.log','w');logs.append(log)
    process=subprocess.Popen([str(ROOT/'target/debug/connectors')],env={**ce,'CONNECTOR_PORT':str(p)},stdout=log,stderr=log);services.append(process)
@@ -189,6 +198,7 @@ with tempfile.TemporaryDirectory(prefix='vendune-rust-connectors-') as directory
    if process.poll() is None:process.send_signal(signal.SIGINT)
   for process in services:process.wait(timeout=70)
   if core is not None:stop(core)
+  if runtime_role:sql(f'DROP OWNED BY {runtime_role}; DROP ROLE {runtime_role};')
   provider.shutdown();provider.server_close()
   Contracts.tearDownClass()
   for log in logs:log.close()

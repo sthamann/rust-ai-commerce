@@ -174,6 +174,7 @@ pub async fn run() -> Result<()> {
     .await?;
     drop(tx);
     checked(ready, "Run commerce migration 049 first")?;
+    store.verify_runtime().await?;
     if env::args().any(|s| s == "--import-legacy") {
         return super::legacy::import(&store).await;
     }

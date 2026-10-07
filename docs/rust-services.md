@@ -6,7 +6,10 @@ connectors`), not provider logic embedded in checkout handlers. Both services us
 PostgreSQL; connector private records are encrypted with AES-256-GCM, bound to tenant
 and app, and protected by forced RLS. The shared gateway alone supplies tenant identity.
 The public UI never receives gateway/provider keys. Run an ordinary database role with
-`NOSUPERUSER NOBYPASSRLS`; database administrators still hold trusted system authority.
+`NOSUPERUSER NOBYPASSRLS` and `DB_RLS_REQUIRED=true`; startup then rejects table ownership,
+owner membership, TRUNCATE privilege and unprotected connector tables. Database administrators
+still hold trusted system authority. Local development can use the schema owner with this
+strict switch disabled; that is not a production RLS configuration.
 
 ```mermaid
 flowchart LR
@@ -77,6 +80,13 @@ An accepted external mail cannot be recalled. The service drains active work on 
 4. Back up the database **and** encryption key. `/health` checks database reachability
    without exposing tokens, configuration or customer content.
 
+For production, provision a dedicated connector login (no superuser/bypass/owner
+membership). Grant schema usage; SELECT on `tenants`/`commerce_migrations`;
+SELECT/INSERT/UPDATE/DELETE on the six `connector_*` tables; and USAGE/SELECT/UPDATE
+on `connector_changes_seq_seq`. Set its URL as `CONNECTOR_DATABASE_URL` and enable
+`DB_RLS_REQUIRED=true`. Trusted workers still use transaction-local system scope;
+ordinary tenant actions use tenant scope. The gateway key is therefore server-only authority.
+
 For a pre-existing SQLite connector: **stop its worker first**, preserve an encrypted
 SQLite backup and the original Fernet key, build both binaries, then run:
 
@@ -120,7 +130,8 @@ follow the Rust rule and use the documented gateway, tenant ownership and durabl
   header injection, invalid types and localized rendering.
 - `scripts/rust_connectors.py` starts two real Rust services against PostgreSQL and local
   provider fixtures: raced idempotency, quotas, leases, ambiguity, OAuth callbacks,
-  Gmail/GA4/Slack, bounded source exports and non-superuser RLS.
+  Gmail/GA4/Slack, knowledge/MCP ingestion, bounded source exports and non-owner/non-bypass
+  service instances, plus strict unsafe-role rejection and noisy-neighbor admission.
 - `scripts/email_tests.py` preserves the old reference comparisons and uses the actual
   Rust checkout → outbox → Flow Builder → Rust service → SMTP path, including consumer receipts.
 - SMTP STARTTLS/TLS, HTTP wire formats, stale configuration and offline state migration
