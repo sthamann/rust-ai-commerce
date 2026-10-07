@@ -1,7 +1,7 @@
 # Lean-checked commerce contracts
 
-The prototype runs Lean 4.29.1 proofs for **33 policies used in production
-Rust paths**, with **69 named properties**. This is **not a certificate that the
+The prototype runs Lean 4.29.1 proofs for **34 policies used in production
+Rust paths**, with **72 named properties**. This is **not a certificate that the
 entire commerce core is correct or bug-free**. The Rust-standard-services review
 contains 314 Rust modules: one extracted policy module, 30 reviewed binding
 modules, one comparison driver and 282 unproved modules. Binding review is not a
@@ -105,7 +105,7 @@ The existing **Verify prototype / verify** job now also:
    verification workflow also require an explicit recorded review after changes.
 3. Builds proofs with the pinned Lean toolchain and rechecks compiled declarations
    using bundled `leanchecker`.
-4. Audits all 67 required theorems' transitive axioms. Only Lean's standard
+4. Audits all 72 required theorems' transitive axioms. Only Lean's standard
    `propext`, `Quot.sound` and `Classical.choice` foundations are allowed. `sorry`,
    `admit`, custom axioms, `native_decide` and missing theorem audits fail.
 5. Executes compiled Rust and Lean functions on **5,879** identical inputs:
@@ -239,7 +239,7 @@ limits decimal precision, `resource_quota_admissible` admits positive bounded op
 limits, and `payment_transition_admissible` defines the monotonic ledger graph,
 including late capture. `src/money.rs`, `src/platform/quotas.rs` and
 `src/payments/state.rs` are their real consumers. The reviewed manifest now has
-33 policies and 69 named theorems; compiled Rust/Lean comparisons and negative
+34 policies and 72 named theorems; compiled Rust/Lean comparisons and negative
 mutations remain required. These proofs do not cover signed integer parsing,
 floating-point conversion, SQL hooks/transactions, provider evidence, or the whole
 server. [Architecture and executable checks](production-architecture.md).
@@ -251,3 +251,18 @@ an explicit HTTP 429 rejection before attempt eight permits a provider retry. Ex
 and ambiguous-result properties plus mutations protect this rule. Configuration locks,
 SQL claims/leases, SMTP/TLS, OAuth and external provider evidence remain unproved
 adapters with real integration regressions; the runtime is not wholly Lean-certified.
+
+## Private app transport admission (2026-10-07)
+
+The production app gateway consumes `app_service_transport_admissible`. Three
+named properties establish the exact decision, rejection of an unapproved private
+HTTP origin and rejection of URLs with unsafe components. The URL adapter compares
+scheme, host and port against an operator-owned allowlist; real URL cases reject
+lookalikes, alternate ports, credentials, queries and fragments. HTTP redirects
+remain disabled in the shared client. Mutation checks reject dropping the clean-URL
+guard or admitting every private destination.
+
+These properties prove the extracted Boolean decision. URL parsing, DNS, hosting
+network isolation, HTTP/TLS execution and service authentication remain reviewed
+and tested adapter boundaries, not Lean proofs. See [Rust services](rust-services.md)
+for the private hosting configuration.
