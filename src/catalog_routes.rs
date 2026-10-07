@@ -33,7 +33,12 @@ pub(crate) async fn catalog_page(
         categories::admit(&a, &h, id).await?;
     }
     criteria.channel_id = marketing::channel_id(&h).into();
-    criteria.product_ids = marketing::catalog_scope(&a, &h).await?;
+    let scope = marketing::catalog_scope(&a, &h).await?;
+    criteria.product_ids = match (criteria.product_ids.take(), scope) {
+        (Some(ids), Some(scope)) => Some(ids.into_iter().filter(|id| scope.contains(id)).collect()),
+        (Some(ids), None) => Some(ids),
+        (None, scope) => scope,
+    };
     let page = product_page(&a, &t, &chain, &criteria).await?;
     let ps = &page.products;
     let mut data = vec![];

@@ -747,8 +747,8 @@
     },
     "src/catalog_routes.rs": {
       "status": "unproved",
-      "sha256": "85a827b24d54db33a6e4392da4bbb914a430f3afeccd0226059174ce8f3b0624",
-      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+      "sha256": "05d1a73ddf538ed443837e42e316f61d9d4d52e0937afdf4c93402905106058e",
+      "review": "Reviewed currency admission and shared bounded catalog resolver for approved recommendations, with sales-channel intersection and immutable checkout/provider/email money; tenant, currency and worker restart tests protect financial boundaries."
     },
     "src/categories/admin.rs": {
       "status": "unproved",
@@ -797,8 +797,8 @@
     },
     "src/cognition/recommendations.rs": {
       "status": "unproved",
-      "sha256": "2b51758d64616a7aab5349580f20709d6edeb971dead7c64fd17443d34031551",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "25e02b0eeb939c91c83b5cd41e5cd27a7884d52a32acf7c30e0228c01ede0f5a",
+      "review": "Reviewed currency admission and shared bounded catalog resolver for approved recommendations, with sales-channel intersection and immutable checkout/provider/email money; tenant, currency and worker restart tests protect financial boundaries."
     },
     "src/cognition/routes.rs": {
       "status": "unproved",

@@ -58,6 +58,7 @@ export function useLocale() {
   const { locale, setLocale } = useContext(LocaleContext);
   return {
     locale,
+    currency,
     setLocale,
     t: (key: Key, values: Record<string, string | number> = {}) =>
       Object.entries(values).reduce(

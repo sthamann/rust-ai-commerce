@@ -31,6 +31,8 @@ validated server-side; sending a different header cannot enable a disabled curre
 
 The storefront selector requotes an open cart, including taxes, shipping, coupons
 and payment availability. Its remembered choice is scoped to shop and channel.
+Merchant-approved product recommendations reuse the same bounded catalog price
+path, react to currency changes and filter products by the active sales channel.
 
 The exchange-rate base and a stored amount's source currency are different facts.
 Changing the base renormalizes rates; it does not relabel an existing EUR 100 price

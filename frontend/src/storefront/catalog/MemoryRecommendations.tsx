@@ -8,7 +8,7 @@ export default function MemoryRecommendations({
 }: {
   productId: string;
 }) {
-  const { a, money, locale } = useAppText();
+  const { a, money, locale, currency } = useAppText();
   const [products, setProducts] = useState<
     { id: string; name: string; price: number }[]
   >([]);
@@ -26,7 +26,7 @@ export default function MemoryRecommendations({
     return () => {
       active = false;
     };
-  }, [productId, locale]);
+  }, [productId, locale, currency]);
   if (!products.length) return null;
   return (
     <section className="pdp-recommendations">

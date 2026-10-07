@@ -111,6 +111,15 @@ try:
     assert sql("SELECT count(*) FROM products WHERE tenant='atelier' AND id LIKE 'fx_bulk_%' AND id<>'fx_bulk_999' AND extra->'currencyPrices'->'USD'->>'price'='2.68';")=='205'
     assert sql("SELECT extra->'currencyPrices'->'USD' IS NULL FROM products WHERE tenant='atelier' AND id='fx_bulk_999';")=='t'
     print('PASS fixed-price worker resumes a committed 100-product checkpoint after restart; 205 midpoint prices are exact and post-snapshot products excluded')
+    sql("INSERT INTO knowledge_hypotheses(tenant,id,kind,evidence,state) VALUES('atelier','currency-recommendation','association','{\"left\":\"mug\",\"right\":\"fx_bulk_001\"}','published');")
+    rec = call(one, '/store-api/intelligence/recommendations/mug', h={'x-tenant':'atelier','x-commerce-currency':'USD'})
+    assert rec['currencyContext']['code']=='USD' and len(rec['elements'])==1,rec
+    assert rec['elements'][0]['price']==2.68 and rec['elements'][0]['currency']=='USD',rec
+    channel = {'name':{'en':'Restricted currency recommendations'},'kind':'storefront','active':True,'locales':['en-GB'],'productIds':['mug'],'navigationCategoryId':None}
+    call(one, '/api/automation/channels/fx_restricted', {'revision':0,'data':channel},h,'PUT')
+    rec = call(one, '/store-api/intelligence/recommendations/mug', h={'x-tenant':'atelier','x-commerce-currency':'USD','sw-sales-channel-id':'fx_restricted'})
+    assert rec['elements']==[],rec
+    print('PASS approved recommendations use shared currency prices and cannot leak products hidden by the sales channel')
     print('PASS core SQL denies unknown scope, foreign reads/writes and forged insertion without WHERE protection')
     def read(n):
         t = 'atelier' if n % 2 else 'workshop'
