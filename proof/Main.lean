@@ -39,6 +39,7 @@ def evalRequest (j : Json) : Except String Json := do
   | "consent_admissible" => pure (toJson (consent_admissible ((← (args.getObjVal? "enabled") >>= Json.getBool?)) ((← (args.getObjVal? "current") >>= Json.getBool?)) ((← (args.getObjVal? "fresh") >>= Json.getBool?)) ((← (args.getObjVal? "chosen") >>= Json.getBool?))))
   | "legal_checkout_admissible" => pure (toJson (legal_checkout_admissible ((← (args.getObjVal? "strict") >>= Json.getBool?)) ((← (args.getObjVal? "current") >>= Json.getBool?)) ((← (args.getObjVal? "accepted") >>= Json.getBool?)) ((← (args.getObjVal? "digital") >>= Json.getBool?)) ((← (args.getObjVal? "immediate") >>= Json.getBool?))))
   | "notification_retry_admissible" => pure (toJson (notification_retry_admissible ((← (args.getObjVal? "rate_limited") >>= Json.getBool?)) ((← (args.getObjVal? "attempts") >>= Json.getNat?))))
+  | "app_service_transport_admissible" => pure (toJson (app_service_transport_admissible ((← (args.getObjVal? "clean_url") >>= Json.getBool?)) ((← (args.getObjVal? "https") >>= Json.getBool?)) ((← (args.getObjVal? "http") >>= Json.getBool?)) ((← (args.getObjVal? "loopback") >>= Json.getBool?)) ((← (args.getObjVal? "private_origin") >>= Json.getBool?))))
   | _ => throw "Unknown policy"
 
 def main : IO Unit := do

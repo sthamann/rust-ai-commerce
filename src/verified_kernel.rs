@@ -197,3 +197,14 @@ pub fn legal_checkout_admissible(
 pub fn notification_retry_admissible(rate_limited: bool, attempts: u64) -> bool {
     rate_limited && attempts < 8
 }
+
+/// Private HTTP requires an exact operator-approved origin; unsafe URL parts are always denied.
+pub fn app_service_transport_admissible(
+    clean_url: bool,
+    https: bool,
+    http: bool,
+    loopback: bool,
+    private_origin: bool,
+) -> bool {
+    clean_url && (https || http && (loopback || private_origin))
+}

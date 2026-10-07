@@ -87,6 +87,22 @@ on `connector_changes_seq_seq`. Set its URL as `CONNECTOR_DATABASE_URL` and enab
 `DB_RLS_REQUIRED=true`. Trusted workers still use transaction-local system scope;
 ordinary tenant actions use tenant scope. The gateway key is therefore server-only authority.
 
+### Private hosted networking
+
+For Northflank, keep connector port 8797 private and configure the core with
+`APP_SERVICE_PRIVATE_ORIGINS=http://vendune-connectors:8797`. Each operator-owned
+`APP_SERVICES` entry then uses `http://vendune-connectors:8797/APP_ID` and the shared
+gateway token. The allowance matches the exact origin, including its port; it does
+not permit arbitrary HTTP endpoints, URL credentials, query strings or fragments.
+The shared HTTP client disables redirects. HTTPS remains the default outside this
+explicitly trusted private network. Keep database TLS enabled independently.
+
+Northflank's runtime encryption key must use **padded** URL-safe Base64 encoding
+(44 characters for 32 bytes), as required by the connector's decoder. Inject it as
+a runtime variable, not a build argument or an unparsed `.env` file. Email credentials
+are configured through the app's `configure` action and encrypted in PostgreSQL.
+Configure test mode first; changing hosting does not authorize sending test emails.
+
 For a pre-existing SQLite connector: **stop its worker first**, preserve an encrypted
 SQLite backup and the original Fernet key, build both binaries, then run:
 

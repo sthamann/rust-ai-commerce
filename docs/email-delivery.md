@@ -82,8 +82,17 @@ Northflank service has its SMTP configuration in a runtime secret file and has
 been restarted. A single signup-code request through the public Experience page
 was confirmed `Sent` and `Delivered` by Brevo at 08:43 CEST that day. Inbox
 placement and completed onboarding were not part of that email-only check.
-This does not establish deployment of the independent public
-Rust connector or successful checkout/flow notification delivery.
+The independent `vendune-connectors` Rust service is also deployed on Northflank
+with a private port, a restricted PostgreSQL role and forced tenant RLS on its six
+connector tables. Its health endpoint and rejection of unauthenticated calls were
+checked in the hosting network. Brevo credentials are encrypted in the test shop's
+connector configuration; test mode is enabled and automatic notifications are off.
+A synthetic queue check does not establish real checkout/flow email delivery.
+
+The core reaches this private service through an operator-owned `APP_SERVICES`
+mapping and the exact origin allowlist described in [Rust services](rust-services.md).
+No connector URL, gateway token or SMTP password is supplied by storefront clients.
+Other shops retain disabled defaults until their operator configures delivery.
 
 ## API, apps and MCP
 

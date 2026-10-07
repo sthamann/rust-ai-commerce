@@ -275,4 +275,13 @@ theorem notification_retry_exact (limited : Bool) (attempts : Nat) :
   simp [notification_retry_admissible]
 theorem notification_ambiguous_never_retry (attempts : Nat) :
     notification_retry_admissible false attempts = false := by simp [notification_retry_admissible]
+/-- All and only clean HTTPS or explicitly admitted HTTP transports pass. -/
+theorem app_service_transport_exact (clean secure plain loopback approved : Bool) :
+    app_service_transport_admissible clean secure plain loopback approved = true ↔
+    clean = true ∧ (secure = true ∨ plain = true ∧ (loopback = true ∨ approved = true)) := by
+  cases clean <;> cases secure <;> cases plain <;> cases loopback <;> cases approved <;> simp [app_service_transport_admissible]
+theorem app_service_transport_unapproved_denied :
+    app_service_transport_admissible true false true false false = false := by rfl
+theorem app_service_transport_unsafe_denied (secure plain loopback approved : Bool) :
+    app_service_transport_admissible false secure plain loopback approved = false := by rfl
 end CommerceKernel
