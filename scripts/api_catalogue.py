@@ -5,6 +5,8 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 rows={}
 for file in sorted((ROOT/'src').rglob('*.rs')):
+ # Independently deployed app services are not core API endpoints.
+ if 'connectors' in file.relative_to(ROOT).parts:continue
  text=file.read_text()
  for match in re.finditer(r'\.route\(\s*"([^"\n]+)"\s*,',text):
   start=match.end();depth=1;quoted=False;escaped=False;end=start

@@ -5,6 +5,8 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("notification_retry_admissible","rate_limited &&","true &&"),
+ ("notification_retry_admissible","attempts < 8","true"),
  ("consent_admissible","current &&","true &&"),
  ("consent_admissible","fresh &&","true &&"),
  ("consent_admissible","&& chosen","&& true"),

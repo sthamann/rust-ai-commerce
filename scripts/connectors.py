@@ -7,27 +7,18 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 RUNTIME = ROOT / ".run"
 STATE = RUNTIME / "connector-env.json"
 PID = RUNTIME / "connector.pid"
-SERVER = ROOT / "extensions/services/connectors/server.py"
+SERVER = ROOT / "target/debug/connectors"
 
-# The local launcher also works on managed Python installations without global pip.
-venv_python = RUNTIME / "connectors-venv/bin/python"
-if (
-    venv_python.exists()
-    and pathlib.Path(sys.prefix).resolve() != venv_python.parent.parent.resolve()
-):
-    os.execv(str(venv_python), [str(venv_python), *sys.argv])
 
 
 def configuration():
-    from cryptography.fernet import Fernet
-    import secrets
+    import secrets, base64
 
     RUNTIME.mkdir(exist_ok=True)
     if not STATE.exists():
         values = {
-            "CONNECTOR_SECRET_KEY": Fernet.generate_key().decode(),
+            "CONNECTOR_SECRET_KEY": base64.urlsafe_b64encode(secrets.token_bytes(32)).decode(),
             "CONNECTOR_GATEWAY_TOKEN": secrets.token_hex(32),
-            "CONNECTOR_DATABASE": str(RUNTIME / "connector-state.sqlite"),
             "CONNECTOR_PUBLIC_URL": "http://127.0.0.1:8797",
             "CONNECTOR_PORT": "8797",
         }
@@ -57,12 +48,13 @@ def owned():
     command = subprocess.run(
         ["ps", "-p", str(pid), "-o", "command="], capture_output=True, text=True
     ).stdout
-    return pid if str(SERVER) in command else None
+    legacy_server = ROOT / "extensions/services/connectors/server.py"
+    return pid if str(SERVER) in command or str(legacy_server) in command else None
 
 
 def start():
     if owned():
-        print("Connector app service is already running")
+        print("Owned connector is running; stop it before a legacy migration or runtime upgrade")
         return
     values = configuration()
     operator = {}
@@ -71,18 +63,22 @@ def start():
             ["/bin/bash", "-c", "set -a; source .env; env -0"], cwd=ROOT
         )
         operator = dict(x.decode().split("=", 1) for x in raw.split(b"\0") if b"=" in x)
+    subprocess.run(["cargo", "build", "--locked", "--bin", "connectors"], cwd=ROOT, check=True)
     env = {
         **os.environ,
         **values,
         **{
             k: v
             for k, v in operator.items()
-            if k.startswith(("GOOGLE_CLIENT_", "SLACK_CLIENT_", "EMAIL_SMTP_"))
+            if k.startswith(("GOOGLE_CLIENT_", "SLACK_CLIENT_", "EMAIL_SMTP_", "EMAIL_TLS_", "CONNECTOR_TENANT_", "CONNECTOR_WORKERS_", "CONNECTOR_DATABASE_URL", "DATABASE_URL"))
         },
     }
+    legacy = pathlib.Path(values.get("CONNECTOR_DATABASE", RUNTIME / "connector-state.sqlite"))
+    if legacy.exists() and legacy.stat().st_size and not (RUNTIME / "connector-migrated").exists():
+        raise RuntimeError("Legacy SQLite exists: stop the old service, run scripts/migrate_connector_state.py, and retain its backup")
     log = open(RUNTIME / "connectors.log", "a")
     p = subprocess.Popen(
-        [sys.executable, str(SERVER)],
+        [str(SERVER)],
         cwd=ROOT,
         env=env,
         stdout=log,
@@ -90,9 +86,13 @@ def start():
         start_new_session=True,
     )
     PID.write_text(str(p.pid))
-    time.sleep(0.3)
-    if p.poll() is not None:
-        raise RuntimeError("Connector startup failed; inspect .run/connectors.log")
+    for _ in range(100):
+        if p.poll() is not None: raise RuntimeError("Connector startup failed; inspect .run/connectors.log")
+        try:
+            urllib.request.urlopen("http://127.0.0.1:" + values["CONNECTOR_PORT"] + "/health", timeout=1).close()
+            break
+        except OSError: time.sleep(0.1)
+    else: raise RuntimeError("Connector health check timed out")
     print("Connector app service ready on loopback port " + values["CONNECTOR_PORT"])
 
 

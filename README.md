@@ -249,7 +249,7 @@ bounded fuel/memory and no network/filesystem access.
 | Evidence | What it establishes |
 | --- | --- |
 | **7,000 original-PHP comparisons** | Bounded pricing, context, shipping-tax, rule and comparison behavior against reviewed Shopware sources. [Parity matrix](docs/shopware-parity.md). |
-| **32 extracted production policies · 67 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
+| **33 extracted production policies · 69 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
 | **1,000,000 products + 1,000,000 translations** | Dated local commerce workloads with retained raw measurements and failures; not production capacity or a Shopware speed ratio. [Benchmarks](docs/benchmarks.md). |
 | **Continuous verification** | Source ownership, localization, Rust/frontend checks, real PostgreSQL integration, original PHP comparisons and Lean/mutation gates. [CI](https://github.com/sthamann/vendune/actions) · [Testing](docs/testing.md). |
 
@@ -265,6 +265,17 @@ security and intelligence paths](docs/production-architecture.md), including ren
 diagrams, source locations, configuration, tests and the remaining production gaps.
 The ported pricing slice deliberately retains Shopware float behavior; a complete
 integer/decimal pricing migration must continue to pass its original-source gates.
+
+### Rust standard services
+
+Email Delivery, Google Analytics, Gmail and Slack now run in a separate **Rust** service.
+Their configuration, source exports and notification queue use encrypted, tenant-scoped
+PostgreSQL records. Multiple workers share fenced leases and per-shop limits; uncertain
+external results are never blindly retried. API, MCP and Flow Builder contracts remain
+unchanged. External apps still choose their own language.
+
+[Architecture and SQLite migration](docs/rust-services.md) · [Email setup](docs/email-delivery.md) · [Connected apps](docs/connected-apps.md)
+
 
 ## Current boundaries
 

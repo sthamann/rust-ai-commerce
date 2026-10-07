@@ -3,7 +3,7 @@
 These are separate provider apps. The Rust core owns the permission/schema gateway,
 private evidence storage, event outbox and durable flows. Provider OAuth, API calls,
 token refresh, mailbox cursors and delivery jobs live in
-`extensions/services/connectors/`. No Google/Slack SDK or credential belongs in the
+`src/connectors/`. No Google/Slack SDK or credential belongs in the
 Rust commerce domain or browser.
 
 ## Merchant experience
@@ -72,8 +72,7 @@ removes private sources and fences old in-flight exports so they cannot repopula
 Local:
 
 ```sh
-python3 -m venv .run/connectors-venv
-.run/connectors-venv/bin/python -m pip install -r extensions/services/connectors/requirements.txt
+cargo build --locked --bin connectors
 python3 scripts/connectors.py start
 CONNECTED_APPS=1 scripts/dev.sh
 ```
@@ -98,16 +97,22 @@ users or the provider's public-app verification as appropriate. Slack uses `chat
 Google can revoke an application's combined grant, so disconnecting one Google app
 may require reconnecting another integration using the same Google OAuth project.
 
-For deployment, the optional `connected-apps` compose profile builds the independent
-Python service, persists its encrypted SQLite state and serves its callback behind
-Caddy at `https://YOUR_COMMERCE_DOMAIN/connected-apps/oauth/callback`. Supply a Fernet
-key as `CONNECTOR_SECRET_KEY` and a random 32+ character `CONNECTOR_GATEWAY_TOKEN`.
-Set the core's `APP_SERVICES` entries to HTTPS URLs such as
-`https://YOUR_COMMERCE_DOMAIN/connected-apps/gmail`, with that gateway token. Keep existing
-Storyfront/custom app entries. The public frontend on Vercel receives neither OAuth
-credentials nor the gateway token. SQLite is the app's own small durable state store;
-run one connector process per persisted volume. Separate provider queues keep long mailbox imports from blocking Slack notifications. Replicated provider workers require a
-shared transactional job store and coordinated leases; the Rust core can scale separately.
+For deployment, the optional `connected-apps` Compose profile builds the independent
+Rust service. Configuration, OAuth tokens, source exports and jobs use the shared
+PostgreSQL database (migration 049), encrypted with a persistent 32-byte URL-safe
+Base64 `CONNECTOR_SECRET_KEY`. The key format remains compatible with the original
+operator key, but old Fernet ciphertext needs the explicit offline migration below.
+Set a random 32+ character `CONNECTOR_GATEWAY_TOKEN` and `CONNECTOR_DATABASE_URL`.
+Caddy serves the callback at `https://YOUR_COMMERCE_DOMAIN/connected-apps/oauth/callback`.
+Set `APP_SERVICES` entries such as `https://YOUR_COMMERCE_DOMAIN/connected-apps/gmail`
+with that gateway token; preserve Storyfront/custom app entries. Neither provider
+credentials nor the gateway token reach the public frontend. A startup health check
+requires migration 049; deploy migrations before restarting the service.
+
+Multiple instances claim PostgreSQL jobs with row locks, tenant admission and fenced
+leases. Mailbox imports have separate workers from notifications. Expired leases become
+`uncertain`; starting another instance never steals an unexpired lease. See
+[the runtime architecture, quotas and migration](rust-services.md).
 
 The Slack implementation supports the ordinary non-rotating bot token setup. Slack
 rotating refresh tokens, Gmail attachment ingestion, unbounded mailbox backfills and

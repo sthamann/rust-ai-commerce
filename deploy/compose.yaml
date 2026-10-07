@@ -69,6 +69,8 @@ services:
       context: ..
       dockerfile: extensions/services/connectors/Dockerfile
     environment:
+      CONNECTOR_DATABASE_URL: ${CONNECTOR_DATABASE_URL:-${DATABASE_URL:?shared PostgreSQL URL required}}
+      DB_RLS_REQUIRED: ${DB_RLS_REQUIRED:-false}
       CONNECTOR_SECRET_KEY: ${CONNECTOR_SECRET_KEY:-}
       CONNECTOR_GATEWAY_TOKEN: ${CONNECTOR_GATEWAY_TOKEN:-}
       CONNECTOR_PUBLIC_URL: https://${COMMERCE_DOMAIN}/connected-apps
@@ -77,7 +79,8 @@ services:
       SLACK_CLIENT_ID: ${SLACK_CLIENT_ID:-}
       SLACK_CLIENT_SECRET: ${SLACK_CLIENT_SECRET:-}
       EMAIL_SMTP_HOSTS: ${EMAIL_SMTP_HOSTS:-}
-    volumes: ["connector-data:/state"]
+    depends_on:
+      postgres: {condition: service_healthy}
     restart: unless-stopped
   gateway:
     image: caddy:2
@@ -95,4 +98,3 @@ volumes:
   commerce-data:
   caddy-data:
   caddy-config:
-  connector-data:

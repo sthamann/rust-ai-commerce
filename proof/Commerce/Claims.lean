@@ -269,4 +269,10 @@ theorem consent_exact (enabled current fresh chosen : Bool) :
 theorem legal_checkout_exact (strict current accepted digital immediate : Bool) :
     legal_checkout_admissible strict current accepted digital immediate = true ↔ strict = false ∨ current = true ∧ accepted = true ∧ (digital = false ∨ immediate = true) := by
   cases strict <;> cases current <;> cases accepted <;> cases digital <;> cases immediate <;> simp [legal_checkout_admissible]
+/-- Retry admits exactly explicit rate-limit rejection before the eighth attempt. -/
+theorem notification_retry_exact (limited : Bool) (attempts : Nat) :
+    notification_retry_admissible limited attempts = true ↔ limited = true ∧ attempts < 8 := by
+  simp [notification_retry_admissible]
+theorem notification_ambiguous_never_retry (attempts : Nat) :
+    notification_retry_admissible false attempts = false := by simp [notification_retry_admissible]
 end CommerceKernel

@@ -37,7 +37,7 @@ an exact port of Shopware's entire mail-template/document/message-queue subsyste
    sender/transport. Real use needs your own credentials and sender verification.
 
 For hosted service URLs, follow the [connected-app operator setup](connected-apps.md#operator-setup):
-provide the persistent Fernet key and gateway token, then include an `email` entry
+provide the persistent 32-byte URL-safe Base64 encryption key and gateway token, then include an `email` entry
 in `APP_SERVICES` pointing to `https://YOUR_COMMERCE_DOMAIN/connected-apps/email`
 with the same gateway token. Preserve your other app entries. The browser receives
 neither that token nor provider credentials.
@@ -54,7 +54,7 @@ changing SMTP host/username clears the old SMTP password. Settings are revision 
 All actions use the regular authenticated app gateway and require `apps.manage`.
 There are no public storefront mail-sending actions. Other app modules can invoke
 the same actions through the scoped SDK. The core forwards a tenant-bound request
-to the separately deployed service, never accepts a browser-supplied service URL.
+to the separately deployed Rust service, never accepts a browser-supplied service URL.
 
 | Action | Purpose |
 |---|---|
@@ -116,13 +116,20 @@ four-language selection work now.
 
 ## Persistence, errors and deployment boundaries
 
-The connector owns encrypted tenant/app-bound SQLite configuration and queue data
-on its persistent volume. The commerce process returns after enqueue and does not
-wait for an SMTP conversation. Each connector app has its own worker; mail latency
-does not block analytics/Gmail/Slack worker threads. The current mail worker is a
-single durable process, not a measured high-volume delivery cluster. Run one writer
-against its SQLite state and persist both database and encryption key. A horizontally
-scaled PostgreSQL queue/rate limiter is a future adapter, not a current capability.
+The independent Rust connector owns tenant/app-bound encrypted PostgreSQL configuration,
+message payloads and delivery receipts. Queue submission returns without waiting for
+an SMTP conversation. Multiple processes use fair tenant admission, `SKIP LOCKED`
+claims and 120-second lease tokens. Worker operations are bounded to 60 seconds;
+SMTP/HTTP delivery has an 8-second total timeout. Recovery marks only expired leases
+uncertain and never automatically re-sends them. The old single-writer SQLite runtime
+has been replaced; [migration and architecture](rust-services.md) describe the transition.
+
+Operator limits apply independently per tenant/app: by default 10,000 new jobs per UTC
+day, 1,000 queued/running jobs, 120 dispatches per minute and two in-flight jobs.
+Idempotent replay consumes no extra daily quota. Limits can be configured through
+`CONNECTOR_TENANT_DAILY`, `CONNECTOR_TENANT_BACKLOG`, `CONNECTOR_TENANT_PER_MINUTE`
+and `CONNECTOR_TENANT_CONCURRENCY`. Configure every instance consistently.
+Two workers per app/process are the default; `CONNECTOR_WORKERS_PER_APP` accepts 1–8.
 
 A stable tenant/request key plus payload fingerprint prevents duplicate queueing;
 reusing it with different data fails. SMTP receives a stable Message-ID. Resend
@@ -148,20 +155,25 @@ automatic invitation dispatch or attachment/PDF sending are claimed in this vers
 ## Source map and verification
 
 - `extensions/apps/email/manifest.json`: published API/MCP/event/flow contract.
-- `email_config.py`: typed settings, encrypted credentials, SMTP host policy.
-- `email_templates.py`: bounded envelopes and four-language order rendering.
-- `email_service.py`: actions, event intake and durable queue submission.
-- `email_delivery.py`: real SMTP/STARTTLS/TLS, Resend and SendGrid HTTP delivery.
+- `src/connectors/config.rs`: compiler-typed settings/credentials plus runtime validation.
+- `src/connectors/templates.rs`: bounded envelopes and EN/DE/FR/ES order/consumer rendering.
+- `src/connectors/email.rs`: published app actions/events and Resend/SendGrid delivery.
+- `src/connectors/smtp.rs`: pinned SMTP/STARTTLS/TLS, verified certificates and MIME.
+- `src/connectors/{store,crypto,queue,worker}.rs`: encrypted PostgreSQL persistence, quotas and fenced workers.
+- `src/bin/connectors.rs`: independent standard-service process.
 - `frontend/src/admin/apps/EmailPanel.tsx`, `email-i18n.ts`: native multilingual app workspace.
 - `src/marketing/flows.rs`: durable order-customer snapshot for the existing app flow adapter.
 
-`python3 scripts/email_tests.py` tests local SMTP with real STARTTLS/implicit TLS,
+`python3 scripts/email_tests.py` keeps the archived Python implementation as a differential
+reference and runs the actual Rust/PostgreSQL checkout/flow/SMTP consumer.
+`python3 scripts/rust_connectors.py` tests multiple actual Rust instances, OAuth, quotas,
+leases, RLS, provider imports and delivery. The fixtures test local SMTP with real STARTTLS/implicit TLS,
 both real HTTP wire formats, EU routing, encrypted tenant isolation, revision fences,
 header/network rejection, retries, ambiguous failure/restart and duplicate request
 handling. Set `DATABASE_URL` for its isolated real Rust/PostgreSQL checkout → flow →
 SMTP test, API permission checks, MCP discovery and staging rejection. It creates
 and removes its own database through the local Docker PostgreSQL container; override
-`DB_CONTAINER` if needed. CI runs all nine groups. No real account, external email
+`DB_CONTAINER` if needed. CI runs the registered suites, including the actual Rust multi-process path. No real account, external email
 or paid provider call is used. Provider/network code is outside the Lean proof boundary.
 
 ## Browser sign-in

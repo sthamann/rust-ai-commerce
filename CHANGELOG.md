@@ -1,5 +1,12 @@
 # Changelog
 
+## Rust standard services — 7 October 2026
+
+- Ported bundled Email Delivery, GA4, Gmail, Slack and OAuth/export state to an independent Rust service; existing app, Flow Builder and MCP contracts are preserved.
+- Replaced local SQLite with encrypted tenant/app-bound PostgreSQL records, forced RLS, distributed lease-fenced claims and per-tenant/app quotas. Ambiguous external delivery is never automatically resent.
+- Added compiler-typed mail configuration, verified SMTP STARTTLS/TLS and Resend/SendGrid delivery, atomic offline migration, actual multi-process/provider regressions and the extracted Lean retry predicate.
+- Archived the previous Python implementation as a migration comparison oracle. Python remains in development tools and independent app examples, outside the first-party central runtime. See [the architecture and language audit](docs/rust-services.md).
+
 ## Vendune identity — October 2026
 
 - Renamed the public repository, Rust crate/binary, frontend package, Docker images, MCP identity and documentation to Vendune.

@@ -260,7 +260,8 @@ Read the [complete extension contract and resource/performance boundaries](../do
 
 `apps/email` connects standard SMTP (STARTTLS or implicit TLS), Resend and SendGrid
 through the same private API/MCP/flow capability. Its transport, encrypted settings
-and durable jobs live in four focused `services/connectors/email_*.py` modules.
+and durable PostgreSQL jobs live in the focused Rust modules under `src/connectors/`.
+The service image contains no Python interpreter; external apps remain language-independent.
 Use `order-confirmation-flow.json` after installing/configuring the app; never enable
 the automatic all-order path and an equivalent flow unintentionally. See the
 [complete configuration, template and test guide](../docs/email-delivery.md).

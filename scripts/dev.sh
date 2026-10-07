@@ -23,7 +23,8 @@ fi
 # Recreating that database with the standard image would remove extension libraries.
 docker compose -p "$project" up -d --no-recreate --wait postgres qdrant
 (cd frontend && npm ci && npm run build)
-cargo build --locked
+cargo build --locked --bin vendune
+BOOTSTRAP_MODE=migrate SEED_DEMO=false target/debug/vendune
 if [ "${CONNECTED_APPS:-0}" = "1" ]; then
   python3 scripts/connectors.py start
 fi

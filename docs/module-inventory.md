@@ -73,6 +73,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/automation_rules/time.rs](../src/automation_rules/time.rs) | Calendar comparisons use an explicit server clock, IANA zones and the original exclusive date-range end. |
 | [src/automation_rules/validation.rs](../src/automation_rules/validation.rs) | Bounded source payload validation against exported field/operator metadata and nested condition scopes. |
 | [src/bin/automation_rules.rs](../src/bin/automation_rules.rs) | JSON batch transport for comparisons with original Shopware rule classes; not a production authority endpoint. |
+| [src/bin/connectors.rs](../src/bin/connectors.rs) | Independent Rust standard-app service; no provider code executes in commerce request workers. |
 | [src/bin/context.rs](../src/bin/context.rs) | Bounded ports of original language-chain, rule priority and quantity selection. |
 | [src/bin/delivery.rs](../src/bin/delivery.rs) | Batch proportional-tax fixture transport for the original-PHP comparator. |
 | [src/bin/money_boundary.rs](../src/bin/money_boundary.rs) | Batch transport for comparing the actual legacy-to-integer checkout boundary against original Shopware totals. |
@@ -140,6 +141,26 @@ This lists every checked-in source module in these roots, including files with n
 | [src/commerce/tax_rules.rs](../src/commerce/tax_rules.rs) | Priority-based destination rules; current tax law is merchant configuration, not bundled tax advice. |
 | [src/commerce/types.rs](../src/commerce/types.rs) | Checkout selection and configuration data contracts. |
 | [src/concierge.rs](../src/concierge.rs) | Read-only storefront shopping advisor. |
+| [src/connectors/actions.rs](../src/connectors/actions.rs) | Existing standard-app actions and event/export endpoints share validated tenant-bound dispatch. |
+| [src/connectors/config.rs](../src/connectors/config.rs) | Compile-time mail setting types plus bounded runtime validation and write-only credentials. |
+| [src/connectors/crypto.rs](../src/connectors/crypto.rs) | Authenticated encryption binds config, OAuth verifiers, messages and receipts to tenant and app. |
+| [src/connectors/email.rs](../src/connectors/email.rs) | Email app actions/events retain the published gateway, flow and MCP payload contract. |
+| [src/connectors/error.rs](../src/connectors/error.rs) | Sanitized failures distinguish explicit rejection from ambiguous external side effects. |
+| [src/connectors/exports.rs](../src/connectors/exports.rs) | Tenant-scoped encrypted knowledge records and bounded monotonic exports preserve importer fences. |
+| [src/connectors/legacy.rs](../src/connectors/legacy.rs) | Explicit offline SQLite export import: all records are rebound/encrypted atomically; ambiguous jobs stay uncertain. |
+| [src/connectors/mod.rs](../src/connectors/mod.rs) | Language-neutral app HTTP contract backed by a Rust-only standard connector runtime. |
+| [src/connectors/network.rs](../src/connectors/network.rs) | Fixed provider endpoints, no redirects, bounded response streaming and loopback-only fixture overrides. |
+| [src/connectors/oauth.rs](../src/connectors/oauth.rs) | Single-use tenant/app-bound OAuth state, PKCE, encrypted tokens and serialized refresh/disconnect. |
+| [src/connectors/providers/analytics.rs](../src/connectors/providers/analytics.rs) | Exact bounded GA4 source rows, quota metadata and stale-report tombstones; no invented causal claims. |
+| [src/connectors/providers/gmail.rs](../src/connectors/providers/gmail.rs) | Read-only Gmail incremental imports preserve high-water cursors, bounded windows and deletion evidence. |
+| [src/connectors/providers.rs](../src/connectors/providers.rs) | Provider-specific read imports and notification mapping stay outside the commerce kernel. |
+| [src/connectors/queue.rs](../src/connectors/queue.rs) | Atomic idempotent enqueue, fair tenant admission and lease-fenced SKIP LOCKED claims for many workers. |
+| [src/connectors/server.rs](../src/connectors/server.rs) | Authenticated bounded app HTTP service with private OAuth callback and graceful worker lifetime. |
+| [src/connectors/smtp.rs](../src/connectors/smtp.rs) | Pinned SMTP/STARTTLS/TLS with verified hostname, bounded dialogue and no retry after ambiguous DATA. |
+| [src/connectors/store.rs](../src/connectors/store.rs) | PostgreSQL transactions carry local RLS context; config mutation serializes with in-flight delivery. |
+| [src/connectors/templates.rs](../src/connectors/templates.rs) | Bounded immutable envelopes and non-executable multilingual templates; HTML substitutions are escaped. |
+| [src/connectors/tests.rs](../src/connectors/tests.rs) | Actual Rust parsers, encryption and template consumers reject escalation/injection and preserve language behavior. |
+| [src/connectors/worker.rs](../src/connectors/worker.rs) | Distributed delivery workers fence settings and leases, retry only proven rejection, and drain on shutdown. |
 | [src/context.rs](../src/context.rs) | Bounded behavioral ports of Shopware 6.7.14.2 context and product-cart selection. |
 | [src/customer.rs](../src/customer.rs) | Customer credential verification and context rotation. |
 | [src/demo_catalog.rs](../src/demo_catalog.rs) | Public synthetic fashion template; provisioning copies only this versioned fixture into a new tenant. |
@@ -695,16 +716,6 @@ This lists every checked-in source module in these roots, including files with n
 | [extensions/minimum-order.wat](../extensions/minimum-order.wat) | Business orders must reach EUR 50 and stay inside the supplied budget. |
 | [extensions/sdk/analytics.js](../extensions/sdk/analytics.js) | Consent-bound GA4 adapter for native and headless storefronts. Never send customer identities. |
 | [extensions/sdk/browser.js](../extensions/sdk/browser.js) | Guest SDK: no merchant tokens or raw host API access; the host rechecks every action. |
-| [extensions/services/connectors/callback_page.py](../extensions/services/connectors/callback_page.py) | Localized OAuth completion screen; never render provider codes, tokens or raw errors. |
-| [extensions/services/connectors/email_config.py](../extensions/services/connectors/email_config.py) | Validate mail transport configuration and expose only write-only credential flags. |
-| [extensions/services/connectors/email_delivery.py](../extensions/services/connectors/email_delivery.py) | Provider delivery outside the commerce process; TLS SMTP and fixed Resend/SendGrid APIs. |
-| [extensions/services/connectors/email_service.py](../extensions/services/connectors/email_service.py) | Email app actions and event intake: queue bounded immutable envelopes with revision fences. |
-| [extensions/services/connectors/email_templates.py](../extensions/services/connectors/email_templates.py) | Bounded locale-aware mail envelopes and escaped order-template variables; no executable templates. |
-| [extensions/services/connectors/oauth.py](../extensions/services/connectors/oauth.py) | Server-side Google/Slack OAuth; single-use tenant-bound state and refreshed private tokens. |
-| [extensions/services/connectors/providers.py](../extensions/services/connectors/providers.py) | Real GA4 reporting, Gmail incremental retrieval and queued Slack notifications. |
-| [extensions/services/connectors/server.py](../extensions/services/connectors/server.py) | Separate app process with provider OAuth, encrypted persistence and durable jobs; no core provider code. |
-| [extensions/services/connectors/store.py](../extensions/services/connectors/store.py) | Private, tenant-bound encrypted connector state and durable delivery receipts. |
-| [extensions/services/connectors/transport.py](../extensions/services/connectors/transport.py) | Fixed provider endpoints; bounded requests and sanitized failures, without token logging. |
 | [extensions/single-order-cap.wat](../extensions/single-order-cap.wat) | Limit any individual business purchase to EUR 250, within its budget. |
 
 ## Verification tools and fixtures
@@ -742,7 +753,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/demo/fixtures.py](../scripts/demo/fixtures.py) | Four-language, provider-free commerce playground definitions; no credentials or real customer data. |
 | [scripts/developer_documents.py](../scripts/developer_documents.py) | Local model wire fixtures verify app generation, provenance and document privacy, without paid providers. |
 | [scripts/differential.py](../scripts/differential.py) | Independent PHP/Rust differential; fails on any money delta, not averaged error. |
-| [scripts/email_tests.py](../scripts/email_tests.py) | Real SMTP/TLS and provider HTTP fixtures plus Rust/PostgreSQL/MCP/flow consumers. No external mail. |
+| [scripts/email_tests.py](../scripts/email_tests.py) | Archived differential SMTP/TLS fixtures plus actual Rust/PostgreSQL/MCP/flow consumers. No external mail. |
 | [scripts/extensions.py](../scripts/extensions.py) | Activate actual Wasm policies and prove their effect on B2B checkout. |
 | [scripts/fashion_demo.py](../scripts/fashion_demo.py) | Actual default signup, fashion variants/media/localization, isolated checkout and restart; synthetic data only. |
 | [scripts/formal/axioms.py](../scripts/formal/axioms.py) | Audit owned proof sources and transitive Lean dependencies; no extra axioms are allowed. |
@@ -766,6 +777,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/marketing_accounts.py](../scripts/marketing_accounts.py) | Real isolated shops: customer authority, limited coupons, event flows, channels and selected releases. No paid models. |
 | [scripts/mcp_stdio.py](../scripts/mcp_stdio.py) | Line-delimited MCP stdio bridge for Claude Desktop and other local clients. |
 | [scripts/merchant_operations.py](../scripts/merchant_operations.py) | Real HTTP/PostgreSQL CRM, receipt, scoped-access and paid-download regressions. No PSP traffic. |
+| [scripts/migrate_connector_state.py](../scripts/migrate_connector_state.py) | Explicit offline legacy-state migration; decrypted data crosses stdin only, never logs or temporary files. |
 | [scripts/money_boundary_differential.py](../scripts/money_boundary_differential.py) | Gate the exact checkout boundary using totals from original Shopware calculators, never a PHP rewrite. |
 | [scripts/payment_providers.py](../scripts/payment_providers.py) | Provider-neutral financial ledger through real HTTP/PostgreSQL and a local private-service fixture. |
 | [scripts/payments.py](../scripts/payments.py) | PayPal wire-contract and real Rust/PostgreSQL state tests. Local fixture, never real provider traffic. |
@@ -785,6 +797,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/restart.py](../scripts/restart.py) | Persist an API snapshot, restart server+DB externally, verify exact state. |
 | [scripts/rule_catalog.py](../scripts/rule_catalog.py) | Inventory original Shopware conditions without claiming unsupported scopes are implemented. |
 | [scripts/rule_differential.py](../scripts/rule_differential.py) | Execute original Shopware numeric comparisons, including epsilon, null and unsupported operator semantics. |
+| [scripts/rust_connectors.py](../scripts/rust_connectors.py) | Actual Rust/PostgreSQL multi-process notification, OAuth/import and adversarial fixtures; no external accounts. |
 | [scripts/scalability.py](../scripts/scalability.py) | Real HTTP/PG regression for bounded reads and concurrent cart edits. |
 | [scripts/security/tenant_schema.py](../scripts/security/tenant_schema.py) | Database adversarial checks: reject cross-shop links even when API predicates are accidentally omitted. |
 | [scripts/services.py](../scripts/services.py) | Standalone app process, opaque UI SDK transport, own SQLite inbox and independent durable worker. |

@@ -2,6 +2,7 @@
 
 This folder owns the Rust modules listed below. Each source begins with its responsibility contract. The crate currently shares internal types/imports through a facade; APIs, MCP and UCP delegate to shared domain operations.
 
+- [`connectors.rs`](connectors.rs): Independent Rust standard-app process; PostgreSQL-backed E-mail, Gmail, Analytics and Slack.
 - [`automation_rules.rs`](automation_rules.rs): JSON batch transport for comparisons with original Shopware rule classes; not a production authority endpoint.
 - [`context.rs`](context.rs): Bounded ports of original language-chain, rule priority and quantity selection.
 - [`delivery.rs`](delivery.rs): Batch proportional-tax fixture transport for the original-PHP comparator.
