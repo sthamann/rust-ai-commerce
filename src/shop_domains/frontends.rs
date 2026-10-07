@@ -182,6 +182,10 @@ async fn proxy(
         .header("x-frontend-channel", row.get::<String, _>("channel"));
     for key in [
         "content-type",
+        "accept",
+        "last-event-id",
+        "range",
+        "if-none-match",
         "x-locale",
         "x-cart-token",
         "x-customer-token",
@@ -192,38 +196,16 @@ async fn proxy(
             req = req.header(key, value);
         }
     }
-    let mut r = req.send().await.map_err(|_| {
+    if let Some(cookie) = super::frontend_transport::request_cookie(&parts.headers) {
+        req = req.header("cookie", cookie);
+    }
+    let r = req.send().await.map_err(|_| {
         Error(
             StatusCode::BAD_GATEWAY,
             "Frontend service unavailable".into(),
         )
     })?;
-    let status = StatusCode::from_u16(r.status().as_u16()).unwrap_or(StatusCode::BAD_GATEWAY);
-    let headers = r.headers().clone();
-    let mut bytes = Vec::new();
-    while let Some(c) = r
-        .chunk()
-        .await
-        .map_err(|_| bad("Invalid frontend response"))?
-    {
-        if bytes.len() + c.len() > 8_000_000 {
-            return Err(bad("Frontend response exceeds limit"));
-        }
-        bytes.extend_from_slice(&c);
-    }
-    let mut response = (status, bytes).into_response();
-    for key in [
-        "content-type",
-        "cache-control",
-        "content-security-policy",
-        "referrer-policy",
-        "x-content-type-options",
-    ] {
-        if let Some(v) = headers.get(key) {
-            response.headers_mut().insert(key, v.clone());
-        }
-    }
-    Ok(response)
+    Ok(super::frontend_transport::response(r))
 }
 #[cfg(test)]
 mod tests {

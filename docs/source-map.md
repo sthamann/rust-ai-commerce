@@ -405,3 +405,7 @@ App assistants compile the shared Manifest in `frontend/src/admin/developer/assi
 ## European operation
 
 `src/legal/` owns privacy policy/receipt, guarded checkout snapshots, sector facts and consumer request review. `frontend/src/{admin,shared,storefront}/legal/` connects their actual interface and consent consumers. Migration 048 scopes receipts, logs and review audits; the email connector and Flow Builder consume their outbox events. See [the complete behavior map and limits](european-operation.md).
+
+### Hosted frontend transport
+
+`src/shop_domains/frontend_transport.rs` streams the fixed, authenticated external frontend response with backpressure and an 8 MB cumulative body limit. SSE starts before upstream EOF; a body failure closes the stream. `HOSTED_FRONTEND_COOKIE_NAMES` defaults empty and optionally permits at most eight opaque anonymous shopper cookies. Login credentials remain stripped. Cookies returned to the browser must be host-only, Secure, HttpOnly and SameSite=Lax; redirects must be relative. This generic adapter contains no private Storyfront implementation. `identity_broker` exercises routing, foreign-shop denial, cookie filtering, paused shops and streaming through the real HTTP service. The network adapter remains outside the Lean proof boundary.

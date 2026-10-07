@@ -312,6 +312,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/rule_comparison.rs](../src/rule_comparison.rs) | Behavioral port of Shopware 6.7.14.2 RuleComparison::numeric and FloatComparator's exact epsilon boundaries. |
 | [src/sandbox.rs](../src/sandbox.rs) | Pure Wasmtime guest execution with bounded resources and no host imports. |
 | [src/seed.rs](../src/seed.rs) | Idempotent synthetic template catalogue initialization. |
+| [src/shop_domains/frontend_transport.rs](../src/shop_domains/frontend_transport.rs) | Stream generic hosted frontend responses and admit only explicitly allowlisted opaque shopper cookies. |
 | [src/shop_domains/frontends.rs](../src/shop_domains/frontends.rs) | Generic operator-allowlisted frontend mounts. Host scope is derived from storage, never client headers. |
 | [src/shop_domains.rs](../src/shop_domains.rs) | Resolve configured shop subdomains before authentication; reject unknown hosts and conflicting scopes. |
 | [src/staging/assets.rs](../src/staging/assets.rs) | Binary assets are immutable, staged independently through metadata/digest units; paid entitlements never clone. |

@@ -2,7 +2,7 @@
 """Synthetic broker signatures, durable replay prevention, scoped frontend routing and private Studio handoff; no provider calls."""
 import base64, hashlib, hmac, json, os, socket, time, urllib.error, urllib.request, uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from threading import Thread
+from threading import Thread, Event
 from testing.runtime import ROOT, serve, stop
 key = 'a' * 64
 suffix = uuid.uuid4().hex[:8]
@@ -10,14 +10,18 @@ issuer = 'https://experience.example.test'
 with socket.socket() as probe:
     probe.bind(('127.0.0.1',0)); port=probe.getsockname()[1]
 base=f'http://127.0.0.1:{port}'
+finish_stream=Event()
 class Frontend(BaseHTTPRequestHandler):
     def do_GET(self):
+        if self.path == '/stream':
+            self.send_response(200);self.send_header('Content-Type','text/event-stream');self.end_headers()
+            self.wfile.write(b'data: ready\n\n');self.wfile.flush();finish_stream.wait(5);return
         data={'path':self.path,'alias':self.headers.get('x-frontend-alias'),'tenant':self.headers.get('x-frontend-tenant'),'channel':self.headers.get('x-frontend-channel'),'cookie':self.headers.get('cookie'),'authorization':self.headers.get('authorization'),'authenticated':self.headers.get('x-frontend-key')=='b'*64}
-        self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps(data).encode())
+        self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Set-Cookie','shopper_sid=opaque-123; Path=/; HttpOnly; Secure; SameSite=Lax');self.send_header('Set-Cookie','admin_token=forbidden; Path=/; HttpOnly; Secure; SameSite=Lax');self.end_headers();self.wfile.write(json.dumps(data).encode())
     def log_message(self,*args): pass
 frontend=ThreadingHTTPServer(('127.0.0.1',0),Frontend)
 Thread(target=frontend.serve_forever,daemon=True).start()
-env={**os.environ,'BIND_ADDR':f'127.0.0.1:{port}','IDENTITY_BROKER_KEY':key,'IDENTITY_BROKER_ISSUER':issuer,'HOSTED_FRONTEND_KEY':'b'*64,'HOSTED_FRONTEND_ORIGIN':f'http://127.0.0.1:{frontend.server_port}','DEMO_CATALOG':'fashion'}
+env={**os.environ,'BIND_ADDR':f'127.0.0.1:{port}','IDENTITY_BROKER_KEY':key,'IDENTITY_BROKER_ISSUER':issuer,'HOSTED_FRONTEND_KEY':'b'*64,'HOSTED_FRONTEND_ORIGIN':f'http://127.0.0.1:{frontend.server_port}','DEMO_CATALOG':'fashion','HOSTED_FRONTEND_COOKIE_NAMES':'shopper_sid'}
 def call(path,body=None,headers=None,method=None,expected=200):
     req=urllib.request.Request(base+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(headers or {})},method=method or ('GET' if body is None else 'POST'))
     try:
@@ -79,6 +83,16 @@ with (ROOT/'artifacts/identity-broker-server.log').open('w') as log:
         call('/api/settings/frontends',{'alias':alias,'channel':'missing'},mh,method='PUT',expected=400)
         host={'Host':alias+'.vendune.ai','cookie':'merchant-cookie','Authorization':'Bearer '+one['token']}
         data=call('/',headers=host);assert data['tenant']==shop and data['channel']=='default' and data['authenticated'] and data['cookie'] is None and data['authorization'] is None
+        data=call('/',headers={**host,'cookie':'admin_token=secret; shopper_sid=opaque-123'});assert data['cookie']=='shopper_sid=opaque-123' and data['authorization'] is None
+        req=urllib.request.Request(base+'/',headers=host)
+        with urllib.request.urlopen(req,timeout=5) as response:
+            assert response.headers.get_all('Set-Cookie')==['shopper_sid=opaque-123; Path=/; HttpOnly; Secure; SameSite=Lax']
+        req=urllib.request.Request(base+'/stream',headers=host)
+        try:
+            with urllib.request.urlopen(req,timeout=2) as response:
+                assert response.readline()==b'data: ready\n'
+        finally:finish_stream.set()
+        check('Only configured opaque shopper cookies round-trip; first SSE event arrives before upstream EOF')
         call('/',headers={**host,'x-tenant':other},expected=400)
         call('/api/platform/overview',headers={'Host':alias+'.vendune.ai'},expected=401)
         call(path,signed(path,'new-'+suffix,workspaceId=alias,workspaceName='Reserved alias'),expected=409)
