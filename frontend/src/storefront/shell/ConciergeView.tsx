@@ -6,7 +6,12 @@ import "../../shared/styles/workbench.css";
 import "../styles/shop.css";
 
 import { useStorefront } from "./StorefrontContext";
+import { useRef } from "react";
+import { useExperienceUIText } from "../../shared/i18n/experience-ui-i18n";
+import Icon from "../../shared/ui/Icon";
 export default function ConciergeView() {
+  const { u } = useExperienceUIText();
+  const input = useRef<HTMLInputElement>(null);
   const {
     s,
     run,
@@ -26,10 +31,20 @@ export default function ConciergeView() {
     ? "fashionWish"
     : "wish";
   return (
-    <section className="shop-concierge">
+    <section
+      className="shop-concierge"
+      id="assistant"
+      aria-labelledby="shop-assistant-title"
+    >
       <div>
-        <p className="shop-kicker">{s("ask")}</p>
-        <p>{s(prompt)}</p>
+        <p className="shop-kicker">
+          <Icon name="spark" size={16} /> {s("ask")}
+        </p>
+        <h2 id="shop-assistant-title">{u("assistantIntro")}</h2>
+        <p>{u("assistantHint")}</p>
+        <small>
+          <Icon name="box" size={14} /> {u("grounded")}
+        </small>
       </div>
       <form
         onSubmit={(e) => {
@@ -48,6 +63,7 @@ export default function ConciergeView() {
         }}
       >
         <input
+          ref={input}
           aria-label={s("ask")}
           value={wish}
           onChange={(e) => setWish(e.target.value)}
@@ -57,6 +73,28 @@ export default function ConciergeView() {
           {busy ? s("thinking") : s("ask")} ↗
         </button>
       </form>
+      <div className="shop-assistant-prompts">
+        {(["budget", "gift", "compare"] as const).map((key) => (
+          <button
+            type="button"
+            key={key}
+            disabled={busy}
+            onClick={() => {
+              setWish(u(key));
+              input.current?.focus();
+            }}
+          >
+            <Icon
+              name={
+                key === "budget" ? "percent" : key === "gift" ? "box" : "layers"
+              }
+              size={16}
+            />
+            {u(key)}
+            <Icon name="arrow" size={14} />
+          </button>
+        ))}
+      </div>
       {advice && (
         <div className="shop-advice" role="status">
           <p>{advice.explanation}</p>

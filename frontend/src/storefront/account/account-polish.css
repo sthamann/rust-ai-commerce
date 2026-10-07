@@ -1,0 +1,166 @@
+/* Brand-aware account presentation with a separate orientation panel and bounded, scrollable forms. */
+.customer-account {
+  --account-accent: var(--blue, #245d49);
+  --account-ink: var(--ink, #202f2b);
+  --account-muted: var(--muted, #66746e);
+  --account-line: var(--line, #dfe6e1);
+}
+.customer-account.is-auth {
+  width: min(900px, calc(100vw - 48px));
+}
+.customer-account.is-auth .account-content {
+  padding: 0;
+}
+.account-auth-layout {
+  display: grid;
+  grid-template-columns: 0.85fr 1fr;
+  min-width: 0;
+}
+.account-auth-intro {
+  padding: 40px 32px;
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--account-accent) 7%, white),
+    #f8fafb
+  );
+  border-right: 1px solid var(--account-line);
+}
+.account-auth-mark {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  color: var(--account-accent);
+  border: 1px solid color-mix(in srgb, var(--account-accent) 20%, white);
+  border-radius: 18px;
+  background: white;
+  margin-bottom: 28px;
+}
+.customer-account .account-auth-intro h2 {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -1px;
+}
+.account-auth-intro p {
+  color: var(--account-muted);
+  max-width: 280px;
+}
+.account-auth-intro ul {
+  list-style: none;
+  display: grid;
+  gap: 18px;
+  padding: 24px 0 0;
+  margin: 0;
+  font-size: 13px;
+}
+.account-auth-intro li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.account-auth-intro li svg {
+  color: var(--account-accent);
+}
+.account-auth-layout .account-auth {
+  padding: 32px;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+}
+.customer-account .account-auth h2 {
+  font-size: 26px;
+}
+.customer-account .account-reveal {
+  display: grid;
+  place-items: center;
+}
+.customer-account .shop-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--account-accent) 85%, black);
+}
+.customer-account .account-sidebar nav button {
+  align-items: center;
+}
+.customer-account .account-sidebar nav button > span:first-of-type {
+  flex: 1;
+}
+.customer-account .account-order-heading {
+  flex-wrap: wrap;
+}
+.customer-account .account-order-heading strong,
+.customer-account .account-line-item strong {
+  overflow-wrap: anywhere;
+}
+.customer-account .account-status-grid > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.customer-account .account-line-item {
+  flex-wrap: wrap;
+}
+.customer-account .customer-actions button {
+  min-width: 0;
+}
+.customer-account .account-sidebar nav button {
+  min-height: 44px;
+}
+@media (max-width: 700px), (max-height: 560px) {
+  .account-auth-layout {
+    grid-template-columns: 1fr;
+  }
+  .account-auth-intro {
+    padding: 20px 24px;
+    border: 0;
+    border-bottom: 1px solid var(--account-line);
+  }
+  .account-auth-mark,
+  .account-auth-intro ul {
+    display: none;
+  }
+  .customer-account .account-auth-intro h2 {
+    font-size: 21px;
+    margin: 0 0 6px;
+  }
+  .account-auth-intro p {
+    max-width: none;
+    margin: 0;
+    font-size: 12px;
+  }
+  .account-auth-layout .account-auth {
+    padding: 24px;
+  }
+}
+@media (max-width: 620px), (max-width: 1000px) and (max-height: 500px) {
+  .customer-account.is-auth {
+    width: 100vw;
+  }
+  .customer-account .account-status-grid {
+    grid-template-columns: 1fr;
+  }
+  .account-auth-layout .account-auth {
+    padding: 24px 18px max(24px, env(safe-area-inset-bottom));
+  }
+  .customer-account .customer-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .customer-account .customer-actions button {
+    min-height: 44px;
+    padding: 12px;
+    font-size: 13px;
+  }
+  .customer-account .customer-actions button:nth-child(n + 3) {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 380px) {
+  .customer-account .account-metrics {
+    grid-template-columns: 1fr;
+  }
+  .customer-account .account-metrics button {
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+  }
+  .account-metrics strong {
+    grid-column: auto;
+  }
+}

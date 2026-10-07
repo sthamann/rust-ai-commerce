@@ -1,0 +1,131 @@
+/* Shared storefront interaction layer: stable navigation, editorial surfaces and catalogue-grounded AI discovery. */
+.shop-hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.shop-assistant-link {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 44px;
+  font-size: 13px;
+  color: var(--blue);
+}
+.shop-concierge {
+  position: relative;
+  border-radius: 24px;
+  padding: clamp(24px, 3vw, 40px);
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 32px;
+  background: linear-gradient(125deg, #edf5ef, #f8faf6);
+  border-color: #dce8df;
+  scroll-margin-top: 24px;
+}
+.shop-concierge h2 {
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.15;
+  letter-spacing: -1px;
+  margin: 12px 0;
+  font-weight: 550;
+  max-width: 400px;
+}
+.shop-concierge .shop-kicker,
+.shop-concierge small {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.shop-concierge .shop-kicker {
+  color: var(--blue);
+}
+.shop-concierge small {
+  font-size: 11px;
+  color: var(--muted);
+}
+.shop-concierge form {
+  background: white;
+  padding: 6px;
+  border: 1px solid #c9dccf;
+  border-radius: 16px;
+  align-items: center;
+  box-shadow: 0 8px 24px #173a2408;
+}
+.shop-concierge input {
+  background: transparent;
+  border: 0;
+  min-width: 0;
+  font-size: 14px;
+}
+.shop-concierge form > button {
+  border-radius: 12px;
+}
+.shop-assistant-prompts {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 10px;
+}
+.shop-assistant-prompts button {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  border: 1px solid #d2e1d7;
+  background: #ffffffb3;
+  color: var(--ink);
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+.shop-assistant-prompts button:hover {
+  background: white;
+  border-color: var(--blue);
+}
+.shop-advice {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+}
+.shop-advice a {
+  border-radius: 12px;
+  min-height: 44px;
+  margin-bottom: 8px;
+}
+@media (max-width: 680px) {
+  .shop-concierge {
+    grid-template-columns: 1fr;
+    padding: 24px 18px;
+    border-radius: 20px;
+  }
+  .shop-concierge form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .shop-concierge form > button {
+    width: 100%;
+  }
+  .shop-concierge input {
+    min-height: 48px;
+    font-size: 16px;
+    width: 100%;
+  }
+  .shop-assistant-prompts {
+    display: grid;
+  }
+  .shop-assistant-prompts button {
+    justify-content: space-between;
+  }
+  .shop :is(input, select, textarea) {
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .shop :is(.shop-primary, .shop-secondary, .shop-assistant-prompts button) {
+    transition:
+      box-shadow 0.18s ease,
+      background 0.18s ease,
+      border-color 0.18s ease;
+  }
+}

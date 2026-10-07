@@ -11,7 +11,9 @@ import Art from "../../shared/ui/ProductArt";
 import "../styles/shop.css";
 
 import { useStorefront } from "./StorefrontContext";
+import { useExperienceUIText } from "../../shared/i18n/experience-ui-i18n";
 export default function StorefrontHome() {
+  const { u } = useExperienceUIText();
   const { salesChannel, w, experience, s, products } = useStorefront();
   const fashion = products.some((p) =>
     p.media[0]?.url.startsWith("/media/demo/fashion/"),
@@ -35,10 +37,16 @@ export default function StorefrontHome() {
               : s(fashion ? "fashionHero" : "hero")}
           </h1>
           <p>{s(fashion ? "fashionIntro" : "intro")}</p>
-          <a className="shop-primary" href="#collection">
-            {s("explore")}
-            <Icon name="arrow" />
-          </a>
+          <div className="shop-hero-actions">
+            <a className="shop-primary" href="#collection">
+              {s("explore")}
+              <Icon name="arrow" />
+            </a>
+            <a className="shop-assistant-link" href="#assistant">
+              <Icon name="spark" size={18} />
+              {u("copilot")}
+            </a>
+          </div>
         </div>
         <div className="shop-hero-art">
           {hero?.media[0]?.url ? (

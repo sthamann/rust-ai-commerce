@@ -357,6 +357,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/assistant/MessageText.tsx](../frontend/src/admin/assistant/MessageText.tsx) | MessageText keeps merchant interaction separate from workspace orchestration. |
 | [frontend/src/admin/assistant/ProposalCard.tsx](../frontend/src/admin/assistant/ProposalCard.tsx) | ProposalCard keeps merchant interaction separate from workspace orchestration. |
 | [frontend/src/admin/assistant/SettingsDialog.tsx](../frontend/src/admin/assistant/SettingsDialog.tsx) | SettingsDialog keeps merchant interaction separate from workspace orchestration. |
+| [frontend/src/admin/assistant/WorkspaceCopilot.tsx](../frontend/src/admin/assistant/WorkspaceCopilot.tsx) | Contextual drawer reuses the existing scoped conversation, permissions and proposal execution without unmounting editors. |
 | [frontend/src/admin/automation/AutomationDefinitions.tsx](../frontend/src/admin/automation/AutomationDefinitions.tsx) | Searchable, explicitly editable definitions with visible active state and version. |
 | [frontend/src/admin/automation/AutomationDelete.tsx](../frontend/src/admin/automation/AutomationDelete.tsx) | One confirmation and a server recheck; stale versions and used definitions never disappear silently. |
 | [frontend/src/admin/automation/AutomationEditor.tsx](../frontend/src/admin/automation/AutomationEditor.tsx) | AutomationEditor: focused form view with explicit typed inputs and callbacks. |
@@ -542,6 +543,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/studio-sign-in.css](../frontend/src/admin/styles/studio-sign-in.css) | Dedicated access surface: responsive Vendune login and native modal reauthentication. |
 | [frontend/src/admin/styles/studio.css](../frontend/src/admin/styles/studio.css) | Ordered studio stylesheet entry; domain rules live in the adjacent folder. |
 | [frontend/src/admin/styles/variants.css](../frontend/src/admin/styles/variants.css) | Variant family and review table share the catalog's responsive theme and focus treatment. |
+| [frontend/src/admin/styles/workspace-copilot.css](../frontend/src/admin/styles/workspace-copilot.css) | Contextual assistant drawer inherits Studio tokens and contains the existing conversation on all viewport sizes. |
 | [frontend/src/admin/styles/workspace-polish.css](../frontend/src/admin/styles/workspace-polish.css) | Consistent Studio density, readable hierarchy and independently scrollable navigation across workspaces. |
 | [frontend/src/admin/team/AccessManager.tsx](../frontend/src/admin/team/AccessManager.tsx) | Fine-grained team overrides, revocable invitations and personal session inventory. |
 | [frontend/src/admin/team/PersonalAccountForm.tsx](../frontend/src/admin/team/PersonalAccountForm.tsx) | PersonalAccountForm: focused account-form view with explicit typed inputs and callbacks. |
@@ -614,6 +616,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/customer-i18n.ts](../frontend/src/shared/i18n/customer-i18n.ts) | Account and address labels share four complete locales across storefront and studio. |
 | [frontend/src/shared/i18n/email-i18n.ts](../frontend/src/shared/i18n/email-i18n.ts) | Complete mail workspace vocabulary in English, German, French and Spanish. |
 | [frontend/src/shared/i18n/errors-i18n.ts](../frontend/src/shared/i18n/errors-i18n.ts) | Localized request guidance across all transports; original diagnostics remain available to developer tools. |
+| [frontend/src/shared/i18n/experience-ui-i18n.ts](../frontend/src/shared/i18n/experience-ui-i18n.ts) | Shared four-language interaction vocabulary for contextual Studio help and storefront discovery. |
 | [frontend/src/shared/i18n/i18n.tsx](../frontend/src/shared/i18n/i18n.tsx) | i18n: Four-language locale context, UI dictionaries and translated API errors. |
 | [frontend/src/shared/i18n/international-i18n.ts](../frontend/src/shared/i18n/international-i18n.ts) | International settings vocabulary. Every key requires English, German, French and Spanish. |
 | [frontend/src/shared/i18n/knowledge-i18n.ts](../frontend/src/shared/i18n/knowledge-i18n.ts) | Knowledge workspace vocabulary: sources, evidence and capabilities without fabricated learning claims. |
@@ -660,6 +663,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/account/CustomerAccount.tsx](../frontend/src/storefront/account/CustomerAccount.tsx) | Responsive customer workspace separates authentication, address care and protected purchase details. |
 | [frontend/src/storefront/account/CustomerSignIn.tsx](../frontend/src/storefront/account/CustomerSignIn.tsx) | Distinct sign-in and registration forms with correct autofill and an authenticated, rotated cart context. |
 | [frontend/src/storefront/account/account-fields.css](../frontend/src/storefront/account/account-fields.css) | Account form controls have explicit label spacing, consistent actions and shared address-editor integration. |
+| [frontend/src/storefront/account/account-polish.css](../frontend/src/storefront/account/account-polish.css) | Brand-aware account presentation with a separate orientation panel and bounded, scrollable forms. |
 | [frontend/src/storefront/account/account-purchases.css](../frontend/src/storefront/account/account-purchases.css) | Purchase cards, fulfillment, documents and financial detail use one readable account layout. |
 | [frontend/src/storefront/account/account-types.ts](../frontend/src/storefront/account/account-types.ts) | Shopper-only account responses deliberately exclude cart/session credentials and internal order activity. |
 | [frontend/src/storefront/account/account.css](../frontend/src/storefront/account/account.css) | Customer workspace: quiet fashion palette, clear purchase cards and an accessible mobile sheet. |
@@ -705,10 +709,12 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/shell/useCompanyIdentity.ts](../frontend/src/storefront/shell/useCompanyIdentity.ts) | Channel-scoped public brand/legal identity; stale responses cannot leak across tenants or languages. |
 | [frontend/src/storefront/shell/useConsentedExperience.ts](../frontend/src/storefront/shell/useConsentedExperience.ts) | Assign experiments only after current personalization consent; discard stale responses on withdrawal. |
 | [frontend/src/storefront/shell/usePersonalization.ts](../frontend/src/storefront/shell/usePersonalization.ts) | Opt-in behavior signals and stable product ordering; no authoritative prices are changed. |
+| [frontend/src/storefront/shell/useStorefrontAnchors.ts](../frontend/src/storefront/shell/useStorefrontAnchors.ts) | Restore native section navigation after SPA rendering, with cancellation and reduced-motion support. |
 | [frontend/src/storefront/shell/useStorefrontController.ts](../frontend/src/storefront/shell/useStorefrontController.ts) | Cart lifecycle, authoritative checkout commands and storefront coordination. |
 | [frontend/src/storefront/styles/checkout-fields.css](../frontend/src/storefront/styles/checkout-fields.css) | Checkout-owned form layout, independent of previously mounted account/admin stylesheets. |
 | [frontend/src/storefront/styles/checkout.css](../frontend/src/storefront/styles/checkout.css) | One-page checkout: calm responsive workspace with a sticky, readable order review. |
 | [frontend/src/storefront/styles/company-identity.css](../frontend/src/storefront/styles/company-identity.css) | Public company branding and readable legal identity across storefront channels. |
+| [frontend/src/storefront/styles/experience-polish.css](../frontend/src/storefront/styles/experience-polish.css) | Shared storefront interaction layer: stable navigation, editorial surfaces and catalogue-grounded AI discovery. |
 | [frontend/src/storefront/styles/legal.css](../frontend/src/storefront/styles/legal.css) | Responsive, equally weighted consent controls and readable legal/customer forms. |
 | [frontend/src/storefront/styles/order-completion.css](../frontend/src/storefront/styles/order-completion.css) | Order receipt page and finite transform-only celebration; honors reduced motion. |
 | [frontend/src/storefront/styles/shop/01--root.css](../frontend/src/storefront/styles/shop/01--root.css) | shop: -root styles. Source order is preserved by the entry stylesheet. |

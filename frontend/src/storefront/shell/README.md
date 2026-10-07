@@ -20,6 +20,8 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 - [`usePersonalization.ts`](usePersonalization.ts): Opt-in behavior signals and stable product ordering; no authoritative prices are changed.
 - [`useStorefrontController.ts`](useStorefrontController.ts): Cart lifecycle, authoritative checkout commands and storefront coordination.
 
+`useStorefrontAnchors.ts` restores section scrolling after SPA rendering, with reduced-motion support. `ConciergeView` starters prepare an editable question and reuse the existing cart-scoped recommendation API only on explicit submission.
+
 ## Verification
 
 Run `npm run build`, `npm test`, `npm run test:coverage` and `npm run architecture` from `frontend/`. Coverage includes untested source files. See [testing and limitations](../../../../docs/testing.md); file presence does not mean full test coverage.

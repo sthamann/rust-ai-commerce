@@ -36,7 +36,11 @@
 }
 .shop-brand {
   font-size: 28px;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  min-width: 0;
+  max-width: 390px;
+  line-height: 1.2;
 }
 .shop-bag-button {
   padding: 8px 14px;
@@ -223,7 +227,8 @@
   }
   .shop-brand {
     font-size: 24px;
-    flex: 1;
+    flex: 1 1 100%;
+    max-width: 100%;
   }
   .shop-nav > .shop-text-button {
     font-size: 13px !important;

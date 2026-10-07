@@ -27,8 +27,13 @@ export type IconName =
   | "percent"
   | "people"
   | "code"
-  | "layers";
+  | "layers"
+  | "eye"
+  | "eyeOff";
 const paths: Record<IconName, string> = {
+  eye: "M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Zm7 0a3 3 0 1 0 6 0 3 3 0 1 0-6 0",
+  eyeOff:
+    "M3 3l18 18M10 5h2c6 0 10 7 10 7s-1.5 2.6-4 4.6M6.2 6.3C3.6 8.6 2 12 2 12s4 7 10 7c1.5 0 2.9-.4 4.2-1M9.8 9.8a3 3 0 0 0 4.4 4.4",
   building: "M4 21h16M6 21V3h12v18M9 7h1M14 7h1M9 11h1M14 11h1M10 21v-5h4v5",
   globe:
     "M3 12h18M12 3c-6 6-6 12 0 18M12 3c6 6 6 12 0 18M3 12a9 9 0 1 0 18 0 9 9 0 1 0-18 0",

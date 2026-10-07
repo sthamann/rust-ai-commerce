@@ -1,6 +1,7 @@
 /** Central catalog workspace: server-filtered cursor list, product details and hierarchical categories. */
 import { lazy, useEffect, useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
+import type { OpenEntity } from "../shell/useEntityNavigation";
 import { useCatalogText } from "./catalog-i18n";
 import type { Category } from "./catalog-model";
 const ProductEditor = lazy(() => import("./ProductEditor"));
@@ -11,10 +12,12 @@ export default function ProductDataView({
   request,
   initialId,
   onEntityBack,
+  onEntity,
 }: {
   request: RequestFn;
   initialId?: string;
   onEntityBack?: () => void;
+  onEntity?: OpenEntity;
 }) {
   const { c, money, locale } = useCatalogText();
   const [view, setView] = useState("products");
@@ -89,14 +92,16 @@ export default function ProductDataView({
         request={request}
         categories={categories}
         onBack={() => {
+          setReload((v) => v + 1);
           if (onEntityBack) {
             onEntityBack();
             return;
           }
           setId(null);
-          setReload((v) => v + 1);
         }}
-        onCreated={setId}
+        onCreated={(createdId) =>
+          onEntity ? onEntity("productData", createdId) : setId(createdId)
+        }
       />
     );
   return (
@@ -207,7 +212,9 @@ export default function ProductDataView({
                     <td>
                       <button
                         className="catalog-product-link"
-                        onClick={() => setId(p.id)}
+                        onClick={() =>
+                          onEntity ? onEntity("productData", p.id) : setId(p.id)
+                        }
                       >
                         {p.media?.[0]?.url ? (
                           <img src={p.media[0].url} alt="" />

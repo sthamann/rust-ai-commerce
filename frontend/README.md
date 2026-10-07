@@ -15,6 +15,10 @@ src/
 
 Every feature folder has a README and every source file has a responsibility comment. The [complete module inventory](../docs/module-inventory.md) is checked in CI. The Rust module/test mapping remains in [the source map](../docs/source-map.md).
 
+## Connected AI interaction
+
+Studio exposes contextual **Ask Vendune** beside the current workspace, using the existing scoped conversation and reviewable proposals while keeping editors mounted. The standard storefront exposes catalogue-grounded discovery and a separate customer-account workspace. See [the interaction architecture and verification boundaries](../docs/ui-experience.md).
+
 ## State and boundaries
 
 `admin/shell/useStudioController.ts` owns merchant session, workspace, staging, conversation and command state. `StudioContext` exposes that state to focused composition views, not to shared building blocks. `requests.ts` preserves the separate live and selected-environment transports. `useServerHealth.ts` checks public server availability independently of merchant login.
