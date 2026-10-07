@@ -71,8 +71,19 @@ The exact proof boundary and extension procedure are documented in
   fabricated translations or silently copy names into every language.
 - All new interface text and bundled content ships in English, German and Spanish;
   preserve French where supported. Use typed shared vocabulary modules, never raw JSX
-  text/labels. `npm run localization` is required in CI. The legacy literal inventory
-  records existing debt; do not grow it to bypass this rule.
+  text/labels. `npm run localization` is required in CI. No legacy literal baseline
+  or record-legacy bypass is allowed. Conditional/fallback/template copy, local
+  string bindings and display props also belong in vocabularies. The explicit
+  `localization-tokens.json` list is only for proper names, protocol identifiers,
+  units and artwork lettering; never add interface prose to silence a failure.
+- Preserve every `{parameter}` in all translations. Use `npm run translations`
+  to export/import existing typed catalogues; imports validate all keys/locales
+  before writing string literals. See [the translation guide](docs/localization.md).
+- External app hosts pass interface/content/main locales and enabled languages.
+  Guest apps use `sdk.uiText` for controls and `sdk.text` for merchant content;
+  native and product-slot apps use the same main-language fallback. Do not slice
+  a locale and hard-code English as a content fallback. Verify a non-English-main
+  shop and a fifth content language; arbitrary third-party UI needs its own checks.
 - Reuse `shared/geography` search/group pickers for country or region selection.
   Country checkbox walls and unvalidated free-text subdivision IDs are prohibited.
 - Newly enabled delivery countries require explicit tax configuration and valid shipping

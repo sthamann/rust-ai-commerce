@@ -154,8 +154,10 @@ calls or real tax-law validation are part of these checks.
 
 The mandatory [project rule](../AGENTS.md#internationalization-contract-mandatory-for-every-new-module)
 and `npm run localization` reject new untranslated UI literals and incomplete
-bundled EN/DE/ES country/method/class content. An explicit legacy literal inventory
-remains; this gate does not claim that every historic module is fully localized.
+bundled EN/DE/FR/ES country/method/class content. The legacy UI-literal inventory
+has been removed; conditional and template copy is checked as well. See
+[the translation guide](localization.md) for translator export/import, app SDK
+context, main-language inheritance and the exact static-check boundaries.
 The destination guard is extracted to Lean with every Boolean combination and
 negative guard mutations. Database transactions, tax-law choices, model output
 quality and the surrounding server remain outside that proof boundary.

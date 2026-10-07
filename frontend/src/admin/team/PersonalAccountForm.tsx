@@ -81,7 +81,7 @@ export default function PersonalAccountForm({
               minLength={2}
               maxLength={48}
               pattern="[a-z0-9][a-z0-9-]+"
-              placeholder="my-shop"
+              placeholder={s("shopSlugExample")}
             />
           </label>
         </>

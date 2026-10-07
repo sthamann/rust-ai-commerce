@@ -1,7 +1,9 @@
 /** Generic registered product configuration slot. App packages own labels, input names and business rules. */
 import { useEffect, useState } from "react";
-import { shopApi, type Cart } from "../api/shop-api";
+import { getContentLocale, shopApi, type Cart } from "../api/shop-api";
 import { useAppText } from "../i18n/app-i18n";
+import { contentText } from "../i18n/content-language";
+import { useCountryCatalogue } from "../geography/useCountryCatalogue";
 type Slot = {
   app: string;
   version: string;
@@ -30,6 +32,9 @@ type Props = {
 };
 export default function AppSlot(props: Props) {
   const { locale } = useAppText();
+  const catalogue = useCountryCatalogue();
+  const language = getContentLocale();
+  const mainLocale = catalogue?.mainLocale ?? "en-GB";
   const [slots, setSlots] = useState<Slot[]>([]);
   useEffect(() => {
     let active = true;
@@ -44,6 +49,7 @@ export default function AppSlot(props: Props) {
       active = false;
     };
   }, [locale, props.productId]);
+  if (!catalogue) return null;
   return (
     <>
       {slots.map((slot, i) =>
@@ -52,12 +58,16 @@ export default function AppSlot(props: Props) {
           <ConfigurationForm
             key={`${slot.app}:${slot.version}:${props.productId}`}
             slot={slot}
+            language={language}
+            mainLocale={mainLocale}
             {...props}
           />
         ) : slot.slot.component === "entity-list" ? (
           <PublicEntities
             key={`${slot.app}:${i}`}
             slot={slot}
+            language={language}
+            mainLocale={mainLocale}
             productId={props.productId}
             familyId={props.familyId}
           />
@@ -70,13 +80,16 @@ function PublicEntities({
   slot,
   productId,
   familyId,
+  language,
+  mainLocale,
 }: {
   slot: Slot;
   productId: string;
   familyId?: string;
+  language: string;
+  mainLocale: string;
 }) {
   const { locale } = useAppText();
-  const lang = locale.slice(0, 2);
   const [records, setRecords] = useState<
     { name: string; elements: Record<string, unknown>[] }[]
   >([]);
@@ -105,7 +118,9 @@ function PublicEntities({
   }, [slot.app, productId, locale]);
   return (
     <section className="app-slot">
-      <h3>{slot.slot.label?.[lang] ?? slot.slot.label?.en ?? slot.app}</h3>
+      <h3>
+        {contentText(slot.slot.label ?? {}, language, mainLocale) || slot.app}
+      </h3>
       {records.flatMap((group) =>
         group.elements
           .filter(
@@ -123,12 +138,18 @@ function PublicEntities({
                   const value = r[f.name];
                   const text =
                     f.translatable && value && typeof value === "object"
-                      ? ((value as Record<string, string>)[lang] ??
-                        (value as Record<string, string>).en)
+                      ? contentText(
+                          value as Record<string, string>,
+                          language,
+                          mainLocale,
+                        )
                       : String(value ?? "");
                   return (
                     <div key={f.name}>
-                      <dt>{f.label?.[lang] ?? f.label?.en ?? f.name}</dt>
+                      <dt>
+                        {contentText(f.label ?? {}, language, mainLocale) ||
+                          f.name}
+                      </dt>
                       <dd>{text}</dd>
                     </div>
                   );
@@ -144,15 +165,17 @@ function ConfigurationForm({
   productId,
   cart,
   onCart,
-}: Props & { slot: Slot }) {
-  const { a, locale } = useAppText();
+  language,
+  mainLocale,
+}: Props & { slot: Slot; language: string; mainLocale: string }) {
+  const { a } = useAppText();
   const [text, setText] = useState("");
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const c = slot.configuration!;
-  const label = c.label[locale.slice(0, 2)] ?? c.label.en ?? slot.app;
-  const hint = c.hint[locale.slice(0, 2)] ?? c.hint.en;
+  const label = contentText(c.label, language, mainLocale) || slot.app;
+  const hint = contentText(c.hint, language, mainLocale);
   return (
     <section className="app-slot">
       <h3>{label}</h3>

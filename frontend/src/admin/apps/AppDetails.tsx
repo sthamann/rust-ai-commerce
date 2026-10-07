@@ -241,9 +241,7 @@ export default function AppDetails({
                     })
                   }
                 >
-                  {act.handler === "configurations"
-                    ? a("personalizedOrders")
-                    : act.description}
+                  {a("personalizedOrders")}
                 </button>
               ))}
           </div>

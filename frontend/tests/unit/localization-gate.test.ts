@@ -56,3 +56,62 @@ it("rejects stacked per-language value fields in future modules", () => {
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+it.each([
+  '<button>{busy ? "Saving now" : "Save changes"}</button>',
+  '<input placeholder={busy ? "Please wait" : "Your company"} />',
+  "<p>{`Hello ${name}`}</p>",
+  '<button aria-label={name ?? "Delete item"} />',
+])("rejects conditional, fallback and template copy: %s", (jsx) => {
+  const root = mkdtempSync(join(tmpdir(), "commerce-localization-"));
+  try {
+    writeFileSync(join(root, "New.tsx"), `export const New = () => ${jsx};`);
+    const result = spawnSync(
+      process.execPath,
+      [resolve("scripts/localization.mjs"), "--source", root],
+      { encoding: "utf8" },
+    );
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("untranslated UI literal");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+it("rejects a translation that drops an interpolation parameter", () => {
+  const root = mkdtempSync(join(tmpdir(), "commerce-localization-"));
+  try {
+    writeFileSync(
+      join(root, "new-i18n.ts"),
+      'const words = { count: ["{count} orders", "Bestellungen", "{count} commandes", "{count} pedidos"] };',
+    );
+    const result = spawnSync(
+      process.execPath,
+      [resolve("scripts/localization.mjs"), "--source", root],
+      { encoding: "utf8" },
+    );
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("translation placeholders differ");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+it("rejects text hidden in a local variable binding", () => {
+  const root = mkdtempSync(join(tmpdir(), "commerce-localization-"));
+  try {
+    writeFileSync(
+      join(root, "New.tsx"),
+      'export const New = () => { const label = "Untranslated title"; return <h2>{label}</h2>; };',
+    );
+    const result = spawnSync(
+      process.execPath,
+      [resolve("scripts/localization.mjs"), "--source", root],
+      { encoding: "utf8" },
+    );
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("Untranslated title");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});

@@ -1,4 +1,9 @@
 /** Guest SDK: no merchant tokens or raw host API access; the host rechecks every action. */
+export function commerceText(map, language, mainLocale = "en-GB", values = {}) {
+  const raw = map[language] ?? map[language.split("-")[0]] ?? map[mainLocale] ?? map[mainLocale.split("-")[0]] ?? "";
+  return Object.entries(values).reduce((text, [key, value]) => text.replaceAll(`{${key}}`, String(value)), raw);
+}
+const timeoutText = { en: "The app did not respond. Try again.", de: "Die App hat nicht geantwortet. Versuche es erneut.", fr: "L’app n’a pas répondu. Réessayez.", es: "La app no respondió. Inténtalo de nuevo." };
 export function connectCommerce() {
   return new Promise(resolve => {
     const waiting = new Map(), observers = new Set();
@@ -10,6 +15,11 @@ export function connectCommerce() {
         if (!sdk) {
           sdk = {
             get locale() { return context.locale; },
+            get contentLocale() { return context.contentLocale ?? context.locale; },
+            get mainLocale() { return context.mainLocale ?? "en-GB"; },
+            get locales() { return context.locales ?? [sdk.mainLocale]; },
+            text(map, values = {}) { return commerceText(map, sdk.contentLocale, sdk.mainLocale, values); },
+            uiText(map, values = {}) { return commerceText(map, sdk.locale, "en-GB", values); },
             get app() { return context.app; },
             get context() { return context.context ?? {}; },
             onContext(fn) { observers.add(fn); return () => observers.delete(fn); },
@@ -17,7 +27,7 @@ export function connectCommerce() {
             action(action, input = {}) {
               return new Promise((accept, reject) => {
                 const id = crypto.randomUUID();
-                const timeout = setTimeout(() => { waiting.delete(id); reject(new Error('App action timed out')); }, 15000);
+                const timeout = setTimeout(() => { waiting.delete(id); reject(new Error(sdk.uiText(timeoutText))); }, 15000);
                 waiting.set(id, {accept, reject, timeout});
                 parent.postMessage({type:'commerce.action', nonce:context.nonce, id, action, input}, '*');
               });

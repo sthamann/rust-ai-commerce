@@ -53,7 +53,7 @@ export function CreateShop({
             pattern="[a-z0-9][a-z0-9-]{0,46}[a-z0-9]"
             minLength={2}
             maxLength={48}
-            placeholder="my-shop"
+            placeholder={t("shopSlugExample")}
             value={form.id}
             onChange={(e) => setForm({ ...form, id: e.target.value })}
           />

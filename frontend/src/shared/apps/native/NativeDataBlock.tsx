@@ -11,6 +11,7 @@ export default function NativeDataBlock({
   entity,
   request,
   mainLocale,
+  displayLocale,
   dataEpoch = 0,
   onSaved,
   context = {},
@@ -20,6 +21,7 @@ export default function NativeDataBlock({
   entity: Entity;
   request: RequestFn;
   mainLocale: string;
+  displayLocale?: string;
   dataEpoch?: number;
   onSaved?: () => void;
   context?: Record<string, unknown>;
@@ -31,7 +33,8 @@ export default function NativeDataBlock({
       ? { [bound.field]: reference }
       : undefined;
   const missingContext = !!bound && !filter;
-  const { a, locale } = useAppStudioText();
+  const { a, locale: interfaceLocale } = useAppStudioText();
+  const locale = displayLocale ?? interfaceLocale;
   const [records, setRecords] = useState<AppRecord[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
   const [error, setError] = useState("");

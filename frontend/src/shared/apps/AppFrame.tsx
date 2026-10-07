@@ -8,12 +8,18 @@ export default function AppFrame({
   request,
   allowedActions,
   context: surfaceContext = {},
+  mainLocale = "en-GB",
+  locales = ["en-GB"],
+  contentLocale,
 }: {
   app: string;
   url: string;
   request: RequestFn;
   allowedActions?: string[];
   context?: Record<string, unknown>;
+  mainLocale?: string;
+  locales?: string[];
+  contentLocale?: string;
 }) {
   const ref = useRef<HTMLIFrameElement>(null);
   const { locale } = useAppText();
@@ -21,7 +27,16 @@ export default function AppFrame({
   const [height, setHeight] = useState(400);
   const context = () =>
     ref.current?.contentWindow?.postMessage(
-      { type: "commerce.context", app, locale, nonce, context: surfaceContext },
+      {
+        type: "commerce.context",
+        app,
+        locale,
+        contentLocale: contentLocale ?? locale,
+        mainLocale,
+        locales,
+        nonce,
+        context: surfaceContext,
+      },
       "*",
     );
   useEffect(() => {
@@ -66,7 +81,13 @@ export default function AppFrame({
     window.addEventListener("message", listener);
     return () => window.removeEventListener("message", listener);
   }, [app, nonce, request, allowedActions]);
-  useEffect(context, [nonce, surfaceContext]);
+  useEffect(context, [
+    nonce,
+    surfaceContext,
+    mainLocale,
+    locales,
+    contentLocale,
+  ]);
   return (
     <iframe
       key={`${app}:${locale}`}

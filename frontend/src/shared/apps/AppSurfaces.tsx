@@ -7,6 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { getContentLocale } from "../api/shop-api";
 import type { RequestFn } from "../api/types";
 import { useLocale } from "../i18n/i18n";
 import "../styles/app-surfaces.css";
@@ -139,7 +140,7 @@ export function AppSurfaceView({
       data-surface={s.surface.id}
     >
       <div className="app-surface-heading">
-        <h2>{surfaceLabel(s, locale)}</h2>
+        <h2>{surfaceLabel(s, isPublic ? getContentLocale() : locale)}</h2>
         <span>
           {s.app} · {s.version}
         </span>
@@ -163,6 +164,9 @@ export function AppSurfaceView({
         <AppFrame
           app={s.app}
           url={s.url!}
+          mainLocale={s.mainLocale}
+          locales={s.locales}
+          contentLocale={isPublic ? getContentLocale() : locale}
           request={scoped}
           allowedActions={s.surface.actions}
           context={{
@@ -199,7 +203,6 @@ export function AppSurfaceSlot({
 }
 export function StorefrontAppNavigation() {
   const { surfaces } = useContext(Registry);
-  const { locale } = useLocale();
   return (
     <>
       {surfaces
@@ -209,7 +212,7 @@ export function StorefrontAppNavigation() {
             key={`${s.app}:${s.surface.id}`}
             href={`#app/${s.app}/${s.surface.id}`}
           >
-            {surfaceLabel(s, locale)}
+            {surfaceLabel(s, getContentLocale())}
           </a>
         ))}
     </>

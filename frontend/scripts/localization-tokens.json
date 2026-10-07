@@ -1,0 +1,214 @@
+[
+  {
+    "text": "/api/apps/",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "/http/",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "/products/",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "/webhooks/apps/{shop}/",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "AI",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "API",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "API/MCP",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "Apache AGE",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "B",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "Claude",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "Claude Code",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "Claude Desktop / MCP",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "Codex",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "DE",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "ECB",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "EN",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "ES",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "EUR",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "FIELD",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "FR",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "GET",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "GitHub ↗",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "I",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "ISO",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "IT",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "JSON",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "KB",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "MB",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "MCP",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "MCP / UCP",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "MERCHANT_TOKEN",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "NOTES",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "OpenAI",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "POST",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "Resend",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "SDK",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "SHA-256:",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "SKU",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "SMTP",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "SMTP · Resend · SendGrid",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "STARTTLS · 587",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "SendGrid",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "TLS · 465",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "U",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "UCP",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "US",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "USD",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "V",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "app.",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "app.record.changed",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "ms",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "v",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  },
+  {
+    "text": "v0.5",
+    "reason": "Stable product/provider name, protocol identifier, unit or artwork lettering; not interface prose."
+  }
+]

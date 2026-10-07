@@ -1,4 +1,5 @@
 /** The same React renderer powers design preview, private sandbox, released admin modules and storefront surfaces. */
+import { getContentLocale } from "../../api/shop-api";
 import { useState } from "react";
 import type { RequestFn } from "../../api/types";
 import { useAppStudioText } from "../../i18n/app-studio-i18n";
@@ -45,7 +46,8 @@ export default function NativeAppView({
         ? matches[0]
         : mainLocale;
   const [dataEpoch, setDataEpoch] = useState(0);
-  const { locale, a } = useAppStudioText();
+  const { locale: interfaceLocale, a } = useAppStudioText();
+  const locale = isPublic ? getContentLocale() : interfaceLocale;
   const scoped: RequestFn = (path, body) => {
     const action = path.split("/").at(-1)!;
     if (!allowedActions.includes(action))
@@ -81,6 +83,7 @@ export default function NativeAppView({
                   entity={entity!}
                   request={scoped}
                   mainLocale={mainLocale}
+                  displayLocale={locale}
                   dataEpoch={b.kind === "form" ? 0 : dataEpoch}
                   context={context}
                   onSaved={() => setDataEpoch((n) => n + 1)}

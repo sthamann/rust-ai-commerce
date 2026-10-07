@@ -66,7 +66,7 @@ export default function StorefrontHeader() {
           }
         >
           {cart?.customerGroup === "business"
-            ? "Example Studio · B2B"
+            ? s("businessAccount")
             : s("business")}
         </button>
         <button onClick={() => setAccount(true)}>{w("account")}</button>

@@ -273,3 +273,7 @@ the automatic all-order path and an equivalent flow unintentionally. See the
 ## Payment providers
 
 `apps/payment-provider/manifest.json` is a provider-neutral service contract with translated methods, account onboarding and protected payment commands for HTTP, MCP and Flow Builder. App Studio edits the same contract. The public core validates exact receipts and owns stock/order/refund jobs; proprietary PSP calls remain in a separate private service. See [Payment provider API 1](../docs/payment-provider-api.md) for deployment, embedded checkout, immutable upgrades, callbacks and limits. The example is synthetic; it does not call Stripe or collect money.
+
+## App translations
+
+Use `sdk.uiText` for interface controls and `sdk.text` for merchant-owned content. The host supplies interface/content/main languages and enabled shop locales; both native and external apps retain per-field inheritance. See [the complete contract and examples](../docs/localization.md#native-and-external-apps). All bundled manifests and guest catalogues are checked by `npm --prefix frontend run localization`.

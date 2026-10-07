@@ -1,5 +1,7 @@
 /** Storefront and operational interface strings: de. */
 export const de = {
+  businessAccount: "Geschäftskonto · B2B",
+  shopSlugExample: "mein-shop",
   brand: "Marke",
   camel: "Camel",
   chalk: "Kreideweiß",

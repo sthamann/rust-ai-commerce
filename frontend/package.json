@@ -12,7 +12,8 @@
     "test:coverage": "vitest run --coverage",
     "test:coverage:full": "vitest run --coverage --coverage.thresholds.100",
     "architecture": "node scripts/architecture.mjs",
-    "localization": "node scripts/localization.mjs",
+    "localization": "node scripts/localization.mjs && node scripts/translation-catalog.mjs check && node scripts/app-localization.mjs",
+    "translations": "node scripts/translation-catalog.mjs",
     "api:check": "python3 ../scripts/api_catalogue.py --check"
   },
   "dependencies": {

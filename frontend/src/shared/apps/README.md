@@ -13,3 +13,7 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 ## Verification
 
 Run `npm run build`, `npm test`, `npm run test:coverage` and `npm run architecture` from `frontend/`. Coverage includes untested source files. See [testing and limitations](../../../../docs/testing.md); file presence does not mean full test coverage.
+
+## Language context
+
+Native surfaces and legacy product slots use shared `contentText` and shop main-language inheritance. Public surfaces read the storefront content locale, including extra enabled languages. `AppFrame` passes interface/content/main locales and enabled languages to the guest SDK; no credentials or permissions are added. See [localization](../../../../docs/localization.md).

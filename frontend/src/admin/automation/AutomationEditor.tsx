@@ -1,4 +1,5 @@
 /** AutomationEditor: focused form view with explicit typed inputs and callbacks. */
+import { useAutomationText } from "../../shared/i18n/automation-i18n";
 import { channelUrl } from "../channels/channel-model";
 import PromotionSchedule from "./PromotionSchedule";
 import { shopScope } from "../../shared/api/shop-scope";
@@ -58,6 +59,7 @@ export default function AutomationEditor({
   setAdvanced,
 }: AutomationEditorProps) {
   const { mainLocale } = useContentLanguage();
+  const { a } = useAutomationText();
   const [categories, setCategories] = useState<any[]>([]);
   useEffect(() => {
     let active = true;
@@ -267,7 +269,7 @@ export default function AutomationEditor({
               onChange={(e) => update("kind", e.target.value)}
             >
               <option value="storefront">{w("storefrontType")}</option>
-              <option value="headless">Headless</option>
+              <option value="headless">{a("headless")}</option>
             </select>
           </label>
           <label>

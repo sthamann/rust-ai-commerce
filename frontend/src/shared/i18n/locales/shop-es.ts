@@ -1,6 +1,8 @@
 /** Storefront and operational interface strings: es. */
 import type { Key } from "./shop-de";
 export const es: Record<Key, string> = {
+  businessAccount: "Cuenta empresarial · B2B",
+  shopSlugExample: "mi-tienda",
   brand: "Marca",
   camel: "Camel",
   chalk: "Blanco tiza",
