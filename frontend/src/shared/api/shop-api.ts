@@ -3,6 +3,31 @@ import { requestJson } from "./request-json";
 import { shopScope } from "./shop-scope";
 import { responseError } from "../i18n/errors-i18n";
 import { getLocale } from "../i18n/i18n";
+export type CurrencyDefinition = {
+  code: string;
+  scale: number;
+  rate: string;
+  strategy: "automatic" | "fixed";
+};
+export type CurrencyConfig = {
+  baseCurrency: string;
+  pricingCurrency?: string;
+  defaultCurrency: string;
+  enabled: string[];
+  definitions: CurrencyDefinition[];
+  autoRefresh: boolean;
+  rateSource: "manual" | "ecb";
+  rateDate: string | null;
+};
+export type CurrencyContext = {
+  code: string;
+  scale: number;
+  factor: string;
+  baseCurrency: string;
+  strategy: string;
+  rateSource: string;
+  rateDate: string | null;
+};
 export type Product = {
   id: string;
   product_number?: string;
@@ -11,6 +36,7 @@ export type Product = {
   description: string;
   category: string;
   price: number;
+  currency?: string;
   calculated_price?: Price;
   tax_rate: number;
   stock: number;
@@ -73,6 +99,7 @@ export type Payment = {
   mode: string;
 };
 export type Config = {
+  currencies?: CurrencyConfig;
   legal?: import("../legal/legal-types").LegalConfig;
   customerGroups?: import("../customer/customer-types").CustomerGroup[];
   countries: string[];
@@ -111,6 +138,8 @@ export type Order = {
   }[];
 };
 export type Cart = {
+  currencyContext?: CurrencyContext;
+  availableCurrencies?: string[];
   legal?: { requiresDigital: boolean; strictCheckout: boolean };
   couponCodes?: string[];
   discountTotal?: number;
@@ -147,6 +176,8 @@ export type Cart = {
   availablePaymentMethods: Payment[];
   deliveries: { deliveryDate: { earliest: string; latest: string } }[];
   price: {
+    currency?: string;
+    currencyScale?: number;
     positionPrice: number;
     totalPrice: number;
     netPrice: number;
@@ -200,6 +231,15 @@ export async function shopApi<T = unknown>(
     headers: {
       "Content-Type": "application/json",
       "x-commerce-locale": getContentLocale(),
+      ...(localStorage.getItem(
+        `rac-currency:${shopScope()}:${new URLSearchParams(location.search).get("channel") ?? "default"}`,
+      )
+        ? {
+            "x-commerce-currency": localStorage.getItem(
+              `rac-currency:${shopScope()}:${new URLSearchParams(location.search).get("channel") ?? "default"}`,
+            )!,
+          }
+        : {}),
       "sw-sales-channel-id":
         new URLSearchParams(location.search).get("channel") ?? "default",
       ...(localStorage.getItem(`rac-customer:${shopScope()}`)
@@ -223,6 +263,20 @@ export async function shopApi<T = unknown>(
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const v = r.value;
+  if (
+    r.status === 409 &&
+    v.errors?.[0]?.detail?.startsWith("Currency unavailable") &&
+    path === "/store-api/checkout/cart" &&
+    body !== undefined &&
+    method !== "PUT"
+  ) {
+    const key = `rac-currency:${shopScope()}:${new URLSearchParams(location.search).get("channel") ?? "default"}`;
+    if (localStorage.getItem(key)) {
+      localStorage.removeItem(key);
+      return shopApi<T>(path, body, token, method, merchant);
+    }
+  }
+
   if (
     r.status === 401 &&
     path.startsWith("/store-api/") &&

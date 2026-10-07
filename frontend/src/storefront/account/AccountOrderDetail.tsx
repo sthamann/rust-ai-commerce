@@ -33,8 +33,13 @@ export default function AccountOrderDetail({
   const { a, locale } = useAccountText(),
     { c } = useCustomerText(),
     { o } = useOperationsText(),
-    { money } = useShopText();
+    { money: _currentMoney } = useShopText();
   const [order, setOrder] = useState<CustomerOrder>();
+  const money = (n: number) =>
+    new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: order?.cart.price.currency ?? "EUR",
+    }).format(n);
   const [loading, setLoading] = useState(true);
   const path = `/store-api/account/orders/${encodeURIComponent(id)}`;
   useEffect(() => {

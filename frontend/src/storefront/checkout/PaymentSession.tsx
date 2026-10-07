@@ -10,6 +10,7 @@ type Status = {
   approvalUrl?: string;
   amountMinor: number;
   currency: string;
+  currencyScale?: number;
   environment: string;
   job?: { state: string; operation: string } | null;
 };
@@ -132,7 +133,16 @@ function PaymentStatus({ id, token, autoRedirect = false }: PaymentProps) {
           {new Intl.NumberFormat(document.documentElement.lang || "en", {
             style: "currency",
             currency: data.currency,
-          }).format(data.amountMinor / 100)}
+          }).format(
+            data.amountMinor /
+              10 **
+                (data.currencyScale ??
+                  new Intl.NumberFormat("en", {
+                    style: "currency",
+                    currency: data.currency,
+                  }).resolvedOptions().maximumFractionDigits ??
+                  2),
+          )}
         </strong>
       )}
       {paid && <p>{x("paidHint")}</p>}

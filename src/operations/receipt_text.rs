@@ -14,6 +14,8 @@ pub(super) fn lines(v: &Value) -> Vec<String> {
     let word = |w: [&str; 4]| w[index].to_string();
     let o = &v["order"];
     let c = &o["cart"];
+    let currency = c["price"]["currency"].as_str().unwrap_or("EUR");
+    let decimals = c["price"]["currencyScale"].as_u64().unwrap_or(2) as usize;
     let title = match v["kind"].as_str().unwrap_or("") {
         "invoice" => word(["Invoice", "Rechnung", "Facture", "Factura"]),
         "delivery_note" => word([
@@ -144,7 +146,7 @@ pub(super) fn lines(v: &Value) -> Vec<String> {
             ));
             if v["kind"] != "delivery_note" {
                 lines.push(format!(
-                    "  {:.2} EUR",
+                    "  {:.decimals$} {currency}",
                     sign * item["price"]["totalPrice"].as_f64().unwrap_or(0.)
                 ));
             }
@@ -157,12 +159,12 @@ pub(super) fn lines(v: &Value) -> Vec<String> {
             ("totalPrice", word(["Total", "Gesamt", "Total", "Total"])),
         ] {
             lines.push(format!(
-                "{label}: {:.2} EUR",
+                "{label}: {:.decimals$} {currency}",
                 sign * c["price"][key].as_f64().unwrap_or(0.)
             ));
         }
         lines.push(format!(
-            "{}: {:.2} EUR",
+            "{}: {:.decimals$} {currency}",
             word(["Shipping", "Versand", "Livraison", "Envío"]),
             sign * c["shippingCosts"]["totalPrice"].as_f64().unwrap_or(0.)
         ));
@@ -171,7 +173,7 @@ pub(super) fn lines(v: &Value) -> Vec<String> {
                 if let Some(taxes) = item["price"]["calculatedTaxes"].as_array() {
                     for tax in taxes {
                         lines.push(format!(
-                            "{} {}%: {:.2} EUR",
+                            "{} {}%: {:.decimals$} {currency}",
                             word(["VAT", "MwSt.", "TVA", "IVA"]),
                             tax["taxRate"],
                             sign * tax["tax"].as_f64().unwrap_or(0.)
@@ -182,4 +184,19 @@ pub(super) fn lines(v: &Value) -> Vec<String> {
         }
     }
     lines
+}
+
+#[cfg(test)]
+mod currency_tests {
+    use super::*;
+    #[test]
+    fn document_uses_invoice_currency_and_precision() {
+        for (code, scale, total, expected) in [
+            ("JPY", 0, 1234., "1234 JPY"),
+            ("KWD", 3, 7.123, "7.123 KWD"),
+        ] {
+            let value = json!({"locale":"en","kind":"invoice","order":{"cart":{"price":{"currency":code,"currencyScale":scale,"totalPrice":total},"lineItems":[]}}});
+            assert!(lines(&value).iter().any(|s| s.contains(expected)));
+        }
+    }
 }

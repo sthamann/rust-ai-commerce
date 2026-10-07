@@ -130,7 +130,9 @@ contract has not been verified. Its example app therefore reports
 `connector-contract-required` and cannot be selected for checkout. The native
 PayPal adapter must not be presented as an official Shopware Payments integration.
 
-Production gaps include authorization/void flows, multi-currency, dispute and
+The current [provider API](payment-provider-api.md) adds authorization/void commands
+and [multi-currency](currencies.md) with immutable precision. The following gaps
+refer to the native PayPal adapter: dispute and
 externally initiated refund reconciliation, asynchronous refund completion,
 early webhook matching before provider-ID persistence, refund retry beyond the
 provider's idempotency retention, multi-seller onboarding/credential rotation,

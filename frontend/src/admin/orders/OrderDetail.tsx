@@ -144,7 +144,7 @@ export default function OrderDetail({
   const money = (n: number) =>
     new Intl.NumberFormat(locale, {
       style: "currency",
-      currency: "EUR",
+      currency: order?.cart.price.currency ?? "EUR",
     }).format(n);
   if (!order) return <p role="status">{error || o("processing")}</p>;
   return (

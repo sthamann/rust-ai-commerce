@@ -1,7 +1,6 @@
 /** Clickable purchase cards show the live server status and lead to a protected order detail. */
 import { useAccountText } from "../../shared/i18n/account-i18n";
 import { useOperationsText } from "../../shared/i18n/operations-i18n";
-import { useShopText } from "../../shared/i18n/shop-i18n";
 import type { CustomerOrder } from "./account-types";
 export default function AccountOrderList({
   orders,
@@ -13,8 +12,7 @@ export default function AccountOrderList({
   onShop: () => void;
 }) {
   const { a, locale } = useAccountText(),
-    { o } = useOperationsText(),
-    { money } = useShopText();
+    { o } = useOperationsText();
   if (!orders.length)
     return (
       <div className="account-empty">
@@ -47,7 +45,12 @@ export default function AccountOrderList({
                   })}
               </small>
             </div>
-            <strong>{money(order.cart.price.totalPrice)}</strong>
+            <strong>
+              {new Intl.NumberFormat(locale, {
+                style: "currency",
+                currency: order.cart.price.currency ?? "EUR",
+              }).format(order.cart.price.totalPrice)}
+            </strong>
           </div>
           <div className="account-order-products">
             {order.cart.lineItems.slice(0, 3).map((item) => (

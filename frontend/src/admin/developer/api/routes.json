@@ -425,6 +425,26 @@
     "source": "src/routes.rs"
   },
   {
+    "path": "/api/merchant/currencies/price-jobs",
+    "method": "GET",
+    "source": "src/currencies/routes.rs"
+  },
+  {
+    "path": "/api/merchant/currencies/price-jobs",
+    "method": "POST",
+    "source": "src/currencies/routes.rs"
+  },
+  {
+    "path": "/api/merchant/currencies/price-jobs/{id}",
+    "method": "GET",
+    "source": "src/currencies/routes.rs"
+  },
+  {
+    "path": "/api/merchant/currencies/rates/refresh",
+    "method": "POST",
+    "source": "src/currencies/routes.rs"
+  },
+  {
     "path": "/api/merchant/customer-groups",
     "method": "GET",
     "source": "src/operations/mod.rs"
@@ -975,6 +995,11 @@
     "source": "src/marketing/routes.rs"
   },
   {
+    "path": "/store-api/checkout/currency",
+    "method": "PUT",
+    "source": "src/currencies/routes.rs"
+  },
+  {
     "path": "/store-api/checkout/handoff",
     "method": "POST",
     "source": "src/checkout_handoff.rs"
@@ -1013,6 +1038,11 @@
     "path": "/store-api/countries",
     "method": "GET",
     "source": "src/routes.rs"
+  },
+  {
+    "path": "/store-api/currencies",
+    "method": "GET",
+    "source": "src/currencies/routes.rs"
   },
   {
     "path": "/store-api/intelligence/recommendations/{id}",

@@ -1,5 +1,14 @@
 //! Public HTTP/MCP capability catalogue, separate from authorization and dispatch.
 pub(crate) const CAPABILITIES: &[(&str, &str)] = &[
+    ("currency.list", "Read currencies and FX context"),
+    ("currency.select", "Select open-cart currency with revision"),
+    ("merchant.currencies.refresh", "Refresh ECB rates"),
+    (
+        "merchant.currencies.generate",
+        "Queue fixed-price generation",
+    ),
+    ("merchant.currencies.jobs", "List currency jobs"),
+    ("merchant.currencies.job", "Read currency job"),
     (
         "privacy.policy",
         "Read effective channel legal documents and consent policy",

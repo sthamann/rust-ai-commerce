@@ -1,4 +1,5 @@
 /** Payment jobs are observed until confirmation. Delivery actions share the server state machine. */
+import { useCurrencyText } from "../../shared/i18n/currency-i18n";
 import { safeRichUrl } from "../../shared/content/rich-document";
 import { useAccountText } from "../../shared/i18n/account-i18n";
 import { useState } from "react";
@@ -27,6 +28,8 @@ export default function OrderPaymentDelivery({
   const [links, setLinks] = useState<Record<number, string>>({});
   const paymentText = usePaymentProviderText();
   const [tracking, setTracking] = useState<Record<number, string>>({});
+  const { c } = useCurrencyText();
+  const refundFactor = 10 ** (order.cart.price.currencyScale ?? 2);
   const [refund, setRefund] = useState("");
   const actions = order.workflow?.actions ?? [];
   const label = (a: OrderAction) =>
@@ -81,14 +84,21 @@ export default function OrderPaymentDelivery({
             <form
               onSubmit={async (e) => {
                 e.preventDefault();
-                if (await onPayment("refund", Number(refund))) setRefund("");
+                if (
+                  await onPayment(
+                    "refund",
+                    Math.round(Number(refund) * refundFactor),
+                  )
+                )
+                  setRefund("");
               }}
             >
               <label>
-                {o("refund")}
+                {c("refundAmount")} · {order.cart.price.currency ?? "EUR"}
                 <input
                   type="number"
-                  min={1}
+                  min={1 / refundFactor}
+                  step={1 / refundFactor}
                   required
                   value={refund}
                   onChange={(e) => setRefund(e.target.value)}

@@ -36,6 +36,9 @@ pub(crate) async fn product_detail(
         .map(|c| selection(&c.data))
         .unwrap_or_else(CheckoutSelection::defaults);
     let (config, _) = scoped_config(&a, &t, marketing::channel_id(&h)).await?;
+    let currency = config
+        .currencies
+        .selected(&currencies::requested(&h, c.as_ref()))?;
     let selection = resolve_selection(selection, group, &config);
     let taxes = tax_settings_for_header(&a, c.as_ref(), &chain, &config).await?;
     let priced = tax_products(&ps, &selection, &taxes)?;
@@ -65,6 +68,7 @@ pub(crate) async fn product_detail(
             status: "preview".into(),
             data: Cart {
                 coupons: vec![],
+                currency: currency.code.clone(),
                 sales_channel: "default".into(),
                 app_configurations: HashMap::new(),
                 items: vec![Item {
@@ -107,7 +111,26 @@ pub(crate) async fn product_detail(
         })
         .unwrap_or_default();
     product["variantLabel"] = json!(suffix);
+    product["price"] = json!(currencies::product_price(
+        priced.iter().find(|v| v.id == p.id).unwrap_or(p),
+        &config.currencies,
+        currency
+    )?);
+    product["currency"] = json!(currency.code);
+    let variants = family_ps
+        .iter()
+        .map(|p| -> Result<Value> {
+            let mut v = json!(p);
+            v["price"] = json!(currencies::product_price(
+                priced.iter().find(|v| v.id == p.id).unwrap_or(p),
+                &config.currencies,
+                currency
+            )?);
+            v["currency"] = json!(currency.code);
+            Ok(v)
+        })
+        .collect::<Result<Vec<_>>>()?;
     Ok(Json(
-        json!({"product":product,"familyId":family,"variants":family_ps,"variantsPagination":{"nextCursor":next_cursor,"hasMore":next_cursor.is_some(),"limit":criteria.page_size()?},"calculatedPrices":price_tiers,"delivery":delivery,"taxStatus":if config.is_business(group){"net"}else{"gross"},"country":selection.country,"reviews":{"count":count,"average":rating,"elements":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"author":r.get::<String,_>("author"),"rating":r.get::<i32,_>("rating"),"title":r.get::<String,_>("title"),"content":r.get::<String,_>("content"),"verifiedPurchase":r.get::<bool,_>("verified"),"demo":r.get::<bool,_>("demo"),"time":r.get::<String,_>("time")})).collect::<Vec<_>>()}}),
+        json!({"currencyContext":currencies::context(&config.currencies,currency),"availableCurrencies":config.currencies.enabled,"product":product,"familyId":family,"variants":variants,"variantsPagination":{"nextCursor":next_cursor,"hasMore":next_cursor.is_some(),"limit":criteria.page_size()?},"calculatedPrices":price_tiers,"delivery":delivery,"taxStatus":if config.is_business(group){"net"}else{"gross"},"country":selection.country,"reviews":{"count":count,"average":rating,"elements":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"author":r.get::<String,_>("author"),"rating":r.get::<i32,_>("rating"),"title":r.get::<String,_>("title"),"content":r.get::<String,_>("content"),"verifiedPurchase":r.get::<bool,_>("verified"),"demo":r.get::<bool,_>("demo"),"time":r.get::<String,_>("time")})).collect::<Vec<_>>()}}),
     ))
 }

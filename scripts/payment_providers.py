@@ -41,8 +41,8 @@ def wait(id,h,state):
  raise AssertionError((state,v,call('/api/payments',h=ah)))
 def sql(statement):
  return subprocess.check_output(['docker','exec','-i',os.getenv('DB_CONTAINER','rust-ai-commerce-postgres-1'),'psql','-U','commerce','-d',os.environ['TEST_DATABASE'],'-At','-v','ON_ERROR_STOP=1'],input=statement,text=True).strip()
-def purchase():
- h={'x-tenant':'workshop'};c=call('/store-api/checkout/cart',{'session':uuid.uuid4().hex},h);h['sw-context-token']=c['token'];c=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'notebook','quantity':1},{'referencedId':'mug','quantity':1}]},h)
+def purchase(currency="EUR"):
+ h={'x-tenant':'workshop','x-commerce-currency':currency};c=call('/store-api/checkout/cart',{'session':uuid.uuid4().hex},h);h['sw-context-token']=c['token'];c=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'notebook','quantity':1},{'referencedId':'mug','quantity':1}]},h)
  s=c['checkout'];s.update(paymentMethodId='example-payments-wallet',customerEmail='fixture@example.test',billingAddress={'name':'Fixture Buyer','firstName':'Fixture','lastName':'Buyer','street':'Fixture Street 1','postalCode':'12345','city':'Test','country':'DE'});call('/store-api/checkout/context',{'revision':c['revision'],'checkout':s},h,'PUT')
  return call('/store-api/checkout/order',{}, {**h,'Idempotency-Key':uuid.uuid4().hex}),h
 try:
@@ -51,7 +51,7 @@ try:
   if p.poll()!=None:raise RuntimeError('See .run/generic-payments.log')
   try:call('/health');break
   except OSError:time.sleep(.2)
- m=json.loads((ROOT/'extensions/apps/payment-provider/manifest.json').read_text());call('/api/apps',{'manifest':m},ah)
+ m=json.loads((ROOT/'extensions/apps/payment-provider/manifest.json').read_text());m['paymentProvider']['methods'][0]['currencies']=['EUR','USD','JPY','KWD'];call('/api/apps',{'manifest':m},ah)
  providers=call('/api/payment-providers',h=ah);assert any(x['id']==m['id'] for x in providers['providers'])
  onboard={'operation':'start','channel':'default','country':'DE','requestKey':uuid.uuid4().hex,'approve':True}
  call('/api/payment-providers/'+m['id']+'/onboarding',onboard,ah)
@@ -60,8 +60,14 @@ try:
  call('/api/payment-providers/'+m['id']+'/onboarding',onboard,ah,expected=400);behavior.clear()
  behavior['badUrl']=True;call('/api/payment-providers/'+m['id']+'/onboarding',onboard,ah,expected=400);behavior.clear();assert call('/api/payment-providers',h=ah)['accounts']==before
  print('PASS Installed contracts and scoped onboarding reject foreign identities and malicious URLs without mutating accounts')
- config=call('/api/merchant/commerce',h=ah);method=next(x for x in config['data']['payments'] if x['id']=='example-payments-wallet');assert not method['active'];method['active']=True;call('/api/merchant/commerce',{'data':config['data'],'revision':config['revision']},ah,'PUT')
+ config=call('/api/merchant/commerce',h=ah);fx=config['data']['currencies'];fx['definitions'] += [{'code':c,'scale':n,'rate':r,'strategy':'automatic'} for c,n,r in [('USD',2,'1.25'),('JPY',0,'160'),('KWD',3,'0.33333333')]];fx['enabled'] += ['USD','JPY','KWD'];method=next(x for x in config['data']['payments'] if x['id']=='example-payments-wallet');assert not method['active'];method['active']=True;call('/api/merchant/commerce',{'data':config['data'],'revision':config['revision']},ah,'PUT')
  assert any(x['id']=='example-payments-wallet' for x in call('/store-api/checkout/options',h={'x-tenant':'workshop'})['payments'])
+ for code,scale in [('USD',2),('JPY',0),('KWD',3)]:
+  fo,fh=purchase(code);fid=fo['payment']['attemptId'];fv=wait(fid,fh,'ready');assert fv['currency']==code and fv['currencyScale']==scale and fo['money']['minor']==fv['amountMinor']
+  reference[fid]='approved';call('/store-api/payments/'+fid+'/reconcile',{}, {**fh,'Idempotency-Key':uuid.uuid4().hex});wait(fid,fh,'captured')
+  call('/api/payments/'+fid+'/refund',{'approve':True,'amountMinor':1},{**ah,'Idempotency-Key':uuid.uuid4().hex});assert wait(fid,fh,'partially_refunded')['refundedMinor']==1
+  outbound=next(x for x in calls if x.get('attemptId')==fid and x['operation']=='create');assert outbound['currencyScale']==scale and outbound['currency']==code
+ print('PASS real generic adapter ledger preserves USD/JPY/KWD minor units and exact partial refunds')
  o,h=purchase();id=o['payment']['attemptId'];wait(id,h,'ready');assert o['payment']['provider']==m['id']
  call('/store-api/payments/'+id+'/session',h={**h,'x-tenant':'atelier'},expected=404);session=call('/store-api/payments/'+id+'/session',h=h);assert session['expiresIn']==300 and secret not in json.dumps(session)
  call('/api/merchant/orders/'+o['id']+'/transition',{'kind':'payment','state':'paid','revision':o['revision']},ah,expected=409)

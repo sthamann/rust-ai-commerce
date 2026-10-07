@@ -91,6 +91,22 @@ fn real_order_template_is_localized_and_html_variables_are_escaped() {
     assert!(templates::order(&json!({"event":event}), &s).is_err());
     assert!(templates::order(&json!({"event":{}}), &s).is_err());
 }
+
+#[test]
+fn order_mail_uses_frozen_currency_precision_and_exact_amount() {
+    let s = config::Settings::default();
+    for (code, scale, minor, rendered) in [("JPY", 0, 1234, "1234"), ("KWD", 3, 7123, "7.123")] {
+        let event = json!({"order":{"orderNumber":"FX-1","currencyId":"EUR",
+            "money":{"minor":minor,"currency":{"code":code,"scale":scale}},
+            "orderCustomer":{"email":"buyer@example.test","firstName":"Ada"},
+            "cart":{"price":{"totalPrice":999.99}}}});
+        let mail = templates::order(&json!({"event":event,"locale":"en"}), &s).unwrap();
+        assert!(mail.text.contains(&format!("{rendered} {code}")));
+        assert!(!mail.text.contains("999.99"));
+        let mail = templates::order(&json!({"event":event,"locale":"de"}), &s).unwrap();
+        assert!(mail.text.contains(&rendered.replace('.', ",")));
+    }
+}
 #[test]
 fn consumer_receipts_preserve_declaration_and_do_not_claim_resolution() {
     let s = config::Settings::default();

@@ -7,12 +7,13 @@ requirements, **not a claim that the current app host implements them all**.
 
 ## Current boundary
 
-The native `PaymentProvider` trait in `src/payments/provider.rs` separates wire
-calls from the core ledger. Its dispatcher currently selects PayPal; attempt
-creation, currency, reconciliation and receipt parsing are also PayPal-specific.
-Installing a managed app or declaring a service action does not register a new
-settlement provider. A new rail needs an explicit core integration and its own
-adapter, not arbitrary app writes to order payment state.
+The native `PaymentProvider` trait separates wire calls from the core ledger.
+External adapters now register through the versioned [payment provider app
+contract](payment-provider-api.md), with declared supported currencies, scoped
+onboarding and immutable attempts. [Multi-currency](currencies.md) is resolved
+before payment preparation; adapters receive minor units and explicit precision.
+A method name or arbitrary service action alone still cannot register settlement
+or write payment state. Providers must implement and verify the shared contract.
 
 The existing [checkout contract](checkout.md) and
 [payment ledger description](intelligence-apps-payments.md#payment-adapter-and-ledger)

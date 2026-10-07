@@ -1,0 +1,108 @@
+/** Currency cards use the Studio form grid, keyboard targets and responsive layouts. */
+.currency-settings label {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  font-weight: 550;
+}
+.currency-settings label small,
+.currency-settings p {
+  font-size: 0.86rem;
+  color: var(--muted, #61718c);
+  font-weight: 400;
+  line-height: 1.6;
+}
+.currency-settings input,
+.currency-settings select {
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+}
+.currency-settings-top,
+.currency-rate-cards {
+  display: grid;
+  align-items: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.currency-rate-cards {
+  margin: 24px 0;
+}
+.currency-rate-cards article,
+.currency-feed {
+  padding: 24px;
+  border: 1px solid var(--border, #dce5f3);
+  border-radius: 18px;
+  background: var(--surface, #fff);
+  display: grid;
+  gap: 16px;
+}
+.currency-rate-cards header,
+.currency-job {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.currency-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.currency-chips button {
+  padding: 10px 16px;
+  border-radius: 24px;
+  border: 1px solid #dce5f3;
+  background: transparent;
+  color: inherit;
+}
+.currency-chips button[aria-pressed="true"] {
+  color: #155eef;
+  border-color: #99baff;
+  background: #edf4ff;
+}
+.currency-add {
+  display: flex;
+  gap: 16px;
+  align-items: end;
+  margin-top: 24px;
+}
+.currency-add label {
+  flex: 1;
+}
+.currency-settings .currency-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.currency-toggle input {
+  width: 18px;
+  min-height: 18px;
+}
+.currency-job {
+  padding: 16px 0;
+  border-bottom: 1px solid #dce5f3;
+}
+.shop-currency-picker select {
+  min-height: 38px;
+  border: 1px solid #dce5f3;
+  border-radius: 20px;
+  padding: 0 10px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+@media (max-width: 700px) {
+  .currency-settings-top,
+  .currency-rate-cards {
+    grid-template-columns: 1fr;
+  }
+  .currency-add,
+  .currency-job {
+    flex-wrap: wrap;
+  }
+  .currency-rate-cards article,
+  .currency-feed {
+    padding: 18px;
+  }
+}

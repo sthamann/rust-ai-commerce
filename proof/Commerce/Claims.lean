@@ -284,4 +284,9 @@ theorem app_service_transport_unapproved_denied :
     app_service_transport_admissible true false true false false = false := by rfl
 theorem app_service_transport_unsafe_denied (secure plain loopback approved : Bool) :
     app_service_transport_admissible false secure plain loopback approved = false := by rfl
+theorem currency_context_exact (enabled configured fresh : Bool) :
+    currency_context_admissible enabled configured fresh = true ↔ enabled = true ∧ configured = true ∧ fresh = true := by
+  cases enabled <;> cases configured <;> cases fresh <;> simp [currency_context_admissible]
+theorem currency_context_stale_denied (enabled configured : Bool) :
+    currency_context_admissible enabled configured false = false := by simp [currency_context_admissible]
 end CommerceKernel

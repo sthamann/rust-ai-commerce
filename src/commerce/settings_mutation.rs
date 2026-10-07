@@ -23,6 +23,7 @@ pub(crate) async fn save_config(
             .fetch_one(&mut *tx)
             .await?;
     let previous = decode_config(previous.get("data"))?;
+    currencies::routes_guard(&mut tx, &t, &previous.currencies, &s.currencies).await?;
     super::group_usage::guard(&mut tx, &t, &previous, &s).await?;
     super::method_usage::guard(&mut tx, &t, &previous, &s, None).await?;
     let patches: Vec<Value> =

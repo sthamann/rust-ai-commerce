@@ -98,12 +98,13 @@ uses scale 3. Parsing/formatting uses integer arithmetic, rejects ambiguous prec
 and supports checked addition only for matching code **and** scale. Scale is bounded
 to six; signed credit amounts including `i64::MIN` round-trip without overflow.
 
-The active checkout is still EUR. Orders include an explicit `money` snapshot;
-the payment ledger persists `currency_scale = 2`. A library test for JPY/KWD does
-**not** mean full multicurrency pricing, tax, FX, provider and frontend support.
+The active checkout supports a channel-selected currency. Orders include an explicit
+`money` snapshot; the payment ledger persists its currency scale (including zero
+and three). [The multi-currency guide](currencies.md) explains automatic/fixed
+pricing, saved rates, protocol contracts and tested provider boundaries.
 
 The Shopware-ported calculators still reproduce the original PHP float behavior.
-`Money::from_legacy_eur` preserves the existing checkout rounding and rejects
+The currency-aware checkout boundary preserves the existing calculator rounding and rejects
 non-finite, negative or out-of-range payment totals. This is a carefully defined
 boundary, not a claim that all tax and discount arithmetic is now integer-based.
 `scripts/money_boundary_differential.py` compares the actual boundary against original

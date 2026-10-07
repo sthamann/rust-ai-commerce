@@ -120,6 +120,8 @@ impl CheckoutSelection {
 pub(crate) struct Settings {
     #[serde(default)]
     pub legal: crate::legal::Config,
+    #[serde(default)]
+    pub currencies: crate::currencies::Config,
     #[serde(default = "main_locale")]
     pub main_locale: String,
     #[serde(default = "content_locales")]

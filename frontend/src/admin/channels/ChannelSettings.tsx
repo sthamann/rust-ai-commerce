@@ -1,4 +1,5 @@
 /** Channel settings embed existing revision-aware identity and checkout editors with the channel selected. */
+import { useCurrencyText } from "../../shared/i18n/currency-i18n";
 import { useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
 import LegalSettings from "../legal/LegalSettings";
@@ -17,10 +18,11 @@ export default function ChannelSettings({
   canWrite: boolean;
   onDirty: (dirty: boolean) => void;
 }) {
+  const { c: ct } = useCurrencyText();
   const { l } = useLegalText();
   const t = useChannelText(),
     [area, setArea] = useState<
-      "company" | "taxes" | "shipping" | "payment" | "legal"
+      "company" | "taxes" | "shipping" | "payment" | "legal" | "currencies"
     >("company"),
     [dirty, setDirty] = useState(false);
   const notify = (value: boolean) => {
@@ -31,18 +33,29 @@ export default function ChannelSettings({
     <>
       <p>{t("scopeHint")}</p>
       <nav className="workbench-row">
-        {(["company", "taxes", "shipping", "payment", "legal"] as const).map(
-          (k) => (
-            <button
-              key={k}
-              className={k === area ? "studio-primary" : "studio-secondary"}
-              disabled={dirty && k !== area}
-              onClick={() => setArea(k)}
-            >
-              {k === "legal" ? l("title") : t(k)}
-            </button>
-          ),
-        )}
+        {(
+          [
+            "company",
+            "currencies",
+            "taxes",
+            "shipping",
+            "payment",
+            "legal",
+          ] as const
+        ).map((k) => (
+          <button
+            key={k}
+            className={k === area ? "studio-primary" : "studio-secondary"}
+            disabled={dirty && k !== area}
+            onClick={() => setArea(k)}
+          >
+            {k === "legal"
+              ? l("title")
+              : k === "currencies"
+                ? ct("title")
+                : t(k)}
+          </button>
+        ))}
       </nav>
       {area === "company" ? (
         <MasterDataSettings

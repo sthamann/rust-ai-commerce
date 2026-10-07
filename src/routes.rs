@@ -18,6 +18,7 @@ pub(crate) fn router(a: App) -> Router {
         )
         .route("/api/auth/handoff", post(auth::handoff::create))
         .route("/api/auth/redeem", post(auth::handoff::redeem))
+        .merge(currencies::router())
         .merge(translations::router())
         .merge(apps::app_router())
         .merge(checkout_handoff::router())

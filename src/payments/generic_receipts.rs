@@ -97,7 +97,7 @@ pub(crate) async fn persist(
     } else if status == "captured" {
         if !receipt_matches(
             p.amount,
-            &json!({"value":amount_string(v["settledAmountMinor"].as_i64().ok_or(bad("Settled amount missing"))?),"currency_code":v["currency"]}),
+            &json!({"value":format_amount(v["settledAmountMinor"].as_i64().ok_or(bad("Settled amount missing"))?,&p.currency)?,"currency_code":v["currency"]}),
             &p.currency,
             v["confirmed"] == true,
         )? {
@@ -198,6 +198,7 @@ mod tests {
             order: "o".into(),
             amount: 123,
             currency: "EUR".into(),
+            currency_scale: 2,
             state: "ready".into(),
             provider_order: Some("remote".into()),
             capture: None,

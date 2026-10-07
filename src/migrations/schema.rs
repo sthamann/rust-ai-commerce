@@ -189,4 +189,12 @@ pub(super) const SCHEMA: &[(&str, &str)] = &[
         "049-rust-connectors",
         include_str!("../../migrations/049-rust-connectors.sql"),
     ),
+    (
+        "050-currency-price-jobs",
+        include_str!("../../migrations/050-currency-price-jobs.sql"),
+    ),
+    (
+        "051-multi-currency-ledger",
+        include_str!("../../migrations/051-multi-currency-ledger.sql"),
+    ),
 ];

@@ -28,7 +28,7 @@ pub(crate) fn payment_router() -> Router<App> {
 pub(crate) async fn status(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     auth::permit(&h, "payments.read")?;
-    let rows=sqlx::query("SELECT id,order_id,state,provider,amount_minor,currency,refunded_minor,adapter_version,environment FROM payment_attempts WHERE tenant=$1 ORDER BY created_at DESC LIMIT 100").bind(&t).fetch_all(&a.db).await?;
+    let rows=sqlx::query("SELECT id,order_id,state,provider,amount_minor,currency,currency_scale,refunded_minor,adapter_version,environment FROM payment_attempts WHERE tenant=$1 ORDER BY created_at DESC LIMIT 100").bind(&t).fetch_all(&a.db).await?;
     let jobs=sqlx::query("SELECT id,attempt_id,operation,state,error FROM payment_jobs WHERE tenant=$1 ORDER BY created_at DESC LIMIT 100").bind(&t).fetch_all(&a.db).await?;
     let generic = providers_route(State(a.clone()), h.clone()).await?.0;
     let mut providers = vec![
@@ -50,7 +50,7 @@ pub(crate) async fn status(State(a): State<App>, h: HeaderMap) -> Result<Json<Va
         providers.push(json!({"id":"shopware_payments","configured":false,"status":"private-adapter-required"}));
     }
     Ok(Json(
-        json!({"providers":providers,"attempts":rows.iter().map(|r|json!({"provider":r.get::<String,_>("provider"),"id":r.get::<String,_>("id"),"orderId":r.get::<String,_>("order_id"),"state":r.get::<String,_>("state"),"amountMinor":r.get::<i64,_>("amount_minor"),"currency":r.get::<String,_>("currency"),"refundedMinor":r.get::<i64,_>("refunded_minor"),"adapterVersion":r.get::<String,_>("adapter_version"),"environment":r.get::<String,_>("environment")})).collect::<Vec<_>>(),"jobs":jobs.iter().map(|r|json!({"id":r.get::<String,_>("id"),"attemptId":r.get::<String,_>("attempt_id"),"operation":r.get::<String,_>("operation"),"state":r.get::<String,_>("state"),"error":r.get::<Option<String>,_>("error")})).collect::<Vec<_>>()}),
+        json!({"providers":providers,"attempts":rows.iter().map(|r|json!({"provider":r.get::<String,_>("provider"),"id":r.get::<String,_>("id"),"orderId":r.get::<String,_>("order_id"),"state":r.get::<String,_>("state"),"amountMinor":r.get::<i64,_>("amount_minor"),"currency":r.get::<String,_>("currency"),"currencyScale":r.get::<i16,_>("currency_scale"),"refundedMinor":r.get::<i64,_>("refunded_minor"),"adapterVersion":r.get::<String,_>("adapter_version"),"environment":r.get::<String,_>("environment")})).collect::<Vec<_>>(),"jobs":jobs.iter().map(|r|json!({"id":r.get::<String,_>("id"),"attemptId":r.get::<String,_>("attempt_id"),"operation":r.get::<String,_>("operation"),"state":r.get::<String,_>("state"),"error":r.get::<Option<String>,_>("error")})).collect::<Vec<_>>()}),
     ))
 }
 async fn customer_status(
@@ -62,11 +62,11 @@ async fn customer_status(
     Ok(Json(read(&a, &tenant(&h)?, &id).await?))
 }
 pub(crate) async fn read(a: &App, t: &str, id: &str) -> Result<Value> {
-    let r=sqlx::query("SELECT provider,provider_context,state,approval_url,amount_minor,currency,refunded_minor,revision,environment FROM payment_attempts WHERE tenant=$1 AND id=$2").bind(t).bind(id).fetch_optional(&a.db).await?.ok_or(Error(StatusCode::NOT_FOUND,"Payment not found".into()))?;
+    let r=sqlx::query("SELECT provider,provider_context,state,approval_url,amount_minor,currency,currency_scale,refunded_minor,revision,environment FROM payment_attempts WHERE tenant=$1 AND id=$2").bind(t).bind(id).fetch_optional(&a.db).await?.ok_or(Error(StatusCode::NOT_FOUND,"Payment not found".into()))?;
     let job = sqlx::query("SELECT id,operation,state FROM payment_jobs WHERE tenant=$1 AND attempt_id=$2 ORDER BY created_at DESC,id DESC LIMIT 1")
         .bind(t).bind(id).fetch_optional(&a.db).await?.map(|j| json!({"id":j.get::<String,_>("id"),"operation":j.get::<String,_>("operation"),"state":j.get::<String,_>("state")}));
     Ok(
-        json!({"provider":r.get::<String,_>("provider"),"checkout":r.get::<Value,_>("provider_context")["checkout"],"job":job,"id":id,"state":r.get::<String,_>("state"),"approvalUrl":r.get::<Option<String>,_>("approval_url"),"amountMinor":r.get::<i64,_>("amount_minor"),"currency":r.get::<String,_>("currency"),"refundedMinor":r.get::<i64,_>("refunded_minor"),"revision":r.get::<i64,_>("revision"),"environment":r.get::<String,_>("environment"),"realMoneyCharged":r.get::<String,_>("environment")=="live" && ["captured","captured_late","partially_refunded","refunded"].contains(&r.get::<String,_>("state").as_str())}),
+        json!({"provider":r.get::<String,_>("provider"),"checkout":r.get::<Value,_>("provider_context")["checkout"],"job":job,"id":id,"state":r.get::<String,_>("state"),"approvalUrl":r.get::<Option<String>,_>("approval_url"),"amountMinor":r.get::<i64,_>("amount_minor"),"currency":r.get::<String,_>("currency"),"currencyScale":r.get::<i16,_>("currency_scale"),"refundedMinor":r.get::<i64,_>("refunded_minor"),"revision":r.get::<i64,_>("revision"),"environment":r.get::<String,_>("environment"),"realMoneyCharged":r.get::<String,_>("environment")=="live" && ["captured","captured_late","partially_refunded","refunded"].contains(&r.get::<String,_>("state").as_str())}),
     )
 }
 async fn customer_command(

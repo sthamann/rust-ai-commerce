@@ -62,6 +62,7 @@ export function useCatalog(
     cart?.token,
     cart?.customerGroup,
     cart?.checkout.country,
+    cart?.price.currency,
   ]);
   return {
     products,

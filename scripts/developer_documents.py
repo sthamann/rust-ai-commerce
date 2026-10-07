@@ -83,7 +83,7 @@ try:
  passed('Private data sheet is excluded until approval; public questions return exact source hash/excerpt')
  call('/api/knowledge/documents/'+doc['id']+'/index',{},a)
  for locale in ['de-DE','fr-FR','es-ES','en-GB']:
-  behavior['mode']=locale;q=call('/store-api/product/mug/questions',{'question':'spülmaschinenfest?','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug,locale=locale);assert q['sources'] and q['answer']
+  behavior['mode']=locale;q=call('/store-api/product/mug/questions',{'question':'spülmaschinenfest?','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug,locale=locale);assert q['sources'] and q['answer'],(locale,q)
  assert any(p=='/api/embed' and b['input']=='spülmaschinenfest?' for p,b in captured)
  passed('Indexed semantic retrieval is actually consumed for cross-language questions with no lexical match')
  behavior['mode']='citation';call('/store-api/product/mug/questions',{'question':'Dishwasher','inference':{'provider':'openai'}},tenant=slug,expected=400)

@@ -10,8 +10,19 @@ pub(crate) fn order_fields(o: &mut Value) {
     o["price"] = o["cart"]["price"].clone();
     o["lineItems"] = o["cart"]["lineItems"].clone();
     o["shippingCosts"] = o["cart"]["shippingCosts"].clone();
-    o["currencyId"] = json!("EUR");
-    o["currencyFactor"] = json!(1);
+    o["currencyId"] = o["cart"]["price"]["currency"]
+        .as_str()
+        .map(|c| json!(c))
+        .unwrap_or(json!("EUR"));
+    o["currencyFactor"] = json!(
+        o["cart"]["currencyContext"]["factor"]
+            .as_str()
+            .and_then(|s| s.parse::<f64>().ok())
+            .unwrap_or(1.)
+    );
+    if o["currencyFactor"].is_null() {
+        o["currencyFactor"] = json!(1);
+    }
     o["taxStatus"] = o["cart"]["price"]["taxStatus"].clone();
     o["transactions"] = json!([{"id":o["payment"]["attemptId"].as_str().map(str::to_owned).unwrap_or_else(||format!("{}-payment",o["id"].as_str().unwrap_or(""))),"paymentMethodId":o["payment"]["method"]["id"],"state":o["payment"]["state"],"amount":o["cart"]["price"],"provider":o["payment"]["provider"],"realMoneyCharged":o["payment"]["realMoneyCharged"]}]);
     let mut addresses = Vec::new();

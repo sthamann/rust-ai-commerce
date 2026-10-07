@@ -1,6 +1,7 @@
 //! Verified merchant overview facts consumed by the chat and activity views.
 use super::*;
 use axum::{extract::Request, middleware::Next};
+mod revenue;
 
 pub(super) async fn track_channels(State(a): State<App>, request: Request, next: Next) -> Response {
     let start = std::time::Instant::now();
@@ -42,10 +43,12 @@ pub(super) async fn merchant_overview(
     let (locale, chain) = language_context(&a, &h).await?;
     let page = product_page(&a, &t, &chain, &criteria).await?;
     let ps = &page.products;
-    let stats=sqlx::query("SELECT count(*) AS orders,coalesce(sum((data->'cart'->'price'->>'totalPrice')::double precision),0) AS revenue,count(*) FILTER(WHERE created_at>=current_date) AS today FROM orders WHERE tenant=$1").bind(&t).fetch_one(&a.db).await?;
+    let stats=sqlx::query("SELECT count(*) AS orders,count(*) FILTER(WHERE created_at>=current_date) AS today FROM orders WHERE tenant=$1").bind(&t).fetch_one(&a.db).await?;
+    let revenue = revenue::summary(&a, &t).await?;
+    let (settings, _) = commerce::config(&a, &t).await?;
     let rows=sqlx::query("SELECT data,created_at::text AS time FROM orders WHERE tenant=$1 ORDER BY created_at DESC LIMIT 8").bind(&t).fetch_all(&a.db).await?;
-    let orders=rows.iter().map(|r| {let data=r.get::<Value,_>("data");json!({"id":data["id"],"number":data["orderNumber"],"total":data["cart"]["price"]["totalPrice"],"channel":data.get("channel").cloned().unwrap_or(json!("unknown")),"time":r.get::<String,_>("time"),"payment":"simulated"})}).collect::<Vec<_>>();
-    let timeline=sqlx::query("SELECT d::date::text AS day,count(o.id) AS orders,coalesce(sum((o.data->'cart'->'price'->>'totalPrice')::double precision),0) AS revenue FROM generate_series(current_date-6,current_date,interval '1 day') d LEFT JOIN orders o ON o.tenant=$1 AND o.created_at>=d AND o.created_at<d+interval '1 day' GROUP BY d ORDER BY d").bind(&t).fetch_all(&a.db).await?;
+    let orders=rows.iter().map(|r| {let data=r.get::<Value,_>("data");json!({"id":data["id"],"number":data["orderNumber"],"total":data["cart"]["price"]["totalPrice"],"currency":data["cart"]["price"]["currency"].as_str().unwrap_or("EUR"),"channel":data.get("channel").cloned().unwrap_or(json!("unknown")),"time":r.get::<String,_>("time"),"payment":"simulated"})}).collect::<Vec<_>>();
+    let timeline=sqlx::query("SELECT d::date::text AS day,count(o.id) AS orders,count(DISTINCT coalesce(o.data->'cart'->'price'->>'currency','EUR')) FILTER(WHERE o.id IS NOT NULL) AS currency_count, min(coalesce(o.data->'cart'->'price'->>'currency','EUR')) FILTER(WHERE o.id IS NOT NULL) AS currency, coalesce(sum((o.data->'cart'->'price'->>'totalPrice')::numeric),0)::text AS revenue FROM generate_series(current_date-6,current_date,interval '1 day') d LEFT JOIN orders o ON o.tenant=$1 AND o.created_at>=d AND o.created_at<d+interval '1 day' GROUP BY d ORDER BY d").bind(&t).fetch_all(&a.db).await?;
     let policy =
         sqlx::query("SELECT variant,views,purchases FROM policy WHERE tenant=$1 ORDER BY variant")
             .bind(&t)
@@ -60,9 +63,9 @@ pub(super) async fn merchant_overview(
     let channels=sqlx::query("SELECT channel,calls,failures,last_seen::text AS last_seen FROM channel_metrics WHERE tenant=$1 ORDER BY channel").bind(&t).fetch_all(&a.db).await?;
     let providers = a.inference.public_providers().await.map_err(bad)?;
     Ok(Json(json!({
-        "locale":locale,"tenant":t,"dataMode":"synthetic-demo","products":ps,"productsPagination":{"nextCursor":page.next_cursor,"hasMore":page.next_cursor.is_some(),"limit":page.limit},
-        "summary":{"orders":stats.get::<i64,_>("orders"),"ordersToday":stats.get::<i64,_>("today"),"revenue":stats.get::<f64,_>("revenue"),"pendingPlans":plans.get::<i64,_>("pending"),"appliedPlans":plans.get::<i64,_>("applied")},
-        "orders":orders,"timeline":timeline.iter().map(|r|json!({"day":r.get::<String,_>("day"),"orders":r.get::<i64,_>("orders"),"revenue":r.get::<f64,_>("revenue")})).collect::<Vec<_>>(),
+        "locale":locale,"tenant":t,"productCurrency":settings.currencies.pricing_currency,"dataMode":"synthetic-demo","products":ps,"productsPagination":{"nextCursor":page.next_cursor,"hasMore":page.next_cursor.is_some(),"limit":page.limit},
+        "summary":{"orders":stats.get::<i64,_>("orders"),"ordersToday":stats.get::<i64,_>("today"),"revenue":revenue["singleTotal"],"revenueByCurrency":revenue["amounts"],"revenueCurrency":revenue["singleCurrency"],"pendingPlans":plans.get::<i64,_>("pending"),"appliedPlans":plans.get::<i64,_>("applied")},
+        "orders":orders,"timeline":timeline.iter().map(|r|json!({"day":r.get::<String,_>("day"),"orders":r.get::<i64,_>("orders"),"currency":r.get::<Option<String>,_>("currency"),"revenue":if r.get::<i64,_>("currency_count")>1 {Value::Null} else {json!(r.get::<String,_>("revenue").parse::<f64>().unwrap_or(0.))}})).collect::<Vec<_>>(),
         "knowledge":{"graph":graph,"indexedProducts":index.get::<i64,_>("count"),"lastIndexed":index.get::<Option<String>,_>("updated"),"provenance":"curated-demo","modelWeightsLearn":false},
         "learning":{"timeline":learning_timeline.iter().map(|r|json!({"day":r.get::<String,_>("day"),"views":r.get::<i64,_>("views"),"rewarded":r.get::<i64,_>("rewarded")})).collect::<Vec<_>>(),"variants":variants,"method":"epsilon-greedy with smoothed purchase rate","reward":"simulated order","causalUpliftProven":false},
         "activity":activity.iter().map(|r|json!({"kind":r.get::<String,_>("kind"),"time":r.get::<String,_>("time"),"id":r.get::<String,_>("id")})).collect::<Vec<_>>(),

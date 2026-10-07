@@ -10,6 +10,8 @@ pub(crate) struct Item {
 pub(crate) struct Cart {
     #[serde(default)]
     pub(crate) coupons: Vec<String>,
+    #[serde(default)]
+    pub(crate) currency: String,
     #[serde(default = "default_channel")]
     pub(crate) sales_channel: String,
     #[serde(default)]

@@ -17,6 +17,8 @@ import Commerce.Claims
 #print axioms CommerceKernel.completion_exact
 #print axioms CommerceKernel.completion_safe
 #print axioms CommerceKernel.consent_exact
+#print axioms CommerceKernel.currency_context_exact
+#print axioms CommerceKernel.currency_context_stale_denied
 #print axioms CommerceKernel.currency_scale_exact
 #print axioms CommerceKernel.currency_scale_overflow_denied
 #print axioms CommerceKernel.customer_group_net_exact

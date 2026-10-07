@@ -103,7 +103,11 @@ pub(crate) async fn prepare_remote(
         .iter()
         .find(|v| Some(v.id.as_str()) == method["providerMethod"].as_str())
         .ok_or(bad("Unknown provider method"))?;
-    if !method.currencies.iter().any(|c| c == "EUR")
+    let currency = o["cart"]["price"]["currency"]
+        .as_str()
+        .unwrap_or("EUR")
+        .to_owned();
+    if !method.currencies.iter().any(|c| c == &currency)
         || (!method.countries.is_empty()
             && !method
                 .countries
@@ -127,10 +131,10 @@ pub(crate) async fn prepare_remote(
     }
     let environment: String = r.get("environment");
     remote::config(provider, &m.version, &environment)?;
-    let context = json!({"apiVersion":"1","accountRef":r.get::<String,_>("account_ref"),"method":method.id,"capabilities":method.capabilities,"checkout":method.checkout,"intent":method.intent,"channel":channel,"returnOrigin":return_origin});
+    let context = json!({"apiVersion":"1","accountRef":r.get::<String,_>("account_ref"),"method":method.id,"capabilities":method.capabilities,"checkout":method.checkout,"intent":method.intent,"channel":channel,"returnOrigin":return_origin,"currencyScale":o["cart"]["price"]["currencyScale"]});
     let id = uid();
     o["payment"] = json!({"method":o["cart"]["paymentMethod"],"provider":provider,"state":"pending","attemptId":id,"environment":environment,"realMoneyCharged":false});
-    sqlx::query("INSERT INTO payment_attempts(id,tenant,order_id,provider,adapter_version,amount_minor,currency,environment,bn_code,provider_context) VALUES($1,$2,$3,$4,$5,$6,'EUR',$7,'',$8)").bind(&id).bind(&c.tenant).bind(o["id"].as_str().unwrap()).bind(provider).bind(&m.version).bind(minor).bind(environment).bind(context).execute(&mut **tx).await?;
+    sqlx::query("INSERT INTO payment_attempts(id,tenant,order_id,provider,adapter_version,amount_minor,currency,environment,bn_code,provider_context,currency_scale) VALUES($1,$2,$3,$4,$5,$6,$9,$7,'',$8,$10)").bind(&id).bind(&c.tenant).bind(o["id"].as_str().unwrap()).bind(provider).bind(&m.version).bind(minor).bind(environment).bind(context).bind(currency).bind(o["cart"]["price"]["currencyScale"].as_i64().unwrap_or(2) as i16).execute(&mut **tx).await?;
     for item in &c.data.items {
         sqlx::query("INSERT INTO inventory_reservations(tenant,attempt_id,product_id,quantity) VALUES($1,$2,$3,$4)").bind(&c.tenant).bind(&id).bind(&item.id).bind(item.quantity as i32).execute(&mut **tx).await?;
     }
@@ -151,6 +155,7 @@ pub(crate) async fn available(
     a: &App,
     t: &str,
     channel: &str,
+    currency: &str,
 ) -> Result<std::collections::HashSet<(String, String)>> {
     let rows = sqlx::query("SELECT DISTINCT ON (p.id) p.id,p.version,p.manifest,a.ready,a.data,a.environment FROM app_packages p JOIN payment_provider_accounts a ON a.tenant=p.tenant AND a.app=p.id WHERE p.tenant=$1 AND p.active AND a.channel IN ($2,'default') ORDER BY p.id,(a.channel=$2) DESC").bind(t).bind(channel).fetch_all(&a.db).await?;
     let mut enabled = std::collections::HashSet::new();
@@ -171,7 +176,7 @@ pub(crate) async fn available(
         let account: Value = row.get("data");
         if let Some(provider) = manifest.payment_provider {
             for method in provider.methods {
-                if method.currencies.iter().any(|c| c == "EUR")
+                if method.currencies.iter().any(|c| c == currency)
                     && account["methods"]
                         .as_array()
                         .is_some_and(|ms| ms.iter().any(|v| v == &method.id))
@@ -182,4 +187,27 @@ pub(crate) async fn available(
         }
     }
     Ok(enabled)
+}
+
+/// Provider declarations constrain quote discovery; authoritative preparation rechecks under locks.
+pub(crate) async fn currency_methods(
+    a: &App,
+    t: &str,
+    channel: &str,
+    code: &str,
+    mut s: commerce::Settings,
+) -> Result<commerce::Settings> {
+    let enabled = available(a, t, channel, code).await?;
+    for method in &mut s.payments {
+        if let Some(provider) = &method.provider {
+            method.active &= method
+                .provider_method
+                .as_ref()
+                .is_some_and(|m| enabled.contains(&(provider.clone(), m.clone())));
+        }
+        if ["paypal-sandbox", "paypal-live"].contains(&method.id.as_str()) {
+            method.active &= "AUD BRL CAD CNY CZK DKK EUR HKD HUF ILS JPY MYR MXN TWD NZD NOK PHP PLN GBP SGD SEK CHF THB USD".split(' ').any(|c|c==code);
+        }
+    }
+    Ok(s)
 }
