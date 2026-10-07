@@ -49,6 +49,42 @@ and disable delivery** clears both. API callers can explicitly clear one with an
 empty string. Switching API provider clears the old key unless a new one is supplied;
 changing SMTP host/username clears the old SMTP password. Settings are revision checked.
 
+## Brevo SMTP and hosted Experience
+
+Brevo also works through the standard SMTP transport; a separate provider adapter
+is unnecessary. Use `smtp-relay.brevo.com`, port `587`, STARTTLS, and the SMTP login
+and SMTP key from the provider account. An API key is not an SMTP password. Include
+the exact hostname in the connector operator's `EMAIL_SMTP_HOSTS` allowlist.
+
+Authenticate a dedicated sending subdomain with the provider's verification TXT,
+both DKIM CNAME records and DMARC TXT. Keep the existing domain's MX and SPF records
+when it also hosts mailboxes. Copy the account-specific DNS values from Brevo rather
+than a documentation example. See [Brevo's authentication instructions](https://help.brevo.com/hc/en-us/articles/12163873383186-Authenticate-your-domain-with-Brevo-Brevo-code-DKIM-DMARC).
+Sender authentication authorizes outgoing mail; it does not create a receiving mailbox.
+Brevo's shared free account currently allows 300 emails per day across its senders;
+per-tenant connector limits do not increase that account-wide allowance.
+
+The private Experience onboarding service and this Rust Email Delivery app have
+separate configuration and deployment boundaries:
+
+- **Experience:** runtime-only `MAIL_FROM`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`,
+  `SMTP_REQUIRE_TLS`, `SMTP_USER`, and `SMTP_PASSWORD` configure signup codes and
+  access-link mail. Production credentials belong in the hosting secret store,
+  never in browser bundles, image layers, repository files or build arguments.
+- **Commerce apps and flows:** deploy the Rust connector with its restricted
+  PostgreSQL role, gateway token and persistent encryption key; configure the
+  tenant's sender and transport through the authenticated app gateway. Experience's
+  SMTP settings do not implicitly configure every shop's order notifications.
+
+As of 2026-10-07, `mail.vendune.ai` is authenticated at Brevo and its sender
+`Vendune <hello@mail.vendune.ai>` is verified. The existing `vendune-experience`
+Northflank service has its SMTP configuration in a runtime secret file and has
+been restarted. A single signup-code request through the public Experience page
+was confirmed `Sent` and `Delivered` by Brevo at 08:43 CEST that day. Inbox
+placement and completed onboarding were not part of that email-only check.
+This does not establish deployment of the independent public
+Rust connector or successful checkout/flow notification delivery.
+
 ## API, apps and MCP
 
 All actions use the regular authenticated app gateway and require `apps.manage`.
