@@ -258,6 +258,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/operations/company_model.rs](../src/operations/company_model.rs) | Company profile admission, sparse channel inheritance and structured-address print projection. |
 | [src/operations/company_public.rs](../src/operations/company_public.rs) | Explicit public legal/brand projection; bank account, domestic tax ID and unlinked uploads remain private. |
 | [src/operations/customers.rs](../src/operations/customers.rs) | Tenant-scoped paged CRM and revision-checked merchant changes; credentials never leave storage. |
+| [src/operations/guest_customers.rs](../src/operations/guest_customers.rs) | Merchant-only guest contact projection; order snapshots never create account authority. |
 | [src/operations/master_data.rs](../src/operations/master_data.rs) | Revisioned tenant company basis and sparse channel overrides, serialized with receipt issuance. |
 | [src/operations/mod.rs](../src/operations/mod.rs) | Merchant CRM and fulfillment APIs, shared verbatim with MCP operations capabilities. |
 | [src/operations/orders.rs](../src/operations/orders.rs) | Bounded order search, token-redacted detail and append-only operational notes. |
@@ -427,6 +428,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/channels/channel-model.ts](../frontend/src/admin/channels/channel-model.ts) | Existing sales-channel contract and safe storefront URLs; independent tenants remain a separate concept. |
 | [frontend/src/admin/channels/connection-i18n.ts](../frontend/src/admin/channels/connection-i18n.ts) | Domain lifecycle copy in every supported Studio language. |
 | [frontend/src/admin/customers/CustomersManager.tsx](../frontend/src/admin/customers/CustomersManager.tsx) | CRM list and editable customer profile with linked order history. |
+| [frontend/src/admin/customers/GuestContact.tsx](../frontend/src/admin/customers/GuestContact.tsx) | Read-only checkout snapshots distinguish guest contacts from authenticated customer accounts. |
 | [frontend/src/admin/dashboard/OverviewView.tsx](../frontend/src/admin/dashboard/OverviewView.tsx) | OverviewView renders verified shop state and typed user actions. |
 | [frontend/src/admin/developer/AppActionAccess.tsx](../frontend/src/admin/developer/AppActionAccess.tsx) | Team permissions and MCP visibility are independent from public storefront reads and AI grounding. |
 | [frontend/src/admin/developer/AppAgentPanel.tsx](../frontend/src/admin/developer/AppAgentPanel.tsx) | Coding agents receive the current Manifest IR and authoritative schema; imported edits round-trip to the canvas. |

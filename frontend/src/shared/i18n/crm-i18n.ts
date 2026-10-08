@@ -1,6 +1,13 @@
 /** Complete CRM/history vocabulary shared by settings, customer account and entity editors. */
 import { useLocale } from "./i18n";
 export const crmWords = {
+  guest: ["Guest buyer", "Gastkäufer", "Acheteur invité", "Comprador invitado"],
+  guestHint: [
+    "Contact and addresses come from the latest guest order. They are historical snapshots, not a login account. Open an order to inspect its original data.",
+    "Kontakt und Adressen stammen aus der letzten Gastbestellung. Es sind historische Bestelldaten, kein Kundenkonto. Öffne eine Bestellung, um ihre ursprünglichen Daten zu sehen.",
+    "Le contact et les adresses proviennent de la dernière commande invitée. Ce sont des données historiques, pas un compte. Ouvrez une commande pour consulter ses données originales.",
+    "El contacto y las direcciones proceden del último pedido como invitado. Son datos históricos, no una cuenta. Abre un pedido para consultar sus datos originales.",
+  ],
   addressPending: [
     "Save or discard profile edits before changing addresses.",
     "Speichere oder verwerfe die Profiländerungen, bevor du Adressen änderst.",

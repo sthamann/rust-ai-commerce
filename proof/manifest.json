@@ -1553,8 +1553,8 @@
     },
     "src/migrations/schema.rs": {
       "status": "unproved",
-      "sha256": "d8d4a3611ac44581f74ca95ce485f7f0c453990dfdfbf85ac56585679df8f203",
-      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
+      "sha256": "e52e305d2b93b0d3f8332c38b525ec586036640311c6b0871b8bc45341b4b714",
+      "review": "Reviewed tenant-scoped guest CRM projection and indexed historical order reads; account enrollment, checkout ownership and authenticated order access are unchanged. Guest snapshots cannot be saved as account profiles; SQL and UI remain unproved adapters."
     },
     "src/migrations.rs": {
       "status": "unproved",
@@ -1588,8 +1588,13 @@
     },
     "src/operations/customers.rs": {
       "status": "unproved",
-      "sha256": "185596e2d8f4f8acf0dc70c785b61a09881870fc14cb78dca4c81ddaa1249cd4",
-      "review": "Reviewed connected CRM: configured group pricing admission with exact Lean contract, settings lock and dependency rejection; independent revisioned default addresses and ownership-validated book restore; trusted transaction-local actors with deferred one-per-transaction credential-free aggregate history; scoped read/write/MCP restore through domain handlers preserving current stock, identity and financial events. Real crm_history tests cover all twelve editable entity restore types, checkout, stale writes, group dependencies, foreign shops and viewer rejection; Rust unit/lint and affected integration suites verify existing consumers. SQL/async adapters remain unproved."
+      "sha256": "bbe4eeee46591cd650c9a55828adf8a191a57fed7dc3e39534ce84820a653174",
+      "review": "Reviewed tenant-scoped guest CRM projection and indexed historical order reads; account enrollment, checkout ownership and authenticated order access are unchanged. Guest snapshots cannot be saved as account profiles; SQL and UI remain unproved adapters."
+    },
+    "src/operations/guest_customers.rs": {
+      "status": "unproved",
+      "sha256": "bd869ddd890c92e4a4be70d44b8451e3d54b3b1c6a7ae455bb438562e5770aca",
+      "review": "Reviewed tenant-scoped guest CRM projection and indexed historical order reads; account enrollment, checkout ownership and authenticated order access are unchanged. Guest snapshots cannot be saved as account profiles; SQL and UI remain unproved adapters."
     },
     "src/operations/master_data.rs": {
       "status": "unproved",
@@ -1598,8 +1603,8 @@
     },
     "src/operations/mod.rs": {
       "status": "unproved",
-      "sha256": "eede84fd1b3d8a072f3daf1df26171b2028d07a35e6cf8e96551d39141f3582b",
-      "review": "Reviewed customer order ownership reuse and shopper projection, customer receipts bound to tenant/order/receipt through the same immutable PDF renderer, HTTPS tracking validation reusing existing rich URL policy, and MCP tracking schema. Real customer HTTP tests reject anonymous/foreign/mismatched IDs, compare customer and merchant PDF bytes, reject unsafe URLs without revision changes and observe live delivery updates. Async SQL and UI paths remain explicitly unproved."
+      "sha256": "8d84eb537dc8c6bd450c33e5c0131b8523ab997bd8fb028b21fc96003f31e854",
+      "review": "Reviewed tenant-scoped guest CRM projection and indexed historical order reads; account enrollment, checkout ownership and authenticated order access are unchanged. Guest snapshots cannot be saved as account profiles; SQL and UI remain unproved adapters."
     },
     "src/operations/orders.rs": {
       "status": "unproved",
@@ -2270,6 +2275,10 @@
     "migrations/053-channel-access.sql": {
       "sha256": "1ac5343ab481ab099e1a113cf834a8ebe9ba07009733aab3a4712a6d11fdb85b",
       "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
+    },
+    "migrations/054-guest-customer-directory.sql": {
+      "sha256": "24ab91bdd28bd707704516f3d9cf80153fee340dd635179efb46b867063088e1",
+      "review": "Reviewed tenant-scoped guest CRM projection and indexed historical order reads; account enrollment, checkout ownership and authenticated order access are unchanged. Guest snapshots cannot be saved as account profiles; SQL and UI remain unproved adapters."
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "08ed10a3c4484ad7ca1403be069ac19d7112b538d0bda9fb64fc33b98a3972d2",

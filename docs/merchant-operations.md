@@ -221,3 +221,28 @@ without a revision mutation; and the latest delivery state returned to the custo
 Selected extracted Lean policies still cover only their documented production decisions,
 not these complete async/SQL/UI paths. Email changes, password-recovery email workflows
 and carrier push integrations are separate future capabilities.
+
+## Guest buyers in the merchant customer directory
+
+The existing CRM API (`GET /api/merchant/customers` and `GET /api/merchant/customers/{email}`)
+includes guest buyers from committed order snapshots. No separate contact ledger or login
+account is fabricated. Previously placed guest orders appear immediately, without backfill.
+The directory groups contacts by email within the merchant tenant; a registered account
+wins the directory entry when that email already exists. Merchant order history includes
+both its authenticated purchases and matching guest purchases, subject to `orders.read`.
+This grouping is a merchant search convention, not proof that both buyers are one person.
+
+Guest details display the most recent purchase contact and billing/shipping snapshots,
+a guest badge and native order links. Their historical addresses are read-only; they have
+no default address book, account revision, account app identity or rollback. Registered
+customers retain existing profile/address/history editing. A new account with the same
+email does **not** inherit earlier guest orders, downloads, addresses or financial documents.
+Checkout does not silently enroll buyers or issue credentials. Contactless synthetic demo
+orders cannot supply an identifiable directory contact and remain in order management.
+
+The shared MCP operations `merchant.customers` / `merchant.customer` use these same
+permission-aware handlers. `operations/customer_directory.sql` owns the paged projection;
+`operations/guest_customers.rs` owns guest detail hydration. Migration 054 indexes guest
+email/latest-order lookup. Account ownership stays in `accounts/` and is unchanged.
+The `customer_accounts` real PostgreSQL suite checks search, pagination, deduplication,
+existing guest purchases, account enrollment after purchase and foreign-tenant denial.
