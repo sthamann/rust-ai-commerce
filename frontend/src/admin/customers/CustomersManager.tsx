@@ -1,5 +1,6 @@
 /** CRM list and editable customer profile with linked order history. */
 import { AppSurfaceSlot } from "../../shared/apps/AppSurfaces";
+import GuestContact from "./GuestContact";
 import AddressBook from "../../shared/customer/AddressBook";
 import CustomerFields from "../../shared/customer/CustomerFields";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
@@ -39,6 +40,7 @@ export default function CustomersManager({
     [canEdit, setCanEdit] = useState(false),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false);
+  const editable = canEdit && customer?.guest !== true;
   const dirty =
     !!customer &&
     JSON.stringify([
@@ -133,87 +135,103 @@ export default function CustomersManager({
             <div className="customer-heading">
               <div>
                 <small>
-                  {c("customerNumber")} · {customer.customerNumber}
+                  {customer.guest
+                    ? r("guest")
+                    : `${c("customerNumber")} · ${customer.customerNumber}`}
                 </small>
                 <h2>{customer.profile.name || customer.email}</h2>
                 <p>{customer.email}</p>
               </div>
               <span className="operation-status">
-                {o(customer.active ? "active" : "inactive")}
+                {customer.guest
+                  ? r("guest")
+                  : o(customer.active ? "active" : "inactive")}
               </span>
             </div>
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-                setBusy(true);
-                try {
-                  await request(
-                    `/api/merchant/customers/${encodeURIComponent(customer.email)}`,
-                    {
-                      revision: customer.revision,
-                      profile: customer.profile,
-                      company: customer.company || null,
-                      customerGroup: customer.customerGroup,
-                      active: customer.active,
-                    },
-                    "PUT",
-                  );
-                  await detail(customer.email);
-                } catch (e) {
-                  setError((e as Error).message);
-                } finally {
-                  setBusy(false);
-                }
-              }}
-            >
-              <CustomerFields
-                value={{ ...customer.profile, company: customer.company ?? "" }}
-                disabled={!canEdit}
-                onChange={(p) =>
-                  setCustomer({ ...customer, profile: p, company: p.company })
-                }
-              />
-              <label>
-                {o("group")}
-                <select
-                  disabled={!canEdit}
-                  value={customer.customerGroup}
-                  onChange={(e) =>
-                    setCustomer({ ...customer, customerGroup: e.target.value })
+            {!customer.guest && (
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  setBusy(true);
+                  try {
+                    await request(
+                      `/api/merchant/customers/${encodeURIComponent(customer.email)}`,
+                      {
+                        revision: customer.revision,
+                        profile: customer.profile,
+                        company: customer.company || null,
+                        customerGroup: customer.customerGroup,
+                        active: customer.active,
+                      },
+                      "PUT",
+                    );
+                    await detail(customer.email);
+                  } catch (e) {
+                    setError((e as Error).message);
+                  } finally {
+                    setBusy(false);
                   }
-                >
-                  {groups.map((g) => (
-                    <option key={g.id} value={g.id}>
-                      {groupName(g.id)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  disabled={!canEdit}
-                  checked={customer.active}
-                  onChange={(e) =>
-                    setCustomer({ ...customer, active: e.target.checked })
+                }}
+              >
+                <CustomerFields
+                  value={{
+                    ...customer.profile,
+                    company: customer.company ?? "",
+                  }}
+                  disabled={!editable}
+                  onChange={(p) =>
+                    setCustomer({ ...customer, profile: p, company: p.company })
                   }
                 />
-                {o("active")}
-              </label>
-              {canEdit && (
-                <button disabled={busy} className="studio-primary">
-                  {o("save")}
-                </button>
-              )}
-            </form>
+                <label>
+                  {o("group")}
+                  <select
+                    disabled={!editable}
+                    value={customer.customerGroup}
+                    onChange={(e) =>
+                      setCustomer({
+                        ...customer,
+                        customerGroup: e.target.value,
+                      })
+                    }
+                  >
+                    {groups.map((g) => (
+                      <option key={g.id} value={g.id}>
+                        {groupName(g.id)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    disabled={!editable}
+                    checked={customer.active}
+                    onChange={(e) =>
+                      setCustomer({ ...customer, active: e.target.checked })
+                    }
+                  />
+                  {o("active")}
+                </label>
+                {editable && (
+                  <button disabled={busy} className="studio-primary">
+                    {o("save")}
+                  </button>
+                )}
+              </form>
+            )}
             {dirty && <p className="muted">{r("addressPending")}</p>}
-            <AddressBook
-              request={request}
-              path={`/api/merchant/customers/${encodeURIComponent(customer.email)}/addresses`}
-              countries={countries}
-              canEdit={canEdit && !dirty && !busy}
-              onChange={() => void detail(customer.email)}
-            />
+            {customer.guest ? (
+              <GuestContact customer={customer} />
+            ) : (
+              <AddressBook
+                request={request}
+                path={`/api/merchant/customers/${encodeURIComponent(customer.email)}/addresses`}
+                countries={countries}
+                canEdit={editable && !dirty && !busy}
+                onChange={() => void detail(customer.email)}
+              />
+            )}
             {customer.orders && (
               <>
                 <h3>{o("orders")}</h3>
@@ -236,18 +254,22 @@ export default function CustomersManager({
                 ))}
               </>
             )}
-            <AppSurfaceSlot
-              location="admin.customer"
-              context={{ customerId: customer.id }}
-            />
-            <EntityHistory
-              request={request}
-              entity="customer"
-              id={customer.email}
-              revision={customer.revision}
-              dirty={dirty || busy}
-              onRestored={() => detail(customer.email)}
-            />
+            {!customer.guest && (
+              <AppSurfaceSlot
+                location="admin.customer"
+                context={{ customerId: customer.id }}
+              />
+            )}
+            {!customer.guest && (
+              <EntityHistory
+                request={request}
+                entity="customer"
+                id={customer.email}
+                revision={customer.revision}
+                dirty={dirty || busy}
+                onRestored={() => detail(customer.email)}
+              />
+            )}
           </section>
         </>
       ) : (
@@ -266,7 +288,7 @@ export default function CustomersManager({
             >
               <strong>{c.profile.name || c.email}</strong>
               <span>{c.email}</span>
-              <span>{groupName(c.customerGroup)}</span>
+              <span>{c.guest ? r("guest") : groupName(c.customerGroup)}</span>
             </button>
           ))}
           {!rows.length && <p>{o("empty")}</p>}

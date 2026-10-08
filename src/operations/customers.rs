@@ -8,9 +8,15 @@ pub(super) async fn list(
     let t = merchant(&a, &h)?;
     auth::permit(&h, "customers.read")?;
     let n = c.validate()?;
-    let rows=sqlx::query("SELECT *,created_at::text AS created FROM customers WHERE tenant=$1 AND email>$2 AND ($3='' OR strpos(lower(email||' '||coalesce(profile->>'name','')) ,lower($3))>0) ORDER BY email LIMIT $4").bind(t).bind(c.after).bind(c.query).bind(n+1).fetch_all(&a.db).await?;
+    let rows = sqlx::query_scalar::<_, Value>(include_str!("customer_directory.sql"))
+        .bind(t)
+        .bind(c.after)
+        .bind(c.query)
+        .bind(n + 1)
+        .fetch_all(&a.db)
+        .await?;
     let more = rows.len() > n as usize;
-    let elements = rows.iter().take(n as usize).map(value).collect::<Vec<_>>();
+    let elements = rows.into_iter().take(n as usize).collect::<Vec<_>>();
     let after = elements.last().map(|v| v["email"].clone());
     Ok(Json(
         json!({"elements":elements,"hasMore":more,"nextCursor":if more{after}else{None}}),
@@ -32,13 +38,17 @@ pub(super) async fn detail(
     .bind(&t)
     .bind(&email)
     .fetch_optional(&a.db)
-    .await?
-    .ok_or(Error(StatusCode::NOT_FOUND, "Customer not found".into()))?;
-    let mut v = value(&r);
-    accounts::decorate(&a, &t, &email, &mut v).await?;
-    v["addresses"] = accounts::address_list(&a, &t, &email).await?;
+    .await?;
+    let mut v = if let Some(r) = r {
+        let mut v = value(&r);
+        accounts::decorate(&a, &t, &email, &mut v).await?;
+        v["addresses"] = accounts::address_list(&a, &t, &email).await?;
+        v
+    } else {
+        super::guest_customers::contact(&a, &t, &email).await?
+    };
     if auth::permit(&h, "orders.read").is_ok() {
-        let rows=sqlx::query("SELECT o.data #- '{cart,token}' AS data,o.created_at::text AS created FROM orders o JOIN carts c ON c.id=o.cart_id AND c.tenant=o.tenant WHERE o.tenant=$1 AND ((o.data->'orderCustomer'->>'customerId')=(SELECT id FROM customers WHERE tenant=o.tenant AND email=$2) OR (NOT o.data ? 'orderCustomer' AND c.data->>'email'=$2)) ORDER BY o.created_at DESC LIMIT 100").bind(t).bind(email).fetch_all(&a.db).await?;
+        let rows=sqlx::query("SELECT o.data #- '{cart,token}' AS data,o.created_at::text AS created FROM orders o JOIN carts c ON c.id=o.cart_id AND c.tenant=o.tenant WHERE o.tenant=$1 AND ((o.data->'orderCustomer'->>'customerId')=(SELECT id FROM customers WHERE tenant=o.tenant AND email=$2) OR (o.data->'orderCustomer'->>'guest'='true' AND o.data->'orderCustomer'->>'email'=$2) OR (NOT o.data ? 'orderCustomer' AND c.data->>'email'=$2)) ORDER BY o.created_at DESC LIMIT 100").bind(t).bind(email).fetch_all(&a.db).await?;
         v["orders"] = json!(
             rows.iter()
                 .map(|r| {

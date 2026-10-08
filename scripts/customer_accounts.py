@@ -102,6 +102,33 @@ config=call('/api/merchant/commerce',h=mh);config['data']['payments'].append({'i
 cart=call('/store-api/checkout/cart',{},public);bh={**public,'sw-context-token':cart['token']};cart=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':sample_item,'quantity':1}]},bh);cart=call('/store-api/checkout/context',{'revision':cart['revision'],'checkout':{**cart['checkout'],'paymentMethodId':'bank'}},bh,'PUT');call('/store-api/checkout/order',{}, {**bh,'Idempotency-Key':'invalid-bank-'+suffix},expected=400)
 cart=call('/store-api/checkout/context',{'revision':cart['revision'],'checkout':{**cart['checkout'],'customerEmail':'guest@example.test','billingAddress':billing}},bh,'PUT');paid=call('/store-api/checkout/order',{}, {**bh,'Idempotency-Key':'valid-bank-'+suffix});assert paid['payment']['state']=='pending' and paid['payment']['provider']=='manual'
 passed('Financial/manual checkout requires contact and billing data; complete guest checkout creates a pending native payment')
+# Guest CRM projection includes existing orders, without creating authentication authority.
+crm=call('/api/merchant/customers?query=guest%40example.test&limit=1',h=mh)
+assert len(crm['elements'])==1 and crm['elements'][0]['email']=='guest@example.test' and crm['elements'][0]['guest']
+gcontact=call('/api/merchant/customers/guest@example.test',h=mh)
+assert gcontact['id'] is None and gcontact['guest'] and gcontact['billingAddress']['street']==billing['street']
+assert [o['id'] for o in gcontact['orders']]==[paid['id']] and 'token' not in gcontact['orders'][0]['cart']
+grpc={'jsonrpc':'2.0','id':1,'method':'tools/call','params':{'name':'merchant.customer','arguments':{'id':'guest@example.test'}}}
+assert not call('/mcp',grpc,mh)['result']['isError']
+assert call('/mcp',grpc,fmh)['result']['isError']
+
+assert call('/api/merchant/customers?query=guest%40example.test',h=fmh)['elements']==[]
+call('/api/merchant/customers/guest@example.test',h=fmh,expected=404)
+call('/api/merchant/customers/guest@example.test',{'revision':1,'profile':{'name':'Overwrite'},'customerGroup':'consumer','active':True},mh,'PUT',409)
+registered=call('/api/merchant/customers/'+email,h=mh)
+assert {o['id'] for o in registered['orders']}=={oid,gorder['id']} and not registered['guest']
+assert len([c for c in call('/api/merchant/customers',h=mh)['elements'] if c['email']==email])==1
+# Email matching remains a merchant search only, never an owning-account predicate.
+new_account=call('/store-api/account/register',{'email':'guest@example.test','name':'New Account','password':password},public)
+assert call('/store-api/account/orders',h={**public,'x-customer-token':new_account['customerToken']})['elements']==[]
+assert len(call('/api/merchant/customers?query=guest%40example.test',h=mh)['elements'])==1
+assert not call('/api/merchant/customers/guest@example.test',h=mh)['guest']
+assert [o['id'] for o in call('/api/merchant/customers/guest@example.test',h=mh)['orders']]==[paid['id']]
+page1=call('/api/merchant/customers?limit=1',h=mh)
+page2=call('/api/merchant/customers?limit=1&after='+page1['nextCursor'],h=mh)
+assert page1['elements'][0]['email']!=page2['elements'][0]['email']
+passed('CRM lists and opens historical guest buyers with addresses and linked orders; account ownership, email deduplication, search, pagination and foreign-tenant denial remain intact')
+
 # MCP uses identical address implementation and current per-user permissions.
 def mcp(name,args,h):return call('/mcp',{'jsonrpc':'2.0','id':1,'method':'tools/call','params':{'name':name,'arguments':args}},h)['result']
 assert not mcp('merchant.customer.addresses',{'id':email},mh)['isError'];assert not mcp('merchant.customer.address.save',{'id':email,'address':billing},mh)['isError'];assert mcp('merchant.customer.addresses',{'id':email},fmh)['isError']

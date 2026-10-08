@@ -5,6 +5,7 @@ mod company_logo;
 mod company_model;
 mod company_public;
 mod customers;
+mod guest_customers;
 pub(crate) use customers::restore_customer;
 pub(crate) use master_data::save as restore_company;
 mod master_data;
