@@ -1,6 +1,7 @@
 //! Resolve configured shop subdomains before authentication; reject unknown hosts and conflicting scopes.
 use crate::*;
 use axum::{extract::Request, middleware::Next};
+mod frontend_editor;
 mod frontend_transport;
 pub(crate) mod frontends;
 #[derive(Clone)]

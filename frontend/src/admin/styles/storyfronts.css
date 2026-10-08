@@ -1,0 +1,82 @@
+/* Tenant-bound Experience cards share Studio tokens and keep long hostnames inside mobile columns. */
+.storyfront-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 360px), 1fr));
+  gap: 24px;
+}
+.studio .storyfront-card {
+  padding: 0;
+  overflow: hidden;
+  min-width: 0;
+}
+.storyfront-card-cover {
+  padding: 32px;
+  min-height: 170px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  background: linear-gradient(135deg, var(--hover), var(--panel));
+  color: var(--accent);
+}
+.storyfront-card-cover > svg {
+  width: 54px;
+  height: 54px;
+}
+.storyfront-card-cover > span {
+  background: var(--surface);
+  color: var(--positive);
+  padding: 7px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.storyfront-card-body {
+  padding: 28px;
+}
+.storyfront-card-body h2,
+.storyfront-address {
+  overflow-wrap: anywhere;
+}
+.storyfront-card-body h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+.storyfront-card-body dl {
+  display: flex;
+  gap: 14px;
+  margin: 22px 0;
+  font-size: 13px;
+}
+.storyfront-card-body dt,
+.storyfront-explanation,
+.storyfront-address {
+  color: var(--muted);
+}
+.storyfront-card-body dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.storyfront-card-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.storyfront-card-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.storyfront-explanation {
+  max-width: 820px;
+  margin: 0 0 24px;
+}
+@media (max-width: 600px) {
+  .storyfront-card-body {
+    padding: 20px;
+  }
+  .storyfront-card-actions a {
+    width: 100%;
+  }
+}

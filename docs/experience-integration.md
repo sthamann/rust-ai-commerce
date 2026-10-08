@@ -20,6 +20,28 @@ Authenticated `GET/PUT /api/settings/frontends` reads or binds `{alias, channel}
 
 `HOSTED_FRONTEND_ORIGIN` is an operator-only HTTPS origin (loopback is permitted locally). `HOSTED_FRONTEND_KEY` authenticates Core-to-frontend requests. `SHOP_DOMAIN_SUFFIX` supplies wildcard shop addresses; the hosting layer separately routes the exact Experience host to the private service. Hostname resolution derives tenant and channel from PostgreSQL, rejects conflicting headers and never trusts an arbitrary browser tenant. Paused shops and disabled channels are unavailable.
 
+### Discover and edit existing Experiences
+
+Commerce Studio's **Storyfronts** page reads the existing tenant-bound mounts from
+`GET /api/settings/frontends`; it does not require installing the older optional
+Storyfront connector app. This fixes the empty management page for shops created
+through Experience onboarding, including multiple frontends on one shop.
+
+Set `HOSTED_FRONTEND_EDITOR_URL=https://experience.vendune.ai/design/{alias}` on
+the core deployment to expose a passive `editorUrl` on each mount. The operator
+template accepts a single alias path component and HTTPS (or local loopback);
+credentials, query strings and fragments are rejected. No merchant token is
+forwarded to the browser URL. The private deployment's existing `/design/{alias}`
+route chooses its configured original native editor or retained legacy editor.
+The editor continues to enforce its own canonical Experience ownership and login.
+A mounted frontend means **connected**, not **published**, and listing it never
+imports products, generates an experience, spends on models or changes publication.
+
+The list is scoped by authenticated workspace and `settings.read`; the real
+`identity_broker` PostgreSQL/HTTP suite checks own/foreign/anonymous access. UI
+regressions cover existing mounts without an installed app, loading/failure/retry,
+late responses after switching workspace, editor URL safety and localized actions.
+
 Only public assets/pages and allowlisted `/experience-api/context` and `/experience-api/shops/...` reach the frontend. Core admin, Store API, MCP, UCP and private service routes stay separate. Proxying strips cookies and merchant Authorization, prohibits redirects and bounds request/response bodies. The private frontend must independently check the gateway key, alias, tenant/channel, same-origin writes and requested shop; public API allowlists must remain restrictive.
 
 ## Source and evidence
