@@ -1,4 +1,5 @@
 /** Open registered native/isolated admin surfaces through the existing permission-filtered registry. */
+import StoryfrontConnections from "../storyfronts/StoryfrontConnections";
 import { useState } from "react";
 import {
   useAppSurfaces,
@@ -24,7 +25,9 @@ export default function AppInterfaces({
   const { locale } = useLocale(),
     l = useLibraryText();
   const selected = surfaces.find((s) => s.surface.id === id) ?? surfaces[0];
-  return selected ? (
+  return p.connections?.length ? (
+    <StoryfrontConnections frontends={p.connections} />
+  ) : selected ? (
     <div className="app-interface-content">
       <div className="app-detail-tabs">
         {surfaces.map((s) => (

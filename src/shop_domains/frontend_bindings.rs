@@ -2,12 +2,9 @@
 use crate::*;
 pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
     auth::permit(&h, "settings.read")?;
-    let rows = sqlx::query("SELECT alias,channel,experience_alias,revision FROM hosted_frontends WHERE tenant=$1 ORDER BY alias")
-        .bind(tenant(&h)?).fetch_all(&a.db).await?;
-    Ok(Json(json!({"frontends":rows.iter().map(|r| {
-        let alias:String=r.get("alias"); let experience:String=r.get("experience_alias");
-        json!({"alias":alias,"channel":r.get::<String,_>("channel"),"experienceAlias":experience,"revision":r.get::<i64,_>("revision"),"url":super::links(&alias)["storefrontUrl"],"editorUrl":super::frontend_editor::url(&experience,env::var("HOSTED_FRONTEND_EDITOR_URL").ok().as_deref())})
-    }).collect::<Vec<_>>()})))
+    Ok(Json(
+        json!({"frontends":apps::hosted::connections(&a,&tenant(&h)?).await?}),
+    ))
 }
 pub(super) async fn bind(
     State(a): State<App>,
@@ -37,6 +34,11 @@ pub(super) async fn bind(
         .as_str()
         .filter(|s| apps::identifier(s))
         .ok_or(bad("Channel required"))?;
+    let requested_app = v["appId"].as_str();
+    if v.get("appId").is_some() && requested_app != Some("storyfront") {
+        return Err(bad("Unknown hosted app"));
+    }
+    let mut app_id = requested_app.map(str::to_owned);
     let experience = v["experienceAlias"].as_str().unwrap_or(alias);
     validate_tenant(experience)?;
     let origin = env::var("HOSTED_FRONTEND_ORIGIN").map_err(|_| {
@@ -74,28 +76,39 @@ pub(super) async fn bind(
     }
     // Additional domains can only select an Experience already mounted by this same tenant.
     if experience != alias {
-        let own: bool = sqlx::query_scalar(
-            "SELECT EXISTS(SELECT 1 FROM hosted_frontends WHERE tenant=$1 AND experience_alias=$2)",
+        let own = sqlx::query(
+            "SELECT app_id FROM hosted_frontends WHERE tenant=$1 AND experience_alias=$2 ORDER BY alias LIMIT 1",
         )
         .bind(&t)
         .bind(experience)
-        .fetch_one(&mut *tx)
+        .fetch_optional(&mut *tx)
         .await?;
-        if !own {
+        let Some(own) = own else {
             return Err(bad("Experience is not connected to this shop"));
+        };
+        if app_id.is_none() {
+            app_id = own.get("app_id");
         }
     }
-    let row=sqlx::query("SELECT tenant,channel,experience_alias,revision FROM hosted_frontends WHERE alias=$1 FOR UPDATE").bind(alias).fetch_optional(&mut *tx).await?;
+    let row=sqlx::query("SELECT tenant,channel,experience_alias,revision,app_id FROM hosted_frontends WHERE alias=$1 FOR UPDATE").bind(alias).fetch_optional(&mut *tx).await?;
     if let Some(row) = &row {
         if row.get::<String, _>("tenant") != t {
             return Err(conflict("Address belongs to another shop"));
         }
+        if app_id.is_none() {
+            app_id = row.get("app_id");
+        }
         let unchanged = row.get::<String, _>("channel") == channel
-            && row.get::<String, _>("experience_alias") == experience;
+            && row.get::<String, _>("experience_alias") == experience
+            && row.get::<Option<String>, _>("app_id") == app_id;
         if !unchanged && v["revision"].as_i64() != Some(row.get("revision")) {
             return Err(conflict("Frontend revision changed"));
         }
         if unchanged {
+            if let Some(id) = &app_id {
+                apps::hosted::ensure(&mut tx, &t, id).await?;
+            }
+            tx.commit().await?;
             return Ok(Json(
                 json!({"alias":alias,"channel":channel,"revision":row.get::<i64,_>("revision"),"urls":super::links(alias)}),
             ));
@@ -103,8 +116,11 @@ pub(super) async fn bind(
     } else if v["revision"].as_i64().is_some_and(|r| r != 0) {
         return Err(conflict("Frontend revision changed"));
     }
-    let revision:i64=sqlx::query_scalar("INSERT INTO hosted_frontends(alias,tenant,channel,origin,experience_alias) VALUES($1,$2,$3,$4,$5) ON CONFLICT(alias) DO UPDATE SET channel=excluded.channel,origin=excluded.origin,experience_alias=excluded.experience_alias,revision=hosted_frontends.revision+1 WHERE hosted_frontends.tenant=excluded.tenant RETURNING revision")
-        .bind(alias).bind(&t).bind(channel).bind(origin).bind(experience).fetch_one(&mut *tx).await?;
+    if let Some(id) = &app_id {
+        apps::hosted::ensure(&mut tx, &t, id).await?;
+    }
+    let revision:i64=sqlx::query_scalar("INSERT INTO hosted_frontends(alias,tenant,channel,origin,experience_alias,app_id) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(alias) DO UPDATE SET channel=excluded.channel,origin=excluded.origin,experience_alias=excluded.experience_alias,app_id=excluded.app_id,revision=hosted_frontends.revision+1 WHERE hosted_frontends.tenant=excluded.tenant RETURNING revision")
+        .bind(alias).bind(&t).bind(channel).bind(origin).bind(experience).bind(&app_id).fetch_one(&mut *tx).await?;
     sqlx::query("INSERT INTO outbox(tenant,kind,data) VALUES($1,'frontend.configured',$2)").bind(&t).bind(json!({"alias":alias,"channel":channel,"revision":revision,"actor":header(&h,"x-rac-user")})).execute(&mut *tx).await?;
     tx.commit().await?;
     Ok(Json(

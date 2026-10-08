@@ -2,7 +2,7 @@
 use crate::*;
 use axum::{extract::Request, middleware::Next};
 mod frontend_bindings;
-mod frontend_editor;
+pub(crate) mod frontend_editor;
 mod frontend_transport;
 pub(crate) mod frontends;
 #[derive(Clone)]

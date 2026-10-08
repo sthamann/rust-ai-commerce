@@ -108,13 +108,14 @@ with tempfile.TemporaryDirectory(prefix='vendune-rust-connectors-') as directory
   grid=[json.loads(body) for path,body,_ in provider.calls if path.endswith('/mail/send')]
   assert {'/global/mail/send','/eu/mail/send'} <= {path for path,_,_ in provider.calls}
   assert len(grid)==2 and all(v['personalizations'][0]['bcc']==[{'email':'audit@example.test'}] for v in grid)
-  # Hold admission deterministically; changing configuration must fence a queued send.
-  sql(f"UPDATE connector_limits SET minute=date_trunc('minute',now()),dispatched=120 WHERE tenant='{t}' AND app='email';")
+  # Occupy both worker slots; a calendar-minute rollover must not release this fence.
+  sql(f"INSERT INTO connector_jobs (tenant,app,id,fingerprint,state,payload,lease_id,lease_until) SELECT j.tenant,j.app,held.id,j.fingerprint,'running',j.payload,'00000000-0000-0000-0000-000000000001'::uuid,now()+interval '1 day' FROM connector_jobs j CROSS JOIN (VALUES ('hold-a'),('hold-b')) AS held(id) WHERE j.tenant='{t}' AND j.app='email' AND j.id='race-1';")
+  assert sql(f"SELECT count(*) FROM connector_jobs WHERE tenant='{t}' AND app='email' AND state='running';")=='2'
   send('stale-9');assert sql(f"SELECT state FROM connector_jobs WHERE tenant='{t}' AND id='stale-9';")=='queued'
   settings['fromName']='Updated Rust Shop';current=call('email','status')
   call('email','configure',{'revision':current['revision'],'settings':settings})
   before_calls=len(provider.calls)
-  sql(f"UPDATE connector_limits SET dispatched=0 WHERE tenant='{t}' AND app='email';")
+  sql(f"DELETE FROM connector_jobs WHERE tenant='{t}' AND app='email' AND id IN ('hold-a','hold-b');")
   wait(lambda:any(j['id']=='stale-9' and j['state']=='failed' for j in call('email','status')['jobs']))
   assert len(provider.calls)==before_calls
   # Actual OAuth callback, state reuse and source exports run against Rust, not the archived oracle.

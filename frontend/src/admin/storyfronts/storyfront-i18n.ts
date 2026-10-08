@@ -1,6 +1,18 @@
 /** Four-language navigation copy; mounted frontends are connections, not proof of publication. */
 import { useLocale } from "../../shared/i18n/i18n";
 export const storyfrontWords = {
+  managed: [
+    "Managed by Experience",
+    "Von Experience verwaltet",
+    "Gérée par Experience",
+    "Gestionada por Experience",
+  ],
+  managedHint: [
+    "Storyfront is installed automatically for your connected experiences. Disconnect their frontend bindings before pausing this app.",
+    "Storyfront ist für deine verbundenen Experiences automatisch installiert. Entferne deren Frontend-Verbindungen, bevor du diese App pausierst.",
+    "Storyfront est installée automatiquement pour vos expériences connectées. Déconnectez leurs frontends avant de mettre cette app en pause.",
+    "Storyfront se instala automáticamente para tus experiencias conectadas. Desconecta sus frontends antes de pausar esta app.",
+  ],
   connected: [
     "Connected experience",
     "Verbundene Experience",

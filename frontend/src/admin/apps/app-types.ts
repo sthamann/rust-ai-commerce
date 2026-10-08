@@ -2,6 +2,8 @@
 import type { Entity } from "./AppEntity";
 export type Package = {
   uiUrl?: string;
+  managedBy?: "experience" | null;
+  connections?: import("../storyfronts/storyfront-model").FrontendConnection[];
   id: string;
   version: string;
   active: boolean;

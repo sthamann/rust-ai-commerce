@@ -34,11 +34,28 @@ call('/store-api/product',{}, {**private,'Authorization':bh['Authorization']},st
 call('/ucp/v1/checkout-sessions',{},private,status=403)
 call('/mcp',{'jsonrpc':'2.0','id':1,'method':'tools/list'},private,status=403)
 # Provision a canonical mount just as Experience onboarding does, then reuse it on a new address/channel.
-call('/api/settings/frontends',{'alias':shop,'channel':'default'},ah,'PUT')
+call('/api/settings/frontends',{'alias':shop,'channel':'default','appId':'storyfront'},ah,'PUT')
+app=next((p for p in call('/api/apps',h=ah)['packages'] if p['id']=='storyfront'),None)
+assert app is not None and app['active'], 'Experience mount must install Storyfront'
+assert app['managedBy']=='experience' and app['connections'][0]['alias']==shop
+before=app['revision']
+call('/api/settings/frontends',{'alias':shop,'channel':'default','appId':'storyfront'},ah,'PUT')
+assert next(p for p in call('/api/apps',h=ah)['packages'] if p['id']=='storyfront')['revision']==before
+call('/api/apps/storyfront',{'active':False,'revision':before},ah,'PUT',409)
+status=call('/api/apps/storyfront/actions/status',{},ah)
+assert status['status']=='connected' and status['frontends'][0]['appId']=='storyfront'
+mcp=call('/mcp',{'jsonrpc':'2.0','id':1,'method':'tools/call','params':{'name':'app.storyfront.status','arguments':{}}},ah)
+assert mcp['result']['structuredContent']==status
+call('/api/apps/storyfront/actions/generate',{},ah,status=409)
+call('/api/apps/storyfront/actions/status',{},sh,status=401)
+assert call('/api/apps',h=bh)['packages']==[]
+call('/api/settings/frontends',{'alias':shop,'channel':'default','appId':'storyfront'},bh,'PUT',409)
+assert call('/api/apps',h=bh)['packages']==[]
+call('/api/settings/frontends',{'alias':'unsupported-'+u,'channel':'default','appId':'unknown'},ah,'PUT',400)
 alias='channel-preview-'+u
 mount=call('/api/settings/frontends',{'alias':alias,'channel':extra['id'],'experienceAlias':shop,'revision':0},ah,'PUT')
 row=next(f for f in call('/api/settings/frontends',h=ah)['frontends'] if f['alias']==alias)
-assert row['experienceAlias']==shop and '/design/'+shop in row['editorUrl']
+assert row['appId']=='storyfront' and row['experienceAlias']==shop and '/design/'+shop in row['editorUrl']
 assert call('/api/settings/frontends',h=bh)['frontends']==[]
 call('/api/settings/frontends',{'alias':alias,'channel':'default'},bh,'PUT',409)
 assert next(f for f in call('/api/settings/frontends',h=ah)['frontends'] if f['alias']==alias)==row
@@ -97,5 +114,14 @@ call('/api/settings/frontends/'+alias,{'revision':row['revision']},ah,'DELETE')
 call('/api/automation/channels/private_test',{'revision':extra['revision']},ah,'DELETE')
 assert not any(c['id']=='private_test' for c in call('/api/automation',h=ah)['channels'])
 call('/api/automation/channels/default',{'revision':main['revision']},ah,'DELETE',409)
+call('/api/settings/frontends/'+shop,{'revision':1},ah,'DELETE')
+app=next(p for p in call('/api/apps',h=ah)['packages'] if p['id']=='storyfront')
+assert app['connections']==[] and app['managedBy'] is None
+call('/api/apps/storyfront',{'active':False,'revision':app['revision']},ah,'PUT')
+call('/api/settings/frontends',{'alias':shop,'channel':'default','appId':'storyfront'},ah,'PUT')
+assert next(p for p in call('/api/apps',h=ah)['packages'] if p['id']=='storyfront')['active']
+# Ordinary operator-hosted custom frontends must not silently install Storyfront.
+call('/api/settings/frontends',{'alias':b['workspace'],'channel':'default'},bh,'PUT')
+assert call('/api/apps',h=bh)['packages']==[]
 server.shutdown();server.server_close()
 print('PASS channel CRUD, default pause, private Store API/UCP/MCP, domain ownership/revisions, dependency deletion, one-use previews, stale grants and logout revocation')

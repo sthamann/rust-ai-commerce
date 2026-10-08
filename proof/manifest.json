@@ -438,8 +438,13 @@
     },
     "src/apps/gateway.rs": {
       "status": "reviewed-binding",
-      "sha256": "5a253f26a06d963fad7cc71744659f9049e88423a82ed9f495a8acef97166dd1",
-      "review": "Reviewed exact operator-owned private origin admission, forbidden URL credentials/query/fragment, redirect-disabled shared client and three URL parser regressions; extracted transport predicate adds exact admission and unsafe/unapproved denial claims with two mutations. Network parsing, DNS, TLS and PostgreSQL/provider adapters remain unproved."
+      "sha256": "67d36963799c6f28488372d53446e00fec3a861b94ec78dd0ac61cb994062594",
+      "review": "Reviewed tenant-scoped hosted app association, transactional immutable Storyfront installation and one-time validated migration 055; dependency deactivation shares config/app locks; private renderer excluded. PostgreSQL regressions cover foreign references and cold restart. SQL/network adapters remain unproved."
+    },
+    "src/apps/hosted.rs": {
+      "status": "unproved",
+      "sha256": "99c9395d7e764592661a12827605735ff0457f9894a15a20e441b6a6196edd4d",
+      "review": "Reviewed tenant-scoped hosted app association, transactional immutable Storyfront installation and one-time validated migration 055; dependency deactivation shares config/app locks; private renderer excluded. PostgreSQL regressions cover foreign references and cold restart. SQL/network adapters remain unproved."
     },
     "src/apps/manifest.rs": {
       "status": "unproved",
@@ -453,8 +458,8 @@
     },
     "src/apps/mod.rs": {
       "status": "unproved",
-      "sha256": "ab76a87193240125161b8b1ed4bd3f297a83e75a596a9a8fddf85789dd244b8d",
-      "review": "Reviewed exact operator-owned private origin admission, forbidden URL credentials/query/fragment, redirect-disabled shared client and three URL parser regressions; extracted transport predicate adds exact admission and unsafe/unapproved denial claims with two mutations. Network parsing, DNS, TLS and PostgreSQL/provider adapters remain unproved."
+      "sha256": "2c93bbb6cda35a4a39bc53f7adb76d9b97e3086e56170f450ef95561e0d9d349",
+      "review": "Reviewed tenant-scoped hosted app association, transactional immutable Storyfront installation and one-time validated migration 055; dependency deactivation shares config/app locks; private renderer excluded. PostgreSQL regressions cover foreign references and cold restart. SQL/network adapters remain unproved."
     },
     "src/apps/native_data.rs": {
       "status": "unproved",
@@ -488,8 +493,8 @@
     },
     "src/apps/routes.rs": {
       "status": "unproved",
-      "sha256": "7fc44d803a71e84d923f56ecf74214bee34b7b54437a3aa058f463be93467052",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "89b234bd555c1d19513e11b3ae644a3a16f4fdaa3054fcbaf8e6d468d0eae886",
+      "review": "Reviewed tenant-scoped hosted app association, transactional immutable Storyfront installation and one-time validated migration 055; dependency deactivation shares config/app locks; private renderer excluded. PostgreSQL regressions cover foreign references and cold restart. SQL/network adapters remain unproved."
     },
     "src/apps/runtime.rs": {
       "status": "unproved",
@@ -1553,13 +1558,13 @@
     },
     "src/migrations/schema.rs": {
       "status": "unproved",
-      "sha256": "e52e305d2b93b0d3f8332c38b525ec586036640311c6b0871b8bc45341b4b714",
-      "review": "Reviewed tenant-scoped guest CRM projection and indexed historical order reads; account enrollment, checkout ownership and authenticated order access are unchanged. Guest snapshots cannot be saved as account profiles; SQL and UI remain unproved adapters."
+      "sha256": "ac5008ca61e5a31110f18a3f0e8eefa96d86bb7ce64d5b18dad733eba85dafdd",
+      "review": "Reviewed tenant-scoped hosted app association, transactional immutable Storyfront installation and one-time validated migration 055; dependency deactivation shares config/app locks; private renderer excluded. PostgreSQL regressions cover foreign references and cold restart. SQL/network adapters remain unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
-      "sha256": "390578173b54062b8541b902f4bb653a6252dccc3648be7396aa086a0236c7fa",
-      "review": "Reviewed all changed Rust, append-only schemas, build/extraction and Lean inputs: lease hooks bind new/reused connections and reset on release; strict runtime rejects owner/bypass/TRUNCATE and preserves app-schema ownership; two-replica non-owner PostgreSQL tests deny forged foreign writes, enforce operator quotas and parent-stage daily usage, release persisted allocation quantities once despite corrupted snapshots, and distinguish commit from rollback invalidation. Money retains legacy EUR rounding with explicit scale and original Shopware differential; receipt-backed state admission is monotonic with late capture/refund. Async SQL/provider code remains unproved. Rust 113 tests, staging/app/automation/settings and strict checkout/CRM/tenant regressions passed; 274 frontend tests and production build passed."
+      "sha256": "02f2de1a4612457e6116d04229ab314bec5d4b52ccda7ae22574caf2bd403797",
+      "review": "Reviewed tenant-scoped hosted app association, transactional immutable Storyfront installation and one-time validated migration 055; dependency deactivation shares config/app locks; private renderer excluded. PostgreSQL regressions cover foreign references and cold restart. SQL/network adapters remain unproved."
     },
     "src/money.rs": {
       "status": "reviewed-binding",
@@ -1883,13 +1888,13 @@
     },
     "src/shop_domains/frontend_bindings.rs": {
       "status": "unproved",
-      "sha256": "036d77e58e34f89b1bfdee66f2af0164ff59aae733cb0794b9967c222a551a8e",
-      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
+      "sha256": "df41690e3c56ee0e7fee3030f05d08fd53f30c6c7a1e4feca1e57f2d3ef81869",
+      "review": "Reviewed tenant-scoped hosted app association, transactional immutable Storyfront installation and one-time validated migration 055; dependency deactivation shares config/app locks; private renderer excluded. PostgreSQL regressions cover foreign references and cold restart. SQL/network adapters remain unproved."
     },
     "src/shop_domains/frontend_editor.rs": {
       "status": "unproved",
-      "sha256": "dde09763cba3fe493127443049207822f11f284bc3240e57f9e284ebe3ddae34",
-      "review": "Reviewed passive operator editor URL navigation and tenant-scoped existing frontend discovery; URL/HTTP adapters remain unproved. Added own foreign anonymous scope and stale-workspace UI regressions."
+      "sha256": "afdd882637b16ccb2a916f4a48927f37411c1ab56888f1af9d739fb390976ac4",
+      "review": "Reviewed tenant-scoped hosted app association, transactional immutable Storyfront installation and one-time validated migration 055; dependency deactivation shares config/app locks; private renderer excluded. PostgreSQL regressions cover foreign references and cold restart. SQL/network adapters remain unproved."
     },
     "src/shop_domains/frontend_transport.rs": {
       "status": "unproved",
@@ -1903,8 +1908,8 @@
     },
     "src/shop_domains.rs": {
       "status": "unproved",
-      "sha256": "5d5359d361c13761043e5093e0b791a8956ccbcc0aa3d2076dc31ee1bc08b2a2",
-      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
+      "sha256": "a6c36e9fe4ae7c06967270ab61e74e2a4593514b972ef6916f15dc936e0ae6ee",
+      "review": "Reviewed tenant-scoped hosted app association, transactional immutable Storyfront installation and one-time validated migration 055; dependency deactivation shares config/app locks; private renderer excluded. PostgreSQL regressions cover foreign references and cold restart. SQL/network adapters remain unproved."
     },
     "src/staging/assets.rs": {
       "status": "unproved",
@@ -2279,6 +2284,10 @@
     "migrations/054-guest-customer-directory.sql": {
       "sha256": "24ab91bdd28bd707704516f3d9cf80153fee340dd635179efb46b867063088e1",
       "review": "Reviewed tenant-scoped guest CRM projection and indexed historical order reads; account enrollment, checkout ownership and authenticated order access are unchanged. Guest snapshots cannot be saved as account profiles; SQL and UI remain unproved adapters."
+    },
+    "migrations/055-hosted-apps.sql": {
+      "sha256": "2c0b6254b31d1a4d523f2e2765f629af02dfb3e14312d34a9a08422d54de0ae8",
+      "review": "Reviewed tenant-scoped hosted app association, transactional immutable Storyfront installation and one-time validated migration 055; dependency deactivation shares config/app locks; private renderer excluded. PostgreSQL regressions cover foreign references and cold restart. SQL/network adapters remain unproved."
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "08ed10a3c4484ad7ca1403be069ac19d7112b538d0bda9fb64fc33b98a3972d2",

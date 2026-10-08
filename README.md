@@ -17,6 +17,10 @@
 
 </div>
 
+Experience shops automatically install the Storyfront integration. Apps, Storyfronts
+and sales-channel connections lead to the same original editor; the renderer stays
+private. [How installation and dependencies work](docs/channel-management.md#storyfront-app-ownership-for-experience-shops).
+
 Vendune is a self-hosted **Rust commerce system** for B2C and B2B shops. Run a
 storefront, manage it in Vendune Studio, build custom experiences and give agents
 access to the same catalog, prices, inventory and checkout. AI retrieves shop
