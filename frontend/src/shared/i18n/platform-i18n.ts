@@ -195,7 +195,7 @@ const fr: typeof en = {
   traffic: "Activité API",
   trafficNote:
     "Requêtes HTTP cumulées, pas des visiteurs. Inclut tests et lectures marchands ; hors environnement de test.",
-  failures: "Erreurs",
+  failures: "Réponses HTTP 4xx/5xx",
   created: "Créée",
   noShops: "Aucune boutique correspondante.",
   noActivity: "Aucune activité pour le moment.",
