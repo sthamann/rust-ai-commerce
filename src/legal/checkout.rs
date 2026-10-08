@@ -10,7 +10,7 @@ pub(super) struct Acceptance {
 }
 pub(super) async fn accept(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Acceptance>,
 ) -> Result<Json<Value>> {
     let c = load_cart(&a, &h).await?;

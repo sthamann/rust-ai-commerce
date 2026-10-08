@@ -1,5 +1,7 @@
 //! Installed payment registry and immutable account/version snapshots; no remote calls inside checkout SQL.
-use super::*;
+use super::{enqueue_tx, remote};
+use crate::{App, Result, Row, StoredCart, Value, apps, bad, commerce, conflict, json, uid};
+
 pub(crate) fn external(o: &Value) -> bool {
     !matches!(
         o["payment"]["provider"].as_str(),
@@ -158,6 +160,12 @@ pub(crate) async fn available(
     currency: &str,
 ) -> Result<std::collections::HashSet<(String, String)>> {
     let rows = sqlx::query("SELECT DISTINCT ON (p.id) p.id,p.version,p.manifest,a.ready,a.data,a.environment FROM app_packages p JOIN payment_provider_accounts a ON a.tenant=p.tenant AND a.app=p.id WHERE p.tenant=$1 AND p.active AND a.channel IN ($2,'default') ORDER BY p.id,(a.channel=$2) DESC").bind(t).bind(channel).fetch_all(&a.db).await?;
+    enabled_rows(rows, currency)
+}
+fn enabled_rows(
+    rows: Vec<sqlx::postgres::PgRow>,
+    currency: &str,
+) -> Result<std::collections::HashSet<(String, String)>> {
     let mut enabled = std::collections::HashSet::new();
     for row in rows {
         let id: String = row.get("id");
@@ -195,9 +203,16 @@ pub(crate) async fn currency_methods(
     t: &str,
     channel: &str,
     code: &str,
-    mut s: commerce::Settings,
+    s: commerce::Settings,
 ) -> Result<commerce::Settings> {
     let enabled = available(a, t, channel, code).await?;
+    Ok(filter_methods(&enabled, code, s))
+}
+fn filter_methods(
+    enabled: &std::collections::HashSet<(String, String)>,
+    code: &str,
+    mut s: commerce::Settings,
+) -> commerce::Settings {
     for method in &mut s.payments {
         if let Some(provider) = &method.provider {
             method.active &= method
@@ -209,5 +224,17 @@ pub(crate) async fn currency_methods(
             method.active &= "AUD BRL CAD CNY CZK DKK EUR HKD HUF ILS JPY MYR MXN TWD NZD NOK PHP PLN GBP SGD SEK CHF THB USD".split(' ').any(|c|c==code);
         }
     }
-    Ok(s)
+    s
+}
+
+/// Checkout reads the provider registry on its existing transaction: never borrow another pooled backend under locks.
+pub(crate) async fn currency_methods_conn(
+    conn: &mut sqlx::PgConnection,
+    t: &str,
+    channel: &str,
+    code: &str,
+    s: commerce::Settings,
+) -> Result<commerce::Settings> {
+    let rows=sqlx::query("SELECT DISTINCT ON (p.id) p.id,p.version,p.manifest,a.ready,a.data,a.environment FROM app_packages p JOIN payment_provider_accounts a ON a.tenant=p.tenant AND a.app=p.id WHERE p.tenant=$1 AND p.active AND a.channel IN ($2,'default') ORDER BY p.id,(a.channel=$2) DESC").bind(t).bind(channel).fetch_all(conn).await?;
+    Ok(filter_methods(&enabled_rows(rows, code)?, code, s))
 }

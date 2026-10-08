@@ -5,7 +5,11 @@ pub(crate) fn router() -> Router<App> {
         .route("/store-api/checkout/handoff", post(issue))
         .route("/store-api/checkout/handoff/consume", post(consume))
 }
-async fn issue(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Result<Json<Value>> {
+async fn issue(
+    State(a): State<App>,
+    h: RequestContext,
+    Json(v): Json<Value>,
+) -> Result<Json<Value>> {
     let t = tenant(&h)?;
     let _ = load_cart(&a, &h).await?;
     let mut tx = a.db.begin().await?;
@@ -31,7 +35,11 @@ async fn issue(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Resu
         json!({"checkoutPath":format!("/?shop={t}&channel={}#checkout/{ticket}",c.data.sales_channel),"expiresInSeconds":600,"singleUse":true}),
     ))
 }
-async fn consume(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Result<Json<Value>> {
+async fn consume(
+    State(a): State<App>,
+    h: RequestContext,
+    Json(v): Json<Value>,
+) -> Result<Json<Value>> {
     let t = tenant(&h)?;
     let ticket = v["ticket"]
         .as_str()

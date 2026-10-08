@@ -1,6 +1,6 @@
 //! Public navigation is localized and restricted to the selected channel's active category ancestry.
 use super::*;
-async fn rows(a: &App, h: &HeaderMap) -> Result<Vec<sqlx::postgres::PgRow>> {
+async fn rows(a: &App, h: &RequestContext) -> Result<Vec<sqlx::postgres::PgRow>> {
     let t = tenant(h)?;
     let (locale, _) = language_context(a, h).await?;
     let channel = marketing::channel(a, h, marketing::channel_id(h), &locale).await?;
@@ -13,7 +13,7 @@ async fn rows(a: &App, h: &HeaderMap) -> Result<Vec<sqlx::postgres::PgRow>> {
     }
     Ok(result)
 }
-pub(crate) async fn admit(a: &App, h: &HeaderMap, id: &str) -> Result<()> {
+pub(crate) async fn admit(a: &App, h: &RequestContext, id: &str) -> Result<()> {
     if !rows(a, h)
         .await?
         .iter()
@@ -26,7 +26,7 @@ pub(crate) async fn admit(a: &App, h: &HeaderMap, id: &str) -> Result<()> {
     }
     Ok(())
 }
-pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn list(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let (locale, _) = language_context(&a, &h).await?;
     let (settings, _) = commerce::config(&a, &tenant(&h)?).await?;
     let rows = rows(&a, &h).await?;

@@ -70,7 +70,7 @@ pub(crate) async fn seed_builtin(a: &App) -> Result<()> {
     }
     tx.commit().await?;
     for p in prototype_products(a, "nord-atelier").await? {
-        knowledge::sync_product(&mut *a.db.acquire().await?, "nord-atelier", &json!(p)).await?;
+        knowledge::sync_product_scoped(&a.db, "nord-atelier", &json!(p)).await?;
     }
     knowledge::seed_relations(&a.db, "nord-atelier").await?;
     Ok(())

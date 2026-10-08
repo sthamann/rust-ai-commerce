@@ -34,7 +34,7 @@ pub(crate) fn preview_mutation(path: &str, method: &str) -> bool {
 }
 pub(crate) async fn admit(
     a: &App,
-    h: &HeaderMap,
+    h: &RequestContext,
     path: &str,
     method: &str,
     host: Option<&str>,

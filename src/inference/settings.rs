@@ -84,7 +84,7 @@ fn safe_endpoint(value: &str) -> String {
     url.to_string().trim_end_matches('/').to_string()
 }
 impl Inference {
-    pub fn with_database(mut self, db: sqlx::PgPool) -> Self {
+    pub fn with_database(mut self, db: crate::scoped_pool::ScopedPool) -> Self {
         self.db = Some(db);
         self
     }

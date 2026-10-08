@@ -3,7 +3,7 @@ use crate::*;
 
 pub(crate) async fn experience(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let t = tenant(&h)?;
@@ -103,7 +103,7 @@ pub(crate) async fn experience(
         json!({"schemaVersion":1,"revision":er.get::<i64,_>("revision"),"variant":variant,"propensity":probability,"headline":if e["headlineLocale"].as_str().unwrap_or("en-GB")==requested_locale{e["headline"].clone()}else{Value::Null},"blocks":[{"type":"hero"},{"type":if variant=="comparison"{"comparison-grid"}else{"product-grid"}},{"type":"cart"}],"adaptation":{"localBehavior":true,"policy":"persisted epsilon-greedy; simulated purchase reward"}}),
     ))
 }
-pub(crate) async fn policy_stats(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn policy_stats(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     let rs = sqlx::query("SELECT * FROM policy WHERE tenant=$1 ORDER BY variant")
         .bind(t)
@@ -117,7 +117,7 @@ pub(crate) async fn policy_stats(State(a): State<App>, h: HeaderMap) -> Result<J
 /// Product behavior updates a tenant/session profile; the response immediately ranks available channel products.
 pub(crate) async fn personalization(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let c = load_cart(&a, &h).await?;
@@ -209,7 +209,7 @@ pub(crate) async fn personalization(
 /// Clear this anonymous shop session's behavior and allow the shopper to turn adaptation off.
 pub(crate) async fn forget_personalization(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
 ) -> Result<Json<Value>> {
     let c = load_cart(&a, &h).await?;
     let mut tx = a.db.begin().await?;

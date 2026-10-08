@@ -1,7 +1,7 @@
 //! Merchant order read adapter.
 use crate::*;
 
-pub(crate) async fn orders(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn orders(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     auth::permit(&h, "orders.read")?;
     let rs =

@@ -1,6 +1,6 @@
 //! Typed customer-owned profile updates; price groups, email and merchant roles cannot be self-assigned.
 use super::*;
-pub(super) async fn get(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn get(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let (t, email) = identity(&a, &h).await?;
     let r = sqlx::query(
         "SELECT *,created_at::text AS created FROM customers WHERE tenant=$1 AND email=$2",
@@ -16,7 +16,7 @@ pub(super) async fn get(State(a): State<App>, h: HeaderMap) -> Result<Json<Value
 }
 pub(super) async fn save(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let (t, email) = identity(&a, &h).await?;
@@ -64,7 +64,7 @@ pub(super) async fn save(
 }
 pub(super) async fn password(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let (t, email) = identity(&a, &h).await?;

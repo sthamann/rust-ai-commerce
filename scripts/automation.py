@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Real HTTP/PostgreSQL branching automation, private facts, durable delays and revoked-actor regressions. No providers."""
+from testing.database import psql
 import copy,json,os,subprocess,time,uuid,urllib.request,urllib.error,sys,pathlib
 BASE=os.environ.get('BASE_URL','http://127.0.0.1:8787');suffix=uuid.uuid4().hex[:10];checks=[]
 def call(path,body=None,h=None,method=None,expected=200):
@@ -10,7 +11,7 @@ def call(path,body=None,h=None,method=None,expected=200):
     assert status==expected,(path,status,expected,v)
     return v
 def sql(statement):
-    return subprocess.check_output(['docker','exec','-i',os.getenv('DB_CONTAINER','vendune-postgres-1'),'psql','-U','commerce','-d',os.environ['TEST_DATABASE'],'-At','-v','ON_ERROR_STOP=1'],input=statement,text=True).strip()
+    return subprocess.check_output(psql(os.getenv('DB_CONTAINER','vendune-postgres-1'),'commerce',os.environ['TEST_DATABASE'],'-At','-v','ON_ERROR_STOP=1'),input=statement,text=True).strip()
 def check(s):checks.append(s);print('PASS',s,flush=True)
 def register(label):return call('/api/auth/register',{'workspaceId':label+'-'+suffix,'workspaceName':label,'name':'Owner','email':label+suffix+'@example.test','password':'Synthetic-flow-2026!'})
 a=register('automate');foreign=register('autoforeign');t=a['workspace'];mh={'x-tenant':t,'Authorization':'Bearer '+a['token']};public={'x-tenant':t};fh={'x-tenant':t,'Authorization':'Bearer '+foreign['token']};names={l:'Automation '+l for l in ['en','de','fr','es']}

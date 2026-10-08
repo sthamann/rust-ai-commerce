@@ -29,7 +29,9 @@ jobs:
         with:
           python-version: '3.13'
       - name: Install verification and offline-migration dependencies
-        run: python3 -m pip install -r scripts/testing/requirements.txt
+        run: |
+          python3 -m pip install -r scripts/testing/requirements.txt
+          sudo apt-get update && sudo apt-get install -y pgbouncer
       - run: cargo fmt --check && cargo clippy --locked --all-targets -- -D warnings
       - name: Instrument the real Rust unit and HTTP paths
         run: |

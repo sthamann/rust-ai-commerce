@@ -16,8 +16,8 @@ The following sections distinguish delivered work from the remaining roadmap.
 now reduce repeated SQL in HTTP, MCP and Studio, preserve cross-replica freshness,
 and expose configurable connection budgets. Browser in-flight request sharing and
 fingerprinted asset caching are also delivered. Public catalog response caches,
-fleet poolers, per-tenant admission and historical dashboard projections remain
-the following stages, with separate capacity measurements required.
+historical dashboard projections and measured fleet capacity remain
+following stages, with separate capacity measurements required.
 
 The three workloads need different solutions:
 
@@ -75,19 +75,19 @@ write per second and a one-second write timeout. They can be dropped on failure
 or buffer overflow; orders and payment events remain durable. Counters still
 use PostgreSQL, so export them to a dedicated metrics system for production.
 
-**Remaining:** per-tenant admission, connection budgets across replicas, bounded
-versioned tenant-policy caches, resumable catalog/AI projection jobs and resource
-isolation under competing workloads. `DB_POOL_MAX` is now configurable per process;
-its default 20 connections are still not a fleet-wide budget. Validate pooler
-compatibility with transaction-local context, prepared statements and advisory locks.
-The initial 014 migration builds indexes transactionally; plan its upgrade window
-for an existing large database. It is not an online index build.
+**Delivered hardening:** cluster-wide tenant leases, connection budgets across
+replicas, bounded LRU tenant/pure-app Wasm caches, off-thread compilation before
+commerce locks, durable login throttles and commit-notification worker wakes.
+Real transaction-mode PgBouncer is covered by the strict-runtime suite. Per-event
+savepoints and quarantine isolate poison outbox messages; bounded retirement
+prevents indefinite duplicate payload growth while keeping referenced evidence.
+[Exact review findings and configuration](core-hardening.md).
 
-The [app runtime cache](../src/apps/runtime.rs) clears all entries when its size
-reaches 64 and compiles while holding its cache mutex. Replace this with bounded
-weighted eviction and one compilation per module digest outside the global
-lock. Reuse compiled modules where engine configuration permits, and compile
-approved versions before activation. Fuel and memory limits remain necessary.
+**Remaining:** complete token/spend quotas, cell placement, sustained competing
+load measurements, online large-schema upgrades and independently isolated
+compiler processes. The initial 014 migration builds indexes transactionally;
+plan its window on an existing large database. Hardened query/admission costs
+must be measured; older benchmarks cannot establish current fleet capacity.
 
 Acceptance: cold HTTP startup does not traverse catalog data; a bulk import or
 slow app cannot consume all serving connections, CPU or inference slots.

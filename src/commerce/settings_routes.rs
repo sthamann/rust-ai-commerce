@@ -1,7 +1,10 @@
 //! Tenant configuration and operational read model.
 use super::*;
 
-pub(crate) async fn merchant_config(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn merchant_config(
+    State(a): State<App>,
+    h: RequestContext,
+) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     auth::permit(&h, "settings.read")?;
     let (data, revision) = config(&a, &t).await?;

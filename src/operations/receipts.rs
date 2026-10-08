@@ -1,16 +1,16 @@
 //! Idempotent immutable invoices/delivery notes with transactional per-shop number ranges.
 use super::*;
-pub(super) async fn settings(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn settings(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     merchant(&a, &h)?;
     auth::permit(&h, "documents.read")?;
     settings_value(&a, &h).await
 }
-pub(super) async fn settings_value(a: &App, h: &HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn settings_value(a: &App, h: &RequestContext) -> Result<Json<Value>> {
     master_data::read(a, h, None).await
 }
 pub(super) async fn save_settings(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     merchant(&a, &h)?;
@@ -18,12 +18,16 @@ pub(super) async fn save_settings(
     auth::permit(&h, "settings.write")?;
     save_settings_value(&a, &h, v).await
 }
-pub(super) async fn save_settings_value(a: &App, h: &HeaderMap, v: Value) -> Result<Json<Value>> {
+pub(super) async fn save_settings_value(
+    a: &App,
+    h: &RequestContext,
+    v: Value,
+) -> Result<Json<Value>> {
     master_data::save(a, h, v, None).await
 }
 pub(super) async fn list(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -35,7 +39,7 @@ pub(super) async fn list(
 }
 pub(super) async fn create(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -135,7 +139,7 @@ pub(super) async fn create(
 }
 pub(super) async fn pdf(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Response> {
     let t = merchant(&a, &h)?;

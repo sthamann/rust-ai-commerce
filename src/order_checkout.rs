@@ -1,7 +1,7 @@
 //! Atomic checkout, stock locks, extension policy and idempotency.
 use crate::*;
 
-pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value> {
+pub(crate) async fn checkout(a: &App, h: &RequestContext, key: &str) -> Result<Value> {
     if key.len() < 8 || key.len() > 128 {
         return Err(bad("Idempotency-Key must contain 8..128 characters"));
     }
@@ -9,6 +9,12 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
     for i in &admitted.data.items {
         marketing::admit_product(a, h, &i.id).await?;
     }
+    let (initial_config, _) = commerce::config(a, &admitted.tenant).await?;
+    let prepared_policy = if initial_config.is_business(&admitted.data.group) {
+        Some(sandbox_cache::prepare(a, &admitted.tenant).await?)
+    } else {
+        None
+    };
     let mut tx = a.db.begin().await?;
     history::context(&mut tx, h, "checkout").await?;
     let lock_key = format!("{}:{key}", tenant(h)?);
@@ -107,7 +113,8 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         return Err(conflict("Checkout currency changed; review again"));
     }
     let config =
-        payments::currency_methods(a, &c.tenant, &c.data.sales_channel, &code, config).await?;
+        payments::currency_methods_conn(&mut tx, &c.tenant, &c.data.sales_channel, &code, config)
+            .await?;
     let legal_snapshot = legal::snapshot(&mut tx, &c, &config, &ps).await?;
     let selected = commerce::selection(&c.data);
     for address in [&selected.address, &selected.billing_address]
@@ -196,33 +203,23 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         }
     }
     if config.is_business(&c.data.group) {
-        // A revision change on another replica must never leave this checkout on a stale policy.
-        let source: String =
-            sqlx::query_scalar("SELECT wat FROM extensions WHERE tenant=$1 FOR SHARE")
+        let digest: String =
+            sqlx::query_scalar("SELECT digest FROM extensions WHERE tenant=$1 FOR SHARE")
                 .bind(&c.tenant)
                 .fetch_one(&mut *tx)
                 .await?;
-        let cached = a.sandboxes.read().unwrap().get(&c.tenant).cloned();
-        let sandbox = if let Some(cached) = cached.filter(|s| s.source_matches(&source)) {
-            cached
-        } else {
-            let compiled = tokio::task::spawn_blocking(move || Sandbox::new(&source))
-                .await
-                .map_err(|e| bad(e.to_string()))?
-                .map_err(bad)?;
-            let compiled = Arc::new(compiled);
-            a.sandboxes
-                .write()
-                .unwrap()
-                .insert(c.tenant.clone(), compiled.clone());
-            compiled
-        };
+        let sandbox = prepared_policy
+            .as_ref()
+            .filter(|s| s.digest() == digest)
+            .ok_or(conflict(
+                "Business policy changed during checkout; retry your reviewed purchase",
+            ))?;
         if !sandbox.approve(minor, 100_000).map_err(bad)? {
             return Err(conflict("Company purchase rejected by tenant extension"));
         }
     }
     let external = q["paymentMethod"]["mode"] == "app";
-    if external && staging::parent(a, &c.tenant).await?.is_some() {
+    if external && staging::parent_conn(&mut tx, &c.tenant).await?.is_some() {
         return Err(bad("External payments are disabled in private sandboxes"));
     }
     if external && q["paymentMethod"]["provider"].is_null() {
@@ -261,8 +258,13 @@ pub(crate) async fn checkout(a: &App, h: &HeaderMap, key: &str) -> Result<Value>
         let return_origin = if q["paymentMethod"]["provider"].is_string() {
             match header(h, "origin") {
                 Some(origin) => Some(
-                    payments::sessions::origin(a, &c.tenant, &c.data.sales_channel, Some(origin))
-                        .await?,
+                    payments::sessions::origin_conn(
+                        &mut tx,
+                        &c.tenant,
+                        &c.data.sales_channel,
+                        Some(origin),
+                    )
+                    .await?,
                 ),
                 None => None,
             }

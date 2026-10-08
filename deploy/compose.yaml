@@ -17,15 +17,41 @@ services:
     image: qdrant/qdrant:v1.16.3
     volumes: ["qdrant-data:/qdrant/storage"]
     restart: unless-stopped
-  commerce:
+  migrate:
     image: vendune:${COMMERCE_IMAGE_TAG:-local}
     build: &commerce-build
       context: ..
       dockerfile: deploy/Dockerfile
     environment:
-      DATABASE_URL: ${DATABASE_URL:?postgres://commerce:encoded-password@postgres:5432/commerce}
+      DATABASE_URL: ${DATABASE_URL:?migration owner URL required}
+      BOOTSTRAP_MODE: migrate
+    depends_on:
+      postgres: {condition: service_healthy}
+    restart: "no"
+  provision-runtime:
+    image: postgres:17-bookworm
+    entrypoint: ["sh", "/provision-runtime.sh"]
+    volumes: ["./sql/provision-runtime.sh:/provision-runtime.sh:ro"]
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD:?required}
+      DB_RUNTIME_PASSWORD: ${DB_RUNTIME_PASSWORD:?independent runtime password required}
+      DB_CONNECTOR_PASSWORD: ${DB_CONNECTOR_PASSWORD:?independent connector password required}
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    restart: "no"
+  commerce:
+    image: vendune:${COMMERCE_IMAGE_TAG:-local}
+    build: *commerce-build
+    environment:
+      DATABASE_URL: ${DATABASE_RUNTIME_URL:?non-owner runtime URL required}
+      DATABASE_RUNTIME_URL: ${DATABASE_RUNTIME_URL:?non-owner runtime URL required}
+      DB_RLS_REQUIRED: "true"
       BIND_ADDR: 0.0.0.0:8787
-      BOOTSTRAP_MODE: ${BOOTSTRAP_MODE:-auto}
+      BOOTSTRAP_MODE: serve
+      DB_MAX_PROCESSES: ${DB_MAX_PROCESSES:-1}
+      DB_CLUSTER_CONNECTION_BUDGET: ${DB_CLUSTER_CONNECTION_BUDGET:-80}
+      DB_POOLER_MODE: ${DB_POOLER_MODE:-session}
+      DATABASE_LISTENER_URL: ${DATABASE_LISTENER_URL:-}
       DB_POOL_MAX: ${DB_POOL_MAX:-20}
       DB_POOL_MIN: ${DB_POOL_MIN:-0}
       DB_POOL_WAIT_MS: ${DB_POOL_WAIT_MS:-5000}
@@ -44,7 +70,7 @@ services:
       APP_SERVICES: ${APP_SERVICES:-{}}
 
     depends_on:
-      postgres: {condition: service_healthy}
+      provision-runtime: {condition: service_completed_successfully}
     restart: unless-stopped
   operator:
     profiles: [operator-setup]
@@ -69,8 +95,8 @@ services:
       context: ..
       dockerfile: extensions/services/connectors/Dockerfile
     environment:
-      CONNECTOR_DATABASE_URL: ${CONNECTOR_DATABASE_URL:-${DATABASE_URL:?shared PostgreSQL URL required}}
-      DB_RLS_REQUIRED: ${DB_RLS_REQUIRED:-false}
+      CONNECTOR_DATABASE_URL: ${CONNECTOR_DATABASE_URL:?dedicated non-owner connector URL required}
+      DB_RLS_REQUIRED: "true"
       CONNECTOR_SECRET_KEY: ${CONNECTOR_SECRET_KEY:-}
       CONNECTOR_GATEWAY_TOKEN: ${CONNECTOR_GATEWAY_TOKEN:-}
       CONNECTOR_PUBLIC_URL: https://${COMMERCE_DOMAIN}/connected-apps
@@ -80,7 +106,7 @@ services:
       SLACK_CLIENT_SECRET: ${SLACK_CLIENT_SECRET:-}
       EMAIL_SMTP_HOSTS: ${EMAIL_SMTP_HOSTS:-}
     depends_on:
-      postgres: {condition: service_healthy}
+      provision-runtime: {condition: service_completed_successfully}
     restart: unless-stopped
   gateway:
     image: caddy:2

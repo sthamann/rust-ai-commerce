@@ -12,22 +12,34 @@ pub(crate) use rich::validate_rich;
 pub(crate) use upload::{list, publish};
 pub(crate) fn router() -> Router<App> {
     Router::new()
-        .route("/api/merchant/media/provider", get(image_jobs::provider))
-        .route(
+        .secure_route(
+            "/api/merchant/media/provider",
+            &[("GET", "catalog.read")],
+            get(image_jobs::provider),
+        )
+        .secure_route(
             "/api/merchant/products/{id}/media/jobs",
+            &[("GET", "catalog.read"), ("POST", "catalog.write")],
             get(image_jobs::list_jobs).post(image_jobs::enqueue),
         )
-        .route("/api/merchant/media/jobs/{id}", get(image_jobs::detail))
-        .route(
+        .secure_route(
+            "/api/merchant/media/jobs/{id}",
+            &[("GET", "catalog.read")],
+            get(image_jobs::detail),
+        )
+        .secure_route(
             "/api/merchant/media/jobs/{id}/apply",
+            &[("POST", "catalog.write")],
             post(image_jobs::apply),
         )
-        .route(
+        .secure_route(
             "/api/merchant/products/{id}/assets",
+            &[("GET", "catalog.read"), ("POST", "catalog.write")],
             get(upload::list).post(upload::upload),
         )
-        .route(
+        .secure_route(
             "/api/merchant/assets/{id}",
+            &[("PUT", "catalog.write")],
             axum::routing::put(upload::publish),
         )
         .route(
@@ -86,7 +98,12 @@ pub(crate) fn media_permission(name: &str) -> Option<&'static str> {
         _ => None,
     }
 }
-pub(crate) async fn media_invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+pub(crate) async fn media_invoke(
+    a: &App,
+    h: &RequestContext,
+    name: &str,
+    v: &Value,
+) -> Result<Value> {
     let state = State(a.clone());
     let headers = h.clone();
     let id = || {

@@ -2,7 +2,7 @@
 use super::*;
 pub(super) async fn restore(
     a: App,
-    h: HeaderMap,
+    h: RequestContext,
     id: String,
     state: Value,
     revision: i64,

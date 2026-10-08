@@ -2,7 +2,7 @@
 use super::*;
 pub(super) async fn change(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -39,21 +39,28 @@ pub(super) async fn change(
     ))
 }
 /// Evaluate availability after identity derivation. Paused shops retain merchant GET access; deleted shops require restoration.
-pub(crate) async fn admit(a: &App, h: &HeaderMap, path: &str, method: &str) -> Result<()> {
+pub(crate) async fn admit(a: &App, h: &RequestContext, path: &str, method: &str) -> Result<bool> {
     if path.starts_with("/api/auth/")
         || path.starts_with("/api/platform/")
+        || path.starts_with("/api/identity/")
+        || path == "/api/capabilities"
+        || path == "/api/workspaces"
         || path == "/health"
         || path.starts_with("/assets/")
         || !["/api/", "/store-api/", "/ucp/", "/mcp", "/webhooks/"]
             .iter()
             .any(|prefix| path.starts_with(prefix))
     {
-        return Ok(());
+        return Ok(false);
     }
     let t = tenant(h)?;
-    let status:Option<String>=sqlx::query_scalar("SELECT t.status FROM tenants t WHERE t.id=coalesce((SELECT live_tenant FROM shop_environments WHERE tenant=$1),$1)").bind(&t).fetch_optional(&a.db).await?;
+    let status = if h.principal.tenant.as_deref() == Some(t.as_str()) && h.tenant_status.is_some() {
+        h.tenant_status.clone()
+    } else {
+        sqlx::query_scalar::<_,String>("SELECT t.status FROM tenants t WHERE t.id=coalesce((SELECT live_tenant FROM shop_environments WHERE tenant=$1),$1)").bind(&t).fetch_optional(&a.db).await?
+    };
     let Some(status) = status else {
-        return Ok(());
+        return Err(Error(StatusCode::NOT_FOUND, "Shop not found".into()));
     };
     let read = (method == "GET"
         || method == "POST"
@@ -90,5 +97,5 @@ pub(crate) async fn admit(a: &App, h: &HeaderMap, path: &str, method: &str) -> R
             "Shop is unavailable; contact the platform operator".into(),
         ));
     }
-    Ok(())
+    Ok(true)
 }

@@ -1,5 +1,6 @@
 //! One monotonic provider-neutral ledger state machine; evidence validation and authorization stay in receipt adapters.
-use super::*;
+use crate::{Result, conflict, verified_kernel};
+
 fn code(state: &str) -> Option<u64> {
     [
         "pending",
@@ -32,6 +33,7 @@ pub(crate) fn transition(current: &str, next: &str) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn terminal_receipts_never_regress_and_late_capture_has_an_explicit_refund_path() {
         for current in [

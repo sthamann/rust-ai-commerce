@@ -105,14 +105,15 @@ pub(crate) fn validate_metadata(entity: &str, data: &Value) -> Result<()> {
     Ok(())
 }
 pub(crate) fn router() -> Router<App> {
-    Router::new().route(
+    Router::new().secure_route(
         "/api/automation/entities/{entity}/{id}",
+        &[("PUT", "settings.write")],
         axum::routing::put(save),
     )
 }
 async fn save(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((entity, id)): Path<(String, String)>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

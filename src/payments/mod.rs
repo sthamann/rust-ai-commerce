@@ -1,5 +1,5 @@
 //! Provider-independent payment ledger and durable workers; the PayPal adapter supports explicit Sandbox/Live environments.
-use crate::*;
+
 mod accounts;
 mod app_commands;
 pub(crate) use accounts::*;
@@ -12,8 +12,9 @@ mod generic_receipts;
 mod operations;
 mod paypal;
 mod provider;
+pub(crate) mod provider_configuration;
 mod provider_webhooks;
-mod remote;
+pub(crate) mod remote;
 mod return_urls;
 mod routes;
 pub(crate) mod sessions;

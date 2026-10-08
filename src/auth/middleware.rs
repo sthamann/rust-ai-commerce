@@ -1,11 +1,14 @@
 //! Resolve sessions from PostgreSQL on every request: role changes/revocation work across replicas.
 //! Remove all client-supplied principal headers before adding server-derived identities.
-use super::*;
+use crate::{
+    App, Error, RequestContext, Response, Result, State, StatusCode, apps, bad, header, tenant,
+};
+use axum::response::IntoResponse;
 use axum::{extract::Request, middleware::Next};
 fn forbidden(s: &str) -> Error {
     Error(StatusCode::FORBIDDEN, s.into())
 }
-pub(crate) fn permit(h: &HeaderMap, kind: &str) -> Result<()> {
+pub(crate) fn permit(h: &RequestContext, kind: &str) -> Result<()> {
     header(h, "x-rac-role").ok_or(Error(
         StatusCode::UNAUTHORIZED,
         "Personal login or instance administrator credential required".into(),
@@ -16,109 +19,6 @@ pub(crate) fn permit(h: &HeaderMap, kind: &str) -> Result<()> {
     } else {
         Err(forbidden("Role does not permit this action"))
     }
-}
-fn action(path: &str, method: &str) -> &'static str {
-    if path.starts_with("/api/automation/channels/") && path.ends_with("/preview") {
-        return "settings.read";
-    }
-    if path == "/api/search/product"
-        || (path.starts_with("/api/merchant/products")
-            || path.starts_with("/api/merchant/categories"))
-            && method == "GET"
-    {
-        return "catalog.read";
-    }
-    if path.starts_with("/api/knowledge") || path == "/api/policy" {
-        return if path.ends_with("/reindex") {
-            "catalog"
-        } else {
-            "knowledge.read"
-        };
-    }
-    if path.starts_with("/api/auth/") {
-        return "read";
-    }
-    if path.starts_with("/api/settings/") {
-        return if method == "GET" {
-            "settings.read"
-        } else {
-            "settings.write"
-        };
-    }
-    if path == "/api/merchant/order-state-machine" {
-        return if method == "GET" {
-            "orders.read"
-        } else {
-            "settings.write"
-        };
-    }
-    if path.starts_with("/api/merchant/customers") {
-        return if method == "GET" {
-            "customers.read"
-        } else {
-            "customers.write"
-        };
-    }
-    if path.starts_with("/api/merchant/receipts") {
-        return if method == "GET" {
-            "documents.read"
-        } else {
-            "documents.create"
-        };
-    }
-    if path.starts_with("/api/merchant/orders") {
-        return if path.contains("/receipts") {
-            if method == "GET" {
-                "documents.read"
-            } else {
-                "documents.create"
-            }
-        } else if method == "GET" {
-            "orders.read"
-        } else {
-            "operations"
-        };
-    }
-    if path.starts_with("/api/payments/jobs/") {
-        return "payments.manage";
-    }
-    if path.starts_with("/api/payments") || path.starts_with("/api/payment-providers") {
-        return if method == "GET" {
-            "payments.read"
-        } else {
-            "payments.manage"
-        };
-    }
-    if path.starts_with("/api/apps/") && (path.contains("/actions/") || path.contains("/http/")) {
-        return "read";
-    }
-    if path.starts_with("/api/workspace/") {
-        return "users";
-    }
-    if path == "/api/auth/logout"
-        || method == "GET"
-        || [
-            "/api/search/product",
-            "/api/search/order",
-            "/api/merchant/quote",
-            "/api/knowledge/search",
-            "/api/agent/plan",
-            "/api/agent/chat",
-        ]
-        .contains(&path)
-    {
-        return "read";
-    }
-    if path == "/api/merchant/commerce" {
-        return "settings";
-    }
-    if path.starts_with("/api/merchant/orders/") {
-        return "operations";
-    }
-    if path == "/api/extensions/activate" {
-        return "extension";
-    }
-    "catalog"
 }
 pub(crate) async fn authenticate(state: State<App>, request: Request, next: Next) -> Response {
     // Identity lookup is trusted; the admitted business request gets a narrower context below.
@@ -140,6 +40,7 @@ async fn authenticate_scoped(State(a): State<App>, mut request: Request, next: N
     ] {
         request.headers_mut().remove(key);
     }
+    let mut h = RequestContext::from_request(&request);
     let path = request.uri().path().to_string();
     let method = request.method().to_string();
     // Public image subrequests cannot carry frontend custom headers. Resolve only the scoped asset URL
@@ -148,13 +49,13 @@ async fn authenticate_scoped(State(a): State<App>, mut request: Request, next: N
         || path.starts_with("/store-api/company-logo/")
         || path.starts_with("/products/")
         || path.starts_with("/channel-preview/"))
-        && header(request.headers(), "x-tenant").is_none()
+        && header(&h, "x-tenant").is_none()
         && let Ok(url) = reqwest::Url::parse(&format!("http://local{}", request.uri()))
         && let Some((_, shop)) = url.query_pairs().find(|(k, _)| k == "shop")
     {
         match shop.parse() {
             Ok(value) => {
-                request.headers_mut().insert("x-tenant", value);
+                h.insert("x-tenant", value);
             }
             Err(_) => return bad("Invalid asset shop scope").into_response(),
         }
@@ -170,76 +71,61 @@ async fn authenticate_scoped(State(a): State<App>, mut request: Request, next: N
         if !apps::identifier(&channel) {
             return bad("Invalid preview channel").into_response();
         }
-        request
-            .headers_mut()
-            .insert("sw-sales-channel-id", channel.parse().unwrap());
+        h.insert("sw-sales-channel-id", channel.parse().unwrap());
+    }
+    if path.starts_with("/api/platform/")
+        && request
+            .extensions()
+            .get::<axum::extract::MatchedPath>()
+            .and_then(|p| super::route_policy::lookup(p.as_str(), &method))
+            != Some("platform")
+    {
+        return forbidden("Platform route has no registered permission").into_response();
     }
     // Global administration has its own personal-session grant; tenant/admin/bootstrap roles cannot inherit it.
     if path.starts_with("/api/platform/") {
-        match crate::platform::authenticate(&a, request.headers()).await {
+        match crate::platform::authenticate(&a, &h).await {
             Ok(user) => {
-                request
-                    .headers_mut()
-                    .insert("x-rac-platform-user", user.parse().unwrap());
+                h.insert("x-rac-platform-user", user.parse().unwrap());
             }
             Err(e) => return e.into_response(),
         }
+        request.extensions_mut().insert(h);
         return next.run(request).await;
     }
 
-    let public = [
-        "/api/auth/login",
-        "/api/auth/register",
-        "/api/auth/accept",
-        "/api/auth/redeem",
-        "/api/identity/exchange",
-        "/api/identity/credentials",
-        "/api/identity/inference",
-        "/api/experience",
-        "/api/concierge",
-        "/api/capabilities",
-    ]
-    .contains(&path.as_str());
+    let policy = if path.starts_with("/api/") {
+        let matched = request
+            .extensions()
+            .get::<axum::extract::MatchedPath>()
+            .map(|p| p.as_str());
+        match matched.and_then(|p| super::route_policy::lookup(p, &method)) {
+            Some(policy) => policy,
+            None => return forbidden("API route has no registered permission").into_response(),
+        }
+    } else {
+        "public"
+    };
+    let public = policy == "public";
     let protected = path.starts_with("/api/") && !public;
-    let credential = header(request.headers(), "authorization")
-        .and_then(|v| v.strip_prefix("Bearer "))
-        .map(str::to_string);
-    let auth_result:Result<()>=async {
-  let selected_tenant=tenant(request.headers())?;
-  let environment_parent=crate::staging::parent(&a,&selected_tenant).await?;
-  if environment_parent.is_some() && (path.starts_with("/api/workspace") || path.starts_with("/api/environments")){return Err(forbidden("Manage membership and environments in the live workspace"));}
-  if environment_parent.is_some() && credential.is_none() && (path.starts_with("/store-api/") || path.starts_with("/api/") || path.starts_with("/ucp/") || path=="/mcp"){return Err(Error(StatusCode::UNAUTHORIZED,"Private sandbox requires a merchant session".into()));}
-  if let Some(token)=credential {
-   if token==*a.token {
-    if env::var("ALLOW_BOOTSTRAP_AUTH").as_deref()==Ok("false"){return Err(Error(StatusCode::UNAUTHORIZED,"Personal merchant session required".into()));}
-    let t=tenant(request.headers())?;
-    request.headers_mut().insert("x-rac-user","bootstrap".parse().unwrap());request.headers_mut().insert("x-rac-role","owner".parse().unwrap());request.headers_mut().insert("x-rac-tenant",t.parse().unwrap());
-   }else{
-    let (user,default_tenant,key_permissions)=resolve_credential(&a,&token).await?;
-    let rows=sqlx::query("SELECT m.tenant,m.role,m.permissions FROM memberships m WHERE m.user_id=$1 AND m.active ORDER BY m.tenant").bind(&user).fetch_all(&a.db).await?;
-    let chosen=header(request.headers(),"x-tenant").map(str::to_string).unwrap_or_else(||{let default=default_tenant.clone();if rows.iter().any(|r|r.get::<String,_>("tenant")==default){default}else{rows.first().map(|r|r.get::<String,_>("tenant")).unwrap_or_default()}});
-    let scope=crate::staging::parent(&a,&chosen).await?.unwrap_or_else(||chosen.clone());
-    if key_permissions.is_some() && scope!=default_tenant {return Err(forbidden("Integration key is bound to one workspace"));}
-    let member=rows.iter().find(|r|r.get::<String,_>("tenant")==scope).ok_or(forbidden("No active membership in this workspace"))?;
-    request.headers_mut().insert("x-tenant",chosen.parse().map_err(|_|bad("Invalid tenant"))?);
-    request.headers_mut().insert("x-rac-tenant",chosen.parse().unwrap());
-    let permissions:Value=member.get("permissions");if !permissions.is_null(){request.headers_mut().insert("x-rac-permissions",permissions.to_string().parse().map_err(|_|bad("Invalid permissions"))?);}request.headers_mut().insert("x-rac-user",user.parse().unwrap());request.headers_mut().insert("x-rac-role",member.get::<String,_>("role").parse().unwrap());
-    if let Some(scopes)=key_permissions{let mut actor=HeaderMap::new();actor.insert("x-rac-role",member.get::<String,_>("role").parse().unwrap());if !permissions.is_null(){actor.insert("x-rac-permissions",permissions.to_string().parse().unwrap());}let allowed=scopes.into_iter().filter(|s|super::permissions::allowed(&actor,s)).collect::<Vec<_>>();request.headers_mut().insert("x-rac-permissions",json!(allowed).to_string().parse().unwrap());request.headers_mut().insert("x-rac-role","admin".parse().unwrap());}
-
-   }
-  }else if protected{return Err(Error(StatusCode::UNAUTHORIZED,"Merchant login required".into()));}
-  if protected{permit(request.headers(),action(&path,&method))?;}
-  Ok(())
- }.await;
+    let auth_result = async {
+        super::identity::resolve(&a, &mut h, &path, protected).await?;
+        if protected {
+            permit(&h, policy)?;
+        }
+        Ok::<(), Error>(())
+    }
+    .await;
     if let Err(e) = auth_result {
         return e.into_response();
     }
-    if let Err(e) = crate::platform::admit(&a, request.headers(), &path, &method).await {
-        return e.into_response();
-    }
+    h.validated_tenant = match crate::platform::admit(&a, &h, &path, &method).await {
+        Ok(validated) => validated || h.principal.tenant.is_some(),
+        Err(e) => return e.into_response(),
+    };
     let preview = match crate::marketing::channel_access::admit(
         &a,
-        request.headers(),
+        &h,
         &path,
         &method,
         request
@@ -253,13 +139,11 @@ async fn authenticate_scoped(State(a): State<App>, mut request: Request, next: N
         Err(e) => return e.into_response(),
     };
     if preview {
-        let channel = crate::marketing::channel_id(request.headers()).to_owned();
-        request
-            .headers_mut()
-            .insert("x-rac-channel-preview", channel.parse().unwrap());
+        let channel = crate::marketing::channel_id(&h).to_owned();
+        h.insert("x-rac-channel-preview", channel.parse().unwrap());
     }
     let private_response = preview
-        || header(request.headers(), "x-rac-role").is_some()
+        || header(&h, "x-rac-role").is_some()
         || request
             .extensions()
             .get::<crate::shop_domains::HostShop>()
@@ -274,13 +158,15 @@ async fn authenticate_scoped(State(a): State<App>, mut request: Request, next: N
         // Provisioning, identity and staging require cross-workspace reads, after their existing grants.
         vendune::tenant_scope::Scope::System
     } else {
-        match tenant(request.headers()) {
+        match tenant(&h) {
             Ok(t) => vendune::tenant_scope::Scope::Tenant(t),
             Err(e) => return e.into_response(),
         }
     };
+    *request.headers_mut() = h.transport().clone();
+    request.extensions_mut().insert(h);
     let mut response =
-        vendune::tenant_scope::scoped(scope, performance::admit_request(&a, request, next)).await;
+        vendune::tenant_scope::scoped(scope, super::abuse::run(&a, request, next)).await;
     if private_response {
         response
             .headers_mut()
@@ -291,10 +177,11 @@ async fn authenticate_scoped(State(a): State<App>, mut request: Request, next: N
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn role_matrix() {
         for role in ["owner", "admin", "editor", "viewer"] {
-            let mut h = HeaderMap::new();
+            let mut h = RequestContext::new();
             h.insert("x-rac-role", role.parse().unwrap());
             assert!(permit(&h, "read").is_ok());
             assert_eq!(permit(&h, "catalog").is_ok(), role != "viewer");
@@ -304,16 +191,6 @@ mod tests {
             );
             assert!(permit(&h, "unknown").is_err());
         }
-        assert!(permit(&HeaderMap::new(), "read").is_err());
-    }
-    #[test]
-    fn transport_permissions() {
-        assert_eq!(action("/api/merchant/commerce", "PUT"), "settings");
-        assert_eq!(
-            action("/api/merchant/orders/id/transition", "POST"),
-            "operations"
-        );
-        assert_eq!(action("/api/search/order", "POST"), "read");
-        assert_eq!(action("/api/agent/tasks/id/apply", "POST"), "catalog");
+        assert!(permit(&RequestContext::new(), "read").is_err());
     }
 }

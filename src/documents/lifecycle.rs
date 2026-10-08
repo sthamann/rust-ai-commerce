@@ -2,7 +2,7 @@
 use super::*;
 pub(crate) async fn detail(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -19,7 +19,7 @@ pub(crate) async fn detail(
 }
 pub(crate) async fn edit(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -77,7 +77,7 @@ pub(crate) async fn edit(
 }
 pub(crate) async fn lifecycle(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

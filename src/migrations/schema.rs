@@ -217,4 +217,8 @@ pub(super) const SCHEMA: &[(&str, &str)] = &[
         "056-http-response-diagnostics",
         include_str!("../../migrations/056-http-response-diagnostics.sql"),
     ),
+    (
+        "057-core-hardening",
+        include_str!("../../migrations/057-core-hardening.sql"),
+    ),
 ];

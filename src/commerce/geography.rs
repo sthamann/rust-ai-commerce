@@ -37,7 +37,10 @@ pub(crate) fn catalogue(s: &Settings) -> Vec<Country> {
     rows.sort_by(|a, b| a.code.cmp(&b.code));
     rows
 }
-pub(crate) async fn country_catalogue(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn country_catalogue(
+    State(a): State<App>,
+    h: RequestContext,
+) -> Result<Json<Value>> {
     let (s, revision) = config(&a, &tenant(&h)?).await?;
     Ok(Json(
         json!({"countries":catalogue(&s),"enabled":s.countries,"mainLocale":s.main_locale,"locales":s.locales,"revision":revision}),

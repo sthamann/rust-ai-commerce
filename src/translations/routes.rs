@@ -2,7 +2,7 @@
 use super::*;
 pub(crate) async fn create(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "catalog")?;
@@ -38,7 +38,7 @@ pub(crate) async fn create(
     sqlx::query("INSERT INTO translation_jobs(tenant,id,source_locale,target_locale,choice,overwrite,total,highwater) VALUES($1,$2,$3,$4,$5,$6,$7,$8)").bind(&t).bind(&id).bind(&s.main_locale).bind(target).bind(json!(choice)).bind(v["overwrite"].as_bool().unwrap_or(false)).bind(row.get::<i64,_>("total")).bind(row.get::<String,_>("highwater")).execute(&a.db).await?;
     Ok(Json(json!({"id":id,"status":"queued"})))
 }
-pub(crate) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn list(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     auth::permit(&h, "catalog.read")?;
     let t = merchant(&a, &h)?;
     let rows:Vec<Value>=sqlx::query_scalar("SELECT to_jsonb(j)-'tenant'-'lease'-'lease_until' FROM translation_jobs j WHERE tenant=$1 ORDER BY created_at DESC LIMIT 30").bind(&t).fetch_all(&a.db).await?;
@@ -46,7 +46,7 @@ pub(crate) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Valu
 }
 pub(crate) async fn detail(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     axum::extract::Query(q): axum::extract::Query<HashMap<String, String>>,
 ) -> Result<Json<Value>> {
@@ -61,7 +61,7 @@ pub(crate) async fn detail(
 }
 pub(crate) async fn control(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

@@ -45,7 +45,7 @@ pub(crate) async fn tax_settings_for_header(
             .any(|t| t.rules.iter().any(|r| r.condition.is_some()))
     {
         let ps = cart_products(a, &c.tenant, chain, &c.data.items).await?;
-        return tax_settings_for_cart(&mut *a.db.acquire().await?, c, &ps, s).await;
+        return tax_settings_for_cart(&mut *a.db.begin().await?, c, &ps, s).await;
     }
     Ok(s.clone())
 }

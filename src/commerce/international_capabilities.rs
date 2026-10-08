@@ -13,7 +13,7 @@ pub(crate) fn international_permission(name: &str) -> Option<&'static str> {
 }
 pub(crate) async fn international_invoke(
     a: &App,
-    h: &HeaderMap,
+    h: &RequestContext,
     name: &str,
     v: &Value,
 ) -> Result<Value> {

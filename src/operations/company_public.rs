@@ -1,6 +1,6 @@
 //! Explicit public legal/brand projection; bank account, domestic tax ID and unlinked uploads remain private.
 use super::*;
-pub(super) async fn get(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn get(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = tenant(&h)?;
     let channel = marketing::channel_id(&h);
     let (settings, _) = commerce::config(&a, &t).await?;

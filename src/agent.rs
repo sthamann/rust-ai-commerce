@@ -6,14 +6,23 @@ pub(super) fn choice(v: &Value) -> Result<Option<Choice>> {
         .map(|v| serde_json::from_value(v.clone()).map_err(|_| bad("Invalid inference selection")))
         .transpose()
 }
-pub(super) async fn model_providers(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn model_providers(
+    State(a): State<App>,
+    h: RequestContext,
+) -> Result<Json<Value>> {
     merchant(&a, &h)?;
     Ok(Json(a.inference.public_providers().await.map_err(bad)?))
 }
-pub(super) async fn knowledge_graph(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn knowledge_graph(
+    State(a): State<App>,
+    h: RequestContext,
+) -> Result<Json<Value>> {
     Ok(Json(knowledge::graph(&a.db, &tenant(&h)?).await?))
 }
-pub(super) async fn knowledge_status(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn knowledge_status(
+    State(a): State<App>,
+    h: RequestContext,
+) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     let rows = sqlx::query("SELECT product_id,embedding_model,content_hash,md5(embedding::text) AS vector_digest FROM semantic_products WHERE tenant=$1 ORDER BY product_id")
         .bind(t).fetch_all(&a.db).await?;
@@ -57,14 +66,14 @@ pub(super) async fn retrieve(a: &App, t: &str, q: &str) -> Result<Value> {
 }
 pub(super) async fn semantic_search(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     Ok(Json(
         retrieve(&a, &tenant(&h)?, v["query"].as_str().unwrap_or("")).await?,
     ))
 }
-pub(super) async fn reindex(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn reindex(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     let (endpoint, key, _) = a.inference.connection("ollama").await.map_err(bad)?;
     let model = embedding_model();
@@ -96,7 +105,7 @@ pub(super) async fn reindex(State(a): State<App>, h: HeaderMap) -> Result<Json<V
         json!({"indexed":count,"model":model,"engine":"Qdrant","dimensions":1024,"synchronized":synchronized && pending == 0,"pending":pending}),
     ))
 }
-pub(super) async fn conversations(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn conversations(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     let rows=sqlx::query("SELECT id,title,created_at::text AS created_at FROM conversations WHERE tenant=$1 ORDER BY created_at DESC LIMIT 40").bind(t).fetch_all(&a.db).await?;
     Ok(Json(
@@ -110,7 +119,7 @@ async fn messages(a: &App, t: &str, id: &str) -> Result<Vec<Value>> {
 }
 pub(super) async fn conversation(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -132,7 +141,7 @@ pub(super) async fn conversation(
 }
 pub(super) async fn merchant_chat(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;

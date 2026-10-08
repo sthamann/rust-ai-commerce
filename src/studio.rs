@@ -49,7 +49,7 @@ pub(super) async fn track_channels(State(a): State<App>, request: Request, next:
 }
 pub(super) async fn merchant_overview(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     axum::extract::Query(criteria): axum::extract::Query<CatalogCriteria>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;

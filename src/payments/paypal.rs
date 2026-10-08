@@ -1,5 +1,7 @@
 //! Native PayPal Orders v2 sandbox wire adapter; credentials never enter prompts or browser responses.
-use super::*;
+use super::{Attempt, account, base, environment, format_amount, parse_amount};
+use crate::{App, Error, Result, StatusCode, Value, bad, conflict, hash, http_limits, json};
+
 async fn access(a: &App, t: &str) -> Result<String> {
     let c = account(t)?;
     let r = a

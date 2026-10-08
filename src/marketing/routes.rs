@@ -5,17 +5,27 @@ pub(crate) fn router() -> Router<App> {
         .merge(channel_preview::router())
         .merge(catalog::router())
         .merge(metadata::router())
-        .route("/api/automation", get(list))
-        .route("/api/automation/executions", get(jobs::list))
-        .route(
+        .secure_route("/api/automation", &[("GET", "settings.read")], get(list))
+        .secure_route(
+            "/api/automation/executions",
+            &[("GET", "settings.read")],
+            get(jobs::list),
+        )
+        .secure_route(
             "/api/automation/{kind}/{id}",
+            &[("PUT", "settings.write"), ("DELETE", "settings.write")],
             axum::routing::put(save).delete(lifecycle::delete),
         )
-        .route(
+        .secure_route(
             "/api/automation/{kind}/{id}/dependencies",
+            &[("GET", "settings.read")],
             get(lifecycle::dependencies),
         )
-        .route("/api/automation/rules/preview", post(preview))
+        .secure_route(
+            "/api/automation/rules/preview",
+            &[("POST", "settings.read")],
+            post(preview),
+        )
         .route("/store-api/checkout/coupons", axum::routing::put(coupons))
 }
 pub(super) fn table(kind: &str) -> Result<&'static str> {
@@ -27,7 +37,7 @@ pub(super) fn table(kind: &str) -> Result<&'static str> {
         _ => Err(bad("Unknown configuration type")),
     }
 }
-pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn list(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     auth::permit(&h, "settings.read")?;
     let t = merchant(&a, &h)?;
     let mut result = json!({});
@@ -57,7 +67,7 @@ pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Valu
 }
 pub(crate) async fn save(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((kind, id)): Path<(String, String)>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -221,7 +231,7 @@ pub(crate) async fn save(
 }
 pub(super) async fn preview(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -234,9 +244,9 @@ pub(super) async fn preview(
         return Err(bad("Wrong cart"));
     }
     let mut q = cart_json(&a, &cart).await?;
-    q["ruleFacts"] = facts::rule_facts(&mut *a.db.acquire().await?, &cart, &q).await?;
+    q["ruleFacts"] = facts::rule_facts(&mut *a.db.begin().await?, &cart, &q).await?;
     super::rule_snapshot::attach(
-        &mut *a.db.acquire().await?,
+        &mut *a.db.begin().await?,
         &t,
         &v["condition"],
         &mut q["ruleFacts"],
@@ -246,7 +256,11 @@ pub(super) async fn preview(
         json!({"matched":c.checked_matches(&cart,&q)?,"sideEffects":false}),
     ))
 }
-async fn coupons(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Result<Json<Value>> {
+async fn coupons(
+    State(a): State<App>,
+    h: RequestContext,
+    Json(v): Json<Value>,
+) -> Result<Json<Value>> {
     let codes = v["codes"]
         .as_array()
         .filter(|v| v.len() <= 5)

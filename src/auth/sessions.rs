@@ -1,5 +1,10 @@
 //! Login/logout and personal workspace discovery. Only hashed opaque tokens persist.
-use super::*;
+use super::{email, verify_password};
+use crate::{
+    App, Error, Json, RequestContext, Result, Row, State, StatusCode, Value, bad, hash, header,
+    json, tenant, uid,
+};
+
 pub(crate) async fn issue_session(a: &App, user: &str, tenant: &str) -> Result<Value> {
     let token = format!("{}{}", uid(), uid());
     sqlx::query("INSERT INTO user_sessions(digest,user_id,default_tenant) VALUES($1,$2,$3)")
@@ -24,7 +29,11 @@ pub(crate) async fn user_data(a: &App, user: &str) -> Result<Value> {
         json!({"user":{"id":r.get::<String,_>("id"),"email":r.get::<String,_>("email"),"name":r.get::<String,_>("name")},"passwordSetupRequired":!r.get::<bool, _>("password_initialized"),"workspaces":ms.iter().map(|r|json!({"id":r.get::<String,_>("id"),"name":r.get::<String,_>("name"),"role":r.get::<String,_>("role"),"urls":crate::shop_domains::links(&r.get::<String,_>("id"))})).collect::<Vec<_>>(),"expiresIn":43200}),
     )
 }
-pub(crate) async fn user_login(State(a): State<App>, Json(v): Json<Value>) -> Result<Json<Value>> {
+pub(crate) async fn user_login(
+    State(a): State<App>,
+    Json(input): Json<super::dto::Login>,
+) -> Result<Json<Value>> {
+    let v = json!(input);
     let email = email(&v)?;
     let p = v["password"].as_str().unwrap_or("");
     if p.len() > 128 {
@@ -56,7 +65,7 @@ pub(crate) async fn user_login(State(a): State<App>, Json(v): Json<Value>) -> Re
         issue_session(&a, &user, &membership.get::<String, _>("tenant")).await?,
     ))
 }
-pub(crate) async fn user_session(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn user_session(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let user = header(&h, "x-rac-user").ok_or(bad("User required"))?;
     if user == "bootstrap" {
         let rows = sqlx::query("SELECT id,name FROM tenants ORDER BY name")
@@ -70,7 +79,7 @@ pub(crate) async fn user_session(State(a): State<App>, h: HeaderMap) -> Result<J
     data["workspace"] = json!(tenant(&h)?);
     Ok(Json(data))
 }
-pub(crate) async fn user_logout(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn user_logout(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     if let Some(t) = header(&h, "authorization").and_then(|v| v.strip_prefix("Bearer ")) {
         sqlx::query("DELETE FROM user_sessions WHERE digest=$1")
             .bind(hash(t))

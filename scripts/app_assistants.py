@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Real assistant packages: editor context, rights, MCP opt-out, cron, signed webhooks, flows and local service fixtures."""
+from testing.database import psql
 import concurrent.futures
 import copy
 import hashlib
@@ -60,7 +61,7 @@ def call(path, body=None, headers=None, expected=200, method=None, raw=None):
 
 
 def sql(statement):
-    return subprocess.run(['docker', 'exec', '-i', env.get('TEST_DB_CONTAINER', 'vendune-postgres-1'), 'psql', '-U', 'commerce', '-d', env['TEST_DATABASE'], '-At', '-v', 'ON_ERROR_STOP=1', '-c', statement], check=True, text=True, capture_output=True).stdout.strip()
+    return subprocess.run(psql(env.get('TEST_DB_CONTAINER', 'vendune-postgres-1'),'commerce',env['TEST_DATABASE'],'-At','-v','ON_ERROR_STOP=1','-c',statement), check=True, text=True, capture_output=True).stdout.strip()
 
 
 def wait(predicate):

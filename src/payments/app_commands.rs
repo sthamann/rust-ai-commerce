@@ -1,8 +1,12 @@
 //! App/Flow/MCP payment actions enqueue core jobs; provider-bound attempts prevent cross-app command authority.
-use super::*;
+use super::enqueue;
+use crate::{
+    App, Error, RequestContext, Result, StatusCode, Value, auth, bad, json, merchant, tenant,
+};
+
 pub(crate) async fn app_command(
     a: &App,
-    h: &HeaderMap,
+    h: &RequestContext,
     provider: &str,
     v: &Value,
 ) -> Result<Value> {

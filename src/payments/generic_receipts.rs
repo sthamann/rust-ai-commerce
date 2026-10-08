@@ -1,5 +1,9 @@
 //! Provider-neutral receipt admission and atomic allocation; verified evidence owns ledger transitions.
-use super::*;
+use super::{
+    Attempt, enqueue_tx, format_amount, receipt_matches, release_stock, remote, state, update_order,
+};
+use crate::{Error, Result, Row, StatusCode, Value, bad, conflict, json};
+
 pub(super) fn identity(p: &Attempt, v: &Value) -> Result<()> {
     if v["apiVersion"] != "1"
         || v["provider"] != p.provider
@@ -188,6 +192,7 @@ pub(crate) async fn persist(
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn every_receipt_is_bound_to_its_original_account_and_invoice() {
         let p = Attempt {

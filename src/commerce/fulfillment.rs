@@ -3,7 +3,7 @@ use super::*;
 
 pub(crate) async fn transition_order(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

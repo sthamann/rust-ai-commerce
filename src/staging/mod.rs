@@ -11,9 +11,21 @@ pub(crate) use release::*;
 pub(crate) use snapshot::*;
 pub(crate) fn router() -> Router<App> {
     Router::new()
-        .route("/api/environments", get(list).post(clone::create))
-        .route("/api/environments/{id}/diff", get(diff))
-        .route("/api/environments/{id}/release", post(release))
+        .secure_route(
+            "/api/environments",
+            &[("GET", "settings.read"), ("POST", "settings.write")],
+            get(list).post(clone::create),
+        )
+        .secure_route(
+            "/api/environments/{id}/diff",
+            &[("GET", "settings.read")],
+            get(diff),
+        )
+        .secure_route(
+            "/api/environments/{id}/release",
+            &[("POST", "settings.write")],
+            post(release),
+        )
 }
 pub(crate) async fn parent(a: &App, t: &str) -> Result<Option<String>> {
     Ok(
@@ -23,7 +35,15 @@ pub(crate) async fn parent(a: &App, t: &str) -> Result<Option<String>> {
             .await?,
     )
 }
-pub(crate) async fn live(a: &App, h: &HeaderMap) -> Result<String> {
+pub(crate) async fn parent_conn(conn: &mut sqlx::PgConnection, t: &str) -> Result<Option<String>> {
+    Ok(
+        sqlx::query_scalar("SELECT live_tenant FROM shop_environments WHERE tenant=$1")
+            .bind(t)
+            .fetch_optional(conn)
+            .await?,
+    )
+}
+pub(crate) async fn live(a: &App, h: &RequestContext) -> Result<String> {
     let t = merchant(a, h)?;
     if parent(a, &t).await?.is_some() {
         return Err(bad("Use the live workspace for environment management"));
@@ -41,7 +61,7 @@ pub(crate) async fn owned(a: &App, live: &str, stage: &str) -> Result<Value> {
             "Environment unavailable".into(),
         ))
 }
-async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+async fn list(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = live(&a, &h).await?;
     let rows=sqlx::query("SELECT tenant,name,created_at::text AS created_at FROM shop_environments WHERE live_tenant=$1 ORDER BY created_at DESC").bind(&t).fetch_all(&a.db).await?;
     let history=sqlx::query("SELECT id,environment,selections,created_at::text AS created_at FROM shop_releases WHERE live_tenant=$1 ORDER BY created_at DESC LIMIT 30").bind(&t).fetch_all(&a.db).await?;
@@ -49,7 +69,11 @@ async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
         json!({"live":t,"environments":rows.iter().map(|r|json!({"id":r.get::<String,_>("tenant"),"name":r.get::<String,_>("name"),"createdAt":r.get::<String,_>("created_at")})).collect::<Vec<_>>(),"releases":history.iter().map(|r|json!({"id":r.get::<String,_>("id"),"environment":r.get::<String,_>("environment"),"selections":r.get::<Value,_>("selections"),"createdAt":r.get::<String,_>("created_at")})).collect::<Vec<_>>() }),
     ))
 }
-async fn diff(State(a): State<App>, h: HeaderMap, Path(id): Path<String>) -> Result<Json<Value>> {
+async fn diff(
+    State(a): State<App>,
+    h: RequestContext,
+    Path(id): Path<String>,
+) -> Result<Json<Value>> {
     let t = live(&a, &h).await?;
     let base = owned(&a, &t, &id).await?;
     let mut tx = a.db.begin().await?;

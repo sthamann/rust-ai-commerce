@@ -3,7 +3,7 @@ use crate::*;
 
 pub(crate) async fn login(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let t = tenant(&h)?;
@@ -51,7 +51,7 @@ pub(crate) async fn login(
     if let Some(id) = profile["defaultPaymentMethodId"].as_str() {
         selected.payment_method_id = id.into();
     }
-    let (settings, _) = commerce::config(&a, &t).await?;
+    let (settings, _) = commerce::scoped_locked(&mut tx, &t, "default").await?;
     c.data.checkout = Some(commerce::resolve_selection(
         selected,
         &r.get::<String, _>("group_name"),

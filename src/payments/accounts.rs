@@ -1,6 +1,16 @@
 //! Merchant-authorized onboarding bridge; only authenticated provider responses establish account bindings.
-use super::*;
-pub(crate) async fn onboarding(a: &App, h: &HeaderMap, id: &str, input: &Value) -> Result<Value> {
+use super::{Attempt, remote};
+use crate::{
+    App, Error, Json, Path, RequestContext, Result, Row, State, StatusCode, Value, apps, auth, bad,
+    conflict, json, merchant,
+};
+
+pub(crate) async fn onboarding(
+    a: &App,
+    h: &RequestContext,
+    id: &str,
+    input: &Value,
+) -> Result<Value> {
     let t = merchant(a, h)?;
     auth::permit(h, "payments.manage")?;
     let m = apps::package(a, &t, id, true).await?;
@@ -26,8 +36,7 @@ pub(crate) async fn onboarding(a: &App, h: &HeaderMap, id: &str, input: &Value) 
             "Sales channel not found".into(),
         ));
     }
-    let all: Value = serde_json::from_str(&env::var("PAYMENT_SERVICES").unwrap_or("{}".into()))
-        .map_err(|_| bad("Invalid payment service configuration"))?;
+    let all = &crate::runtime_config::get().payment_services;
     let configured = &all[id][&m.version];
     let environment = input["environment"]
         .as_str()
@@ -124,13 +133,16 @@ pub(crate) async fn onboarding(a: &App, h: &HeaderMap, id: &str, input: &Value) 
 }
 pub(crate) async fn onboarding_route(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     Ok(Json(onboarding(&a, &h, &id, &v).await?))
 }
-pub(crate) async fn providers_route(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn providers_route(
+    State(a): State<App>,
+    h: RequestContext,
+) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     auth::permit(&h, "payments.read")?;
     let rows=sqlx::query("SELECT id,version,active,manifest->'paymentProvider' AS contract FROM app_packages WHERE tenant=$1 AND manifest ? 'paymentProvider' ORDER BY id").bind(&t).fetch_all(&a.db).await?;

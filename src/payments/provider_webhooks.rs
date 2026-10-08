@@ -1,10 +1,15 @@
 //! Version-pinned HMAC notifications enqueue reconciliation; external event payloads never write monetary state.
-use super::*;
+use super::{attempt, enqueue_tx, remote};
+use crate::{
+    App, Error, Json, Path, RequestContext, Result, Sha256, State, StatusCode, Value, bad, hash,
+    header, json, tenant,
+};
+
 use axum::body::Bytes;
 use hmac::{Hmac, Mac};
 pub(crate) async fn webhook(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(provider): Path<String>,
     bytes: Bytes,
 ) -> Result<Json<Value>> {

@@ -14,7 +14,7 @@ struct Release {
 }
 pub(crate) async fn release(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

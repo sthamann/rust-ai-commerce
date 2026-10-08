@@ -1,6 +1,6 @@
 //! Live control-plane telemetry: database probes and pool/cache diagnostics, explicit process-only scope.
 use super::*;
-pub(super) async fn snapshot(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn snapshot(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     auth::actor(&h)?;
     let start = std::time::Instant::now();
     let database=sqlx::query("SELECT pg_database_size(current_database()) AS bytes,version() AS version,(SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND state='active') AS active_connections,(SELECT sum(xact_commit)::text FROM pg_stat_database WHERE datname=current_database()) AS commits").fetch_one(&a.db).await?;

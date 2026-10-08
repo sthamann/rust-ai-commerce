@@ -2,13 +2,11 @@
 import hashlib
 import os
 import subprocess
+from testing.database import psql
 
 
 def sql(statement):
-    result = subprocess.run([
-        'docker', 'exec', '-i', os.environ['TEST_DB_CONTAINER'], 'psql', '-X', '-q',
-        '-U', 'commerce', '-d', os.environ['TEST_DATABASE'], '-v', 'ON_ERROR_STOP=1', '-At',
-    ], input='SET search_path=public;\n' + statement, text=True, capture_output=True)
+    result = subprocess.run(psql(os.environ['TEST_DB_CONTAINER'],'commerce',os.environ['TEST_DATABASE'],'-X','-q','-v','ON_ERROR_STOP=1','-At'), input='SET search_path=public;\n' + statement, text=True, capture_output=True)
     assert result.returncode == 0, result.stderr
     return result.stdout.strip()
 

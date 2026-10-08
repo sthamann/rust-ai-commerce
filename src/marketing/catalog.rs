@@ -2,10 +2,18 @@
 use super::*;
 pub(crate) fn router() -> Router<App> {
     Router::new()
-        .route("/api/automation/catalog", get(catalog))
-        .route("/api/automation/import-condition", post(import))
+        .secure_route(
+            "/api/automation/catalog",
+            &[("GET", "settings.read")],
+            get(catalog),
+        )
+        .secure_route(
+            "/api/automation/import-condition",
+            &[("POST", "settings.read")],
+            post(import),
+        )
 }
-pub(super) async fn catalog(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn catalog(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     auth::permit(&h, "settings.read")?;
     let t = merchant(&a, &h)?;
     let rows =
@@ -27,7 +35,7 @@ pub(super) async fn catalog(State(a): State<App>, h: HeaderMap) -> Result<Json<V
     result["pipelineContract"] = json!({"nodes":["condition","action","delay","stop"],"maxNodes":100,"maxDelaySeconds":2592000,"cyclicGraphs":false});
     Ok(Json(result))
 }
-pub(super) async fn import(h: HeaderMap, Json(v): Json<Value>) -> Result<Json<Value>> {
+pub(super) async fn import(h: RequestContext, Json(v): Json<Value>) -> Result<Json<Value>> {
     auth::permit(&h, "settings.write")?;
     let normalized = normalize(&v, 0)?;
     let c: rules::Condition = serde_json::from_value(normalized.clone())

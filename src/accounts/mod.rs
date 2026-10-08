@@ -49,7 +49,7 @@ pub(crate) async fn session(a: &App, t: &str, email: &str) -> Result<String> {
         .await?;
     Ok(token)
 }
-pub(crate) async fn identity(a: &App, h: &HeaderMap) -> Result<(String, String)> {
+pub(crate) async fn identity(a: &App, h: &RequestContext) -> Result<(String, String)> {
     let t = tenant(h)?;
     let token = header(h, "x-customer-token").ok_or(Error(
         StatusCode::UNAUTHORIZED,
@@ -70,7 +70,11 @@ pub(crate) async fn identity(a: &App, h: &HeaderMap) -> Result<(String, String)>
         ))?,
     ))
 }
-async fn register(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Result<Json<Value>> {
+async fn register(
+    State(a): State<App>,
+    h: RequestContext,
+    Json(v): Json<Value>,
+) -> Result<Json<Value>> {
     let t = tenant(&h)?;
     let email = auth::email(&v)?;
     let name = auth::name(&v)?;
@@ -98,6 +102,9 @@ async fn register(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> R
             initial.push((field, ad));
         }
     }
+    let locale = language_context(&a, &h).await?.0;
+    let channel = marketing::channel_id(&h);
+    marketing::channel(&a, &h, channel, &locale).await?;
     let mut tx = a.db.begin().await?;
     history::customer_context(&mut tx, &email).await?;
     let n=sqlx::query("INSERT INTO customers(tenant,email,password_hash,profile) VALUES($1,$2,$3,$4) ON CONFLICT DO NOTHING").bind(&t).bind(&email).bind(password).bind(json!(contact)).execute(&mut *tx).await?.rows_affected();
@@ -107,9 +114,6 @@ async fn register(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> R
     for (field, ad) in initial {
         address_save_conn(&mut tx,&t,&email,None,&json!({"defaultBilling":field=="billingAddress","defaultShipping":field=="shippingAddress"}),&ad).await?;
     }
-    let locale = language_context(&a, &h).await?.0;
-    let channel = marketing::channel_id(&h);
-    marketing::channel(&a, &h, channel, &locale).await?;
     sqlx::query(
         "UPDATE customers SET language_id=$1,sales_channel_id=$2,company=NULLIF($5,'') WHERE tenant=$3 AND email=$4",
     )
@@ -125,7 +129,7 @@ async fn register(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> R
         json!({"customerToken":session(&a,&t,&email).await?,"email":email}),
     ))
 }
-async fn logout(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+async fn logout(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let (t, _) = identity(&a, &h).await?;
     sqlx::query("DELETE FROM customer_sessions WHERE tenant=$1 AND digest=$2")
         .bind(&t)

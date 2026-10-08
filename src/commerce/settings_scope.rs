@@ -42,7 +42,7 @@ pub(crate) async fn scoped_locked(
 }
 pub(crate) async fn get_scope(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(channel): Path<String>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "settings.read")?;
@@ -75,7 +75,7 @@ pub(crate) async fn get_scope(
 }
 pub(crate) async fn save_scope(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(channel): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

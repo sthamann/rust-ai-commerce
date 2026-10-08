@@ -3,6 +3,7 @@
 Restores the previously active tenant extension, including on failure.
 Use only with synthetic demo inventory; no payment provider is contacted.
 """
+from testing.database import psql
 import hashlib,json,os,uuid,pathlib,urllib.request,urllib.error,subprocess,time,socket
 BASE=os.getenv('BASE_URL','http://127.0.0.1:8787'); tenant=os.getenv('TEST_TENANT','workshop')
 assert tenant.isascii() and all(c.isalnum() or c=='-' for c in tenant), 'Invalid test tenant'
@@ -16,7 +17,7 @@ def req(path,body=None,h=None,expected=200,backend=None):
     assert status==expected,(path,status,expected,data)
     return data
 # Read the exact prior policy privately from our local DB, so custom policies are preserved.
-r=subprocess.run(['docker','exec',os.getenv('DB_CONTAINER','vendune-postgres-1'),'psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-At','-c',"SELECT to_json(wat)::text FROM public.extensions WHERE tenant='"+tenant+"'"],check=True,capture_output=True,text=True)
+r=subprocess.run(psql(os.getenv('DB_CONTAINER','vendune-postgres-1'),'commerce',os.getenv('TEST_DATABASE','commerce'),'-At','-c',"SELECT to_json(wat)::text FROM public.extensions WHERE tenant='"+tenant+"'"),check=True,capture_output=True,text=True)
 previous=json.loads(r.stdout.strip()) if r.stdout.strip() else (root/'extensions/company-limit.wat').read_text()
 previous_digest=hashlib.sha256(previous.encode()).hexdigest()
 def check(name):checks.append(name);print('PASS',name)

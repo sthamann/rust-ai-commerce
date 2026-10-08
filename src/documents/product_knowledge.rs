@@ -2,7 +2,7 @@
 use super::*;
 pub(crate) async fn product_knowledge(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;

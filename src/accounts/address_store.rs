@@ -13,7 +13,7 @@ pub(crate) async fn address_save(
     email: &str,
     id: Option<&str>,
     v: &Value,
-    h: &HeaderMap,
+    h: &RequestContext,
 ) -> Result<Value> {
     let mut address: commerce::Address =
         serde_json::from_value(v["address"].clone()).map_err(|_| bad("Invalid address"))?;
@@ -86,7 +86,7 @@ pub(crate) async fn address_delete(
     email: &str,
     id: &str,
     revision: i64,
-    h: &HeaderMap,
+    h: &RequestContext,
 ) -> Result<Value> {
     let mut tx = a.db.begin().await?;
     if header(h, "x-rac-user").is_some() {

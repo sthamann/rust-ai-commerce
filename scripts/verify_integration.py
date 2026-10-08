@@ -15,6 +15,7 @@ import urllib.parse
 import uuid
 
 from testing.runtime import ROOT, run, serve, stop
+from testing.database import psql
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("--container", default="vendune-postgres-1")
@@ -33,8 +34,7 @@ user = url.username or "commerce"
 
 def sql(statement):
     subprocess.run(
-        ["docker", "exec", "-i", args.container, "psql", "-U", user,
-         "-d", "postgres", "-v", "ON_ERROR_STOP=1"],
+        psql(args.container,user,"postgres","-v","ON_ERROR_STOP=1"),
         input=statement, text=True, check=True, stdout=subprocess.DEVNULL,
     )
 
@@ -59,6 +59,9 @@ env.update({
     # from one shop. Configure that admitted load explicitly; production defaults
     # remain conservative and separate saturation tests verify 429 behavior.
     "TENANT_CONCURRENCY": "32",
+    # Multi-process app fixtures run HTTP + memory + app workers alongside this
+    # server. Give each a small explicit pool, within the real shared 80-slot cap.
+    "DB_POOL_MAX": "4", "DB_POOL_MIN": "0",
     # Existing differential cases intentionally use the versioned furniture fixture.
     # The fashion_demo provider suite starts a separate server with the shipping default.
     "DEMO_CATALOG": "legacy-furniture",

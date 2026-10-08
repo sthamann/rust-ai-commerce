@@ -9,5 +9,6 @@ pub mod money;
 pub mod pricing;
 pub mod rule_comparison;
 pub mod sandbox;
+pub mod scoped_pool;
 pub mod tenant_scope;
 pub mod verified_kernel;

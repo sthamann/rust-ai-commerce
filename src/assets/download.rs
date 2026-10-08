@@ -2,7 +2,7 @@
 use super::*;
 pub(super) async fn attachments(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     marketing::admit_product(&a, &h, &id).await?;
@@ -35,7 +35,7 @@ fn response(r: &sqlx::postgres::PgRow) -> Response {
 }
 pub(super) async fn attachment(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Response> {
     let t = tenant(&h)?;
@@ -51,7 +51,7 @@ fn paid(o: &Value) -> bool {
         o["payment"]["provider"] == "simulated" && o["payment"]["state"] == "authorized",
     )
 }
-pub(super) async fn owned(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn owned(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let (t, email) = accounts::identity(&a, &h).await?;
     let (settings, _) = commerce::config(&a, &t).await?;
     let locale = header(&h, "x-commerce-locale").unwrap_or(&settings.main_locale);
@@ -62,7 +62,7 @@ pub(super) async fn owned(State(a): State<App>, h: HeaderMap) -> Result<Json<Val
 }
 pub(super) async fn file(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((order, asset)): Path<(String, String)>,
 ) -> Result<Response> {
     let t = tenant(&h)?;

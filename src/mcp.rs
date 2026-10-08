@@ -176,7 +176,7 @@ pub(crate) fn tool_schema(name: &str) -> Value {
     };
     json!({"type":"object","properties":props,"required":required,"additionalProperties":false})
 }
-pub(crate) async fn mcp(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Response {
+pub(crate) async fn mcp(State(a): State<App>, h: RequestContext, Json(v): Json<Value>) -> Response {
     if let Some(origin) = header(&h, "origin") {
         // Trust only explicit deployment configuration, never Host or forwarded headers.
         let public = env::var("COMMERCE_PUBLIC_ORIGIN").ok().and_then(|v| {

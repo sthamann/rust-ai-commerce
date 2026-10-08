@@ -1,6 +1,11 @@
 //! Workspace member visibility and immediately effective role/revocation changes.
-use super::*;
-pub(crate) async fn members(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+use super::{SCOPES, allowed, permit, role_allowed, validate_permissions};
+use crate::{
+    App, Error, Json, Path, RequestContext, Result, Row, State, StatusCode, Value, bad, conflict,
+    header, json, merchant,
+};
+
+pub(crate) async fn members(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let tenant = merchant(&a, &h)?;
     permit(&h, "users")?;
     let rows=sqlx::query("SELECT u.id,u.name,u.email,m.role,m.active,m.permissions FROM memberships m JOIN merchant_users u ON u.id=m.user_id WHERE m.tenant=$1 ORDER BY u.name").bind(&tenant).fetch_all(&a.db).await?;
@@ -11,7 +16,7 @@ pub(crate) async fn members(State(a): State<App>, h: HeaderMap) -> Result<Json<V
 }
 pub(crate) async fn update_member(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(user): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -72,7 +77,7 @@ pub(crate) async fn update_member(
         old.get("permissions")
     };
     if permissions.is_null() && header(&h, "x-rac-permissions").is_some() {
-        let mut defaults = HeaderMap::new();
+        let mut defaults = RequestContext::new();
         defaults.insert("x-rac-role", role.parse().unwrap());
         for scope in SCOPES {
             if allowed(&defaults, scope) && !allowed(&h, scope) {

@@ -2,7 +2,7 @@
 use super::*;
 pub(super) async fn list(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     axum::extract::Query(c): axum::extract::Query<Criteria>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -27,7 +27,7 @@ fn value(r: &sqlx::postgres::PgRow) -> Value {
 }
 pub(super) async fn detail(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(email): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -72,7 +72,7 @@ struct Edit {
 }
 pub(super) async fn save(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(email): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -80,7 +80,7 @@ pub(super) async fn save(
 }
 pub(crate) async fn restore_customer(
     a: App,
-    h: HeaderMap,
+    h: RequestContext,
     email: String,
     state: Value,
     revision: i64,
@@ -90,7 +90,7 @@ pub(crate) async fn restore_customer(
 }
 async fn save_domain(
     a: App,
-    h: HeaderMap,
+    h: RequestContext,
     email: String,
     v: Value,
     book: Option<Value>,

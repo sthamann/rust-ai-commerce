@@ -1,31 +1,52 @@
 //! Customer payment status/capture and merchant refund operations share the durable command API.
-use super::*;
+use super::{
+    account, customer, enqueue, environment, onboarding_route, provider_webhooks, providers_route,
+    sessions, webhooks,
+};
+use crate::{
+    App, Error, Json, Path, RequestContext, Result, Router, Row, SecureRoutes, State, StatusCode,
+    Value, auth, bad, get, header, json, merchant, post, tenant,
+};
+
 pub(crate) fn payment_router() -> Router<App> {
     Router::new()
         .route(
             "/store-api/payment-providers/{id}/webhooks",
             post(provider_webhooks::webhook),
         )
-        .route("/api/payment-providers", get(providers_route))
-        .route(
+        .secure_route(
+            "/api/payment-providers",
+            &[("GET", "payments.read")],
+            get(providers_route),
+        )
+        .secure_route(
             "/api/payment-providers/{id}/onboarding",
+            &[("POST", "payments.manage")],
             post(onboarding_route),
         )
-        .route("/api/payments", get(status))
-        .route("/api/payments/jobs/{id}", get(job_status))
+        .secure_route("/api/payments", &[("GET", "payments.read")], get(status))
+        .secure_route(
+            "/api/payments/jobs/{id}",
+            &[("GET", "payments.read")],
+            get(job_status),
+        )
         .route("/store-api/payments/{id}", get(customer_status))
         .route("/store-api/payments/{id}/session", get(sessions::session))
         .route(
             "/store-api/payments/{id}/{operation}",
             post(customer_command),
         )
-        .route("/api/payments/{id}/{operation}", post(merchant_command))
+        .secure_route(
+            "/api/payments/{id}/{operation}",
+            &[("POST", "payments.manage")],
+            post(merchant_command),
+        )
         .route(
             "/store-api/payments/paypal/webhooks",
             post(webhooks::webhook),
         )
 }
-pub(crate) async fn status(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn status(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     auth::permit(&h, "payments.read")?;
     let rows=sqlx::query("SELECT id,order_id,state,provider,amount_minor,currency,currency_scale,refunded_minor,adapter_version,environment FROM payment_attempts WHERE tenant=$1 ORDER BY created_at DESC LIMIT 100").bind(&t).fetch_all(&a.db).await?;
@@ -55,7 +76,7 @@ pub(crate) async fn status(State(a): State<App>, h: HeaderMap) -> Result<Json<Va
 }
 async fn customer_status(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     customer(&a, &h, &id).await?;
@@ -71,7 +92,7 @@ pub(crate) async fn read(a: &App, t: &str, id: &str) -> Result<Value> {
 }
 async fn customer_command(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((id, op)): Path<(String, String)>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -95,7 +116,7 @@ async fn customer_command(
 }
 async fn merchant_command(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((id, op)): Path<(String, String)>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -132,7 +153,7 @@ async fn merchant_command(
 /// Merchant polling observes the durable job instead of dispatching another financial command.
 async fn job_status(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;

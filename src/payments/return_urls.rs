@@ -1,5 +1,6 @@
 //! Provider return/cancel URLs preserve the tenant and sales channel; navigation is never payment evidence.
-use super::*;
+use crate::{Result, bad, env};
+
 pub(crate) fn urls(
     tenant: &str,
     channel: &str,
@@ -47,6 +48,7 @@ pub(crate) fn build(
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn scoped_return_and_cancel_are_distinct_and_encoded() {
         let (a, c) = build(

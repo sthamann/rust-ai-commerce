@@ -186,7 +186,7 @@ pub(crate) fn enrich(
     Ok(q)
 }
 pub(crate) async fn dates(a: &App, q: &mut Value) -> Result<()> {
-    dates_conn(&mut *a.db.acquire().await?, q).await
+    dates_conn(&mut *a.db.begin().await?, q).await
 }
 pub(crate) async fn dates_conn(conn: &mut sqlx::PgConnection, q: &mut Value) -> Result<()> {
     if let Some(d) = q["deliveries"].as_array_mut().and_then(|d| d.first_mut()) {

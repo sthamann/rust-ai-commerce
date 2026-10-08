@@ -6,19 +6,24 @@ pub(crate) fn cognition_router() -> Router<App> {
             "/store-api/intelligence/recommendations/{id}",
             get(recommendations),
         )
-        .route("/api/intelligence", get(memory))
-        .route(
+        .secure_route(
+            "/api/intelligence",
+            &[("GET", "knowledge.read")],
+            get(memory),
+        )
+        .secure_route(
             "/api/intelligence/hypotheses/{id}",
+            &[("PUT", "catalog.write")],
             axum::routing::put(decide),
         )
 }
-async fn memory(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+async fn memory(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     auth::permit(&h, "knowledge.read")?;
     Ok(Json(observations(&a, &merchant(&a, &h)?).await?))
 }
 async fn decide(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

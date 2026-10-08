@@ -2,7 +2,7 @@
 
 [Feature tour](features.md) · [Architecture](production-architecture.md) · [Complete documentation](documentation-site.md)
 
-This review describes **Vendune main at `706102f8ff3526a6f5bba7ab09b96ce713d1de74`**
+The earlier feature/media review below describes **Vendune main at `706102f8ff3526a6f5bba7ab09b96ce713d1de74`**
 and the privately operated Experience deployment observed on 8 October. Documentation
 changes do not turn the prototype into a fully compatible Shopware replacement or
 certify every provider. The static API catalogue contains **243 HTTP method/path
@@ -10,6 +10,10 @@ pairs** at this source; installed app routes are discovered separately. The curr
 formal manifest contains **36 extracted policies and 78 properties** across a
 334-module Rust inventory; [formal evidence](formal-verification.md) distinguishes
 those pure decisions from unproved SQL, network and UI adapters.
+
+## Core hardening update
+
+The eighteen-point core review is addressed in [the hardening guide](core-hardening.md): typed trusted identity and explicit route rights, strict deployment roles, consolidated current grants, shared tenant/connection leases, transaction-local SQL/PgBouncer, bounded off-thread Wasm/image work, commit wakes, isolated outbox retries and retention. The guide distinguishes source/tests from a verified public rollout.
 
 ## What changed and where to use it
 

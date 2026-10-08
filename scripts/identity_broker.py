@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Synthetic broker signatures, durable replay prevention, scoped frontend routing and private Studio handoff; no provider calls."""
+from testing.database import psql
 import base64, hashlib, hmac, json, os, socket, time, urllib.error, urllib.request, uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from threading import Thread, Event
@@ -134,14 +135,14 @@ with (ROOT/'artifacts/identity-broker-server.log').open('w') as log:
         call(path,signed(path,'new-'+suffix,workspaceId=alias,workspaceName='Reserved alias'),expected=409)
         check('Hosted addresses are tenant-bound, forbid collisions, strip credentials and do not proxy merchant APIs')
         import subprocess
-        subprocess.run(['docker','exec',os.environ['DB_CONTAINER'],'psql','-U',os.environ.get('TEST_DATABASE_USER','commerce'),'-d',os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1','-c',f"UPDATE tenants SET status='paused' WHERE id='{shop}'"],check=True,capture_output=True)
+        subprocess.run(psql(os.environ['DB_CONTAINER'],os.environ.get('TEST_DATABASE_USER','commerce'),os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1','-c',f"UPDATE tenants SET status='paused' WHERE id='{shop}'"),check=True,capture_output=True)
         call('/',headers=host,expected=503)
         check('Paused shops cannot remain available through a separately mounted frontend')
         # Reconstruct the pre-055 schema in this disposable database, with a real unregistered hosted shop.
         call('/api/settings/frontends',{'alias':other,'channel':'default'},th,method='PUT')
         assert not call('/api/apps',headers=th)['packages']
         stop(server)
-        subprocess.run(['docker','exec',os.environ['DB_CONTAINER'],'psql','-U',os.environ.get('TEST_DATABASE_USER','commerce'),'-d',os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1','-c',"ALTER TABLE hosted_frontends DROP COLUMN app_id; DELETE FROM commerce_migrations WHERE version='055-hosted-apps';"],check=True,capture_output=True)
+        subprocess.run(psql(os.environ['DB_CONTAINER'],os.environ.get('TEST_DATABASE_USER','commerce'),os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1','-c',"ALTER TABLE hosted_frontends DROP COLUMN app_id; DELETE FROM commerce_migrations WHERE version='055-hosted-apps';"),check=True,capture_output=True)
         server=serve(env,base,log)
         installed=next(p for p in call('/api/apps',headers=th)['packages'] if p['id']=='storyfront')
         assert installed['active'] and installed['managedBy']=='experience' and installed['connections'][0]['alias']==other

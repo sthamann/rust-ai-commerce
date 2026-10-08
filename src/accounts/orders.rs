@@ -45,7 +45,7 @@ pub(super) struct Page {
 }
 pub(super) async fn list(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     axum::extract::Query(page): axum::extract::Query<Page>,
 ) -> Result<Json<Value>> {
     let (t, email) = identity(&a, &h).await?;
@@ -77,7 +77,7 @@ pub(super) async fn list(
 }
 pub(super) async fn detail(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let (t, email) = identity(&a, &h).await?;
@@ -100,7 +100,7 @@ pub(super) async fn detail(
 }
 pub(super) async fn receipt(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((order, id)): Path<(String, String)>,
 ) -> Result<Response> {
     let (t, email) = identity(&a, &h).await?;

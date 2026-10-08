@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Actual default signup, fashion variants/media/localization, isolated checkout and restart; synthetic data only."""
+from testing.database import psql
 import hashlib
 import json
 import os
@@ -86,8 +87,7 @@ with (ROOT / 'artifacts/fashion-demo-server.log').open('w') as log:
         assert request('/store-api/checkout/order', {}, {**ch,'Idempotency-Key':suffix})['id'] == order['id']
         check('A fashion size variant places one durable simulated order; another shop keeps its own stock')
         # A merchant edit to the built-in demo must survive a fresh server process.
-        subprocess.run(['docker','exec',os.environ['DB_CONTAINER'],'psql','-U','commerce','-d',os.environ['TEST_DATABASE'],
-            '-v','ON_ERROR_STOP=1','-c',"UPDATE products SET price=251 WHERE tenant='nord-atelier' AND id='coat'"], check=True, capture_output=True)
+        subprocess.run(psql(os.environ['DB_CONTAINER'],'commerce',os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1','-c',"UPDATE products SET price=251 WHERE tenant='nord-atelier' AND id='coat'"), check=True, capture_output=True)
         stop(server)
         server = serve(env, base, log)
         assert request('/store-api/product/coat', headers={'x-tenant':'nord-atelier'})['product']['price'] == 251

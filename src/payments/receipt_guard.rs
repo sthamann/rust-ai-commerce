@@ -1,5 +1,7 @@
 //! Bind integer provider receipt amounts and status to the formally checked exact-match predicate.
-use super::*;
+use super::parse_amount;
+use crate::{Result, Value, verified_kernel};
+
 pub(crate) fn receipt_matches(
     expected: i64,
     amount: &Value,

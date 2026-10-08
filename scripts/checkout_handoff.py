@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Exercise actual PostgreSQL checkout transfer, isolation, replay and durable ordering."""
+from testing.database import psql
 import concurrent.futures, hashlib, json, os, subprocess, urllib.request, urllib.error, uuid
 BASE=os.getenv('BASE_URL','http://127.0.0.1:8787');checks=[]
 def call(path,body=None,h=None,method=None,expected=200):
@@ -21,7 +22,7 @@ c,ch=cart();call('/store-api/checkout/handoff',{'revision':c['revision']-1},ch,e
 ticket=issue(c,ch);call('/store-api/checkout/handoff/consume',{'ticket':ticket},{'x-tenant':other['workspace']},expected=410)
 old=ticket;ticket=issue(c,ch);call('/store-api/checkout/handoff/consume',{'ticket':old},h,expected=410);check('Tickets are tenant scoped and reissue revokes the previous transfer')
 digest=hashlib.sha256(ticket.encode()).hexdigest()
-subprocess.run(['docker','exec',os.getenv('DB_CONTAINER','vendune-postgres-1'),'psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-q','-c',f"UPDATE checkout_handoffs SET expires_at=now()-interval '1 second' WHERE digest='{digest}'"],check=True,capture_output=True)
+subprocess.run(psql(os.getenv('DB_CONTAINER','vendune-postgres-1'),'commerce',os.getenv('TEST_DATABASE','commerce'),'-q','-c',f"UPDATE checkout_handoffs SET expires_at=now()-interval '1 second' WHERE digest='{digest}'"),check=True,capture_output=True)
 call('/store-api/checkout/handoff/consume',{'ticket':ticket},h,expected=410);check('Expired transfers fail against database time')
 ticket=issue(c,ch)
 with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:results=list(pool.map(lambda _:call('/store-api/checkout/handoff/consume',{'ticket':ticket},h,expected=None),range(2)))

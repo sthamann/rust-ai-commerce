@@ -3,7 +3,7 @@ use crate::*;
 
 pub(crate) async fn admin_catalog(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     body: axum::body::Bytes,
 ) -> Result<Json<Value>> {
     merchant(&a, &h)?;
@@ -11,7 +11,7 @@ pub(crate) async fn admin_catalog(
 }
 pub(crate) async fn activate_extension(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -24,13 +24,16 @@ pub(crate) async fn activate_extension(
     compiled.approve(0, 100_000).map_err(bad)?;
     let digest = hash(&wat);
     sqlx::query("INSERT INTO extensions(tenant,wat,digest) VALUES($1,$2,$3) ON CONFLICT(tenant) DO UPDATE SET wat=$2,digest=$3,revision=extensions.revision+1").bind(&t).bind(&wat).bind(&digest).execute(&a.db).await?;
-    a.sandboxes.write().unwrap().insert(t, Arc::new(compiled));
+    a.sandboxes.insert(t, Arc::new(compiled));
     Ok(Json(
         json!({"activated":true,"digest":digest,"hook":"company.purchase.approve","fuel":10000,"memoryBytes":1048576,"hostImports":false}),
     ))
 }
 
-pub(crate) async fn extension_state(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn extension_state(
+    State(a): State<App>,
+    h: RequestContext,
+) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     let r = sqlx::query("SELECT digest,revision FROM extensions WHERE tenant=$1")
         .bind(t)

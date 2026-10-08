@@ -3,12 +3,14 @@ use crate::*;
 use axum::{extract::Request, middleware::Next};
 pub(crate) fn router() -> Router<App> {
     Router::new()
-        .route(
+        .secure_route(
             "/api/settings/frontends",
+            &[("GET", "settings.read"), ("PUT", "settings.write")],
             get(super::frontend_bindings::list).put(super::frontend_bindings::bind),
         )
-        .route(
+        .secure_route(
             "/api/settings/frontends/{alias}",
+            &[("DELETE", "settings.write")],
             axum::routing::delete(super::frontend_bindings::remove),
         )
 }

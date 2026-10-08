@@ -1,5 +1,7 @@
 //! Transactional provider receipts and order state updates; external responses cannot invent amounts or tenants.
-use super::*;
+use super::{Attempt, enqueue_tx, generic_receipts, paypal, receipt_matches, state};
+use crate::{Error, Result, Row, StatusCode, Value, bad, conflict, json, verified_kernel};
+
 pub(crate) async fn persist(
     tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     p: &Attempt,

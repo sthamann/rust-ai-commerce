@@ -1,6 +1,6 @@
 //! Recoverable App Studio project deletion; installed packages and app records retain their independent lifecycle.
 use super::*;
-pub(super) async fn set(a: &App, h: &HeaderMap, v: &Value) -> Result<Value> {
+pub(super) async fn set(a: &App, h: &RequestContext, v: &Value) -> Result<Value> {
     auth::permit(h, "users")?;
     let t = staging::live(a, h).await?;
     let app = v["app"]
@@ -25,7 +25,7 @@ pub(super) async fn set(a: &App, h: &HeaderMap, v: &Value) -> Result<Value> {
 }
 pub(super) async fn remove(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(app): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -40,7 +40,7 @@ pub(super) async fn remove(
 }
 pub(super) async fn restore(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(app): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

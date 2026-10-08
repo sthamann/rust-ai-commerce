@@ -167,14 +167,15 @@ Lean policy extraction does not prove database, browser or distributed behavior.
 Committed outbox events now notify every replica to evict the affected tenant's
 settings cache. Configuration writes emit an explicit event. Reconnect clears the
 cache, and authoritative versions remain the correctness gate; notification delivery
-is not durable business delivery. Each process reserves one additional database
-connection for its listener. Strict RLS adds scope-binding/reset SQL around borrowed
-connections; the dated latency baseline above predates these hooks and must not be
-used as a measurement of the new security path. Direct PostgreSQL/session pooling
-is required; transaction pooling is not yet compatible.
+is not durable business delivery. HTTP/worker processes reserve their pool plus two listeners against a database-backed
+fleet budget. Identity/grants/status are consolidated into one current lookup, and
+session mode removes the extra reset query. Transaction-mode PgBouncer is supported
+through `ScopedPool` and SET LOCAL, with direct/session notification listeners.
+The dated latency baseline above predates these changes; do not reuse it as a
+measurement of the hardened path. Admission leases also add real SQL work.
 
-The HTTP path now has bounded process/per-tenant permits, a reserved checkout pool,
-429/Retry-After saturation responses, persistent daily interactive AI quotas and
-operator histogram buckets. Concurrent permits are process-local, daily quotas
-are database-wide. Complete provider/token/spend quotas, distributed concurrency
-and telemetry export remain open. [Exact configuration and tests](production-architecture.md).
+HTTP has bounded local and shared tenant permits, reserved checkout capacity,
+429/Retry-After saturation responses, persistent login throttles, daily interactive
+AI quotas and operator histogram buckets. Actual model calls and app/provider work
+have shared concurrency caps. Token/spend quotas and telemetry export remain open.
+[Configuration, tradeoffs and tests](core-hardening.md).

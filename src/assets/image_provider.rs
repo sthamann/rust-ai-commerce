@@ -71,7 +71,9 @@ pub(super) async fn create(
     let decoded = STANDARD
         .decode(encoded)
         .map_err(|_| bad("Invalid generated image encoding"))?;
-    checked_png(&decoded)
+    tokio::task::spawn_blocking(move || checked_png(&decoded))
+        .await
+        .map_err(|_| bad("Image decoding worker failed"))?
 }
 fn checked_png(bytes: &[u8]) -> Result<Vec<u8>> {
     if bytes.is_empty() || bytes.len() > 8 * 1024 * 1024 {

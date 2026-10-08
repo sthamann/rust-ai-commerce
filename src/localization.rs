@@ -2,7 +2,7 @@
 use super::*;
 use vendune::context::{Language, language_chain};
 
-pub(super) async fn language_context(a: &App, h: &HeaderMap) -> Result<(String, Vec<String>)> {
+pub(super) async fn language_context(a: &App, h: &RequestContext) -> Result<(String, Vec<String>)> {
     let (settings, _) = commerce::config(a, &tenant(h)?).await?;
     let locale = header(h, "x-commerce-locale").unwrap_or(&settings.main_locale);
     let rows = performance::languages(a).await?;
@@ -113,7 +113,7 @@ fn translated_field<'a>(
     })
 }
 
-pub(super) async fn context_info(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn context_info(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let (locale, chain) = language_context(&a, &h).await?;
     let (settings, _) =
         commerce::scoped_config(&a, &tenant(&h)?, marketing::channel_id(&h)).await?;
@@ -131,7 +131,7 @@ pub(super) async fn context_info(State(a): State<App>, h: HeaderMap) -> Result<J
 }
 pub(super) async fn preview_quote(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;

@@ -12,6 +12,9 @@ import urllib.parse
 import urllib.request
 import uuid
 from testing.runtime import ROOT, serve, stop
+from testing.database import psql
+from testing.pooler import Pooler
+from security import core_hardening
 
 env = dict(os.environ)
 role = 'runtime_' + uuid.uuid4().hex[:12]
@@ -20,10 +23,10 @@ url = urllib.parse.urlsplit(env['DATABASE_URL'])
 owner = urllib.parse.unquote(url.username or 'commerce')
 database = env['TEST_DATABASE']
 processes = []
+pooler = None
 
 def sql(text, fail=False):
-    result = subprocess.run(['docker', 'exec', '-i', env['TEST_DB_CONTAINER'], 'psql', '-U', owner,
-        '-d', database, '-qAt', '-v', 'ON_ERROR_STOP=1'], input=text, text=True, capture_output=True)
+    result = subprocess.run(psql(env['TEST_DB_CONTAINER'],owner,database,'-qAt','-v','ON_ERROR_STOP=1'), input=text, text=True, capture_output=True)
     if fail:
         assert result.returncode != 0, 'Unsafe SQL unexpectedly succeeded'
     else:
@@ -58,14 +61,19 @@ try:
     runtime_url = urllib.parse.urlunsplit(url._replace(netloc=f'{role}:{password}@{url.hostname}:{url.port}'))
     env.update(DATABASE_RUNTIME_URL=runtime_url, DB_RLS_REQUIRED='true', DB_POOL_MAX='2', DB_POOL_MIN='0',
         PROCESS_ROLE='http', BOOTSTRAP_MODE='serve', TENANT_AI_DAILY_QUOTA='3')
+    if env.get('TEST_TRANSACTION_POOLING')=='1':
+        pooler=Pooler(runtime_url)
+        env.update(DATABASE_RUNTIME_URL=pooler.url,DATABASE_LISTENER_URL=runtime_url,DB_POOLER_MODE='transaction')
     # Strict startup must reject a role that has a whole-table RLS bypass operation.
     sql(f'GRANT TRUNCATE ON products TO {role};')
     with (ROOT/'artifacts/production-unsafe-role.log').open('w') as bad_log:
         rejected = subprocess.Popen([str(ROOT/'target/debug/vendune')], cwd=ROOT,
             env={**env,'BIND_ADDR':f'127.0.0.1:{port()}'}, stdout=bad_log, stderr=bad_log)
         assert rejected.wait(timeout=20) != 0, 'Unsafe runtime role was admitted'
+    assert 'Runtime role must not own core tables' in (ROOT/'artifacts/production-unsafe-role.log').read_text(), 'Startup failed before role audit'
     sql(f'REVOKE TRUNCATE ON products FROM {role};')
     print('PASS strict startup rejects a runtime with core TRUNCATE privilege')
+    core_hardening.before_workers(sql)
     bases = []
     for index in range(2):
         base = f'http://127.0.0.1:{port()}'
@@ -101,8 +109,10 @@ try:
         time.sleep(.03)
     assert state['state']=='queued' and state['processed']==100,state
     stop(processes[0][0])
+    assert sql("SELECT count(*) FROM resource_leases WHERE tenant='__runtime' AND class='db-connections' AND slots=4")=='1', 'Graceful shutdown retained a fleet connection reservation'
     resumed = {**env,'PROCESS_ROLE':'all','BASE_URL':one,'BIND_ADDR':one.removeprefix('http://')}
     processes[0] = (serve(resumed,one,processes[0][1]),processes[0][1])
+    assert sql("SELECT count(*) FROM resource_leases WHERE tenant='__runtime' AND class='db-connections' AND slots=4")=='2', 'Restart lost the shared fleet budget'
     for _ in range(200):
         state = call(one, '/api/merchant/currencies/price-jobs/'+job['id'],h=h)
         if state['state']=='completed': break
@@ -194,8 +204,10 @@ try:
     call(two, '/api/agent/chat', {}, ai_h, expected=429)
     assert scoped(sessions[0]['workspace'], 'SELECT attempts FROM tenant_ai_usage').splitlines()[-1] == '3'
     print('PASS daily interactive AI quota is atomic and shared across replicas')
+    core_hardening.verify(sql,call,bases,h)
 finally:
     for process, log in processes:
         stop(process); log.close()
+    if pooler:pooler.close()
     # Runtime owns dynamically created app tables only; DROP OWNED is restricted to this disposable DB.
     sql(f'DROP OWNED BY {role}; DROP ROLE {role};')

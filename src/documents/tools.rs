@@ -24,7 +24,7 @@ pub(crate) fn knowledge_schema(name: &str) -> Option<Value> {
 }
 pub(crate) async fn knowledge_invoke(
     a: &App,
-    h: &HeaderMap,
+    h: &RequestContext,
     name: &str,
     v: &Value,
 ) -> Result<Value> {

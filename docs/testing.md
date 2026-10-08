@@ -317,3 +317,19 @@ These checks are not live provider capability or a full-system security proof.
 `managed_search.py` allocates its own loopback port, so an open local Studio
 fixture cannot accidentally satisfy its readiness check. Qdrant-backed suites
 require the actual configured local Qdrant address.
+
+## Core hardening regressions (8 October 2026)
+
+The existing strict-runtime suite now checks persistent login backoff across two
+processes, poison-event savepoint isolation and recovery, referenced/unsettled
+retention, and database-wide admission saturation/expiry. `transaction_pooler`
+repeats real checkout, customer registration/login, CRM, app/staging and RLS paths
+through one actual PgBouncer backend; listeners stay on a direct runtime connection.
+This exposed and removed nested pooled borrows under checkout/login locks.
+CI installs PgBouncer 1.21+ and uses the same suite registry. Native execution may
+select `TEST_PSQL` and `TEST_PGBOUNCER`; all databases and pooler processes are
+isolated fixtures and cleaned up. Unknown route rights and trusted Principal
+extraction also have unit/static controls. [Implementation and boundaries](core-hardening.md).
+
+These checks establish those behaviors, not 100% whole-system coverage, public
+rollout status, a speed-up percentage or protection against a compromised server.

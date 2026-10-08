@@ -1,6 +1,6 @@
 //! Independent platform authorization: live personal sessions, current grants, no integration/bootstrap escalation.
 use crate::*;
-pub(crate) async fn authenticate(a: &App, h: &HeaderMap) -> Result<String> {
+pub(crate) async fn authenticate(a: &App, h: &RequestContext) -> Result<String> {
     let token = header(h, "authorization")
         .and_then(|s| s.strip_prefix("Bearer "))
         .ok_or(Error(
@@ -25,7 +25,7 @@ pub(crate) async fn authenticate(a: &App, h: &HeaderMap) -> Result<String> {
     }
     Ok(user)
 }
-pub(super) fn actor(h: &HeaderMap) -> Result<&str> {
+pub(super) fn actor(h: &RequestContext) -> Result<&str> {
     header(h, "x-rac-platform-user")
         .ok_or(Error(StatusCode::UNAUTHORIZED, "Operator required".into()))
 }

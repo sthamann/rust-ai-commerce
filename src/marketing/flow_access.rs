@@ -1,7 +1,7 @@
 //! Every queued flow step rehydrates current membership; stored definitions never preserve revoked privileges.
 use super::*;
-pub(crate) async fn headers(a: &App, t: &str, actor: Option<&str>) -> Result<HeaderMap> {
-    let mut h = HeaderMap::new();
+pub(crate) async fn headers(a: &App, t: &str, actor: Option<&str>) -> Result<RequestContext> {
+    let mut h = RequestContext::new();
     h.insert(
         "x-tenant",
         t.parse().map_err(|_| bad("Invalid flow tenant"))?,

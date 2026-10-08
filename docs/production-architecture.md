@@ -18,14 +18,13 @@ and [test coverage](testing.md). Diagram images open at full size.
    stored frontend binding. A sales channel is an experience within a merchant
    workspace; an unrelated merchant is a different tenant, not another channel.
 2. Authentication strips caller-supplied internal identity headers, resolves the
-   current session and membership, and checks the requested operation. Customer
+   current session, all grants and shop status in one authoritative query, and checks explicit route/method permission. The trusted Principal lives in request extensions. Customer
    operations also verify the customer/cart/download capability.
 3. Resource admission takes bounded process and tenant permits. Checkout uses a
    separate process pool, so catalog traffic cannot consume all checkout permits.
    Interactive AI admission also reserves a durable daily quota before the handler.
 4. A task-local database scope follows the admitted request. Fresh and reused
-   SQLx connections receive that scope before queries; returning the connection
-   clears it. Unknown tasks receive an empty, denied context.
+   SQLx connections receive that scope before queries; explicit transactions use SET LOCAL. Session mode rebinds every borrow without an extra reset query; transaction-pool mode scopes direct queries as well. Unknown tasks receive an empty, denied context.
 5. The native handler validates its entity IDs, rights and expected revision.
    Mutations use PostgreSQL transactions and write their outbox events in the same
    commit. MCP and UCP use these operations rather than a separate payment engine.
@@ -38,7 +37,7 @@ and [test coverage](testing.md). Diagram images open at full size.
 | Responsibility | Actual implementation | Authority |
 |---|---|---|
 | Merchant identity and permissions | `src/auth/`, `src/accounts/`, `src/auth/middleware.rs` | Current PostgreSQL session/membership; no client principal |
-| Tenant-scoped database leases | `src/tenant_scope.rs`, `src/performance/{pool,row_security}.rs` | Server-derived scope; PostgreSQL row policies |
+| Tenant-scoped database leases | `src/request_context.rs`, `src/tenant_scope.rs`, `src/scoped_pool.rs`, `src/performance/{pool,row_security}.rs` | Server-derived scope; PostgreSQL row policies |
 | Product, category and checkout operations | `src/commerce/`, `src/order_checkout.rs`, `src/cart_*.rs` | Locked catalog/settings/cart snapshot |
 | Exact money boundary | `src/money.rs` | Checked minor integers and explicit currency scale |
 | Stock allocation | `src/commerce/inventory.rs`, migration 047 | Persisted quantities linked to tenant + order + product |
@@ -128,12 +127,13 @@ PostgreSQL superusers and `BYPASSRLS` roles bypass row security even when forced
 installing policy SQL while continuing to use that role does not secure a deployment.
 See the [PostgreSQL row-security documentation](https://www.postgresql.org/docs/current/ddl-rowsecurity.html).
 
-The runtime uses task-local tenant context, bound to the **same borrowed connection**
-that executes its queries. Hooks cover new connections, idle reuse and return/reset.
-This currently requires direct PostgreSQL or session-pooling semantics. Transaction-
-or statement-pooling PgBouncer is not supported by this session-bound mechanism.
-Do not insert such a pooler without moving protected operations into explicit,
-transaction-local scopes and rerunning the connection-isolation regressions.
+The runtime uses task-local tenant context and the shared `ScopedPool` executor.
+Explicit transactions batch BEGIN and SET LOCAL; transaction-pool mode also wraps
+direct queries in a scoped transaction. Session mode binds every checkout, with no
+second reset query on return. Unknown tasks fail closed. Transaction pooling is
+verified through actual PgBouncer with one backend, protocol prepared statements
+and two Rust replicas. It needs a separate direct/session `DATABASE_LISTENER_URL`;
+statement pooling is unsupported. [Configuration and all eighteen review fixes](core-hardening.md).
 
 Identity resolution, authenticated platform operations, registration/provisioning,
 staging/developer control paths and fleet workers deliberately use trusted system
@@ -150,15 +150,13 @@ injection, a compromised process, all side channels or arbitrary external servic
    so plan DDL/backfill locks for large live installations.
 2. Provision a dedicated runtime login through the database/secret manager.
    [runtime-role.sql](../deploy/sql/runtime-role.sql) grants only core DML/reference
-   privileges, prepares future-table grants and transfers **only managed app tables**
-   to their app schema group. Run it as the actual migration owner so future grants
-   apply to that owner's objects. Never grant the migration owner to runtime.
+   privileges, grants existing core tables (excluding connector credentials) and transfers **only managed app tables**
+   to their app schema group. Run it as the actual migration owner after additive migrations; rerun role provisioning for new tables. Never grant the migration owner to runtime.
 3. Set `DATABASE_RUNTIME_URL`, `DB_RLS_REQUIRED=true`, `BOOTSTRAP_MODE=serve` and
    `ALLOW_BOOTSTRAP_AUTH=false` for public HTTP and worker deployments. Membership
    in `vendune_runtime` must be inherited by the runtime login. App tables may be
    owned by that limited app-schema group; core tables stay with the migration owner.
-4. Allow one extra PostgreSQL connection per process for the invalidation listener
-   in addition to `DB_POOL_MAX`. Budget all replicas, workers and setup connections.
+4. Reserve `DB_POOL_MAX + 2` per process for the pool and listeners against the shared `DB_CLUSTER_CONNECTION_BUDGET`. A fenced heartbeat enforces this fleet budget; a lost lease stops its process.
 5. Run the strict `production_foundations` suite on a disposable database and test
    registration, ordinary and sandbox operations, callbacks and cold restart before
    switching public traffic. Public hosting secrets/configuration are operational
@@ -190,14 +188,14 @@ See [read performance](read-performance.md) for the measured baseline and limits
 |---|---:|---|
 | `HTTP_CONCURRENCY` | 128 | Process permits for ordinary API requests |
 | `CHECKOUT_CONCURRENCY` | 32 | Separate reserved process permits for checkout/payment/UCP |
-| `TENANT_CONCURRENCY` | 16 | Concurrent API requests per tenant **per process** |
-| `TENANT_AI_CONCURRENCY` | 2 | Interactive AI requests per tenant **per process** |
+| `TENANT_CONCURRENCY` | 16 | Concurrent API requests per tenant across replicas (plus local defense) |
+| `TENANT_AI_CONCURRENCY` | 2 | Interactive AI requests per tenant across replicas (plus local defense) |
 | `TENANT_AI_DAILY_QUOTA` | 1000 | Default durable admitted interactive AI attempts per UTC day |
 | `DB_POOL_MAX` / `DB_POOL_WAIT_MS` | 20 / 5000 | SQL connection capacity and bounded queue wait |
 
 Admission uses immediate permits and returns 429 plus `Retry-After` on saturation;
 permit drop also handles cancellation. Tenant bookkeeping is bounded to 4096 active/
-recent tenant budgets, so random tenant IDs cannot create an unbounded memory map.
+recent tenant budgets, and unvalidated callers share an anonymous bucket, so arbitrary tenant headers cannot allocate new entries.
 Checkout's separate process capacity still shares the configured tenant cap and SQL
 pool: this is not a guarantee of unlimited checkout throughput.
 
@@ -210,8 +208,7 @@ Platform operators configure a shop through `GET/PUT /api/platform/shops/{id}/qu
 This quota counts `/api/experience`, `/api/concierge`, agent chat/plan and product
 `/questions` and `/ask` HTTP routes, not tokens, actual
 provider spend, every MCP-derived AI action, background translation/image jobs or
-identity-broker usage on behalf of another shop. Those need dedicated admission at
-the provider/job boundary before claiming a complete tenant AI cost cap.
+identity-broker usage on behalf of another shop. The actual model boundary also has shared concurrency leases for translation, image, developer and broker work; these limit concurrent calls, not tokens or spend. A complete tenant AI cost cap remains unimplemented.
 
 `/api/platform/infrastructure` exposes bounded latency histogram buckets, calls,
 failures, capacity and rejection counters, SQL pool/read-cache diagnostics and
@@ -250,6 +247,7 @@ the same declared capabilities; provider output cannot become an unchecked SQL c
 - `production_foundations` runs two real Rust replicas under a non-owner, non-bypass
   database login, deliberately omits tenant predicates, attempts foreign mutations,
   repeats checkout/CRM/tenant regressions and checks commit/rollback cache events.
+- `transaction_pooler` repeats the strict-runtime suite through a real one-backend PgBouncer; poison-event, retention, login-backoff and shared-limit controls also run in both modes.
 - Payment suites use local provider fixtures for restart, capture/refund, duplicate
   notifications, version/account pinning, authorization/void and uncertain receipts.
 - Original Shopware differential suites guard the ported behavior and money boundary.
@@ -261,6 +259,5 @@ the same declared capabilities; provider output cannot become an unchecked SQL c
   a merge to `main`. These diagrams are rendered assets, not unrendered fenced code.
 
 Remaining production work includes complete integer pricing/tax migration, per-tenant
-worker/provider token and spend admission, distributed concurrency leases, runtime/
-worker privilege separation, large-scale DDL/backfill validation, full telemetry
+worker/provider token and spend admission, finer runtime/worker privilege separation, large-scale DDL/backfill validation, full telemetry
 export/traces/alerts and independently reviewed public deployment hardening.

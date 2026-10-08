@@ -1,5 +1,7 @@
 //! Trusted server-to-server inference inherits operator settings without disclosing any provider credentials.
-use super::*;
+use super::email;
+use crate::{App, Error, Json, Result, State, StatusCode, Value, bad, json};
+
 pub(crate) async fn generate(State(a): State<App>, Json(v): Json<Value>) -> Result<Json<Value>> {
     let c = super::broker::assertion(&a, "/api/identity/inference", &v).await?;
     let email = email(&c)?;
@@ -42,6 +44,8 @@ pub(crate) async fn generate(State(a): State<App>, Json(v): Json<Value>) -> Resu
             "Daily identity inference allowance reached".into(),
         ));
     }
+    let _cluster =
+        crate::performance::cluster_lease::Lease::acquire(&a, "__identity", "model", 4).await?;
     let output = a
         .inference
         .structured_with_images(None, system, user, &c["schema"], &images)
@@ -72,6 +76,7 @@ fn schema_valid(v: &Value, depth: usize) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn malformed_schema_cannot_panic_provider_adapter() {
         assert!(!schema_valid(&json!({"type":"object"}), 0));

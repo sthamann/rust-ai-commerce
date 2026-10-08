@@ -1,23 +1,20 @@
 //! Process lifetime only. See docs/source-map.md for domain responsibilities.
-use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier, password_hash::SaltString};
+use argon2::{Argon2, PasswordHasher, password_hash::SaltString};
 use axum::{
     Json, Router,
     extract::{Path, State},
-    http::{HeaderMap, StatusCode},
+    http::StatusCode,
     response::{IntoResponse, Response},
     routing::{get, post},
 };
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
-use sqlx::{PgPool, Row, postgres::PgPoolOptions};
-use std::{
-    collections::HashMap,
-    env,
-    sync::{Arc, RwLock},
-};
+use sqlx::{Row, postgres::PgPoolOptions};
+use std::{collections::HashMap, env, sync::Arc};
 use tower_http::services::ServeDir;
 use uuid::Uuid;
+use vendune::scoped_pool::ScopedPool as PgPool;
 use vendune::{
     inference::{Choice, Inference},
     knowledge,
@@ -39,8 +36,11 @@ mod http_limits;
 mod marketing;
 mod operations;
 mod payments;
+mod runtime_config;
+mod security_headers;
 mod staging;
 mod translations;
+mod work_signal;
 mod workers;
 use agent::*;
 mod localization;
@@ -48,8 +48,12 @@ use localization::*;
 mod studio;
 use studio::*;
 mod auth;
+pub(crate) use auth::SecureRoutes;
 mod commerce;
 mod currencies;
+mod request_context;
+mod sandbox_cache;
+pub(crate) use request_context::RequestContext;
 mod foundation;
 mod legal;
 pub(crate) use foundation::*;

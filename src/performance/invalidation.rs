@@ -4,12 +4,10 @@ use sqlx::postgres::PgListener;
 pub(crate) fn start(a: &App) {
     let a = a.clone();
     vendune::tenant_scope::spawn(async move {
-        let url = env::var("DATABASE_RUNTIME_URL")
-            .or_else(|_| env::var("DATABASE_URL"))
-            .expect("Database URL");
+        let url = &runtime_config::get().listener_url;
         loop {
             a.reads.clear();
-            let connected = PgListener::connect(&url).await;
+            let connected = PgListener::connect(url).await;
             if let Ok(mut listener) = connected
                 && listener.listen("vendune_read_invalidation").await.is_ok()
             {

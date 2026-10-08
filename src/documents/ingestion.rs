@@ -3,7 +3,7 @@ use super::*;
 use axum::extract::Multipart;
 pub(crate) async fn ingest(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     merchant(&a, &h)?;
@@ -12,7 +12,7 @@ pub(crate) async fn ingest(
 }
 pub(crate) async fn upload(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     mut form: Multipart,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -66,7 +66,7 @@ pub(crate) async fn upload(
         save(&a, &h, &t, &v, if pdf { "pdf" } else { "upload-text" }).await?,
     ))
 }
-async fn save(a: &App, h: &HeaderMap, t: &str, v: &Value, source: &str) -> Result<Value> {
+async fn save(a: &App, h: &RequestContext, t: &str, v: &Value, source: &str) -> Result<Value> {
     let data = content::validate(a, t, v).await?;
     let title = data["title"].as_str().unwrap();
     let text = data["content"].as_str().unwrap();
@@ -102,7 +102,7 @@ async fn save(a: &App, h: &HeaderMap, t: &str, v: &Value, source: &str) -> Resul
         json!({"id":id,"contentHash":digest,"revision":1,"visibility":"private","chunks":chunks,"sourceType":source}),
     )
 }
-pub(crate) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn list(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     auth::permit(&h, "knowledge.read")?;
     let rows=sqlx::query("SELECT id,product_id,title,source_type,visibility,revision,content_hash FROM knowledge_documents WHERE tenant=$1 ORDER BY created_at DESC LIMIT 100").bind(t).fetch_all(&a.db).await?;
@@ -112,7 +112,7 @@ pub(crate) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Valu
 }
 pub(crate) async fn publish(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

@@ -31,7 +31,7 @@ fn normalize(bytes: &[u8]) -> Result<(Vec<u8>, u32, u32)> {
 }
 pub(super) async fn upload(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     mut multipart: axum::extract::Multipart,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -107,7 +107,7 @@ async fn bytes(a: &App, t: &str, id: &str) -> Result<Response> {
 }
 pub(super) async fn preview(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -137,7 +137,7 @@ fn default_channel() -> String {
 }
 pub(super) async fn public(
     State(a): State<App>,
-    mut h: HeaderMap,
+    mut h: RequestContext,
     Path(id): Path<String>,
     axum::extract::Query(q): axum::extract::Query<LogoScope>,
 ) -> Result<Response> {

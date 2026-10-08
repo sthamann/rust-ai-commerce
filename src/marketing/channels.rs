@@ -19,7 +19,7 @@ fn public_visibility() -> String {
 }
 pub(crate) async fn channel(
     a: &App,
-    h: &HeaderMap,
+    h: &RequestContext,
     id: &str,
     locale: &str,
 ) -> Result<Option<Channel>> {
@@ -52,10 +52,10 @@ pub(crate) async fn channel(
     }
     Ok(Some(c))
 }
-pub(crate) fn channel_id(h: &HeaderMap) -> &str {
+pub(crate) fn channel_id(h: &RequestContext) -> &str {
     header(h, "sw-sales-channel-id").unwrap_or("default")
 }
-pub(crate) async fn admit_product(a: &App, h: &HeaderMap, id: &str) -> Result<()> {
+pub(crate) async fn admit_product(a: &App, h: &RequestContext, id: &str) -> Result<()> {
     let available:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM products p WHERE p.tenant=$1 AND p.id=$2 AND p.active AND (p.parent_id IS NULL OR EXISTS(SELECT 1 FROM products parent WHERE parent.tenant=p.tenant AND parent.id=p.parent_id AND parent.active)))").bind(tenant(h)?).bind(id).fetch_one(&a.db).await?;
     if !available {
         return Err(Error(StatusCode::NOT_FOUND, "Product unavailable".into()));
@@ -89,7 +89,7 @@ pub(crate) async fn admit_product(a: &App, h: &HeaderMap, id: &str) -> Result<()
 }
 pub(crate) async fn filter_channel(
     a: &App,
-    h: &HeaderMap,
+    h: &RequestContext,
     ps: Vec<Product>,
 ) -> Result<Vec<Product>> {
     let config = channel(a, h, channel_id(h), &language_context(a, h).await?.0).await?;
@@ -113,7 +113,7 @@ pub(crate) async fn filter_channel(
 }
 
 /// Internal scope is never taken from caller-supplied catalog criteria.
-pub(crate) async fn catalog_scope(a: &App, h: &HeaderMap) -> Result<Option<Vec<String>>> {
+pub(crate) async fn catalog_scope(a: &App, h: &RequestContext) -> Result<Option<Vec<String>>> {
     Ok(
         channel(a, h, channel_id(h), &language_context(a, h).await?.0)
             .await?

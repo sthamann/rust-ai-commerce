@@ -3,7 +3,7 @@ use crate::*;
 
 pub(crate) async fn set_items(
     a: &App,
-    h: &HeaderMap,
+    h: &RequestContext,
     items: Vec<Item>,
     expected: Option<i64>,
 ) -> Result<StoredCart> {
@@ -11,7 +11,7 @@ pub(crate) async fn set_items(
 }
 pub(crate) async fn set_cart(
     a: &App,
-    h: &HeaderMap,
+    h: &RequestContext,
     items: Vec<Item>,
     expected: Option<i64>,
     buyer: Option<Option<Value>>,

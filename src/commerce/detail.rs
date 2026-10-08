@@ -3,7 +3,7 @@ use super::*;
 
 pub(crate) async fn product_detail(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     axum::extract::Query(mut criteria): axum::extract::Query<CatalogCriteria>,
 ) -> Result<Json<Value>> {

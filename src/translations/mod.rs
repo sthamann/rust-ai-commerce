@@ -9,13 +9,19 @@ pub(crate) use routes::{control, create, detail, list};
 pub(crate) use worker::once;
 pub(crate) fn router() -> Router<App> {
     Router::new()
-        .route(
+        .secure_route(
             "/api/merchant/translations",
+            &[("GET", "catalog.read"), ("POST", "catalog.write")],
             get(routes::list).post(routes::create),
         )
-        .route(
+        .secure_route(
             "/api/merchant/translations/{id}",
+            &[("GET", "catalog.read"), ("PUT", "catalog.write")],
             get(routes::detail).put(routes::control),
         )
-        .route("/api/merchant/translations/{id}/apply", post(apply::apply))
+        .secure_route(
+            "/api/merchant/translations/{id}/apply",
+            &[("POST", "catalog.write")],
+            post(apply::apply),
+        )
 }

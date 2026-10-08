@@ -5,6 +5,7 @@ pub(crate) async fn bootstrap() -> App {
     tracing_subscriber::fmt()
         .with_env_filter(env::var("RUST_LOG").unwrap_or("info".into()))
         .init();
+    let _configuration = runtime_config::get();
     let mode = env::var("BOOTSTRAP_MODE").unwrap_or("auto".into());
     assert!(
         ["auto", "serve", "migrate"].contains(&mode.as_str()),
@@ -26,6 +27,7 @@ pub(crate) async fn bootstrap() -> App {
         .connect(&env::var("DATABASE_RUNTIME_URL").unwrap_or(database_url.clone()))
         .await
         .expect("commerce connection");
+    let db = PgPool::new(db, runtime_config::get().transaction_pooling);
     performance::verify_row_security(&db).await;
     migrations::ready(&db).await;
     // Personal-only hosting has no shared bootstrap credential. Legacy development mode still requires one.
@@ -44,14 +46,18 @@ pub(crate) async fn bootstrap() -> App {
         .timeout(std::time::Duration::from_secs(180))
         .build()
         .unwrap();
+    let connection_budget = performance::cluster_lease::Lease::connection_budget(&db)
+        .await
+        .expect("Cluster database connection budget exhausted");
     let a = App {
+        _connection_budget: Arc::new(connection_budget),
         db: db.clone(),
         inference_slots: Arc::new(tokio::sync::Semaphore::new(4)),
         token: Arc::new(auth),
         inference: Inference::from_env(http.clone()).with_database(db.clone()),
         http,
         model: Arc::new(env::var("OLLAMA_MODEL").unwrap_or("qwen3.6:35b".into())),
-        sandboxes: Arc::new(RwLock::new(HashMap::new())),
+        sandboxes: Arc::new(sandbox_cache::Cache::default()),
         channel_metrics: Arc::new(channel_metrics::ChannelMetrics::default()),
         app_limits: Arc::new(apps::ServiceLimits::default()),
         reads: Arc::new(performance::Reads::default()),
@@ -86,7 +92,7 @@ pub(crate) async fn bootstrap() -> App {
                 .await
                 .expect("persisted extension")
         {
-            a.sandboxes.write().unwrap().insert(
+            a.sandboxes.insert(
                 t.into(),
                 Arc::new(Sandbox::new(&wat).expect("saved extension")),
             );
@@ -114,7 +120,7 @@ pub(crate) async fn run() {
             .await
             .expect("PostgreSQL migration connection");
         migrations::apply(&db).await;
-        migrations::ready(&db).await;
+        migrations::ready(&PgPool::new(db.clone(), false)).await;
         db.close().await;
         println!("Migration-only setup complete");
         return;
@@ -122,19 +128,26 @@ pub(crate) async fn run() {
     let a = bootstrap().await;
     if env::var("PROCESS_ROLE").is_ok_and(|s| s.ends_with("-worker")) {
         shutdown().await;
+        a._connection_budget.release().await;
+        a.db.close().await;
         return;
     }
     let app = router(a.clone());
     let addr = env::var("BIND_ADDR").unwrap_or("127.0.0.1:8787".into());
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     println!("vendune listening on http://{addr}");
-    axum::serve(listener, app)
-        .with_graceful_shutdown(async {
-            shutdown().await;
-        })
-        .await
-        .unwrap();
+    axum::serve(
+        listener,
+        app.into_make_service_with_connect_info::<std::net::SocketAddr>(),
+    )
+    .with_graceful_shutdown(async {
+        shutdown().await;
+    })
+    .await
+    .unwrap();
     a.channel_metrics.flush(&a.db).await;
+    a._connection_budget.release().await;
+    a.db.close().await;
 }
 
 async fn shutdown() {

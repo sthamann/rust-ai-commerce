@@ -6,12 +6,14 @@ pub(crate) use admin::{create as create_category, list as list_categories, save 
 pub(crate) use navigation::admit;
 pub(crate) fn router() -> Router<App> {
     Router::new()
-        .route(
+        .secure_route(
             "/api/merchant/categories",
+            &[("GET", "catalog.read"), ("POST", "catalog.write")],
             get(admin::list).post(admin::create),
         )
-        .route(
+        .secure_route(
             "/api/merchant/categories/{id}",
+            &[("PUT", "catalog.write")],
             axum::routing::put(admin::save),
         )
         .route(

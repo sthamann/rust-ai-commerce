@@ -1,5 +1,7 @@
 //! Versioned app-owned payment methods; declarations never grant financial authority.
-use super::*;
+use crate::{Result, apps, bad};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub(crate) struct ProviderContract {
@@ -75,6 +77,7 @@ pub(crate) fn validate_contract(m: &apps::Manifest) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     fn manifest() -> apps::Manifest {
         serde_json::from_str(include_str!(
             "../../extensions/apps/payment-provider/manifest.json"

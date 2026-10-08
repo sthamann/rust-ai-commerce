@@ -1,7 +1,7 @@
 //! Transactional application of approved, revision-bound proposals.
 use crate::*;
 
-pub(crate) async fn apply(a: &App, t: &str, id: &str, h: &HeaderMap) -> Result<Value> {
+pub(crate) async fn apply(a: &App, t: &str, id: &str, h: &RequestContext) -> Result<Value> {
     let mut tx = a.db.begin().await?;
     let r = sqlx::query("SELECT * FROM tasks WHERE tenant=$1 AND id=$2 FOR UPDATE")
         .bind(t)

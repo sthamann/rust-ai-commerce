@@ -6,7 +6,7 @@ mod generation;
 mod routes;
 pub(crate) use routes::router;
 
-pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+pub(crate) async fn invoke(a: &App, h: &RequestContext, name: &str, v: &Value) -> Result<Value> {
     auth::permit(h, "users")?;
     Ok(match name {
         "developer.archive" => archive::set(a, h, v).await?,

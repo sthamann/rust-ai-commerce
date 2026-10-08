@@ -4,6 +4,7 @@
 Fixtures belong to one freshly registered test tenant. An explicit database
 container is required; no existing shop is altered.
 """
+from testing.database import psql
 import argparse,concurrent.futures,json,os,pathlib,subprocess,time,urllib.request,urllib.error,uuid
 
 parser=argparse.ArgumentParser(description=__doc__)
@@ -20,7 +21,7 @@ def call(path,body=None,headers=None,expected=200,method=None):
     return data
 
 def sql(source):
-    return subprocess.check_output(['docker','exec','-i',args.container,'psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-qAt','-v','ON_ERROR_STOP=1'],input='SET search_path=public;\n'+source,text=True).strip()
+    return subprocess.check_output(psql(args.container,'commerce',os.getenv('TEST_DATABASE','commerce'),'-qAt','-v','ON_ERROR_STOP=1'),input='SET search_path=public;\n'+source,text=True).strip()
 
 def ok(name):checks.append(name);print('PASS',name,flush=True)
 

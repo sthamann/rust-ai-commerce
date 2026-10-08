@@ -1,7 +1,7 @@
 //! Durable image jobs: tenant admission, revision-bound private previews and explicit publication, without automatic paid retries.
 use crate::*;
 use base64::{Engine, engine::general_purpose::STANDARD};
-pub(super) async fn provider(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn provider(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     merchant(&a, &h)?;
     auth::permit(&h, "catalog.read")?;
     Ok(Json(
@@ -10,7 +10,7 @@ pub(super) async fn provider(State(a): State<App>, h: HeaderMap) -> Result<Json<
 }
 pub(super) async fn enqueue(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(product): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -77,7 +77,7 @@ pub(super) async fn enqueue(
 }
 pub(super) async fn list_jobs(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(product): Path<String>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "catalog.read")?;
@@ -90,7 +90,7 @@ pub(super) async fn list_jobs(
 }
 pub(super) async fn detail(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "catalog.read")?;
@@ -115,7 +115,7 @@ pub(super) async fn detail(
 }
 pub(super) async fn apply(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -159,15 +159,15 @@ pub(super) async fn apply(
         json!({"id":asset,"url":format!("/store-api/assets/{asset}?shop={t}"),"view":"","alt":{}}),
     ))
 }
-pub(crate) async fn image_once(a: &App) -> Result<()> {
+pub(crate) async fn image_once(a: &App) -> Result<bool> {
     // Interrupted provider calls are deliberately not retried: a lost response may already have incurred a charge.
     sqlx::query("UPDATE media_jobs SET state='failed',error='Image request interrupted; start a new job manually' WHERE state='processing' AND started_at < now()-interval '5 minutes'").execute(&a.db).await?;
     if !super::image_provider::configured(a).await {
-        return Ok(());
+        return Ok(false);
     }
     let job=sqlx::query("UPDATE media_jobs SET state='processing',started_at=now() WHERE (tenant,id)=(SELECT tenant,id FROM media_jobs WHERE state='queued' AND EXISTS(SELECT 1 FROM tenants t WHERE t.id=coalesce((SELECT live_tenant FROM shop_environments WHERE tenant=media_jobs.tenant),media_jobs.tenant) AND t.status='active') ORDER BY created_at LIMIT 1 FOR UPDATE SKIP LOCKED) RETURNING *").fetch_optional(&a.db).await?;
     let Some(job) = job else {
-        return Ok(());
+        return Ok(false);
     };
     let t: String = job.get("tenant");
     let id: String = job.get("id");
@@ -187,7 +187,7 @@ pub(crate) async fn image_once(a: &App) -> Result<()> {
                 .await?;
         }
     }
-    Ok(())
+    Ok(true)
 }
 async fn generate(a: &App, t: &str, product: &str, request: &Value) -> Result<String> {
     let source = if request["mode"] == "optimize" {
@@ -203,6 +203,7 @@ async fn generate(a: &App, t: &str, product: &str, request: &Value) -> Result<St
     } else {
         None
     };
+    let _cluster = crate::performance::cluster_lease::Lease::acquire(a, t, "model", 2).await?;
     let bytes = super::image_provider::create(
         a,
         request["prompt"]

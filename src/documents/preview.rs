@@ -2,7 +2,7 @@
 use super::*;
 pub(crate) async fn preview(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;

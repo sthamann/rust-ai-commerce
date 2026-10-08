@@ -1,8 +1,13 @@
 //! PayPal verifies webhook signatures before inbox insertion; provider reconciliation confirms monetary state.
-use super::*;
+use super::{account, enqueue_tx, paypal};
+use crate::{
+    App, Error, Json, RequestContext, Result, State, StatusCode, Value, bad, hash, header, json,
+    tenant,
+};
+
 pub(crate) async fn webhook(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let t = tenant(&h)?;
