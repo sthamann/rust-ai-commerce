@@ -2,6 +2,7 @@
 """Real PostgreSQL/HTTP operator control-plane regression; synthetic accounts only, no paid providers."""
 
 import json, os, pathlib, subprocess, urllib.request, urllib.error, uuid
+from testing.database import psql
 
 BASE = os.getenv("BASE_URL", "http://127.0.0.1:8787")
 suffix = uuid.uuid4().hex[:10]
@@ -34,20 +35,8 @@ def check(message):
 
 def sql(text):
     r = subprocess.run(
-        [
-            "docker",
-            "exec",
-            "-i",
-            os.getenv("DB_CONTAINER", "vendune-postgres-1"),
-            "psql",
-            "-XqAt",
-            "-v",
-            "ON_ERROR_STOP=1",
-            "-U",
-            "commerce",
-            "-d",
-            os.getenv("TEST_DATABASE", "commerce"),
-        ],
+        psql(os.getenv("DB_CONTAINER", "vendune-postgres-1"), "commerce",
+             os.getenv("TEST_DATABASE", "commerce"), "-XqAt", "-v", "ON_ERROR_STOP=1"),
         input=text,
         capture_output=True,
         text=True,
