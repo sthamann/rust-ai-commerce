@@ -227,6 +227,13 @@ fn eval(j: &Value) -> Result<Value, String> {
                 .as_bool()
                 .ok_or("Invalid private_origin")?
         ))),
+        Some("channel_access_admissible") => Ok(json!(channel_access_admissible(
+            args["active"].as_bool().ok_or("Invalid active")?,
+            args["is_private"].as_bool().ok_or("Invalid is_private")?,
+            args["merchant"].as_bool().ok_or("Invalid merchant")?,
+            args["preview"].as_bool().ok_or("Invalid preview")?,
+            args["mutating"].as_bool().ok_or("Invalid mutating")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

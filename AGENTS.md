@@ -154,3 +154,7 @@ For a runtime extension or port:
    preserve the original comparison fixtures, concurrency and migration checks.
 5. Update module ownership and service documentation. Check the final runtime image
    and startup path, not merely whether Rust code exists or unit tests pass.
+
+## Sales-channel access and domains
+
+Use the existing `sales_channels` and `hosted_frontends` owners; see `docs/channel-management.md`. Pause/privacy is enforced in shared authentication admission across Store API, UCP/MCP and hosted frontends. Never trust caller preview-principal headers or bypass checks for caches. Browser previews require a personal session, current membership and matching channel revision; they cannot purchase or modify accounts. Domain aliases retain canonical Experience identity and revision checks. Original native Storyfront channel bindings remain immutable; do not silently substitute a channel while its checkout still uses the imported one.

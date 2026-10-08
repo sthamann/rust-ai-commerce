@@ -67,6 +67,12 @@ const words = {
     "Le noyau garantit prix, taxes, stock et transitions. Les flux orchestrent vos processus. Aucune remise automatique.",
     "El núcleo garantiza precios, impuestos, stock y transiciones. Los flujos coordinan tus procesos. No se activan descuentos automáticamente.",
   ],
+  frontends: [
+    "Connected domains & experiences",
+    "Verbundene Domains & Experiences",
+    "Domaines et expériences connectés",
+    "Dominios y experiencias conectados",
+  ],
   default_channel: [
     "The main channel is required",
     "Der Hauptkanal wird benötigt",
@@ -147,6 +153,7 @@ export function useLifecycleText() {
   return (key: keyof typeof words) => words[key][i];
 }
 export type DependencyKind =
+  | "frontends"
   | "default_channel"
   | "rules"
   | "flows"

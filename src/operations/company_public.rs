@@ -5,7 +5,7 @@ pub(super) async fn get(State(a): State<App>, h: HeaderMap) -> Result<Json<Value
     let channel = marketing::channel_id(&h);
     let (settings, _) = commerce::config(&a, &t).await?;
     let locale = header(&h, "x-commerce-locale").unwrap_or(&settings.main_locale);
-    marketing::channel(&a, &t, channel, locale).await?;
+    marketing::channel(&a, &h, channel, locale).await?;
     let mut tx = a.db.begin().await?;
     master_data::lock(&mut tx, &t).await?;
     let base = master_data::records(&mut tx, &t, None).await?;

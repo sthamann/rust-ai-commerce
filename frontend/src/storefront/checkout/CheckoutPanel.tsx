@@ -11,6 +11,7 @@ import CheckoutDetails from "./CheckoutDetails";
 import CheckoutSummary from "./CheckoutSummary";
 import PaymentSession from "./PaymentSession";
 import CheckoutPurchase from "./CheckoutPurchase";
+import ChannelPreview from "../shell/ChannelPreview";
 import CheckoutProgress from "./CheckoutProgress";
 export default function CheckoutPanel({
   cart,
@@ -23,7 +24,9 @@ export default function CheckoutPanel({
   onCoupons,
   onCart,
   requestError,
+  preview = false,
 }: {
+  preview?: boolean;
   requestError?: string;
   cart?: Cart;
   order?: Order;
@@ -71,7 +74,7 @@ export default function CheckoutPanel({
     if (!locked) onClose();
   };
   const submit = async () => {
-    if (!cart || locked) return;
+    if (!cart || locked || preview) return;
     setSaving(true);
     setError("");
     try {
@@ -118,6 +121,7 @@ export default function CheckoutPanel({
           <Icon name="close" />
         </button>
       </header>
+      {preview && <ChannelPreview />}
       <CheckoutProgress reviewed={reviewed} complete={!!order} />
       <div className="bag-body">
         <AppSurfaceSlot
@@ -155,7 +159,7 @@ export default function CheckoutPanel({
                   setSelection((old) => ({ ...old, ...patch }))
                 }
                 onCart={onCart}
-                busy={locked}
+                busy={locked || preview}
                 onSubmit={submit}
               />
               <CheckoutLegal
@@ -174,7 +178,7 @@ export default function CheckoutPanel({
             </div>
             <CheckoutSummary
               cart={cart}
-              busy={locked}
+              busy={locked || preview}
               reviewed={reviewed}
               onQuantity={onQuantity}
               onCoupons={async (codes) => {
@@ -197,7 +201,7 @@ export default function CheckoutPanel({
             <strong>{money(cart.price.totalPrice)}</strong>
           </div>
           <CheckoutPurchase
-            busy={locked}
+            busy={locked || preview}
             reviewed={reviewed}
             total={cart.price.totalPrice}
           />

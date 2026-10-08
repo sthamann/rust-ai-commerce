@@ -12,6 +12,10 @@ import Commerce.Claims
 #print axioms CommerceKernel.app_tool_exact
 #print axioms CommerceKernel.cancellation_exact
 #print axioms CommerceKernel.cancellation_safe
+#print axioms CommerceKernel.channel_access_exact
+#print axioms CommerceKernel.channel_paused_requires_preview
+#print axioms CommerceKernel.channel_preview_no_mutation
+#print axioms CommerceKernel.channel_private_requires_identity
 #print axioms CommerceKernel.checkout_contact_exact
 #print axioms CommerceKernel.checkout_review_exact
 #print axioms CommerceKernel.completion_exact

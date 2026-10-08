@@ -145,6 +145,11 @@
     "source": "src/marketing/catalog.rs"
   },
   {
+    "path": "/api/automation/channels/{id}/preview",
+    "method": "POST",
+    "source": "src/marketing/channel_preview.rs"
+  },
+  {
     "path": "/api/automation/entities/{entity}/{id}",
     "method": "PUT",
     "source": "src/marketing/metadata.rs"
@@ -775,6 +780,11 @@
     "source": "src/shop_domains/frontends.rs"
   },
   {
+    "path": "/api/settings/frontends/{alias}",
+    "method": "DELETE",
+    "source": "src/shop_domains/frontends.rs"
+  },
+  {
     "path": "/api/settings/master-data",
     "method": "GET",
     "source": "src/operations/mod.rs"
@@ -833,6 +843,16 @@
     "path": "/api/workspaces",
     "method": "POST",
     "source": "src/routes.rs"
+  },
+  {
+    "path": "/channel-preview/end",
+    "method": "POST",
+    "source": "src/marketing/channel_preview.rs"
+  },
+  {
+    "path": "/channel-preview/{ticket}",
+    "method": "GET",
+    "source": "src/marketing/channel_preview.rs"
   },
   {
     "path": "/health",

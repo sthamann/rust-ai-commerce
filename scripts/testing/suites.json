@@ -36,7 +36,8 @@
     "crm_history",
     "tenant_isolation",
     "legal_privacy",
-    "currencies"
+    "currencies",
+    "channel_management"
   ],
   "providers": [
     "email_tests",

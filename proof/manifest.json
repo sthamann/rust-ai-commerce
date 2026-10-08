@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "34 extracted production policies; surrounding modules remain unproved",
+  "claim": "36 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -327,6 +327,17 @@
         "currency_context_exact",
         "currency_context_stale_denied"
       ]
+    },
+    "channel_access_admissible": {
+      "bindings": [
+        "src/marketing/channel_access.rs"
+      ],
+      "theorems": [
+        "channel_private_requires_identity",
+        "channel_paused_requires_preview",
+        "channel_preview_no_mutation",
+        "channel_access_exact"
+      ]
     }
   },
   "sources": {
@@ -362,8 +373,8 @@
     },
     "src/accounts/mod.rs": {
       "status": "unproved",
-      "sha256": "830abaf201e4ece0b1984e9a515c2d01e9f60ec57406b8ab4191e0e71acdc9cb",
-      "review": "Reviewed customer order ownership reuse and shopper projection, customer receipts bound to tenant/order/receipt through the same immutable PDF renderer, HTTPS tracking validation reusing existing rich URL policy, and MCP tracking schema. Real customer HTTP tests reject anonymous/foreign/mismatched IDs, compare customer and merchant PDF bytes, reject unsafe URLs without revision changes and observe live delivery updates. Async SQL and UI paths remain explicitly unproved."
+      "sha256": "865af7374b6e4b0a68dae04677338e61317614b8806a1b6af10cbcf3853da81a",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/accounts/order_snapshot.rs": {
       "status": "unproved",
@@ -592,8 +603,8 @@
     },
     "src/auth/middleware.rs": {
       "status": "unproved",
-      "sha256": "3b235a1e23aff4ccf9127a20df22cabe5fef8a2c250f17cfbd3a2938184c4930",
-      "review": "Reviewed signed credential route, linked-email owner lock, explicit password verification/recovery, session and handoff revocation, enrollment migration and real PostgreSQL identity regressions; SQL/network adapters remain unproved."
+      "sha256": "684e30f57e1064bb579892b43012c331842009c0300d64d081b4c822ac8f6d73",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/auth/mod.rs": {
       "status": "unproved",
@@ -697,8 +708,8 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "8f7a4bd8a52b9f2c07df0613dbf7dfba14b9eb47b3508d8110910d475689be48",
-      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+      "sha256": "b6faac49c05b973d56599e189f9c8f150591ec236fdb62547c56803c62c964da",
+      "review": "Reviewed channel access policy and actual middleware consumer, stripped forged preview principal, session/member/revision-bound tickets and tenant-owned frontend aliases. Catalogue/cart/navigation/legal consumers use server-derived preview scope. HTTP and UI adversarial regressions exercise foreign IDs, stale revisions, paused/private channels, purchase denial and logout revocation; async adapters remain unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
@@ -737,8 +748,8 @@
     },
     "src/cart_storage.rs": {
       "status": "unproved",
-      "sha256": "83522f17cff9f8ab80527953fa68096dbb1793c7c4dd78bd1cb25625fd00a668",
-      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+      "sha256": "3c09c104f2e9ec8122269b771543ca0814172cfa16c3b3df3a9371cac80fb407",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/catalog_model.rs": {
       "status": "unproved",
@@ -767,8 +778,8 @@
     },
     "src/categories/navigation.rs": {
       "status": "unproved",
-      "sha256": "5250ec137cdac457e7c5f8169aedec6f82446f84e416ab741c39c063578b2bbd",
-      "review": "Reviewed international configuration, destination tax predicates and native bindings; targeted PostgreSQL international/catalog cases plus Rust tests pass. Translation fixtures verify restart, provider rejection, tenant permissions and revision conflicts. Config/product/apply share row locks. Additive schema 028 and versioned MIT geography reviewed; surrounding SQL/provider behavior remains unproved."
+      "sha256": "59995db08705cd08311e3a723ad19f8201f4a95dd5e4f9ce609c34084a86c4e2",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/channel_metrics.rs": {
       "status": "unproved",
@@ -1342,8 +1353,8 @@
     },
     "src/legal/consent.rs": {
       "status": "reviewed-binding",
-      "sha256": "e83f562fff43a7686165291d3c176d544c3b10222420c5b8eac41a6931c7f551",
-      "review": "Reviewed legal configuration/validation, scoped receipt locks and revocation, strict digital/physical checkout snapshots, private idempotent declarations/review audit, composite-FK RLS migration 048, permission-shared MCP adapters and receipt-redacted generic flows. Real PostgreSQL/HTTP consent, foreign-session/tenant, stale acknowledgements, immutable order and completed flow cases plus local SMTP consumer receipt delivery pass; exact consent/checkout Boolean claims and negative mutations preserve the stated unproved SQL/browser/provider boundary."
+      "sha256": "320236902481fd5fd87c7a4b66bdf30c06c1b1788f014db68aee9c92e4334d72",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/legal/mod.rs": {
       "status": "unproved",
@@ -1390,10 +1401,20 @@
       "sha256": "b2ce70e12049a4430b9f6438b11f147c93fefe16dc868f1f7381f9a4d54b61e2",
       "review": "Reviewed merged managed PostgreSQL/Qdrant knowledge retrieval with authoritative tenant, archived, visibility, enabled-language and digest hydration checks; preserved source reassignment and vector text revision fence; no extracted policy changed."
     },
+    "src/marketing/channel_access.rs": {
+      "status": "reviewed-binding",
+      "sha256": "32d601b4b787d92bd866e200dd4470782f6bf92cce2b8a43f0f5c6c4fb3545e5",
+      "review": "Preview navigation is a bounded catalogue read; automatic personalization remains blocked in preview"
+    },
+    "src/marketing/channel_preview.rs": {
+      "status": "unproved",
+      "sha256": "91f540b1c791f593d07aac465c9c8535a59ec4501d1a2d7ae12319fdddca9814",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
+    },
     "src/marketing/channels.rs": {
       "status": "unproved",
-      "sha256": "b291a131470073d7a47409d8eed9c290f5e0e31511e5f5a70034eeea7ece4d3d",
-      "review": "Reviewed automation lifecycle SQL and controllers, tenant serialization and foreign keys, actual default channel language inheritance and persisted-channel metrics; these integration paths remain outside the Lean policy proof boundary."
+      "sha256": "dadea66ab22bccc875250acff723a1d49a1291c5b3522b4d0ff2bf61676db3f2",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/marketing/condition_gateway.rs": {
       "status": "unproved",
@@ -1407,8 +1428,8 @@
     },
     "src/marketing/dependencies.rs": {
       "status": "unproved",
-      "sha256": "2a2e09330110498d4feb4f87a607ef767092b80ac9d9c8a1833083a9eb04ee16",
-      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
+      "sha256": "4986407229dc15d1ba1adbdf41779f66fb105582ed0b120ba77a891acb5abc10",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/marketing/facts.rs": {
       "status": "unproved",
@@ -1467,8 +1488,8 @@
     },
     "src/marketing/mod.rs": {
       "status": "unproved",
-      "sha256": "f2cd28bebf1ef25f951f04d91f511b488f12609176a58b40e5778539805b2e95",
-      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
+      "sha256": "9850e30dce6f1ca0f8def0c324d4aebccb6014884f1e5c374766392e5dbf62cc",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/marketing/pipeline.rs": {
       "status": "reviewed-binding",
@@ -1492,8 +1513,8 @@
     },
     "src/marketing/routes.rs": {
       "status": "unproved",
-      "sha256": "f2e880b3ce0f7ee6d57ab541f4bad5ff4f97d2922dc6a9e49074536619c55780",
-      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
+      "sha256": "f22948644790bebce15e66f7fcb7d52c6f809c6bccb21a520860547ab7467e7d",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/marketing/rule_fields.rs": {
       "status": "unproved",
@@ -1532,8 +1553,8 @@
     },
     "src/migrations/schema.rs": {
       "status": "unproved",
-      "sha256": "6b631fc5a329587e2590faf0419edb833e11bc7e421038821e132378b4d08706",
-      "review": "Reviewed signed credential route, linked-email owner lock, explicit password verification/recovery, session and handoff revocation, enrollment migration and real PostgreSQL identity regressions; SQL/network adapters remain unproved."
+      "sha256": "d8d4a3611ac44581f74ca95ce485f7f0c453990dfdfbf85ac56585679df8f203",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
@@ -1562,8 +1583,8 @@
     },
     "src/operations/company_public.rs": {
       "status": "unproved",
-      "sha256": "ca4a29dcf0042201e88c4f3f4f437c6ea0ec8eede23eb0ce3ce90152b7d882e1",
-      "review": "Reviewed company field whitelist, dynamic locales and structured geography; tenant-only immutable decoded logo storage and public linked projection; serialized base/channel revisions with stale and concurrent HTTP cases; order-channel issuer and immutable cancellation snapshots; private cloning, selective release and digest-rebound live baseline. 80 Rust and 122 UI tests plus company, merchant operations, account and staging PostgreSQL suites passed. JSON, SQL, image and UI adapters remain unproved."
+      "sha256": "8ed8a365c2228e5358590ebd4664c3a7fa09f5006151d18a393a9516cd5d6ed7",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/operations/customers.rs": {
       "status": "unproved",
@@ -1855,6 +1876,11 @@
       "sha256": "dc9a936dee659568e48871fab187ff75e746dd65206e54d1d3b06371cb48d32d",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/shop_domains/frontend_bindings.rs": {
+      "status": "unproved",
+      "sha256": "036d77e58e34f89b1bfdee66f2af0164ff59aae733cb0794b9967c222a551a8e",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
+    },
     "src/shop_domains/frontend_editor.rs": {
       "status": "unproved",
       "sha256": "dde09763cba3fe493127443049207822f11f284bc3240e57f9e284ebe3ddae34",
@@ -1867,13 +1893,13 @@
     },
     "src/shop_domains/frontends.rs": {
       "status": "unproved",
-      "sha256": "9aa4dc6d3d345826af3922e1c52d6b05ddb849dd09ddb995da7130c2c3384911",
-      "review": "Reviewed passive operator editor URL navigation and tenant-scoped existing frontend discovery; URL/HTTP adapters remain unproved. Added own foreign anonymous scope and stale-workspace UI regressions."
+      "sha256": "bf3ec8c8585f3e752a2c3b5a2d73489de2ffb5f0a3f10305ff38b7e340491fb0",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/shop_domains.rs": {
       "status": "unproved",
-      "sha256": "eff366791b25d40b9e7cb14e9f03dbffe647cfc63aaa9358294680574c4fdef1",
-      "review": "Reviewed passive operator editor URL navigation and tenant-scoped existing frontend discovery; URL/HTTP adapters remain unproved. Added own foreign anonymous scope and stale-workspace UI regressions."
+      "sha256": "5d5359d361c13761043e5093e0b791a8956ccbcc0aa3d2076dc31ee1bc08b2a2",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/staging/assets.rs": {
       "status": "unproved",
@@ -1907,8 +1933,8 @@
     },
     "src/staging/release.rs": {
       "status": "unproved",
-      "sha256": "6c44193a8c5aa674b918e4bd732f4fa4c96292eadebc52a4090aa8b6ad4da9da",
-      "review": "Reviewed additive migration 040 and provisioning order; persisted main channel consumes catalog scope and inherits languages; HTTP/MCP deletion rechecks tenant, revision and semantic dependencies with configuration locks and scoped channel FKs; flow projection shares definition locks; staging checks final references. Real PostgreSQL lifecycle, automation, marketing, staging, scoped-settings and foreign-tenant regressions passed. Kernel extraction is unchanged; surrounding SQL and async lifecycle remain unproved."
+      "sha256": "aa3137469c3bbf6efd304a2a257f681e47afc50c97d6113b1e3b8d504c172a6c",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
     "src/staging/snapshot.rs": {
       "status": "unproved",
@@ -1967,8 +1993,8 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "d4889d87e0ef47ea21f617076b2a1f0b3f75f49566916b8f504a61298288e2fb",
-      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+      "sha256": "d38b984664e8e46a183cfdaf5f85913e30ccb59ac60a45f6921aa955ff679d49",
+      "review": "Reviewed channel access policy and actual middleware consumer, stripped forged preview principal, session/member/revision-bound tickets and tenant-owned frontend aliases. Catalogue/cart/navigation/legal consumers use server-derived preview scope. HTTP and UI adversarial regressions exercise foreign IDs, stale revisions, paused/private channels, purchase denial and logout revocation; async adapters remain unproved."
     },
     "src/workers.rs": {
       "status": "unproved",
@@ -2241,9 +2267,13 @@
       "sha256": "031779a36ded0bc4350b0285fe8a580f9c9d75276b30d92b51ffac392587afb3",
       "review": "Reviewed signed credential route, linked-email owner lock, explicit password verification/recovery, session and handoff revocation, enrollment migration and real PostgreSQL identity regressions; SQL/network adapters remain unproved."
     },
+    "migrations/053-channel-access.sql": {
+      "sha256": "1ac5343ab481ab099e1a113cf834a8ebe9ba07009733aab3a4712a6d11fdb85b",
+      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
+    },
     "proof/Commerce/Claims.lean": {
-      "sha256": "edf5e9ecb5799ce0ef121689cd1fa8be99c382e0e8327df38f9fec6577de474a",
-      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+      "sha256": "08ed10a3c4484ad7ca1403be069ac19d7112b538d0bda9fb64fc33b98a3972d2",
+      "review": "Reviewed channel policy and production consumers, identity stripping, session/revision/member-bound preview tickets, tenant domain aliases and staging validation. Added positive and negative Lean admission properties; surrounding SQL/authentication/proxy implementations remain unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -2278,8 +2308,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "3938d9dcf215557abfdb608793446735ca62b1b2b7826e7cdd20fbac5eb5cf77",
-      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+      "sha256": "79bf4afbead045480bcb5eb642fcb4cbf526990089c25087cbcc5241aa3a2f49",
+      "review": "Reviewed channel access policy and actual middleware consumer, stripped forged preview principal, session/member/revision-bound tickets and tenant-owned frontend aliases. Catalogue/cart/navigation/legal consumers use server-derived preview scope. HTTP and UI adversarial regressions exercise foreign IDs, stale revisions, paused/private channels, purchase denial and logout revocation; async adapters remain unproved."
     },
     "scripts/formal/registry.py": {
       "sha256": "3b554637854314cffd45018b3e5adc568d24e0ab145d7d6fa75350d2f80f5900",

@@ -1,6 +1,62 @@
 /** Sales-channel onboarding and inherited settings vocabulary in all interface languages. */
 import { useLocale } from "../../shared/i18n/i18n";
 const words = {
+  connections: [
+    "Domains & experiences",
+    "Domains & Experiences",
+    "Domaines et expériences",
+    "Dominios y experiencias",
+  ],
+  visibility: ["Visibility", "Sichtbarkeit", "Visibilité", "Visibilidad"],
+  public: ["Public", "Öffentlich", "Public", "Público"],
+  private: [
+    "Private · merchant preview only",
+    "Privat · nur Händler-Vorschau",
+    "Privé · aperçu marchand",
+    "Privado · vista previa",
+  ],
+  visibilityHint: [
+    "Private channels are closed to shoppers and agents. Open a personal preview to inspect them without placing orders.",
+    "Private Kanäle sind für Kunden und Agenten gesperrt. Eine persönliche Vorschau erlaubt dir die Prüfung ohne echte Bestellungen.",
+    "Les canaux privés sont fermés aux clients et agents. L’aperçu personnel ne permet pas de commander.",
+    "Los canales privados están cerrados a clientes y agentes. La vista previa personal no permite pedidos.",
+  ],
+  previewPrivate: [
+    "Open personal preview",
+    "Persönliche Vorschau öffnen",
+    "Ouvrir mon aperçu",
+    "Abrir vista previa personal",
+  ],
+  previewHint: [
+    "15-minute preview. Purchases disabled. Saving the channel or signing out revokes access.",
+    "Vorschau für 15 Minuten. Käufe sind gesperrt. Kanaländerungen oder Abmelden beenden den Zugriff.",
+    "Aperçu de 15 minutes, achats désactivés. Enregistrer ou se déconnecter révoque l’accès.",
+    "Vista previa de 15 minutos sin compras. Guardar o cerrar sesión revoca el acceso.",
+  ],
+  previewError: [
+    "Preview could not be opened. Sign in with your personal merchant account and try again.",
+    "Vorschau konnte nicht geöffnet werden. Melde dich mit deinem persönlichen Händlerkonto an und versuche es erneut.",
+    "Impossible d’ouvrir l’aperçu. Connectez-vous avec votre compte marchand personnel.",
+    "No se pudo abrir la vista previa. Inicia sesión con tu cuenta personal.",
+  ],
+  readOnly: [
+    "Your role can view this channel. Editing requires settings write access.",
+    "Deine Rolle darf diesen Kanal ansehen. Zum Bearbeiten brauchst du Schreibrechte für Einstellungen.",
+    "Votre rôle peut consulter ce canal. La modification nécessite les droits de réglage.",
+    "Tu rol puede ver este canal. Editar requiere permisos de ajustes.",
+  ],
+  unchanged: [
+    "Everything is saved. Change a field to enable saving.",
+    "Alles gespeichert. Ändere ein Feld, um Speichern zu aktivieren.",
+    "Tout est enregistré. Modifiez un champ pour enregistrer.",
+    "Todo guardado. Cambia un campo para guardar.",
+  ],
+  editHint: [
+    "Edit the channel, then save your changes.",
+    "Bearbeite den Kanal und speichere deine Änderungen.",
+    "Modifiez puis enregistrez le canal.",
+    "Edita el canal y guarda los cambios.",
+  ],
   title: [
     "Sales channels",
     "Verkaufskanäle",

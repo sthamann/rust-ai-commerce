@@ -5,7 +5,7 @@ pub(crate) async fn policy(State(a): State<App>, h: HeaderMap) -> Result<Json<Va
     let t = tenant(&h)?;
     let channel = marketing::channel_id(&h);
     let (s, _) = commerce::scoped_config(&a, &t, channel).await?;
-    marketing::channel(&a, &t, channel, &language_context(&a, &h).await?.0).await?;
+    marketing::channel(&a, &h, channel, &language_context(&a, &h).await?.0).await?;
     Ok(Json(
         json!({"data":public_config(&s.legal),"policyVersion":version(&s.legal),"mainLocale":s.main_locale,"locales":s.locales,"salesChannelId":channel}),
     ))

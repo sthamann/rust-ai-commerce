@@ -5,6 +5,7 @@ import { shopScope } from "../../shared/api/shop-scope";
 import { useCompanyIdentity } from "./useCompanyIdentity";
 import { useStorefrontAnchors } from "./useStorefrontAnchors";
 import { useCatalog } from "./useCatalog";
+import { channelPreview } from "./ChannelPreview";
 import { useConsentedExperience } from "./useConsentedExperience";
 import { usePersonalization } from "./usePersonalization";
 
@@ -201,6 +202,7 @@ export function useStorefrontController({
           }
         if (!active) return;
         save(c);
+        if (channelPreview()) return;
         const exp = await shopApi<{ variant: string; headline?: string }>(
           "/api/experience",
           { session },

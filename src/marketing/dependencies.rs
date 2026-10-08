@@ -88,6 +88,10 @@ pub(super) async fn inspect(
         )],
         "channels" => &[
             (
+                "frontends",
+                "SELECT count(*) FROM hosted_frontends WHERE tenant=$1 AND channel=$2",
+            ),
+            (
                 "orders",
                 "SELECT count(*) FROM orders WHERE tenant=$1 AND data->>'salesChannelId'=$2",
             ),

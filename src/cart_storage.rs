@@ -15,7 +15,7 @@ pub(crate) async fn load_cart(a: &App, h: &HeaderMap) -> Result<StoredCart> {
             "Cart belongs to another sales channel".into(),
         ));
     }
-    marketing::channel(a, &c.tenant, &c.data.sales_channel, &c.data.locale).await?;
+    marketing::channel(a, h, &c.data.sales_channel, &c.data.locale).await?;
     Ok(c)
 }
 pub(crate) async fn new_cart(
@@ -110,7 +110,7 @@ pub(crate) async fn new_cart_context(
     let t = tenant(h)?;
     let locale = language_context(a, h).await?.0;
     let channel = marketing::channel_id(h);
-    marketing::channel(a, &t, channel, &locale).await?;
+    marketing::channel(a, h, channel, &locale).await?;
     let identity = if header(h, "x-customer-token").is_some() {
         Some(accounts::identity(a, h).await?.1)
     } else {

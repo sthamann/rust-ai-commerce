@@ -2,6 +2,7 @@
 use super::*;
 pub(crate) fn router() -> Router<App> {
     Router::new()
+        .merge(channel_preview::router())
         .merge(catalog::router())
         .merge(metadata::router())
         .route("/api/automation", get(list))
@@ -143,14 +144,13 @@ pub(crate) async fn save(
             }
             let c: Channel =
                 serde_json::from_value(data.clone()).map_err(|_| bad("Invalid channel"))?;
-            if id == "default"
-                && (!c.active || c.kind != "storefront" || c.locales != settings.locales)
-            {
+            if id == "default" && (c.kind != "storefront" || c.locales != settings.locales) {
                 return Err(bad(
-                    "Main channel must remain active and inherit shop languages",
+                    "Main channel must remain a storefront and inherit shop languages",
                 ));
             }
-            if !["storefront", "headless"].contains(&c.kind.as_str())
+            if !["public", "private"].contains(&c.visibility.as_str())
+                || !["storefront", "headless"].contains(&c.kind.as_str())
                 || c.locales.is_empty()
                 || c.locales.iter().any(|v| !settings.locales.contains(v))
                 || c.product_ids.len() > 500

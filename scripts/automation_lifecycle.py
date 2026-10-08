@@ -28,7 +28,8 @@ save('channels','default',edited,channel['revision'])
 call('/api/automation/channels/default',{'revision':channel['revision']},h,'DELETE',409)
 assert item('channels','default')['data']['name']==names
 call('/api/automation/channels/default',{'revision':channel['revision']+1},h,'DELETE',409)
-call('/api/automation/channels/default',{'revision':channel['revision']+1,'data':{**edited,'active':False}},h,'PUT',400)
+call('/api/automation/channels/default',{'revision':channel['revision']+1,'data':{**edited,'active':False}},h,'PUT')
+call('/api/automation/channels/default',{'revision':channel['revision']+2,'data':{**edited,'active':True}},h,'PUT')
 bh={'x-tenant':b['workspace'],'Authorization':'Bearer '+b['token']}
 rule={'name':names,'active':True,'condition':{'type':'alwaysValid'}}
 save('rules','test_target',rule)

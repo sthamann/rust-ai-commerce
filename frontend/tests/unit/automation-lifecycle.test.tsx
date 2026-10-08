@@ -27,7 +27,7 @@ const channel = {
     productIds: [],
   },
 };
-it("opens the persisted main channel for editing but protects its lifecycle", async () => {
+it("opens the persisted main channel for editing and pausing while protecting deletion", async () => {
   const user = userEvent.setup();
   const request = vi.fn(async (path: string) =>
     path === "/api/automation"
@@ -52,7 +52,7 @@ it("opens the persisted main channel for editing but protects its lifecycle", as
   expect(screen.getByLabelText("Channel name")).toHaveValue("Main shop");
   expect(
     screen.getByRole("button", { name: "Deactivate channel" }),
-  ).toBeDisabled();
+  ).toBeEnabled();
   expect(
     screen.queryByRole("button", { name: "Delete" }),
   ).not.toBeInTheDocument();

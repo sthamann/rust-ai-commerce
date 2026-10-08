@@ -3,7 +3,7 @@ use super::*;
 async fn rows(a: &App, h: &HeaderMap) -> Result<Vec<sqlx::postgres::PgRow>> {
     let t = tenant(h)?;
     let (locale, _) = language_context(a, h).await?;
-    let channel = marketing::channel(a, &t, marketing::channel_id(h), &locale).await?;
+    let channel = marketing::channel(a, h, marketing::channel_id(h), &locale).await?;
     let root = channel
         .and_then(|c| c.navigation_category_id)
         .unwrap_or_else(|| "catalog-root".into());

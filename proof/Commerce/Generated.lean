@@ -108,4 +108,7 @@ def notification_retry_admissible (rate_limited : Bool) (attempts : Nat) : Bool 
 def app_service_transport_admissible (clean_url : Bool) (https : Bool) (http : Bool) (loopback : Bool) (private_origin : Bool) : Bool :=
   (clean_url && (https || (http && (loopback || private_origin))))
 
+def channel_access_admissible (active : Bool) (is_private : Bool) (merchant : Bool) (preview : Bool) (mutating : Bool) : Bool :=
+  ((active && ((!is_private) || merchant)) || (preview && (!mutating)))
+
 end CommerceKernel

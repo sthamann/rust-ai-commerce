@@ -115,3 +115,30 @@ it.each([false, true])(
     expect(location.hash).toBe("#assistant");
   },
 );
+
+function PreviewProbe() {
+  const c = useStorefrontController({ onMerchant: vi.fn() });
+  return <output>{c.cart?.token ?? c.error}</output>;
+}
+it("loads the preview cart without assigning production experiments", async () => {
+  history.replaceState(null, "", "/?shop=unit-shop&channel=private&preview=1");
+  const fetcher = vi.fn(async (path: string) => ({
+    ok: true,
+    status: 200,
+    json: async () =>
+      path === "/store-api/checkout/cart"
+        ? cart
+        : path === "/store-api/company"
+          ? { data: {} }
+          : { elements: [product] },
+  }));
+  vi.stubGlobal("fetch", fetcher);
+  render(<PreviewProbe />, { wrapper: LocaleProvider });
+  await waitFor(() =>
+    expect(screen.getByRole("status")).toHaveTextContent(cart.token),
+  );
+  expect(fetcher.mock.calls.some(([path]) => path === "/api/experience")).toBe(
+    false,
+  );
+  history.replaceState(null, "", "/?shop=unit-shop");
+});

@@ -2,6 +2,8 @@
 export type FrontendConnection = {
   alias: string;
   channel: string;
+  experienceAlias?: string;
+  revision?: number;
   url: string;
   editorUrl?: string | null;
 };

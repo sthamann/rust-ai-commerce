@@ -129,3 +129,27 @@
       border-color 0.18s ease;
   }
 }
+.channel-preview-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: #eaf1ff;
+  color: #163568;
+  border-bottom: 1px solid #cbdcff;
+  flex-wrap: wrap;
+}
+.channel-preview-banner p {
+  margin: 0.35rem 0 0;
+  max-width: 65ch;
+  font-size: 0.9rem;
+}
+.channel-preview-banner button {
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #aac3f7;
+  background: white;
+  color: inherit;
+  cursor: pointer;
+}
