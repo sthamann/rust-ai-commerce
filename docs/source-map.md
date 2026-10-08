@@ -415,3 +415,7 @@ and existing-password verification. Migration 052 marks new broker accounts pend
 `sessions.rs` reports that state and `handoff.rs` enforces enrollment before Studio
 entry. `scripts/identity_broker.py` checks real login, ownership, replay and revocation.
 See [merchant password enrollment](experience-integration.md#merchant-password-enrollment-and-email-link-recovery).
+
+### Channel access and frontend bindings
+
+`marketing/channel_access.rs` is the shared Store API/UCP/MCP/hosted admission boundary; `channel_preview.rs` owns personal, one-use browser previews. `auth/middleware.rs` strips forged preview principals and adds the validated request marker consumed by catalog, cart, navigation and legal paths. `shop_domains/frontend_bindings.rs` owns revisioned tenant/Experience alias CRUD; it reuses `hosted_frontends`, not another domain registry. The private renderer remains in the private integration repository. See [channel management](channel-management.md) for behavior and limits.

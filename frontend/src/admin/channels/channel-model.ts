@@ -7,6 +7,7 @@ export type Channel = {
     name: Record<string, string>;
     kind: "storefront" | "headless";
     active: boolean;
+    visibility?: "public" | "private";
     locales: string[];
     productIds: string[];
     navigationCategoryId?: string | null;
@@ -25,7 +26,15 @@ export const freshChannel = (mainLocale: string): Channel => ({
   },
 });
 export function channelUrl(shop: string, channel: string) {
-  const url = new URL(storefrontURL(shop), location.origin);
+  const publicOrigin = location.hostname.endsWith(".vendune.ai")
+    ? "https://app.vendune.ai"
+    : location.origin;
+  const url = new URL(
+    channel === "default"
+      ? storefrontURL(shop)
+      : `/?shop=${encodeURIComponent(shop)}`,
+    channel === "default" ? location.origin : publicOrigin,
+  );
   url.searchParams.set("channel", channel);
   return url.origin === location.origin
     ? `${url.pathname}${url.search}#`

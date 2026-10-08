@@ -30,6 +30,9 @@ export default function SalesChannelsWorkspace({
     [error, setError] = useState("");
   useEffect(() => {
     let active = true;
+    setSelected(null);
+    setManage(false);
+    setError("");
     Promise.all([
       request("/api/automation"),
       request("/api/merchant/commerce"),
@@ -50,7 +53,7 @@ export default function SalesChannelsWorkspace({
     return () => {
       active = false;
     };
-  }, [request]);
+  }, [request, workspace]);
   const save = (channel: Channel) =>
     setChannels((old) => [...old.filter((c) => c.id !== channel.id), channel]);
   return (
@@ -94,7 +97,13 @@ export default function SalesChannelsWorkspace({
                   {c.data.kind === "headless" ? "API" : "V"}
                 </span>
                 <span className="soft-tag">
-                  {t(c.data.active ? "active" : "inactive")}
+                  {t(
+                    !c.data.active
+                      ? "inactive"
+                      : c.data.visibility === "private"
+                        ? "private"
+                        : "active",
+                  )}
                 </span>
                 {c.id === "default" && (
                   <span className="soft-tag">{t("default")}</span>

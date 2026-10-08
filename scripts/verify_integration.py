@@ -44,6 +44,9 @@ if not args.existing_database:
 with socket.socket() as probe:
     probe.bind(("127.0.0.1", 0))
     port = probe.getsockname()[1]
+with socket.socket() as probe:
+    probe.bind(("127.0.0.1", 0))
+    frontend_port = probe.getsockname()[1]
 env.update({
     "DATABASE_URL": urllib.parse.urlunsplit(url._replace(path="/" + name)),
     "DB_CONTAINER": args.container, "TEST_DB_CONTAINER": args.container,
@@ -63,6 +66,9 @@ env.update({
     "OLLAMA_URL": "http://127.0.0.1:1", "TEST_PERSONAL": "1",
     "PLATFORM_SECRET_KEY": "07"*32, "INFERENCE_ALLOW_LOOPBACK": "true",
     "SHOP_DOMAIN_SUFFIX": "vendune.ai",
+    "HOSTED_FRONTEND_ORIGIN": f"http://127.0.0.1:{frontend_port}",
+    "HOSTED_FRONTEND_KEY": "fixture-gateway-" + "x"*64,
+    "HOSTED_FRONTEND_EDITOR_URL": f"http://127.0.0.1:{frontend_port}/design/{{alias}}",
 })
 for key in ("LIVE_STUDIO", "LIVE_MODEL", "OPENAI_API_KEY", "ANTHROPIC_API_KEY"):
     env.pop(key, None)

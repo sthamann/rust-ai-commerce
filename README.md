@@ -325,3 +325,7 @@ Bring a reproducible commerce bug, a useful extension, a locale correction or a
 bounded Shopware port with original-source comparisons.
 [Contribute](CONTRIBUTING.md) · [Open an issue](https://github.com/sthamann/vendune/issues/new/choose) ·
 [Changelog](CHANGELOG.md).
+
+### Channel management and private previews
+
+Existing sales channels now support revisioned editing, pause/resume and public/private visibility, including the main channel. Each channel displays its connected domains and canonical Experience editing links. Additional addresses and disconnect operations reuse the tenant-owned frontend registry and dependency checks. Personal 15-minute previews are session-bound and cannot purchase. See [workflow, APIs, security and native Storyfront limits](docs/channel-management.md).

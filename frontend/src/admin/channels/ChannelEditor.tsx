@@ -1,10 +1,12 @@
 /** Guided channel creation/editing reuses the native revisioned API and shared content-language inheritance. */
-import AutomationDelete from "../automation/AutomationDelete";
+import ChannelActions from "./ChannelActions";
+import ChannelConnections from "./ChannelConnections";
+import ChannelCatalog from "./ChannelCatalog";
 import { useLifecycleText } from "../automation/lifecycle-i18n";
 import { useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
 import type { Category } from "../catalog/catalog-model";
-import { channelUrl, type Channel } from "./channel-model";
+import { type Channel } from "./channel-model";
 import { useChannelText } from "./channel-i18n";
 import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
 import ContentLanguagePicker from "../../shared/i18n/ContentLanguagePicker";
@@ -13,7 +15,7 @@ import { contentText } from "../../shared/i18n/content-language";
 import { useLocale } from "../../shared/i18n/i18n";
 import ConfirmDialog from "../../shared/ui/ConfirmDialog";
 import EntityHistory from "../../shared/history/EntityHistory";
-import ChannelProducts from "./ChannelProducts";
+
 import ChannelSettings from "./ChannelSettings";
 export default function ChannelEditor({
   initial,
@@ -49,6 +51,7 @@ export default function ChannelEditor({
     [busy, setBusy] = useState(false),
     [notice, setNotice] = useState(false),
     [scope, setScope] = useState(false),
+    [connections, setConnections] = useState(false),
     [scopeDirty, setScopeDirty] = useState(false),
     [confirm, setConfirm] = useState<"back" | "active" | null>(null);
   const confirmKey =
@@ -108,41 +111,55 @@ export default function ChannelEditor({
         {draft.revision > 0 && (
           <nav className="workbench-row">
             <button
-              className={!scope ? "studio-primary" : "studio-secondary"}
+              className={
+                !scope && !connections ? "studio-primary" : "studio-secondary"
+              }
               disabled={scopeDirty}
-              onClick={() => setScope(false)}
+              onClick={() => {
+                setScope(false);
+                setConnections(false);
+              }}
             >
               {t("basics")}
             </button>
             <button
               className={scope ? "studio-primary" : "studio-secondary"}
-              disabled={
-                draft.id === "default" ||
-                busy ||
-                JSON.stringify(draft) !== baseline
-              }
-              onClick={() => setScope(true)}
+              disabled={busy || JSON.stringify(draft) !== baseline}
+              onClick={() => {
+                setScope(true);
+                setConnections(false);
+              }}
             >
               {t("scope")}
             </button>
-            <a
-              className="studio-secondary"
-              href={channelUrl(workspace, draft.id)}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t("preview")} ↗
-            </a>
             <button
-              className="studio-secondary"
-              disabled={draft.id === "default" || !canWrite || dirty || busy}
-              onClick={() => setConfirm("active")}
+              className={connections ? "studio-primary" : "studio-secondary"}
+              disabled={dirty || busy}
+              onClick={() => {
+                setScope(false);
+                setConnections(true);
+              }}
             >
-              {t(draft.data.active ? "deactivate" : "activate")}
+              {t("connections")}
             </button>
+            <ChannelActions
+              draft={draft}
+              request={request}
+              workspace={workspace}
+              disabled={!canWrite || dirty || busy}
+              onToggle={() => setConfirm("active")}
+              onDeleted={onDeleted ?? onBack}
+            />
           </nav>
         )}
-        {scope ? (
+        {connections ? (
+          <ChannelConnections
+            mainLocale={mainLocale}
+            request={request}
+            channel={draft.id}
+            disabled={!canWrite || busy}
+          />
+        ) : scope ? (
           <ChannelSettings
             request={request}
             channel={draft.id}
@@ -160,7 +177,32 @@ export default function ChannelEditor({
                 ))}
               </ol>
             )}
+            <p className="channel-status-hint">
+              {t(
+                !canWrite
+                  ? "readOnly"
+                  : draft.revision && !dirty
+                    ? "unchanged"
+                    : "editHint",
+              )}
+            </p>
             <fieldset disabled={!canWrite || busy}>
+              <label className="channel-visibility">
+                {t("visibility")}
+                <select
+                  aria-label={t("visibility")}
+                  value={draft.data.visibility ?? "public"}
+                  onChange={(e) =>
+                    patch({
+                      visibility: e.target.value as "public" | "private",
+                    })
+                  }
+                >
+                  <option value="public">{t("public")}</option>
+                  <option value="private">{t("private")}</option>
+                </select>
+                <span>{t("visibilityHint")}</span>
+              </label>
               {(draft.revision > 0 || step === 0) && (
                 <>
                   <LocalizedField
@@ -203,83 +245,16 @@ export default function ChannelEditor({
               )}
               {(draft.revision > 0 || step === 1) && (
                 <>
-                  <h3>{t("languages")}</h3>
-                  <div className="workbench-row">
-                    {languages.map((language) => (
-                      <button
-                        type="button"
-                        key={language}
-                        disabled={draft.id === "default"}
-                        aria-pressed={draft.data.locales.includes(language)}
-                        className={
-                          draft.data.locales.includes(language)
-                            ? "studio-primary"
-                            : "studio-secondary"
-                        }
-                        onClick={() =>
-                          patch({
-                            locales: draft.data.locales.includes(language)
-                              ? draft.data.locales.filter((l) => l !== language)
-                              : [...draft.data.locales, language],
-                          })
-                        }
-                      >
-                        {new Intl.DisplayNames([locale], {
-                          type: "language",
-                        }).of(language) ?? language}
-                      </button>
-                    ))}
-                  </div>
-                  <label>
-                    {t("root")}
-                    <select
-                      value={draft.data.navigationCategoryId ?? ""}
-                      onChange={(e) =>
-                        patch({ navigationCategoryId: e.target.value || null })
-                      }
-                    >
-                      <option value="">{t("all")}</option>
-                      {categories.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {contentText(
-                            Object.fromEntries(
-                              Object.entries(c.data.translations).map(
-                                ([l, v]) => [l, v.name],
-                              ),
-                            ),
-                            locale,
-                            mainLocale,
-                          ) || c.id}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <div className="workbench-row">
-                    {[false, true].map((value) => (
-                      <button
-                        type="button"
-                        key={String(value)}
-                        className={
-                          selected === value
-                            ? "studio-primary"
-                            : "studio-secondary"
-                        }
-                        onClick={() => {
-                          setSelected(value);
-                          if (!value) patch({ productIds: [] });
-                        }}
-                      >
-                        {t(value ? "selected" : "all")}
-                      </button>
-                    ))}
-                  </div>
-                  {selected && (
-                    <ChannelProducts
-                      request={request}
-                      value={draft.data.productIds}
-                      onChange={(productIds) => patch({ productIds })}
-                    />
-                  )}
+                  <ChannelCatalog
+                    draft={draft}
+                    languages={languages}
+                    categories={categories}
+                    mainLocale={mainLocale}
+                    selected={selected}
+                    setSelected={setSelected}
+                    patch={patch}
+                    request={request}
+                  />
                 </>
               )}
               {!draft.revision && step === 2 && (
@@ -365,14 +340,6 @@ export default function ChannelEditor({
           </>
         )}
         {draft.id === "default" && <p>{life("inheritLanguages")}</p>}
-        <AutomationDelete
-          request={request}
-          kind="channels"
-          id={draft.id}
-          revision={draft.revision}
-          disabled={!canWrite || dirty || busy}
-          onDeleted={onDeleted ?? onBack}
-        />
         {notice && <p role="status">{t("saved")}</p>}
         {error && <p role="alert">{error}</p>}
         {confirm && (

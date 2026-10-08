@@ -289,4 +289,22 @@ theorem currency_context_exact (enabled configured fresh : Bool) :
   cases enabled <;> cases configured <;> cases fresh <;> simp [currency_context_admissible]
 theorem currency_context_stale_denied (enabled configured : Bool) :
     currency_context_admissible enabled configured false = false := by simp [currency_context_admissible]
+
+theorem channel_private_requires_identity (active merchant preview mutating : Bool)
+    (h : channel_access_admissible active true merchant preview mutating = true) :
+    merchant = true ∨ (preview = true ∧ mutating = false) := by
+  cases active <;> cases merchant <;> cases preview <;> cases mutating <;> simp_all [channel_access_admissible]
+theorem channel_paused_requires_preview (is_private merchant preview mutating : Bool)
+    (h : channel_access_admissible false is_private merchant preview mutating = true) :
+    preview = true ∧ mutating = false := by
+  cases is_private <;> cases merchant <;> cases preview <;> cases mutating <;> simp_all [channel_access_admissible]
+theorem channel_preview_no_mutation (is_private : Bool) :
+    channel_access_admissible false is_private false true true = false := by
+  cases is_private <;> rfl
+
+theorem channel_access_exact (active is_private merchant preview mutating : Bool) :
+    channel_access_admissible active is_private merchant preview mutating =
+      ((active && !is_private) || (active && merchant) || (preview && !mutating)) := by
+  cases active <;> cases is_private <;> cases merchant <;> cases preview <;> cases mutating <;> rfl
+
 end CommerceKernel

@@ -32,6 +32,7 @@ import StorefrontHome from "./StorefrontHome";
 import { useStorefrontController } from "./useStorefrontController";
 import "../styles/storefront-polish.css";
 import "../styles/experience-polish.css";
+import ChannelPreview, { channelPreview } from "./ChannelPreview";
 export default function Storefront(props: { onMerchant: () => void }) {
   const { co } = useCompanyText();
   const { l } = useLegalText();
@@ -70,14 +71,17 @@ export default function Storefront(props: { onMerchant: () => void }) {
             scopeKey={`${shopTenant}:${salesChannel}`}
           >
             <div className="shop">
-              <ShopAnalytics
-                shop={shopTenant}
-                channel={salesChannel}
-                products={products}
-                cart={cart}
-                bag={bag}
-                order={order}
-              />
+              <ChannelPreview />
+              {!channelPreview() && (
+                <ShopAnalytics
+                  shop={shopTenant}
+                  channel={salesChannel}
+                  products={products}
+                  cart={cart}
+                  bag={bag}
+                  order={order}
+                />
+              )}
               {new URLSearchParams(location.search).get("sandbox") === "1" && (
                 <div className="sandbox-banner">
                   {w("stage")} · {w("exclusion")}
@@ -152,7 +156,7 @@ export default function Storefront(props: { onMerchant: () => void }) {
                 <p>{s("simulation")}</p>
                 <a href="https://github.com/sthamann/vendune">GitHub ↗</a>
               </footer>
-              {account && (
+              {account && !channelPreview() && (
                 <CustomerAccount
                   cart={cart}
                   onCart={save}
@@ -169,6 +173,7 @@ export default function Storefront(props: { onMerchant: () => void }) {
                   onQuantity={quantity}
                   onSelection={selection}
                   onCart={save}
+                  preview={channelPreview()}
                   onBuy={buy}
                   onCoupons={async (codes) => {
                     const result = await shopApi<Cart>(

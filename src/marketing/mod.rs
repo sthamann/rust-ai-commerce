@@ -1,6 +1,8 @@
 //! Native rule conditions, coupons, durable flows and headless/storefront sales-channel boundaries.
 use crate::*;
 mod app_flows;
+pub(crate) mod channel_access;
+pub(crate) mod channel_preview;
 mod channels;
 use app_flows::*;
 mod catalog;

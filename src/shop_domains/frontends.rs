@@ -2,79 +2,15 @@
 use crate::*;
 use axum::{extract::Request, middleware::Next};
 pub(crate) fn router() -> Router<App> {
-    Router::new().route("/api/settings/frontends", get(list).put(bind))
-}
-async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
-    auth::permit(&h, "settings.read")?;
-    let rows =
-        sqlx::query("SELECT alias,channel FROM hosted_frontends WHERE tenant=$1 ORDER BY alias")
-            .bind(tenant(&h)?)
-            .fetch_all(&a.db)
-            .await?;
-    Ok(Json(
-        json!({"frontends":rows.iter().map(|r|json!({"alias":r.get::<String,_>("alias"),"channel":r.get::<String,_>("channel"),"url":super::links(&r.get::<String,_>("alias"))["storefrontUrl"],"editorUrl":super::frontend_editor::url(&r.get::<String,_>("alias"),env::var("HOSTED_FRONTEND_EDITOR_URL").ok().as_deref())})).collect::<Vec<_>>()}),
-    ))
-}
-async fn bind(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Result<Json<Value>> {
-    auth::permit(&h, "settings.write")?;
-    let t = tenant(&h)?;
-    let alias = v["alias"]
-        .as_str()
-        .ok_or(bad("Frontend address required"))?;
-    validate_tenant(alias)?;
-    if [
-        "app",
-        "www",
-        "api",
-        "admin",
-        "mail",
-        "platform",
-        "experience",
-    ]
-    .contains(&alias)
-    {
-        return Err(bad("Reserved address"));
-    }
-    let channel = v["channel"]
-        .as_str()
-        .filter(|s| apps::identifier(s))
-        .ok_or(bad("Channel required"))?;
-    let origin = env::var("HOSTED_FRONTEND_ORIGIN").map_err(|_| {
-        Error(
-            StatusCode::SERVICE_UNAVAILABLE,
-            "Hosted frontend service is not configured".into(),
+    Router::new()
+        .route(
+            "/api/settings/frontends",
+            get(super::frontend_bindings::list).put(super::frontend_bindings::bind),
         )
-    })?;
-    if !valid_origin(&origin) {
-        return Err(bad("Operator frontend origin is invalid"));
-    }
-    let mut tx = a.db.begin().await?;
-    sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,43))")
-        .bind(alias)
-        .execute(&mut *tx)
-        .await?;
-    let occupied: bool =
-        sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM tenants WHERE id=$1 AND id<>$2)")
-            .bind(alias)
-            .bind(&t)
-            .fetch_one(&mut *tx)
-            .await?;
-    if occupied {
-        return Err(conflict("Address belongs to another shop"));
-    }
-    let available:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM sales_channels WHERE tenant=$1 AND id=$2 AND data->>'active'='true')").bind(&t).bind(channel).fetch_one(&mut *tx).await?;
-    if !available {
-        return Err(bad("Active channel required"));
-    }
-    let n=sqlx::query("INSERT INTO hosted_frontends(alias,tenant,channel,origin) VALUES($1,$2,$3,$4) ON CONFLICT(alias) DO UPDATE SET channel=excluded.channel,origin=excluded.origin WHERE hosted_frontends.tenant=excluded.tenant")
-        .bind(alias).bind(&t).bind(channel).bind(origin).execute(&mut *tx).await?.rows_affected();
-    if n == 0 {
-        return Err(conflict("Address belongs to another shop"));
-    }
-    tx.commit().await?;
-    Ok(Json(
-        json!({"alias":alias,"channel":channel,"urls":super::links(alias)}),
-    ))
+        .route(
+            "/api/settings/frontends/{alias}",
+            axum::routing::delete(super::frontend_bindings::remove),
+        )
 }
 pub(super) fn valid_origin(s: &str) -> bool {
     reqwest::Url::parse(s).is_ok_and(|u| {
@@ -88,7 +24,8 @@ pub(super) fn valid_origin(s: &str) -> bool {
     })
 }
 pub(crate) fn public_path(path: &str) -> bool {
-    if path.starts_with("/api/")
+    if path.starts_with("/channel-preview/")
+        || path.starts_with("/api/")
         || path.starts_with("/store-api/")
         || path.starts_with("/ucp/")
         || path == "/mcp"
@@ -113,7 +50,7 @@ pub(crate) async fn serve(State(a): State<App>, request: Request, next: Next) ->
     if !public_path(request.uri().path()) {
         return next.run(request).await;
     }
-    let row = match sqlx::query("SELECT f.tenant,f.channel,f.origin,t.status,c.data->>'active' AS active FROM hosted_frontends f JOIN tenants t ON t.id=f.tenant JOIN sales_channels c ON c.tenant=f.tenant AND c.id=f.channel WHERE f.alias=$1")
+    let row = match sqlx::query("SELECT f.tenant,f.channel,f.origin,f.experience_alias,t.status,c.data->>'active' AS active FROM hosted_frontends f JOIN tenants t ON t.id=f.tenant JOIN sales_channels c ON c.tenant=f.tenant AND c.id=f.channel WHERE f.alias=$1")
         .bind(&alias)
         .fetch_optional(&a.db)
         .await
@@ -128,9 +65,7 @@ pub(crate) async fn serve(State(a): State<App>, request: Request, next: Next) ->
             .into_response();
         }
     };
-    if row.get::<String, _>("status") != "active"
-        || row.get::<Option<String>, _>("active").as_deref() != Some("true")
-    {
+    if row.get::<String, _>("status") != "active" {
         return Error(
             StatusCode::SERVICE_UNAVAILABLE,
             "Shop or sales channel is unavailable".into(),
@@ -177,7 +112,8 @@ async fn proxy(
         )
         .body(bytes)
         .header("x-frontend-key", key)
-        .header("x-frontend-alias", alias)
+        .header("x-frontend-alias", row.get::<String, _>("experience_alias"))
+        .header("x-frontend-host", alias)
         .header("x-frontend-tenant", row.get::<String, _>("tenant"))
         .header("x-frontend-channel", row.get::<String, _>("channel"));
     for key in [
@@ -195,6 +131,12 @@ async fn proxy(
         if let Some(value) = parts.headers.get(key) {
             req = req.header(key, value);
         }
+    }
+    if let Some(preview) = header(&parts.headers, "x-channel-preview")
+        .map(str::to_owned)
+        .or_else(|| crate::marketing::channel_preview::cookie(&parts.headers))
+    {
+        req = req.header("x-channel-preview", preview);
     }
     if let Some(cookie) = super::frontend_transport::request_cookie(&parts.headers) {
         req = req.header("cookie", cookie);

@@ -220,10 +220,15 @@ pub(crate) async fn release(
                 .await?;
             }
             if kind == "channel"
-                && unit == "default"
-                && (current[key]["active"] != true || current[key]["kind"] != "storefront")
+                && !matches!(
+                    current[key]["visibility"].as_str(),
+                    None | Some("public" | "private")
+                )
             {
-                return Err(bad("Main channel must remain active and storefront"));
+                return Err(bad("Invalid channel visibility"));
+            }
+            if kind == "channel" && unit == "default" && current[key]["kind"] != "storefront" {
+                return Err(bad("Main channel must remain storefront"));
             }
         }
     }

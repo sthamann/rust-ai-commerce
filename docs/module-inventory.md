@@ -220,6 +220,8 @@ This lists every checked-in source module in these roots, including files with n
 | [src/main.rs](../src/main.rs) | Process lifetime only. See docs/source-map.md for domain responsibilities. |
 | [src/marketing/app_flows.rs](../src/marketing/app_flows.rs) | App flow dispatch uses the same permission/schema gateway as HTTP/MCP, with a stable job key. |
 | [src/marketing/catalog.rs](../src/marketing/catalog.rs) | Native condition metadata, app action/event discovery and source-compatible condition import. |
+| [src/marketing/channel_access.rs](../src/marketing/channel_access.rs) | Single admission boundary for Store API, UCP/MCP and hosted storefronts; previews cannot purchase. |
+| [src/marketing/channel_preview.rs](../src/marketing/channel_preview.rs) | One-use preview handoff becomes a host-only cookie, bound to current session, membership and channel revision. |
 | [src/marketing/channels.rs](../src/marketing/channels.rs) | Sales channels share a merchant tenant but bind independent catalog visibility, locale and cart identity. |
 | [src/marketing/condition_gateway.rs](../src/marketing/condition_gateway.rs) | Shared rule admission and authoritative context for tax and other native consumers. |
 | [src/marketing/customer_facts.rs](../src/marketing/customer_facts.rs) | Customer rule authority is loaded by tenant and stable customer ID, with aggregate history and calendar age. |
@@ -313,6 +315,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/rule_comparison.rs](../src/rule_comparison.rs) | Behavioral port of Shopware 6.7.14.2 RuleComparison::numeric and FloatComparator's exact epsilon boundaries. |
 | [src/sandbox.rs](../src/sandbox.rs) | Pure Wasmtime guest execution with bounded resources and no host imports. |
 | [src/seed.rs](../src/seed.rs) | Idempotent synthetic template catalogue initialization. |
+| [src/shop_domains/frontend_bindings.rs](../src/shop_domains/frontend_bindings.rs) | Revisioned aliases point to an existing tenant-owned Experience; origin selection remains operator-only. |
 | [src/shop_domains/frontend_editor.rs](../src/shop_domains/frontend_editor.rs) | Operator-owned editor navigation for hosted frontends; no private editor or identity implementation. |
 | [src/shop_domains/frontend_transport.rs](../src/shop_domains/frontend_transport.rs) | Stream generic hosted frontend responses and admit only explicitly allowlisted opaque shopper cookies. |
 | [src/shop_domains/frontends.rs](../src/shop_domains/frontends.rs) | Generic operator-allowlisted frontend mounts. Host scope is derived from storage, never client headers. |
@@ -413,12 +416,16 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/catalog/variant-family.ts](../frontend/src/admin/catalog/variant-family.ts) | Cursor-based family lookup for duplicate review, bounded independently of the 50-row creation limit. |
 | [frontend/src/admin/catalog/variant-i18n.ts](../frontend/src/admin/catalog/variant-i18n.ts) | Guided variant creation and editing vocabulary; content still follows shop language inheritance. |
 | [frontend/src/admin/catalog/variant-model.ts](../frontend/src/admin/catalog/variant-model.ts) | Bounded option combinations and metadata-free child payloads shared by the guided variant creator. |
+| [frontend/src/admin/channels/ChannelActions.tsx](../frontend/src/admin/channels/ChannelActions.tsx) | Lifecycle actions use shared dependency deletion and one-use preview admission. |
+| [frontend/src/admin/channels/ChannelCatalog.tsx](../frontend/src/admin/channels/ChannelCatalog.tsx) | Catalog/language controls share the channel schema and content-language fallback. |
+| [frontend/src/admin/channels/ChannelConnections.tsx](../frontend/src/admin/channels/ChannelConnections.tsx) | Uses the existing tenant-owned frontend registry, not a parallel domain or Experience store. |
 | [frontend/src/admin/channels/ChannelEditor.tsx](../frontend/src/admin/channels/ChannelEditor.tsx) | Guided channel creation/editing reuses the native revisioned API and shared content-language inheritance. |
 | [frontend/src/admin/channels/ChannelProducts.tsx](../frontend/src/admin/channels/ChannelProducts.tsx) | Search-based channel product assignment, preserving selected IDs across server-filtered result pages. |
 | [frontend/src/admin/channels/ChannelSettings.tsx](../frontend/src/admin/channels/ChannelSettings.tsx) | Channel settings embed existing revision-aware identity and checkout editors with the channel selected. |
 | [frontend/src/admin/channels/SalesChannelsWorkspace.tsx](../frontend/src/admin/channels/SalesChannelsWorkspace.tsx) | Discover and create channels separately from rules; shared settings and independent SaaS shops remain explicit. |
 | [frontend/src/admin/channels/channel-i18n.ts](../frontend/src/admin/channels/channel-i18n.ts) | Sales-channel onboarding and inherited settings vocabulary in all interface languages. |
 | [frontend/src/admin/channels/channel-model.ts](../frontend/src/admin/channels/channel-model.ts) | Existing sales-channel contract and safe storefront URLs; independent tenants remain a separate concept. |
+| [frontend/src/admin/channels/connection-i18n.ts](../frontend/src/admin/channels/connection-i18n.ts) | Domain lifecycle copy in every supported Studio language. |
 | [frontend/src/admin/customers/CustomersManager.tsx](../frontend/src/admin/customers/CustomersManager.tsx) | CRM list and editable customer profile with linked order history. |
 | [frontend/src/admin/dashboard/OverviewView.tsx](../frontend/src/admin/dashboard/OverviewView.tsx) | OverviewView renders verified shop state and typed user actions. |
 | [frontend/src/admin/developer/AppActionAccess.tsx](../frontend/src/admin/developer/AppActionAccess.tsx) | Team permissions and MCP visibility are independent from public storefront reads and AI grounding. |
@@ -701,6 +708,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/legal/PrivacyProvider.tsx](../frontend/src/storefront/legal/PrivacyProvider.tsx) | Unified affirmative consent: server-validated receipt, channel boundaries, expiry and policy revalidation. |
 | [frontend/src/storefront/legal/ProductSafety.tsx](../frontend/src/storefront/legal/ProductSafety.tsx) | Explicit PDP safety/sector facts; no generated warning, certification or origin is invented. |
 | [frontend/src/storefront/shell/CatalogNavigation.tsx](../frontend/src/storefront/shell/CatalogNavigation.tsx) | Public category navigation uses the same tenant/channel tree as the listing API, with translated names. |
+| [frontend/src/storefront/shell/ChannelPreview.tsx](../frontend/src/storefront/shell/ChannelPreview.tsx) | Explain the server-authorized, session-bound preview and clear its HttpOnly cookie on exit. |
 | [frontend/src/storefront/shell/CollectionView.tsx](../frontend/src/storefront/shell/CollectionView.tsx) | CollectionView: storefront view composed from the scoped cart/controller. |
 | [frontend/src/storefront/shell/CompanyLegalPage.tsx](../frontend/src/storefront/shell/CompanyLegalPage.tsx) | Directly reachable channel legal page; renders only the server's explicit public projection as text. |
 | [frontend/src/storefront/shell/ConciergeView.tsx](../frontend/src/storefront/shell/ConciergeView.tsx) | ConciergeView: storefront view composed from the scoped cart/controller. |
@@ -711,6 +719,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/shell/StorefrontHome.tsx](../frontend/src/storefront/shell/StorefrontHome.tsx) | StorefrontHome: storefront view composed from the scoped cart/controller. |
 | [frontend/src/storefront/shell/StorefrontLanguage.tsx](../frontend/src/storefront/shell/StorefrontLanguage.tsx) | Shop-configured content languages, including custom locales; the interface keeps its supported language vocabulary. |
 | [frontend/src/storefront/shell/cart-commands.ts](../frontend/src/storefront/shell/cart-commands.ts) | Revision-bound quantity update, preserving SKU minimum and server pricing authority. |
+| [frontend/src/storefront/shell/channel-preview-i18n.ts](../frontend/src/storefront/shell/channel-preview-i18n.ts) | Personal preview copy in every supported language; exported through the shared translation catalogue. |
 | [frontend/src/storefront/shell/useCatalog.ts](../frontend/src/storefront/shell/useCatalog.ts) | Cursor catalogue loading, debounced filters and stale-response protection. |
 | [frontend/src/storefront/shell/useCompanyIdentity.ts](../frontend/src/storefront/shell/useCompanyIdentity.ts) | Channel-scoped public brand/legal identity; stale responses cannot leak across tenants or languages. |
 | [frontend/src/storefront/shell/useConsentedExperience.ts](../frontend/src/storefront/shell/useConsentedExperience.ts) | Assign experiments only after current personalization consent; discard stale responses on withdrawal. |
@@ -767,6 +776,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/branding.py](../scripts/branding.py) | Keep the public Vendune identity, shared vector assets and executable package/deployment paths consistent. |
 | [scripts/build_site.py](../scripts/build_site.py) | Build marketing pages and the complete Markdown documentation for GitHub Pages. |
 | [scripts/catalog_management.py](../scripts/catalog_management.py) | Real HTTP/PostgreSQL catalog creation, categories, multilingual editor, visibility and staging regressions. Synthetic isolated shops only. |
+| [scripts/channel_management.py](../scripts/channel_management.py) | Isolated HTTP regressions for revisioned channels, domain aliases and session-bound private previews; no providers. |
 | [scripts/check_site.py](../scripts/check_site.py) | Check the generated documentation's links and discovery metadata. |
 | [scripts/checkout_handoff.py](../scripts/checkout_handoff.py) | Exercise actual PostgreSQL checkout transfer, isolation, replay and durable ordering. |
 | [scripts/checkout_review.py](../scripts/checkout_review.py) | Real SQL checkout rejects unreviewed changes without orders or stock writes; synthetic fixture only. |

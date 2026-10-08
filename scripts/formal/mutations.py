@@ -5,6 +5,9 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("channel_access_admissible","!is_private || merchant","true"),
+ ("channel_access_admissible","preview && !mutating","preview"),
+ ("channel_access_admissible","active &&","true &&"),
  ("currency_context_admissible","enabled &&","true &&"),
  ("currency_context_admissible","&& fresh","&& true"),
  ("app_service_transport_admissible","clean_url &&","true &&"),

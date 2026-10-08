@@ -213,3 +213,14 @@ pub fn app_service_transport_admissible(
 ) -> bool {
     clean_url && (https || http && (loopback || private_origin))
 }
+
+/// Preview grants admit only simulations; public requests require an active channel and private requests a current merchant.
+pub fn channel_access_admissible(
+    active: bool,
+    is_private: bool,
+    merchant: bool,
+    preview: bool,
+    mutating: bool,
+) -> bool {
+    active && (!is_private || merchant) || preview && !mutating
+}

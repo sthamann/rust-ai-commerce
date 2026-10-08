@@ -109,7 +109,7 @@ async fn register(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> R
     }
     let locale = language_context(&a, &h).await?.0;
     let channel = marketing::channel_id(&h);
-    marketing::channel(&a, &t, channel, &locale).await?;
+    marketing::channel(&a, &h, channel, &locale).await?;
     sqlx::query(
         "UPDATE customers SET language_id=$1,sales_channel_id=$2,company=NULLIF($5,'') WHERE tenant=$3 AND email=$4",
     )
