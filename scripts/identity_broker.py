@@ -26,7 +26,10 @@ def call(path,body=None,headers=None,method=None,expected=200):
     req=urllib.request.Request(base+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(headers or {})},method=method or ('GET' if body is None else 'POST'))
     try:
         with urllib.request.urlopen(req,timeout=45) as r:code,data=r.status,json.load(r)
-    except urllib.error.HTTPError as e:code,data=e.code,json.load(e)
+    except urllib.error.HTTPError as e:
+        code=e.code;raw=e.read()
+        try:data=json.loads(raw)
+        except ValueError:data={'nonJsonResponse':raw[:200].decode(errors='replace')}
     assert code==expected,(path,code,expected,data)
     return data
 
@@ -58,6 +61,28 @@ with (ROOT/'artifacts/identity-broker-server.log').open('w') as log:
         call(path,signed(path,'second-'+suffix,workspaceId=shop,workspaceName='Foreign'),expected=409)
         call(path,signed(path,subject,email='changed-'+suffix+'@example.test',workspaceId=shop,workspaceName='Test'),expected=409)
         check('Foreign shop takeover and silent identity-email relinking fail; opt-out produces an empty catalog')
+        cred='/api/identity/credentials';secret='Synthetic-merchant-password-123'
+        assert one['passwordSetupRequired'] is True
+        call('/api/auth/handoff',{},mh,expected=403)
+        call(cred,signed(cred,subject,workspaceId=other,action='set-password',password=secret),expected=401)
+        call(cred,signed(cred,subject,email='wrong@example.test',workspaceId=shop,action='set-password',password=secret),expected=401)
+        call(cred,signed(cred,subject,workspaceId=shop,action='set-password',password='short'),expected=400)
+        call(cred,signed(path,subject,workspaceId=shop,action='set-password',password=secret),expected=401)
+        enroll=signed(cred,subject,workspaceId=shop,action='set-password',password=secret)
+        one=call(cred,enroll);assert one['passwordSetupRequired'] is False
+        call(cred,enroll,expected=401)
+        call('/api/auth/session',headers=mh,expected=401)
+        mh={'x-tenant':shop,'Authorization':'Bearer '+one['token']}
+        account=call('/api/auth/login',{'email':subject+'@example.test','password':secret})
+        assert account['user']['id']==one['user']['id']
+        call(cred,signed(cred,subject,workspaceId=shop,action='verify-password',password='Wrong-password-123'),expected=401)
+        same=call(cred,signed(cred,subject,workspaceId=shop,action='verify-password',password=secret))
+        assert same['user']['id']==one['user']['id']
+        # Adding another shop through the broker must preserve an existing chosen password.
+        again=call(path,signed(path,subject,workspaceId=shop,workspaceName='Existing'))
+        assert again['passwordSetupRequired'] is False
+        assert call('/api/auth/login',{'email':subject+'@example.test','password':secret})['user']['id']==one['user']['id']
+        check('Explicit credential setup enables real login, revokes old sessions and rejects foreign ownership, bad signatures, replay and wrong passwords')
         # Stable import IDs must preserve normal edits and reject accidental overwrite.
         stable=str(uuid.uuid4())
         product={'id':stable,'revision':0,'translations':{'en':{'name':'Imported product','description':'Merchant fact'}},'extra':{},'catalog':{'active':True,'productNumber':stable,'parentId':None,'options':{},'categoryIds':[]},'commerce':{'price':12.5,'taxRate':19,'stock':4,'minPurchase':1,'purchaseSteps':1,'maxPurchase':None,'deliveryDays':3,'listPrice':None,'advancedPrices':[],'media':[],'properties':{}}}
@@ -71,6 +96,10 @@ with (ROOT/'artifacts/identity-broker-server.log').open('w') as log:
         call(infer,signed(infer,subject,system='Test',input='Test',schema={'type':'object'}),expected=400)
         call(infer,signed(infer,subject,system='Test',input='Test',schema={'type':'object'},images=['data:image/png;base64,'+'A'*100000]),expected=400)
         check('Stable UUID imports cannot overwrite existing products or expose foreign editors; bounded vision assertions retain schema admission')
+        old_ticket=call('/api/auth/handoff',{},mh)['ticket']
+        one=call(cred,signed(cred,subject,workspaceId=shop,action='set-password',password=secret+'-new'))
+        call('/api/auth/redeem',{'ticket':old_ticket},expected=401)
+        mh={'x-tenant':shop,'Authorization':'Bearer '+one['token']}
         ticket=call('/api/auth/handoff',{},mh)['ticket'];assert len(ticket)==64
         session=call('/api/auth/redeem',{'ticket':ticket});assert session['user']['id']==one['user']['id']
         call('/api/auth/redeem',{'ticket':ticket},expected=401)
@@ -98,7 +127,7 @@ with (ROOT/'artifacts/identity-broker-server.log').open('w') as log:
         call(path,signed(path,'new-'+suffix,workspaceId=alias,workspaceName='Reserved alias'),expected=409)
         check('Hosted addresses are tenant-bound, forbid collisions, strip credentials and do not proxy merchant APIs')
         import subprocess
-        subprocess.run(['docker','exec',os.environ['DB_CONTAINER'],'psql','-U','commerce','-d',os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1','-c',f"UPDATE tenants SET status='paused' WHERE id='{shop}'"],check=True,capture_output=True)
+        subprocess.run(['docker','exec',os.environ['DB_CONTAINER'],'psql','-U',os.environ.get('TEST_DATABASE_USER','commerce'),'-d',os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1','-c',f"UPDATE tenants SET status='paused' WHERE id='{shop}'"],check=True,capture_output=True)
         call('/',headers=host,expected=503)
         check('Paused shops cannot remain available through a separately mounted frontend')
         stop(server);server=serve(env,base,log)

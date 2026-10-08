@@ -197,4 +197,8 @@ pub(super) const SCHEMA: &[(&str, &str)] = &[
         "051-multi-currency-ledger",
         include_str!("../../migrations/051-multi-currency-ledger.sql"),
     ),
+    (
+        "052-merchant-credentials",
+        include_str!("../../migrations/052-merchant-credentials.sql"),
+    ),
 ];

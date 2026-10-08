@@ -34,3 +34,46 @@ Only public assets/pages and allowlisted `/experience-api/context` and `/experie
 | `scripts/identity_broker.py` | Real HTTP/PostgreSQL signatures, foreign ownership, empty/fashion provisioning, handoff, mounts, paused shop and restart regressions |
 
 Hermetic provider tests and these integration checks do not demonstrate Google/Apple production OAuth, actual email delivery or a publicly deployed private experience service. Those require configured credentials and observed external results. New adapters remain explicitly unproved in the formal inventory; existing extracted policies retain their checks.
+
+## Merchant password enrollment and email-link recovery
+
+Migration 052 adds `merchant_users.password_initialized`. Existing accounts keep their
+credential and are marked initialized; newly broker-created accounts explicitly start
+uninitialized. Provisioning/import workers may use their server-only sessions, but a
+Studio handoff cannot be created or redeemed until the merchant chooses a password.
+`user_data` exposes `passwordSetupRequired` so the private integration can route its
+workspace button to enrollment instead of attempting a handoff.
+
+`POST /api/identity/credentials` accepts only the existing operator-configured broker's
+route-bound HMAC assertion, verified email, subject, audience, expiry and one-use nonce.
+The asserted identity must already link to that exact canonical email/account and an
+active owner membership in the requested shop. It does not create users, link a new
+identity, assign roles or trust browser-supplied email/shop claims.
+
+- `set-password`: explicit enrollment/recovery; native Argon2 hashing and the existing
+  12–128-byte password validator. A canonical-account lock serializes credential changes.
+  Password replacement marks enrollment complete and revokes old merchant sessions and
+  unused Studio handoffs before issuing a new personal session.
+- `verify-password`: verifies the existing hash and leaves it unchanged. No email-link
+  handler should select password replacement implicitly for an existing-password login.
+
+The private integration owns the 24-hour email ticket, scanner-safe GET, bounded
+same-origin form POST, confirmation and localized errors. It consumes the ticket in a
+transaction before invoking the broker and restores it if the handoff fails. This is
+not a distributed transaction: a lost response can leave a chosen password committed in
+Rust while the email ticket remains retryable. Retrying or using existing-password login
+recovers that situation; a provider password is never logged or stored by Experience.
+
+Legacy randomly generated broker passwords cannot be distinguished reliably from human
+passwords by inspecting Argon2 hashes. Existing email links therefore offer explicit
+password setup/recovery alongside existing-password verification; the migration never
+silently resets an existing hash. Email-code/OAuth authentication remains supported by
+the private Experience workspace. The broker is trusted account-recovery authority;
+protect its key as carefully as platform credentials.
+
+`src/auth/broker_credentials.rs`, `broker.rs`, `sessions.rs`, `handoff.rs`, the public
+route allowlist and migration 052 share this behavior. `scripts/identity_broker.py`
+exercises real PostgreSQL/HTTP setup, ordinary password login, wrong-password refusal,
+foreign identity/shop denial, signature/replay rejection, session/handoff invalidation
+and preservation of chosen credentials across further broker exchanges. These SQL and
+network adapters remain **unproved**; no new whole-account Lean guarantee is claimed.

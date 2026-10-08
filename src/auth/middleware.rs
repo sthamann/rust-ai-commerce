@@ -173,6 +173,7 @@ async fn authenticate_scoped(State(a): State<App>, mut request: Request, next: N
         "/api/auth/accept",
         "/api/auth/redeem",
         "/api/identity/exchange",
+        "/api/identity/credentials",
         "/api/identity/inference",
         "/api/experience",
         "/api/concierge",

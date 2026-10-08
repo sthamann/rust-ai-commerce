@@ -552,8 +552,13 @@
     },
     "src/auth/broker.rs": {
       "status": "unproved",
-      "sha256": "3957a67fd2cb93ddcca7337abac750f0fc442f216c0f4838bfab00f37d145dee",
-      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
+      "sha256": "ca983d240e8a44659403837f33f63ae34536517ce18bb5f43e94845b70345bab",
+      "review": "Reviewed signed credential route, linked-email owner lock, explicit password verification/recovery, session and handoff revocation, enrollment migration and real PostgreSQL identity regressions; SQL/network adapters remain unproved."
+    },
+    "src/auth/broker_credentials.rs": {
+      "status": "unproved",
+      "sha256": "fcf54fb766cfcd2cd2106b89097a7562791b15e1c394316449749d66ca1be325",
+      "review": "Reviewed signed credential route, linked-email owner lock, explicit password verification/recovery, session and handoff revocation, enrollment migration and real PostgreSQL identity regressions; SQL/network adapters remain unproved."
     },
     "src/auth/broker_inference.rs": {
       "status": "unproved",
@@ -567,8 +572,8 @@
     },
     "src/auth/handoff.rs": {
       "status": "unproved",
-      "sha256": "82d0fa24db31f45128f3488c3493f054669381702a794eaf3363701ab4c26b37",
-      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
+      "sha256": "cb17dba0ea6315d5210e6b337d4e850e6b62b6d43c2910d021c222cf28195859",
+      "review": "Reviewed signed credential route, linked-email owner lock, explicit password verification/recovery, session and handoff revocation, enrollment migration and real PostgreSQL identity regressions; SQL/network adapters remain unproved."
     },
     "src/auth/integrations.rs": {
       "status": "unproved",
@@ -587,13 +592,13 @@
     },
     "src/auth/middleware.rs": {
       "status": "unproved",
-      "sha256": "99801d16ac2b9c0d29695e2648997773acd997f44ef6fb3b912e4dc63821bc21",
-      "review": "Reviewed storefront_pages.rs SKU deep-link HTML admission and existing marketing tenant/channel policy, routes/main registration and auth middleware query scope for public product HTML; frontend identity/slug routing regression tests plus real HTTP cross-host/query/header and inactive-product regressions. No extracted business policy changed."
+      "sha256": "3b235a1e23aff4ccf9127a20df22cabe5fef8a2c250f17cfbd3a2938184c4930",
+      "review": "Reviewed signed credential route, linked-email owner lock, explicit password verification/recovery, session and handoff revocation, enrollment migration and real PostgreSQL identity regressions; SQL/network adapters remain unproved."
     },
     "src/auth/mod.rs": {
       "status": "unproved",
-      "sha256": "b994650cd289e7f0c7981e55881a4e2d73246ab375e953290449cfa2fad2a981",
-      "review": "Reviewed optional signed identity broker, route-bounded inference, single-use personal Studio handoff, stable product IDs and tenant-bound hosted storefront admission; real HTTP/PostgreSQL isolation and replay regressions; adapters remain unproved"
+      "sha256": "fd30aff6fb3984a67aa4b733439a5492d86ddea881dee2a30544848914121e0f",
+      "review": "Reviewed signed credential route, linked-email owner lock, explicit password verification/recovery, session and handoff revocation, enrollment migration and real PostgreSQL identity regressions; SQL/network adapters remain unproved."
     },
     "src/auth/permissions.rs": {
       "status": "reviewed-binding",
@@ -612,8 +617,8 @@
     },
     "src/auth/sessions.rs": {
       "status": "unproved",
-      "sha256": "4b792c006b48aab1381120404b974e6d74b627f49abd9b945c1d9fcd3c498ccb",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "88b9a1d901f71191a5b2483f200238037549c13a327ff489e76c43e43da4c5e2",
+      "review": "Reviewed signed credential route, linked-email owner lock, explicit password verification/recovery, session and handoff revocation, enrollment migration and real PostgreSQL identity regressions; SQL/network adapters remain unproved."
     },
     "src/automation_rules/comparison.rs": {
       "status": "unproved",
@@ -1527,8 +1532,8 @@
     },
     "src/migrations/schema.rs": {
       "status": "unproved",
-      "sha256": "2addefc041e8fa601a40a29d0bba7a860fd7087971f8158ba1114d2e176901a6",
-      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+      "sha256": "6b631fc5a329587e2590faf0419edb833e11bc7e421038821e132378b4d08706",
+      "review": "Reviewed signed credential route, linked-email owner lock, explicit password verification/recovery, session and handoff revocation, enrollment migration and real PostgreSQL identity regressions; SQL/network adapters remain unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
@@ -1832,8 +1837,8 @@
     },
     "src/routes.rs": {
       "status": "unproved",
-      "sha256": "6a94bee169f2c238a7e54480dec7c91a4d27cf46f36ed56b38bdc09695b7bf18",
-      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+      "sha256": "b7a4815724e7497b771d908625312d6a5dff4f72bf0c02af829028cd7ccd0a71",
+      "review": "Reviewed signed credential route, linked-email owner lock, explicit password verification/recovery, session and handoff revocation, enrollment migration and real PostgreSQL identity regressions; SQL/network adapters remain unproved."
     },
     "src/rule_comparison.rs": {
       "status": "reviewed-binding",
@@ -2226,6 +2231,10 @@
     "migrations/051-multi-currency-ledger.sql": {
       "sha256": "353741f2bee549bea4842f007d006f6a14c663185cf96115220dd4ff228c29c2",
       "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+    },
+    "migrations/052-merchant-credentials.sql": {
+      "sha256": "031779a36ded0bc4350b0285fe8a580f9c9d75276b30d92b51ffac392587afb3",
+      "review": "Reviewed signed credential route, linked-email owner lock, explicit password verification/recovery, session and handoff revocation, enrollment migration and real PostgreSQL identity regressions; SQL/network adapters remain unproved."
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "edf5e9ecb5799ce0ef121689cd1fa8be99c382e0e8327df38f9fec6577de474a",
