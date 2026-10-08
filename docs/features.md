@@ -416,7 +416,7 @@ The palette contains text, forms, grids, cards, inputs, choices, dates, buttons,
 
 *GIF: real draft layout changes. The design canvas labels its sample data; it is distinct from the working sandbox preview.*
 
-![Saved design canvas with the selected Text component and its real properties](assets/feature-tour/app-design-still.jpg)
+![Native form designer with snapping geometry and property inspector, captured 8 October](assets/feature-tour/app-form-designer.png)
 
 Data models include date/time, explicit-currency money, scaled decimals, private images/files, rich text and multiple relations alongside translated/JSON/scalar fields. Physical tenant/app tables enforce RLS, scoped relations, recursive validation, uniqueness and quotas. Explicit rename/remove/convert/fill migrations retain bounded recovery snapshots; arbitrary SQL is prohibited. [Manifest/storage contracts](app-platform.md).
 
@@ -425,6 +425,12 @@ Data models include date/time, explicit-currency money, scaled decimals, private
 ### Working preview, immutable versions and app data
 
 F5 runs the current autosaved draft in an actor-private, expiring sandbox without publishing a package. Changes hot-reload actual app records; schema edits reset the private preview. For publication, select a staging sandbox, save an immutable version, inspect changes/digest and approve installation. **Working sandbox preview** runs the actual native renderer with real managed records. For embedded forms, choose a real matching object, save, reopen and inspect persisted data/revision. Package publication and app-data publication are independent.
+
+![Private preview after saving and reloading a product-bound record, captured 8 October](assets/feature-tour/app-private-preview.png)
+
+Code-behind can validate a form, call its allowed gateway action, refresh the view
+and display a translated result. Breakpoints pause between bounded instructions.
+The retained 6 October recording below illustrates the separate staging path.
 
 ![Save a product-bound care record and observe it in the actual sandbox renderer](assets/feature-tour/app-preview.gif)
 

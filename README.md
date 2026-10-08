@@ -200,7 +200,8 @@ supports validated content restoration, without replaying financial operations.
 These are real browser captures; waits are shortened for readability. The
 [complete tour](docs/features.md) retains **40 screenshots and 12 interaction
 GIFs from 6 October**, alongside [three new public integration captures from
-8 October](docs/assets/showcase/README.md#public-integration-captures-8-october-2026).
+8 October](docs/assets/showcase/README.md#public-integration-captures-8-october-2026)
+and [two current App Studio captures](docs/assets/feature-tour/README.md).
 Capture versions, recording edits and live-provider limits remain explicit.
 
 ## Operate the whole platform
