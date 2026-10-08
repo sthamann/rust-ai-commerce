@@ -1,5 +1,10 @@
 //! Durable idempotent payment commands, customer context binding and serial refund admission.
-use super::*;
+use super::attempt;
+use crate::{
+    App, Error, RequestContext, Result, StatusCode, Value, bad, conflict, hash, json, tenant,
+    token, verified_kernel,
+};
+
 pub(crate) async fn enqueue_tx(
     tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     t: &str,
@@ -29,7 +34,7 @@ pub(crate) async fn enqueue_tx(
 }
 pub(crate) async fn enqueue(
     a: &App,
-    h: &HeaderMap,
+    h: &RequestContext,
     id: &str,
     op: &str,
     key: &str,
@@ -90,7 +95,7 @@ pub(crate) async fn enqueue(
     tx.commit().await?;
     Ok(json!({"jobId":job,"queued":true}))
 }
-pub(crate) async fn customer(a: &App, h: &HeaderMap, id: &str) -> Result<()> {
+pub(crate) async fn customer(a: &App, h: &RequestContext, id: &str) -> Result<()> {
     let ok:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM payment_attempts p JOIN orders o ON o.id=p.order_id AND o.tenant=p.tenant JOIN carts c ON c.id=o.cart_id AND c.tenant=o.tenant WHERE p.tenant=$1 AND p.id=$2 AND c.token=$3)").bind(tenant(h)?).bind(id).bind(token(h)?).fetch_one(&a.db).await?;
     if !ok {
         return Err(Error(

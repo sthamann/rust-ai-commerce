@@ -28,15 +28,26 @@ if (
 output = pathlib.Path(a.output)
 output.parent.mkdir(parents=True, exist_ok=True)
 db = secrets.token_urlsafe(36)
+runtime = secrets.token_urlsafe(36)
+connector = secrets.token_urlsafe(36)
 instance = secrets.token_urlsafe(48)
 password = secrets.token_urlsafe(27)
 config = f"""# Private generated deployment configuration. Never commit or paste this file into logs.
 COMMERCE_DOMAIN={domain}
 DB_PASSWORD={db}
+DB_RUNTIME_PASSWORD={runtime}
+DB_CONNECTOR_PASSWORD={connector}
 DATABASE_URL=postgres://commerce:{urllib.parse.quote(db, safe="")}@postgres:5432/commerce
+DATABASE_RUNTIME_URL=postgres://vendune_runtime_login:{urllib.parse.quote(runtime,safe="")}@postgres:5432/commerce
+DATABASE_LISTENER_URL=postgres://vendune_runtime_login:{urllib.parse.quote(runtime,safe="")}@postgres:5432/commerce
+CONNECTOR_DATABASE_URL=postgres://vendune_connectors:{urllib.parse.quote(connector,safe="")}@postgres:5432/commerce
+DB_RLS_REQUIRED=true
+DB_CLUSTER_CONNECTION_BUDGET=80
+DB_MAX_PROCESSES=1
+DB_POOLER_MODE=session
 MERCHANT_TOKEN={instance}
 COMMERCE_IMAGE_TAG=local
-BOOTSTRAP_MODE=auto
+BOOTSTRAP_MODE=serve
 SEED_DEMO=false
 ALLOW_PUBLIC_SIGNUP=false
 ALLOW_BOOTSTRAP_AUTH=false

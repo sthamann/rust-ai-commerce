@@ -8,7 +8,7 @@ pub(crate) async fn capabilities() -> Json<Value> {
         json!({"capabilities":CAPABILITIES.iter().map(|(n,d)|json!({"name":n,"description":d})).collect::<Vec<_>>()}),
     )
 }
-pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+pub(crate) async fn invoke(a: &App, h: &RequestContext, name: &str, v: &Value) -> Result<Value> {
     if currencies::schema(name).is_some() {
         return currencies::invoke(a, h, name, v).await;
     }

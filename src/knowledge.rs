@@ -1,6 +1,7 @@
 //! Transactional PostgreSQL knowledge relations and separately indexed Qdrant retrieval.
+use crate::scoped_pool::ScopedPool as PgPool;
 use serde_json::{Value, json};
-use sqlx::{PgConnection, PgPool, Row};
+use sqlx::{PgConnection, Row};
 mod relations;
 mod search;
 pub mod vectors;
@@ -39,4 +40,15 @@ pub async fn embedding(
         return Err("Embedding model must return 1024 finite dimensions".into());
     }
     Ok(vector)
+}
+
+/// Persist a graph product on an explicitly scoped transaction, also behind transaction poolers.
+pub async fn sync_product_scoped(
+    db: &PgPool,
+    tenant: &str,
+    product: &Value,
+) -> Result<(), sqlx::Error> {
+    let mut tx = db.begin().await?;
+    sync_product(&mut tx, tenant, product).await?;
+    tx.commit().await
 }

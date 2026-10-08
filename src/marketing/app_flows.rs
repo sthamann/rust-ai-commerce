@@ -3,7 +3,7 @@ use super::*;
 pub(crate) async fn validate_app_flow(
     a: &App,
     t: &str,
-    h: &HeaderMap,
+    h: &RequestContext,
     f: &flows::Flow,
 ) -> Result<()> {
     if f.action != "app_action" {
@@ -68,7 +68,7 @@ pub(crate) async fn execute_app_flow(
         .app_action
         .as_ref()
         .ok_or(bad("Flow app action required"))?;
-    let mut h = HeaderMap::new();
+    let mut h = RequestContext::new();
     h.insert(
         "x-tenant",
         t.parse().map_err(|_| bad("Invalid flow tenant"))?,

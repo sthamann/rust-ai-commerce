@@ -6,7 +6,7 @@ pub(crate) async fn public_pairs(a: &App, t: &str) -> Result<Value> {
 }
 pub(crate) async fn recommendations(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = tenant(&h)?;

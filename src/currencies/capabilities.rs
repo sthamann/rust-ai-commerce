@@ -28,7 +28,7 @@ pub(crate) fn schema(name: &str) -> Option<Value> {
         json!({"type":"object","properties":props,"required":required,"additionalProperties":false}),
     )
 }
-pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+pub(crate) async fn invoke(a: &App, h: &RequestContext, name: &str, v: &Value) -> Result<Value> {
     let state = State(a.clone());
     let h = h.clone();
     let Json(result) = match name {

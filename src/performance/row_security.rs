@@ -1,6 +1,7 @@
 //! Bind each borrowed PostgreSQL connection to task scope, and reject unsafe strict-runtime roles.
-use crate::*;
 use sqlx::PgConnection;
+use std::env;
+use vendune::scoped_pool::ScopedPool as PgPool;
 use vendune::tenant_scope::{Scope, current};
 
 pub(super) async fn bind(conn: &mut PgConnection) -> std::result::Result<(), sqlx::Error> {

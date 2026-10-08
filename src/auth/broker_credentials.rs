@@ -1,6 +1,7 @@
 //! Explicit password setup/recovery or existing-password verification from a trusted, verified-email broker.
 //! No public reset-by-email endpoint: assertions bind route, identity, shop, action, expiry and one-use nonce.
-use super::*;
+use super::{broker, email, hash_password, issue_session, password, verify_password};
+use crate::{App, Error, Json, Result, Row, State, StatusCode, Value, bad, validate_tenant};
 
 pub(crate) async fn credentials(State(a): State<App>, Json(v): Json<Value>) -> Result<Json<Value>> {
     let c = broker::assertion(&a, "/api/identity/credentials", &v).await?;

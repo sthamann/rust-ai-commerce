@@ -57,7 +57,11 @@ pub(super) async fn records(
         Ok(json!({"data":base,"revision":rev}))
     }
 }
-pub(super) async fn read(a: &App, h: &HeaderMap, channel: Option<&str>) -> Result<Json<Value>> {
+pub(super) async fn read(
+    a: &App,
+    h: &RequestContext,
+    channel: Option<&str>,
+) -> Result<Json<Value>> {
     let t = merchant(a, h)?;
     let mut tx = a.db.begin().await?;
     history::context(&mut tx, h, "merchant").await?;
@@ -66,14 +70,14 @@ pub(super) async fn read(a: &App, h: &HeaderMap, channel: Option<&str>) -> Resul
     tx.commit().await?;
     Ok(Json(value))
 }
-pub(super) async fn get(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn get(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     merchant(&a, &h)?;
     auth::permit(&h, "settings.read")?;
     read(&a, &h, None).await
 }
 pub(super) async fn get_channel(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(channel): Path<String>,
 ) -> Result<Json<Value>> {
     merchant(&a, &h)?;
@@ -82,7 +86,7 @@ pub(super) async fn get_channel(
 }
 pub(super) async fn put(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     merchant(&a, &h)?;
@@ -91,7 +95,7 @@ pub(super) async fn put(
 }
 pub(super) async fn put_channel(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(channel): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -101,7 +105,7 @@ pub(super) async fn put_channel(
 }
 pub(crate) async fn save(
     a: &App,
-    h: &HeaderMap,
+    h: &RequestContext,
     v: Value,
     channel: Option<&str>,
 ) -> Result<Json<Value>> {

@@ -1,5 +1,9 @@
 //! Payment provider identity, tenant account configuration and immutable wire context.
-use super::*;
+use super::{enqueue_tx, paypal, prepare_remote, remote};
+use crate::{
+    App, Error, Result, Row, StatusCode, StoredCart, Value, bad, conflict, currencies, json, uid,
+};
+
 #[derive(Clone)]
 pub(crate) struct Account {
     pub client: String,
@@ -9,12 +13,7 @@ pub(crate) struct Account {
     pub bn_code: String,
 }
 pub(crate) fn account(t: &str) -> Result<Account> {
-    let all: Value = serde_json::from_str(
-        &env::var("PAYPAL_ACCOUNTS")
-            .or_else(|_| env::var("PAYPAL_SANDBOX_ACCOUNTS"))
-            .unwrap_or("{}".into()),
-    )
-    .map_err(|_| bad("Invalid payment account configuration"))?;
+    let all = &crate::runtime_config::get().paypal_accounts;
     let v = &all[t];
     Ok(Account {
         client: v["clientId"]
@@ -40,38 +39,10 @@ pub(crate) fn account(t: &str) -> Result<Account> {
     })
 }
 pub(crate) fn base() -> Result<String> {
-    let live = env::var("PAYPAL_ENVIRONMENT").unwrap_or("sandbox".into());
-    if !["live", "sandbox"].contains(&live.as_str()) {
-        return Err(bad("PAYPAL_ENVIRONMENT must be live or sandbox"));
-    }
-    let expected = if live == "live" {
-        "https://api-m.paypal.com"
-    } else {
-        "https://api-m.sandbox.paypal.com"
-    };
-    let base = env::var("PAYPAL_SANDBOX_BASE_URL").unwrap_or(expected.into());
-    let url = reqwest::Url::parse(&base).map_err(|_| bad("Invalid PayPal URL"))?;
-    if base != expected
-        && !(live == "sandbox"
-            && url.scheme() == "http"
-            && ["127.0.0.1", "localhost"].contains(&url.host_str().unwrap_or(""))
-            && url.username().is_empty()
-            && url.password().is_none()
-            && url.path() == "/"
-            && url.query().is_none())
-    {
-        return Err(bad("PayPal origin must match its configured environment"));
-    }
-    Ok(base.trim_end_matches('/').into())
+    Ok(crate::runtime_config::get().paypal_base.clone())
 }
 pub(crate) fn environment() -> &'static str {
-    if env::var("PAYPAL_SANDBOX_BASE_URL").is_ok_and(|s| s.starts_with("http://")) {
-        "contract-fixture"
-    } else if env::var("PAYPAL_ENVIRONMENT").is_ok_and(|s| s == "live") {
-        "live"
-    } else {
-        "sandbox"
-    }
+    crate::runtime_config::get().paypal_environment
 }
 pub(crate) async fn prepare(
     tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
@@ -222,6 +193,7 @@ pub(crate) async fn dispatch(
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn currency_wire_amounts_use_iso_precision() {
         assert_eq!(format_amount(123, "JPY").unwrap(), "123");

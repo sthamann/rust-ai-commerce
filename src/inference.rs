@@ -21,7 +21,7 @@ pub struct Choice {
 }
 #[derive(Clone)]
 pub struct Inference {
-    db: Option<sqlx::PgPool>,
+    db: Option<crate::scoped_pool::ScopedPool>,
     settings: std::sync::Arc<tokio::sync::Mutex<Option<(std::time::Instant, Value)>>>,
     default_provider: Provider,
     disabled: Vec<String>,

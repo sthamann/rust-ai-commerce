@@ -1,6 +1,6 @@
 //! Revisioned aliases point to an existing tenant-owned Experience; origin selection remains operator-only.
 use crate::*;
-pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn list(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     auth::permit(&h, "settings.read")?;
     Ok(Json(
         json!({"frontends":apps::hosted::connections(&a,&tenant(&h)?).await?}),
@@ -8,7 +8,7 @@ pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Valu
 }
 pub(super) async fn bind(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "settings.write")?;
@@ -129,7 +129,7 @@ pub(super) async fn bind(
 }
 pub(super) async fn remove(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(alias): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

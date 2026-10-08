@@ -1,6 +1,6 @@
 //! Bounded restart-safe fixed-price materialization with frozen FX, product locks and atomic checkpoints across replicas.
 use super::*;
-pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn list(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     auth::permit(&h, "catalog.read")?;
     let t = merchant(&a, &h)?;
     let rows=sqlx::query("SELECT id,state,processed,data,created_at::text AS created FROM currency_price_jobs WHERE tenant=$1 ORDER BY created_at DESC LIMIT 30").bind(t).fetch_all(&a.db).await?;
@@ -13,7 +13,7 @@ fn view(r: &sqlx::postgres::PgRow) -> Value {
 }
 pub(super) async fn detail(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "catalog.read")?;
@@ -23,7 +23,7 @@ pub(super) async fn detail(
 }
 pub(super) async fn create(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "catalog.write")?;
@@ -88,7 +88,7 @@ async fn batch(a: &App) -> Result<bool> {
         .execute(&mut *tx)
         .await?;
     let result: Result<()> = async {
-    let mut actor = HeaderMap::new();
+    let mut actor = RequestContext::new();
     if let Some(value) = data["actor"].as_str() {
         actor.insert(
             "x-rac-user",
@@ -187,7 +187,7 @@ pub(crate) fn worker(a: &App) {
                 if refreshing && ticks.is_multiple_of(60)
                   && let Ok(rows)=sqlx::query("SELECT tenant,revision FROM commerce_settings WHERE data->'currencies'->>'autoRefresh'='true' AND tenant>$1 ORDER BY tenant LIMIT 50").bind(&cursor).fetch_all(&a.db).await {
                     refreshing=rows.len()==50;
-                    for row in rows {cursor=row.get("tenant");if let Err(error)=rates::refresh(&a,&cursor,row.get("revision"),&HeaderMap::new()).await {eprintln!("currency rate refresh retained previous rates: {}",error.1);}}
+                    for row in rows {cursor=row.get("tenant");if let Err(error)=rates::refresh(&a,&cursor,row.get("revision"),&RequestContext::new()).await {eprintln!("currency rate refresh retained previous rates: {}",error.1);}}
                 }
                 ticks += 1;
                 tokio::time::sleep(std::time::Duration::from_secs(1)).await;

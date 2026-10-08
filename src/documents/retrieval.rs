@@ -48,7 +48,7 @@ pub(crate) async fn search_in(
 }
 pub(crate) async fn index(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;

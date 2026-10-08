@@ -2,7 +2,7 @@
 use super::*;
 pub(super) async fn get(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     auth::actor(&h)?;
@@ -25,7 +25,7 @@ pub(super) async fn get(
 }
 pub(super) async fn save(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Two real Rust replicas test coherent read caches; optional matched local HTTP baseline probe."""
+from testing.database import psql
 import concurrent.futures
 import hashlib
 import json
@@ -21,8 +22,7 @@ env['RUST_LOG'] = 'sqlx::query=debug'
 
 
 def sql(text):
-    return subprocess.check_output(['docker', 'exec', '-i', env['TEST_DB_CONTAINER'], 'psql', '-U', 'commerce',
-        '-d', env['TEST_DATABASE'], '-qAt', '-v', 'ON_ERROR_STOP=1'], input=text, text=True).strip()
+    return subprocess.check_output(psql(env['TEST_DB_CONTAINER'],'commerce',env['TEST_DATABASE'],'-qAt','-v','ON_ERROR_STOP=1'), input=text, text=True).strip()
 
 
 def port():
@@ -164,8 +164,7 @@ finally:
 limited = start('limited', {'DB_POOL_MAX': '1', 'DB_POOL_WAIT_MS': '100'})
 try:
     basis = call(limited[2], '/api/merchant/commerce', headers=merchant)
-    lock = subprocess.Popen(['docker', 'exec', '-i', env['TEST_DB_CONTAINER'], 'psql', '-U', 'commerce',
-        '-d', env['TEST_DATABASE'], '-qAt', '-v', 'ON_ERROR_STOP=1'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
+    lock = subprocess.Popen(psql(env['TEST_DB_CONTAINER'],'commerce',env['TEST_DATABASE'],'-qAt','-v','ON_ERROR_STOP=1'), stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
     lock.stdin.write(f"BEGIN; SELECT tenant FROM commerce_settings WHERE tenant='{tenant}' FOR UPDATE; SELECT pg_sleep(4); COMMIT;\n")
     lock.stdin.close()
     assert lock.stdout.readline().strip() == tenant

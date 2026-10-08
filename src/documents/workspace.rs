@@ -9,7 +9,7 @@ pub(crate) struct WorkspaceQuery {
 }
 pub(crate) async fn workspace(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     axum::extract::Query(q): axum::extract::Query<WorkspaceQuery>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;

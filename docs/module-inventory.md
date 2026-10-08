@@ -53,11 +53,14 @@ This lists every checked-in source module in these roots, including files with n
 | [src/assets/rich.rs](../src/assets/rich.rs) | Safe structured rich content, never executable HTML. Same schema for merchant API and frontend. |
 | [src/assets/rich_document.rs](../src/assets/rich_document.rs) | Allow-listed editor JSON with bounded depth and content; HTML/handlers/styles cannot enter the renderer. |
 | [src/assets/upload.rs](../src/assets/upload.rs) | File admission, immutable bytes and explicit publishing; binary content never enters merchant list responses. |
+| [src/auth/abuse.rs](../src/auth/abuse.rs) | Database-backed account and trusted peer-prefix throttles shared by replicas; reserve before password hashing. |
 | [src/auth/broker.rs](../src/auth/broker.rs) | Optional trusted identity exchange: signatures bind route, audience, expiry and one-use nonce. |
 | [src/auth/broker_credentials.rs](../src/auth/broker_credentials.rs) | Explicit password setup/recovery or existing-password verification from a trusted, verified-email broker. |
 | [src/auth/broker_inference.rs](../src/auth/broker_inference.rs) | Trusted server-to-server inference inherits operator settings without disclosing any provider credentials. |
 | [src/auth/credentials.rs](../src/auth/credentials.rs) | Argon2 password operations run off the asynchronous request executor. |
+| [src/auth/dto.rs](../src/auth/dto.rs) | Stable typed authentication envelopes; field validation remains in the shared credential owner. |
 | [src/auth/handoff.rs](../src/auth/handoff.rs) | One-time personal-session handoff to the Studio; no passwords or bearer tokens in links. |
+| [src/auth/identity.rs](../src/auth/identity.rs) | Resolve the current credential and membership once; bootstrap and sandbox checks share the same boundary. |
 | [src/auth/integrations.rs](../src/auth/integrations.rs) | Expiring API/MCP keys are bounded to one workspace and intersect their creator's current membership. |
 | [src/auth/invitations.rs](../src/auth/invitations.rs) | Single-use, expiring invitations. Acceptance verifies an existing account password. |
 | [src/auth/members.rs](../src/auth/members.rs) | Workspace member visibility and immediately effective role/revocation changes. |
@@ -66,6 +69,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/auth/permissions.rs](../src/auth/permissions.rs) | Fine-grained workspace overrides. Owners retain control; delegates cannot grant rights they lack. |
 | [src/auth/provision.rs](../src/auth/provision.rs) | Reusable synthetic shop provisioning for initial signup and additional shops owned by the same merchant. |
 | [src/auth/registration.rs](../src/auth/registration.rs) | Create an isolated merchant workspace from synthetic template data. |
+| [src/auth/route_policy.rs](../src/auth/route_policy.rs) | Rights are registered beside each API method. Missing registrations always deny access. |
 | [src/auth/sessions.rs](../src/auth/sessions.rs) | Login/logout and personal workspace discovery. Only hashed opaque tokens persist. |
 | [src/automation_rules/comparison.rs](../src/automation_rules/comparison.rs) | Original comparison primitives plus literal wildcard/zip operators; no regex or executable expressions. |
 | [src/automation_rules/containers.rs](../src/automation_rules/containers.rs) | Source line wrappers, quantified goods and all-line containers retain one selected line scope. |
@@ -267,9 +271,12 @@ This lists every checked-in source module in these roots, including files with n
 | [src/operations/receipt_pdf.rs](../src/operations/receipt_pdf.rs) | Minimal paginated PDF serializer with WinAnsi Helvetica; snapshot retains complete Unicode originals. |
 | [src/operations/receipt_text.rs](../src/operations/receipt_text.rs) | Four-language document labels and authoritative snapshot-to-print projection. |
 | [src/operations/receipts.rs](../src/operations/receipts.rs) | Idempotent immutable invoices/delivery notes with transactional per-shop number ranges. |
+| [src/operations/routes.rs](../src/operations/routes.rs) | HTTP/MCP rights for merchant CRM, fulfillment and company settings. |
 | [src/operations/workflow.rs](../src/operations/workflow.rs) | Revision-bound workflow configuration used by installed apps and selective sandbox releases. |
 | [src/order_checkout.rs](../src/order_checkout.rs) | Atomic checkout, stock locks, extension policy and idempotency. |
 | [src/order_routes.rs](../src/order_routes.rs) | Merchant order read adapter. |
+| [src/outbox/control.rs](../src/outbox/control.rs) | Tenant-authorized quarantine inspection and explicit retry; delivered or retired events cannot be replayed here. |
+| [src/outbox/retention.rs](../src/outbox/retention.rs) | Bounded retirement of duplicate delivered payloads; provenance IDs and unsettled app/flow work survive. |
 | [src/outbox.rs](../src/outbox.rs) | Durable outbox and audit projection worker. |
 | [src/payments/accounts.rs](../src/payments/accounts.rs) | Merchant-authorized onboarding bridge; only authenticated provider responses establish account bindings. |
 | [src/payments/app_commands.rs](../src/payments/app_commands.rs) | App/Flow/MCP payment actions enqueue core jobs; provider-bound attempts prevent cross-app command authority. |
@@ -279,6 +286,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/payments/operations.rs](../src/payments/operations.rs) | Durable idempotent payment commands, customer context binding and serial refund admission. |
 | [src/payments/paypal.rs](../src/payments/paypal.rs) | Native PayPal Orders v2 sandbox wire adapter; credentials never enter prompts or browser responses. |
 | [src/payments/provider.rs](../src/payments/provider.rs) | Payment provider identity, tenant account configuration and immutable wire context. |
+| [src/payments/provider_configuration.rs](../src/payments/provider_configuration.rs) | Pure startup validation of the native provider origin; no live credentials or provider calls. |
 | [src/payments/provider_webhooks.rs](../src/payments/provider_webhooks.rs) | Version-pinned HMAC notifications enqueue reconciliation; external event payloads never write monetary state. |
 | [src/payments/receipt_guard.rs](../src/payments/receipt_guard.rs) | Bind integer provider receipt amounts and status to the formally checked exact-match predicate. |
 | [src/payments/registry.rs](../src/payments/registry.rs) | Installed payment registry and immutable account/version snapshots; no remote calls inside checkout SQL. |
@@ -292,6 +300,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/payments/worker.rs](../src/payments/worker.rs) | Leased payment jobs; network runs after claim commit, fenced receipts prevent duplicate local effects. |
 | [src/performance/admission.rs](../src/performance/admission.rs) | Bounded instance/tenant concurrency, durable UTC-day AI quotas, and low-cardinality latency telemetry. |
 | [src/performance/cache.rs](../src/performance/cache.rs) | Bounded weighted LRU for immutable decoded read models; no network I/O under its mutex. |
+| [src/performance/cluster_lease.rs](../src/performance/cluster_lease.rs) | Cluster-wide tenant resource leases. DB serialization protects admission; cancellation releases the fenced lease. |
 | [src/performance/invalidation.rs](../src/performance/invalidation.rs) | Commit-only outbox notifications eagerly evict replica caches; authoritative version probes survive missed events. |
 | [src/performance/languages.rs](../src/performance/languages.rs) | Global language registry is versioned in the same transaction as every registry mutation. |
 | [src/performance/mod.rs](../src/performance/mod.rs) | Shared read-context caching with authoritative versions; mutations and checkout locks stay outside memoization. |
@@ -314,9 +323,14 @@ This lists every checked-in source module in these roots, including files with n
 | [src/proposal_apply.rs](../src/proposal_apply.rs) | Transactional application of approved, revision-bound proposals. |
 | [src/proposal_model.rs](../src/proposal_model.rs) | Typed proposals and validation before persistence or execution. |
 | [src/proposal_routes.rs](../src/proposal_routes.rs) | HTTP proposal creation, approval and task listing. |
+| [src/request_context.rs](../src/request_context.rs) | Trusted request identity lives in extensions; HTTP headers carry transport inputs only. |
 | [src/routes.rs](../src/routes.rs) | HTTP transport registry; domain behavior lives in dedicated modules. |
 | [src/rule_comparison.rs](../src/rule_comparison.rs) | Behavioral port of Shopware 6.7.14.2 RuleComparison::numeric and FloatComparator's exact epsilon boundaries. |
+| [src/runtime_config.rs](../src/runtime_config.rs) | Immutable process configuration, validated once at startup. Mutable shop/provider settings remain in PostgreSQL. |
 | [src/sandbox.rs](../src/sandbox.rs) | Pure Wasmtime guest execution with bounded resources and no host imports. |
+| [src/sandbox_cache.rs](../src/sandbox_cache.rs) | Bounded tenant-policy compilation cache. Prepare outside commerce locks; verify the digest under the lock. |
+| [src/scoped_pool.rs](../src/scoped_pool.rs) | The commerce database executor: transaction-local tenant scope, including direct queries and cancelled streams. |
+| [src/security_headers.rs](../src/security_headers.rs) | Common browser defenses on successful responses and errors, including reverse-proxy HTTPS deployments. |
 | [src/seed.rs](../src/seed.rs) | Idempotent synthetic template catalogue initialization. |
 | [src/shop_domains/frontend_bindings.rs](../src/shop_domains/frontend_bindings.rs) | Revisioned aliases point to an existing tenant-owned Experience; origin selection remains operator-only. |
 | [src/shop_domains/frontend_editor.rs](../src/shop_domains/frontend_editor.rs) | Operator-owned editor navigation for hosted frontends; no private editor or identity implementation. |
@@ -342,6 +356,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/translations/worker.rs](../src/translations/worker.rs) | One leased product per step: keyset traversal, bounded inference and resumable provider errors. |
 | [src/ucp.rs](../src/ucp.rs) | Selected UCP checkout adapters sharing the native cart. |
 | [src/verified_kernel.rs](../src/verified_kernel.rs) | Closed, side-effect-free commerce policies extracted to Lean; keep within the checked bool/u64 grammar. |
+| [src/work_signal.rs](../src/work_signal.rs) | One dedicated LISTEN connection per worker process. Commit notifications are hints; polling repairs lost hints. |
 | [src/workers.rs](../src/workers.rs) | Independently deployable worker roles; leases and durable receipts coordinate replicas. |
 
 ## Studio, storefront, platform and shared frontend
@@ -847,7 +862,9 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/rule_differential.py](../scripts/rule_differential.py) | Execute original Shopware numeric comparisons, including epsilon, null and unsupported operator semantics. |
 | [scripts/rust_connectors.py](../scripts/rust_connectors.py) | Actual Rust/PostgreSQL multi-process notification, OAuth/import and adversarial fixtures; no external accounts. |
 | [scripts/scalability.py](../scripts/scalability.py) | Real HTTP/PG regression for bounded reads and concurrent cart edits. |
+| [scripts/security/core_hardening.py](../scripts/security/core_hardening.py) | Real replica regressions for auth admission, poison-event isolation, retention and bounded resource leases. |
 | [scripts/security/tenant_schema.py](../scripts/security/tenant_schema.py) | Database adversarial checks: reject cross-shop links even when API predicates are accidentally omitted. |
+| [scripts/security_route_gate.py](../scripts/security_route_gate.py) | Every static commerce Admin API method must have an adjacent explicit permission; new routes fail closed. |
 | [scripts/services.py](../scripts/services.py) | Standalone app process, opaque UI SDK transport, own SQLite inbox and independent durable worker. |
 | [scripts/settings_scopes.py](../scripts/settings_scopes.py) | Real tenant/channel settings, immutable order dependencies, localized gallery and selective staging regressions. |
 | [scripts/site_markdown.py](../scripts/site_markdown.py) | Render every tracked Markdown document with repository-aware links and search. |
@@ -858,10 +875,13 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/tenant_isolation.py](../scripts/tenant_isolation.py) | Adversarial two-shop API/MCP/UCP/object and schema isolation with real personal/customer sessions. |
 | [scripts/testing/coverage_env.py](../scripts/testing/coverage_env.py) | Convert trusted cargo-llvm-cov environment output to GitHub's environment-file syntax. |
 | [scripts/testing/coverage_report.py](../scripts/testing/coverage_report.py) | Publish separate all-source coverage totals, untested files and enforce reviewed minimums. |
+| [scripts/testing/database.py](../scripts/testing/database.py) | Use the same PostgreSQL fixtures through Docker or an explicitly selected native psql executable. |
+| [scripts/testing/pooler.py](../scripts/testing/pooler.py) | Owned real PgBouncer fixture: one backend, transaction pooling, never a forced privileged user. |
 | [scripts/testing/runtime.py](../scripts/testing/runtime.py) | Owned synthetic server lifetime, child checks and loopback readiness for verification. |
 | [scripts/testing/sitecustomize.py](../scripts/testing/sitecustomize.py) | Opt-in subprocess instrumentation for synthetic verification; never loaded by production. |
 | [scripts/testing/source_inventory.py](../scripts/testing/source_inventory.py) | Generate/check exact production and verification module inventory; listings are not coverage. |
 | [scripts/testing/tooling_tests.py](../scripts/testing/tooling_tests.py) | Ordered Studio layout. |
+| [scripts/transaction_pooler.py](../scripts/transaction_pooler.py) | Repeat the real strict-runtime and multi-replica regressions through a one-backend transaction pooler. |
 | [scripts/translations.py](../scripts/translations.py) | Durable translation jobs against a local provider fixture, real SQL, native MCP and a cold restart; no paid calls. |
 | [scripts/users.py](../scripts/users.py) | Real multi-user, workspace isolation and role/revocation regression tests. |
 | [scripts/verify_integration.py](../scripts/verify_integration.py) | Single integration suite registry, isolated DB by default; never alters an existing shop. |

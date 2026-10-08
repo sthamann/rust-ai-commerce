@@ -1,8 +1,16 @@
 //! Single-use, expiring invitations. Acceptance verifies an existing account password.
-use super::*;
+use super::{
+    SCOPES, allowed, email, hash_password, issue_session, name, password, permit, role_allowed,
+    verify_password,
+};
+use crate::{
+    App, Error, Json, RequestContext, Result, Row, State, StatusCode, Value, bad, hash, header,
+    json, merchant, uid,
+};
+
 pub(crate) async fn invite_user(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -19,7 +27,7 @@ pub(crate) async fn invite_user(
             "Cannot assign this role".into(),
         ));
     }
-    let mut defaults = HeaderMap::new();
+    let mut defaults = RequestContext::new();
     defaults.insert("x-rac-role", role.parse().unwrap());
     if SCOPES
         .iter()
@@ -65,7 +73,7 @@ pub(crate) async fn accept_invite(
             StatusCode::FORBIDDEN,
             "Invitation creator lost access".into(),
         ))?;
-        let mut actor = HeaderMap::new();
+        let mut actor = RequestContext::new();
         actor.insert(
             "x-rac-role",
             member.get::<String, _>("role").parse().unwrap(),
@@ -75,7 +83,7 @@ pub(crate) async fn accept_invite(
             actor.insert("x-rac-permissions", scopes.to_string().parse().unwrap());
         }
         permit(&actor, "users")?;
-        let mut defaults = HeaderMap::new();
+        let mut defaults = RequestContext::new();
         defaults.insert(
             "x-rac-role",
             invite.get::<String, _>("role").parse().unwrap(),

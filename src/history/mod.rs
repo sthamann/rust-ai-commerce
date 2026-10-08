@@ -7,17 +7,26 @@ mod routes;
 pub(crate) use capability::{invoke, schema, visible};
 pub(crate) fn router() -> Router<App> {
     Router::new()
-        .route("/api/history/{entity}/{id}", get(routes::list))
-        .route("/api/history/{entity}/{id}/{version}", get(routes::detail))
-        .route(
+        .secure_route(
+            "/api/history/{entity}/{id}",
+            &[("GET", "read")],
+            get(routes::list),
+        )
+        .secure_route(
+            "/api/history/{entity}/{id}/{version}",
+            &[("GET", "read")],
+            get(routes::detail),
+        )
+        .secure_route(
             "/api/history/{entity}/{id}/{version}/restore",
+            &[("POST", "read")],
             post(routes::restore),
         )
         .layer(axum::extract::DefaultBodyLimit::max(256 * 1024))
 }
 pub(crate) async fn context(
     conn: &mut sqlx::PgConnection,
-    h: &HeaderMap,
+    h: &RequestContext,
     source: &str,
 ) -> Result<()> {
     sqlx::query("SELECT set_config('vendune.actor',$1,true),set_config('vendune.source',$2,true),set_config('vendune.reason',$3,true)")

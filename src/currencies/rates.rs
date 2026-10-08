@@ -82,7 +82,12 @@ pub(super) fn parse(cfg: &Config, xml: &str) -> Result<Config> {
     next.validate()?;
     Ok(next)
 }
-pub(super) async fn refresh(a: &App, t: &str, expected: i64, actor: &HeaderMap) -> Result<Value> {
+pub(super) async fn refresh(
+    a: &App,
+    t: &str,
+    expected: i64,
+    actor: &RequestContext,
+) -> Result<Value> {
     let (s, revision) = commerce::config(a, t).await?;
     if revision != expected {
         return Err(conflict("Settings changed; reload first"));

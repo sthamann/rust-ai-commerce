@@ -2,7 +2,7 @@
 use super::*;
 pub(crate) async fn create(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "users")?;
@@ -145,8 +145,6 @@ pub(crate) async fn create(
         .await?;
     tx.commit().await?;
     a.sandboxes
-        .write()
-        .unwrap()
         .insert(id.clone(), Arc::new(Sandbox::new(wat).map_err(bad)?));
     Ok(Json(
         json!({"id":id,"name":name,"private":true,"previewPath":format!("/?shop={id}&sandbox=1#"),"payments":"simulated-only"}),

@@ -8,12 +8,12 @@ pub(crate) async fn plan_with(
     choice: Option<&Choice>,
     history: &str,
     locale: &str,
-    authority: &HeaderMap,
+    authority: &RequestContext,
 ) -> Result<Value> {
     if instruction.is_empty() || instruction.len() > 4000 {
         return Err(bad("Instruction must contain 1..4000 characters"));
     }
-    let mut language_headers = HeaderMap::new();
+    let mut language_headers = RequestContext::new();
     language_headers.insert("x-tenant", t.parse().map_err(|_| bad("Invalid tenant"))?);
     language_headers.insert(
         "x-commerce-locale",
@@ -80,6 +80,7 @@ pub(crate) async fn plan_with(
             "Inference capacity busy; try again shortly".into(),
         )
     })?;
+    let _cluster = crate::performance::cluster_lease::Lease::acquire(a, t, "model", 2).await?;
     let output = a
         .inference
         .structured(choice, system, &prompt, &schema)

@@ -10,6 +10,7 @@ for path in files:
     assert lines and (lines[0].startswith('//!') or lines[0].startswith('///')),str(path.relative_to(root))+' needs a responsibility comment'
 assert len((root/'src/main.rs').read_text().splitlines())<=120
 for path in (root/'extensions').glob('*.wat'):assert path.name in (root/'extensions/README.md').read_text(),path.name+' needs documentation'
+subprocess.run(["python3", "scripts/security_route_gate.py"], cwd=root, check=True)
 print(f'PASS {len(files)} Rust modules: responsibility documented; <=320 lines; main <=120; every WAT example documented')
 
 subprocess.run(["node", "frontend/scripts/architecture.mjs"], cwd=root, check=True)

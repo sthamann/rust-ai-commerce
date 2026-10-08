@@ -457,42 +457,42 @@
   {
     "path": "/api/merchant/customer-groups",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/customers",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/customers/{email}",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/customers/{email}",
     "method": "PUT",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/customers/{email}/addresses",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/customers/{email}/addresses",
     "method": "POST",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/customers/{email}/addresses/{id}",
     "method": "DELETE",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/customers/{email}/addresses/{id}",
     "method": "PUT",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/legal/requests",
@@ -522,37 +522,37 @@
   {
     "path": "/api/merchant/order-state-machine",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/order-state-machine",
     "method": "PUT",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/orders",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/orders/{id}",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/orders/{id}/notes",
     "method": "POST",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/orders/{id}/receipts",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/orders/{id}/receipts",
     "method": "POST",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/orders/{id}/transition",
@@ -612,17 +612,17 @@
   {
     "path": "/api/merchant/receipts/settings",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/receipts/settings",
     "method": "PUT",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/receipts/{id}/pdf",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/merchant/reviews/{id}",
@@ -750,6 +750,11 @@
     "source": "src/routes.rs"
   },
   {
+    "path": "/api/runtime/outbox/{id}/retry",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
     "path": "/api/search/order",
     "method": "POST",
     "source": "src/routes.rs"
@@ -762,12 +767,12 @@
   {
     "path": "/api/settings/company-logo",
     "method": "POST",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/settings/company-logo/{id}",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/settings/frontends",
@@ -787,22 +792,22 @@
   {
     "path": "/api/settings/master-data",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/settings/master-data",
     "method": "PUT",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/settings/master-data/channels/{id}",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/settings/master-data/channels/{id}",
     "method": "PUT",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/api/workspace/integrations",
@@ -1047,12 +1052,12 @@
   {
     "path": "/store-api/company",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/store-api/company-logo/{id}",
     "method": "GET",
-    "source": "src/operations/mod.rs"
+    "source": "src/operations/routes.rs"
   },
   {
     "path": "/store-api/context",

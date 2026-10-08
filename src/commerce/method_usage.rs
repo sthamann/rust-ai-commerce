@@ -30,7 +30,7 @@ async fn counts(
 }
 pub(crate) async fn method_dependencies(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((area, id)): Path<(String, String)>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "settings.read")?;

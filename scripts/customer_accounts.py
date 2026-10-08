@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Real registration/address/login/checkout lifecycle, ownership, CAS and immutable financial snapshots."""
+from testing.database import psql
 import os,json,uuid,urllib.request,urllib.error,concurrent.futures
 BASE=os.getenv('BASE_URL','http://127.0.0.1:8787');suffix=uuid.uuid4().hex[:12];checks=[];password='Synthetic-address-2026!'
 def call(path,body=None,h=None,method=None,expected=200,binary=False):
@@ -154,7 +155,7 @@ if os.getenv('TEST_DATABASE'):
       SELECT 'page-order-'||i::text||'-{suffix}',tenant,'page-cart-'||i::text||'-{suffix}','page-key-'||i::text||'-{suffix}','fixture',
       jsonb_set(data,'{{id}}',to_jsonb('page-order-'||i::text||'-{suffix}')),created_at-interval '1 minute'
       FROM orders CROSS JOIN generate_series(1,100) i WHERE id='{oid}'; COMMIT;"""
-    subprocess.run(['docker','exec','-i',os.environ['TEST_DB_CONTAINER'],'psql','-U','commerce','-d',os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1'],input=sql,text=True,check=True,stdout=subprocess.DEVNULL)
+    subprocess.run(psql(os.environ['TEST_DB_CONTAINER'],'commerce',os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1'),input=sql,text=True,check=True,stdout=subprocess.DEVNULL)
     first=call('/store-api/account/orders',h=ch);second=call('/store-api/account/orders?after='+first['nextCursor'],h=ch)
     assert len(first['elements'])==100 and len(second['elements'])==1 and second['nextCursor'] is None
     assert len({o['id']for o in first['elements']+second['elements']})==101

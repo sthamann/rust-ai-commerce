@@ -42,6 +42,11 @@ animation. [Checkout setup and limits](docs/checkout.md).
 > payments. Current capabilities and remaining production work are described
 > [below](#current-boundaries) and in the [complete feature guide](docs/features.md).
 
+**Core hardening:** explicit route permissions, trusted request identity, non-owner
+RLS deployment, shared tenant/connection budgets, persistent login throttles,
+transaction-mode PgBouncer and recoverable poison-event handling now use the
+existing commerce owners. [All eighteen fixes, architecture and verification boundaries](docs/core-hardening.md).
+
 ## Get started
 
 **Rust stable 1.96+ · Node.js 22+ · Docker Compose · Python 3**
@@ -317,7 +322,7 @@ unchanged. External apps still choose their own language.
 
 | Area | Current scope |
 | --- | --- |
-| **Production readiness** | Working prototype. Recovery/MFA, distributed quotas, automatic relocation/failover, legal compliance and full-system coverage remain additional work. |
+| **Production readiness** | Working prototype. Recovery/MFA, complete token/spend quotas, automatic relocation/failover, legal compliance and full-system coverage remain additional work. |
 | **Payments & connected services** | Simulated/manual payments, native PayPal Orders v2 and a versioned [provider API](docs/payment-provider-api.md) for isolated payment apps: onboarding, redirect/embedded checkout, capture/authorize/void/refund, signed callbacks and Flow/MCP actions. App Studio edits the same contract. Local fixtures are tested; real PSP outcomes and the private Shopware Payments service require approved provider configuration. |
 | **Tenant isolation** | Scoped API/MCP operations, tenant-aware foreign keys, core FORCE RLS policies and connection-scoped runtime enforcement. Strict deployments require a separate non-owner runtime login; policies alone do not protect a superuser. [Exact isolation boundary](docs/tenant-isolation.md). |
 | **Shopware & protocols** | Selected native behavior ports and HTTP/MCP/UCP capabilities; complete DAL/CMS/plugin compatibility and full protocol conformance are outside this slice. |

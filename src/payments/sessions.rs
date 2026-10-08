@@ -1,8 +1,13 @@
 //! Customer-bound, short-lived provider UI sessions; iframe messages are never ledger receipts.
-use super::*;
+use super::{attempt, customer, generic_receipts, remote};
+use crate::{
+    App, Error, Json, Path, RequestContext, Result, State, StatusCode, Value, bad, conflict, env,
+    json, tenant, uid,
+};
+
 pub(crate) async fn session(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     axum::extract::Query(input): axum::extract::Query<std::collections::HashMap<String, String>>,
 ) -> Result<Json<Value>> {
@@ -70,6 +75,15 @@ pub(crate) async fn origin(
     channel: &str,
     requested: Option<&str>,
 ) -> Result<String> {
+    let mut tx = a.db.begin().await?;
+    origin_conn(&mut tx, t, channel, requested).await
+}
+pub(crate) async fn origin_conn(
+    conn: &mut sqlx::PgConnection,
+    t: &str,
+    channel: &str,
+    requested: Option<&str>,
+) -> Result<String> {
     let core = env::var("COMMERCE_PUBLIC_ORIGIN")
         .or_else(|_| env::var("PUBLIC_BASE_URL"))
         .unwrap_or("http://127.0.0.1:8787".into());
@@ -97,7 +111,7 @@ pub(crate) async fn origin(
             return Ok(normalized);
         }
         if let Some(alias) = host.strip_suffix(&format!(".{suffix}")) {
-            let owned: bool = sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM hosted_frontends WHERE tenant=$1 AND channel=$2 AND alias=$3)").bind(t).bind(channel).bind(alias).fetch_one(&a.db).await?;
+            let owned: bool = sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM hosted_frontends WHERE tenant=$1 AND channel=$2 AND alias=$3)").bind(t).bind(channel).bind(alias).fetch_one(conn).await?;
             if owned {
                 return Ok(normalized);
             }

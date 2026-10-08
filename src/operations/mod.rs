@@ -15,58 +15,10 @@ mod receipt_pdf;
 mod receipt_text;
 mod receipts;
 pub(crate) use receipts::receipt_response;
+mod routes;
 mod workflow;
-pub(crate) fn router() -> Router<App> {
-    Router::new()
-        .route(
-            "/api/settings/master-data",
-            get(master_data::get).put(master_data::put),
-        )
-        .route(
-            "/api/settings/master-data/channels/{id}",
-            get(master_data::get_channel).put(master_data::put_channel),
-        )
-        .route("/api/settings/company-logo", post(company_logo::upload))
-        .route(
-            "/api/settings/company-logo/{id}",
-            get(company_logo::preview),
-        )
-        .route("/store-api/company", get(company_public::get))
-        .route("/store-api/company-logo/{id}", get(company_logo::public))
-        .route(
-            "/api/merchant/order-state-machine",
-            get(workflow::get).put(workflow::save),
-        )
-        .route("/api/merchant/customer-groups", get(commerce::groups))
-        .route("/api/merchant/customers", get(customers::list))
-        .route(
-            "/api/merchant/customers/{email}/addresses",
-            get(addresses::list).post(addresses::create),
-        )
-        .route(
-            "/api/merchant/customers/{email}/addresses/{id}",
-            axum::routing::put(addresses::save).delete(addresses::remove),
-        )
-        .route(
-            "/api/merchant/customers/{email}",
-            get(customers::detail).put(customers::save),
-        )
-        .route("/api/merchant/orders", get(orders::list))
-        .route("/api/merchant/orders/{id}", get(orders::detail))
-        .route("/api/merchant/orders/{id}/notes", post(orders::note))
-        .route(
-            "/api/merchant/orders/{id}/receipts",
-            get(receipts::list).post(receipts::create),
-        )
-        .route(
-            "/api/merchant/receipts/settings",
-            get(receipts::settings).put(receipts::save_settings),
-        )
-        .route("/api/merchant/receipts/{id}/pdf", get(receipts::pdf))
-        .layer(axum::extract::DefaultBodyLimit::max(
-            2 * 1024 * 1024 + 65536,
-        ))
-}
+pub(crate) use routes::router;
+
 #[derive(Deserialize, Default)]
 pub(crate) struct Criteria {
     #[serde(default)]
@@ -118,7 +70,7 @@ pub(crate) fn permission(name: &str) -> Option<&'static str> {
         _ => return None,
     })
 }
-pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+pub(crate) async fn invoke(a: &App, h: &RequestContext, name: &str, v: &Value) -> Result<Value> {
     merchant(a, h)?;
     auth::permit(
         h,

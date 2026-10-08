@@ -3,11 +3,15 @@ use crate::*;
 use axum::response::Redirect;
 pub(crate) fn router() -> Router<App> {
     Router::new()
-        .route("/api/automation/channels/{id}/preview", post(create))
+        .secure_route(
+            "/api/automation/channels/{id}/preview",
+            &[("POST", "settings.read")],
+            post(create),
+        )
         .route("/channel-preview/{ticket}", get(redeem))
         .route("/channel-preview/end", post(end))
 }
-pub(crate) fn cookie(h: &HeaderMap) -> Option<String> {
+pub(crate) fn cookie(h: &impl crate::request_context::HeaderReader) -> Option<String> {
     header(h, "cookie")?
         .split(';')
         .map(str::trim)
@@ -37,7 +41,7 @@ pub(crate) async fn valid(
     if host.is_some_and(|h| alias.as_deref() != Some(h)) {
         return Ok(false);
     }
-    let mut identity = HeaderMap::new();
+    let mut identity = RequestContext::new();
     identity.insert(
         "x-rac-role",
         row.get::<String, _>("role")
@@ -58,7 +62,7 @@ pub(crate) async fn valid(
 }
 async fn create(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -111,7 +115,8 @@ async fn redeem(
     Path(ticket): Path<String>,
     request: axum::extract::Request,
 ) -> Result<Response> {
-    let h = request.headers();
+    let context = RequestContext::from_request(&request);
+    let h = &context;
     if !token(&ticket) {
         return Err(bad("Invalid preview link"));
     }

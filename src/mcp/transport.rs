@@ -3,7 +3,7 @@ use super::*;
 /// MCP opt-out is independent of a merchant's selected internal planning tools.
 pub(super) async fn invoke_transport(
     a: &App,
-    h: &HeaderMap,
+    h: &RequestContext,
     name: &str,
     input: &Value,
 ) -> Result<Value> {

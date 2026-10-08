@@ -2,25 +2,50 @@
 use super::*;
 pub(crate) fn router() -> Router<App> {
     Router::new()
-        .route("/api/developer", get(list))
-        .route("/api/developer/schema", get(schema))
-        .route("/api/developer/generate", post(generate))
-        .route("/api/developer/import", post(import))
-        .route("/api/developer/builds/{id}/stage", post(stage))
-        .route("/api/developer/task", post(task))
-        .route(
+        .secure_route("/api/developer", &[("GET", "apps.manage")], get(list))
+        .secure_route(
+            "/api/developer/schema",
+            &[("GET", "apps.manage")],
+            get(schema),
+        )
+        .secure_route(
+            "/api/developer/generate",
+            &[("POST", "apps.manage")],
+            post(generate),
+        )
+        .secure_route(
+            "/api/developer/import",
+            &[("POST", "apps.manage")],
+            post(import),
+        )
+        .secure_route(
+            "/api/developer/builds/{id}/stage",
+            &[("POST", "apps.manage")],
+            post(stage),
+        )
+        .secure_route(
+            "/api/developer/task",
+            &[("POST", "apps.manage")],
+            post(task),
+        )
+        .secure_route(
             "/api/developer/apps/{id}",
+            &[("DELETE", "apps.manage")],
             axum::routing::delete(archive::remove),
         )
-        .route("/api/developer/apps/{id}/restore", post(archive::restore))
+        .secure_route(
+            "/api/developer/apps/{id}/restore",
+            &[("POST", "apps.manage")],
+            post(archive::restore),
+        )
 }
-async fn schema(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+async fn schema(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     auth::permit(&h, "users")?;
     let t = staging::live(&a, &h).await?;
     let (settings, _) = commerce::config(&a, &t).await?;
     Ok(Json(generation::schema_for(&settings.locales)))
 }
-pub(crate) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn list(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     auth::permit(&h, "users")?;
     let t = staging::live(&a, &h).await?;
     let (settings, _) = commerce::config(&a, &t).await?;
@@ -30,7 +55,11 @@ pub(crate) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Valu
         json!({"builds":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"environment":r.get::<String,_>("environment"),"app":r.get::<String,_>("app"),"version":r.get::<String,_>("version"),"digest":r.get::<String,_>("digest"),"manifest":r.get::<Value,_>("manifest"),"summary":r.get::<Value,_>("summary"),"state":r.get::<String,_>("state"),"provider":r.get::<String,_>("provider"),"model":r.get::<Option<String>,_>("model")})).collect::<Vec<_>>(),"archivedBuilds":trash.iter().map(|r|json!({"id":r.get::<String,_>("id"),"environment":r.get::<String,_>("environment"),"app":r.get::<String,_>("app"),"version":r.get::<String,_>("version"),"digest":r.get::<String,_>("digest"),"manifest":r.get::<Value,_>("manifest"),"summary":r.get::<Value,_>("summary"),"state":r.get::<String,_>("state"),"provider":r.get::<String,_>("provider"),"model":r.get::<Option<String>,_>("model")})).collect::<Vec<_>>(),"mainLocale":settings.main_locale,"locales":settings.locales,"providers":a.inference.public_providers().await.map_err(bad)?,"codingAgents":[{"id":"codex","transport":"mcp + task export"},{"id":"claude_code","transport":"mcp + task export"}],"runtime":"declarative native data/API/UI; arbitrary service code requires an external build"}),
     ))
 }
-async fn generate(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Result<Json<Value>> {
+async fn generate(
+    State(a): State<App>,
+    h: RequestContext,
+    Json(v): Json<Value>,
+) -> Result<Json<Value>> {
     auth::permit(&h, "users")?;
     let t = staging::live(&a, &h).await?;
     Ok(Json(generation::generate(&a, &t, &h, &v).await?))
@@ -65,7 +94,7 @@ pub(super) fn actions(m: &mut Value) -> Result<()> {
 
 pub(crate) async fn import(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(mut v): Json<Value>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "users")?;
@@ -77,7 +106,7 @@ pub(crate) async fn import(
 }
 pub(crate) async fn stage(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -106,7 +135,7 @@ pub(crate) async fn stage(
 }
 pub(crate) async fn task(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "users")?;

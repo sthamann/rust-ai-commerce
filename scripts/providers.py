@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Cloud wire-contract tests using local HTTP servers, NOT live cloud inference."""
+from testing.database import psql
 import json, os, pathlib, subprocess, threading, time, urllib.request, urllib.error, uuid, concurrent.futures
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -98,7 +99,7 @@ try:
         assert inference_started.wait(10)
         call('/api/agent/chat',{'conversationId':cid,'message':'Concurrent conflicting turn','inference':{'provider':'openai'}},expected=409)
         assert call('/health')['status']=='ok'
-        idle=subprocess.check_output(['docker','exec',os.getenv('DB_CONTAINER','vendune-postgres-1'),'psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-Atc',"SELECT count(*) FROM pg_stat_activity WHERE state='idle in transaction' AND query LIKE '%pg_try_advisory_xact_lock%'"],text=True).strip()
+        idle=subprocess.check_output(psql(os.getenv('DB_CONTAINER','vendune-postgres-1'),'commerce',os.getenv('TEST_DATABASE','commerce'),'-Atc',"SELECT count(*) FROM pg_stat_activity WHERE state='idle in transaction' AND query LIKE '%pg_try_advisory_xact_lock%'"),text=True).strip()
         assert idle=='0';assert turn.result()['messages'][-1]['data']['taskId']
     behavior['mode']='normal'
     passed('Conversation lease excludes concurrent turns while inference holds no advisory transaction or DB connection')

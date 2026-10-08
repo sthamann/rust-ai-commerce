@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Real PostgreSQL/Qdrant synchronization; synthetic embeddings test transport, not AI quality."""
+from testing.database import psql
 import hashlib, json, os, pathlib, socket, subprocess, threading, time, urllib.error, urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 root=pathlib.Path(__file__).resolve().parents[1]
@@ -40,7 +41,7 @@ def call(path,body=None,tenant='atelier',host=None,status=200):
     return value
 
 def sql(text):
-    return subprocess.check_output(['docker','exec','-i',os.environ['DB_CONTAINER'],'psql','-XqAt','-v','ON_ERROR_STOP=1','-U','commerce','-d',os.environ['TEST_DATABASE']],input=text,text=True).strip()
+    return subprocess.check_output(psql(os.environ['DB_CONTAINER'],'commerce',os.environ['TEST_DATABASE'],'-XqAt','-v','ON_ERROR_STOP=1'),input=text,text=True).strip()
 log=open(root/'.run/managed-search.log','w')
 process=subprocess.Popen([str(root/'target/debug/vendune')],cwd=root,env=env,stdout=log,stderr=log)
 try:

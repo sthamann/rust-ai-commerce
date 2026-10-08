@@ -51,7 +51,7 @@ fn validate(v: &Edit) -> Result<()> {
     }
     Ok(())
 }
-pub(crate) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn list(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     auth::permit(&h, "catalog.read")?;
     let t = merchant(&a, &h)?;
     let rows =
@@ -68,20 +68,26 @@ pub(crate) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Valu
 }
 pub(crate) async fn create(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     write(a, h, Uuid::new_v4().to_string(), v, true).await
 }
 pub(crate) async fn save(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     write(a, h, id, v, false).await
 }
-async fn write(a: App, h: HeaderMap, id: String, v: Value, create: bool) -> Result<Json<Value>> {
+async fn write(
+    a: App,
+    h: RequestContext,
+    id: String,
+    v: Value,
+    create: bool,
+) -> Result<Json<Value>> {
     auth::permit(&h, "catalog")?;
     let t = merchant(&a, &h)?;
     let v: Edit = serde_json::from_value(v).map_err(|_| bad("Invalid category edit"))?;

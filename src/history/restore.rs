@@ -2,7 +2,7 @@
 use super::*;
 pub(super) async fn apply(
     a: App,
-    h: HeaderMap,
+    h: RequestContext,
     entity: &str,
     id: String,
     state: Value,

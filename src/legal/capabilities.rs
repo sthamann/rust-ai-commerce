@@ -34,7 +34,7 @@ pub(crate) fn schema(name: &str) -> Option<Value> {
         json!({"type":"object","properties":properties,"required":required,"additionalProperties":false}),
     )
 }
-pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+pub(crate) async fn invoke(a: &App, h: &RequestContext, name: &str, v: &Value) -> Result<Value> {
     match name {
         "privacy.policy" => Ok(policy(State(a.clone()), h.clone()).await?.0),
         "privacy.consent" => Ok(consent::write(

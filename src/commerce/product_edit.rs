@@ -4,7 +4,7 @@ use super::product_metadata::*;
 use super::*;
 pub(crate) async fn edit_product(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -12,7 +12,7 @@ pub(crate) async fn edit_product(
 }
 pub(super) async fn save_product(
     a: App,
-    h: HeaderMap,
+    h: RequestContext,
     id: String,
     v: Value,
     create: bool,
@@ -225,7 +225,7 @@ pub(super) async fn save_product(
 }
 pub(crate) async fn product_editor(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "catalog.read")?;

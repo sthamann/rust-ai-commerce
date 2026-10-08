@@ -2,6 +2,7 @@
 """Isolated production-mode bootstrap test. Creates/drops only a uniquely named synthetic database."""
 
 import json, os, pathlib, secrets, subprocess, time, urllib.error, urllib.parse, urllib.request, uuid
+from testing.database import psql
 
 root = pathlib.Path(__file__).resolve().parents[1]
 name = "platform_setup_" + uuid.uuid4().hex[:12]
@@ -11,20 +12,7 @@ checks = []
 
 def sql(text, database="postgres"):
     return subprocess.run(
-        [
-            "docker",
-            "exec",
-            "-i",
-            container,
-            "psql",
-            "-XqAt",
-            "-v",
-            "ON_ERROR_STOP=1",
-            "-U",
-            "commerce",
-            "-d",
-            database,
-        ],
+        psql(container, "commerce", database, "-XqAt", "-v", "ON_ERROR_STOP=1"),
         input=text,
         capture_output=True,
         text=True,
@@ -157,7 +145,10 @@ try:
             time.sleep(0.2)
     else:
         raise RuntimeError("Production test service did not become healthy")
-    req("/api/auth/register", {}, expected=403)
+    req("/api/auth/register", {
+        "email": "closed-signup@example.test", "name": "Closed signup",
+        "password": "Synthetic-closed-signup-password!", "workspaceId": "closed-signup",
+    }, expected=403)
     req("/api/merchant/overview", token=legacy_token, expected=401)
     req("/api/platform/overview", expected=401)
     check(

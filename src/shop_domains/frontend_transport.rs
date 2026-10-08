@@ -30,9 +30,11 @@ fn opaque_pair(pair: &str, names: &[String]) -> bool {
             .bytes()
             .all(|c| c.is_ascii_alphanumeric() || b"_.~-".contains(&c))
 }
-pub(super) fn request_cookie(headers: &HeaderMap) -> Option<String> {
+pub(super) fn request_cookie(
+    headers: &impl crate::request_context::HeaderReader,
+) -> Option<String> {
     let names = cookie_names();
-    let cookie = headers.get("cookie")?.to_str().ok()?;
+    let cookie = crate::header(headers, "cookie")?;
     let admitted = cookie
         .split(';')
         .map(str::trim)
@@ -103,6 +105,19 @@ pub(super) fn response(upstream: reqwest::Response) -> Response {
         if let Some(value) = headers.get(name) {
             result.headers_mut().insert(name, value.clone());
         }
+    }
+    // This independently hosted renderer owns its script policy (SSR/nonces/provider integrations).
+    // Preserve upstream CSP; the shared core cannot safely rewrite its streamed HTML scripts.
+    if !result.headers().contains_key("content-security-policy") {
+        result.headers_mut().insert(
+            "content-security-policy",
+            format!(
+                "object-src 'none'; base-uri 'self'; frame-ancestors 'self' {}",
+                crate::runtime_config::get().frame_ancestors
+            )
+            .parse()
+            .unwrap(),
+        );
     }
     if let Some(value) = headers.get("location")
         && value

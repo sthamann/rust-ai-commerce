@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Provider-neutral financial ledger through real HTTP/PostgreSQL and a local private-service fixture."""
+from testing.database import psql
 import copy,hashlib,hmac,json,os,pathlib,subprocess,threading,time,urllib.request,urllib.error,uuid
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 ROOT=pathlib.Path(__file__).resolve().parents[1];reference={};results={};behavior={};calls=[]
@@ -40,7 +41,7 @@ def wait(id,h,state):
   time.sleep(.15)
  raise AssertionError((state,v,call('/api/payments',h=ah)))
 def sql(statement):
- return subprocess.check_output(['docker','exec','-i',os.getenv('DB_CONTAINER','rust-ai-commerce-postgres-1'),'psql','-U','commerce','-d',os.environ['TEST_DATABASE'],'-At','-v','ON_ERROR_STOP=1'],input=statement,text=True).strip()
+ return subprocess.check_output(psql(os.getenv('DB_CONTAINER','rust-ai-commerce-postgres-1'),'commerce',os.environ['TEST_DATABASE'],'-At','-v','ON_ERROR_STOP=1'),input=statement,text=True).strip()
 def purchase(currency="EUR"):
  h={'x-tenant':'workshop','x-commerce-currency':currency};c=call('/store-api/checkout/cart',{'session':uuid.uuid4().hex},h);h['sw-context-token']=c['token'];c=call('/store-api/checkout/cart/line-item',{'items':[{'referencedId':'notebook','quantity':1},{'referencedId':'mug','quantity':1}]},h)
  s=c['checkout'];s.update(paymentMethodId='example-payments-wallet',customerEmail='fixture@example.test',billingAddress={'name':'Fixture Buyer','firstName':'Fixture','lastName':'Buyer','street':'Fixture Street 1','postalCode':'12345','city':'Test','country':'DE'});call('/store-api/checkout/context',{'revision':c['revision'],'checkout':s},h,'PUT')

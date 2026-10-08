@@ -9,7 +9,7 @@ pub(crate) async fn health(State(a): State<App>) -> Result<Json<Value>> {
 }
 pub(crate) async fn catalog_request(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     body: axum::body::Bytes,
 ) -> Result<Json<Value>> {
     // Drain the POST body before returning a large response. Otherwise clients
@@ -24,7 +24,7 @@ pub(crate) async fn catalog_request(
 
 pub(crate) async fn catalog_page(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     mut criteria: CatalogCriteria,
 ) -> Result<Json<Value>> {
     let (locale, chain) = language_context(&a, &h).await?;

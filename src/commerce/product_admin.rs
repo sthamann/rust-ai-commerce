@@ -72,14 +72,15 @@ pub(crate) struct ProductCriteria {
     low_stock: Option<bool>,
 }
 pub(crate) fn product_admin_router() -> Router<App> {
-    Router::new().route(
+    Router::new().secure_route(
         "/api/merchant/products",
+        &[("GET", "catalog.read"), ("POST", "catalog.write")],
         get(list_products).post(super::create_product),
     )
 }
 pub(crate) async fn list_products(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     axum::extract::Query(c): axum::extract::Query<ProductCriteria>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "catalog.read")?;

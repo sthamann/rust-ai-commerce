@@ -17,34 +17,55 @@ pub(crate) use questions::*;
 pub(crate) use retrieval::*;
 pub(crate) fn router() -> Router<App> {
     Router::new()
-        .route(
+        .secure_route(
             "/api/knowledge/documents",
+            &[("GET", "knowledge.read"), ("POST", "catalog.write")],
             get(list)
                 .post(ingest)
                 .layer(axum::extract::DefaultBodyLimit::max(256 * 1024)),
         )
-        .route(
+        .secure_route(
             "/api/knowledge/documents/upload",
+            &[("POST", "catalog.write")],
             post(upload).layer(axum::extract::DefaultBodyLimit::max(2 * 1024 * 1024)),
         )
-        .route("/api/knowledge/workspace", get(workspace::workspace))
-        .route(
+        .secure_route(
+            "/api/knowledge/workspace",
+            &[("GET", "knowledge.read")],
+            get(workspace::workspace),
+        )
+        .secure_route(
             "/api/knowledge/product/{id}",
+            &[("GET", "knowledge.read")],
             get(product_knowledge::product_knowledge),
         )
-        .route("/api/knowledge/preview", post(preview::preview))
-        .route(
+        .secure_route(
+            "/api/knowledge/preview",
+            &[("POST", "knowledge.read")],
+            post(preview::preview),
+        )
+        .secure_route(
             "/api/knowledge/documents/{id}",
+            &[
+                ("GET", "knowledge.read"),
+                ("PUT", "catalog.write"),
+                ("PATCH", "catalog.write"),
+            ],
             get(lifecycle::detail)
                 .put(publish)
                 .patch(lifecycle::edit)
                 .layer(axum::extract::DefaultBodyLimit::max(256 * 1024)),
         )
-        .route(
+        .secure_route(
             "/api/knowledge/documents/{id}/lifecycle",
+            &[("POST", "catalog.write")],
             post(lifecycle::lifecycle),
         )
-        .route("/api/knowledge/documents/{id}/index", post(index))
+        .secure_route(
+            "/api/knowledge/documents/{id}/index",
+            &[("POST", "catalog.write")],
+            post(index),
+        )
         .route("/store-api/product/{id}/questions", post(question))
 }
 

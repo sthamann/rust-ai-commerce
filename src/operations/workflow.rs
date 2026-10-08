@@ -1,6 +1,6 @@
 //! Revision-bound workflow configuration used by installed apps and selective sandbox releases.
 use super::*;
-pub(super) async fn get(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn get(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     auth::permit(&h, "orders.read")?;
     let (m, r) = commerce::machine(&a.db, &t).await?;
@@ -8,7 +8,7 @@ pub(super) async fn get(State(a): State<App>, h: HeaderMap) -> Result<Json<Value
 }
 pub(super) async fn save(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;

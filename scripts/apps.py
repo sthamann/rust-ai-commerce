@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Real PostgreSQL app lifecycle, managed schema/RLS, typed API/MCP, cart and observation tests."""
+from testing.database import psql
 import copy,json,os,pathlib,time,urllib.request,urllib.error,uuid,hashlib,subprocess
 BASE=os.getenv('BASE_URL','http://127.0.0.1:8787');ROOT=pathlib.Path(__file__).resolve().parents[1];checks=[]
 def call(path,body=None,h=None,method=None,expected=200):
@@ -24,7 +25,7 @@ call('/api/apps/engraving/entities/rules',{'id':'default','revision':2,'fields':
 table='app_'+hashlib.sha256(b'engraving').hexdigest()[:16]+'_rules';role='test_rls_'+uuid.uuid4().hex[:12]
 # Local database bootstrap identity is a superuser; SET LOCAL ROLE proves the policy under a restricted identity.
 query=f"BEGIN; CREATE ROLE {role}; GRANT SELECT ON {table} TO {role}; SELECT set_config('rac.tenant','{u['workspace']}',true); SET LOCAL ROLE {role}; SELECT count(*) FROM {table} WHERE tenant <> '{u['workspace']}'; SELECT count(*) FROM {table} WHERE tenant = '{u['workspace']}'; ROLLBACK;"
-output=subprocess.check_output(['docker','exec',os.getenv('DB_CONTAINER','vendune-postgres-1'),'psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-Atq','-c',query],text=True).splitlines()
+output=subprocess.check_output(psql(os.getenv('DB_CONTAINER','vendune-postgres-1'),'commerce',os.getenv('TEST_DATABASE','commerce'),'-Atq','-c',query),text=True).splitlines()
 assert output[-2:]==['0','1'],output
 check('Forced app RLS filters another tenant even when SQL omits an application tenant predicate')
 

@@ -1,5 +1,8 @@
 //! Argon2 password operations run off the asynchronous request executor.
-use super::*;
+use crate::{Result, bad};
+use argon2::{Argon2, PasswordHash, PasswordHasher, PasswordVerifier, password_hash::SaltString};
+use serde_json::Value;
+use uuid::Uuid;
 pub(crate) fn email(v: &Value) -> Result<String> {
     let s = v["email"].as_str().unwrap_or("").trim().to_lowercase();
     if s.len() > 254
@@ -53,9 +56,23 @@ pub(crate) fn role_allowed(actor: &str, target: &str) -> bool {
     ["owner", "admin", "editor", "viewer"].contains(&target)
         && (actor == "owner" || actor == "admin" && target != "owner")
 }
+/// HMAC verification compares fixed-size authenticators in constant time, including different token lengths.
+pub(crate) fn bootstrap_matches(candidate: &str, expected: &str) -> bool {
+    use hmac::{Hmac, Mac};
+    use sha2::Sha256;
+    let mut saved = Hmac::<Sha256>::new_from_slice(b"vendune-bootstrap-comparison").unwrap();
+    saved.update(expected.as_bytes());
+    let authenticator = saved.finalize().into_bytes();
+    let mut supplied = Hmac::<Sha256>::new_from_slice(b"vendune-bootstrap-comparison").unwrap();
+    supplied.update(candidate.as_bytes());
+    !expected.is_empty() && supplied.verify_slice(&authenticator).is_ok()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    use serde_json::json;
     #[test]
     fn validation_and_role_boundaries() {
         assert!(email(&json!({"email":" x@example.test "})).is_ok());

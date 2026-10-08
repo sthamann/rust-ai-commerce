@@ -1,12 +1,12 @@
 //! Store API address book uses independent customer sessions, never merchant credentials.
 use super::*;
-pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn list(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let (t, e) = identity(&a, &h).await?;
     Ok(Json(address_list(&a, &t, &e).await?))
 }
 pub(super) async fn create(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let (t, e) = identity(&a, &h).await?;
@@ -14,7 +14,7 @@ pub(super) async fn create(
 }
 pub(super) async fn save(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     axum::extract::Path(id): axum::extract::Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -23,7 +23,7 @@ pub(super) async fn save(
 }
 pub(super) async fn remove(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     axum::extract::Path(id): axum::extract::Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

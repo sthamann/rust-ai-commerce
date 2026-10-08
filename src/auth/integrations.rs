@@ -1,24 +1,66 @@
 //! Expiring API/MCP keys are bounded to one workspace and intersect their creator's current membership.
-use super::*;
+use super::{permit, validate_permissions};
+use crate::{
+    App, Error, Json, Path, RequestContext, Result, State, StatusCode, bad, hash, header, merchant,
+    uid,
+};
+use serde_json::{Value, json};
+use sqlx::Row;
+#[derive(serde::Deserialize)]
+pub(crate) struct Member {
+    pub tenant: String,
+    pub role: String,
+    pub permissions: Value,
+}
+pub(crate) struct Identity {
+    pub user: String,
+    pub default: String,
+    pub scopes: Option<Vec<String>>,
+    pub tenant: Option<String>,
+    pub parent: Option<String>,
+    pub status: Option<String>,
+    pub members: Vec<Member>,
+}
+pub(crate) async fn resolve_identity(
+    a: &App,
+    token: &str,
+    selected: Option<&str>,
+) -> Result<Identity> {
+    let r = sqlx::query(include_str!("identity.sql"))
+        .bind(hash(token))
+        .bind(selected)
+        .fetch_optional(&a.db)
+        .await?
+        .ok_or(Error(
+            StatusCode::UNAUTHORIZED,
+            "Session or integration key expired or invalid".into(),
+        ))?;
+    let scopes: Option<Value> = r.get("scopes");
+    Ok(Identity {
+        user: r.get("user_id"),
+        default: r.get("default_tenant"),
+        tenant: r.get("tenant"),
+        parent: r.get("parent"),
+        status: r.get("status"),
+        scopes: scopes
+            .map(serde_json::from_value)
+            .transpose()
+            .map_err(|_| bad("Invalid integration scopes"))?,
+        members: serde_json::from_value(r.get("memberships"))
+            .map_err(|_| bad("Invalid membership grants"))?,
+    })
+}
 pub(crate) async fn resolve_credential(
     a: &App,
     token: &str,
 ) -> Result<(String, String, Option<Vec<String>>)> {
-    if let Some(r) = sqlx::query(
-        "SELECT user_id,default_tenant FROM user_sessions WHERE digest=$1 AND expires_at>now()",
-    )
-    .bind(hash(token))
-    .fetch_optional(&a.db)
-    .await?
-    {
-        return Ok((r.get("user_id"), r.get("default_tenant"), None));
-    }
-    let r=sqlx::query("SELECT user_id,tenant,permissions FROM integration_keys WHERE digest=$1 AND expires_at>now()").bind(hash(token)).fetch_optional(&a.db).await?.ok_or(Error(StatusCode::UNAUTHORIZED,"Session or integration key expired or invalid".into()))?;
-    let v: Value = r.get("permissions");
-    let scopes = serde_json::from_value(v).map_err(|_| bad("Invalid integration scopes"))?;
-    Ok((r.get("user_id"), r.get("tenant"), Some(scopes)))
+    let identity = resolve_identity(a, token, None).await?;
+    Ok((identity.user, identity.default, identity.scopes))
 }
-pub(crate) async fn integration_list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn integration_list(
+    State(a): State<App>,
+    h: RequestContext,
+) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     permit(&h, "users")?;
     let rows=sqlx::query("SELECT id,name,user_id,permissions,created_at::text AS created,expires_at::text AS expires FROM integration_keys WHERE tenant=$1 ORDER BY created_at DESC LIMIT 100").bind(t).fetch_all(&a.db).await?;
@@ -28,9 +70,10 @@ pub(crate) async fn integration_list(State(a): State<App>, h: HeaderMap) -> Resu
 }
 pub(crate) async fn integration_create(
     State(a): State<App>,
-    h: HeaderMap,
-    Json(v): Json<Value>,
+    h: RequestContext,
+    Json(input): Json<super::dto::Integration>,
 ) -> Result<Json<Value>> {
+    let v = json!(input);
     let t = merchant(&a, &h)?;
     permit(&h, "users")?;
     if header(&h, "x-rac-user") == Some("bootstrap") {
@@ -70,7 +113,7 @@ pub(crate) async fn integration_create(
 }
 pub(crate) async fn integration_revoke(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;

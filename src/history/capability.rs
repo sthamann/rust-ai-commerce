@@ -31,7 +31,7 @@ pub(crate) fn schema(name: &str) -> Option<Value> {
         json!({"type":"object","properties":props,"required":required,"additionalProperties":false}),
     )
 }
-pub(crate) fn visible(h: &HeaderMap, name: &str) -> bool {
+pub(crate) fn visible(h: &RequestContext, name: &str) -> bool {
     if name == "merchant.customer.groups" {
         return auth::permit(h, "customers.read").is_ok()
             || auth::permit(h, "settings.read").is_ok();
@@ -49,7 +49,7 @@ pub(crate) fn visible(h: &HeaderMap, name: &str) -> bool {
     };
     scopes.iter().any(|p| auth::permit(h, p).is_ok())
 }
-pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+pub(crate) async fn invoke(a: &App, h: &RequestContext, name: &str, v: &Value) -> Result<Value> {
     let Json(value) = if name == "merchant.customer.groups" {
         commerce::groups(State(a.clone()), h.clone()).await?
     } else {

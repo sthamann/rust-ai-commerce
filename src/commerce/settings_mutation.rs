@@ -3,7 +3,7 @@ use super::*;
 
 pub(crate) async fn save_config(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "settings.write")?;

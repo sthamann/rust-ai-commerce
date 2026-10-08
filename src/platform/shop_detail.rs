@@ -3,7 +3,7 @@ use super::*;
 use axum::extract::Query;
 pub(super) async fn detail(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Query(c): Query<metrics::Criteria>,
 ) -> Result<Json<Value>> {

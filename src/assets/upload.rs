@@ -2,7 +2,7 @@
 use super::*;
 pub(crate) async fn list(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -14,7 +14,7 @@ pub(crate) async fn list(
 }
 pub(super) async fn upload(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(product): Path<String>,
     mut multipart: axum::extract::Multipart,
 ) -> Result<Json<Value>> {
@@ -114,7 +114,7 @@ fn validate_bytes(mime: &str, b: &[u8]) -> Result<()> {
 }
 pub(crate) async fn publish(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

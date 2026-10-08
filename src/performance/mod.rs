@@ -11,6 +11,7 @@ use std::{
 };
 mod admission;
 mod cache;
+pub(crate) mod cluster_lease;
 pub(crate) use admission::{Admission, run as admit_request};
 mod invalidation;
 mod languages;

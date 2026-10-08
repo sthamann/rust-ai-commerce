@@ -2,7 +2,7 @@
 use super::*;
 pub(super) async fn list(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(email): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -11,7 +11,7 @@ pub(super) async fn list(
 }
 pub(super) async fn create(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(email): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -23,7 +23,7 @@ pub(super) async fn create(
 }
 pub(super) async fn save(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((email, id)): Path<(String, String)>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -35,7 +35,7 @@ pub(super) async fn save(
 }
 pub(super) async fn remove(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((email, id)): Path<(String, String)>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

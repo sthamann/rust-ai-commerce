@@ -1,5 +1,10 @@
 //! Optional trusted identity exchange: signatures bind route, audience, expiry and one-use nonce.
-use super::*;
+use super::{email, hash_password, issue_session, provision_shop};
+use crate::{
+    App, Arc, Error, Json, Result, Sha256, State, StatusCode, Value, bad, conflict, env, hash,
+    json, knowledge, prototype_products, uid, validate_tenant,
+};
+
 use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
 use hmac::{Hmac, Mac};
 
@@ -154,14 +159,11 @@ pub(crate) async fn exchange(State(a): State<App>, Json(v): Json<Value>) -> Resu
     }
     tx.commit().await?;
     if let Some(sandbox) = sandbox {
-        a.sandboxes
-            .write()
-            .unwrap()
-            .insert(shop.into(), Arc::new(sandbox));
+        a.sandboxes.insert(shop.into(), Arc::new(sandbox));
     }
     if seeded {
         for p in prototype_products(&a, shop).await? {
-            knowledge::sync_product(&mut *a.db.acquire().await?, shop, &json!(p)).await?;
+            knowledge::sync_product_scoped(&a.db, shop, &json!(p)).await?;
         }
         knowledge::seed_relations(&a.db, shop).await?;
     }

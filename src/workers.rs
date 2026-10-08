@@ -15,14 +15,18 @@ pub(crate) fn start(a: &App) {
         .contains(&role.as_str()),
         "Unsupported PROCESS_ROLE"
     );
+    if role != "http" {
+        work_signal::start(Arc::new(runtime_config::get().listener_url.clone()));
+    }
     if ["all", "translation-worker"].contains(&role.as_str()) {
         let worker = a.clone();
         vendune::tenant_scope::spawn(async move {
-            let mut ticks = tokio::time::interval(std::time::Duration::from_secs(1));
+            let mut ticks = work_signal::subscribe();
             loop {
                 ticks.tick().await;
-                if let Err(e) = translations::once(&worker).await {
-                    eprintln!("translation worker: {}", e.1);
+                match translations::once(&worker).await {
+                    Ok(worked) => ticks.worked(worked),
+                    Err(e) => eprintln!("translation worker: {}", e.1),
                 }
             }
         });
@@ -30,11 +34,12 @@ pub(crate) fn start(a: &App) {
     if ["all", "media-worker"].contains(&role.as_str()) {
         let worker = a.clone();
         vendune::tenant_scope::spawn(async move {
-            let mut ticks = tokio::time::interval(std::time::Duration::from_secs(1));
+            let mut ticks = work_signal::subscribe();
             loop {
                 ticks.tick().await;
-                if let Err(e) = assets::image_once(&worker).await {
-                    eprintln!("image worker: {}", e.1);
+                match assets::image_once(&worker).await {
+                    Ok(worked) => ticks.worked(worked),
+                    Err(e) => eprintln!("image worker: {}", e.1),
                 }
             }
         });
@@ -52,11 +57,12 @@ pub(crate) fn start(a: &App) {
     if ["all", "memory-worker"].contains(&role.as_str()) {
         let worker = a.clone();
         vendune::tenant_scope::spawn(async move {
-            let mut ticks = tokio::time::interval(std::time::Duration::from_millis(250));
+            let mut ticks = work_signal::subscribe();
             loop {
                 ticks.tick().await;
-                if let Err(e) = consume_once(&worker).await {
-                    eprintln!("memory/outbox worker: {}", e.1);
+                match consume_once(&worker).await {
+                    Ok(worked) => ticks.worked(worked),
+                    Err(e) => eprintln!("memory/outbox worker: {}", e.1),
                 }
             }
         });
@@ -64,11 +70,12 @@ pub(crate) fn start(a: &App) {
     if ["all", "payment-worker"].contains(&role.as_str()) {
         let worker = a.clone();
         vendune::tenant_scope::spawn(async move {
-            let mut ticks = tokio::time::interval(std::time::Duration::from_millis(250));
+            let mut ticks = work_signal::subscribe();
             loop {
                 ticks.tick().await;
-                if let Err(e) = payments::payment_once(&worker).await {
-                    eprintln!("payment worker: {}", e.1);
+                match payments::payment_once(&worker).await {
+                    Ok(worked) => ticks.worked(worked),
+                    Err(e) => eprintln!("payment worker: {}", e.1),
                 }
             }
         });
@@ -87,14 +94,16 @@ pub(crate) fn start(a: &App) {
         });
         let worker = a.clone();
         vendune::tenant_scope::spawn(async move {
-            let mut ticks = tokio::time::interval(std::time::Duration::from_millis(250));
+            let mut ticks = work_signal::subscribe();
             loop {
                 ticks.tick().await;
-                if let Err(e) = marketing::flow_once(&worker).await {
-                    eprintln!("flow worker: {}", e.1);
+                match marketing::flow_once(&worker).await {
+                    Ok(worked) => ticks.worked(worked),
+                    Err(e) => eprintln!("flow worker: {}", e.1),
                 }
-                if let Err(e) = apps::deliver_once(&worker).await {
-                    eprintln!("app worker: {}", e.1);
+                match apps::deliver_once(&worker).await {
+                    Ok(worked) => ticks.worked(worked),
+                    Err(e) => eprintln!("app worker: {}", e.1),
                 }
             }
         });

@@ -1,6 +1,11 @@
 //! One-time personal-session handoff to the Studio; no passwords or bearer tokens in links.
-use super::*;
-pub(crate) async fn create(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+use super::{issue_session, permit};
+use crate::{
+    App, Error, Json, RequestContext, Result, Row, State, StatusCode, Value, bad, hash, header,
+    json, tenant, uid,
+};
+
+pub(crate) async fn create(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     permit(&h, "read")?;
     let user = header(&h, "x-rac-user")
         .filter(|u| *u != "bootstrap")

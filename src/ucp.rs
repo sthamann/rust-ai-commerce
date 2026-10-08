@@ -81,7 +81,7 @@ pub(crate) fn ucp_document(c: &StoredCart, q: &Value) -> Value {
 }
 pub(crate) async fn ucp_create(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let items = ucp_items(&v)?;
@@ -100,7 +100,7 @@ pub(crate) async fn ucp_create(
     doc["context_token"] = json!(c.token);
     Ok(Json(doc))
 }
-pub(crate) async fn ucp_load(a: &App, h: &HeaderMap, id: &str) -> Result<StoredCart> {
+pub(crate) async fn ucp_load(a: &App, h: &RequestContext, id: &str) -> Result<StoredCart> {
     let c = load_cart(a, h).await?;
     if c.id != id {
         return Err(Error(StatusCode::NOT_FOUND, "Checkout not found".into()));
@@ -109,7 +109,7 @@ pub(crate) async fn ucp_load(a: &App, h: &HeaderMap, id: &str) -> Result<StoredC
 }
 pub(crate) async fn ucp_get(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let c = ucp_load(&a, &h, &id).await?;
@@ -117,7 +117,7 @@ pub(crate) async fn ucp_get(
 }
 pub(crate) async fn ucp_update(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
@@ -146,7 +146,7 @@ pub(crate) async fn ucp_update(
 }
 pub(crate) async fn ucp_complete(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let current = ucp_load(&a, &h, &id).await?;
@@ -171,7 +171,7 @@ pub(crate) async fn ucp_complete(
 }
 pub(crate) async fn ucp_cancel(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let c = ucp_load(&a, &h, &id).await?;

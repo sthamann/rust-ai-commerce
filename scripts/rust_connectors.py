@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Actual Rust/PostgreSQL multi-process notification, OAuth/import and adversarial fixtures; no external accounts."""
+from testing.database import psql
 import base64,concurrent.futures,hashlib,json,os,pathlib,signal,socket,sqlite3,subprocess,sys,tempfile,threading,time,urllib.parse,uuid
 from cryptography.fernet import Fernet
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
@@ -16,7 +17,7 @@ def wait(fn):
   time.sleep(.1)
  raise AssertionError('Timed out waiting for actual worker result')
 def sql(query):
- result=subprocess.run(['docker','exec','-i',os.getenv('DB_CONTAINER','vendune-postgres-1'),'psql','-X','-q','-At','-U','commerce','-d',os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1'],input=query,text=True,capture_output=True)
+ result=subprocess.run(psql(os.getenv('DB_CONTAINER','vendune-postgres-1'),'commerce',os.environ['TEST_DATABASE'],'-X','-q','-At','-v','ON_ERROR_STOP=1'),input=query,text=True,capture_output=True)
  assert result.returncode==0,result.stderr
  return result.stdout.strip()
 class Wire(BaseHTTPRequestHandler):

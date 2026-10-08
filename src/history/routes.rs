@@ -7,7 +7,7 @@ pub(super) struct Page {
 }
 pub(super) async fn list(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((entity, id)): Path<(String, String)>,
     axum::extract::Query(p): axum::extract::Query<Page>,
 ) -> Result<Json<Value>> {
@@ -25,7 +25,7 @@ pub(super) async fn list(
 }
 pub(super) async fn detail(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((entity, id, version)): Path<(String, String, i64)>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -44,7 +44,7 @@ pub(super) async fn record(
 }
 pub(super) async fn restore(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((entity, id, version)): Path<(String, String, i64)>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

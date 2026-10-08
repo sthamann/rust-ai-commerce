@@ -1,7 +1,7 @@
 //! Cart creation, loading and input validation.
 use crate::*;
 
-pub(crate) async fn load_cart(a: &App, h: &HeaderMap) -> Result<StoredCart> {
+pub(crate) async fn load_cart(a: &App, h: &RequestContext) -> Result<StoredCart> {
     let r = sqlx::query("SELECT * FROM carts WHERE tenant=$1 AND token=$2")
         .bind(tenant(h)?)
         .bind(token(h)?)
@@ -103,7 +103,7 @@ pub(crate) fn validate_items(items: &[Item]) -> Result<()> {
 
 pub(crate) async fn new_cart_context(
     a: &App,
-    h: &HeaderMap,
+    h: &RequestContext,
     session: &str,
     transport: &str,
 ) -> Result<StoredCart> {
@@ -146,7 +146,7 @@ pub(crate) async fn new_cart_context(
             checkout.customer_email = Some(email.clone());
             checkout.billing_address_id = r.get("default_billing_address_id");
             checkout.shipping_address_id = r.get("default_shipping_address_id");
-            let mut conn = a.db.acquire().await?;
+            let mut conn = a.db.begin().await?;
             if let Some(id) = &checkout.billing_address_id {
                 checkout.billing_address =
                     Some(accounts::address_get(&mut conn, &t, &email, id).await?);
@@ -155,6 +155,7 @@ pub(crate) async fn new_cart_context(
                 checkout.address = Some(accounts::address_get(&mut conn, &t, &email, id).await?);
                 checkout.country = checkout.address.as_ref().unwrap().country.clone();
             }
+            drop(conn);
             let p: Value = r.get("profile");
             if let Some(id) = p["defaultPaymentMethodId"].as_str() {
                 checkout.payment_method_id = id.into();

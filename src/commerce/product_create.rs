@@ -2,7 +2,7 @@
 use super::*;
 pub(crate) async fn create_product(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let id = match v.get("id") {

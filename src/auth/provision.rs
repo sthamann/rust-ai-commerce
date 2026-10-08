@@ -1,5 +1,11 @@
 //! Reusable synthetic shop provisioning for initial signup and additional shops owned by the same merchant.
-use super::*;
+use super::{hash_password, issue_session};
+use crate::{
+    App, Arc, Json, RequestContext, Result, Sandbox, State, Value, accounts, auth, bad, categories,
+    conflict, demo_catalog, env, hash, header, json, knowledge, prototype_products,
+    validate_tenant,
+};
+
 pub(super) async fn provision(
     tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
     user: &str,
@@ -113,7 +119,7 @@ pub(crate) async fn provision_shop(
 }
 pub(crate) async fn create_workspace(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "read")?;
@@ -145,12 +151,9 @@ pub(crate) async fn create_workspace(
     }
     let sandbox = provision(&mut tx, user, slug, name, demo).await?;
     tx.commit().await?;
-    a.sandboxes
-        .write()
-        .unwrap()
-        .insert(slug.into(), Arc::new(sandbox));
+    a.sandboxes.insert(slug.into(), Arc::new(sandbox));
     for p in prototype_products(&a, slug).await? {
-        knowledge::sync_product(&mut *a.db.acquire().await?, slug, &json!(p)).await?;
+        knowledge::sync_product_scoped(&a.db, slug, &json!(p)).await?;
     }
     knowledge::seed_relations(&a.db, slug).await?;
     Ok(Json(issue_session(&a, user, slug).await?))

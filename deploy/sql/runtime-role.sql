@@ -5,9 +5,9 @@
 CREATE ROLE vendune_runtime NOLOGIN NOSUPERUSER NOBYPASSRLS;
 GRANT CONNECT,CREATE ON DATABASE :"DBNAME" TO vendune_runtime;
 GRANT USAGE,CREATE ON SCHEMA public TO vendune_runtime;
-GRANT SELECT,INSERT,UPDATE,DELETE,REFERENCES ON ALL TABLES IN SCHEMA public TO vendune_runtime;
+SELECT format('GRANT SELECT,INSERT,UPDATE,DELETE,REFERENCES ON public.%I TO vendune_runtime',tablename) FROM pg_tables WHERE schemaname='public' AND tablename NOT LIKE 'connector_%' \gexec
 GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO vendune_runtime;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT,INSERT,UPDATE,DELETE,REFERENCES ON TABLES TO vendune_runtime;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON TABLES FROM vendune_runtime;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE,SELECT ON SEQUENCES TO vendune_runtime;
 -- Only app-managed schema ownership is transferable; never transfer commerce tables.
 -- Migration owner must be a member of the app-schema owner to perform the transfer.

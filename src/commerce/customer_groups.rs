@@ -47,7 +47,7 @@ pub(super) fn validate_groups(s: &Settings) -> Result<()> {
     }
     Ok(())
 }
-pub(crate) async fn groups(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn groups(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     if auth::permit(&h, "customers.read").is_err() {
         auth::permit(&h, "settings.read")?;

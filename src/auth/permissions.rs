@@ -1,5 +1,10 @@
 //! Fine-grained workspace overrides. Owners retain control; delegates cannot grant rights they lack.
-use super::*;
+use super::permit;
+use crate::{
+    App, Error, Json, Path, RequestContext, Result, Row, State, StatusCode, Value, bad, hash,
+    header, json, merchant, verified_kernel,
+};
+
 pub(crate) const SCOPES: &[&str] = &[
     "catalog.read",
     "catalog.write",
@@ -27,7 +32,7 @@ pub(crate) fn scope(kind: &str) -> &str {
         x => x,
     }
 }
-pub(crate) fn allowed(h: &HeaderMap, kind: &str) -> bool {
+pub(crate) fn allowed(h: &RequestContext, kind: &str) -> bool {
     let role = header(h, "x-rac-role").unwrap_or("");
     if kind == "read" {
         return !role.is_empty();
@@ -54,7 +59,7 @@ pub(crate) fn allowed(h: &HeaderMap, kind: &str) -> bool {
         default_grant,
     )
 }
-pub(crate) fn validate_permissions(h: &HeaderMap, v: &Value) -> Result<Value> {
+pub(crate) fn validate_permissions(h: &RequestContext, v: &Value) -> Result<Value> {
     if v.is_null() {
         return Ok(Value::Null);
     }
@@ -76,13 +81,13 @@ pub(crate) fn validate_permissions(h: &HeaderMap, v: &Value) -> Result<Value> {
     }
     Ok(v.clone())
 }
-pub(crate) async fn access(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn access(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     merchant(&a, &h)?;
     Ok(Json(
         json!({"permissions":SCOPES.iter().filter(|s|allowed(&h,s)).collect::<Vec<_>>(),"available":SCOPES}),
     ))
 }
-pub(crate) async fn sessions(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn sessions(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     merchant(&a, &h)?;
     let user = header(&h, "x-rac-user").unwrap();
     let rows=sqlx::query("SELECT digest,created_at::text AS created,expires_at::text AS expires FROM user_sessions WHERE user_id=$1 AND expires_at>now() ORDER BY created_at DESC LIMIT 100").bind(user).fetch_all(&a.db).await?;
@@ -95,7 +100,7 @@ pub(crate) async fn sessions(State(a): State<App>, h: HeaderMap) -> Result<Json<
 }
 pub(crate) async fn revoke_session(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     merchant(&a, &h)?;
@@ -108,7 +113,7 @@ pub(crate) async fn revoke_session(
 }
 pub(crate) async fn revoke_invite(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;

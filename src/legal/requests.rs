@@ -12,7 +12,7 @@ pub(super) struct Intake {
 }
 pub(super) async fn create(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Intake>,
 ) -> Result<Json<Value>> {
     let c = load_cart(&a, &h).await?;
@@ -87,7 +87,7 @@ pub(super) async fn create(
 }
 pub(super) async fn receipt(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let c = load_cart(&a, &h).await?;
@@ -96,7 +96,7 @@ pub(super) async fn receipt(
         json!({"id":id,"kind":r.get::<String,_>("kind"),"data":public_data(&r.get::<Value,_>("data")),"state":r.get::<String,_>("state")}),
     ))
 }
-pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn list(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     auth::permit(&h, "customers.read")?;
     let rs=sqlx::query("SELECT id,kind,data,state,revision,channel_id FROM consumer_requests WHERE tenant=$1 ORDER BY created_at DESC,id LIMIT 100").bind(&t).fetch_all(&a.db).await?;
@@ -106,7 +106,7 @@ pub(super) async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Valu
 }
 pub(super) async fn update(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

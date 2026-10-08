@@ -135,7 +135,7 @@ pub(crate) fn validate_prices(v: &Value, cfg: &Config) -> Result<()> {
 pub(crate) fn context(cfg: &Config, d: &Definition) -> Value {
     json!({"code":d.code,"scale":d.scale,"factor":d.rate,"baseCurrency":cfg.base_currency,"pricingCurrency":cfg.pricing_currency,"pricingFactor":cfg.definitions.iter().find(|v|v.code==cfg.pricing_currency).map(|v|v.rate.as_str()),"strategy":d.strategy,"rateSource":cfg.rate_source,"rateDate":cfg.rate_date})
 }
-pub(crate) fn requested(h: &HeaderMap, cart: Option<&StoredCart>) -> String {
+pub(crate) fn requested(h: &RequestContext, cart: Option<&StoredCart>) -> String {
     cart.map(|c| c.data.currency.clone())
         .unwrap_or_else(|| header(h, "x-commerce-currency").unwrap_or("").into())
 }

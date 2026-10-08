@@ -72,3 +72,8 @@ Review local module README lists too. Passing link/build checks does not prove
 every prose claim; observed behavior, implementation scope and proposed work
 must stay distinct. Use [the testing guide](testing.md) and
 [formal scope](formal-verification.md) for exact evidence boundaries.
+
+The subsequent 8 October core review is documented in [core hardening](core-hardening.md),
+with a rendered request/event diagram, all eighteen findings, deployment settings,
+regressions and remaining proof/operational boundaries. Older latency and screenshot
+measurements retain their original scope; they are not relabelled as hardening results.

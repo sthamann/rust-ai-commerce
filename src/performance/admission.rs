@@ -100,7 +100,7 @@ impl Admission {
     }
     pub(crate) fn snapshot(&self) -> Value {
         let metrics = self.metrics.lock().unwrap();
-        json!({"scope":"process","tenantLimit":self.tenant_limit,"tenantAiLimit":self.ai_limit,
+        json!({"scope":"process + database leases","clusterTenantLimits":true,"tenantLimit":self.tenant_limit,"tenantAiLimit":self.ai_limit,
             "dailyAiQuotaDefault":self.daily_ai,"dailyQuotaScope":"database / UTC day",
             "generalAvailable":self.general.available_permits(),"checkoutAvailable":self.checkout.available_permits(),
             "trackedTenants":self.tenants.lock().unwrap().len(),"rejected":self.rejected.load(Ordering::Relaxed),
@@ -135,15 +135,40 @@ pub(crate) async fn run(a: &App, request: Request, next: Next) -> Response {
         return next.run(request).await;
     }
     let class = class(path);
-    let tenant = match tenant(request.headers()) {
-        Ok(t) => t,
-        Err(e) => return e.into_response(),
+    let context = RequestContext::from_request(&request);
+    // An anonymous caller cannot allocate arbitrary tenant buckets with a forged header.
+    let validated = context.validated_tenant;
+    let tenant = if validated {
+        match tenant(&context) {
+            Ok(t) => t,
+            Err(e) => return e.into_response(),
+        }
+    } else {
+        "anonymous".into()
     };
     let Some(_permits) = a.admission.enter(&tenant, class) else {
         a.admission.rejected.fetch_add(1, Ordering::Relaxed);
         return overloaded("Resource concurrency limit reached");
     };
-    if class == "ai" {
+    let _cluster_lease = if validated {
+        match super::cluster_lease::Lease::acquire(a, &tenant, "requests", a.admission.tenant_limit)
+            .await
+        {
+            Ok(lease) => Some(lease),
+            Err(e) => return e.into_response(),
+        }
+    } else {
+        None
+    };
+    let _ai_lease = if validated && class == "ai" {
+        match super::cluster_lease::Lease::acquire(a, &tenant, "ai", a.admission.ai_limit).await {
+            Ok(lease) => Some(lease),
+            Err(e) => return e.into_response(),
+        }
+    } else {
+        None
+    };
+    if class == "ai" && validated {
         // Quota is consumed before invoking a model. Failure still counts the admitted attempt;
         // no refunds on timeouts whose provider cost may be unknown. No model tokens stored here.
         let reserved = vendune::tenant_scope::scoped(vendune::tenant_scope::Scope::System,
@@ -159,7 +184,15 @@ pub(crate) async fn run(a: &App, request: Request, next: Next) -> Response {
         }
     }
     let start = Instant::now();
-    let response = next.run(request).await;
+    let response =
+        match tokio::time::timeout(std::time::Duration::from_secs(300), next.run(request)).await {
+            Ok(r) => r,
+            Err(_) => Error(
+                StatusCode::GATEWAY_TIMEOUT,
+                "Request exceeded its deadline. Check its job/order status before retrying.".into(),
+            )
+            .into_response(),
+        };
     a.admission.record(
         class,
         start.elapsed().as_millis().min(u64::MAX as u128) as u64,

@@ -31,12 +31,12 @@ async fn revision(
 }
 pub(super) async fn dependencies(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((kind, id)): Path<(String, String)>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "settings.read")?;
     let t = merchant(&a, &h)?;
-    let mut conn = a.db.acquire().await?;
+    let mut conn = a.db.begin().await?;
     let rev = revision(&mut conn, &t, &kind, &id, false).await?;
     let mut v = super::dependencies::inspect(&mut conn, &t, &kind, &id).await?;
     v["revision"] = json!(rev);
@@ -44,7 +44,7 @@ pub(super) async fn dependencies(
 }
 pub(super) async fn delete(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((kind, id)): Path<(String, String)>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

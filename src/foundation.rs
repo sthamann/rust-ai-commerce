@@ -4,12 +4,13 @@ use crate::*;
 #[derive(Clone)]
 pub(crate) struct App {
     pub(crate) db: PgPool,
+    pub(crate) _connection_budget: Arc<performance::cluster_lease::Lease>,
     pub(crate) inference_slots: Arc<tokio::sync::Semaphore>,
     pub(crate) token: Arc<String>,
     pub(crate) http: reqwest::Client,
     pub(crate) inference: Inference,
     pub(crate) model: Arc<String>,
-    pub(crate) sandboxes: Arc<RwLock<HashMap<String, Arc<Sandbox>>>>,
+    pub(crate) sandboxes: Arc<sandbox_cache::Cache>,
     pub(crate) channel_metrics: Arc<channel_metrics::ChannelMetrics>,
     pub(crate) app_limits: Arc<apps::ServiceLimits>,
     pub(crate) admission: Arc<performance::Admission>,
@@ -19,11 +20,18 @@ pub(crate) struct App {
 pub(crate) struct Error(pub(crate) StatusCode, pub(crate) String);
 impl IntoResponse for Error {
     fn into_response(self) -> Response {
-        (
+        let status = self.0;
+        let mut response = (
             self.0,
             Json(json!({"errors":[{"code":self.0.as_u16().to_string(),"detail":self.1}]})),
         )
-            .into_response()
+            .into_response();
+        if status == StatusCode::TOO_MANY_REQUESTS || status == StatusCode::SERVICE_UNAVAILABLE {
+            response
+                .headers_mut()
+                .insert("retry-after", "5".parse().unwrap());
+        }
+        response
     }
 }
 impl From<sqlx::Error> for Error {
@@ -51,8 +59,8 @@ pub(crate) fn conflict(s: &str) -> Error {
 pub(crate) fn uid() -> String {
     Uuid::new_v4().simple().to_string()
 }
-pub(crate) fn header<'a>(h: &'a HeaderMap, k: &str) -> Option<&'a str> {
-    h.get(k).and_then(|v| v.to_str().ok())
+pub(crate) fn header<'a>(h: &'a impl request_context::HeaderReader, k: &str) -> Option<&'a str> {
+    h.value(k)
 }
 pub(crate) fn validate_tenant(t: &str) -> Result<()> {
     if !(2..=48).contains(&t.len())
@@ -68,12 +76,16 @@ pub(crate) fn validate_tenant(t: &str) -> Result<()> {
     }
     Ok(())
 }
-pub(crate) fn tenant(h: &HeaderMap) -> Result<String> {
-    let t = header(h, "x-tenant").unwrap_or("atelier");
+pub(crate) fn tenant(h: &impl request_context::HeaderReader) -> Result<String> {
+    let t = header(h, "x-tenant")
+        .or(runtime_config::get().default_tenant.as_deref())
+        .ok_or(bad(
+            "Shop scope required; use its domain or x-tenant header",
+        ))?;
     validate_tenant(t)?;
     Ok(t.into())
 }
-pub(crate) fn merchant(_a: &App, h: &HeaderMap) -> Result<String> {
+pub(crate) fn merchant(_a: &App, h: &RequestContext) -> Result<String> {
     auth::permit(h, "read")?;
     let t = header(h, "x-rac-tenant").ok_or(Error(
         StatusCode::UNAUTHORIZED,
@@ -87,7 +99,7 @@ pub(crate) fn merchant(_a: &App, h: &HeaderMap) -> Result<String> {
     }
     Ok(t.into())
 }
-pub(crate) fn token(h: &HeaderMap) -> Result<&str> {
+pub(crate) fn token(h: &RequestContext) -> Result<&str> {
     header(h, "sw-context-token").ok_or(Error(
         StatusCode::UNAUTHORIZED,
         "Customer context required".into(),

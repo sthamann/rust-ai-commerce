@@ -10,7 +10,7 @@ pub(crate) struct PageContext {
 }
 pub(crate) async fn product_page(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Query(context): Query<PageContext>,
 ) -> Result<Html<String>> {
@@ -18,13 +18,18 @@ pub(crate) async fn product_page(
 }
 pub(crate) async fn product_page_slug(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path((id, _slug)): Path<(String, String)>,
     Query(context): Query<PageContext>,
 ) -> Result<Html<String>> {
     page(&a, h, &id, context).await
 }
-async fn page(a: &App, mut h: HeaderMap, id: &str, context: PageContext) -> Result<Html<String>> {
+async fn page(
+    a: &App,
+    mut h: RequestContext,
+    id: &str,
+    context: PageContext,
+) -> Result<Html<String>> {
     if context
         .shop
         .as_deref()

@@ -14,7 +14,7 @@ password and cannot overwrite or escalate an existing membership.
 Every authenticated request resolves its session and **active membership from
 PostgreSQL**. A client-supplied `x-tenant` only selects among authorized
 memberships; it grants no authority. Client `x-rac-*` principal headers are
-removed before middleware derives trusted user/tenant/role headers. Revocation
+removed before middleware creates a typed Principal in request extensions. Every API route declares its method-specific permission; an unknown API route is denied. Revocation
 and role changes apply to subsequent requests, including on other replicas;
 already executing requests are not retroactively cancelled.
 
@@ -36,8 +36,7 @@ for local setup/verification. It has global authority and must never be
 shared with ordinary merchants. The UI places it under advanced settings;
 normal operation uses Team & access. Personal sessions are kept in browser
 sessionStorage, so same-origin XSS could steal them. Production needs an
-appropriate cookie/token gateway, strict CSP, TLS, origins/CSRF, OIDC/MFA,
-password recovery, verified email, abuse/rate controls and session management.
+appropriate cookie/token gateway, OIDC/MFA, password recovery and verified email. The native strict script CSP, strict-deployment HSTS, constant-time bootstrap comparison and database-backed account/peer throttles are now implemented; see [the eighteen review fixes](core-hardening.md).
 
 Studio validates a visible connected session once per minute and on return to
 the tab. An authoritative merchant-authentication rejection from either JSON
@@ -66,7 +65,7 @@ These checks do not prove containment against SQL injection or a compromised
 server/database identity; physical tenant isolation remains additional work.
 Operator provisioning, configured shop-subdomain routing and recoverable
 pause/trash/restore are implemented; see [the platform guide](platform.md).
-Production billing, distributed quotas, physical tenant erasure/export, isolated
+Production billing, full token/spend quotas, physical tenant erasure/export, isolated
 backups and automated failover remain additional work. Local storefront selection
 uses `?shop=<workspace-id>`; configured public subdomains derive scope from the
 stored host mapping. Customer cart tokens remain independently scoped and rotate
@@ -86,7 +85,7 @@ Models receive bounded shop/conversation context and verified observations.
 They emit allowlisted typed proposals. A separate authorized, explicit
 approval executes changes; the model cannot grant authority, run SQL/code or
 approve its own proposal. MCP mutation uses the same role gate as HTTP.
-Public model endpoints need quotas/abuse controls before remote deployment.
+Interactive model admission has durable daily quotas and shared concurrency leases. Complete token/spend billing and edge abuse defenses remain separate.
 
 Cloud credentials stay on the server. Provider URLs are server configuration,
 not merchant input. Selecting OpenAI/Claude sends bounded shop context to that
@@ -96,8 +95,7 @@ remote ChatGPT/Claude setup still requires a real production authorization
 endpoint. No OAuth server or externally connected account is claimed.
 
 Wasm guests have no host imports/WASI and bounded fuel/memory/stack/source.
-Compilation occurs before activation; checkout refreshes a changed persisted
-policy before execution, including across app instances. Traps roll back
+Cold compilation uses a bounded LRU and blocking-pool slots before cart/product locks; checkout verifies its persisted digest under the lock. Pure app Wasm shares the same cache implementation, without compilation under its global cache mutex. Traps roll back
 purchase. A process-isolated compiler is still a production requirement.
 
 See [app and payment boundaries](intelligence-apps-payments.md) for the opaque
@@ -123,7 +121,7 @@ address snapshots remain independent of later CRM edits.
 
 Immutable bytes/digests protect private uploads and paid purchase files; MIME
 checks are not antivirus. Rich descriptions accept bounded typed blocks and safe
-media URLs, not executable HTML. Global core RLS, production recovery/verification,
+media URLs, not executable HTML. Production recovery/verification,
 legal document compliance and complete upstream PSP capabilities remain outside
 the verified prototype. See the exact [operations boundaries](merchant-operations.md).
 

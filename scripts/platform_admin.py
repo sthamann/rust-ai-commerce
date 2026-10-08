@@ -2,6 +2,7 @@
 """Grant/revoke an existing personal operator offline. Credentials remain in environment; no signup can grant this role."""
 
 import argparse, json, os, pathlib, subprocess
+from testing.database import psql
 
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument("action", choices=["grant", "revoke"])
@@ -27,21 +28,7 @@ else:
 sql = f"WITH changed AS ({change}), recorded AS (INSERT INTO platform_audit(action,data) SELECT 'operator.{a.action}',jsonb_build_object('userId',user_id) FROM changed RETURNING id) SELECT count(*) FROM recorded;"
 env = dict(os.environ)
 if a.container:
-    command = [
-        "docker",
-        "exec",
-        "-i",
-        a.container,
-        "psql",
-        "-X",
-        "-qAt",
-        "-v",
-        "ON_ERROR_STOP=1",
-        "-U",
-        "commerce",
-        "-d",
-        a.database,
-    ]
+    command = psql(a.container, "commerce", a.database, "-X", "-qAt", "-v", "ON_ERROR_STOP=1")
 else:
     if not env.get("DATABASE_URL"):
         p.error("DATABASE_URL required")

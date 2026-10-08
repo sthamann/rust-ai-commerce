@@ -54,7 +54,7 @@ implemented.
 
 Setup records immutable checksummed migrations. `BOOTSTRAP_MODE=migrate` performs
 setup without workers; `serve` requires all migrations to be ready. On upgrades,
-run a controlled migration-only job before restarting `serve` replicas; do not
+run the controlled migration-only job and then the post-migration runtime-role provisioning job before restarting `serve` replicas; do not
 roll mixed schema versions blindly. The initial `auto` mode supports one admitted
 experimental deployment, not rolling-upgrade orchestration.
 
@@ -121,8 +121,7 @@ public HTTPS/Vercel deployment. `platform.py` and `platform_setup.py` are mandat
 HTTP/PostgreSQL CI tests.
 
 Additional public deployments need their own host/domain and operator identity.
-Broader production SaaS requires recovery/email verification, rate limits/abuse
-controls, core-wide RLS, per-tenant inference budgets, signed app trust, billing,
+Broader production SaaS requires recovery/email verification, full provider/token/spend quotas, signed app trust, billing,
 large-catalog staged branches, backups/restores and measured failover. The
 [operator guide](platform.md) describes exactly what the dashboard measures.
 
@@ -157,3 +156,18 @@ cart state, and reloads serve the application at that URL. Older slug addresses 
 the SKU and canonicalize to the currently saved slug. Metadata and canonical tags are
 rendered by the client; server-side product HTML, sitemap generation and slug-only
 redirect history are not implemented by this change.
+
+## Strict runtime and real transaction pooling
+
+The production Compose template separates migration owner, commerce runtime and
+connector credentials. Migrations finish before role provisioning; commerce starts
+in `serve` with strict RLS, no bootstrap auth and no demo fallback. Run provisioning
+after additive upgrades. Existing hosts must migrate and change their own runtime
+credentials explicitly; changing this template alone does not reconfigure them.
+
+`DB_CLUSTER_CONNECTION_BUDGET` is shared by all HTTP/worker processes. Each reserves
+`DB_POOL_MAX + 2`; set `DB_MAX_PROCESSES` and the same budget on every replica.
+Transaction pooling requires PgBouncer 1.21+, protocol prepared-statement support
+and a **direct/session** `DATABASE_LISTENER_URL` under the non-owner login. Set
+`DB_POOLER_MODE=transaction`; statement pooling is unsupported. [Complete settings,
+upgrade sequence, worker retention and tested boundaries](core-hardening.md).

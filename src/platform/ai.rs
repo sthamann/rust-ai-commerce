@@ -1,7 +1,7 @@
 //! Operator-only inference administration: optimistic revision, encrypted write-only keys and audit without secrets.
 use super::*;
 use vendune::inference::settings;
-pub(super) async fn get(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn get(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     auth::actor(&h)?;
     snapshot(&a).await.map(Json)
 }
@@ -31,7 +31,7 @@ async fn snapshot(a: &App) -> Result<Value> {
 }
 pub(super) async fn save(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let actor = auth::actor(&h)?;

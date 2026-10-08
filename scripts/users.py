@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from testing.database import psql
 """Real multi-user, workspace isolation and role/revocation regression tests.
 Creates uniquely named synthetic workspaces/accounts. Never contacts a PSP.
 """
@@ -96,7 +97,7 @@ req('/api/merchant/commerce',{'revision':config['revision'],'data':config['data'
 # Expiration is exercised against the actual DB predicate, not a mocked clock.
 expired=req('/api/workspace/invitations',{'email':'expired-'+suffix+'@example.test','role':'viewer'},oh)
 assert all(c in '0123456789abcdef' for c in expired['id'])
-subprocess.run(['docker','exec',os.getenv('DB_CONTAINER','vendune-postgres-1'),'psql','-U','commerce','-d',os.getenv('TEST_DATABASE','commerce'),'-c',"UPDATE user_invites SET expires_at=now()-interval '1 second' WHERE id='"+expired['id']+"'"],check=True,capture_output=True)
+subprocess.run(psql(os.getenv('DB_CONTAINER','vendune-postgres-1'),'commerce',os.getenv('TEST_DATABASE','commerce'),'-c',"UPDATE user_invites SET expires_at=now()-interval '1 second' WHERE id='"+expired['id']+"'"),check=True,capture_output=True)
 req('/api/auth/accept',{'name':'Expired','password':password,'invitationToken':expired['token']},expected=404)
 check('expired invitation cannot create a membership')
 coowner=invite(owner,'owner','coowner')

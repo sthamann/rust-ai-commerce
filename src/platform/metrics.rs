@@ -23,7 +23,7 @@ fn amounts(rows: &[sqlx::postgres::PgRow]) -> Vec<Value> {
 }
 pub(super) async fn overview(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Query(c): Query<Criteria>,
 ) -> Result<Json<Value>> {
     auth::actor(&h)?;
@@ -46,7 +46,7 @@ pub(super) async fn overview(
 }
 pub(super) async fn shops(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Query(c): Query<Criteria>,
 ) -> Result<Json<Value>> {
     auth::actor(&h)?;
@@ -64,7 +64,7 @@ pub(super) async fn shops(
 }
 pub(super) async fn detail(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Query(c): Query<Criteria>,
 ) -> Result<Json<Value>> {

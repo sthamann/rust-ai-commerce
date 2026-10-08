@@ -24,9 +24,14 @@ pub(crate) fn router() -> Router<App> {
         )
         .route("/store-api/legal/requests", post(requests::create))
         .route("/store-api/legal/requests/{id}", get(requests::receipt))
-        .route("/api/merchant/legal/requests", get(requests::list))
-        .route(
+        .secure_route(
+            "/api/merchant/legal/requests",
+            &[("GET", "customers.read")],
+            get(requests::list),
+        )
+        .secure_route(
             "/api/merchant/legal/requests/{id}",
+            &[("PUT", "customers.write")],
             axum::routing::put(requests::update),
         )
 }

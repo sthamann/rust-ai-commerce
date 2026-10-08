@@ -1,6 +1,6 @@
 //! MCP automation tools call the same tenant-bound handlers and validators as HTTP; no separate mutation semantics.
 use super::*;
-pub(crate) async fn invoke(a: &App, h: &HeaderMap, name: &str, v: &Value) -> Result<Value> {
+pub(crate) async fn invoke(a: &App, h: &RequestContext, name: &str, v: &Value) -> Result<Value> {
     merchant(a, h)?;
     let Json(value) = match name {
         "automation.catalog" => catalog::catalog(State(a.clone()), h.clone()).await?,

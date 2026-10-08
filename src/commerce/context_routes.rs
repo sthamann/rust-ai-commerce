@@ -1,7 +1,7 @@
 //! Public method discovery and revision-checked checkout context changes.
 use super::*;
 
-pub(crate) async fn options(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn options(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = tenant(&h)?;
     let (s, revision) = scoped_config(&a, &t, marketing::channel_id(&h)).await?;
     let cart = if header(&h, "sw-context-token").is_some() {
@@ -43,7 +43,7 @@ pub(crate) async fn options(State(a): State<App>, h: HeaderMap) -> Result<Json<V
 }
 pub(crate) async fn select_checkout(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let mut requested: CheckoutSelection = serde_json::from_value(v["checkout"].clone())

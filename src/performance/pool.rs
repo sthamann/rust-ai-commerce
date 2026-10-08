@@ -1,26 +1,18 @@
 //! Explicit per-process database budgets and bounded queue waits; invalid deployment values fail fast.
-use crate::*;
+use sqlx::postgres::PgPoolOptions;
 use std::time::Duration;
-fn number(key: &str, default: u32, min: u32, max: u32) -> u32 {
-    let value = env::var(key)
-        .map(|s| s.parse::<u32>().expect("Invalid database pool number"))
-        .unwrap_or(default);
-    assert!(
-        (min..=max).contains(&value),
-        "Invalid {key}: allowed {min}..{max}"
-    );
-    value
-}
 pub(crate) fn pool_options() -> PgPoolOptions {
-    let max = number("DB_POOL_MAX", 20, 1, 256);
-    let min = number("DB_POOL_MIN", 0, 0, max);
-    let wait = number("DB_POOL_WAIT_MS", 5000, 100, 60000);
-    PgPoolOptions::new()
-        .max_connections(max)
-        .min_connections(min)
-        .acquire_timeout(Duration::from_millis(wait.into()))
+    let config = crate::runtime_config::get();
+    let options = PgPoolOptions::new()
+        .max_connections(config.db_pool_max)
+        .min_connections(config.db_pool_min)
+        .acquire_timeout(Duration::from_millis(config.db_wait_ms.into()))
         .idle_timeout(Duration::from_secs(300))
-        .max_lifetime(Duration::from_secs(1800))
+        .max_lifetime(Duration::from_secs(1800));
+    if config.transaction_pooling {
+        return options;
+    }
+    options
         .after_connect(|conn, _| {
             Box::pin(async move {
                 sqlx::raw_sql("SET search_path = public; SET jit = off")
@@ -36,14 +28,6 @@ pub(crate) fn pool_options() -> PgPoolOptions {
                 Ok(true)
             })
         })
-        .after_release(|conn, _| {
-            Box::pin(async move {
-                sqlx::query(
-                    "SELECT set_config('rac.tenant','',false),set_config('rac.system','off',false)",
-                )
-                .execute(conn)
-                .await?;
-                Ok(true)
-            })
-        })
+    // Do not issue a second reset query on return. Every checkout, including unscoped
+    // tasks, MUST rebind before use; failed/cancelled acquire discards the connection.
 }

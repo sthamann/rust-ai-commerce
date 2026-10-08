@@ -1,5 +1,6 @@
 //! Versioned setup is separate from serving; no catalog-wide startup repair.
 use crate::*;
+use sqlx::PgPool;
 
 mod schema;
 use schema::SCHEMA;
@@ -130,7 +131,7 @@ pub(crate) async fn seed_demo(a: &App, setup: &PgPool) {
         .await
         .expect("bounded demo products");
         for row in rows {
-            knowledge::sync_product(&mut a.db.acquire().await.unwrap(), t, &json!(product(&row)))
+            knowledge::sync_product_scoped(&a.db, t, &json!(product(&row)))
                 .await
                 .expect("demo graph product");
         }
@@ -143,7 +144,7 @@ pub(crate) async fn seed_demo(a: &App, setup: &PgPool) {
 }
 
 /// Every required schema must match, including domain schemas introduced after bounded reads.
-pub(crate) async fn ready(db: &PgPool) {
+pub(crate) async fn ready(db: &vendune::scoped_pool::ScopedPool) {
     for (version, source) in SCHEMA {
         let current: Option<String> =
             sqlx::query_scalar("SELECT checksum FROM public.commerce_migrations WHERE version=$1")

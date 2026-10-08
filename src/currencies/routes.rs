@@ -4,17 +4,23 @@ pub(crate) fn router() -> Router<App> {
     Router::new()
         .route("/store-api/currencies", get(discover))
         .route("/store-api/checkout/currency", axum::routing::put(select))
-        .route("/api/merchant/currencies/rates/refresh", post(refresh))
-        .route(
+        .secure_route(
+            "/api/merchant/currencies/rates/refresh",
+            &[("POST", "catalog.write")],
+            post(refresh),
+        )
+        .secure_route(
             "/api/merchant/currencies/price-jobs",
+            &[("GET", "catalog.read"), ("POST", "catalog.write")],
             get(jobs::list).post(jobs::create),
         )
-        .route(
+        .secure_route(
             "/api/merchant/currencies/price-jobs/{id}",
+            &[("GET", "catalog.read")],
             get(jobs::detail),
         )
 }
-pub(super) async fn discover(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn discover(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let (s, revision) =
         commerce::scoped_config(&a, &tenant(&h)?, marketing::channel_id(&h)).await?;
     let c = if header(&h, "sw-context-token").is_some() {
@@ -29,7 +35,7 @@ pub(super) async fn discover(State(a): State<App>, h: HeaderMap) -> Result<Json<
 }
 pub(super) async fn select(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let current = load_cart(&a, &h).await?;
@@ -54,7 +60,7 @@ pub(super) async fn select(
 }
 pub(super) async fn refresh(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     auth::permit(&h, "settings.write")?;

@@ -1,8 +1,9 @@
 //! Dedicated payment RPC, pinned service version and operator-owned egress; never ordinary app-action receipts.
-use super::*;
+use super::{Attempt, return_urls};
+use crate::{App, Error, Result, StatusCode, Value, bad, http_limits, json};
+
 pub(crate) fn config(provider: &str, version: &str, environment: &str) -> Result<Value> {
-    let all: Value = serde_json::from_str(&env::var("PAYMENT_SERVICES").unwrap_or("{}".into()))
-        .map_err(|_| bad("Invalid payment services configuration"))?;
+    let all = &crate::runtime_config::get().payment_services;
     // Keep environments side by side so switching a channel to live does not strand sandbox receipts.
     let version = &all[provider][version];
     let c = if version[environment].is_object() {
@@ -10,6 +11,10 @@ pub(crate) fn config(provider: &str, version: &str, environment: &str) -> Result
     } else {
         version.clone()
     };
+    validate_service(&c, environment)?;
+    Ok(c)
+}
+pub(crate) fn validate_service(c: &Value, environment: &str) -> Result<()> {
     let url = reqwest::Url::parse(c["url"].as_str().ok_or(Error(
         StatusCode::SERVICE_UNAVAILABLE,
         "Payment service version unavailable".into(),
@@ -31,7 +36,7 @@ pub(crate) fn config(provider: &str, version: &str, environment: &str) -> Result
             "Payment service requires matching environment, HTTPS and a private credential",
         ));
     }
-    Ok(c)
+    Ok(())
 }
 pub(crate) async fn call(
     a: &App,
@@ -46,6 +51,8 @@ pub(crate) async fn call(
         return Err(bad("External payments are disabled in private sandboxes"));
     }
     let c = config(provider, version, environment)?;
+    let _cluster =
+        crate::performance::cluster_lease::Lease::acquire(a, t, "payment-provider", 8).await?;
     let _permit = a.app_limits.enter(t, provider)?;
     if body.to_string().len() > 65536 {
         return Err(bad("Payment request exceeds limit"));

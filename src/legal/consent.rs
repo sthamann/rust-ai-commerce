@@ -1,7 +1,7 @@
 //! Cart/channel-bound affirmative choices; stale/expired policy receipts never authorize processing.
 use super::*;
 use model::{PURPOSES, version};
-pub(crate) async fn policy(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(crate) async fn policy(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = tenant(&h)?;
     let channel = marketing::channel_id(&h);
     let (s, _) = commerce::scoped_config(&a, &t, channel).await?;
@@ -10,7 +10,7 @@ pub(crate) async fn policy(State(a): State<App>, h: HeaderMap) -> Result<Json<Va
         json!({"data":public_config(&s.legal),"policyVersion":version(&s.legal),"mainLocale":s.main_locale,"locales":s.locales,"salesChannelId":channel}),
     ))
 }
-pub(super) async fn read(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
+pub(super) async fn read(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let c = load_cart(&a, &h).await?;
     let (s, _) = commerce::scoped_config(&a, &c.tenant, &c.data.sales_channel).await?;
     let r=sqlx::query("SELECT data,policy_version,expires_at>now() AS fresh FROM privacy_consents WHERE tenant=$1 AND cart_id=$2 AND channel_id=$3").bind(&c.tenant).bind(&c.id).bind(&c.data.sales_channel).fetch_optional(&a.db).await?;
@@ -30,7 +30,7 @@ pub(super) struct Choice {
 }
 pub(super) async fn write(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Choice>,
 ) -> Result<Json<Value>> {
     let c = load_cart(&a, &h).await?;

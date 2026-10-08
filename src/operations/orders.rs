@@ -2,7 +2,7 @@
 use super::*;
 pub(super) async fn list(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     axum::extract::Query(c): axum::extract::Query<Criteria>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -28,7 +28,7 @@ pub(super) async fn list(
 }
 pub(super) async fn detail(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
@@ -46,7 +46,7 @@ pub(super) async fn detail(
 }
 pub(super) async fn note(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Path(id): Path<String>,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {

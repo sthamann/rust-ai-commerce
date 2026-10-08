@@ -10,6 +10,7 @@ pub struct Sandbox {
     engine: Engine,
     module: Module,
     source: String,
+    digest: String,
 }
 impl Sandbox {
     pub fn new(wat: &str) -> Result<Self, String> {
@@ -28,7 +29,14 @@ impl Sandbox {
             engine,
             module,
             source: wat.into(),
+            digest: {
+                use sha2::Digest;
+                format!("{:x}", sha2::Sha256::digest(wat.as_bytes()))
+            },
         })
+    }
+    pub fn digest(&self) -> &str {
+        &self.digest
     }
     pub fn source_matches(&self, source: &str) -> bool {
         self.source == source

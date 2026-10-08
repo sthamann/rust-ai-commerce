@@ -2,7 +2,7 @@
 use super::*;
 pub(super) async fn create(
     State(a): State<App>,
-    h: HeaderMap,
+    h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
     let actor = auth::actor(&h)?;
@@ -41,15 +41,12 @@ pub(super) async fn create(
     .execute(&mut *tx)
     .await?;
     tx.commit().await?;
-    a.sandboxes
-        .write()
-        .unwrap()
-        .insert(id.into(), Arc::new(sandbox));
+    a.sandboxes.insert(id.into(), Arc::new(sandbox));
     // Product indexing uses the regular consumer and reports failure independently; committed shop ownership stays valid.
     let indexed = if seed {
         let result: Result<()> = async {
             for p in prototype_products(&a, id).await? {
-                knowledge::sync_product(&mut *a.db.acquire().await?, id, &json!(p)).await?;
+                knowledge::sync_product_scoped(&a.db, id, &json!(p)).await?;
             }
             knowledge::seed_relations(&a.db, id).await?;
             Ok(())
