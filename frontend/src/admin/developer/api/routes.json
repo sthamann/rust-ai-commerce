@@ -280,6 +280,11 @@
     "source": "src/history/mod.rs"
   },
   {
+    "path": "/api/identity/credentials",
+    "method": "POST",
+    "source": "src/routes.rs"
+  },
+  {
     "path": "/api/identity/exchange",
     "method": "POST",
     "source": "src/routes.rs"
