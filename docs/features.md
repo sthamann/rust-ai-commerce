@@ -2,9 +2,9 @@
 
 [Documentation home](documentation-site.md) · [Get started](quickstart.md) · [Exact Shopware scope](shopware-parity.md) · [Source map](source-map.md)
 
-**Reviewed on 6 October 2026 against `main` at `5e4f8b5`.** This guide follows the current storefront, all 15 Studio workspaces and the separate platform console. It includes the fashion catalog, central AI configuration, shop lifecycle and the new trusted experience integration.
+**Reviewed on 8 October 2026 against `main` at `706102f`.** This guide follows the storefront, all 15 Studio workspaces and the separate platform console. The latest increment connects managed Storyfront apps, frontend domains, channel pause/private previews, merchant password enrollment and guest buyer contacts. [Current release and deployment boundaries](current-release.md).
 
-Screenshots and GIFs show the real application with synthetic accounts and orders. GIFs demonstrate interaction; pauses are shortened and their timing is not a performance measurement. Commerce examples use simulated payments. Provider configuration is shown separately from a successful live provider transaction. [Capture provenance and recording inventory](assets/feature-tour/README.md).
+The 6 October screenshots and GIFs show the real local application with synthetic accounts and orders; their original source versions are retained. Three new 8 October captures show an owned public demo shop’s app and domain management in English, without exposing customer records. GIFs demonstrate interaction; pauses are shortened and their timing is not a performance measurement. Commerce examples use simulated payments. Provider configuration is shown separately from a successful live provider transaction. [Earlier capture provenance](assets/feature-tour/README.md) · [New integration captures](assets/showcase/README.md#public-integration-captures-8-october-2026).
 
 ![Current Nord Atelier storefront with the generated Harbor coat photograph](assets/feature-tour/storefront.jpg)
 
@@ -82,7 +82,7 @@ The sidebar groups **15 workspaces**. The shell provides a shop switcher, live/p
 | Commerce | Products | Product list, eleven editor tabs and category tree |
 | Commerce | Orders | Workflow, payment, fulfillment, documents and notes |
 | Commerce | Customers | Profiles, address books, groups and linked orders |
-| Experiences | Storyfronts | Configured catalog publication and checkout integration |
+| Experiences | Storyfronts | Owned Experience connections/editor links and optional companion publication |
 | Experiences | Sales channels | Main/additional storefront and headless channels |
 | Experiences | Rules & flows | Conditions, campaigns and event processes |
 | Experiences | Apps | Discover, install, inspect and manage packages |
@@ -335,21 +335,31 @@ Shipping maintains fees, country/rule availability, delivery times and tax alloc
 
 ### Main storefront and three-step channel creation
 
-A shop's persisted main storefront cannot be deactivated/deleted. Additional storefront/headless channels share its catalog/team but have distinct names, enabled languages, navigation root, selected products and settings overrides. Channel-bound carts cannot be silently reassigned to another channel.
+A shop's persisted main storefront cannot be deleted or changed to headless. It can be paused/resumed or made private; personal previews allow an authorized merchant to inspect it while public shoppers and agents are denied. Additional storefront/headless channels share its catalog/team but have distinct names, enabled languages, navigation root, selected products and settings overrides. Channel-bound carts cannot be silently reassigned to another channel.
 
-The creation assistant has **Basics → Catalog & languages → Review & create**. It supports searchable product selection and inherited settings; the final review is explicit. Separate SaaS shops have independent data/membership, whereas channels belong to one shop. Unused additional channels have revision/dependency-checked lifecycle operations. [Channel guide](studio-api-and-channels.md#sales-channels).
+The creation assistant has **Basics → Catalog & languages → Review & create**. It supports searchable product selection and inherited settings; the final review is explicit. Separate SaaS shops have independent data/membership, whereas channels belong to one shop. Unused additional channels have revision/dependency-checked lifecycle operations. **Domains & experiences** displays each owned address, channel assignment and editor link. DNS/certificate provisioning for external domains remains an operator responsibility. [Channel creation](studio-api-and-channels.md#sales-channels) · [Management, domains and previews](channel-management.md).
+
+![Owned domain, channel assignment and existing Storyfront editor in one workspace](assets/showcase/channel-domains.png)
 
 ![Choose channel languages and catalog root, then review the new storefront](assets/feature-tour/channel-wizard.gif)
 
 *GIF: configure the Autumn capsule channel and inspect the review step. Creation is a separate action.*
 
-### Storyfront catalog publication and checkout transfer
+### Managed Storyfront experiences
 
-The Storyfront app connects to an **operator-configured private companion service**. It publishes a bounded catalog snapshot with real SKU mappings, translations and allowed product media, reports job status/counts and opens its configured storefront. Shopper intent transfers through a single-use cart ticket into the authoritative Vendune checkout. The ticket expires, is consumed once and rotates the cart token; merchant credentials do not enter the shopper link.
+Experience onboarding installs the public Storyfront integration in the same transaction as its owned frontend binding. Migration 055 repairs older Experience shops without repeated package revisions. Apps, Storyfronts and the channel connection list show the same domain/channel and open the existing deployment-selected editor. App deactivation is blocked while its frontend dependencies remain. Installation neither copies private code nor publishes a draft.
+
+![Automatically installed Storyfront app with its domain, sales channel and editor](assets/showcase/storyfront-managed.png)
+
+The public Experience deployment currently retains its React revision editor. The private native image builds the original Astro Studio and Cinematic renderer, but its successful isolated CI test does not mean every public shop uses that renderer. Native activation, workers and provider configuration are explicit deployment choices. [Current release](current-release.md) · [Generic connection contract](experience-integration.md).
+
+### Optional companion catalog publication and checkout transfer
+
+For independently operated companion installations, the Storyfront app connects to an **operator-configured private companion service**. It publishes a bounded catalog snapshot with real SKU mappings, translations and allowed product media, reports job status/counts and opens its configured storefront. Shopper intent transfers through a single-use cart ticket into the authoritative Vendune checkout. The ticket expires, is consumed once and rotates the cart token; merchant credentials do not enter the shopper link.
 
 A native install alone does not deploy the private service, generate an AI story release or enable customer account SSO. Provider configuration, consent/tracking, continuous sync and companion ownership remain explicit. The earlier end-to-end Storyfront evidence is retained and dated in its guide. [Storyfront integration](storyfront.md).
 
-![Current Storyfront workspace correctly identifies the required private service](assets/feature-tour/storyfronts.jpg)
+*The earlier companion-service setup capture is retained in the [6 October recording inventory](assets/feature-tour/README.md); it is not the management state of an already connected Experience shop.*
 
 ### Trusted identity, Studio handoff and hosted frontends
 
@@ -357,7 +367,7 @@ The latest generic experience boundary lets a trusted server verify a merchant, 
 
 A personal merchant can issue a **one-use 60-second Studio ticket**. Redeeming it rechecks current membership; Studio removes `login_ticket` from the URL before network requests. Normal personal sessions result, without a password/bearer token in a link. Hosted frontend aliases and shop IDs share collision checks; requests resolve authoritative tenant/channel from storage. The public proxy strips cookies/merchant Authorization, disallows redirects and restricts endpoints/body sizes.
 
-These adapters are opt-in and disabled without operator configuration. Trusted inference has a durable 50-call allowance per verified email per UTC day; this is a prototype abuse boundary, not SaaS billing. They do not establish deployed Google/Apple OAuth, real email verification delivery or a publicly running private experience service. [Trust contract, routes and configuration](experience-integration.md).
+These adapters are opt-in and disabled without operator configuration. Trusted inference has a durable 50-call allowance per verified email per UTC day; this is a prototype abuse boundary, not SaaS billing. The public private-service deployment and owned connection were observed in the latest release review; those observations do not certify Google/Apple OAuth, every email delivery or production scale. [Trust contract, routes and configuration](experience-integration.md).
 
 ![Latest source-derived API explorer with the trusted identity exchange contract](assets/feature-tour/identity-explorer.jpg)
 
@@ -365,7 +375,7 @@ These adapters are opt-in and disabled without operator configuration. Trusted i
 
 ### Discover, install and inspect
 
-The library has **Installed** and **Discover**, search and categories, status filtering, passive cover/icon metadata and a common detail page. Fresh shops show the eight bundled choices without silently connecting external services. Details expose **App details**, **App workspace**, **Data**, and **Version & permissions**. Activation is revision-bound and permission checked; an installed app can retain records when disabled.
+The library has **Installed** and **Discover**, search and categories, status filtering, passive cover/icon metadata and a common detail page. Ordinary fresh shops show the eight bundled choices without silently connecting external services. Experience-created shops already show Storyfront installed/enabled because the mount transaction owns that installation. Details expose **App details**, **App workspace**, **Data**, and **Version & permissions**. Activation is revision-bound and permission checked; an installed app can retain records when disabled.
 
 The bundled catalog is not an external marketplace of arbitrary vetted services. Product Lab and custom packages can be installed from reviewed manifests separately. [Library and package lifecycle](app-library.md).
 
@@ -378,7 +388,7 @@ The bundled catalog is not an external marketplace of arbitrary vetted services.
 | Personalize this product | Product inscription form, Wasm validation, server-calculated taxed surcharge and immutable order configuration | Install/enable its package; generic cart contribution ABI also supports the gift-message example |
 | PayPal | Native provider configuration/status plus authoritative Orders v2 checkout/capture/refund path | Own Sandbox/Live account; server-held credentials; actual PSP account run remains unverified |
 | Shopware Payments | Published integration/settings contract with explicit availability status | Official private standalone connector required; not silently substituted with demo payment |
-| Storyfront | Catalog publication/status and connected shopping/checkout transfer | Separately operated private service and admitted shop pairing |
+| Storyfront | Managed Experience connections/editor links, or companion catalog publication/status and checkout transfer | Experience mounts install the integration automatically; private rendering, publication and companion setup remain separate |
 | Google Analytics | Consent-gated GA4 storefront events plus acquisition/product reports and private evidence | Configured tracking/OAuth service; measurements disclose thresholds/sampling, not causal uplift |
 | Gmail | Read-only label-based support import, initial/history cursor sync and private planning evidence | Configured OAuth service; no attachments or mail-sending capability |
 | Slack | Configured channel/order or deliberate Flow notifications with bounded escaped templates | Own service/token/destination; notifications require explicit setup |
@@ -458,7 +468,7 @@ Invitations expire after 24 hours and are used once. Codes are shared manually; 
 
 Protected Studio links require sign-in before private content loads. An expired active session presents a blocking reauthentication dialog, preserving drafts and editor context. Only the same account/current membership can resume; failed writes are not replayed. Authorization/provider/network errors are distinguished from authentication expiry.
 
-Create named, hashed, scoped integration keys valid for **1–90 days**. They are shown once and are rechecked against the creator's current membership. The API explorer lists **214 static method/path pairs** at the reviewed commit, with source and access metadata; installed app routes are discovered at runtime. Its live tester supports authorized GET and MCP `tools/list`, with a selected scoped key, without replacing Studio identity or exposing operator binary routes. [Sessions and explorer](studio-api-and-channels.md).
+Create named, hashed, scoped integration keys valid for **1–90 days**. They are shown once and are rechecked against the creator's current membership. The API explorer lists **243 static method/path pairs** at the reviewed commit, with source and access metadata; installed app routes are discovered at runtime. Its live tester supports authorized GET and MCP `tools/list`, with a selected scoped key, without replacing Studio identity or exposing operator binary routes. [Sessions and explorer](studio-api-and-channels.md).
 
 ![API/MCP permission selection and native endpoint explorer workspace](assets/feature-tour/api-integrations.jpg)
 

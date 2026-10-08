@@ -19,6 +19,24 @@ Gmail, Slack and email adapters still require their existing settings. Discover 
 the bundled prototype catalog, not an external app marketplace. Shopware Payments
 is labeled as an integration contract with its official connector still required.
 
+## Automatically managed Experience apps
+
+Experience onboarding connects its frontend and installs **Storyfront** through the
+normal app registry in one transaction. Existing Experience mounts are backfilled
+by migration 055; ordinary shops still choose which apps to install. The installed
+card and detail page show the actual connection, domain, sales channel and **Edit
+experience** link. Apps, Storyfronts and channel management use one mount registry
+and the same existing editor, with native/retained selection owned by that deployment.
+
+![Storyfront installed and enabled for an existing public demo experience](assets/showcase/storyfront-installed.png)
+
+The public manifest contains no private renderer. Listing apps does not install
+anything; installation does not publish or generate an Experience. A hosted app
+with frontend dependencies cannot be disabled until those bindings are disconnected.
+Pause a channel when you want to stop public traffic without removing its connection.
+See [ownership and lifecycle](channel-management.md#storyfront-app-ownership-for-experience-shops)
+and [the current release review](current-release.md).
+
 ## Published artwork and localized summaries
 
 Add optional metadata to a new package version. Example paths below refer to

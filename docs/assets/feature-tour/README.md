@@ -9,6 +9,10 @@ knowledge source and app records are synthetic. No production shop or customer
 data is used. Responses and DOM/layout were not mocked or rearranged; screenshots
 were not generated or retouched.
 
+The guide was subsequently reviewed on 8 October; its new public integration
+captures have [separate provenance](../showcase/README.md#public-integration-captures-8-october-2026).
+The recordings in this directory retain their 6 October source versions.
+
 ## Source versions
 
 The feature guide was reviewed against `main` at **`5e4f8b5`**. The unchanged UI

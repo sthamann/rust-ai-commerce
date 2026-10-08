@@ -16,16 +16,18 @@ This key delegates **verified-email identity authority**; its holder can link th
 
 ## Storefront binding
 
-Authenticated `GET/PUT /api/settings/frontends` reads or binds `{alias, channel}` within the caller tenant. An active channel is required. Aliases and shop IDs share one advisory-lock namespace, preventing concurrent collisions. Reserved platform names cannot be allocated.
+Authenticated `GET/PUT /api/settings/frontends` reads or binds `{alias, channel, experienceAlias?, appId?, revision?}` within the caller tenant. An active channel is required. Aliases and shop IDs share one advisory-lock namespace, preventing concurrent collisions. Reserved platform names cannot be allocated.
 
 `HOSTED_FRONTEND_ORIGIN` is an operator-only HTTPS origin (loopback is permitted locally). `HOSTED_FRONTEND_KEY` authenticates Core-to-frontend requests. `SHOP_DOMAIN_SUFFIX` supplies wildcard shop addresses; the hosting layer separately routes the exact Experience host to the private service. Hostname resolution derives tenant and channel from PostgreSQL, rejects conflicting headers and never trusts an arbitrary browser tenant. Paused shops and disabled channels are unavailable.
 
 ### Discover and edit existing Experiences
 
 Commerce Studio's **Storyfronts** page reads the existing tenant-bound mounts from
-`GET /api/settings/frontends`; it does not require installing the older optional
-Storyfront connector app. This fixes the empty management page for shops created
-through Experience onboarding, including multiple frontends on one shop.
+`GET /api/settings/frontends`. Experience onboarding associates `appId: "storyfront"`
+with that mount and installs the public integration through the normal registry in
+the same transaction. Migration 055 backfills existing Experience mounts. Merchants
+do not reinstall a connector; Apps and Storyfronts show the same owned connections,
+including multiple frontends on one shop. Listing itself has no install side effect.
 
 Set `HOSTED_FRONTEND_EDITOR_URL=https://experience.vendune.ai/design/{alias}` on
 the core deployment to expose a passive `editorUrl` on each mount. The operator
@@ -39,7 +41,7 @@ imports products, generates an experience, spends on models or changes publicati
 
 The list is scoped by authenticated workspace and `settings.read`; the real
 `identity_broker` PostgreSQL/HTTP suite checks own/foreign/anonymous access. UI
-regressions cover existing mounts without an installed app, loading/failure/retry,
+regressions retain rolling-upgrade support for existing mounts without an installed app, loading/failure/retry,
 late responses after switching workspace, editor URL safety and localized actions.
 
 Only public assets/pages and allowlisted `/experience-api/context` and `/experience-api/shops/...` reach the frontend. Core admin, Store API, MCP, UCP and private service routes stay separate. Proxying strips cookies and merchant Authorization, prohibits redirects and bounds request/response bodies. The private frontend must independently check the gateway key, alias, tenant/channel, same-origin writes and requested shop; public API allowlists must remain restrictive.
@@ -53,9 +55,10 @@ Only public assets/pages and allowlisted `/experience-api/context` and `/experie
 | `shop_domains.rs`, `shop_domains/frontends.rs` | Authoritative domain scope, guarded registration, public proxy |
 | `commerce/product_create.rs`, `product_edit.rs` | Validated stable import IDs, duplicate conflict and normal revision-bound product saves |
 | `migrations/042-identity-frontends.sql` | Identity, nonce, handoff, hosted frontend and daily inference persistence |
+| `migrations/055-hosted-frontend-apps.sql`, `src/apps/hosted.rs` | Idempotent Experience integration ownership and dependency checks |
 | `scripts/identity_broker.py` | Real HTTP/PostgreSQL signatures, foreign ownership, empty/fashion provisioning, handoff, mounts, paused shop and restart regressions |
 
-Hermetic provider tests and these integration checks do not demonstrate Google/Apple production OAuth, actual email delivery or a publicly deployed private experience service. Those require configured credentials and observed external results. New adapters remain explicitly unproved in the formal inventory; existing extracted policies retain their checks.
+Hermetic provider tests and these integration checks do not demonstrate Google/Apple production OAuth or actual email delivery. The [8 October release review](current-release.md) separately records the observed public deployment, owned app/domain connection and retained editor; it makes no live-provider acceptance claim. New adapters remain explicitly unproved in the formal inventory; existing extracted policies retain their checks.
 
 ## Merchant password enrollment and email-link recovery
 

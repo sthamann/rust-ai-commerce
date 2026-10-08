@@ -1,12 +1,15 @@
 # Lean-checked commerce contracts
 
-The prototype runs Lean 4.29.1 proofs for **35 policies used in production
-Rust paths**, with **74 named properties**. This is **not a certificate that the
-entire commerce core is correct or bug-free**. The Rust-standard-services review
-contains 314 Rust modules: one extracted policy module, 30 reviewed binding
-modules, one comparison driver and 282 unproved modules. Binding review is not a
+The prototype runs Lean 4.29.1 proofs for **36 policies used in production
+Rust paths**, with **78 named properties**. This is **not a certificate that the
+entire commerce core is correct or bug-free**. The 8 October review at `706102f`
+contains 334 Rust modules: one extracted policy module, 33 reviewed binding
+modules, one comparison driver and 299 unproved modules. Binding review is not a
 proof of those modules. The [manifest](../proof/manifest.json) and CI artifact are
-the authoritative per-revision inventory.
+the authoritative per-revision inventory. The [published verification report](formal-verification.json)
+is copied unchanged from [successful GitHub CI run 37764029468](https://github.com/sthamann/vendune/actions/runs/37764029468):
+78 audited theorems, 6,223 compiled conformance cases and zero mismatches. It records
+that source revision, not a new proof of every adapter or later documentation edit.
 
 ## Connection to the real application
 
@@ -271,9 +274,20 @@ for the private hosting configuration.
 
 `currency_context_admissible` is consumed by `src/currencies/model.rs`: only a
 configured, channel-enabled currency with an admitted saved rate may be selected.
-Exact Boolean equivalence and stale-rate rejection bring the current manifest to
+Exact Boolean equivalence and stale-rate rejection brought the then-reviewed manifest to
 35 policies and 74 named properties. Explicit mutations bypassing availability
 or freshness must fail. Rate retrieval/date parsing, rational FX, float taxation,
 job transactions, currency ledgers, UI and provider behavior remain outside these
 Lean proofs and are covered by separate unit/real integration checks.
 [Currency architecture and verification scope](currencies.md).
+
+## Channel admission (2026-10-08)
+
+`channel_access_admissible` is consumed by `src/marketing/channel_access.rs`.
+Four named properties cover exact admission, private-channel identity, paused-channel
+preview requirements and preview mutation denial. The current manifest contains
+**36 extracted policies and 78 properties**. Core HTTP/MCP/UCP and hosted request
+paths share this admission adapter. One-use preview grants, cookies, membership
+queries, hostname resolution, proxy transport and native rendering remain unproved
+adapters exercised by isolated integration regressions.
+[Channel management and security limits](channel-management.md).

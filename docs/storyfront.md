@@ -1,5 +1,19 @@
 # Storyfront connector
 
+## Choose the integration path
+
+**Experience-created shops:** onboarding mounts the frontend and installs the
+Storyfront integration automatically. Apps, Storyfronts and **Sales channels →
+Domains & experiences** expose the owned connection and its existing editor.
+Use [channel management](channel-management.md) and
+[the generic Experience contract](experience-integration.md); do not recreate that
+shop through the companion setup below. Native versus retained editor/rendering
+is a deployment choice, not something inferred from the installed app.
+
+**Independent companion installations:** the remainder of this guide documents
+the separately configured catalog publication and one-use checkout-transfer path.
+Its dated acceptance evidence retains its original scope.
+
 Storyfront (Ambient-C) can use Vendune as its catalog and checkout backend.
 The connector is an independently deployed app, not storefront-specific business
 logic inside the Rust core. It creates a valid merchant manifest, copies product

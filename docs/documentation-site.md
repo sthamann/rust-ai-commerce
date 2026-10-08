@@ -57,6 +57,14 @@ inventories and verification counts. Dated benchmarks, captures and test results
 retain their original measurement scope; a documentation review does not rerun
 every historical experiment or verify live provider accounts.
 
+The 8 October review reconciled README, the full feature tour, app/Experience/channel
+guides, the homepage and `llms.txt` with `706102f`. It corrected obsolete main-channel
+pause restrictions, EUR-only wording, the API/formal inventories and manually installed
+Storyfront claims. Three unretouched public demo captures complement the retained
+6 October recordings. [Current release](current-release.md) and
+[capture provenance](assets/showcase/README.md) distinguish deployed behavior,
+isolated tests and remaining native/provider activation work.
+
 For future changes, read the actual owning code/configuration and update its guide
 in the same change. Regenerate `module-inventory.md` with
 `python3 scripts/testing/source_inventory.py --write` when source modules change.

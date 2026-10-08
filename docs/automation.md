@@ -31,7 +31,9 @@ Sandbox creation copies the current merchant definitions rather than reseeding t
 The main channel can be renamed, translated and assigned catalog/navigation content.
 It inherits the shop languages (including existing regional-language fallback) and shared company/checkout basis; additional
 channels can choose their own languages and sparse settings overrides. The main
-channel cannot be deactivated or deleted. Storefront reads now use its persisted
+channel cannot be deleted, but can be paused or made private with a personal
+merchant preview. See [channel admission and domains](channel-management.md).
+Storefront reads now use its persisted
 catalog configuration instead of bypassing it as an invisible code special case.
 
 Commerce invariants remain in Rust: stock reservations, price/tax calculations,

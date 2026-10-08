@@ -12,6 +12,12 @@
 
 - [Connected playground](https://sthamann.github.io/vendune/playground.html)
 
+## Current release
+- [8 October release review](https://sthamann.github.io/vendune/docs/current-release.html): Managed Storyfront apps, domains/editor links, channel pause/private previews, guest buyers and merchant enrollment; public/native deployment boundaries.
+- [Sales channels and domains](https://sthamann.github.io/vendune/docs/channel-management.html)
+- [Currencies and pricing](https://sthamann.github.io/vendune/docs/currencies.html)
+- [Rust app services](https://sthamann.github.io/vendune/docs/rust-services.html)
+
 ## Full HTML documentation
 - [Production architecture](https://sthamann.github.io/vendune/docs/production-architecture.html): Illustrated request, checkout, tenant security, cache, quota and grounded AI paths, with source locations, deployment configuration and explicit proof limits.
 - [All guides and developer notes](https://sthamann.github.io/vendune/docs/)
@@ -31,7 +37,8 @@
 ## Limits
 Working prototype. The tour uses simulated/manual payments. Configured PayPal Sandbox/Live is supported; actual PSP transactions remain unverified.
 Not a full Shopware replacement or validated production SaaS.
-MCP/UCP are partial bindings. Hosted accounts and production OAuth are not configured.
+MCP/UCP are partial bindings. Hosted merchant/password enrollment and the private Experience service exist; Google/Apple OAuth requires explicit configuration and is not certified by the deployment review.
+Experience mounts install a public Storyfront integration, not the private renderer; public native renderer activation remains a separate deployment choice.
 Live cloud quality, production scale and causal sales uplift are unverified.
 
 ## License
