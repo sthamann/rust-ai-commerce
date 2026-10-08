@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 580" role="img" aria-labelledby="title desc">
+  <title id="title">One Experience connection, shared by Apps, Storyfronts and Sales channels</title>
+  <desc id="desc">Private Experience onboarding writes an authenticated frontend mount. One Core PostgreSQL transaction installs the public integration and stores the owned domain and channel. The Studio views read this registry and link to the deployment-selected existing editor. Draft publication is a separate explicit action; the private renderer remains outside Core.</desc>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#59728e"/></marker></defs>
+  <rect width="1120" height="580" rx="24" fill="#f5f8fe"/>
+  <g font-family="system-ui, sans-serif" fill="#192f49">
+    <text x="40" y="50" font-size="24" font-weight="700">One connection. Several views. Separate publication.</text>
+    <text x="40" y="80" font-size="16" fill="#59728e">Private presentation · shared public integration contract · authoritative Rust commerce</text>
+    <rect x="40" y="124" width="254" height="178" rx="16" fill="#fff" stroke="#d9e3f1"/>
+    <text x="60" y="155" font-size="12" font-weight="700" fill="#2563eb">PRIVATE EXPERIENCE SERVICE</text>
+    <text x="60" y="187" font-size="20" font-weight="650">Owned onboarding</text>
+    <text x="60" y="218" font-size="15">Verified merchant and shop</text>
+    <text x="60" y="245" font-size="15">Existing presentation draft</text>
+    <text x="60" y="277" font-size="14" fill="#59728e">Authenticated mount request →</text>
+    <rect x="358" y="124" width="354" height="178" rx="16" fill="#eaf1ff" stroke="#bed2fb"/>
+    <text x="378" y="155" font-size="12" font-weight="700" fill="#2563eb">RUST CORE · POSTGRESQL</text>
+    <text x="378" y="187" font-size="20" font-weight="650">One transaction</text>
+    <text x="378" y="219" font-size="15">Installed public Storyfront manifest</text>
+    <text x="378" y="246" font-size="15">Owned domain + channel binding</text>
+    <text x="378" y="277" font-size="14" fill="#59728e">Retry preserves unchanged revisions</text>
+    <rect x="776" y="124" width="304" height="178" rx="16" fill="#fff" stroke="#d9e3f1"/>
+    <text x="796" y="155" font-size="12" font-weight="700" fill="#2563eb">VENDUNE STUDIO</text>
+    <text x="796" y="187" font-size="20" font-weight="650">Same registry</text>
+    <text x="796" y="219" font-size="15">Apps · Storyfronts</text>
+    <text x="796" y="246" font-size="15">Sales channels → Domains</text>
+    <text x="796" y="277" font-size="14" fill="#59728e">Open shop / Edit experience</text>
+    <path d="M294 210 H352 M712 210 H770" fill="none" stroke="#59728e" stroke-width="2" marker-end="url(#arrow)"/>
+    <path d="M928 302 V334 H636 V360" fill="none" stroke="#59728e" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="40" y="366" width="356" height="161" rx="16" fill="#fff" stroke="#d9e3f1"/>
+    <text x="60" y="398" font-size="18" font-weight="650">Commerce authority stays in Core</text>
+    <text x="60" y="429" font-size="15">Catalogue · price · stock · checkout</text>
+    <text x="60" y="456" font-size="15">Tenant and channel admission</text>
+    <text x="60" y="492" font-size="14" fill="#59728e">Public / private / paused / personal preview</text>
+    <rect x="452" y="366" width="628" height="161" rx="16" fill="#e9f6f1" stroke="#bce2d5"/>
+    <text x="472" y="398" font-size="18" font-weight="650">Existing editor → explicit review and publication</text>
+    <text x="472" y="429" font-size="15">Public host currently: retained React Experience Studio</text>
+    <text x="472" y="456" font-size="15">Native deployment option: original Astro Studio / Cinematic renderer</text>
+    <text x="472" y="492" font-size="14" fill="#59728e">Installing the integration does not activate private rendering or workers.</text>
+    <text x="40" y="556" font-size="13" fill="#59728e">Source: Core 706102f · release review 8 October 2026 · diagram, not a screenshot or provider acceptance</text>
+  </g>
+</svg>

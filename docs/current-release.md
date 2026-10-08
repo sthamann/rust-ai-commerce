@@ -26,17 +26,7 @@ external customer domain.
 
 ## One connection, several views
 
-```mermaid
-flowchart LR
-    A[Private Experience onboarding] --> B[Authenticated frontend mount]
-    B --> C[PostgreSQL transaction]
-    C --> D[Installed public app manifest]
-    C --> E[Owned domain and channel binding]
-    E --> F[Apps / Storyfronts / Sales channels]
-    D --> F
-    F --> G[Existing deployment-selected editor]
-    G --> H[Explicit draft review and publication]
-```
+![Experience ownership, atomic installation and existing editor path](assets/experience-connections.svg)
 
 Core owns catalogue, price, stock, authentication and checkout. The private Experience
 service owns presentation and its current/native editor selection. The public
