@@ -166,7 +166,8 @@ export default function OrderDetail({
           <small>{o("order")}</small>
           <h2>{order.orderNumber}</h2>
           <p>
-            {(order.orderCustomer?.customerId ||
+            {order.customerEmail &&
+            (order.orderCustomer?.customerId ||
               order.orderCustomer?.guest === true) &&
             onCustomer &&
             rights.includes("customers.read") ? (
