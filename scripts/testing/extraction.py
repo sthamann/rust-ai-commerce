@@ -56,6 +56,9 @@ def verify_extraction(call, captured, behavior, passed):
     assert len(captured)==before
     sql(f"INSERT INTO tenant_resource_limits(tenant,daily_ai) VALUES('{tenant}',3) ON CONFLICT(tenant) DO UPDATE SET daily_ai=3;")
     call('/api/intelligence/extract', args, h, expected=429)
+    denied_plan=call('/mcp', {'jsonrpc':'2.0','id':2,'method':'tools/call',
+        'params':{'name':'merchant.plan','arguments':{'instruction':'Read this shop without spending over its budget'}}}, h)['result']
+    assert denied_plan['isError'], denied_plan
     # The streamed entry point must share the same budget before calling a model.
     call('/api/agent/chat/stream', {'message':'Quota must reject before streaming','inference':args['inference']}, h, expected=429)
     assert len(captured)==before and attempts()==3

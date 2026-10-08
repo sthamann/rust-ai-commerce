@@ -158,4 +158,6 @@ assert len(selection)==2,changes
 req('/api/environments/'+stage+'/release',{'approve':True,'selections':selection},merchant)
 published=req('/api/merchant/products/'+sid,h=merchant);assert published['catalog']['categoryIds']==[cnew] and published['commerce']['stock']==0 and published['catalog']['salesChannelIds']==[]
 check('new category and new product publish together with assignments/visibility while stage stock stays private')
+from testing.intent_navigation import verify_intent_navigation
+verify_intent_navigation(req,merchant,other,pid,check)
 print(json.dumps({'checks':len(checks),'workspace':w['workspace'],'status':'passed'}))

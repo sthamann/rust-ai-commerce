@@ -79,7 +79,9 @@ try:
     passed('Model-selected write tools cannot execute or create an executable task')
     behavior['mode']='normal'
     from testing.extraction import verify_extraction
-    verify_extraction(call, captured, behavior, passed)
+    from testing.provider_fleet import shared_provider
+    with shared_provider(call, env['OPENAI_BASE_URL']):
+        verify_extraction(call, captured, behavior, passed)
     original=call('/api/merchant/commerce')
     def policy(value):
         snapshot=call('/api/merchant/commerce');data=copy.deepcopy(snapshot['data']);data['aiPolicy']=value

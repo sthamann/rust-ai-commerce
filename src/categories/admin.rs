@@ -93,6 +93,7 @@ async fn write(
     let v: Edit = serde_json::from_value(v).map_err(|_| bad("Invalid category edit"))?;
     validate(&v)?;
     let (settings, _) = commerce::config(&a, &t).await?;
+    graph_query::validate(&v.data, &settings)?;
     let names: Value = v.data["translations"]
         .as_object()
         .unwrap()

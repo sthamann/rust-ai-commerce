@@ -51,7 +51,11 @@ existing commerce owners. [All eighteen fixes, architecture and verification bou
 rebuilds, hybrid text retrieval with optional reranking, authorized agent read
 rounds, native chat progress, source-bound merchant-reviewed claims, signed facts,
 price guardrails/daily autonomy budgets, controlled layout experiments and private
-consent-bound cart preferences. [How they connect, setup, evidence and remaining audit work](docs/cognitive-commerce.md).
+consent-bound cart preferences. Categories can select products through saved,
+localized queries of current confirmed public facts; source withdrawal removes
+the corresponding fact membership. Document events can invoke opt-in extraction
+flows through the same rights, review and daily AI quota as HTTP/MCP.
+[How they connect, setup, evidence and remaining audit work](docs/cognitive-commerce.md).
 
 ## Get started
 

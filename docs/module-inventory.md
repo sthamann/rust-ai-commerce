@@ -129,6 +129,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/catalog_page.rs](../src/catalog_page.rs) | Bounded tenant-scoped catalog reads. A cursor is a product ID, never an offset. |
 | [src/catalog_routes.rs](../src/catalog_routes.rs) | Health and localized catalogue HTTP routes. |
 | [src/categories/admin.rs](../src/categories/admin.rs) | Revision-bound category writes, bounded translations and serialized cycle-safe tree moves. |
+| [src/categories/graph_query.rs](../src/categories/graph_query.rs) | Saved category predicates select only current confirmed public source claims; no inference at browse time. |
 | [src/categories/mod.rs](../src/categories/mod.rs) | Tenant-scoped category tree, localized navigation and product assignment boundaries. |
 | [src/categories/navigation.rs](../src/categories/navigation.rs) | Public navigation is localized and restricted to the selected channel's active category ancestry. |
 | [src/channel_metrics/reads.rs](../src/channel_metrics/reads.rs) | One persisted diagnostic read shared by operator overview, shop dossiers and infrastructure. |
@@ -470,6 +471,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/automation/source-rules.ts](../frontend/src/admin/automation/source-rules.ts) | Convert source condition nodes for the graphical editor without losing original payload fields. |
 | [frontend/src/admin/catalog/AiImageStudio.tsx](../frontend/src/admin/catalog/AiImageStudio.tsx) | Optional image-provider jobs create private previews; applying a reviewed image is explicit and revision checked. |
 | [frontend/src/admin/catalog/CategoriesWorkspace.tsx](../frontend/src/admin/catalog/CategoriesWorkspace.tsx) | Localized category tree editor; parent moves and revisions are validated in the API. |
+| [frontend/src/admin/catalog/CategoryFactQuery.tsx](../frontend/src/admin/catalog/CategoryFactQuery.tsx) | One saved predicate on current public evidence; reuses category CAS and the editor's selected content language. |
 | [frontend/src/admin/catalog/MediaDropzone.tsx](../frontend/src/admin/catalog/MediaDropzone.tsx) | Accessible multi-file upload with drag/drop, visible progress and the same validated asset API as attachments. |
 | [frontend/src/admin/catalog/PairFields.tsx](../frontend/src/admin/catalog/PairFields.tsx) | Accessible key/value rows for product properties, specifications and variant options. |
 | [frontend/src/admin/catalog/ProductAssets.tsx](../frontend/src/admin/catalog/ProductAssets.tsx) | Bounded upload and explicit digest-bound publication of attachments and paid files. |
@@ -758,6 +760,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/errors-i18n.ts](../frontend/src/shared/i18n/errors-i18n.ts) | Localized request guidance across all transports; original diagnostics remain available to developer tools. |
 | [frontend/src/shared/i18n/experience-ui-i18n.ts](../frontend/src/shared/i18n/experience-ui-i18n.ts) | Shared four-language interaction vocabulary for contextual Studio help and storefront discovery. |
 | [frontend/src/shared/i18n/experiment-i18n.ts](../frontend/src/shared/i18n/experiment-i18n.ts) | Controlled-experiment vocabulary distinguishes observed cash from causal and margin claims. |
+| [frontend/src/shared/i18n/graph-navigation-i18n.ts](../frontend/src/shared/i18n/graph-navigation-i18n.ts) | Saved fact navigation vocabulary; content terms use the editor's shared language inheritance. |
 | [frontend/src/shared/i18n/guardrail-i18n.ts](../frontend/src/shared/i18n/guardrail-i18n.ts) | Typed four-language merchant AI policy vocabulary. |
 | [frontend/src/shared/i18n/i18n.tsx](../frontend/src/shared/i18n/i18n.tsx) | i18n: Four-language locale context, UI dictionaries and translated API errors. |
 | [frontend/src/shared/i18n/international-i18n.ts](../frontend/src/shared/i18n/international-i18n.ts) | International settings vocabulary. Every key requires English, German, French and Spanish. |
@@ -1009,8 +1012,10 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/testing/database.py](../scripts/testing/database.py) | Use the same PostgreSQL fixtures through Docker or an explicitly selected native psql executable. |
 | [scripts/testing/extraction.py](../scripts/testing/extraction.py) | Native document-event extraction, review boundary and shared AI quotas; local provider only. |
 | [scripts/testing/hotpath.py](../scripts/testing/hotpath.py) | Real HTTP wire bytes and SQL tracing checks for the existing read-performance suite. |
+| [scripts/testing/intent_navigation.py](../scripts/testing/intent_navigation.py) | Exercise saved fact categories through native catalog/MCP, source review and selective staging; no models. |
 | [scripts/testing/inventory_batch.py](../scripts/testing/inventory_batch.py) | Concurrent two-product allocation/release on the actual HTTP path, reused by strict runtime verification. |
 | [scripts/testing/pooler.py](../scripts/testing/pooler.py) | Owned real PgBouncer fixture: one backend, transaction pooling, never a forced privileged user. |
+| [scripts/testing/provider_fleet.py](../scripts/testing/provider_fleet.py) | Configure one encrypted synthetic provider for all test workers, then restore the isolated control-plane row. |
 | [scripts/testing/runtime.py](../scripts/testing/runtime.py) | Owned synthetic server lifetime, child checks and loopback readiness for verification. |
 | [scripts/testing/sitecustomize.py](../scripts/testing/sitecustomize.py) | Opt-in subprocess instrumentation for synthetic verification; never loaded by production. |
 | [scripts/testing/source_inventory.py](../scripts/testing/source_inventory.py) | Generate/check exact production and verification module inventory; listings are not coverage. |

@@ -20,6 +20,7 @@ Each file starts with its responsibility. See [the source inventory](../../../..
 - [`company-i18n.ts`](company-i18n.ts): Company identity, field inheritance and legal storefront vocabulary in four interface languages.
 - [`connected-i18n.ts`](connected-i18n.ts): Four-language vocabulary for connected apps, consent and visual automation.
 - [`content-language.ts`](content-language.ts): Resolve editable translation keys without merging distinct regional locales or fabricating inherited values.
+- [`graph-navigation-i18n.ts`](graph-navigation-i18n.ts): EN/DE/FR/ES labels for saved current-public-fact category predicates; query phrases use enabled content languages.
 - [`crm-i18n.ts`](crm-i18n.ts): Complete CRM/history vocabulary shared by settings, customer account and entity editors.
 - [`customer-i18n.ts`](customer-i18n.ts): Account and address labels share four complete locales across storefront and studio.
 - [`email-i18n.ts`](email-i18n.ts): Complete mail workspace vocabulary in English, German, French and Spanish.

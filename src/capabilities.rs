@@ -128,16 +128,12 @@ pub(crate) async fn invoke(a: &App, h: &RequestContext, name: &str, v: &Value) -
             auth::permit(h, "knowledge.read")?;
             let t = merchant(a, h)?;
             let (locale, _) = language_context(a, h).await?;
-            plan_with(
-                a,
-                &t,
-                v["instruction"].as_str().unwrap_or(""),
-                None,
-                "",
-                &locale,
-                h,
-            )
-            .await
+            let instruction = v["instruction"].as_str().unwrap_or("");
+            if instruction.is_empty() || instruction.len() > 4000 {
+                return Err(bad("Instruction must contain 1..4000 characters"));
+            }
+            performance::reserve_ai_attempt(a, &t).await?;
+            plan_with(a, &t, instruction, None, "", &locale, h).await
         }
         "merchant.apply" => {
             let t = merchant(a, h)?;

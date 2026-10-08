@@ -8,6 +8,8 @@ import TranslationFields from "../../shared/geography/TranslationFields";
 import { useCountryCatalogue } from "../../shared/geography/useCountryCatalogue";
 import { inheritedText } from "../../shared/geography/geography-types";
 import "../styles/international.css";
+import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
+import CategoryFactQuery from "./CategoryFactQuery";
 export function orderedCategories(
   categories: Category[],
   parent: string | null = null,
@@ -190,7 +192,14 @@ export default function CategoriesWorkspace({
                   onChange={(e) =>
                     edit({
                       ...selected,
-                      data: { ...selected.data, type: e.target.value },
+                      data: {
+                        ...selected.data,
+                        type: e.target.value,
+                        graphQuery:
+                          e.target.value === "page"
+                            ? selected.data.graphQuery
+                            : null,
+                      },
                     })
                   }
                 >
@@ -275,6 +284,24 @@ export default function CategoriesWorkspace({
                 </label>
               ))}
             </div>
+            {selected.data.type === "page" && (
+              <ContentLanguage
+                locales={locales}
+                mainLocale={mainLocale}
+                language={langLocale}
+                onLanguageChange={setLanguage}
+              >
+                <CategoryFactQuery
+                  value={selected.data.graphQuery}
+                  onChange={(graphQuery) =>
+                    edit({
+                      ...selected,
+                      data: { ...selected.data, graphQuery },
+                    })
+                  }
+                />
+              </ContentLanguage>
+            )}
             {error && <p role="alert">{error}</p>}
             {saved && <p role="status">{c("saved")}</p>}
             <button

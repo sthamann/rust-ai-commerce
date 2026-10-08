@@ -75,7 +75,7 @@ truncated quotations are not presented as complete evidence.
 Running a compatible adapter does not prove a server's batching throughput.
 Interactive embeddings and background indexing share admission. Reranker requests
 are admitted before provider invocation. Saturation falls back to lexical/fused
-retrieval instead of creating an unbounded inference queue. Interactive chat (including SSE), document extraction via HTTP/MCP and Flow AI
+retrieval instead of creating an unbounded inference queue. Interactive chat (including SSE), MCP merchant planning, document extraction via HTTP/MCP and Flow AI
 actions consume the same atomic UTC-day tenant attempt quota. Staging shares its
 live tenant budget; failed provider attempts count. This is not token/spend accounting.
 
@@ -134,6 +134,25 @@ or use the domain-separated existing platform secret. Verify the exact decoded
 Stock is not reserved and estimated delivery is not guaranteed by a signature.
 The UCP facts route is a Vendune extension, not complete UCP certification.
 
+## Saved fact navigation
+
+Studio **Products → Categories** can augment a listing with a saved fact query.
+Choose an intent, problem, occasion, audience, material or property node type,
+minimum recorded confidence and a localized literal phrase. The existing category
+CAS, history, staging clone/release and enabled-language editor own this data;
+there is no second navigation registry. Missing/null phrases inherit the shop's
+main language and search claims in that source language. An explicit empty phrase
+adds no fact matches for that locale. Manual product assignments remain independent.
+
+The ordinary Store API/MCP category listing selects current confirmed public
+claims, checks their document hash/revision, product scope and validity window,
+then applies current channel visibility, active products and cursor pagination.
+Archiving or making a source private withdraws only its graph-based membership.
+Migration 077 adds partial type/confidence and text-trigram indexes. Browsing runs
+no model and stores no duplicated category-product projection. This is a bounded
+one-hop typed fact predicate with literal substring matching, **not arbitrary
+Cypher, inferred semantic entailment or a full intent-planning language**.
+
 ## Merchant guardrails and optional autonomy
 
 Studio **Shop knowledge → Guardrails** edits `commerce.settings.aiPolicy` with the
@@ -188,6 +207,7 @@ cross-device customer memory. Customer preferences are never public product fact
 | `src/cognition/{guardrails,autonomy}.rs`; migration 073 | Native policy, current revisions, daily price budget and transactional consumer |
 | `src/cognition/experiments/`; migration 075 | Native assignment, preregistration and actual payment-ledger readout |
 | `src/cognition/preferences.rs`; existing privacy owner | Private graph, current consent, advice admission and erasure |
+| `src/categories/{admin,graph_query}.rs`, `listing.sql`; migration 077 | Native saved fact-category predicates, source admission and existing catalog consumer |
 | `frontend/src/admin/intelligence/`, storefront account and shared i18n/API | Multilingual editors and native request transport |
 
 Registered verification includes `users`, `providers`, `knowledge_workspace`,
@@ -211,7 +231,7 @@ protocols and browser code remain outside those proofs.
 | Provenance ontology | Typed nodes/time/history; on-demand and opt-in document-event extraction/review; bounded public graph retrieval | Continuous product/review/return/support extraction with privacy gates (document events already use the native Flow worker) |
 | Verified autonomy | Native price corridors, margin/budget checks and exact extracted predicates | Broader actions and recurring goal execution |
 | Causal learning | Native layout holdouts/CUPED/delayed net-cash readout | Switchbacks, recorded-return/CM metrics, actual live evaluation |
-| Intent navigation | Relevant semantic retrieval | Saved graph-query navigation and storefront consumer |
+| Intent navigation | Saved typed current-public-fact predicates in native categories, Store API/MCP listing, localized editor and staging | Multi-hop intent resolution, benchmarked semantic quality and richer query language |
 | Claim compiler | Exact current confirmed statement admission; private native Storyfront bridge | Every generated/edited prose claim must bind its original native knowledge path |
 | Agent offers | Signed native facts; existing authoritative checkout | Constrained bundle/quantity/delivery negotiation and reservation contracts |
 | Digital twin | Existing sandbox/quote/proposal owners retained | Validated historical replay/simulator, uncertainty and native decision linkage |
