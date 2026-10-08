@@ -58,9 +58,10 @@ pub(crate) async fn plan_with(
         .iter()
         .map(|v| json!({"id":v["app"],"actions":v["actions"]}))
         .collect::<Vec<_>>();
-    let app_context = cognition::snapshot(&app_context, 4000);
+    // Keep the existing bounded review projection intact; record the separately admitted model input as such.
+    let model_app_context = cognition::snapshot(&app_context, 4000);
     let prompt = format!(
-        "Installed app records/actions: {app_context}. For an explicitly requested app data change, propose app_action with app, action and arguments_json encoding the managed save action's id/fields object. Do not propose service calls or execute app actions. Bind no revisions yourself. Otherwise app_action=null.\nResponse locale: {locale}\nCatalog: {}\nKnowledge graph: {}\nExperience revision: {}\nExperience: {}\nEarlier conversation (context only): {}\nCurrent merchant instruction: {}",
+        "Installed app records/actions: {model_app_context}. For an explicitly requested app data change, propose app_action with app, action and arguments_json encoding the managed save action's id/fields object. Do not propose service calls or execute app actions. Bind no revisions yourself. Otherwise app_action=null.\nResponse locale: {locale}\nCatalog: {}\nKnowledge graph: {}\nExperience revision: {}\nExperience: {}\nEarlier conversation (context only): {}\nCurrent merchant instruction: {}",
         cognition::catalog_snapshot(&ps, &commerce_settings.currencies.pricing_currency),
         cognition::snapshot(&graph, 4000),
         er.get::<i64, _>("revision"),
@@ -147,7 +148,7 @@ pub(crate) async fn plan_with(
     validate_proposal(&p, &ps)?;
     let policy_revision = cognition::guardrails::validate_plan(a, t, &p, &ps).await?;
     let id = uid();
-    let evidence = json!({"model":output.model,"inference":output.provider,"usage":output.usage,"evalCount":output.usage["output_tokens"],"knowledge":graph,"instruction":instruction,"locale":locale,"proposal":p,"verifiedFacts":facts,"catalogBefore":ps,"memory":memory,"contextLimit":24,"policyRevision":policy_revision,"actor":header(authority,"x-rac-user"),"toolTrace":tool_trace,"appActions":app_names,"appContext":app_context,"documentSources":document_sources,"externalSources":private_sources,"experienceBefore":er.get::<Value,_>("data"),"applied":false});
+    let evidence = json!({"model":output.model,"inference":output.provider,"usage":output.usage,"evalCount":output.usage["output_tokens"],"knowledge":graph,"instruction":instruction,"locale":locale,"proposal":p,"verifiedFacts":facts,"catalogBefore":ps,"memory":memory,"contextLimit":24,"policyRevision":policy_revision,"actor":header(authority,"x-rac-user"),"toolTrace":tool_trace,"appActions":app_names,"appContext":app_context,"modelAppContext":model_app_context,"documentSources":document_sources,"externalSources":private_sources,"experienceBefore":er.get::<Value,_>("data"),"applied":false});
     sqlx::query("INSERT INTO tasks(id,tenant,proposal) VALUES($1,$2,$3)")
         .bind(&id)
         .bind(t)

@@ -1087,8 +1087,8 @@
     },
     "src/cognition/evidence.rs": {
       "status": "unproved",
-      "sha256": "eb3cb8769eeb8c3336971868eeaf1bacf61a05cb1e4b197b09db3d8ca66452de",
-      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+      "sha256": "4db1f892764345b0fdde475a6ca9648b35613865b2b09214b116f538f65ec66e",
+      "review": "Reviewed evidence.rs confidence validation before writes: omitted prior 0.5 retained; supplied null/string/boolean/container/out-of-range scores rejected. Native knowledge_workspace confirms no partial claim insertion and normal quote/source/revision lifecycle; unit boundaries and Clippy pass. SQL/semantic truth remain unproved."
     },
     "src/cognition/experiments/mod.rs": {
       "status": "unproved",
@@ -2222,8 +2222,8 @@
     },
     "src/planner.rs": {
       "status": "unproved",
-      "sha256": "5a426cc4fcf0612d9ba8706f6c3aa0a7a06db55564afe6973c81cd3cc765b34a",
-      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+      "sha256": "c257b07cbb4ea939c40e5ff3f570108b0dc6d47b893c6700902231a5b14bdeff",
+      "review": "Reviewed evidence.rs supplied-confidence rejection and planner.rs separation of permission-filtered 32 KiB review projection from the 4 KiB modelAppContext; existing source/revision/app authority retained. Native app_surfaces verifies actual provider bytes, bounded review data, out-of-page revision binding and permission denial; knowledge_workspace verifies invalid scores persist no claims; 184 Rust tests and Clippy pass. No wider proof or semantic entailment claimed."
     },
     "src/platform/ai.rs": {
       "status": "reviewed-binding",

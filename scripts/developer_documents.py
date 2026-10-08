@@ -12,7 +12,7 @@ class Model(BaseHTTPRequestHandler):
  def log_message(self,*a):pass
  def do_POST(self):
   b=json.loads(self.rfile.read(int(self.headers['Content-Length'])));captured.append((self.path,b))
-  if self.path=='/api/embed':out={'embeddings':[[1.0]+[0.0]*1023]}
+  if self.path=='/api/embed':out={'embeddings':[[1.0]+[0.0]*1023 for _ in (b['input'] if isinstance(b['input'],list) else [b['input']])]}
   else:
    if behavior['mode']=='app':answer={'summary':labels,'manifest':manifest}
    elif behavior['mode']=='flow':answer={'summary':'Prüfbarer Preisvorschlag für die Leuchte.','changes':[{'product_id':'lamp','price':69.9}]}
@@ -25,7 +25,7 @@ class Model(BaseHTTPRequestHandler):
   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps(out).encode())
 server=ThreadingHTTPServer(('127.0.0.1',0),Model);threading.Thread(target=server.serve_forever,daemon=True).start();port=server.server_address[1]
 sock=socket.socket();sock.bind(('127.0.0.1',0));test_port=sock.getsockname()[1];sock.close()
-env={**os.environ,'BIND_ADDR':f'127.0.0.1:{test_port}','OPENAI_API_KEY':'local-wire-fixture','ANTHROPIC_API_KEY':'local-wire-fixture','ANTHROPIC_BASE_URL':f'http://127.0.0.1:{port}/v1','OPENAI_BASE_URL':f'http://127.0.0.1:{port}/v1','OLLAMA_URL':f'http://127.0.0.1:{port}'}
+env={**os.environ,'BIND_ADDR':f'127.0.0.1:{test_port}','OPENAI_API_KEY':'local-wire-fixture','ANTHROPIC_API_KEY':'local-wire-fixture','ANTHROPIC_BASE_URL':f'http://127.0.0.1:{port}/v1','OPENAI_BASE_URL':f'http://127.0.0.1:{port}/v1','OLLAMA_URL':f'http://127.0.0.1:{port}','EMBEDDING_MODEL':'synthetic-documents-'+uuid.uuid4().hex[:12]}
 # A separate database keeps other replicas from consuming jobs with their provider configuration.
 from urllib.parse import urlsplit,urlunsplit
 fixture_db='commerce_docs_'+uuid.uuid4().hex[:12]
@@ -84,10 +84,17 @@ try:
  call('/api/knowledge/documents/'+doc['id'],{'approve':True,'visibility':'public','revision':1},a,method='PUT')
  q=call('/store-api/product/mug/questions',{'question':'Dishwasher','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug);assert len(q['sources'])==1 and q['sources'][0]['contentHash']==doc['contentHash'] and q['sideEffects'] is False
  passed('Private data sheet is excluded until approval; public questions return exact source hash/excerpt')
- call('/api/knowledge/documents/'+doc['id']+'/index',{},a)
+ indexed=call('/api/knowledge/documents/'+doc['id']+'/index',{},a)
+ assert indexed['asynchronous'] and indexed['indexed']==0
+ # Completion includes the actual vector consumer, not merely submission or SQL embedding persistence.
+ for _ in range(300):
+  q=call('/store-api/product/mug/questions',{'question':'spülmaschinenfest?','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug)
+  if q['sources']:break
+  time.sleep(.1)
+ assert q['sources'],q
  for locale in ['de-DE','fr-FR','es-ES','en-GB']:
   behavior['mode']=locale;q=call('/store-api/product/mug/questions',{'question':'spülmaschinenfest?','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug,locale=locale);assert q['sources'] and q['answer'],(locale,q)
- assert any(p=='/api/embed' and b['input']=='spülmaschinenfest?' for p,b in captured)
+ assert any(p=='/api/embed' and b['input']==['spülmaschinenfest?'] for p,b in captured)
  passed('Indexed semantic retrieval is actually consumed for cross-language questions with no lexical match')
  behavior['mode']='citation';call('/store-api/product/mug/questions',{'question':'Dishwasher','inference':{'provider':'openai'}},tenant=slug,expected=400)
  call('/api/knowledge/documents/'+doc['id'],{'approve':True,'visibility':'private','revision':1},a,method='PUT',expected=409)

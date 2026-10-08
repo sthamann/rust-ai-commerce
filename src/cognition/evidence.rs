@@ -40,6 +40,7 @@ pub(crate) async fn propose_in(
     h: &RequestContext,
     v: &Value,
 ) -> Result<Value> {
+    let confidence = confidence(v)?;
     let product = v["productId"].as_str().ok_or(bad("Product required"))?;
     let source = v["sourceId"].as_str().ok_or(bad("Source required"))?;
     let text = v["text"]
@@ -79,9 +80,21 @@ pub(crate) async fn propose_in(
         return Err(bad("Unknown fact node type"));
     }
     let data = json!({"text":text,"quote":quote,"locale":locale,"sourceId":source,"sourceRevision":row.get::<i64,_>("revision"),"contentHash":v["contentHash"],"sourceType":"document","truthVerified":false,"nodeType":node_type});
-    sqlx::query("INSERT INTO knowledge_relations(tenant,kind,source_id,target_id,target_kind,state,data,actor,confidence) VALUES($1,'CLAIMS',$2,$3,$7,'proposed',$4,$5,$6)").bind(t).bind(product).bind(&id).bind(data).bind(header(h,"x-rac-user").unwrap_or("integration")).bind(v["confidence"].as_f64().filter(|n|n.is_finite()&&(0.0..=1.0).contains(n)).unwrap_or(0.5)).bind(node_type).execute(&mut **tx).await?;
+    sqlx::query("INSERT INTO knowledge_relations(tenant,kind,source_id,target_id,target_kind,state,data,actor,confidence) VALUES($1,'CLAIMS',$2,$3,$7,'proposed',$4,$5,$6)").bind(t).bind(product).bind(&id).bind(data).bind(header(h,"x-rac-user").unwrap_or("integration")).bind(confidence).bind(node_type).execute(&mut **tx).await?;
 
     Ok(json!({"id":id,"revision":1,"state":"proposed","approvalRequired":true}))
+}
+/// Omitted confidence uses the documented candidate prior; malformed supplied values never become an invented score.
+fn confidence(v: &Value) -> Result<f64> {
+    match v.get("confidence") {
+        None => Ok(0.5),
+        Some(value) => value
+            .as_f64()
+            .filter(|n| n.is_finite() && (0.0..=1.0).contains(n))
+            .ok_or(bad(
+                "Claim confidence must be a finite number between 0 and 1",
+            )),
+    }
 }
 pub(crate) async fn decide(a: &App, h: &RequestContext, v: &Value) -> Result<Value> {
     let t = merchant(a, h)?;
@@ -113,4 +126,27 @@ pub(crate) async fn decide(a: &App, h: &RequestContext, v: &Value) -> Result<Val
         .await?;
     tx.commit().await?;
     Ok(json!({"id":id,"state":state,"revision":revision+1}))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn candidate_confidence_is_explicitly_validated() {
+        assert_eq!(confidence(&json!({})).unwrap(), 0.5);
+        for n in [0.0, 0.9, 1.0] {
+            assert_eq!(confidence(&json!({"confidence":n})).unwrap(), n);
+        }
+        for value in [
+            json!(-0.1),
+            json!(1.1),
+            json!("0.9"),
+            json!(null),
+            json!(true),
+            json!({}),
+            json!([]),
+        ] {
+            assert!(confidence(&json!({"confidence":value})).is_err());
+        }
+    }
 }

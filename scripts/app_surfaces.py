@@ -185,6 +185,10 @@ def run():
             assert {a["name"] for a in context["actions"]} == {"catalog", "save_entry", "recommend"}
             assert "support_received" not in model_requests[-1]["input"]
             assert len(json.dumps(preview["appContext"]).encode()) < 32768
+            model_context = json.dumps(preview['modelAppContext'], separators=(',',':'), ensure_ascii=False)
+            assert len(model_context.encode()) <= 4000
+            assert model_context in model_requests[-1]['input'], 'Recorded model app context differs from the actual provider input'
+            assert preview['modelAppContext'] != preview['appContext'], 'Oversized review records must not bypass the model budget'
             bound = json.loads(preview["proposal"]["app_action"]["arguments_json"])
             assert bound["revision"] == 1
             assert call(path + "?after=zz&limit=1", headers=public)["elements"][0]["revision"] == 1

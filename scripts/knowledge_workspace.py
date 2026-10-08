@@ -38,7 +38,11 @@ call(path,{'visibility':'public','revision':1,'approve':True},a,method='PUT')
 claim={'productId':'mug','sourceId':id,'contentHash':doc['contentHash'],'locale':'en-GB','text':'Capacity 500 ml.','quote':'Capacity 500 ml.','nodeType':'property'}
 call('/api/intelligence/claim.propose',{**claim,'quote':'Invented waterproof certification'},a,expected=400)
 call('/api/intelligence/claim.propose',claim,other,expected=404)
+for invalid in [-.1, 1.1, '0.9', None, True, {}, []]:
+ call('/api/intelligence/claim.propose',{**claim,'confidence':invalid},a,expected=400)
+assert not call('/api/intelligence/claims',{'productId':'mug'},a)['claims']
 c=call('/api/intelligence/claim.propose',claim,a)
+assert call('/api/intelligence/claims',{'productId':'mug'},a)['claims'][0]['confidence']==.5
 assert not call('/store-api/product/mug/facts',tenant=tenant)['claims']
 review={'id':c['id'],'revision':1,'state':'confirmed','approve':True}
 call('/api/intelligence/claim.review',{**review,'revision':100},a,expected=409)

@@ -89,6 +89,11 @@ writes. Provider output may propose the existing price/stock/layout/managed-app
 changes; the server binds actual revisions, validates and persists the proposal.
 Expanding this to all registry mutations remains open.
 
+Proposal review retains the existing permission-filtered, bounded `appContext`
+projection (up to 32 KiB). `modelAppContext` records the separate 4 KiB prompt
+projection, including explicit whole-record omissions. Inspecting a proposal's
+review data does not establish that the model read those omitted records.
+
 `POST /api/agent/chat/stream` carries acceptance, elapsed waiting updates and final
 completion/errors through the existing conversation and lease owner. It is **not
 provider token streaming**, a new chat backend or process-resumable model execution.
@@ -100,6 +105,9 @@ explicitly and never dumps a million-product catalog into the model.
 The existing `knowledge_relations` ledger now has typed source/target nodes,
 proposed/evidenced/confirmed/rejected states, confidence, business-valid time and
 recorded-time history. Confidence is not a probability that an assertion is true.
+An omitted candidate confidence uses 0.5; supplied values must be finite JSON
+numbers in 0–1. Nulls, strings and out-of-range values are rejected before a claim
+is stored, rather than silently substituted with a score.
 Current node types include product, variant, material, property, intent, problem,
 occasion, audience, claim, return reason, supplier, policy, document and support.
 
