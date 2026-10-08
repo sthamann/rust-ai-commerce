@@ -593,8 +593,8 @@
     },
     "src/auth/dto.rs": {
       "status": "unproved",
-      "sha256": "13279f8d25d1d943805382b8c7f80d97df84382b70c299e7be022a85a83321f6",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "99fc262bb8f85589c539f514e93383f820cdbf79da1834387ef7e8e728b8b61f",
+      "review": "Reviewed auth DTO allowlisted field shapes and rejection of injected role; existing extracted policy semantics unchanged, focused compiled regression passed"
     },
     "src/auth/handoff.rs": {
       "status": "unproved",
