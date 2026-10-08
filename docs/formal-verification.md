@@ -8,8 +8,10 @@ comparison driver and 317 unproved modules. Binding review is not a proof of tho
 modules. The [manifest](../proof/manifest.json) and CI artifact are the authoritative
 per-revision inventory. Local verification audits 80 theorems, compares 6,227
 compiled cases without mismatches and rejects 98 broken policy variants.
-The [published verification report](formal-verification.json) retains the exact
-CI source revision it records; later documentation does not certify every adapter.
+The [published verification report](formal-verification.json) is copied unchanged
+from the formal verification artifact of [GitHub run 37804364204](https://github.com/sthamann/vendune/actions/runs/37804364204),
+recording source `9fa6a538b30b6169797b5899eed742826755bd2b`. The proof and mutation
+steps passed there; later documentation does not certify every adapter.
 
 ## Connection to the real application
 
