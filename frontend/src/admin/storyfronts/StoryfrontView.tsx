@@ -48,7 +48,8 @@ export default function StoryfrontView({
       if (mounted.status === "fulfilled")
         setFrontends(
           mounted.value.frontends.filter(
-            (f: FrontendConnection) => f.appId === "storyfront",
+            (f: FrontendConnection) =>
+              f.appId === "storyfront" || f.appId === undefined,
           ),
         );
       if (packages.status === "fulfilled")

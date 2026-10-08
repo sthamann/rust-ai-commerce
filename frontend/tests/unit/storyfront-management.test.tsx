@@ -209,3 +209,17 @@ it("ordinary custom frontends are not presented as Storyfront experiences", asyn
     screen.queryByRole("heading", { name: mounted.alias }),
   ).not.toBeInTheDocument();
 });
+
+it("keeps historical Experience connections visible while the backend rolls out app associations", async () => {
+  const { appId: _old, ...legacy } = mounted;
+  render(
+    view(
+      vi.fn(async (path: string) =>
+        path.endsWith("frontends") ? { frontends: [legacy] } : { packages: [] },
+      ),
+    ),
+  );
+  expect(
+    await screen.findByRole("link", { name: "Edit experience" }),
+  ).toBeVisible();
+});
