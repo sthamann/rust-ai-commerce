@@ -13,13 +13,9 @@
 [![Status: working prototype](https://img.shields.io/badge/status-working_prototype-2459ef)](#current-boundaries)
 [![License: Sustainable Use](https://img.shields.io/badge/license-Sustainable_Use-18b9d9)](LICENSE)
 
-[**Start locally**](#get-started) · [**See it in action**](#see-vendune-in-action) · [**Interactive demos**](https://sthamann.github.io/vendune/index.html#demo) · [**Full feature tour**](https://sthamann.github.io/vendune/docs/features.html) · [**Build an app**](docs/app-studio.md) · [**How it works**](docs/production-architecture.md) · [**Documentation**](https://sthamann.github.io/vendune/docs/)
+[**Start locally**](#get-started) · [**See it in action**](#see-vendune-in-action) · [**Interactive demos**](https://sthamann.github.io/vendune/index.html#demo) · [**Full feature tour**](https://sthamann.github.io/vendune/docs/features.html) · [**Latest release**](docs/current-release.md) · [**Build an app**](docs/app-studio.md) · [**How it works**](docs/production-architecture.md) · [**Documentation**](https://sthamann.github.io/vendune/docs/)
 
 </div>
-
-Experience shops automatically install the Storyfront integration. Apps, Storyfronts
-and sales-channel connections lead to the same original editor; the renderer stays
-private. [How installation and dependencies work](docs/channel-management.md#storyfront-app-ownership-for-experience-shops).
 
 Vendune is a self-hosted **Rust commerce system** for B2C and B2B shops. Run a
 storefront, manage it in Vendune Studio, build custom experiences and give agents
@@ -196,8 +192,10 @@ supports validated content restoration, without replaying financial operations.
 *Package and app-data publication are independent. The unselected data stays in the sandbox.*
 
 These are real browser captures; waits are shortened for readability. The
-[complete tour](docs/features.md) has **40 current screenshots and 12 interaction
-GIFs**, with [capture versions and provenance](docs/assets/feature-tour/README.md).
+[complete tour](docs/features.md) retains **40 screenshots and 12 interaction
+GIFs from 6 October**, alongside [three new public integration captures from
+8 October](docs/assets/showcase/README.md#public-integration-captures-8-october-2026).
+Capture versions, recording edits and live-provider limits remain explicit.
 
 ## Operate the whole platform
 
@@ -223,12 +221,25 @@ remain operator-managed; this is not a deployed Google/Apple OAuth service.
 
 | Area | What is connected | Guide |
 | --- | --- | --- |
-| **Catalog & channels** | Search, eleven editor tabs, translated category trees, variants and guided storefront/headless channels | [Products](docs/product-management.md) · [Channels](docs/studio-api-and-channels.md#sales-channels) |
+| **Catalog & channels** | Search, eleven editor tabs, translated category trees, variants, guided storefront/headless channels, domains, pause/resume and personal previews | [Products](docs/product-management.md) · [Channels](docs/studio-api-and-channels.md#sales-channels) |
 | **Customers & orders** | Responsive customer workspace, separate sign-in/registration, default billing/delivery addresses, purchase details, HTTPS tracking, owned invoice PDFs and paid downloads; Studio fulfillment, guest buyer contacts with linked purchase addresses/orders, and customer groups | [Operations](docs/merchant-operations.md) · [History](docs/entity-history.md) |
 | **International settings** | Company/channel inheritance, enabled content locales, countries, destination taxes and eligible shipping/payment methods | [International commerce](docs/international-commerce.md) · [Settings](docs/settings-media.md) |
 | **Knowledge & automation** | Published/private sources, reviewed recommendations/proposals, coupons, rules, event graphs and durable workers | [Knowledge](docs/knowledge-workspace.md) · [Automation](docs/automation.md) |
 | **Apps & developers** | Eight bundled apps, nine builder assistants, typed storage, SDK surfaces, scoped API keys, HTTP/MCP tools, schedules and webhooks | [App library](docs/app-library.md) · [App contracts](docs/app-platform.md) |
 | **Platform & experiences** | Shop domains, inherited AI, lifecycle, diagnostics, trusted identity, private stages and selective releases | [Platform](docs/platform.md) · [Experiences](docs/experience-integration.md) |
+
+### Connected experiences, managed in one place
+
+Experience onboarding installs the **Storyfront integration** in the same
+transaction that connects its frontend. Apps, Storyfronts and **Sales channels →
+Domains & experiences** show the same owned connection and open the deployment’s
+existing editor. Pause a channel or make it private without deleting its orders.
+Storyfront implementation stays private; installation does not publish a draft
+or activate the original native renderer.
+[Current release and deployment boundaries](docs/current-release.md) ·
+[Connections and dependency checks](docs/channel-management.md).
+
+[![Storyfront app installed automatically with the connected domain, channel and editor](docs/assets/showcase/storyfront-managed.png)](docs/channel-management.md#storyfront-app-ownership-for-experience-shops)
 
 The **eight bundled apps** are Personalize this product, PayPal, Shopware
 Payments, Storyfront, Google Analytics, Gmail, Slack and Email delivery
@@ -238,8 +249,9 @@ installation does not silently connect a provider.
 
 Studio has **15 workspaces** in **English, German, Spanish and French**, plus
 dynamic content locales with main-language inheritance. Developers get scoped
-keys and an explorer with **214 static HTTP method/path pairs** at the reviewed
-source; installed app routes are discovered per shop.
+keys and an explorer generated from the current Rust routes (**243 static HTTP
+method/path pairs** at `706102f`, reviewed 8 October 2026); installed app routes
+are discovered per shop. CI rejects catalogue drift.
 [Studio/API tour](docs/studio-api-and-channels.md).
 
 ### Multiple currencies, one checkout

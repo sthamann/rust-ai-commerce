@@ -76,8 +76,10 @@ Orders have a bounded chronological cursor list, immutable customer/billing/
 shipping/quote snapshots, standard totals/line-item/address/transaction read
 fields, editable operational state, tracking per delivery, append-only notes,
 flow effects and generated documents. The prototype has one native payment
-transaction and EUR pricing; multiple partial transactions/currencies and the
-complete Shopware conversion/DAL model remain unported.
+transaction and currency-scaled immutable quotes; [multiple currencies](currencies.md)
+are selected by shop/channel context and retained by orders, payments and invoices.
+Multiple partial transactions and the complete Shopware conversion/DAL model remain
+unported.
 
 Order detail returns `workflow.actions` with translated labels, eligibility and
 reasons. The UI executes an eligible action once and updates directly from the

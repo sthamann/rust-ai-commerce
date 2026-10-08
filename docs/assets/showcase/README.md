@@ -1,8 +1,10 @@
-# Vendune homepage showcase — 6 October 2026
+# Vendune homepage showcase — capture provenance
 
 [Open the showcase](https://sthamann.github.io/vendune/index.html#demo) · [Complete feature guide](../../features.md) · [Earlier capture provenance](../feature-tour/README.md)
 
-The homepage now presents six selectable workflows and six expandable screenshots.
+The 6 October collection contains six selectable workflows and six expandable
+screenshots. The homepage now also includes the two integration screenshots from
+8 October described below.
 These are recordings of the actual application, with synthetic shops, accounts,
 addresses and records. The DOM, responses and interface were not mocked or
 rearranged. Screenshots are unretouched browser captures (some transcoded to WebP).
@@ -67,3 +69,23 @@ layouts. Presentation timing must not be interpreted as a performance benchmark.
 No paid model, email, OAuth, PayPal, Slack or private Storyfront service was
 contacted for this refresh. These captures demonstrate the described local paths;
 they do not certify every provider integration or production capacity.
+
+## Public integration captures 8 October 2026
+
+These three unretouched PNGs were captured through Chrome from the publicly deployed
+Core at **706102f8ff3526a6f5bba7ab09b96ce713d1de74**. They show the owned fictional
+Retro Commodore demo shop, not a synthetic local deployment. Only the interface
+language was changed to English and restored; no app, channel, catalog or customer
+data was changed for these captures. No customer records, credentials or private
+Storyfront source are published. No paid model call, email or payment was initiated.
+
+| File | Observed screen | Scope |
+| --- | --- | --- |
+| [storyfront-installed.png](storyfront-installed.png) | Apps: one installed/enabled Storyfront package | Actual persisted installation, not a Discover-only card |
+| [storyfront-managed.png](storyfront-managed.png) | Managed app detail with domain/channel and editor link | Same owned frontend registry as Storyfronts |
+| [channel-domains.png](channel-domains.png) | Main channel Domains & experiences | Actual binding, reassignment/disconnect controls and existing editor |
+
+The linked editor was opened separately and displayed the retained React Experience
+Studio and published revision. These captures do not claim that the original native
+Astro renderer is active publicly, that every displayed action was executed, or that
+external providers passed acceptance. [Release review](../../current-release.md).

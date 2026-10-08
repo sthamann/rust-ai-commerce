@@ -58,7 +58,7 @@ The plaintext key is shown once, masked in the UI, and only held in component
 memory. Store it in your integration's secret manager. Scheduled future start
 dates and refresh-token rotation are not implemented.
 
-The explorer lists **214 static HTTP method/path pairs** (reviewed at `5e4f8b5`, 6 October 2026) with their Rust source
+The explorer lists **243 static HTTP method/path pairs** (reviewed at `706102f`, 8 October 2026) with their Rust source
 module. `scripts/api_catalogue.py` regenerates this list from `.route`
 declarations; the mandatory CI structure check rejects drift. Installed app `apiRoutes` are
 loaded separately for the current shop. This is not a complete OpenAPI schema;
@@ -105,8 +105,11 @@ masks and native property-group entities remain upstream gaps.
 
 A dedicated workspace separates channels from Rule/Flow Builder. The main
 storefront is a persisted, editable `default` channel. It inherits shop languages and
-shared company/checkout settings, and cannot be deleted or deactivated. Other
-channels expose dependency-checked deletion. See [automation lifecycle](automation.md#starting-configuration-and-lifecycle).
+shared company/checkout settings, and cannot be deleted or changed to headless.
+It can be paused/resumed or made private; authorized merchants can open a personal
+preview. **Domains & experiences** lists, assigns and disconnects owned frontend
+addresses and opens each connection’s existing Storyfront editor. Other channels
+expose dependency-checked deletion. See [domains, previews and admission](channel-management.md). See [automation lifecycle](automation.md#starting-configuration-and-lifecycle).
 Create another storefront or headless channel in
 three steps: translated name/type → enabled languages/navigation/catalog → review.
 Choose products by search rather than entering IDs. All-catalog mode still
@@ -123,13 +126,15 @@ the same supported channel history API.
 
 ## Fresh shops and standard apps
 
-A new independent shop has no externally connected apps. Its **Apps** workspace
+An ordinary new independent shop has no externally connected apps. Its **Apps** workspace
 opens discovery immediately and displays the bundled integrations (engraving,
 PayPal, Shopware Payments, Storyfront, Google Analytics, Gmail, Slack and email).
 Install opens the app's configuration. Availability is distinct from installation
 and a working external connection; payment/mail credentials and authorizations
 must be configured separately. Existing empty shops benefit without a seed-data
-migration or automatic activation of paid/external services.
+migration or automatic activation of paid/external services. Experience onboarding
+is different: connecting a Storyfront frontend installs its integration manifest
+atomically, with no merchant reinstall. [Managed app ownership](channel-management.md#storyfront-app-ownership-for-experience-shops).
 
 ## Verification and boundaries
 
