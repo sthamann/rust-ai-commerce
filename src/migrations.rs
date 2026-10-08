@@ -55,6 +55,11 @@ pub(crate) async fn apply(pool: &PgPool) {
             .execute(&mut *tx)
             .await
             .unwrap_or_else(|e| panic!("Migration {version}: {e}"));
+        if *version == "055-hosted-apps" {
+            apps::hosted::backfill(&mut tx)
+                .await
+                .expect("hosted app migration");
+        }
         sqlx::query("INSERT INTO public.commerce_migrations(version,checksum) VALUES($1,$2)")
             .bind(version)
             .bind(checksum)

@@ -1,5 +1,6 @@
 /** Passive operator URLs contain no browser credential; the destination editor authorizes its own owner. */
 export type FrontendConnection = {
+  appId?: string | null;
   alias: string;
   channel: string;
   experienceAlias?: string;

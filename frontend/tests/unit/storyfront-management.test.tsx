@@ -3,10 +3,12 @@ import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, it, vi } from "vitest";
 import { LocaleProvider } from "../../src/shared/i18n/i18n";
+import AppDetails from "../../src/admin/apps/AppDetails";
 import StoryfrontView from "../../src/admin/storyfronts/StoryfrontView";
 import { connectionUrl } from "../../src/admin/storyfronts/storyfront-model";
 import { storyfrontWords } from "../../src/admin/storyfronts/storyfront-i18n";
 const mounted = {
+  appId: "storyfront",
   alias: "retro-shop",
   channel: "experience_retro",
   url: "https://retro-shop.example.test/",
@@ -123,4 +125,87 @@ it("rejects active or credential-bearing URLs and accepts only HTTPS or explicit
     "http://127.0.0.1:4420/design/demo?locale=es-ES",
   );
   expect(connectionUrl(null)).toBeUndefined();
+});
+
+it("installed managed app details open the existing editor and explain the dependency instead of allowing pause", () => {
+  const request = vi.fn(),
+    a = (key: string) => key;
+  render(
+    <LocaleProvider>
+      <AppDetails
+        {...({
+          p: {
+            id: "storyfront",
+            version: "1.0.0",
+            active: true,
+            revision: 1,
+            managedBy: "experience",
+            connections: [mounted],
+            manifest: {
+              name: { "en-GB": "Storyfront" },
+              entities: [],
+              actions: [],
+              permissions: [],
+            },
+          },
+          locale: "en-GB",
+          mainLocale: "en-GB",
+          a,
+          c: a,
+          manage: true,
+          busy: false,
+          run: vi.fn(),
+          request,
+          detailTab: "appDetails",
+          appCategory: () => "storefront",
+          role: "owner",
+          setResult: vi.fn(),
+          setResultApp: vi.fn(),
+        } as any)}
+      />
+    </LocaleProvider>,
+  );
+  expect(
+    screen.getByRole("button", { name: "Managed by Experience" }),
+  ).toBeDisabled();
+  expect(screen.getByRole("link", { name: "Edit experience" })).toHaveAttribute(
+    "href",
+    mounted.editorUrl + "?locale=en-GB",
+  );
+  expect(screen.getByText(/installed automatically/)).toBeVisible();
+  expect(request).not.toHaveBeenCalled();
+});
+it("managed Storyfront bindings open their editor without a second legacy iframe", async () => {
+  const request = vi.fn(async (path: string) =>
+    path.endsWith("frontends")
+      ? { frontends: [mounted] }
+      : {
+          packages: [
+            {
+              id: "storyfront",
+              active: true,
+              revision: 1,
+              uiUrl: "https://legacy.example.test/",
+            },
+          ],
+        },
+  );
+  const result = render(view(request));
+  await screen.findByRole("link", { name: "Edit experience" });
+  expect(result.container.querySelector("iframe")).toBeNull();
+});
+it("ordinary custom frontends are not presented as Storyfront experiences", async () => {
+  render(
+    view(
+      vi.fn(async (path: string) =>
+        path.endsWith("frontends")
+          ? { frontends: [{ ...mounted, appId: null }] }
+          : { packages: [] },
+      ),
+    ),
+  );
+  await screen.findByRole("button", { name: "Add Storyfront integration" });
+  expect(
+    screen.queryByRole("heading", { name: mounted.alias }),
+  ).not.toBeInTheDocument();
 });

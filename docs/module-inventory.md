@@ -28,6 +28,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/apps/evidence.rs](../src/apps/evidence.rs) | Private provenance-bearing app exports feed merchant retrieval and durable app events; never public PDP answers. |
 | [src/apps/evidence_routes.rs](../src/apps/evidence_routes.rs) | Scoped merchant-only evidence retrieval; sources never enter public product answers. |
 | [src/apps/gateway.rs](../src/apps/gateway.rs) | One permission-aware action gateway serves HTTP, UI and MCP; service egress is operator configured. |
+| [src/apps/hosted.rs](../src/apps/hosted.rs) | Persist hosted-app dependencies through the existing package installer; no private renderer or parallel registry. |
 | [src/apps/manifest.rs](../src/apps/manifest.rs) | Strict package contract; identifiers and limits are checked before any schema DDL. |
 | [src/apps/manifest_validation.rs](../src/apps/manifest_validation.rs) | Package capability, schema and action validation; no executable behavior is inferred from names. |
 | [src/apps/mod.rs](../src/apps/mod.rs) | Versioned app packages: managed data, UI slots, agent tools and isolated service calls. |
@@ -513,6 +514,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/shell/useStudioAccess.ts](../frontend/src/admin/shell/useStudioAccess.ts) | Central Studio identity boundary: initial login, expiry suspension and same-account resume. |
 | [frontend/src/admin/shell/useStudioController.ts](../frontend/src/admin/shell/useStudioController.ts) | Studio session/controller: authentication context, tenant/staging state and chat commands. |
 | [frontend/src/admin/shell/useStudioSession.ts](../frontend/src/admin/shell/useStudioSession.ts) | Revalidate visible Studio sessions and route authenticated failures to the active controller. |
+| [frontend/src/admin/storyfronts/StoryfrontConnections.tsx](../frontend/src/admin/storyfronts/StoryfrontConnections.tsx) | Shared passive navigation from Apps and Storyfronts to the same authorized original editor. |
 | [frontend/src/admin/storyfronts/StoryfrontView.tsx](../frontend/src/admin/storyfronts/StoryfrontView.tsx) | Discover the actual tenant-bound hosted frontends; keep the optional legacy app connector separate. |
 | [frontend/src/admin/storyfronts/storyfront-i18n.ts](../frontend/src/admin/storyfronts/storyfront-i18n.ts) | Four-language navigation copy; mounted frontends are connections, not proof of publication. |
 | [frontend/src/admin/storyfronts/storyfront-model.ts](../frontend/src/admin/storyfronts/storyfront-model.ts) | Passive operator URLs contain no browser credential; the destination editor authorizes its own owner. |

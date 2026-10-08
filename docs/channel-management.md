@@ -60,3 +60,51 @@ Domain CRUD is `GET/PUT /api/settings/frontends` and `DELETE /api/settings/front
 `scripts/channel_management.py` creates two synthetic shops and exercises CRUD, stale revisions, foreign IDs, private Store API/UCP/MCP, default pause/resume, dependencies, actual hosted proxy headers, one-use preview handoff, paused catalog preview, order/account-write denial and logout revocation. It runs in the central integration suite registry with disposable PostgreSQL data and a loopback frontend fixture. UI tests exercise editing, assignment and disconnect confirmation. Existing settings, tenancy, checkout, staging and broker regressions cover surrounding paths.
 
 The pure channel admission decision is extracted into Lean with private/paused/preview claims and deliberate failing mutations. This proves the extracted decision under its input assumptions; it does not prove SQL, authentication, proxies, rendering, native Storyfront or the entire commerce system.
+
+## Storyfront app ownership for Experience shops
+
+An Experience is mounted through the same `PUT /api/settings/frontends` transaction,
+with `appId: "storyfront"`. The core installs the bundled public integration manifest
+through `apps::registry::install_tx`, then commits the frontend binding. It does not
+load the private Storyfront implementation. Repeating an unchanged mount preserves
+both frontend and app revisions. Additional domains inherit the canonical Experience's
+app association; an ordinary custom frontend without `appId` does not install it.
+
+```mermaid
+flowchart LR
+    Job[Private Experience onboarding] --> Mount[Authenticated frontend mount]
+    Mount --> Install[Existing app installer]
+    Install --> Package[(Tenant app package and immutable version)]
+    Mount --> Binding[(Tenant frontend / channel / app binding)]
+    Package --> Apps[Apps: installed and active]
+    Binding --> Apps
+    Binding --> Storyfronts[Storyfronts and channel connections]
+    Apps --> Editor[Existing authorized private Storyfront editor]
+    Storyfronts --> Editor
+```
+
+Migration 055 assigns pre-existing Experience mounts to Storyfront and installs any
+missing package **once**, using the normal installer inside the migration transaction.
+A deferred composite `(tenant,app_id)` foreign key prevents a binding from borrowing
+another tenant's app. GET requests never provision or repair installations. The
+pre-055 hosting contract was Storyfront/Experience; future generic mounts remain
+unassociated unless their application is explicitly supplied.
+
+`GET /api/apps` reports `managedBy: "experience"` and its owned `connections`. Apps
+and Storyfronts reuse the same connection card and safe editor URLs. While any
+frontend depends on the package, deactivation returns 409 under the same
+configuration lock used by mounting. Disconnecting the last binding releases that
+restriction and preserves app data and version history. Channel pause/privacy
+remains separate and continues to protect the public storefront.
+
+The existing private `status` app action (HTTP/MCP) returns these authoritative
+connection records; `connected` describes a binding, not a live renderer health
+check or proof of publication. Managed `generate` directs the merchant to the
+original editor rather than starting a second generator. Optional legacy service
+connectors retain their existing contract for shops without managed bindings.
+
+The real PostgreSQL `channel_management`, `identity_broker` and `tenant_isolation`
+suites cover installation/idempotency, old-data migration/restart, foreign-shop
+rejection, dependency protection and composite foreign keys. UI tests cover
+localized navigation and suppressing duplicate legacy editors. SQL/network
+adapters remain outside the Lean proof boundary.

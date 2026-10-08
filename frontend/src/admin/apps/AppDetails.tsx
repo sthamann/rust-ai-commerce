@@ -3,6 +3,8 @@ import { useAppText } from "../../shared/i18n/app-i18n";
 import { useCustomerText } from "../../shared/i18n/customer-i18n";
 import type { Package } from "./app-types";
 
+import StoryfrontConnections from "../storyfronts/StoryfrontConnections";
+import { useStoryfrontText } from "../storyfronts/storyfront-i18n";
 import AppInterfaces from "./AppInterfaces";
 import AppArtwork from "./AppArtwork";
 import { appName, appSummary } from "./library-model";
@@ -74,6 +76,7 @@ export default function AppDetails({
   setResult,
 }: AppDetailsProps) {
   const l = useLibraryText();
+  const text = useStoryfrontText();
   const [confirm, setConfirm] = useState(false);
   const toggle = () =>
     void run(async () => {
@@ -103,10 +106,10 @@ export default function AppDetails({
         </div>
         <button
           className="studio-secondary"
-          disabled={!manage || busy}
+          disabled={!manage || busy || !!p.managedBy}
           onClick={() => (p.active ? setConfirm(true) : toggle())}
         >
-          {a(p.active ? "disable" : "enable")}
+          {p.managedBy ? text("managed") : a(p.active ? "disable" : "enable")}
         </button>
       </header>
       {confirm && (
@@ -121,6 +124,10 @@ export default function AppDetails({
         </ConfirmDialog>
       )}
       <div className="app-detail-body">
+        {p.managedBy && <p>{text("managedHint")}</p>}
+        {detailTab === "appDetails" && !!p.connections?.length && (
+          <StoryfrontConnections frontends={p.connections} />
+        )}
         <div className="app-capabilities">
           {[
             [l("entities"), p.manifest.entities.length],

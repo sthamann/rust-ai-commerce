@@ -158,3 +158,12 @@ For a runtime extension or port:
 ## Sales-channel access and domains
 
 Use the existing `sales_channels` and `hosted_frontends` owners; see `docs/channel-management.md`. Pause/privacy is enforced in shared authentication admission across Store API, UCP/MCP and hosted frontends. Never trust caller preview-principal headers or bypass checks for caches. Browser previews require a personal session, current membership and matching channel revision; they cannot purchase or modify accounts. Domain aliases retain canonical Experience identity and revision checks. Original native Storyfront channel bindings remain immutable; do not silently substitute a channel while its checkout still uses the imported one.
+
+## Managed Experience apps
+
+Experience onboarding must include `appId: "storyfront"` in the existing hosted-frontend mount.
+`apps/hosted.rs` installs through the existing immutable package registry inside that transaction;
+`hosted_frontends.app_id` is the tenant-aware dependency. Never synthesize an "installed" app
+in the UI, install it from GET, or create another connection/editor registry. Migration 055
+repairs historical mounts once. Preserve deactivation dependency checks and shared connection
+cards in Apps/Storyfronts; original Storyfront code stays in its private repository.

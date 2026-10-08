@@ -18,3 +18,9 @@ Files and their individual responsibilities are listed in [the generated source 
 Run `npm run build`, `npm test`, `npm run test:coverage` and `npm run architecture` from `frontend/`. Coverage includes untested source files; a module in this folder is not automatically fully tested. See the root [testing guide](../../../../docs/testing.md) for backend integration and coverage limits.
 
 [`storyfront-management.test.tsx`](../../../tests/unit/storyfront-management.test.tsx) exercises mount discovery without an installed app, editor/storefront navigation, loading and retry, stale workspace responses, missing editor configuration and unsafe URLs. `scripts/identity_broker.py` verifies the real HTTP/PostgreSQL registry for own, foreign, anonymous and forged tenant requests.
+
+`StoryfrontConnections.tsx` is shared by the Storyfront workspace and installed app
+details/interfaces. Both consume the core's persisted frontend app associations;
+no GET-side install, second editor, iframe fallback for managed connections or
+browser-side provider credentials. Managed packages explain why pausing requires
+first disconnecting their frontend dependencies.

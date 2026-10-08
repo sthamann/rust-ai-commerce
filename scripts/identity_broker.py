@@ -137,7 +137,19 @@ with (ROOT/'artifacts/identity-broker-server.log').open('w') as log:
         subprocess.run(['docker','exec',os.environ['DB_CONTAINER'],'psql','-U',os.environ.get('TEST_DATABASE_USER','commerce'),'-d',os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1','-c',f"UPDATE tenants SET status='paused' WHERE id='{shop}'"],check=True,capture_output=True)
         call('/',headers=host,expected=503)
         check('Paused shops cannot remain available through a separately mounted frontend')
+        # Reconstruct the pre-055 schema in this disposable database, with a real unregistered hosted shop.
+        call('/api/settings/frontends',{'alias':other,'channel':'default'},th,method='PUT')
+        assert not call('/api/apps',headers=th)['packages']
+        stop(server)
+        subprocess.run(['docker','exec',os.environ['DB_CONTAINER'],'psql','-U',os.environ.get('TEST_DATABASE_USER','commerce'),'-d',os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1','-c',"ALTER TABLE hosted_frontends DROP COLUMN app_id; DELETE FROM commerce_migrations WHERE version='055-hosted-apps';"],check=True,capture_output=True)
+        server=serve(env,base,log)
+        installed=next(p for p in call('/api/apps',headers=th)['packages'] if p['id']=='storyfront')
+        assert installed['active'] and installed['managedBy']=='experience' and installed['connections'][0]['alias']==other
+        assert installed['revision']==1
+        check('Pre-055 Experience mounts install the real bundled package through migration, not a GET-side repair')
         stop(server);server=serve(env,base,log)
+        assert next(p for p in call('/api/apps',headers=th)['packages'] if p['id']=='storyfront')['revision']==1
+        check('A fresh restart preserves managed installation without reinstalling or changing version history')
         call(path,assertion,expected=401)
         call('/api/auth/redeem',{'ticket':ticket},expected=401)
         call(path,signed(path,subject,workspaceId=shop,workspaceName='Existing'))

@@ -24,6 +24,10 @@ def run(a, b, passed):
         f['probe_cart'] = 'security-cart-' + oid
         f['probe_order'] = 'security-order-' + oid
         f['free_cart'] = 'security-free-cart-' + oid
+        f['host_app'] = 'host_app_' + oid
+        f['host_alias'] = 'host_alias_' + oid
+        setup += f"INSERT INTO app_packages(tenant,id,version,manifest,digest) VALUES('{t}','{f['host_app']}','1.0.0','{{}}','fixture');"
+        setup += f"INSERT INTO hosted_frontends(alias,tenant,channel,origin,experience_alias,app_id) VALUES('{f['host_alias']}','{t}','default','https://fixture.test','{f['host_alias']}','{f['host_app']}');"
         setup += f"INSERT INTO carts(id,tenant,token,data) VALUES('{f['probe_cart']}','{t}','probe-token-{oid}','{{}}'),('{f['free_cart']}','{t}','free-token-{oid}','{{}}');"
         setup += f"INSERT INTO orders(id,tenant,cart_id,idempotency_key,fingerprint,data) VALUES('{f['probe_order']}','{t}','{f['probe_cart']}','probe-{oid}','fixture','{{}}');"
         f['event'] = sql(f"INSERT INTO outbox(tenant,kind,data) VALUES('{t}','security.fixture','{{}}') RETURNING id;").splitlines()[0]
@@ -35,6 +39,7 @@ def run(a, b, passed):
     # Each row names its expected constraint and one valid/invalid statement. A negative
     # only counts if SQLSTATE 23503 is raised by that exact tenant constraint.
     cases = [
+        ('hosted_frontends_app_fk', lambda f: f"UPDATE hosted_frontends SET app_id='{f['host_app']}' WHERE alias='{a['host_alias']}'"),
         ('orders_cart_scope', lambda f: f"INSERT INTO orders(id,tenant,cart_id,idempotency_key,fingerprint,data) VALUES('security-insert','{ta}','{f['free_cart']}','security-insert','fixture','{{}}')"),
         ('products_parent_scope', lambda f: f"UPDATE products SET parent_id='{('lamp' if f is a else 'foreign-only')}' WHERE tenant='{ta}' AND id='mug'"),
         ('promotion_uses_order_scope', lambda f: f"INSERT INTO promotion_uses(tenant,promotion,order_id) VALUES('{ta}','security-promo','{f['order']['id']}')"),
@@ -61,7 +66,7 @@ def run(a, b, passed):
     for constraint, statement in cases:
         # Roll back both positive and negative probes; they must never affect workers.
         sql('BEGIN; ' + statement(a) + '; ROLLBACK;')
-        sql("BEGIN; DO $probe$ DECLARE failed text; BEGIN BEGIN " + statement(b) +
+        sql("BEGIN; SET CONSTRAINTS ALL IMMEDIATE; DO $probe$ DECLARE failed text; BEGIN BEGIN " + statement(b) +
             "; RAISE EXCEPTION 'Cross-shop reference accepted: " + constraint + "'; "
             "EXCEPTION WHEN foreign_key_violation THEN GET STACKED DIAGNOSTICS failed=CONSTRAINT_NAME; "
             "IF failed <> '" + constraint + "' THEN RAISE EXCEPTION 'Wrong rejection: %',failed; END IF; "

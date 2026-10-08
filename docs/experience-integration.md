@@ -99,3 +99,12 @@ exercises real PostgreSQL/HTTP setup, ordinary password login, wrong-password re
 foreign identity/shop denial, signature/replay rejection, session/handoff invalidation
 and preservation of chosen credentials across further broker exchanges. These SQL and
 network adapters remain **unproved**; no new whole-account Lean guarantee is claimed.
+
+### Automatic Storyfront installation
+
+Private Experience onboarding sets `appId: "storyfront"` on its authenticated
+frontend mount. Core migration 055 repairs existing Experience mounts through the
+normal app installer. Apps and Storyfronts expose the same owned connections and
+editor; an installed integration package does not copy the private renderer into
+the core. See [channel management](channel-management.md#storyfront-app-ownership-for-experience-shops)
+for lifecycle, dependency protection and migration verification.
