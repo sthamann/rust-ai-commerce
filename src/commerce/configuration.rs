@@ -6,6 +6,6 @@ pub(crate) fn decode_config(v: Value) -> Result<Settings> {
         .map(super::settings_defaults::enrich_defaults)
         .map_err(|_| bad("Invalid commerce configuration"))
 }
-pub(crate) async fn config(a: &App, t: &str) -> Result<(Settings, i64)> {
+pub(crate) async fn config(a: &App, t: &str) -> Result<(Arc<Settings>, i64)> {
     performance::settings(a, t, "default").await
 }

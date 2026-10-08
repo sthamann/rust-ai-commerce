@@ -43,6 +43,18 @@ async fn authenticate_scoped(State(a): State<App>, mut request: Request, next: N
     let mut h = RequestContext::from_request(&request);
     let path = request.uri().path().to_string();
     let method = request.method().to_string();
+    // Only the public native shell/assets bypass identity. Hosted shop assets still
+    // require current tenant/channel admission and authorized private previews.
+    if crate::verified_kernel::native_asset_bypass(
+        crate::performance::delivery::native_static(&path),
+        request
+            .extensions()
+            .get::<crate::shop_domains::HostShop>()
+            .is_some(),
+    ) {
+        request.extensions_mut().insert(h);
+        return next.run(request).await;
+    }
     // Public image subrequests cannot carry frontend custom headers. Resolve only the scoped asset URL
     // before sandbox/session admission; private shops still require the same merchant credential.
     if (path.starts_with("/store-api/assets/")

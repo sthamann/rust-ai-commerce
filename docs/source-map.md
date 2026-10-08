@@ -265,12 +265,12 @@ this does not claim every source line or every original Shopware operation is co
 
 | File | Responsibility | Verification |
 |---|---|---|
-| [`src/verified_kernel.rs`](../src/verified_kernel.rs) | Thirteen pure production admission/cap policies | Thirty-three Lean theorems; compiled Rust/Lean conformance; broken-policy mutations |
-| [`src/bin/verified_kernel.rs`](../src/bin/verified_kernel.rs) | Generated JSON comparison driver calling the real policy module | 3,558 comparison cases; generated drift guard |
+| [`src/verified_kernel.rs`](../src/verified_kernel.rs) | 37 pure production admission/cap policies | 80 Lean theorems; compiled Rust/Lean conformance; broken-policy mutations |
+| [`src/bin/verified_kernel.rs`](../src/bin/verified_kernel.rs) | Generated JSON comparison driver calling the real policy module | 6,227 comparison cases; generated drift guard |
 | [`src/payments/receipt_guard.rs`](../src/payments/receipt_guard.rs) | Checked amount conversion and provider receipt policy binding | `payments.py`; reviewed binding, not a proof of the parser |
 
-All 146 Rust files have explicit status and reviewed hashes in
-[`proof/manifest.json`](../proof/manifest.json). The eight consumer modules are
+All 353 Rust modules have explicit status and review inventory in
+[`proof/manifest.json`](../proof/manifest.json). The 34 consumer modules are
 reviewed bindings, not whole-module proofs. See the
 [exact formal coverage and remaining gaps](formal-verification.md).
 
@@ -442,3 +442,17 @@ reads, historical preservation and display. See [the measurement boundary](platf
 - `deploy/sql/provision-runtime.sh`, `scripts/security/core_hardening.py`, `scripts/testing/pooler.py`, `scripts/transaction_pooler.py`: least-privilege provisioning and actual two-replica/one-backend PgBouncer regression paths.
 
 [All eighteen findings, shared architecture and exact limits](core-hardening.md).
+
+## Request-hotpath consolidation (2026-10-08)
+
+| Owner | Responsibility | Real verification |
+|---|---|---|
+| `src/performance/access_snapshot.{rs,sql}`; `src/auth/identity.{rs,sql}` | One current shop/channel/mount snapshot, joined personal identity/channel lookup; immutable request ownership | `read_performance`, `channel_management`, `identity_broker`, `tenant_isolation` |
+| `src/performance/delivery.rs`; `frontend/scripts/precompress.mjs` | Native-only zero-SQL assets, secret-free compression opt-in, deterministic gzip/Brotli variants with correct `Vary`, MIME and range contracts | `read_performance`; frontend precompression unit tests |
+| `src/performance/{settings,mod}.rs` | Immutable `Arc<Settings>` cache ownership; mutable copies only where necessary | Two-replica version/delete/recreate/revocation and checkout/currency regressions |
+| `src/commerce/{inventory.rs,inventory_release.sql}`; `src/order_checkout.rs` | Batched deduction/allocation/release; persisted quantities and sorted product locks | `production_foundations` with simultaneous opposite-order baskets and cancellation replay |
+| `src/studio/{facts.rs,overview.sql,revenue.rs}`; `src/studio.rs` | Consolidated bounded facts and three parallel read branches; unchanged currency-separated API | `studio`, `read_performance` nonempty mixed-currency before/after response checks |
+| `scripts/testing/{hotpath,inventory_batch}.py` | Helpers in existing integration suites, wire/query measurements and real concurrent checkout effects | Existing verification registry; no separate runtime or benchmark engine |
+
+[Raw measurements and exact limits](read-performance.md); SQL/async adapters remain
+unproved despite explicit source-review locks.

@@ -20,15 +20,25 @@ pub(crate) struct Identity {
     pub parent: Option<String>,
     pub status: Option<String>,
     pub members: Vec<Member>,
+    pub channel: Option<crate::performance::access_snapshot::ChannelSnapshot>,
 }
 pub(crate) async fn resolve_identity(
     a: &App,
     token: &str,
     selected: Option<&str>,
 ) -> Result<Identity> {
+    resolve_identity_channel(a, token, selected, None).await
+}
+pub(crate) async fn resolve_identity_channel(
+    a: &App,
+    token: &str,
+    selected: Option<&str>,
+    channel: Option<&str>,
+) -> Result<Identity> {
     let r = sqlx::query(include_str!("identity.sql"))
         .bind(hash(token))
         .bind(selected)
+        .bind(channel)
         .fetch_optional(&a.db)
         .await?
         .ok_or(Error(
@@ -42,6 +52,12 @@ pub(crate) async fn resolve_identity(
         tenant: r.get("tenant"),
         parent: r.get("parent"),
         status: r.get("status"),
+        channel: r.get::<Option<Value>, _>("channel_data").map(|data| {
+            crate::performance::access_snapshot::ChannelSnapshot {
+                data,
+                revision: r.get("channel_revision"),
+            }
+        }),
         scopes: scopes
             .map(serde_json::from_value)
             .transpose()

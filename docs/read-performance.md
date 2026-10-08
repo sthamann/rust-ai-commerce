@@ -15,7 +15,13 @@ from the next architecture stages.
 | Atomic version check | One SQL statement checks base/override versions and channel existence; unchanged JSON is not returned | UUID identity changes within the write transaction, including direct SQL, restore and delete/recreate |
 | Pure read settings | No `BEGIN`, `FOR SHARE`, `COMMIT` around a public configuration preview | Locked transactional settings resolution remains in order placement and mutation paths |
 | Browser transport | Identical simultaneous core reads share one request in Studio and storefront | Full tenant, channel, locale, cart, customer and merchant identity in the key; no completed-response cache; mutation admission barriers |
-| Static frontend | Fingerprinted JS/CSS gets immutable one-year browser caching; shell revalidates | Dynamic API responses default to `no-store`; existing explicit image/app policies remain intact |
+| Static frontend | Fingerprinted JS/CSS gets immutable one-year browser caching; shell revalidates; deterministic gzip/Brotli sidecars | Native variants include `Vary: Accept-Encoding`; dynamic API responses default to `no-store` |
+| Fresh admission snapshot | Domain, tenant existence, staging parent, status and channel share one SQL statement per anonymous/bootstrap request; personal identity lookup joins its selected channel | Server-owned request extension; no cross-request status/rights cache; hosted proxies retain the originally admitted mount |
+| Public asset admission | Native public shell/assets skip SQL identity checks, including an expired bearer | Hosted/private shop assets, scoped uploads, product pages and previews still require current admission |
+| HTTP compression | Gzip/Brotli for explicitly selected secret-free read models | Credentials, customer/cart/order/payment responses, MCP/UCP, arbitrary hosted HTML, SSE and ranges retain their security/delivery boundary |
+| Inventory batching | One statement per stock deduction/allocation/release phase, rather than per item | Checkout retains sorted product locks; release locks in the same order and uses persisted quantities exactly once |
+| Overview facts | One SQL statement for bounded recent activity, order/revenue/learning facts; at most three independent read branches | Historical currencies stay separate; history aggregates still need incremental projections for very large shops |
+| Decoded settings ownership | Warm reads borrow `Arc<Settings>`; mutations clone only at their actual mutable boundary | Existing version checks, checkout locks and cache weight limits remain authoritative |
 | SQL pool | Validated max/min connection count and queue deadline per process; overload returns HTTP 503 | A deployment must budget all HTTP replicas and workers together |
 
 The cache's byte budget is an estimate based on serialized payload size, not a
@@ -58,6 +64,48 @@ digest is retained. SQL tracing was enabled for separate statement counts and
 disabled during timing. These figures measure the shared backend path, not
 browser rendering, AI latency or relative Shopware performance.
 
+## Local matched hotpath result, 8 October 2026
+
+Baseline source: `769b5d3524692842609bf1e29391ad88ae9ca54e` (already includes the
+earlier reset-query removal and identity/grant consolidation). Same debug profile,
+local PostgreSQL 17, six synthetic products, 16 clients, three 300-request rounds
+for five workloads on each binary: **9,000 timed requests, zero errors**. Median
+of three round-level p95 values below; all raw rounds and response fingerprints
+are retained. Some rounds have substantial outliers; these short closed-loop
+samples do not establish fleet tail-latency guarantees.
+
+| Workload | Measured SQL statements before / after | Median round p95 before / after |
+|---|---:|---:|
+| storefront-list | 19 / 16 | 17.37 / 18.93 ms |
+| storefront-detail | 40 / 36 | 27.20 / 21.59 ms |
+| host-catalog | 24 / 16 | 17.12 / 14.05 ms |
+| admin-catalog | 16 / 16 | 14.15 / 14.49 ms |
+| mcp-catalog | 20 / 16 | 21.90 / 20.20 ms |
+
+SQL counts are medians of seven independently traced samples; timing runs disable
+SQL tracing. Counts include pool scope-binding and transaction statements, exclude
+the asynchronous diagnostic counter write, and can vary slightly with background
+connection work. They are observed statements, not the number of business queries.
+
+| Delivered response | SQL before / after | Wire bytes before / after (gzip) |
+|---|---:|---:|
+| asset | 2 / 0 | 262,763 / 84,112 |
+| host-catalog | 24 / 16 | 7,378 / 1,607 |
+| dashboard | 41 / 23 | 12,518 / 3,018 |
+
+The JavaScript entry is byte-identical after decompression. All five business
+responses retain equal fingerprints. The overview contains three actual synthetic
+orders in EUR/EUR/USD; currency-separated totals and mixed-currency-day null totals
+match. Only changing HTTP activity counters are excluded from its fingerprint.
+Brotli variants, range/MIME/cache negotiation, uncompressed auth and hosted assets
+are separately exercised on real HTTP. No model, payment provider or external
+message is involved.
+
+[Raw samples, binary/source hashes and delivery checks](assets/read-performance-2026-10-08.json).
+The changed build was measured from a working tree with its source-tree digest
+retained. These figures do not measure browser rendering, slow AI requests, cold
+database behavior, large shops, production capacity or a Shopware speed ratio.
+
 ## Configuration and reproduction
 
 ```dotenv
@@ -90,7 +138,9 @@ It checks committed writes, overrides and deletion, settings delete/recreate
 without a revision bump, transaction rollback, language registration, unchanged
 conflict inserts, tenancy, immediate membership revocation, cache-disabled mode,
 cold process restart, HTTP cache policies and overload/recovery with a one-slot
-pool. It contacts no model or payment provider and sends no external messages.
+pool. It also checks zero-SQL native assets, byte-identical precompressed variants,
+MIME/range/negotiation behavior, secret-safe compression exclusions and immediate
+shop pause/private-channel changes on both warmed replicas. It contacts no model or payment provider and sends no external messages.
 
 Optional baseline measurement: retain an original binary and its exact source
 commit before building the change, then run the same script with:
@@ -169,7 +219,9 @@ settings cache. Configuration writes emit an explicit event. Reconnect clears th
 cache, and authoritative versions remain the correctness gate; notification delivery
 is not durable business delivery. HTTP/worker processes reserve their pool plus two listeners against a database-backed
 fleet budget. Identity/grants/status are consolidated into one current lookup, and
-session mode removes the extra reset query. Transaction-mode PgBouncer is supported
+session mode removes the extra reset query. The subsequent request-hotpath change
+shares one fresh domain/environment/status/channel/mount snapshot and joins the
+selected channel into personal identity resolution. Transaction-mode PgBouncer is supported
 through `ScopedPool` and SET LOCAL, with direct/session notification listeners.
 The dated latency baseline above predates these changes; do not reuse it as a
 measurement of the hardened path. Admission leases also add real SQL work.
@@ -179,3 +231,17 @@ HTTP has bounded local and shared tenant permits, reserved checkout capacity,
 AI quotas and operator histogram buckets. Actual model calls and app/provider work
 have shared concurrency caps. Token/spend quotas and telemetry export remain open.
 [Configuration, tradeoffs and tests](core-hardening.md).
+
+## CPU and RLS changes deliberately requiring measurement
+
+The extra session-mode reset was removed by the earlier core-hardening change,
+not measured as part of this comparison. Every borrow still binds its current
+server-derived scope; transaction-mode poolers use `SET LOCAL`. Retaining a pool
+connection for an entire HTTP request would also retain it during nested reads or
+external calls and can starve/deadlock small pools. It was not introduced.
+
+An alternative allocator, fat LTO and `target-cpu=x86-64-v3` are hypotheses, not
+risk-free improvements. No allocator throughput percentage has been established;
+CPU-specific binaries can fail on a different hosting architecture. Profile
+release allocations/serialization and compare representative deployment hardware
+before choosing these changes. Existing portable release settings remain in use.

@@ -51,16 +51,28 @@ pub(crate) async fn admit(
     }
     let t = tenant(h)?;
     let id = super::channel_id(h);
-    let row = sqlx::query("SELECT data,revision FROM sales_channels WHERE tenant=$1 AND id=$2")
-        .bind(&t)
-        .bind(id)
-        .fetch_optional(&a.db)
-        .await?
-        .ok_or(Error(
-            StatusCode::NOT_FOUND,
-            "Sales channel unavailable".into(),
-        ))?;
-    let data: Value = row.get("data");
+    let snapshot = if let Some(access) = h
+        .access
+        .as_ref()
+        .filter(|s| s.matches(h) && s.channel_id == id)
+    {
+        access.channel.clone()
+    } else {
+        sqlx::query("SELECT data,revision FROM sales_channels WHERE tenant=$1 AND id=$2")
+            .bind(&t)
+            .bind(id)
+            .fetch_optional(&a.db)
+            .await?
+            .map(|r| crate::performance::access_snapshot::ChannelSnapshot {
+                data: r.get("data"),
+                revision: r.get("revision"),
+            })
+    }
+    .ok_or(Error(
+        StatusCode::NOT_FOUND,
+        "Sales channel unavailable".into(),
+    ))?;
+    let data = snapshot.data;
     let active = data["active"] == true;
     let private = data["visibility"] == "private";
     let supplied = header(h, "x-channel-preview")
@@ -68,7 +80,7 @@ pub(crate) async fn admit(
         .or_else(|| super::channel_preview::cookie(h));
     let preview = if let Some(token) = supplied {
         let valid =
-            super::channel_preview::valid(a, &t, id, row.get("revision"), &token, host).await?;
+            super::channel_preview::valid(a, &t, id, snapshot.revision, &token, host).await?;
         if !valid {
             return Err(Error(
                 StatusCode::FORBIDDEN,

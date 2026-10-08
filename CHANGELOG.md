@@ -1,5 +1,14 @@
 # Changelog
 
+## Request hotpath and delivery — 8 October 2026
+
+- Reuse one fresh server-owned domain/tenant/staging/status/channel snapshot per request, with current personal credentials and immutable hosted mount binding. No status or permission TTL cache.
+- Remove native public-asset identity SQL; ship deterministic gzip/Brotli build variants and secret-free API compression with correct negotiation, ranges and stream exclusions. Hosted/private assets retain admission.
+- Borrow decoded settings through immutable Arc handles; batch inventory deduction/allocation/release using persisted quantities and sorted locks.
+- Consolidate dashboard facts and bound parallel reads to three branches. Historical currency separation and cancellation idempotence retain their contracts.
+- Publish a matched 9,000-request local comparison with zero errors, raw samples and unchanged business fingerprints; no universal speedup or production-capacity claim. See [the measurement and scope](docs/read-performance.md).
+- Add two Lean properties for native-asset admission and explicit review locks for embedded SQL/build inputs. SQL, providers and browser behavior remain unproved.
+
 ## Rust standard services — 7 October 2026
 
 - Ported bundled Email Delivery, GA4, Gmail, Slack and OAuth/export state to an independent Rust service; existing app, Flow Builder and MCP contracts are preserved.

@@ -15,10 +15,14 @@ and [test coverage](testing.md). Diagram images open at full size.
 ## Follow a real request
 
 1. The browser selects a shop and sales channel. A hosted subdomain resolves to a
-   stored frontend binding. A sales channel is an experience within a merchant
+   stored frontend binding. Domain, tenant existence, staging parent, live status and
+   selected channel are loaded in one fresh SQL snapshot and retained for this
+   request; the proxy cannot remap an admitted mount through a later lookup. A sales channel is an experience within a merchant
    workspace; an unrelated merchant is a different tenant, not another channel.
 2. Authentication strips caller-supplied internal identity headers, resolves the
-   current session, all grants and shop status in one authoritative query, and checks explicit route/method permission. The trusted Principal lives in request extensions. Customer
+   current session, all grants, shop status and selected channel in one authoritative
+   query, and checks explicit route/method permission. Only native public shell/assets
+   skip identity SQL; hosted shop assets and previews retain admission. The trusted Principal lives in request extensions. Customer
    operations also verify the customer/cart/download capability.
 3. Resource admission takes bounded process and tenant permits. Checkout uses a
    separate process pool, so catalog traffic cannot consume all checkout permits.
@@ -43,7 +47,7 @@ and [test coverage](testing.md). Diagram images open at full size.
 | Stock allocation | `src/commerce/inventory.rs`, migration 047 | Persisted quantities linked to tenant + order + product |
 | Payments | `src/payments/{state,storage,generic_receipts,worker}.rs` | Verified receipts, immutable provider identity, fenced durable jobs |
 | Rules, flows and app events | `src/marketing/`, `src/apps/`, `src/outbox.rs` | Versioned contracts and current action permissions |
-| Read caching and admission | `src/performance/` | Bounded memory; authoritative SQL versions; outbox eviction |
+| Read caching, admission and delivery | `src/performance/` | Immutable Arc handles; current SQL versions/access snapshots; outbox eviction; secret-free compression |
 | Shop memory and retrieval | `src/cognition/`, `src/knowledge/` | Provenance/publication filters and persisted event receipts |
 | Operator controls | `src/platform/` | Separate personal operator grant, audit and revisions |
 | Migrations / startup | `src/migrations.rs`, `src/migrations/schema.rs`, `src/bootstrap.rs` | Append-only checksums and separate migration credential |
@@ -63,7 +67,9 @@ The same transaction writes the order, deducts available stock, creates an alloc
 for every order line and writes `order.placed`. This allocation now exists for manual,
 simulated and provider-backed methods. Cancellation uses its persisted quantity,
 not an editable line-item snapshot. Setting `released_at` and restoring stock happen
-atomically; repeat cancellation cannot release stock twice. Existing order allocations
+atomically in one statement; repeat cancellation cannot release stock twice.
+Deduction and allocation are batched per cart. Product locks remain in sorted ID
+order for checkout and release, including baskets supplied in opposite orders. Existing order allocations
 are backfilled by migration 047 where their referenced product still exists.
 
 Provider-backed checkout also creates a payment attempt and durable command. Its
@@ -251,7 +257,7 @@ the same declared capabilities; provider output cannot become an unchecked SQL c
 - Payment suites use local provider fixtures for restart, capture/refund, duplicate
   notifications, version/account pinning, authorization/void and uncertain receipts.
 - Original Shopware differential suites guard the ported behavior and money boundary.
-- Lean extracts 30 named policies, including currency precision, bounded quota and
+- Lean extracts 37 named policies, including currency precision, bounded quota and
   ledger transition admission. It does **not** prove the float bridge, all Money
   arithmetic, SQL pool hooks, migrations, external providers, browser or entire core.
 - The documentation build mirrors all tracked Markdown, copies local SVG assets,

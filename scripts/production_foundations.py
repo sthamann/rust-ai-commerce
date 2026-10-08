@@ -15,6 +15,7 @@ from testing.runtime import ROOT, serve, stop
 from testing.database import psql
 from testing.pooler import Pooler
 from security import core_hardening
+from testing import inventory_batch
 
 env = dict(os.environ)
 role = 'runtime_' + uuid.uuid4().hex[:12]
@@ -178,6 +179,7 @@ try:
     assert call(two, '/store-api/product/lamp', h=shopper)['product']['stock'] == stock
     assert scoped(sessions[0]['workspace'], f"SELECT quantity,released_at IS NOT NULL FROM order_inventory_reservations WHERE order_id='{oid}'").splitlines()[-1] == '2|t'
     print('PASS allocations ignore corrupted snapshot quantity and release once across replicas')
+    inventory_batch.verify(call, bases, owner_h, sessions[0]['workspace'])
     # Existing real SQL suites are repeated with the strict runtime, not only privileged DB fixtures.
     for suite in ['checkout_review', 'merchant_operations', 'tenant_isolation']:
         subprocess.run(['python3', f'scripts/{suite}.py'], cwd=ROOT, env={**env,'BASE_URL':one}, check=True)

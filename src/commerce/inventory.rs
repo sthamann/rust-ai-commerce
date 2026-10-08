@@ -5,10 +5,9 @@ pub(crate) async fn allocate(
     c: &StoredCart,
     order: &str,
 ) -> Result<()> {
-    for item in &c.data.items {
-        sqlx::query("INSERT INTO order_inventory_reservations(tenant,order_id,product_id,quantity) VALUES($1,$2,$3,$4)")
-            .bind(&c.tenant).bind(order).bind(&item.id).bind(item.quantity as i32).execute(&mut **tx).await?;
-    }
+    let (ids, quantities) = items(c);
+    sqlx::query("INSERT INTO order_inventory_reservations(tenant,order_id,product_id,quantity) SELECT $1,$2,id,quantity FROM unnest($3::text[],$4::int[]) AS items(id,quantity)")
+        .bind(&c.tenant).bind(order).bind(ids).bind(quantities).execute(&mut **tx).await?;
     Ok(())
 }
 pub(crate) async fn release(
@@ -16,17 +15,28 @@ pub(crate) async fn release(
     tenant: &str,
     order: &str,
 ) -> Result<()> {
-    let rows = sqlx::query("UPDATE order_inventory_reservations SET released_at=now() WHERE tenant=$1 AND order_id=$2 AND released_at IS NULL RETURNING product_id,quantity")
-        .bind(tenant).bind(order).fetch_all(&mut **tx).await?;
-    for row in rows {
-        sqlx::query(
-            "UPDATE products SET stock=stock+$1,revision=revision+1 WHERE tenant=$2 AND id=$3",
-        )
-        .bind(row.get::<i32, _>("quantity"))
+    sqlx::query(include_str!("inventory_release.sql"))
         .bind(tenant)
-        .bind(row.get::<String, _>("product_id"))
+        .bind(order)
         .execute(&mut **tx)
         .await?;
-    }
     Ok(())
+}
+
+/// Checkout already holds product locks in ID order; do not release/reacquire them here.
+pub(crate) async fn consume(
+    tx: &mut sqlx::Transaction<'_, sqlx::Postgres>,
+    c: &StoredCart,
+) -> Result<()> {
+    let (ids, quantities) = items(c);
+    sqlx::query("UPDATE products p SET stock=p.stock-i.quantity,revision=p.revision+1 FROM unnest($2::text[],$3::int[]) AS i(id,quantity) WHERE p.tenant=$1 AND p.id=i.id")
+        .bind(&c.tenant).bind(ids).bind(quantities).execute(&mut **tx).await?;
+    Ok(())
+}
+fn items(c: &StoredCart) -> (Vec<&str>, Vec<i32>) {
+    c.data
+        .items
+        .iter()
+        .map(|i| (i.id.as_str(), i.quantity as i32))
+        .unzip()
 }

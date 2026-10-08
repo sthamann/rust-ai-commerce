@@ -307,4 +307,11 @@ theorem channel_access_exact (active is_private merchant preview mutating : Bool
       ((active && !is_private) || (active && merchant) || (preview && !mutating)) := by
   cases active <;> cases is_private <;> cases merchant <;> cases preview <;> cases mutating <;> rfl
 
+/-- A public-asset optimization cannot bypass admission for a hosted shop. -/
+theorem native_asset_hosted_denied (nativeAsset : Bool) :
+    native_asset_bypass nativeAsset true = false := by simp [native_asset_bypass]
+theorem native_asset_bypass_exact (nativeAsset hosted : Bool) :
+    native_asset_bypass nativeAsset hosted = true ↔ nativeAsset = true ∧ hosted = false := by
+  cases nativeAsset <;> cases hosted <;> simp [native_asset_bypass]
+
 end CommerceKernel

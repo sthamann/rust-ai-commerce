@@ -279,16 +279,7 @@ pub(crate) async fn checkout(a: &App, h: &RequestContext, key: &str) -> Result<V
             .execute(&mut *tx)
             .await?;
     }
-    for i in &c.data.items {
-        sqlx::query(
-            "UPDATE products SET stock=stock-$1,revision=revision+1 WHERE tenant=$2 AND id=$3",
-        )
-        .bind(i.quantity as i32)
-        .bind(&c.tenant)
-        .bind(&i.id)
-        .execute(&mut *tx)
-        .await?;
-    }
+    commerce::inventory::consume(&mut tx, &c).await?;
     if let Some(customer_id) = &c.data.customer_id {
         sqlx::query("UPDATE customers SET last_payment_method_id=$1 WHERE tenant=$2 AND id=$3")
             .bind(&selected.payment_method_id)

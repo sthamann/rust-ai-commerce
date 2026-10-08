@@ -1,15 +1,17 @@
 # Lean-checked commerce contracts
 
-The prototype runs Lean 4.29.1 proofs for **36 policies used in production
-Rust paths**, with **78 named properties**. This is **not a certificate that the
-entire commerce core is correct or bug-free**. The 8 October review at `706102f`
-contains 334 Rust modules: one extracted policy module, 33 reviewed binding
-modules, one comparison driver and 299 unproved modules. Binding review is not a
-proof of those modules. The [manifest](../proof/manifest.json) and CI artifact are
-the authoritative per-revision inventory. The [published verification report](formal-verification.json)
-is copied unchanged from [successful GitHub CI run 37764029468](https://github.com/sthamann/vendune/actions/runs/37764029468):
-78 audited theorems, 6,223 compiled conformance cases and zero mismatches. It records
-that source revision, not a new proof of every adapter or later documentation edit.
+The prototype runs Lean 4.29.1 proofs for **37 policies used in production
+Rust paths**, with **80 named properties**. This is **not a certificate that the
+entire commerce core is correct or bug-free**. The current request-hotpath review contains
+353 Rust modules: one extracted policy module, 34 reviewed binding modules, one
+comparison driver and 317 unproved modules. Binding review is not a proof of those
+modules. The [manifest](../proof/manifest.json) and CI artifact are the authoritative
+per-revision inventory. Local verification audits 80 theorems, compares 6,227
+compiled cases without mismatches and rejects 98 broken policy variants.
+The [published verification report](formal-verification.json) is copied unchanged
+from the formal verification artifact of [GitHub run 37804364204](https://github.com/sthamann/vendune/actions/runs/37804364204),
+recording source `9fa6a538b30b6169797b5899eed742826755bd2b`. The proof and mutation
+steps passed there; later documentation does not certify every adapter.
 
 ## Connection to the real application
 
@@ -104,17 +106,17 @@ The existing **Verify prototype / verify** job now also:
 
 1. Checks generated artifacts match the production Rust policy source exactly.
 2. Requires every Rust module to be classified and checks full-file review hashes.
-   Schema migrations, Cargo files, proof claims, extraction/audit scripts and the
-   verification workflow also require an explicit recorded review after changes.
+   Schema migrations, embedded source SQL, Cargo/frontend build files, Dockerfile,
+   proof claims, extraction/audit scripts and the verification workflow require an explicit recorded review after changes.
 3. Builds proofs with the pinned Lean toolchain and rechecks compiled declarations
    using bundled `leanchecker`.
-4. Audits all 74 required theorems' transitive axioms. Only Lean's standard
+4. Audits all 80 required theorems' transitive axioms. Only Lean's standard
    `propext`, `Quot.sound` and `Classical.choice` foundations are allowed. `sorry`,
    `admit`, custom axioms, `native_decide` and missing theorem audits fail.
-5. Executes compiled Rust and Lean functions on **5,879** identical inputs:
+5. Executes compiled Rust and Lean functions on **6,227** identical inputs:
    exhaustive Boolean assignments plus numeric boundaries/random cases, including
    `u64::MAX`. Their output types and values must match.
-6. Requires Lean to reject **82** deliberately broken policy variants. Also
+6. Requires Lean to reject **98** deliberately broken policy variants. Also
    rejects 14 unsupported grammar examples, three stale/unclassified/disconnected
    inventory cases and nine proof-shortcut/axiom/missing-audit examples.
 7. Runs existing Rust, PHP-reference and real PostgreSQL HTTP regressions.
@@ -291,3 +293,15 @@ paths share this admission adapter. One-use preview grants, cookies, membership
 queries, hostname resolution, proxy transport and native rendering remain unproved
 adapters exercised by isolated integration regressions.
 [Channel management and security limits](channel-management.md).
+
+## Native public asset admission (2026-10-08)
+
+`native_asset_bypass(native_asset, hosted)` is called by the actual authentication
+middleware. Two added theorems prove exact acceptance and unconditional denial
+when hosted; negative mutations remove each required fact or reject all inputs.
+The resulting manifest has 37 policies and 80 properties. This proves the Boolean
+rule, not native-path classification, layer ordering, domain resolution, SQL MVCC,
+proxying, compression or browser behavior. Real hosted/private-asset and two-replica
+regressions cover those adapters, including gzip/Brotli negotiation, ranges and
+uncompressed credential-bearing responses. Embedded `.sql` and build inputs are
+now explicitly review-hash locked to prevent silent adapter drift.

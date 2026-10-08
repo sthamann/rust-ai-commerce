@@ -289,7 +289,7 @@ bounded fuel/memory and no network/filesystem access.
 | Evidence | What it establishes |
 | --- | --- |
 | **7,000 original-PHP comparisons** | Bounded pricing, context, shipping-tax, rule and comparison behavior against reviewed Shopware sources. [Parity matrix](docs/shopware-parity.md). |
-| **36 extracted production policies · 78 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
+| **37 extracted production policies · 80 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
 | **1,000,000 products + 1,000,000 translations** | Dated local commerce workloads with retained raw measurements and failures; not production capacity or a Shopware speed ratio. [Benchmarks](docs/benchmarks.md). |
 | **Translation workflow** | Four-language Studio, platform, checkout and bundled app controls; shared content inheritance, additional shop content languages and translator-friendly catalogue export/import. [How translations work](docs/localization.md). |
 | **Continuous verification** | Source ownership, localization, Rust/frontend checks, real PostgreSQL integration, original PHP comparisons and Lean/mutation gates. [CI](https://github.com/sthamann/vendune/actions) · [Testing](docs/testing.md). |
@@ -301,7 +301,12 @@ bounded fuel/memory and no network/filesystem access.
 The core now includes an exact money boundary with explicit currency scale, strict
 RLS deployment checks, allocations for all payment methods, a central payment state
 machine, commit-driven cache eviction, resource admission, shared daily interactive
-AI quotas and operator latency histograms. [Follow the complete request, checkout,
+AI quotas and operator latency histograms. Native public assets skip database authentication;
+shop admission shares one fresh SQL snapshot, dashboard reads are consolidated,
+settings use immutable `Arc` handles, and storefront/build assets support gzip/Brotli.
+A matched local 9,000-request comparison retains raw samples, payload sizes and
+unchanged-response checks: [read-path measurements and limits](docs/read-performance.md).
+[Follow the complete request, checkout,
 security and intelligence paths](docs/production-architecture.md), including rendered
 diagrams, source locations, configuration, tests and the remaining production gaps.
 The ported pricing slice deliberately retains Shopware float behavior; a complete

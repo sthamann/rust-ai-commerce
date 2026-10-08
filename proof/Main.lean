@@ -42,6 +42,7 @@ def evalRequest (j : Json) : Except String Json := do
   | "notification_retry_admissible" => pure (toJson (notification_retry_admissible ((← (args.getObjVal? "rate_limited") >>= Json.getBool?)) ((← (args.getObjVal? "attempts") >>= Json.getNat?))))
   | "app_service_transport_admissible" => pure (toJson (app_service_transport_admissible ((← (args.getObjVal? "clean_url") >>= Json.getBool?)) ((← (args.getObjVal? "https") >>= Json.getBool?)) ((← (args.getObjVal? "http") >>= Json.getBool?)) ((← (args.getObjVal? "loopback") >>= Json.getBool?)) ((← (args.getObjVal? "private_origin") >>= Json.getBool?))))
   | "channel_access_admissible" => pure (toJson (channel_access_admissible ((← (args.getObjVal? "active") >>= Json.getBool?)) ((← (args.getObjVal? "is_private") >>= Json.getBool?)) ((← (args.getObjVal? "merchant") >>= Json.getBool?)) ((← (args.getObjVal? "preview") >>= Json.getBool?)) ((← (args.getObjVal? "mutating") >>= Json.getBool?))))
+  | "native_asset_bypass" => pure (toJson (native_asset_bypass ((← (args.getObjVal? "native_asset") >>= Json.getBool?)) ((← (args.getObjVal? "hosted") >>= Json.getBool?))))
   | _ => throw "Unknown policy"
 
 def main : IO Unit := do

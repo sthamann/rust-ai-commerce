@@ -5,6 +5,8 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("native_asset_bypass","&& !hosted","&& true"),
+ ("native_asset_bypass","native_asset &&","true &&"),
  ("channel_access_admissible","!is_private || merchant","true"),
  ("channel_access_admissible","preview && !mutating","preview"),
  ("channel_access_admissible","active &&","true &&"),

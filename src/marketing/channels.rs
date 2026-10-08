@@ -37,7 +37,7 @@ pub(crate) async fn channel(
     let mut c: Channel = serde_json::from_value(data).map_err(|_| bad("Invalid channel"))?;
     // The main channel inherits shop languages; additional channels select a subset.
     if id == "default" {
-        c.locales = commerce::config(a, &t).await?.0.locales;
+        c.locales = commerce::config(a, &t).await?.0.locales.clone();
     }
     let allowed = c.locales.contains(&locale.to_string())
         || (id == "default"
