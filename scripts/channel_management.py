@@ -72,6 +72,8 @@ assert mounted['x-frontend-alias']==shop and mounted['x-frontend-host']==alias a
 assert mounted['x-frontend-tenant']==shop and mounted['authorization'] is None and mounted['cookie'] is None
 assert len(mounted['x-channel-preview'])==64
 call('/store-api/product',{},ph)
+call('/store-api/navigation',{},ph)
+call('/api/experience',{},ph,status=403)
 call('/store-api/checkout/order',{},ph,status=403)
 call('/store-api/account/register',{},ph,status=403)
 call('/store-api/product',{}, {**sh,'Cookie':ph['Cookie']},status=403)

@@ -1,4 +1,5 @@
 /** Opt-in behavior signals and stable product ordering; no authoritative prices are changed. */
+import { channelPreview } from "./ChannelPreview";
 import { usePurpose } from "../../shared/legal/consent-store";
 import { useEffect, useState } from "react";
 import { shopApi, type Cart, type Product } from "../../shared/api/shop-api";
@@ -10,7 +11,7 @@ export function usePersonalization(
 ) {
   const [ranked, setRanked] = useState<string[]>([]);
   const [personalized, setPersonalized] = useState(false);
-  const adaptation = usePurpose("personalization");
+  const adaptation = usePurpose("personalization") && !channelPreview();
   const [viewed, setViewed] = useState<Record<string, number>>({});
   useEffect(() => {
     if (!adaptation || !cart || !id) return;

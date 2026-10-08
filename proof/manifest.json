@@ -1403,8 +1403,8 @@
     },
     "src/marketing/channel_access.rs": {
       "status": "reviewed-binding",
-      "sha256": "ad8387c730c9a97484ed2efe515161ae3f8b6055fa77943f799123d9825fdbd0",
-      "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
+      "sha256": "32d601b4b787d92bd866e200dd4470782f6bf92cce2b8a43f0f5c6c4fb3545e5",
+      "review": "Preview navigation is a bounded catalogue read; automatic personalization remains blocked in preview"
     },
     "src/marketing/channel_preview.rs": {
       "status": "unproved",

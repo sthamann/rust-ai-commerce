@@ -16,6 +16,7 @@ pub(crate) fn preview_mutation(path: &str, method: &str) -> bool {
     !matches!(
         path,
         "/store-api/product"
+            | "/store-api/navigation"
             | "/store-api/checkout/cart"
             | "/store-api/checkout/cart/line-item"
             | "/store-api/checkout/context"
@@ -107,6 +108,7 @@ mod tests {
     #[test]
     fn preview_only_admits_bounded_simulations() {
         assert!(!preview_mutation("/store-api/product", "POST"));
+        assert!(!preview_mutation("/store-api/navigation", "POST"));
         assert!(!preview_mutation(
             "/experience-api/shops/own/commerce/checkout/cart",
             "PUT"
