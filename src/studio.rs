@@ -20,15 +20,28 @@ pub(super) async fn track_channels(State(a): State<App>, request: Request, next:
         None
     };
     let t = tenant(request.headers()).ok();
+    // MatchedPath is the router template, never a customer/object ID or query string.
+    let route = request
+        .extensions()
+        .get::<axum::extract::MatchedPath>()
+        .map(|p| p.as_str().to_owned())
+        .unwrap_or_else(|| "<unmatched>".into());
+    let method = request.method().clone();
     let response = next.run(request).await;
     if let (Some(channel), Some(t)) = (channel, t) {
         let failure = response.status().is_client_error() || response.status().is_server_error();
+        if failure {
+            eprintln!(
+                "http_response tenant={t} channel={channel} method={method} route={route} status={}",
+                response.status().as_u16()
+            );
+        }
         // Diagnostic counters are best-effort and do not delay commerce. They
         // count HTTP calls (including synthetic tests/admin reads), never people.
         a.channel_metrics.record(
             t,
             channel,
-            failure,
+            response.status(),
             start.elapsed().as_millis().min(i64::MAX as u128) as i64,
         );
     }

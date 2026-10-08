@@ -786,10 +786,15 @@
       "sha256": "59995db08705cd08311e3a723ad19f8201f4a95dd5e4f9ce609c34084a86c4e2",
       "review": "Reviewed sales-channel access policy and its actual middleware consumer, removed untrusted preview identity headers, revision/session/member-bound single-use preview tickets, tenant-owned domain bindings and guarded deletion, migrated catalogue/cart/navigation/legal consumers and staging defaults. Core HTTP and UI regressions cover foreign IDs, stale revisions, paused/private channels, order denial and logout revocation. Async adapters remain unproved."
     },
+    "src/channel_metrics/reads.rs": {
+      "status": "unproved",
+      "sha256": "d02369af78d751367662406dd14dd29e6cdc8e4d8c7ed12b70a651f3862aa19c",
+      "review": "Review HTTP diagnostic histogram: status-only bounded keys, existing buffered flush and tenant RLS unchanged; shared operator reads preserve unclassified legacy totals. Rust unit classification and frontend outcome tests; real platform integration required before merge. No verified commerce policy changed."
+    },
     "src/channel_metrics.rs": {
       "status": "unproved",
-      "sha256": "9858f4a5b4d4b29ff7bbe75d2f5f82b17db569f5b9972252203054c4bbc90b30",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "61c5be5f12ed0cbeacf38246e23172ef170ec3f2e1cc0ec50212708483c548ef",
+      "review": "Review HTTP diagnostic histogram: status-only bounded keys, existing buffered flush and tenant RLS unchanged; shared operator reads preserve unclassified legacy totals. Rust unit classification and frontend outcome tests; real platform integration required before merge. No verified commerce policy changed."
     },
     "src/chat_lease.rs": {
       "status": "unproved",
@@ -1558,8 +1563,8 @@
     },
     "src/migrations/schema.rs": {
       "status": "unproved",
-      "sha256": "ac5008ca61e5a31110f18a3f0e8eefa96d86bb7ce64d5b18dad733eba85dafdd",
-      "review": "Reviewed tenant-scoped hosted app association, transactional immutable Storyfront installation and one-time validated migration 055; dependency deactivation shares config/app locks; private renderer excluded. PostgreSQL regressions cover foreign references and cold restart. SQL/network adapters remain unproved."
+      "sha256": "644403cb312698dcf1bce660ebcf1c46358c56662238c0a55f2f7cff032cde9a",
+      "review": "Review HTTP diagnostic histogram: status-only bounded keys, existing buffered flush and tenant RLS unchanged; shared operator reads preserve unclassified legacy totals. Rust unit classification and frontend outcome tests; real platform integration required before merge. No verified commerce policy changed."
     },
     "src/migrations.rs": {
       "status": "unproved",
@@ -1808,8 +1813,8 @@
     },
     "src/platform/infrastructure.rs": {
       "status": "unproved",
-      "sha256": "9c790ac6e0a8f5443c3b1e81a519e65cd7cf8704ea14216f30ce2a324508244b",
-      "review": "Reviewed all changed Rust, append-only schemas, build/extraction and Lean inputs: lease hooks bind new/reused connections and reset on release; strict runtime rejects owner/bypass/TRUNCATE and preserves app-schema ownership; two-replica non-owner PostgreSQL tests deny forged foreign writes, enforce operator quotas and parent-stage daily usage, release persisted allocation quantities once despite corrupted snapshots, and distinguish commit from rollback invalidation. Money retains legacy EUR rounding with explicit scale and original Shopware differential; receipt-backed state admission is monotonic with late capture/refund. Async SQL/provider code remains unproved. Rust 113 tests, staging/app/automation/settings and strict checkout/CRM/tenant regressions passed; 274 frontend tests and production build passed."
+      "sha256": "5e68246ee6068471875b21ffb6212168deeb9133b162647f6cc2a455345266ee",
+      "review": "Review HTTP diagnostic histogram: status-only bounded keys, existing buffered flush and tenant RLS unchanged; shared operator reads preserve unclassified legacy totals. Rust unit classification and frontend outcome tests; real platform integration required before merge. No verified commerce policy changed."
     },
     "src/platform/lifecycle.rs": {
       "status": "reviewed-binding",
@@ -1818,8 +1823,8 @@
     },
     "src/platform/metrics.rs": {
       "status": "unproved",
-      "sha256": "ed250f3021ec126ecd5891b08733bcb6b1055fcba94439b34bff03504c561f44",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "57322564089ce71528c7e2cb773e59b168de0979cd38e5f2e4e12bba94ab8e7e",
+      "review": "Review HTTP diagnostic histogram: status-only bounded keys, existing buffered flush and tenant RLS unchanged; shared operator reads preserve unclassified legacy totals. Rust unit classification and frontend outcome tests; real platform integration required before merge. No verified commerce policy changed."
     },
     "src/platform/mod.rs": {
       "status": "unproved",
@@ -1843,8 +1848,8 @@
     },
     "src/platform/shop_detail.rs": {
       "status": "unproved",
-      "sha256": "79cb1620046e89fd4c36db71a6e0fa64284607248d432c8c7ac01e73cd8048e1",
-      "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+      "sha256": "3f3520e357db47f2bb7c9ba913b409f78f31d24c87bc7996baee0ae353f3e01d",
+      "review": "Review HTTP diagnostic histogram: status-only bounded keys, existing buffered flush and tenant RLS unchanged; shared operator reads preserve unclassified legacy totals. Rust unit classification and frontend outcome tests; real platform integration required before merge. No verified commerce policy changed."
     },
     "src/pricing.rs": {
       "status": "unproved",
@@ -1963,8 +1968,8 @@
     },
     "src/studio.rs": {
       "status": "unproved",
-      "sha256": "c563efa8f991f4784aa6592279c625d3fe82b124c73e06619216f6541d5e2631",
-      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+      "sha256": "60ab110cbd45f40c6358163450f4d80fcd8d7b7b59aaac3441e3584aba302e15",
+      "review": "Review HTTP diagnostic histogram: status-only bounded keys, existing buffered flush and tenant RLS unchanged; shared operator reads preserve unclassified legacy totals. Rust unit classification and frontend outcome tests; real platform integration required before merge. No verified commerce policy changed."
     },
     "src/tenant_scope.rs": {
       "status": "unproved",
@@ -2288,6 +2293,10 @@
     "migrations/055-hosted-apps.sql": {
       "sha256": "2c0b6254b31d1a4d523f2e2765f629af02dfb3e14312d34a9a08422d54de0ae8",
       "review": "Reviewed tenant-scoped hosted app association, transactional immutable Storyfront installation and one-time validated migration 055; dependency deactivation shares config/app locks; private renderer excluded. PostgreSQL regressions cover foreign references and cold restart. SQL/network adapters remain unproved."
+    },
+    "migrations/056-http-response-diagnostics.sql": {
+      "sha256": "7e3bf0048bc33ba0092e5dfc4f2decc0316bfd4a99c197f32ea2a627b6bf141f",
+      "review": "Review HTTP diagnostic histogram: status-only bounded keys, existing buffered flush and tenant RLS unchanged; shared operator reads preserve unclassified legacy totals. Rust unit classification and frontend outcome tests; real platform integration required before merge. No verified commerce policy changed."
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "08ed10a3c4484ad7ca1403be069ac19d7112b538d0bda9fb64fc33b98a3972d2",

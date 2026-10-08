@@ -268,3 +268,31 @@
   flex-wrap: wrap;
   padding: 24px 0;
 }
+
+/* HTTP outcomes distinguish access refusals, client responses and server failures. */
+.platform-http-outcomes {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  min-width: 12rem;
+}
+.platform-http-outcomes > span {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: space-between;
+}
+.platform-http-outcomes details {
+  margin-top: 0.4rem;
+}
+.platform-http-outcomes summary {
+  cursor: pointer;
+  color: var(--accent, #2463eb);
+}
+.platform-http-outcomes p {
+  max-width: 42rem;
+  line-height: 1.55;
+}
+.platform-channel-list .platform-http-outcomes {
+  font-size: 0.8rem;
+}

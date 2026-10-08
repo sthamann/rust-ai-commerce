@@ -50,7 +50,7 @@ const en = {
   traffic: "API activity",
   trafficNote:
     "Stored lifetime HTTP requests, not visitors. Includes tests and merchant reads; excludes staging.",
-  failures: "Failures",
+  failures: "HTTP 4xx/5xx responses",
   created: "Created",
   noShops: "No matching shops.",
   noActivity: "No platform activity yet.",
@@ -123,7 +123,7 @@ const de: typeof en = {
   traffic: "API-Aktivität",
   trafficNote:
     "Gespeicherte HTTP-Anfragen seit Beginn, keine Besucher. Enthält Tests und Händleranfragen; ohne Staging.",
-  failures: "Fehler",
+  failures: "HTTP 4xx/5xx-Antworten",
   created: "Erstellt",
   noShops: "Keine passenden Shops.",
   noActivity: "Noch keine Plattformaktivität.",
@@ -268,7 +268,7 @@ const es: typeof en = {
   traffic: "Actividad API",
   trafficNote:
     "Solicitudes HTTP acumuladas, no visitantes. Incluye pruebas y consultas comerciales; excluye staging.",
-  failures: "Errores",
+  failures: "Respuestas HTTP 4xx/5xx",
   created: "Creada",
   noShops: "No hay tiendas coincidentes.",
   noActivity: "Todavía no hay actividad.",

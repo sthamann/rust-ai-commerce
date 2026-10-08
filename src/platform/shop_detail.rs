@@ -33,8 +33,7 @@ pub(super) async fn detail(
             .map(|r| json!({"id":r.get::<String,_>("id"),"configuration":r.get::<Value,_>("data")}))
             .collect::<Vec<_>>()
     );
-    let traffic=sqlx::query("SELECT channel,calls,failures,total_ms,max_ms,timed_calls,last_seen::text AS seen FROM channel_metrics WHERE tenant=$1 ORDER BY channel").bind(&id).fetch_all(&a.db).await?;
-    data["traffic"]=json!(traffic.iter().map(|r|json!({"channel":r.get::<String,_>("channel"),"calls":r.get::<i64,_>("calls"),"failures":r.get::<i64,_>("failures"),"timedCalls":r.get::<i64,_>("timed_calls"),"totalMs":r.get::<i64,_>("total_ms"),"maxMs":r.get::<i64,_>("max_ms"),"lastSeen":r.get::<String,_>("seen")})).collect::<Vec<_>>());
+    data["traffic"] = json!(crate::channel_metrics::traffic(&a.db, Some(&id), false).await?);
     // Receipt settings use the validated company schema, distinct from connector configuration.
     let settings: Option<Value> =
         sqlx::query_scalar("SELECT data FROM receipt_settings WHERE tenant=$1")

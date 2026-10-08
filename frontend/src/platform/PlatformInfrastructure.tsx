@@ -1,4 +1,5 @@
 /** Real infrastructure probes, bounded lifetime traffic and process-local resource counters. */
+import HTTPResponses from "./HTTPResponses";
 import { useEffect, useState } from "react";
 import { useControlText } from "../shared/i18n/control-i18n";
 import { usePlatformText } from "../shared/i18n/platform-i18n";
@@ -26,7 +27,9 @@ export function TrafficTable({ rows }: { rows: Traffic[] }) {
             <tr key={r.channel}>
               <td>{r.channel}</td>
               <td>{r.calls.toLocaleString()}</td>
-              <td>{r.failures}</td>
+              <td>
+                <HTTPResponses traffic={r} />
+              </td>
               <td>
                 {r.timedCalls
                   ? `${(r.totalMs / r.timedCalls).toFixed(1)} / ${r.maxMs} ms`

@@ -179,6 +179,38 @@ use only calls with recorded timing; older requests do not dilute averages.
 They exclude the external network and browser rendering, and are best-effort
 operational diagnostics rather than billing or security logs.
 
+### What the HTTP error counts mean
+
+The former **Failures** label combined every recorded HTTP 4xx and 5xx response.
+It was not a count of software defects. The dashboard, shop dossier and
+infrastructure view now share an exact response-code breakdown:
+
+- **Access rejected (401/403):** check the session, permission or browser Origin.
+  A legitimate security refusal must not be “fixed” by relaxing access checks.
+- **Other 4xx:** inspect the specific status. 400/422 can indicate invalid input,
+  404 a missing record, 409 a revision conflict and 429 an admission limit.
+  These can also expose client bugs and are not automatically considered harmless.
+- **Server failures (5xx):** investigate the server, database or downstream provider.
+- **Historical · unclassified:** preserved older failures for which no response
+  code was stored. They cannot be retrospectively assigned to one of these groups.
+
+`responses` in the existing operator overview/dossier/infrastructure APIs maps
+HTTP codes to cumulative counts. Migration 056 adds this bounded histogram to
+`channel_metrics`; the existing interval buffer and bulk database flush remain
+its owner. No payload, token, address, query string or raw object URL is stored.
+For new 4xx/5xx responses, service logs contain the router template, method,
+workspace identifier and status, so operators can locate the failing endpoint
+without logging request bodies. For example, a product route contains `{id}`
+rather than a real product ID.
+
+These diagnostics start **after** host resolution and authentication admission.
+Early host/session refusals are not included. MCP application errors returned in
+an HTTP 200 JSON-RPC envelope are also not HTTP failures. This view therefore
+cannot claim all protocol operations succeeded or provide security auditing.
+Counters are best-effort and can be lost on timeout/process failure; they are
+not suitable for billing. New counts accumulate alongside old totals, which are
+never reset or relabelled as confirmed successes.
+
 CPU/RAM come from Linux `/proc` and cgroup v2 when available; CPU needs two
 refreshes at least a second apart and is normalized to the container quota.
 Unavailable readings display **—**. Pool/cache/process readings describe the

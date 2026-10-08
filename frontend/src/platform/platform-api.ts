@@ -17,7 +17,7 @@ export type Overview = {
   orders: number;
   pendingEvents: number;
   amounts: Amount[];
-  channels: { channel: string; calls: number; failures: number }[];
+  channels: Pick<Traffic, "channel" | "calls" | "failures" | "responses">[];
 };
 export type Shop = {
   status: "active" | "paused" | "archived";
@@ -91,6 +91,7 @@ export type Traffic = {
   channel: string;
   calls: number;
   failures: number;
+  responses?: Record<string, number>;
   totalMs: number;
   maxMs: number;
   timedCalls: number;

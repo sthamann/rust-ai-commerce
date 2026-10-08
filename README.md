@@ -203,6 +203,9 @@ Capture versions, recording edits and live-provider limits remain explicit.
 platform sign-in. The separate operator console creates shops, inspects their dossiers, and
 supports pause, recoverable trash and restore. Configured wildcard routing gives
 shops subdomains; diagnostics probe the actual database, index, pools and queues.
+HTTP diagnostics distinguish access refusals, other client responses and server
+failures, with exact response codes. Older totals remain visibly unclassified;
+[read the measurement boundaries](docs/platform.md#what-the-http-error-counts-mean).
 
 Central encrypted **Ollama/OpenAI/Anthropic settings** are inherited or overridden
 per shop. Chat, app generation, translations and AI proposals share that selection.
