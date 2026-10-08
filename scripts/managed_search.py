@@ -131,10 +131,10 @@ try:
     process=subprocess.Popen([str(root/'target/debug/vendune')],cwd=root,env=env,stdout=log,stderr=log)
     for _ in range(400):
         if process.poll() is not None: raise RuntimeError('Model-change restart failed')
-        if sql("SELECT count(*) FROM semantic_products WHERE tenant='workshop' AND product_id LIKE 'batch-%' AND embedding_model='"+env['EMBEDDING_MODEL']+"'")=='150' and sql("SELECT count(*) FROM embedding_generations WHERE tenant IN ('atelier','workshop') AND phase='complete' AND model='"+env['EMBEDDING_MODEL']+"'")=='2':break
+        if sql("SELECT count(*) FROM semantic_products WHERE tenant='workshop' AND product_id LIKE 'batch-%' AND embedding_model='"+env['EMBEDDING_MODEL']+"'")=='150' and sql("SELECT count(*) FROM embedding_generations WHERE tenant IN ('atelier','workshop') AND phase='complete' AND model='"+env['EMBEDDING_MODEL']+"'")=='2' and sql("SELECT count(*) FROM embedding_jobs WHERE tenant IN ('atelier','workshop')")=='0':break
         time.sleep(.1)
     assert sql("SELECT count(*) FROM semantic_products WHERE tenant='workshop' AND product_id LIKE 'batch-%' AND embedding_model='"+env['EMBEDDING_MODEL']+"'")=='150'
-    assert sql("SELECT count(*) FROM embedding_jobs WHERE tenant='workshop'")=='0'
+    assert sql("SELECT count(*) FROM embedding_jobs WHERE tenant IN ('atelier','workshop')")=='0',sql("SELECT tenant,kind,object_id,attempts,error_code FROM embedding_jobs WHERE tenant IN ('atelier','workshop')")
     print('PASS cold model-change restart automatically rebuilds existing tenant catalogs without a reindex API call')
 
 finally:
