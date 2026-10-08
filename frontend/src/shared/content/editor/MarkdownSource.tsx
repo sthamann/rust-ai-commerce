@@ -1,6 +1,6 @@
 /** Live Markdown buffer updates the same structured product document; no raw HTML is rendered or persisted. */
 import { useState, useEffect } from "react";
-import type { RichNode } from "../../shared/content/rich-document";
+import type { RichNode } from "../rich-document";
 import type { Editor } from "@tiptap/core";
 import { useEditorBuffer } from "./EditorBuffer";
 import { useEditorText } from "./editor-i18n";

@@ -134,8 +134,10 @@ and variant-aware product presence. `contextField` and `eventField` add typed ap
 The original `cartLineItem` port preserves per-line negative comparison and parent-product
 matching, distinct from the native set-based `lineItemId` condition.
 
-An app declares `events.read` plus service-runtime subscriptions to receive the durable
-outbox. `events.publish` authorizes private typed `emit` actions that publish
+An app declares precise `events:NAME` capabilities plus service-runtime subscriptions
+to receive the durable outbox. Legacy `events.read` does not grant private team or
+other-app events; personal data needs separate consent. Filters, tenant-scoped
+batches, signed outbound envelopes and replay reuse the existing event owner. `events.publish` authorizes private typed `emit` actions that publish
 `app.APP_ID.ACTION_NAME`; the action input schema is validated by the same HTTP/MCP
 gateway. Imported private sources publish `app.APP_ID.source_imported`.
 An action declares `flowAllowed:true` to opt into durable private mutations.

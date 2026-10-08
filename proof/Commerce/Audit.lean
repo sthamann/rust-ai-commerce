@@ -1,13 +1,19 @@
 import Commerce.Claims
+#print axioms CommerceKernel.app_callback_exact
+#print axioms CommerceKernel.app_callback_without_consent_denied
 #print axioms CommerceKernel.app_core_reference_exact
 #print axioms CommerceKernel.app_core_reference_private
 #print axioms CommerceKernel.app_flow_exact
 #print axioms CommerceKernel.app_flow_readonly_denied
+#print axioms CommerceKernel.app_package_authority_exact
+#print axioms CommerceKernel.app_package_unapproved_denied
 #print axioms CommerceKernel.app_read_exact
 #print axioms CommerceKernel.app_read_safe
 #print axioms CommerceKernel.app_service_transport_exact
 #print axioms CommerceKernel.app_service_transport_unapproved_denied
 #print axioms CommerceKernel.app_service_transport_unsafe_denied
+#print axioms CommerceKernel.app_surface_exact
+#print axioms CommerceKernel.app_surface_stale_denied
 #print axioms CommerceKernel.app_tool_disabled
 #print axioms CommerceKernel.app_tool_exact
 #print axioms CommerceKernel.cancellation_exact
@@ -79,3 +85,5 @@ import Commerce.Claims
 #print axioms CommerceKernel.stock_exact
 #print axioms CommerceKernel.stock_positive_bounded
 #print axioms CommerceKernel.terminal_edit_denied
+#print axioms CommerceKernel.wasm_resources_exact
+#print axioms CommerceKernel.wasm_tables_bounded

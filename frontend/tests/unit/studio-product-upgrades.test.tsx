@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { it, expect, vi } from "vitest";
 import { LocaleProvider } from "../../src/shared/i18n/i18n";
-import RichEditor from "../../src/admin/catalog/RichEditor";
+import RichEditor from "../../src/shared/content/editor/RichEditor";
 import ProductEditor from "../../src/admin/catalog/ProductEditor";
 import ProductVariants from "../../src/admin/catalog/ProductVariants";
 import VariantGenerator from "../../src/admin/catalog/VariantGenerator";
@@ -15,7 +15,7 @@ import {
 import {
   markdownCompatible,
   safeMarkdownDocument,
-} from "../../src/admin/catalog/markdown-content";
+} from "../../src/shared/content/editor/markdown-content";
 it("switches visual content to Markdown, applies structured formatting and previews the same document", async () => {
   const change = vi.fn(),
     user = userEvent.setup();

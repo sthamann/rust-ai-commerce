@@ -2,10 +2,10 @@
 import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
 import LocalizedField from "../../shared/i18n/LocalizedField";
 import { lazy, Suspense, useState } from "react";
-import { useEditorBuffer } from "./EditorBuffer";
-const RichEditor = lazy(() => import("./RichEditor"));
+import { useEditorBuffer } from "../../shared/content/editor/EditorBuffer";
+const RichEditor = lazy(() => import("../../shared/content/editor/RichEditor"));
 import PairFields from "./PairFields";
-import { useCatalogText } from "./catalog-i18n";
+import { useCatalogText } from "../../shared/i18n/catalog-i18n";
 import { useInternationalText } from "../../shared/i18n/international-i18n";
 import type { ProductDraft } from "./catalog-model";
 import "../styles/international.css";

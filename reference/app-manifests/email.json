@@ -1,0 +1,161 @@
+{
+  "id": "email",
+  "version": "1.1.0",
+  "coreApi": "1",
+  "runtime": "service",
+  "name": {
+    "en": "Email Delivery",
+    "de": "E-Mail-Versand",
+    "fr": "Envoi d’e-mails",
+    "es": "Envío de correos"
+  },
+  "category": "operations",
+  "permissions": [
+    "service.call",
+    "events.read"
+  ],
+  "entities": [],
+  "slots": [],
+  "actions": [
+    {
+      "name": "status",
+      "description": "Inspect mail configuration and durable delivery receipts",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": true,
+      "permission": "apps.manage",
+      "flowAllowed": false
+    },
+    {
+      "name": "configure",
+      "description": "Configure SMTP, Resend or SendGrid; credentials are write-only",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "settings": {
+            "type": "object"
+          },
+          "credentials": {
+            "type": "object"
+          },
+          "revision": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "settings",
+          "revision"
+        ],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage",
+      "flowAllowed": false
+    },
+    {
+      "name": "preview_order",
+      "description": "Render a localized order email without sending",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "object"
+          },
+          "locale": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "event"
+        ],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": true,
+      "permission": "apps.manage",
+      "flowAllowed": false
+    },
+    {
+      "name": "send",
+      "description": "Queue a transactional email using a stable request key",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "object"
+          },
+          "requestKey": {
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "message",
+          "requestKey"
+        ],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage",
+      "flowAllowed": true
+    },
+    {
+      "name": "send_order",
+      "description": "Queue a localized order confirmation from a commerce event",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "object"
+          },
+          "requestKey": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "event",
+          "requestKey"
+        ],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage",
+      "flowAllowed": true
+    }
+  ],
+  "events": [
+    "order.placed",
+    "consumer.withdrawal.requested",
+    "consumer.access.requested",
+    "consumer.erase.requested",
+    "consumer.correct.requested",
+    "consumer.portability.requested",
+    "consumer.objection.requested"
+  ]
+}

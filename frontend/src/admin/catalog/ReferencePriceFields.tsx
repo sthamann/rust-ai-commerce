@@ -1,6 +1,6 @@
 /** Native reference-unit inputs feed the same server-calculated unit price displayed on product pages. */
 import type { ProductDraft } from "./catalog-model";
-import { useCatalogText } from "./catalog-i18n";
+import { useCatalogText } from "../../shared/i18n/catalog-i18n";
 export default function ReferencePriceFields({
   draft: d,
   onChange,

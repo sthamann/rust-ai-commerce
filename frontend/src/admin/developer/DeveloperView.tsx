@@ -1,5 +1,5 @@
 /** Visual App Studio orchestrates modular editors over the same executable schema used by coding agents. */
-import { useMemo, useState, useRef } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 import type { Environment } from "../environments/EnvironmentManager";
 import type { RequestFn } from "../shell/studio-types";
 import Icon from "../../shared/ui/Icon";
@@ -27,6 +27,9 @@ import AppAgentPanel from "./AppAgentPanel";
 import AppVersions from "./AppVersions";
 import AppLibrary from "./AppLibrary";
 import SandboxPreview from "./SandboxPreview";
+import { useAppPreview } from "./useAppPreview";
+import AppStudioStatus from "./AppStudioStatus";
+import { useDesignerKeys } from "./useDesignerKeys";
 import "../styles/app-studio.css";
 import "../styles/app-assistant.css";
 import "../styles/app-studio-inspector.css";
@@ -64,24 +67,41 @@ export default function DeveloperView({
     mainLocale: string;
     locales: string[];
   } | null>(null);
+  const immediate = useAppPreview(m, request);
   const scoped = useMemo(
-    () => sandboxRequest(studio.env),
-    [sandboxRequest, studio.env],
+    () =>
+      sandboxRequest(
+        immediate.active && immediate.result
+          ? immediate.result.environment
+          : studio.env,
+      ),
+    [
+      sandboxRequest,
+      studio.env,
+      immediate.active,
+      immediate.result?.environment,
+    ],
   );
+  useEffect(() => {
+    if (studio.draftStorage.restored) setAssistant(false);
+  }, [studio.draftStorage.restored]);
   const view = m.views?.find((v) => v.id === viewId) ?? m.views?.[0];
   const manage = ["owner", "admin"].includes(role);
-  const canPreview =
-    !!studio.saved &&
-    studio.saved.state === "staged" &&
-    !studio.dirty &&
-    studio.env === studio.saved.environment;
+  const canPreview = immediate.active && !!immediate.result;
   const openForEditing = (build: Parameters<typeof studio.editVersion>[0]) => {
     setAssistant(false);
     studio.editVersion(build);
     setPreview(false);
+    immediate.close();
     setSelected("");
     setSection("design");
   };
+  useDesignerKeys(
+    !assistant && manage && !studio.busy,
+    immediate.run,
+    () => setPreview(true),
+    studio.dispatch,
+  );
   return (
     <div className="studio-page app-studio">
       <div className="app-studio-intro">
@@ -165,7 +185,14 @@ export default function DeveloperView({
                   {contentText(m.name, locale, studio.mainLocale) || m.id}
                 </strong>
                 <small>
-                  {m.id} · {m.version} · {a(studio.dirty ? "dirty" : "saved")}
+                  {m.id} · {m.version} ·{" "}
+                  {a(
+                    studio.draftStorage.pending
+                      ? "autosaving"
+                      : studio.dirty
+                        ? "draftSaved"
+                        : "saved",
+                  )}
                 </small>
               </div>
             </div>
@@ -269,9 +296,17 @@ export default function DeveloperView({
                   </button>
                   <button
                     className="studio-secondary"
-                    disabled={!canPreview}
+                    disabled={immediate.busy || !!problems(m)}
                     aria-pressed={preview && canPreview}
-                    onClick={() => setPreview(!preview)}
+                    onClick={() => {
+                      if (preview && canPreview) {
+                        setPreview(false);
+                        immediate.close();
+                      } else {
+                        setPreview(true);
+                        void immediate.run();
+                      }
+                    }}
                   >
                     {a(preview && canPreview ? "design" : "realPreview")}
                   </button>
@@ -294,8 +329,9 @@ export default function DeveloperView({
                   <div className="app-editor-workspace">
                     {preview && canPreview ? (
                       <SandboxPreview
-                        app={m.id}
-                        version={m.version}
+                        key={immediate.result!.digest}
+                        app={immediate.result!.app}
+                        version={immediate.result!.version}
                         view={
                           m.surfaces?.find(
                             (s) => s.uiPath === `native/${view.id}`,
@@ -356,22 +392,7 @@ export default function DeveloperView({
           </ContentLanguage>
         </fieldset>
       )}
-      {studio.busy && (
-        <p className="app-notice" role="status">
-          {a("loading")}
-        </p>
-      )}
-      {problems(m) && <p role="alert">{a("invalid")}</p>}
-      {studio.error && (
-        <p className="app-error" role="alert">
-          {studio.error}
-        </p>
-      )}
-      {studio.notice && (
-        <p className="app-notice" role="status">
-          {studio.notice === "released" ? w("released") : a("saved")}
-        </p>
-      )}
+      <AppStudioStatus studio={studio} preview={immediate} />
     </div>
   );
 }

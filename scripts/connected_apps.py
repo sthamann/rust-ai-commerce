@@ -3,6 +3,7 @@
 Only synthetic accounts and loopback provider endpoints; never charges or sends an external message.
 """
 
+from testing.app_approval import consent
 import signal
 import base64, copy, json, os, pathlib, socket, sqlite3, subprocess, sys, tempfile, threading, time, urllib.parse, urllib.request, urllib.error, uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -22,6 +23,7 @@ def passed(text):
 
 
 def http(url, body=None, headers=None, method=None, expected=200):
+    if urllib.parse.urlsplit(url).path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
     req = urllib.request.Request(
         url,
         data=json.dumps(body).encode() if body is not None else None,

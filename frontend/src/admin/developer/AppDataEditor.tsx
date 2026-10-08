@@ -1,4 +1,6 @@
 /** Managed app models expose typed fields and opt-in public reads; removal cleans dependent bindings. */
+import AppModelDiagram from "./AppModelDiagram";
+import AppSchemaMigrations from "./AppSchemaMigrations";
 import AppFieldOptions from "./AppFieldOptions";
 import LocalizedField from "../../shared/i18n/LocalizedField";
 import { useAppStudioText, appText } from "../../shared/i18n/app-studio-i18n";
@@ -58,6 +60,12 @@ export default function AppDataEditor({
           {a("addEntity")}
         </button>
       </div>
+      <AppModelDiagram manifest={manifest} onChange={onChange} />
+      <AppSchemaMigrations
+        key={`${manifest.id}:${manifest.version}`}
+        manifest={manifest}
+        onChange={onChange}
+      />
       {manifest.entities.map((entity, entityIndex) => (
         <section className="app-model-card" key={entityIndex}>
           <header>
@@ -143,53 +151,102 @@ export default function AppDataEditor({
                           kind: e.target.value as Field["kind"],
                           translatable: false,
                           indexed: false,
+                          unique: false,
+                          validation: undefined,
                           coreReference: null,
                           choices: [],
                           references: null,
                         })
                       }
                     >
-                      {(["string", "integer", "boolean", "json"] as const).map(
-                        (k) => (
-                          <option key={k} value={k}>
-                            {a(k)}
-                          </option>
-                        ),
-                      )}
+                      {(
+                        [
+                          "string",
+                          "integer",
+                          "boolean",
+                          "json",
+                          "date",
+                          "datetime",
+                          "money",
+                          "decimal",
+                          "image",
+                          "file",
+                          "richtext",
+                          "relations",
+                        ] as const
+                      ).map((k) => (
+                        <option key={k} value={k}>
+                          {a(k)}
+                        </option>
+                      ))}
                     </select>
                   </label>
                   <div className="app-field-flags">
-                    {(["required", "translatable", "indexed"] as const).map(
-                      (key) => (
-                        <label key={key} className="app-check">
-                          <input
-                            type="checkbox"
-                            disabled={
-                              (key === "translatable" &&
-                                field.kind !== "string") ||
-                              (key === "indexed" &&
-                                (field.kind === "json" || field.translatable))
-                            }
-                            checked={field[key] ?? false}
-                            onChange={(e) =>
-                              set({
-                                [key]: e.target.checked,
-                                ...(key === "translatable" && e.target.checked
-                                  ? {
-                                      indexed: false,
-                                      coreReference: null,
-                                      choices: [],
-                                    }
-                                  : {}),
-                              })
-                            }
-                          />
-                          {a(key === "translatable" ? "translated" : key)}
-                        </label>
-                      ),
-                    )}
+                    {(
+                      ["required", "translatable", "indexed", "unique"] as const
+                    ).map((key) => (
+                      <label key={key} className="app-check">
+                        <input
+                          type="checkbox"
+                          disabled={
+                            (key === "translatable" &&
+                              field.kind !== "string") ||
+                            (["indexed", "unique"].includes(key) &&
+                              ([
+                                "json",
+                                "money",
+                                "richtext",
+                                "relations",
+                              ].includes(field.kind) ||
+                                field.translatable))
+                          }
+                          checked={field[key] ?? false}
+                          onChange={(e) =>
+                            set({
+                              [key]: e.target.checked,
+                              ...(key === "translatable" && e.target.checked
+                                ? {
+                                    indexed: false,
+                                    unique: false,
+                                    validation: undefined,
+                                    coreReference: null,
+                                    choices: [],
+                                  }
+                                : {}),
+                            })
+                          }
+                        />
+                        {a(key === "translatable" ? "translated" : key)}
+                      </label>
+                    ))}
                   </div>
                   <AppFieldOptions field={field} onChange={set} />
+                  {(field.kind === "relations" ||
+                    (field.kind === "string" &&
+                      !field.translatable &&
+                      !field.coreReference &&
+                      !field.choices?.length)) && (
+                    <label>
+                      {a("relationTarget")}
+                      <select
+                        value={field.references ?? ""}
+                        onChange={(e) =>
+                          set({
+                            references: e.target.value || null,
+                            choices: [],
+                            coreReference: null,
+                          })
+                        }
+                      >
+                        <option value="">—</option>
+                        {manifest.entities.map((target) => (
+                          <option key={target.name} value={target.name}>
+                            {target.name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  )}
                   <button
                     className="app-icon-button"
                     aria-label={a("delete")}

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """PayPal wire-contract and real Rust/PostgreSQL state tests. Local fixture, never real provider traffic."""
+from testing.app_approval import consent
 import copy,json,os,pathlib,subprocess,threading,time,urllib.request,urllib.error,uuid,concurrent.futures
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 ROOT=pathlib.Path(__file__).resolve().parents[1];checks=[];orders={};keys={};captures=[];refunds=[];pending_refunds={};bn_seen=[];behavior={'lostCapture':False,'badAmount':False,'pendingRefund':False};gate=threading.Lock()
@@ -43,6 +44,7 @@ port=server.server_address[1];base='http://127.0.0.1:8794';accounts={t:{'clientI
 env={**os.environ,'BIND_ADDR':'127.0.0.1:8794','PAYPAL_SANDBOX_BASE_URL':f'http://127.0.0.1:{port}','PAYPAL_SANDBOX_ACCOUNTS':json.dumps(accounts)}
 log=open(ROOT/'.run/payments-contract.log','w');process=None
 def call(path,body=None,h=None,method=None,expected=200):
+    if path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
     req=urllib.request.Request(base+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(h or {})},method=method or ('GET' if body is None else 'POST'))
     try:
         with urllib.request.urlopen(req,timeout=30) as r:code=r.status;v=json.load(r)

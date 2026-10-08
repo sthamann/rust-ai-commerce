@@ -1,12 +1,12 @@
 {
   "id": "workshop_notes",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "coreApi": "1",
   "runtime": "service",
   "name": {
     "en": "Workshop notes",
     "de": "Werkstattnotizen",
-    "fr": "Notes d\u2019atelier",
+    "fr": "Notes d’atelier",
     "es": "Notas del taller"
   },
   "permissions": [
@@ -14,7 +14,7 @@
     "data.write",
     "admin.slot",
     "service.call",
-    "events.read"
+    "events:order.placed"
   ],
   "entities": [
     {
@@ -63,7 +63,7 @@
       "label": {
         "en": "Workshop notes",
         "de": "Werkstattnotizen",
-        "fr": "Notes d\u2019atelier",
+        "fr": "Notes d’atelier",
         "es": "Notas del taller"
       }
     }
@@ -101,5 +101,22 @@
   ],
   "events": [
     "order.placed"
+  ],
+  "surfaces": [
+    {
+      "id": "workspace",
+      "location": "admin.navigation",
+      "label": {
+        "en": "Workshop notes",
+        "de": "Werkstattnotizen",
+        "fr": "Notes d’atelier",
+        "es": "Notas del taller"
+      },
+      "uiPath": "ui",
+      "actions": [
+        "notes",
+        "availability"
+      ]
+    }
   ]
 }

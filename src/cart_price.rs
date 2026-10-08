@@ -168,6 +168,7 @@ pub(crate) async fn cart_json(a: &App, c: &StoredCart) -> Result<Value> {
     let taxes =
         commerce::tax_settings_for_cart(&mut *a.db.begin().await?, &preview, &ps, &config).await?;
     let ps = commerce::tax_products(&ps, &selected, &taxes)?;
+    let hooks = apps::prepare_hooks(a, &c.tenant).await?;
     let q = marketing::promote(
         &mut *a.db.begin().await?,
         &preview,
@@ -181,6 +182,16 @@ pub(crate) async fn cart_json(a: &App, c: &StoredCart) -> Result<Value> {
     )
     .await?;
     let mut result = commerce::enrich(q, &preview, &ps, &config, revision)?;
+    result = apps::apply_hooks(
+        &mut *a.db.begin().await?,
+        &preview,
+        &ps,
+        result,
+        &config,
+        revision,
+        &hooks,
+    )
+    .await?;
     result["selectionNeedsConfirmation"] = json!(changed);
     result["legal"] = json!({"requiresDigital":!config.is_business(&c.data.group) && ps.iter().any(|p|p.extra["digital"]==true),"strictCheckout":config.legal.strict_checkout});
     commerce::dates(a, &mut result).await?;

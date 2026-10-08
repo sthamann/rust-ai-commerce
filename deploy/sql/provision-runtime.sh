@@ -16,7 +16,7 @@ GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO vendune_runtime;
 
 
 SELECT format('GRANT vendune_runtime TO %I',current_user) \gexec
-SELECT format('ALTER TABLE public.%I OWNER TO vendune_runtime',c.relname) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname ~ '^app_[a-f0-9]{16}_' AND EXISTS(SELECT 1 FROM pg_policy p WHERE p.polrelid=c.oid AND p.polname='tenant_scope') \gexec
+SELECT format('ALTER TABLE public.%I OWNER TO vendune_runtime',c.relname) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname ~ '^app_[a-f0-9]{16}([a-f0-9]{8})?_' AND EXISTS(SELECT 1 FROM pg_policy p WHERE p.polrelid=c.oid AND p.polname='tenant_scope') \gexec
 SELECT 'CREATE ROLE vendune_connectors LOGIN NOSUPERUSER NOBYPASSRLS' WHERE NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='vendune_connectors') \gexec
 ALTER ROLE vendune_connectors NOSUPERUSER NOBYPASSRLS NOREPLICATION NOCREATEDB NOCREATEROLE CONNECTION LIMIT 16 PASSWORD :'connector_password';
 GRANT CONNECT ON DATABASE commerce TO vendune_connectors;

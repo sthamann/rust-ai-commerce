@@ -1,6 +1,6 @@
 {
   "id": "email",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "coreApi": "1",
   "runtime": "service",
   "name": {
@@ -12,7 +12,14 @@
   "category": "operations",
   "permissions": [
     "service.call",
-    "events.read"
+    "events:order.placed",
+    "events:consumer.withdrawal.requested",
+    "events:consumer.access.requested",
+    "events:consumer.erase.requested",
+    "events:consumer.correct.requested",
+    "events:consumer.portability.requested",
+    "events:consumer.objection.requested",
+    "customers.pii"
   ],
   "entities": [],
   "slots": [],
@@ -157,5 +164,8 @@
     "consumer.correct.requested",
     "consumer.portability.requested",
     "consumer.objection.requested"
-  ]
+  ],
+  "eventDelivery": {
+    "batchSize": 10
+  }
 }

@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Actual app UI registry/API/MCP/data/staging and slow-service isolation against Rust/PostgreSQL."""
+from testing.app_approval import consent
+from testing.app_approval import pin
 import concurrent.futures
 import copy
+import hashlib
 import importlib.util
 import json
 import os
@@ -83,9 +86,27 @@ def run():
         thread = threading.Thread(target=server.serve_forever)
         thread.start()
         config = {app_id: {"url": f"http://127.0.0.1:{service_port}", "uiUrl": f"http://127.0.0.1:{service_port}", "token": module.TOKEN}}
+        m = json.loads((ROOT / "extensions/apps/product-lab/manifest.json").read_text())
+        m["id"] = app_id
+        # Internal planning is independent of MCP, but never independent of action rights.
+        save_action = next(a for a in m["actions"] if a["name"] == "save_entry")
+        save_action.update(permission="orders.write", mcp=False)
+        m["entities"].append({"name":"private_notes","label":m["name"],"publicRead":False,"fields":[{"name":"text","label":m["name"],"kind":"string","required":True}]})
+        for name,handler,scope in [("list_notes","list","orders.read"),("save_notes","save","orders.write")]:
+            note_action = copy.deepcopy(next(a for a in m["actions"] if a["handler"] == handler))
+            note_action.update(name=name, description="Private scoped notes", entity="private_notes", public=False, permission=scope, mcp=False)
+            m["actions"].append(note_action)
+        m["intelligence"]["entities"].append("private_notes")
+        busy = copy.deepcopy(m)
+        busy["version"] = "1.2.0"
+        busy["actions"].append({"name": "slow", "description": "Local slow fixture", "handler": "service", "entity": None, "readOnly": True, "permission": "catalog.read", "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}})
+        config[app_id]["uiDigests"] = {"v1/index.html": hashlib.sha256(module.UI).hexdigest()}
+        pin(config,app_id,m)
+        pin(config,app_id,busy)
         env = {**os.environ, "APP_SERVICES": json.dumps(config), "PROCESS_ROLE": "http", "BIND_ADDR": f"127.0.0.1:{api_port}", "OPENAI_API_KEY": "local-wire-fixture", "OPENAI_BASE_URL": f"http://127.0.0.1:{model_server.server_address[1]}/v1"}
 
         def call(path, body=None, headers=None, expected=200, method=None):
+            if path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
             req = urllib.request.Request(base + path, data=None if body is None else json.dumps(body).encode(), headers={"Content-Type": "application/json", **(headers or {})}, method=method)
             try:
                 with urllib.request.urlopen(req, timeout=20) as res:
@@ -116,27 +137,27 @@ def run():
             h = {"Authorization": "Bearer " + u["token"], "x-tenant": u["workspace"]}
             oh = {"Authorization": "Bearer " + other["token"], "x-tenant": other["workspace"]}
             public = {"x-tenant": u["workspace"]}
-            m = json.loads((ROOT / "extensions/apps/product-lab/manifest.json").read_text())
-            m["id"] = app_id
-            # Internal planning is independent of MCP, but never independent of action rights.
-            save_action = next(a for a in m["actions"] if a["name"] == "save_entry")
-            save_action.update(permission="orders.write", mcp=False)
-            m["entities"].append({"name":"private_notes","label":m["name"],"publicRead":False,"fields":[{"name":"text","label":m["name"],"kind":"string","required":True}]})
-            for name,handler,scope in [("list_notes","list","orders.read"),("save_notes","save","orders.write")]:
-                note_action = copy.deepcopy(next(a for a in m["actions"] if a["handler"] == handler))
-                note_action.update(name=name, description="Private scoped notes", entity="private_notes", public=False, permission=scope, mcp=False)
-                m["actions"].append(note_action)
-            m["intelligence"]["entities"].append("private_notes")
             call("/api/apps", {"manifest": m}, h)
             private = call("/api/apps/surfaces", headers=h)["surfaces"]
             exposed = call("/store-api/apps/surfaces", headers=public)["surfaces"]
             assert [s["surface"]["location"] for s in private] == ["admin.navigation"]
             assert len(exposed) == 2 and all(not s["surface"]["location"].startswith("admin.") for s in exposed)
             assert module.TOKEN not in json.dumps([private, exposed])
-            with urllib.request.urlopen(private[0]["url"]) as res:
-                assert b"question-form" in res.read()
+            grant_path = f"/api/apps/{app_id}/surfaces/manager"
+            # Surface names come from the installed contract, never from a caller-made alias.
+            grant_path = f"/api/apps/{app_id}/surfaces/" + private[0]["surface"]["id"]
+            grant = call(grant_path+"/grant", {"context":{}}, h)
+            ui = call(grant_path+"/bundle", {"grant":grant["token"]}, h)
+            assert "question-form" in ui["html"] and "function connectCommerce" in ui["html"]
+            assert "src=\"./app.js\"" not in ui["html"]
+            call(grant_path+"/bundle", {"grant":grant["token"]}, oh, expected=401)
+            call(grant_path+"/bundle", {"grant":"0"*64}, h, expected=401)
+            original = module.UI
+            module.UI = original + b"<!-- changed after approval -->"
+            call(grant_path+"/bundle", {"grant":grant["token"]}, h, expected=403)
+            module.UI = original
             call("/api/apps/surfaces", headers=public, expected=401)
-            passed("Private admin navigation and public product/page surfaces resolve real app UI without credentials")
+            passed("Private and public surfaces use actor-bound pinned self-contained UI; changed bytes and foreign actors are rejected")
             fields = {"product_id": "mug", "title": m["name"], "specification": {"materials": ["ceramic"], "care": {"dishwasher": True}}}
             call(f"/api/apps/{app_id}/http/guides", {"id": "a", "revision": 0, "fields": fields}, h)
             call(f"/api/apps/{app_id}/http/guides", {"id": "b", "revision": 0, "fields": {**fields, "product_id": "chair"}}, h)
@@ -208,9 +229,6 @@ def run():
             sh = {**h, "x-tenant": stage}
             call(f"/api/apps/{app_id}/actions/recommend", args, sh, expected=400)
             passed("Reviewed external app manifests can be staged; private sandboxes cannot execute live service actions")
-            busy = copy.deepcopy(m)
-            busy["version"] = "1.1.0"
-            busy["actions"].append({"name": "slow", "description": "Local slow fixture", "handler": "service", "entity": None, "readOnly": True, "permission": "catalog.read", "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False}})
             call("/api/apps", {"manifest": busy}, h)
             with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
                 tasks = [pool.submit(call, f"/api/apps/{app_id}/actions/slow", {}, h) for _ in range(8)]

@@ -19,36 +19,65 @@ This lists every checked-in source module in these roots, including files with n
 | [src/accounts/orders.rs](../src/accounts/orders.rs) | Customer-owned order reads and receipts share one tenant/identity predicate and a public projection. |
 | [src/accounts/profile.rs](../src/accounts/profile.rs) | Typed customer-owned profile updates; price groups, email and merchant roles cannot be self-assigned. |
 | [src/agent.rs](../src/agent.rs) | Persistent grounded conversations and tenant-scoped semantic knowledge HTTP adapters. |
+| [src/apps/approval.rs](../src/apps/approval.rs) | Operator service authority is bound to immutable package content, never to a merchant-chosen ID. |
+| [src/apps/asset_surfaces.rs](../src/apps/asset_surfaces.rs) | App file uploads reuse the product asset parser/store and require the current package plus either callback consent or a surface grant. |
 | [src/apps/cart_contributions.rs](../src/apps/cart_contributions.rs) | Generic app contributions: configure a cart, bind package/data revisions and persist audited pricing inputs. |
+| [src/apps/commerce_hooks.rs](../src/apps/commerce_hooks.rs) | Typed pure commerce hooks share the compiled sandbox cache and receive explicit immutable snapshots, never SQL or credentials. |
 | [src/apps/compatibility.rs](../src/apps/compatibility.rs) | Explicit read adapter for persisted v0.5 engraving carts; completed order snapshots remain unchanged. |
+| [src/apps/consent.rs](../src/apps/consent.rs) | Package approval binds all requested permissions to a reviewed digest; current actor rights apply before every installation path. |
+| [src/apps/core_callbacks.rs](../src/apps/core_callbacks.rs) | Narrow app callbacks delegate to the existing commerce owners and project PII only with separate consent. |
+| [src/apps/credentials.rs](../src/apps/credentials.rs) | App keys reuse the core integration-key store, current creator rights, expiry and immutable package digest. |
 | [src/apps/data.rs](../src/apps/data.rs) | Managed app tables: typed writes, optimistic revisions, bounded reads and local RLS context. |
+| [src/apps/distribution.rs](../src/apps/distribution.rs) | Signed publisher namespaces and tenant-local dependency/version gates. Operator service access still requires its separate exact digest pin. |
 | [src/apps/editor_contract.rs](../src/apps/editor_contract.rs) | Editor mounts, enumerated fields and tenant-owned core references; no app alters core tables. |
 | [src/apps/editor_tests.rs](../src/apps/editor_tests.rs) | Assistant fixture contracts exercise real validation, not only the client-side builder. |
+| [src/apps/egress.rs](../src/apps/egress.rs) | Bounded origin clients pin resolved addresses for each connection and never use ambient HTTP proxies. |
+| [src/apps/event_contract.rs](../src/apps/event_contract.rs) | Explicit event filters, bounded batches and signed public HTTPS delivery extend the existing leased outbox, not a second queue. |
+| [src/apps/event_projection.rs](../src/apps/event_projection.rs) | Least-privilege event subscriptions and payload projections; merchant identity never implies app access. |
 | [src/apps/events.rs](../src/apps/events.rs) | Durable at-least-once app events, retry leases and stable event idempotency keys. |
 | [src/apps/evidence.rs](../src/apps/evidence.rs) | Private provenance-bearing app exports feed merchant retrieval and durable app events; never public PDP answers. |
 | [src/apps/evidence_routes.rs](../src/apps/evidence_routes.rs) | Scoped merchant-only evidence retrieval; sources never enter public product answers. |
+| [src/apps/field_values.rs](../src/apps/field_values.rs) | Exact app field values reuse commerce money, rich content and tenant-owned assets; no HTML or float decimal coercion. |
+| [src/apps/form_layout.rs](../src/apps/form_layout.rs) | Bounded twelve-column form geometry, presentation flags and tab order shared by every native app surface. |
 | [src/apps/gateway.rs](../src/apps/gateway.rs) | One permission-aware action gateway serves HTTP, UI and MCP; service egress is operator configured. |
 | [src/apps/hosted.rs](../src/apps/hosted.rs) | Persist hosted-app dependencies through the existing package installer; no private renderer or parallel registry. |
+| [src/apps/input_schema.rs](../src/apps/input_schema.rs) | Bounded recursive action-input contract. Untyped managed fields still receive depth/size budgets. |
+| [src/apps/job_callbacks.rs](../src/apps/job_callbacks.rs) | Long-job service callbacks disclose input only after current actor consent, package and lease checks. Late callbacks cannot commit. |
+| [src/apps/jobs.rs](../src/apps/jobs.rs) | Durable long actions piggyback on the existing outbox. Apps claim a fenced lease; unknown side effects are never retried automatically. |
 | [src/apps/manifest.rs](../src/apps/manifest.rs) | Strict package contract; identifiers and limits are checked before any schema DDL. |
 | [src/apps/manifest_validation.rs](../src/apps/manifest_validation.rs) | Package capability, schema and action validation; no executable behavior is inferred from names. |
 | [src/apps/mod.rs](../src/apps/mod.rs) | Versioned app packages: managed data, UI slots, agent tools and isolated service calls. |
 | [src/apps/native_data.rs](../src/apps/native_data.rs) | App record translations use configured shop languages and field-level main-language inheritance. |
 | [src/apps/native_view_tests.rs](../src/apps/native_view_tests.rs) | Native schema security regressions: bindings, public writes, allowlists, bounded blocks and legacy digests. |
 | [src/apps/native_views.rs](../src/apps/native_views.rs) | Bounded native view definitions; every data binding resolves to the same authorized app action gateway. |
+| [src/apps/observability.rs](../src/apps/observability.rs) | Bounded metadata-only app telemetry, storage usage and explicitly approved cursor-based event replay. |
 | [src/apps/planning.rs](../src/apps/planning.rs) | Registered managed app actions join the same preview/approve transaction as core changes. |
 | [src/apps/presentation.rs](../src/apps/presentation.rs) | Optional passive app artwork and localized summaries; omitted metadata preserves published legacy digests. |
 | [src/apps/registry.rs](../src/apps/registry.rs) | Atomic installation and additive schema upgrades; immutable version digests preserve history. |
+| [src/apps/relations.rs](../src/apps/relations.rs) | Multi-relations keep stable array wire values, composite tenant FKs and shared accounting; staging may clone cyclic graphs atomically. |
 | [src/apps/routes.rs](../src/apps/routes.rs) | Tenant-scoped package lifecycle, generated data endpoints and a shared action adapter. |
 | [src/apps/runtime.rs](../src/apps/runtime.rs) | Generic pure-Wasm contribution executor; the installed package supplies all business predicates. |
 | [src/apps/schedules.rs](../src/apps/schedules.rs) | Durable UTC cron ticks emit namespaced outbox events; replicas lock due rows and staging never runs them. |
+| [src/apps/schema_changes.rs](../src/apps/schema_changes.rs) | Explicit, transactional field evolution. No raw migration SQL; bounded recovery snapshots precede DDL and every converted value is validated. |
+| [src/apps/schema_upgrade.rs](../src/apps/schema_upgrade.rs) | Apply a checked migration under tenant-local DDL locks with bounded recovery history and optimistic record revisions. |
+| [src/apps/secrets.rs](../src/apps/secrets.rs) | Digest-bound per-shop app secret rotation reuses platform authenticated encryption; no plaintext read endpoint. |
 | [src/apps/service_limits.rs](../src/apps/service_limits.rs) | Non-queuing per-process bulkheads isolate slow apps without holding database connections. |
 | [src/apps/service_policy.rs](../src/apps/service_policy.rs) | Operator-owned private origins permit isolated service networking without relaxing public egress. |
+| [src/apps/storage.rs](../src/apps/storage.rs) | Attach the shared PostgreSQL accounting trigger to tenant-specific app tables before any write. |
+| [src/apps/surface_grants.rs](../src/apps/surface_grants.rs) | Short-lived UI grants bind a package, surface, actor and concrete editor object on the server. |
 | [src/apps/surface_tests.rs](../src/apps/surface_tests.rs) | Contract counterexamples reject cross-scope UI actions, unsafe URLs and mutating GET routes. |
 | [src/apps/surfaces.rs](../src/apps/surfaces.rs) | App-owned UI surfaces and namespaced HTTP routes reuse the authorized action gateway. |
+| [src/apps/ui_bundles.rs](../src/apps/ui_bundles.rs) | Operator-pinned, bounded self-contained UI bundles use the same actor/context grant as app actions. |
+| [src/apps/ui_logic.rs](../src/apps/ui_logic.rs) | Declarative UI code-behind validates a bounded AST; calls retain surface grants and server domain authorization. |
+| [src/apps/ui_logic_tests.rs](../src/apps/ui_logic_tests.rs) | UI programs must keep static types, same-model saves, surface allowlists and acyclic ownership before install or preview. |
+| [src/apps/ui_logic_types.rs](../src/apps/ui_logic_types.rs) | Static UI expression types prevent control coercion and invoking save with a different model; runtime still validates actual values. |
+| [src/apps/webhook_scope.rs](../src/apps/webhook_scope.rs) | Scope signed app ingress from its route before identity, tenant lifecycle and forced-RLS admission. |
 | [src/apps/webhooks.rs](../src/apps/webhooks.rs) | Operator-signed incoming events: tenant-bound HMAC, five-minute freshness and atomic replay receipts. |
+| [src/assets/app_files.rs](../src/assets/app_files.rs) | Scoped app access to the existing asset store. Binary callbacks are explicit and private; publishing still uses the native asset lifecycle. |
 | [src/assets/download.rs](../src/assets/download.rs) | Public attachments honor sales-channel visibility; downloads require a paid, owned order snapshot. |
 | [src/assets/image_jobs.rs](../src/assets/image_jobs.rs) | Durable image jobs: tenant admission, revision-bound private previews and explicit publication, without automatic paid retries. |
 | [src/assets/image_provider.rs](../src/assets/image_provider.rs) | Optional OpenAI Images adapter; bounded responses and decoded PNG output, no remote user URLs or leaked provider errors. |
+| [src/assets/ingestion.rs](../src/assets/ingestion.rs) | Shared bounded multipart parser for product uploads and scoped app uploads; file validation/persistence stays in the asset owner. |
 | [src/assets/mod.rs](../src/assets/mod.rs) | Product attachments and paid digital downloads: bounded binary persistence and tenant/account ACL. |
 | [src/assets/rich.rs](../src/assets/rich.rs) | Safe structured rich content, never executable HTML. Same schema for merchant API and frontend. |
 | [src/assets/rich_document.rs](../src/assets/rich_document.rs) | Allow-listed editor JSON with bounded depth and content; HTML/handlers/styles cannot enter the renderer. |
@@ -110,6 +139,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/cognition/projection.rs](../src/cognition/projection.rs) | Exactly-once local observation projection; associations retain order/event evidence and simulation labels. |
 | [src/cognition/recommendations.rs](../src/cognition/recommendations.rs) | Merchant-approved associations are consumed by the public shop without exposing order counts or identities. |
 | [src/cognition/routes.rs](../src/cognition/routes.rs) | Merchant memory endpoints and revision-bound experiment/dismissal decisions. |
+| [src/commerce/app_adjustments.rs](../src/commerce/app_adjustments.rs) | Apply admitted integer app adjustments through native pricing/tax calculation; extensions cannot replace quote JSON. |
 | [src/commerce/catalog.rs](../src/commerce/catalog.rs) | SKU loading with parent translation fallback. |
 | [src/commerce/configuration.rs](../src/commerce/configuration.rs) | Tenant checkout configuration loading. |
 | [src/commerce/content_text.rs](../src/commerce/content_text.rs) | Shared field-level content fallback for metadata and configurable object names. |
@@ -149,12 +179,14 @@ This lists every checked-in source module in these roots, including files with n
 | [src/commerce/tax_context.rs](../src/commerce/tax_context.rs) | Tax conditions consume private authoritative pre-tax cart facts without a recursive quote. |
 | [src/commerce/tax_rules.rs](../src/commerce/tax_rules.rs) | Priority-based destination rules; current tax law is merchant configuration, not bundled tax advice. |
 | [src/commerce/types.rs](../src/commerce/types.rs) | Checkout selection and configuration data contracts. |
+| [src/component_runtime.rs](../src/component_runtime.rs) | WIT-typed read-only commerce guest. Snapshots are prepared by domain owners; no WASI, HTTP, DB or merchant credentials reach components. |
 | [src/concierge.rs](../src/concierge.rs) | Read-only storefront shopping advisor. |
 | [src/connectors/actions.rs](../src/connectors/actions.rs) | Existing standard-app actions and event/export endpoints share validated tenant-bound dispatch. |
 | [src/connectors/config.rs](../src/connectors/config.rs) | Compile-time mail setting types plus bounded runtime validation and write-only credentials. |
 | [src/connectors/crypto.rs](../src/connectors/crypto.rs) | Authenticated encryption binds config, OAuth verifiers, messages and receipts to tenant and app. |
 | [src/connectors/email.rs](../src/connectors/email.rs) | Email app actions/events retain the published gateway, flow and MCP payload contract. |
 | [src/connectors/error.rs](../src/connectors/error.rs) | Sanitized failures distinguish explicit rejection from ambiguous external side effects. |
+| [src/connectors/events.rs](../src/connectors/events.rs) | One bounded event envelope feeds existing durable, idempotent connector queues; no parallel scheduler. |
 | [src/connectors/exports.rs](../src/connectors/exports.rs) | Tenant-scoped encrypted knowledge records and bounded monotonic exports preserve importer fences. |
 | [src/connectors/legacy.rs](../src/connectors/legacy.rs) | Explicit offline SQLite export import: all records are rebound/encrypted atomically; ambiguous jobs stay uncertain. |
 | [src/connectors/mod.rs](../src/connectors/mod.rs) | Language-neutral app HTTP contract backed by a Rust-only standard connector runtime. |
@@ -183,8 +215,10 @@ This lists every checked-in source module in these roots, including files with n
 | [src/demo_catalog.rs](../src/demo_catalog.rs) | Public synthetic fashion template; provisioning copies only this versioned fixture into a new tenant. |
 | [src/developer/archive.rs](../src/developer/archive.rs) | Recoverable App Studio project deletion; installed packages and app records retain their independent lifecycle. |
 | [src/developer/builds.rs](../src/developer/builds.rs) | Immutable development versions are validated before storage; installation targets only private environments. |
+| [src/developer/drafts.rs](../src/developer/drafts.rs) | Actor-private, optimistic mutable autosaves; these never install or alter a published package. |
 | [src/developer/generation.rs](../src/developer/generation.rs) | Structured provider output becomes a reviewable immutable manifest; it cannot write files or call shell tools. |
 | [src/developer/mod.rs](../src/developer/mod.rs) | Prompt-generated declarative apps and native coding-agent handoff, never unsandboxed model code. |
+| [src/developer/preview.rs](../src/developer/preview.rs) | F5 runs the shared native app runtime in an actor-private expiring staging clone; no build/version/release is created. |
 | [src/developer/routes.rs](../src/developer/routes.rs) | Developer HTTP transport and coding-agent task export; explicit staging precedes live release. |
 | [src/discount.rs](../src/discount.rs) | Integer-cent proportional discount allocation; cumulative rounding conserves the exact basket discount. |
 | [src/documents/content.rs](../src/documents/content.rs) | Validate enabled-language source content and rebuild hash-bound chunks without inherited fabricated translations. |
@@ -207,6 +241,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/history/restore.rs](../src/history/restore.rs) | Restore snapshots by replaying validated entity edits; financial effects and publication are never copied from historical state. |
 | [src/history/routes.rs](../src/history/routes.rs) | History summaries are bounded and permission-filtered; full snapshots and restore targets stay inside the owning shop. |
 | [src/http_limits.rs](../src/http_limits.rs) | Bounded streaming responses for extension services and payment providers. |
+| [src/inference/schema.rs](../src/inference/schema.rs) | Provider wire adaptation for strict fixed-object schemas; dynamic JSON is encoded only on the model wire and restored before domain validation. |
 | [src/inference/settings.rs](../src/inference/settings.rs) | Shared operator settings; AES-GCM secrets are never part of merchant/operator read responses. |
 | [src/inference/tests.rs](../src/inference/tests.rs) | Provider response contracts, strict schemas and truncation rejection. |
 | [src/inference.rs](../src/inference.rs) | Provider adapters. Credentials stay on the server; domain validation is separate. |
@@ -259,6 +294,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/migrations/schema.rs](../src/migrations/schema.rs) | Append-only ordered migration source catalogue; deployed checksums are never rewritten. |
 | [src/migrations.rs](../src/migrations.rs) | Versioned setup is separate from serving; no catalog-wide startup repair. |
 | [src/money.rs](../src/money.rs) | Exact signed minor-unit amounts with explicit currency scale; legacy Shopware float pricing stays isolated. |
+| [src/network_policy.rs](../src/network_policy.rs) | Shared DNS destination classification for app HTTP egress and approved SMTP providers. |
 | [src/operations/addresses.rs](../src/operations/addresses.rs) | Merchant/MCP address operations use identical customer ownership and revision checks to the Store API. |
 | [src/operations/company_logo.rs](../src/operations/company_logo.rs) | Tenant-owned logo uploads: bounded decoding, metadata stripping, immutable PNG storage and linked public delivery. |
 | [src/operations/company_model.rs](../src/operations/company_model.rs) | Company profile admission, sparse channel inheritance and structured-address print projection. |
@@ -331,6 +367,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/runtime_config.rs](../src/runtime_config.rs) | Immutable process configuration, validated once at startup. Mutable shop/provider settings remain in PostgreSQL. |
 | [src/sandbox.rs](../src/sandbox.rs) | Pure Wasmtime guest execution with bounded resources and no host imports. |
 | [src/sandbox_cache.rs](../src/sandbox_cache.rs) | Bounded tenant-policy compilation cache. Prepare outside commerce locks; verify the digest under the lock. |
+| [src/sandbox_engine.rs](../src/sandbox_engine.rs) | One bounded Wasmtime engine per process, with independent fuel and wall-clock interruption. |
 | [src/scoped_pool.rs](../src/scoped_pool.rs) | The commerce database executor: transaction-local tenant scope, including direct queries and cancelled streams. |
 | [src/security_headers.rs](../src/security_headers.rs) | Common browser defenses on successful responses and errors, including reverse-proxy HTTPS deployments. |
 | [src/seed.rs](../src/seed.rs) | Idempotent synthetic template catalogue initialization. |
@@ -367,11 +404,17 @@ This lists every checked-in source module in these roots, including files with n
 | Module | Responsibility |
 |---|---|
 | [frontend/src/admin/agents/AgentsView.tsx](../frontend/src/admin/agents/AgentsView.tsx) | AgentsView renders verified shop state and typed user actions. |
+| [frontend/src/admin/apps/AppAccess.tsx](../frontend/src/admin/apps/AppAccess.tsx) | Explicit consent for digest-bound server callback keys; plaintext is shown once and never persisted in the browser. |
+| [frontend/src/admin/apps/AppActivity.tsx](../frontend/src/admin/apps/AppActivity.tsx) | API-backed per-app call metadata, storage budgets and explicitly approved durable replay. |
 | [frontend/src/admin/apps/AppArtwork.tsx](../frontend/src/admin/apps/AppArtwork.tsx) | Passive app artwork with independent failed-image fallbacks and deterministic local category covers. |
+| [frontend/src/admin/apps/AppConsent.tsx](../frontend/src/admin/apps/AppConsent.tsx) | Review the actual package and permission changes before installation; consent is enforced by the API. |
 | [frontend/src/admin/apps/AppDetails.tsx](../frontend/src/admin/apps/AppDetails.tsx) | AppDetails: Installed app details, activation, version, data and isolated interface. |
 | [frontend/src/admin/apps/AppEntity.tsx](../frontend/src/admin/apps/AppEntity.tsx) | Managed entity editor renders fields from the installed app contract. |
 | [frontend/src/admin/apps/AppInterfaces.tsx](../frontend/src/admin/apps/AppInterfaces.tsx) | Open registered native/isolated admin surfaces through the existing permission-filtered registry. |
+| [frontend/src/admin/apps/AppJobArtifact.tsx](../frontend/src/admin/apps/AppJobArtifact.tsx) | Completed app exports read the existing tenant asset owner; private files never acquire a public URL. |
+| [frontend/src/admin/apps/AppJobs.tsx](../frontend/src/admin/apps/AppJobs.tsx) | Long actions use the same app/outbox contract, with progress and explicit uncertain-outcome review. |
 | [frontend/src/admin/apps/AppLibrary.tsx](../frontend/src/admin/apps/AppLibrary.tsx) | Searchable installed/discovery app cards with category/status filters and real lifecycle actions. |
+| [frontend/src/admin/apps/AppSecrets.tsx](../frontend/src/admin/apps/AppSecrets.tsx) | Metadata-only credentials screen; rotation sends plaintext once to the encrypted server store. |
 | [frontend/src/admin/apps/AppsManager.tsx](../frontend/src/admin/apps/AppsManager.tsx) | Installed package workspace: lifecycle, generated entities and shared agent actions. |
 | [frontend/src/admin/apps/ConnectorPanel.tsx](../frontend/src/admin/apps/ConnectorPanel.tsx) | Native app workspace: OAuth, provider settings, durable jobs and private sources. |
 | [frontend/src/admin/apps/EmailPanel.tsx](../frontend/src/admin/apps/EmailPanel.tsx) | Native email app settings, localized templates, safe previews and durable delivery receipts. |
@@ -406,8 +449,6 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/automation/source-rules.ts](../frontend/src/admin/automation/source-rules.ts) | Convert source condition nodes for the graphical editor without losing original payload fields. |
 | [frontend/src/admin/catalog/AiImageStudio.tsx](../frontend/src/admin/catalog/AiImageStudio.tsx) | Optional image-provider jobs create private previews; applying a reviewed image is explicit and revision checked. |
 | [frontend/src/admin/catalog/CategoriesWorkspace.tsx](../frontend/src/admin/catalog/CategoriesWorkspace.tsx) | Localized category tree editor; parent moves and revisions are validated in the API. |
-| [frontend/src/admin/catalog/EditorBuffer.ts](../frontend/src/admin/catalog/EditorBuffer.ts) | Unsaved Markdown source participates in the aggregate's save/navigation guard without becoming product content. |
-| [frontend/src/admin/catalog/MarkdownSource.tsx](../frontend/src/admin/catalog/MarkdownSource.tsx) | Live Markdown buffer updates the same structured product document; no raw HTML is rendered or persisted. |
 | [frontend/src/admin/catalog/MediaDropzone.tsx](../frontend/src/admin/catalog/MediaDropzone.tsx) | Accessible multi-file upload with drag/drop, visible progress and the same validated asset API as attachments. |
 | [frontend/src/admin/catalog/PairFields.tsx](../frontend/src/admin/catalog/PairFields.tsx) | Accessible key/value rows for product properties, specifications and variant options. |
 | [frontend/src/admin/catalog/ProductAssets.tsx](../frontend/src/admin/catalog/ProductAssets.tsx) | Bounded upload and explicit digest-bound publication of attachments and paid files. |
@@ -424,16 +465,10 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/catalog/ReferencePriceFields.tsx](../frontend/src/admin/catalog/ReferencePriceFields.tsx) | Native reference-unit inputs feed the same server-calculated unit price displayed on product pages. |
 | [frontend/src/admin/catalog/RelatedProducts.tsx](../frontend/src/admin/catalog/RelatedProducts.tsx) | Search-backed related-product selection, avoiding comma-separated opaque IDs. |
 | [frontend/src/admin/catalog/ReviewModeration.tsx](../frontend/src/admin/catalog/ReviewModeration.tsx) | Product-scoped review publication; authoritative authorization stays in the API. |
-| [frontend/src/admin/catalog/RichEditor.tsx](../frontend/src/admin/catalog/RichEditor.tsx) | Actual Tiptap WYSIWYG editor with structured safe content, media, formatting and per-language drafts. |
 | [frontend/src/admin/catalog/TaxClassSelect.tsx](../frontend/src/admin/catalog/TaxClassSelect.tsx) | Assign a product to an actual tenant tax class; legacy standard/reduced mapping remains explicit. |
 | [frontend/src/admin/catalog/VariantGenerator.tsx](../frontend/src/admin/catalog/VariantGenerator.tsx) | Reviewable, bounded batch creation uses saved parent data and keeps successful rows on partial failure. |
-| [frontend/src/admin/catalog/catalog-i18n.ts](../frontend/src/admin/catalog/catalog-i18n.ts) | Complete four-language catalog workspace vocabulary, separate from commerce data translations. |
 | [frontend/src/admin/catalog/catalog-model.ts](../frontend/src/admin/catalog/catalog-model.ts) | Editable native product aggregate and defaults shared by creation, detail and variant workflows. |
-| [frontend/src/admin/catalog/editor-document.ts](../frontend/src/admin/catalog/editor-document.ts) | Canonical transport drops editor-only null attributes; description headings remain within the native H2/H3 contract. |
-| [frontend/src/admin/catalog/editor-i18n.ts](../frontend/src/admin/catalog/editor-i18n.ts) | Four-language controls for visual/Markdown editing without changing content-language inheritance. |
-| [frontend/src/admin/catalog/markdown-content.ts](../frontend/src/admin/catalog/markdown-content.ts) | Markdown admission shares the public rich-document node/URL boundary; rich-only features never silently disappear. |
 | [frontend/src/admin/catalog/media-model.ts](../frontend/src/admin/catalog/media-model.ts) | Pure gallery operations preserve order, explicit alt translations and upload bounds without fabricating language values. |
-| [frontend/src/admin/catalog/rich-conversion.ts](../frontend/src/admin/catalog/rich-conversion.ts) | Lossless import of legacy blocks into structured WYSIWYG content, preserving inline emphasis. |
 | [frontend/src/admin/catalog/variant-family.ts](../frontend/src/admin/catalog/variant-family.ts) | Cursor-based family lookup for duplicate review, bounded independently of the 50-row creation limit. |
 | [frontend/src/admin/catalog/variant-i18n.ts](../frontend/src/admin/catalog/variant-i18n.ts) | Guided variant creation and editing vocabulary; content still follows shop language inheritance. |
 | [frontend/src/admin/catalog/variant-model.ts](../frontend/src/admin/catalog/variant-model.ts) | Bounded option combinations and metadata-free child payloads shared by the guided variant creator. |
@@ -455,14 +490,27 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/developer/AppAssistant.tsx](../frontend/src/admin/developer/AppAssistant.tsx) | Guided app kinds create normal editable manifests; all changes follow private-stage versioning. |
 | [frontend/src/admin/developer/AppAutomation.tsx](../frontend/src/admin/developer/AppAutomation.tsx) | Editable triggers are declared alongside UI and actions; secrets remain operator-managed. |
 | [frontend/src/admin/developer/AppCanvas.tsx](../frontend/src/admin/developer/AppCanvas.tsx) | Accessible click-to-add canvas with selectable blocks and keyboard-accessible ordering controls. |
+| [frontend/src/admin/developer/AppCodeBuffer.ts](../frontend/src/admin/developer/AppCodeBuffer.ts) | Invalid local expressions block apply and mode changes until corrected; multiple editors report independently. |
 | [frontend/src/admin/developer/AppConnections.tsx](../frontend/src/admin/developer/AppConnections.tsx) | Route, tool, grounding and Flow Builder switches modify the shared executable manifest directly. |
 | [frontend/src/admin/developer/AppContextBinding.tsx](../frontend/src/admin/developer/AppContextBinding.tsx) | Native UI bindings connect the open host object to an indexed app field, never to a global JS context. |
+| [frontend/src/admin/developer/AppControlProperties.tsx](../frontend/src/admin/developer/AppControlProperties.tsx) | DataField and one-level container references are edited against the current typed model rather than free text. |
 | [frontend/src/admin/developer/AppDataEditor.tsx](../frontend/src/admin/developer/AppDataEditor.tsx) | Managed app models expose typed fields and opt-in public reads; removal cleans dependent bindings. |
 | [frontend/src/admin/developer/AppEditorNavigation.tsx](../frontend/src/admin/developer/AppEditorNavigation.tsx) | Consistent navigation between visual definitions, provider contracts and immutable versions. |
+| [frontend/src/admin/developer/AppEvents.tsx](../frontend/src/admin/developer/AppEvents.tsx) | Edits the validated subscription/filter/batch contract; delivery uses the existing leased outbox. |
+| [frontend/src/admin/developer/AppExpressionEditor.tsx](../frontend/src/admin/developer/AppExpressionEditor.tsx) | Expressions use typed source text and known form/control references, with a separate JSON editor for agent object ASTs. |
 | [frontend/src/admin/developer/AppFieldOptions.tsx](../frontend/src/admin/developer/AppFieldOptions.tsx) | Core references and typed choice fields remain owned app data with a single content-language editor. |
+| [frontend/src/admin/developer/AppGeometry.tsx](../frontend/src/admin/developer/AppGeometry.tsx) | F4 presentation properties use one content language; layout values remain bounded grid units. |
+| [frontend/src/admin/developer/AppGridCanvas.tsx](../frontend/src/admin/developer/AppGridCanvas.tsx) | Drag/drop, snapping, resize and multi-selection share the published app geometry contract. |
 | [frontend/src/admin/developer/AppInspector.tsx](../frontend/src/admin/developer/AppInspector.tsx) | One content language edits app/view/block metadata; changing bindings updates the actual manifest. |
+| [frontend/src/admin/developer/AppInstructionEditor.tsx](../frontend/src/admin/developer/AppInstructionEditor.tsx) | Block instructions expose schema-aware targets; nested branches are edited recursively under the server's bounded AST contract. |
 | [frontend/src/admin/developer/AppLibrary.tsx](../frontend/src/admin/developer/AppLibrary.tsx) | Saved app cards with explicit editing and recoverable project removal, independent of installed package/data lifecycle. |
+| [frontend/src/admin/developer/AppLogicEditor.tsx](../frontend/src/admin/developer/AppLogicEditor.tsx) | A code-behind dialog edits one AST through visual blocks, BASIC syntax or agent JSON, then returns it to the manifest compiler. |
+| [frontend/src/admin/developer/AppMenuEditor.tsx](../frontend/src/admin/developer/AppMenuEditor.tsx) | Menu and injection sites are the existing surfaces, with explicit action allowlists and live role scopes. |
+| [frontend/src/admin/developer/AppModelDiagram.tsx](../frontend/src/admin/developer/AppModelDiagram.tsx) | Relationships use the same typed field.references contract as the form editor; no separate diagram state or database model. |
+| [frontend/src/admin/developer/AppModules.tsx](../frontend/src/admin/developer/AppModules.tsx) | Pure server modules edit the same WIT component contract consumed by quotes and checkout; no browser eval or live service code. |
 | [frontend/src/admin/developer/AppPayments.tsx](../frontend/src/admin/developer/AppPayments.tsx) | Visual payment contracts use the same manifest as coding agents; onboarding uses the protected API. |
+| [frontend/src/admin/developer/AppSchemaMigrations.tsx](../frontend/src/admin/developer/AppSchemaMigrations.tsx) | Migration plans are explicit versioned agent-readable data, validated by the shared server compiler before any DDL. |
+| [frontend/src/admin/developer/AppStudioStatus.tsx](../frontend/src/admin/developer/AppStudioStatus.tsx) | Shared status footer keeps validation, persistence and execution feedback beside the designer. |
 | [frontend/src/admin/developer/AppVersions.tsx](../frontend/src/admin/developer/AppVersions.tsx) | Saved version inspection, digest-approved stage install and conflict-aware package-only live release. |
 | [frontend/src/admin/developer/AppViewTabs.tsx](../frontend/src/admin/developer/AppViewTabs.tsx) | Native view navigation and creation are separate from workspace orchestration. |
 | [frontend/src/admin/developer/DeveloperView.tsx](../frontend/src/admin/developer/DeveloperView.tsx) | Visual App Studio orchestrates modular editors over the same executable schema used by coding agents. |
@@ -473,8 +521,16 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/developer/api/IntegrationKeys.tsx](../frontend/src/admin/developer/api/IntegrationKeys.tsx) | Personal, expiring, least-privilege integration keys; plaintext stays in component memory and is never reloaded. |
 | [frontend/src/admin/developer/api/api-i18n.ts](../frontend/src/admin/developer/api/api-i18n.ts) | Four-language developer API console vocabulary; no credentials are persisted in UI storage. |
 | [frontend/src/admin/developer/app-model.ts](../frontend/src/admin/developer/app-model.ts) | Pure schema edits preserve unsupported extension properties; compilation binds native UI to real actions. |
+| [frontend/src/admin/developer/app-validation.ts](../frontend/src/admin/developer/app-validation.ts) | Draft validation surfaces bounded manifest errors; authoritative installation remains in Rust. |
+| [frontend/src/admin/developer/asset-actions.ts](../frontend/src/admin/developer/asset-actions.ts) | Native asset editors use the existing asset owner; generated actions remain explicit capabilities in the package. |
 | [frontend/src/admin/developer/assistant-model.ts](../frontend/src/admin/developer/assistant-model.ts) | Assistants compile to the public manifest contract, with no hidden runtime or provider code. |
+| [frontend/src/admin/developer/basic-code.ts](../frontend/src/admin/developer/basic-code.ts) | Small BASIC-style surface syntax compiles into the same bounded AST as visual and agent edits; no JavaScript execution. |
+| [frontend/src/admin/developer/control-model.ts](../frontend/src/admin/developer/control-model.ts) | Pure control construction and bounded code-behind discovery keep visual edits and agent manifests identical. |
+| [frontend/src/admin/developer/model-workspace.ts](../frontend/src/admin/developer/model-workspace.ts) | Form wizard emits the standard manifest IR; the ordinary compiler supplies all actions, APIs and permission allowlists. |
+| [frontend/src/admin/developer/useAppPreview.ts](../frontend/src/admin/developer/useAppPreview.ts) | F5/hot reload uses the existing native runtime in an actor-private staging environment, never an immutable build. |
 | [frontend/src/admin/developer/useAppStudio.ts](../frontend/src/admin/developer/useAppStudio.ts) | Tenant-scoped build lifecycle; immutable saved snapshots gate sandbox previews and selected app-only releases. |
+| [frontend/src/admin/developer/useDesignerKeys.ts](../frontend/src/admin/developer/useDesignerKeys.ts) | Designer keyboard shortcuts leave native input and rich-editor undo behavior intact. |
+| [frontend/src/admin/developer/useDraftStorage.ts](../frontend/src/admin/developer/useDraftStorage.ts) | Actor-private server autosaves serialize writes and preserve optimistic revisions across app switches. |
 | [frontend/src/admin/environments/EnvironmentManager.tsx](../frontend/src/admin/environments/EnvironmentManager.tsx) | Private environment creation and digest-bound selective release. |
 | [frontend/src/admin/intelligence/ExternalKnowledge.tsx](../frontend/src/admin/intelligence/ExternalKnowledge.tsx) | Private connected-app evidence browser shows active-source provenance without exposing it to shoppers. |
 | [frontend/src/admin/intelligence/KnowledgeExplorer.tsx](../frontend/src/admin/intelligence/KnowledgeExplorer.tsx) | Product-centred evidence inspector reads canonical facts and graph relationships beyond overview sampling. |
@@ -542,6 +598,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/app-assistant.css](../frontend/src/admin/styles/app-assistant.css) | Guided extension workspace: restrained colour, clear choices and responsive setup. |
 | [frontend/src/admin/styles/app-catalog.css](../frontend/src/admin/styles/app-catalog.css) | App library/detail presentation: bounded cards, passive artwork, accessible filters and theme-aware forms. |
 | [frontend/src/admin/styles/app-detail.css](../frontend/src/admin/styles/app-detail.css) | Scoped app detail hierarchy, permission disclosure, data and integration forms. |
+| [frontend/src/admin/styles/app-library.css](../frontend/src/admin/styles/app-library.css) | App callback consent follows the same card and field rhythm as app configuration. |
 | [frontend/src/admin/styles/app-studio-inspector.css](../frontend/src/admin/styles/app-studio-inspector.css) | App Studio binding indicators, empty canvas and properties inspector. |
 | [frontend/src/admin/styles/app-studio-panels.css](../frontend/src/admin/styles/app-studio-panels.css) | App Studio model, connection, agent and version panels. |
 | [frontend/src/admin/styles/app-studio-responsive.css](../frontend/src/admin/styles/app-studio-responsive.css) | Responsive App Studio layouts and reduced-motion settings. |
@@ -559,7 +616,6 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/styles/knowledge-sources.css](../frontend/src/admin/styles/knowledge-sources.css) | Knowledge source library/editor layouts: single-language forms and lifecycle controls. |
 | [frontend/src/admin/styles/knowledge.css](../frontend/src/admin/styles/knowledge.css) | Unified knowledge workspace: evidence-first hierarchy, accessible cards and theme-aware responsive layouts. |
 | [frontend/src/admin/styles/legal-settings.css](../frontend/src/admin/styles/legal-settings.css) | Light legal workspace: compact readiness, sector chips, linked sources and single-language editors. |
-| [frontend/src/admin/styles/markdown-editor.css](../frontend/src/admin/styles/markdown-editor.css) | Shared visual/Markdown product editor treatment using existing Studio theme tokens. |
 | [frontend/src/admin/styles/media-workspace.css](../frontend/src/admin/styles/media-workspace.css) | Gallery workspace: airy tiles, focused image inspector and accessible upload surfaces using Studio theme tokens. |
 | [frontend/src/admin/styles/operations.css](../frontend/src/admin/styles/operations.css) | Operational screens share the studio's light surface and clear focus states. |
 | [frontend/src/admin/styles/provider-account.css](../frontend/src/admin/styles/provider-account.css) | Shared provider onboarding layout works independently of the lazy-loaded visual App Studio. |
@@ -611,10 +667,26 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/apps/AppSlot.tsx](../frontend/src/shared/apps/AppSlot.tsx) | Generic registered product configuration slot. App packages own labels, input names and business rules. |
 | [frontend/src/shared/apps/AppSurfaces.tsx](../frontend/src/shared/apps/AppSurfaces.tsx) | One registry read per workspace; app bundles load only when their surface is mounted. |
 | [frontend/src/shared/apps/native/NativeAppView.tsx](../frontend/src/shared/apps/native/NativeAppView.tsx) | The same React renderer powers design preview, private sandbox, released admin modules and storefront surfaces. |
+| [frontend/src/shared/apps/native/NativeAssetField.tsx](../frontend/src/shared/apps/native/NativeAssetField.tsx) | Searchable tenant-owned files with private image preview and contextual multipart upload; no raw asset IDs need to be typed. |
+| [frontend/src/shared/apps/native/NativeBlocks.tsx](../frontend/src/shared/apps/native/NativeBlocks.tsx) | All native controls render from the same validated manifest, including one-level containers and code-behind buttons. |
+| [frontend/src/shared/apps/native/NativeControl.tsx](../frontend/src/shared/apps/native/NativeControl.tsx) | Typed VB-style controls read app records; edits stay local until an explicitly bound gateway action runs. |
 | [frontend/src/shared/apps/native/NativeDataBlock.tsx](../frontend/src/shared/apps/native/NativeDataBlock.tsx) | One bounded keyset page per mounted data block; action requests remain tenant- and permission-scoped. |
+| [frontend/src/shared/apps/native/NativeField.tsx](../frontend/src/shared/apps/native/NativeField.tsx) | One typed field editor for native forms; rich text uses the product editor and configured language inheritance. |
 | [frontend/src/shared/apps/native/NativeRecordForm.tsx](../frontend/src/shared/apps/native/NativeRecordForm.tsx) | Native managed-record form retains revisions and inherited translations; it never executes schema code. |
+| [frontend/src/shared/apps/native/NativeRelationField.tsx](../frontend/src/shared/apps/native/NativeRelationField.tsx) | Related records load only through actions already granted to the current surface; no merchant-token side route. |
+| [frontend/src/shared/apps/native/NativeRuntime.tsx](../frontend/src/shared/apps/native/NativeRuntime.tsx) | Native controls share one local execution context; form records and gateway calls remain scoped by their existing owners. |
+| [frontend/src/shared/apps/native/geometry.ts](../frontend/src/shared/apps/native/geometry.ts) | The twelve-column layout is the same manifest geometry for the designer and published renderer. |
+| [frontend/src/shared/apps/native/logic.ts](../frontend/src/shared/apps/native/logic.ts) | Bounded AST interpreter; no eval, globals, arbitrary URLs or implicit gateway permissions. |
 | [frontend/src/shared/apps/native/types.ts](../frontend/src/shared/apps/native/types.ts) | The versioned Manifest is the shared intermediate representation for visual and agent edits. |
+| [frontend/src/shared/apps/useSurfaceGateway.ts](../frontend/src/shared/apps/useSurfaceGateway.ts) | Bind native and isolated UI actions to the same short-lived server grant; credentials stay in the host. |
 | [frontend/src/shared/content/RichDescription.tsx](../frontend/src/shared/content/RichDescription.tsx) | Safe rich blocks with native image/video rendering; no HTML interpretation or script execution. |
+| [frontend/src/shared/content/editor/EditorBuffer.ts](../frontend/src/shared/content/editor/EditorBuffer.ts) | Unsaved Markdown source participates in the aggregate's save/navigation guard without becoming product content. |
+| [frontend/src/shared/content/editor/MarkdownSource.tsx](../frontend/src/shared/content/editor/MarkdownSource.tsx) | Live Markdown buffer updates the same structured product document; no raw HTML is rendered or persisted. |
+| [frontend/src/shared/content/editor/RichEditor.tsx](../frontend/src/shared/content/editor/RichEditor.tsx) | Actual Tiptap WYSIWYG editor with structured safe content, media, formatting and per-language drafts. |
+| [frontend/src/shared/content/editor/editor-document.ts](../frontend/src/shared/content/editor/editor-document.ts) | Canonical transport drops editor-only null attributes; description headings remain within the native H2/H3 contract. |
+| [frontend/src/shared/content/editor/editor-i18n.ts](../frontend/src/shared/content/editor/editor-i18n.ts) | Four-language controls for visual/Markdown editing without changing content-language inheritance. |
+| [frontend/src/shared/content/editor/markdown-content.ts](../frontend/src/shared/content/editor/markdown-content.ts) | Markdown admission shares the public rich-document node/URL boundary; rich-only features never silently disappear. |
+| [frontend/src/shared/content/editor/rich-conversion.ts](../frontend/src/shared/content/editor/rich-conversion.ts) | Lossless import of legacy blocks into structured WYSIWYG content, preserving inline emphasis. |
 | [frontend/src/shared/content/rich-document.tsx](../frontend/src/shared/content/rich-document.tsx) | Safe structured editor rendering. Only known nodes/marks produce elements; URLs are never executable. |
 | [frontend/src/shared/customer/AddressBook.tsx](../frontend/src/shared/customer/AddressBook.tsx) | Tenant-owned address cards, defaults and revision-aware CRUD shared by account and CRM. |
 | [frontend/src/shared/customer/AddressCard.tsx](../frontend/src/shared/customer/AddressCard.tsx) | Human-readable address used in order snapshots and address books. |
@@ -636,13 +708,18 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/ContentLanguagePicker.tsx](../frontend/src/shared/i18n/ContentLanguagePicker.tsx) | Compact shared language switcher with explicit main-language context; selection never changes persisted content. |
 | [frontend/src/shared/i18n/LocalizedField.tsx](../frontend/src/shared/i18n/LocalizedField.tsx) | Single visible field for the editor's language, with main-language preview and explicit restore-to-inheritance. |
 | [frontend/src/shared/i18n/account-i18n.ts](../frontend/src/shared/i18n/account-i18n.ts) | Customer account vocabulary: one complete EN/DE/FR/ES contract for authentication and purchase care. |
+| [frontend/src/shared/i18n/app-access-i18n.ts](../frontend/src/shared/i18n/app-access-i18n.ts) | Explicit app callback consent and short-lived key management vocabulary. |
 | [frontend/src/shared/i18n/app-assistant-i18n.ts](../frontend/src/shared/i18n/app-assistant-i18n.ts) | App assistants and extension permissions use the same EN/DE/FR/ES vocabulary. |
+| [frontend/src/shared/i18n/app-events-i18n.ts](../frontend/src/shared/i18n/app-events-i18n.ts) | Subscription/filter/delivery vocabulary shared by Studio and coding agents. |
 | [frontend/src/shared/i18n/app-i18n.ts](../frontend/src/shared/i18n/app-i18n.ts) | App and evidence UI vocabulary, shared by store, merchant and payment components. |
 | [frontend/src/shared/i18n/app-library-i18n.ts](../frontend/src/shared/i18n/app-library-i18n.ts) | App library vocabulary and built-in summaries; no inferred connection or payment readiness. |
+| [frontend/src/shared/i18n/app-logic-i18n.ts](../frontend/src/shared/i18n/app-logic-i18n.ts) | Designer controls, code-behind and debugger vocabulary ships in every bundled interface language. |
+| [frontend/src/shared/i18n/app-operations-i18n.ts](../frontend/src/shared/i18n/app-operations-i18n.ts) | App operational vocabulary shared by installed apps and developer diagnostics; EN/DE/FR/ES. |
 | [frontend/src/shared/i18n/app-studio-i18n.ts](../frontend/src/shared/i18n/app-studio-i18n.ts) | App Studio and native runtime vocabulary; every key ships EN/DE/FR/ES. |
 | [frontend/src/shared/i18n/automation-fields.ts](../frontend/src/shared/i18n/automation-fields.ts) | Localized labels for original rule and native flow parameter fields. |
 | [frontend/src/shared/i18n/automation-i18n.ts](../frontend/src/shared/i18n/automation-i18n.ts) | Four-language automation editor vocabulary keeps source identifiers stable and user labels readable. |
 | [frontend/src/shared/i18n/automation-labels.ts](../frontend/src/shared/i18n/automation-labels.ts) | Source-named rule labels are localized independently from their stable integration identifiers. |
+| [frontend/src/shared/i18n/catalog-i18n.ts](../frontend/src/shared/i18n/catalog-i18n.ts) | Complete four-language catalog workspace vocabulary, separate from commerce data translations. |
 | [frontend/src/shared/i18n/checkout-i18n.ts](../frontend/src/shared/i18n/checkout-i18n.ts) | Checkout vocabulary: the same purchase and payment states in every supported UI language. |
 | [frontend/src/shared/i18n/company-i18n.ts](../frontend/src/shared/i18n/company-i18n.ts) | Company identity, field inheritance and legal storefront vocabulary in four interface languages. |
 | [frontend/src/shared/i18n/connected-i18n.ts](../frontend/src/shared/i18n/connected-i18n.ts) | Four-language vocabulary for connected apps, consent and visual automation. |
@@ -683,6 +760,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/styles/apps.css](../frontend/src/shared/styles/apps.css) | apps: Shared customer, app and workbench styles; application workspaces must not import each other.. |
 | [frontend/src/shared/styles/currencies.css](../frontend/src/shared/styles/currencies.css) | Currency cards use the Studio form grid, keyboard targets and responsive layouts. |
 | [frontend/src/shared/styles/customers.css](../frontend/src/shared/styles/customers.css) | Shared light account/address workspace, responsive and keyboard-accessible. |
+| [frontend/src/shared/styles/markdown-editor.css](../frontend/src/shared/styles/markdown-editor.css) | Shared visual/Markdown product editor treatment using existing Studio theme tokens. |
 | [frontend/src/shared/styles/native-app.css](../frontend/src/shared/styles/native-app.css) | Native app layouts share commerce design tokens; tables/forms remain bounded and responsive. |
 | [frontend/src/shared/styles/workbench.css](../frontend/src/shared/styles/workbench.css) | Merchant workbench uses the studio's light-blue design tokens and responsive review panels. |
 | [frontend/src/shared/ui/Brand.tsx](../frontend/src/shared/ui/Brand.tsx) | Shared Vendune identity; product branding is independent of tenant-owned company logos and session keys. |
@@ -768,11 +846,13 @@ This lists every checked-in source module in these roots, including files with n
 
 | Module | Responsibility |
 |---|---|
+| [extensions/apps/catalog-export/server.py](../extensions/apps/catalog-export/server.py) | Independent, language-neutral export example. Only scoped commerce callbacks; no core SQL or hosted Python dependency. |
 | [extensions/apps/engraving/configuration.wat](../extensions/apps/engraving/configuration.wat) | Engraving-owned rules: printable input is checked by the host; app defines length and fee. |
 | [extensions/apps/gift-message/configuration.wat](../extensions/apps/gift-message/configuration.wat) | Gift-message-owned rules: printable input is checked by the host; app defines length and fee. |
 | [extensions/apps/product-lab/app.js](../extensions/apps/product-lab/app.js) | A complete guest surface can use any UI framework; this example needs no build or host imports. |
 | [extensions/apps/product-lab/index.html](../extensions/apps/product-lab/index.html) | Independent app entry; see extensions/README.md for its public contract. |
 | [extensions/apps/product-lab/server.py](../extensions/apps/product-lab/server.py) | App-owned code, SQLite structures and versioned browser UI; no commerce credentials reach the guest. |
+| [extensions/apps/service-example/index.html](../extensions/apps/service-example/index.html) | Independent app entry; see extensions/README.md for its public contract. |
 | [extensions/apps/service-example/server.py](../extensions/apps/service-example/server.py) | Standalone app service with its own UI and durable event inbox. Run separately from the core. |
 | [extensions/apps/storyfront/ui.html](../extensions/apps/storyfront/ui.html) | Independent app entry; see extensions/README.md for its public contract. |
 | [extensions/budget-reserve.wat](../extensions/budget-reserve.wat) | Keep EUR 100 of the supplied budget unused. Inputs are integer cents. |
@@ -780,6 +860,9 @@ This lists every checked-in source module in these roots, including files with n
 | [extensions/minimum-order.wat](../extensions/minimum-order.wat) | Business orders must reach EUR 50 and stay inside the supplied budget. |
 | [extensions/sdk/analytics.js](../extensions/sdk/analytics.js) | Consent-bound GA4 adapter for native and headless storefronts. Never send customer identities. |
 | [extensions/sdk/browser.js](../extensions/sdk/browser.js) | Guest SDK: no merchant tokens or raw host API access; the host rechecks every action. |
+| [extensions/sdk/events.py](../extensions/sdk/events.py) | Language-neutral wire contract example: validate full batches and public HMAC envelopes before effects. |
+| [extensions/sdk/ui_bundle.py](../extensions/sdk/ui_bundle.py) | Build self-contained vanilla example UIs from the shared SDK; no remote imports at runtime. |
+| [extensions/sdk/wit/snapshot-price.component.wat](../extensions/sdk/wit/snapshot-price.component.wat) | Typed fixture: calls the real host cart snapshot and returns one percent of its subtotal. |
 | [extensions/single-order-cap.wat](../extensions/single-order-cap.wat) | Limit any individual business purchase to EUR 250, within its budget. |
 
 ## Verification tools and fixtures
@@ -787,8 +870,20 @@ This lists every checked-in source module in these roots, including files with n
 | Module | Responsibility |
 |---|---|
 | [scripts/api_catalogue.py](../scripts/api_catalogue.py) | Generate a drift-checked static HTTP route catalogue from the compiled Rust router declarations. |
+| [scripts/app_assets.py](../scripts/app_assets.py) | Actual native scoped file upload, callback read, product/digest/key fences and public-file policy. |
 | [scripts/app_assistants.py](../scripts/app_assistants.py) | Real assistant packages: editor context, rights, MCP opt-out, cron, signed webhooks, flows and local service fixtures. |
+| [scripts/app_callbacks.py](../scripts/app_callbacks.py) | Real app identity, separate PII consent, digest/creator fences and foreign-object tests. No paid services. |
+| [scripts/app_components.py](../scripts/app_components.py) | Real typed WIT host reads, all four quote hooks and checkout persistence/CAS/tenant negative cases. |
+| [scripts/app_consent.py](../scripts/app_consent.py) | Installation/upgrade consent uses the actual reviewed digest and full permissions; no fixture auto-consent. |
+| [scripts/app_distribution.py](../scripts/app_distribution.py) | Real signed publisher packages exercise canonical CLI signing, consent, dependency update/deactivation and tenant containment. |
+| [scripts/app_events.py](../scripts/app_events.py) | Actual leased delivery: slow-service isolation, bounded batches, minimization, filter/replay and stale lease fencing. |
+| [scripts/app_export.py](../scripts/app_export.py) | Actual independent export app receives leased events, reads scoped products, uploads a private artifact and completes durable jobs. |
 | [scripts/app_inference.py](../scripts/app_inference.py) | Opt-in real local model proposes a registered app operation; approval exercises the same managed writer. |
+| [scripts/app_jobs.py](../scripts/app_jobs.py) | Real long-action identity/idempotency/lease/CAS/tenant/quota checks, without external or paid effects. |
+| [scripts/app_preview.py](../scripts/app_preview.py) | F5 uses actual native APIs in a personal clone; no version publication, foreign-team access or release. Synthetic only. |
+| [scripts/app_relations.py](../scripts/app_relations.py) | Real composite-FK multi-relations: per-tenant schemas, atomic quotas/revisions, hostile references and cyclic staging clone. |
+| [scripts/app_schema.py](../scripts/app_schema.py) | Real installed-schema evolution, recovery snapshots, rollback on bad conversions and isolation of equal app IDs. |
+| [scripts/app_secrets.py](../scripts/app_secrets.py) | Encrypted tenant/app credentials and real incoming webhooks under strict non-owner RLS; synthetic local service only. |
 | [scripts/app_studio.py](../scripts/app_studio.py) | Native App Studio exercised through real HTTP/PostgreSQL: shared IR, version isolation, data, routes, MCP and selective release. |
 | [scripts/app_surfaces.py](../scripts/app_surfaces.py) | Actual app UI registry/API/MCP/data/staging and slow-service isolation against Rust/PostgreSQL. |
 | [scripts/apps.py](../scripts/apps.py) | Real PostgreSQL app lifecycle, managed schema/RLS, typed API/MCP, cart and observation tests. |
@@ -798,6 +893,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/automation_registry.py](../scripts/automation_registry.py) | Rebuild the native rule catalog from pinned PHP reflection and explicitly reviewed scope bindings. |
 | [scripts/benchmark.py](../scripts/benchmark.py) | Reproducible local HTTP + PostgreSQL benchmark, with response validation. |
 | [scripts/branding.py](../scripts/branding.py) | Keep the public Vendune identity, shared vector assets and executable package/deployment paths consistent. |
+| [scripts/build_app_ui.py](../scripts/build_app_ui.py) | Export deterministic example HTML and its operator uiDigests entry; never fetch remote resources. |
 | [scripts/build_site.py](../scripts/build_site.py) | Build marketing pages and the complete Markdown documentation for GitHub Pages. |
 | [scripts/catalog_management.py](../scripts/catalog_management.py) | Real HTTP/PostgreSQL catalog creation, categories, multilingual editor, visibility and staging regressions. Synthetic isolated shops only. |
 | [scripts/channel_management.py](../scripts/channel_management.py) | Isolated HTTP regressions for revisioned channels, domain aliases and session-bound private previews; no providers. |
@@ -876,6 +972,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/structure.py](../scripts/structure.py) | Guard the documented Rust domain split and public extension examples. |
 | [scripts/studio.py](../scripts/studio.py) | Actual Studio API, localization and original-kernel consumer checks. |
 | [scripts/tenant_isolation.py](../scripts/tenant_isolation.py) | Adversarial two-shop API/MCP/UCP/object and schema isolation with real personal/customer sessions. |
+| [scripts/testing/app_approval.py](../scripts/testing/app_approval.py) | Use the Rust manifest serializer for operator pins; never invent a second canonical digest. |
 | [scripts/testing/coverage_env.py](../scripts/testing/coverage_env.py) | Convert trusted cargo-llvm-cov environment output to GitHub's environment-file syntax. |
 | [scripts/testing/coverage_report.py](../scripts/testing/coverage_report.py) | Publish separate all-source coverage totals, untested files and enforce reviewed minimums. |
 | [scripts/testing/database.py](../scripts/testing/database.py) | Use the same PostgreSQL fixtures through Docker or an explicitly selected native psql executable. |

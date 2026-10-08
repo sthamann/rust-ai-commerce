@@ -6,14 +6,12 @@ import {
   AppSurfaceView,
   surfaceLabel,
 } from "../../shared/apps/AppSurfaces";
-import AppFrame from "../../shared/apps/AppFrame";
 import { useLocale } from "../../shared/i18n/i18n";
 import { useLibraryText } from "../../shared/i18n/app-library-i18n";
 import type { RequestFn } from "../shell/studio-types";
 import type { Package } from "./app-types";
 export default function AppInterfaces({
   p,
-  request,
 }: {
   p: Package;
   request: RequestFn;
@@ -42,8 +40,6 @@ export default function AppInterfaces({
       </div>
       <AppSurfaceView selected={selected} />
     </div>
-  ) : p.uiUrl ? (
-    <AppFrame app={p.id} url={p.uiUrl} request={request} />
   ) : (
     <p className="app-library-empty">{l("noInterface")}</p>
   );

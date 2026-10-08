@@ -16,7 +16,7 @@ export default function AppFieldOptions({
 }) {
   const { t } = useAssistantText(),
     { a } = useAppStudioText();
-  if (f.kind !== "string" || f.translatable) return null;
+  if (f.kind !== "string" || f.translatable || f.references) return null;
   return (
     <div className="app-field-options">
       <label>

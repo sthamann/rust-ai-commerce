@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Adversarial two-shop API/MCP/UCP/object and schema isolation with real personal/customer sessions."""
+from testing.app_approval import consent
 import datetime
 import hashlib
 import json
@@ -24,6 +25,7 @@ def passed(name):
 
 
 def call(path, body=None, h=None, method=None, expected=200):
+    if path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
     raw = body if isinstance(body, bytes) else None if body is None else json.dumps(body).encode()
     req = urllib.request.Request(BASE + path, data=raw, headers={'Content-Type': 'application/json', **(h or {})}, method=method)
     try:

@@ -50,6 +50,11 @@
     "source": "src/apps/routes.rs"
   },
   {
+    "path": "/api/apps/review",
+    "method": "POST",
+    "source": "src/apps/consent.rs"
+  },
+  {
     "path": "/api/apps/surfaces",
     "method": "GET",
     "source": "src/apps/surfaces.rs"
@@ -65,6 +70,36 @@
     "source": "src/apps/routes.rs"
   },
   {
+    "path": "/api/apps/{id}/activity",
+    "method": "GET",
+    "source": "src/apps/observability.rs"
+  },
+  {
+    "path": "/api/apps/{id}/core/asset_upload",
+    "method": "POST",
+    "source": "src/apps/asset_surfaces.rs"
+  },
+  {
+    "path": "/api/apps/{id}/core/{operation}",
+    "method": "POST",
+    "source": "src/apps/core_callbacks.rs"
+  },
+  {
+    "path": "/api/apps/{id}/credentials",
+    "method": "GET",
+    "source": "src/apps/credentials.rs"
+  },
+  {
+    "path": "/api/apps/{id}/credentials",
+    "method": "POST",
+    "source": "src/apps/credentials.rs"
+  },
+  {
+    "path": "/api/apps/{id}/credentials/{key}",
+    "method": "DELETE",
+    "source": "src/apps/credentials.rs"
+  },
+  {
     "path": "/api/apps/{id}/entities/{entity}",
     "method": "GET",
     "source": "src/apps/routes.rs"
@@ -75,6 +110,11 @@
     "source": "src/apps/routes.rs"
   },
   {
+    "path": "/api/apps/{id}/events/replay",
+    "method": "POST",
+    "source": "src/apps/observability.rs"
+  },
+  {
     "path": "/api/apps/{id}/http/{route}",
     "method": "GET",
     "source": "src/apps/surfaces.rs"
@@ -83,6 +123,46 @@
     "path": "/api/apps/{id}/http/{route}",
     "method": "POST",
     "source": "src/apps/surfaces.rs"
+  },
+  {
+    "path": "/api/apps/{id}/jobs",
+    "method": "GET",
+    "source": "src/apps/jobs.rs"
+  },
+  {
+    "path": "/api/apps/{id}/jobs/{job}",
+    "method": "POST",
+    "source": "src/apps/jobs.rs"
+  },
+  {
+    "path": "/api/apps/{id}/secrets",
+    "method": "GET",
+    "source": "src/apps/secrets.rs"
+  },
+  {
+    "path": "/api/apps/{id}/secrets/{kind}",
+    "method": "PUT",
+    "source": "src/apps/secrets.rs"
+  },
+  {
+    "path": "/api/apps/{id}/surfaces/{surface}/actions/{action}",
+    "method": "POST",
+    "source": "src/apps/surface_grants.rs"
+  },
+  {
+    "path": "/api/apps/{id}/surfaces/{surface}/assets",
+    "method": "POST",
+    "source": "src/apps/asset_surfaces.rs"
+  },
+  {
+    "path": "/api/apps/{id}/surfaces/{surface}/bundle",
+    "method": "POST",
+    "source": "src/apps/ui_bundles.rs"
+  },
+  {
+    "path": "/api/apps/{id}/surfaces/{surface}/grant",
+    "method": "POST",
+    "source": "src/apps/surface_grants.rs"
   },
   {
     "path": "/api/auth/accept",
@@ -215,6 +295,21 @@
     "source": "src/developer/routes.rs"
   },
   {
+    "path": "/api/developer/drafts",
+    "method": "GET",
+    "source": "src/developer/drafts.rs"
+  },
+  {
+    "path": "/api/developer/drafts/{id}",
+    "method": "DELETE",
+    "source": "src/developer/drafts.rs"
+  },
+  {
+    "path": "/api/developer/drafts/{id}",
+    "method": "PUT",
+    "source": "src/developer/drafts.rs"
+  },
+  {
     "path": "/api/developer/generate",
     "method": "POST",
     "source": "src/developer/routes.rs"
@@ -223,6 +318,11 @@
     "path": "/api/developer/import",
     "method": "POST",
     "source": "src/developer/routes.rs"
+  },
+  {
+    "path": "/api/developer/preview",
+    "method": "POST",
+    "source": "src/developer/preview.rs"
   },
   {
     "path": "/api/developer/schema",
@@ -988,6 +1088,21 @@
     "path": "/store-api/apps/{id}/http/{route}",
     "method": "POST",
     "source": "src/apps/surfaces.rs"
+  },
+  {
+    "path": "/store-api/apps/{id}/surfaces/{surface}/actions/{action}",
+    "method": "POST",
+    "source": "src/apps/surface_grants.rs"
+  },
+  {
+    "path": "/store-api/apps/{id}/surfaces/{surface}/bundle",
+    "method": "POST",
+    "source": "src/apps/ui_bundles.rs"
+  },
+  {
+    "path": "/store-api/apps/{id}/surfaces/{surface}/grant",
+    "method": "POST",
+    "source": "src/apps/surface_grants.rs"
   },
   {
     "path": "/store-api/assets/{id}",

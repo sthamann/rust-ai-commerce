@@ -53,7 +53,7 @@ pub(crate) async fn release(
     }
     for k in keys.iter().filter(|k| k.starts_with("app:")) {
         sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,7))")
-            .bind(&k[4..])
+            .bind(format!("{t}:{}", &k[4..]))
             .execute(&mut *tx)
             .await?;
     }
@@ -65,7 +65,7 @@ pub(crate) async fn release(
         sqlx::query("SELECT pg_advisory_xact_lock(hashtextextended($1,8))")
             .bind(format!(
                 "{t}:{}:{}",
-                apps::table(parts[1], parts[2]),
+                apps::table(&t, parts[1], parts[2]),
                 parts[3]
             ))
             .execute(&mut *tx)
@@ -123,6 +123,7 @@ pub(crate) async fn release(
             if m.runtime != "declarative" {
                 return Err(bad("External services need a separate deployment"));
             }
+            apps::actor_permissions(&h, &m)?;
             apps::install_tx(&mut tx, &t, m).await?;
             sqlx::query("UPDATE app_packages SET active=$1 WHERE tenant=$2 AND id=$3")
                 .bind(value["active"].as_bool())
@@ -147,7 +148,7 @@ pub(crate) async fn release(
                 .ok_or(bad("App entity missing"))?;
             let sql = format!(
                 "SELECT revision FROM public.{} WHERE tenant=$1 AND id=$2",
-                apps::table(&m.id, &e.name)
+                apps::table(&t, &m.id, &e.name)
             );
             let revision = sqlx::query_scalar::<_, i64>(sqlx::AssertSqlSafe(sql.as_str()))
                 .bind(&t)

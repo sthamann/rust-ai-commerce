@@ -1,5 +1,5 @@
 /** Complete four-language catalog workspace vocabulary, separate from commerce data translations. */
-import { useLocale } from "../../shared/i18n/i18n";
+import { useLocale } from "./i18n";
 const words = {
   nested: [
     "Include child-category products",

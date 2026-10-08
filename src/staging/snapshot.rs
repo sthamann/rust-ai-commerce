@@ -53,12 +53,12 @@ pub(crate) async fn snapshot(tx: &mut Tx<'_>, t: &str) -> Result<Value> {
             let columns = e
                 .fields
                 .iter()
-                .map(|f| f.name.as_str())
+                .map(|f| crate::apps::column(&f.name))
                 .collect::<Vec<_>>()
                 .join(",");
             let sql = format!(
                 "SELECT to_jsonb(r) AS data FROM (SELECT id,{columns} FROM public.{} WHERE tenant=$1 ORDER BY id LIMIT 1001 FOR UPDATE) r",
-                apps::table(&app, &e.name)
+                apps::table(t, &app, &e.name)
             );
             let records = sqlx::query(sqlx::AssertSqlSafe(sql.as_str()))
                 .bind(t)

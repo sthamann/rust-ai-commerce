@@ -15,14 +15,32 @@ export default function AppFrame({
   app: string;
   url: string;
   request: RequestFn;
-  allowedActions?: string[];
+  allowedActions: string[];
   context?: Record<string, unknown>;
   mainLocale?: string;
   locales?: string[];
   contentLocale?: string;
 }) {
   const ref = useRef<HTMLIFrameElement>(null);
-  const { locale } = useAppText();
+  const { locale, a } = useAppText();
+  const [bundle, setBundle] = useState<string>();
+  const [error, setError] = useState("");
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    let active = true;
+    setBundle(undefined);
+    setError("");
+    request("__bundle", {})
+      .then((v) => {
+        if (active) setBundle(v.html);
+      })
+      .catch(() => {
+        if (active) setError(a("bundleUnavailable"));
+      });
+    return () => {
+      active = false;
+    };
+  }, [request, app, url, locale, attempt]);
   const nonce = useMemo(() => crypto.randomUUID(), [app, url, locale]);
   const [height, setHeight] = useState(400);
   const context = () =>
@@ -59,7 +77,7 @@ export default function AppFrame({
         typeof id !== "string" ||
         typeof action !== "string" ||
         !/^[a-z][a-z0-9_]{0,31}$/.test(action) ||
-        (allowedActions && !allowedActions.includes(action))
+        !allowedActions.includes(action)
       )
         return;
       try {
@@ -88,12 +106,22 @@ export default function AppFrame({
     locales,
     contentLocale,
   ]);
+  if (error)
+    return (
+      <div role="alert">
+        <p>{error}</p>
+        <button onClick={() => setAttempt((n) => n + 1)}>{a("refresh")}</button>
+      </div>
+    );
+  if (!bundle) return <p role="status">{a("bundleLoading")}</p>;
+  const policy =
+    "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'";
   return (
     <iframe
       key={`${app}:${locale}`}
       ref={ref}
-      src={url}
-      sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
+      srcDoc={`<!doctype html><meta http-equiv="Content-Security-Policy" content="${policy}">${bundle}`}
+      sandbox="allow-scripts"
       referrerPolicy="no-referrer"
       title={app}
       className="app-frame"

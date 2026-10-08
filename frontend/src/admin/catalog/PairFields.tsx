@@ -1,5 +1,5 @@
 /** Accessible key/value rows for product properties, specifications and variant options. */
-import { useCatalogText } from "./catalog-i18n";
+import { useCatalogText } from "../../shared/i18n/catalog-i18n";
 export default function PairFields({
   value,
   onChange,

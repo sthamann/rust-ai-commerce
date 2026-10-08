@@ -1,4 +1,4 @@
-# Feature-tour captures — 6 October 2026
+# Feature-tour captures — 6 and 8 October 2026
 
 [Feature guide](../../features.md) · [All media provenance](../README.md)
 
@@ -12,6 +12,15 @@ were not generated or retouched.
 The guide was subsequently reviewed on 8 October; its new public integration
 captures have [separate provenance](../showcase/README.md#public-integration-captures-8-october-2026).
 The recordings in this directory retain their 6 October source versions.
+
+The two 8 October App Studio PNGs (`app-form-designer.png` and
+`app-private-preview.png`) were captured from the `feat/app-platform-v2` working
+tree based on `a8755f4`, using the actual Chrome UI and Rust runtime on port 61610
+with isolated PostgreSQL 17. The synthetic shop is App Studio Lab. The preview
+contains a lamp care record saved through the native app gateway and reloaded
+from PostgreSQL. No provider call, production data, Qdrant assertion, mocked
+response or image modification is involved in these two captures. The final
+commit containing them identifies the exact captured source changes.
 
 ## Source versions
 

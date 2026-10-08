@@ -8,13 +8,11 @@ import { useEditorBuffer } from "./EditorBuffer";
 import MarkdownSource from "./MarkdownSource";
 import { markdownCompatible } from "./markdown-content";
 import { useEditorText } from "./editor-i18n";
-import "../styles/markdown-editor.css";
+import "../../styles/markdown-editor.css";
 import { Node, mergeAttributes } from "@tiptap/core";
-import RichDescription, {
-  type RichBlock,
-} from "../../shared/content/RichDescription";
-import { safeRichUrl } from "../../shared/content/rich-document";
-import { useCatalogText } from "./catalog-i18n";
+import RichDescription, { type RichBlock } from "../RichDescription";
+import { safeRichUrl } from "../rich-document";
+import { useCatalogText } from "../../i18n/catalog-i18n";
 import { editorTransport } from "./editor-document";
 import { editorDocument } from "./rich-conversion";
 const Video = Node.create({
@@ -83,7 +81,7 @@ export default function RichEditor({
             {
               type: "document",
               doc: editorTransport(
-                editor.getJSON() as import("../../shared/content/rich-document").RichNode,
+                editor.getJSON() as import("../rich-document").RichNode,
               ),
             },
           ],

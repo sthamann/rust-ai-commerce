@@ -5,6 +5,13 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("app_callback_admissible","capability &&","true &&"),
+ ("app_callback_admissible","&& current_role","&& true"),
+ ("app_package_authorized","pinned || bundled","true"),
+ ("app_surface_admissible","current_package &&","true &&"),
+ ("app_surface_admissible","&& allowed_action","&& true"),
+ ("wasm_resources_admissible","elements <= 10000","true"),
+ ("wasm_resources_admissible","pages <= 16","true"),
  ("native_asset_bypass","&& !hosted","&& true"),
  ("native_asset_bypass","native_asset &&","true &&"),
  ("channel_access_admissible","!is_private || merchant","true"),

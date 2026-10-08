@@ -2,6 +2,8 @@
 use super::*;
 pub(crate) fn router() -> Router<App> {
     Router::new()
+        .merge(drafts::router())
+        .merge(preview::router())
         .secure_route("/api/developer", &[("GET", "apps.manage")], get(list))
         .secure_route(
             "/api/developer/schema",
@@ -125,6 +127,7 @@ pub(crate) async fn stage(
     let m: apps::Manifest =
         serde_json::from_value(row.get("manifest")).map_err(|_| bad("Invalid app"))?;
     builds::validate(&m)?;
+    apps::actor_permissions(&h, &m)?;
     let result = apps::install_tx(&mut tx, &env, m).await?;
     sqlx::query("UPDATE developer_builds SET state='staged' WHERE id=$1")
         .bind(id)

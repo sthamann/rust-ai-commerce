@@ -1,3 +1,4 @@
+from testing.app_approval import consent
 import signal
 #!/usr/bin/env python3
 """Archived differential SMTP/TLS fixtures plus actual Rust/PostgreSQL/MCP/flow consumers. No external mail."""
@@ -14,6 +15,7 @@ import email_config, email_templates, email_delivery
 
 
 def http(url, body=None, headers=None, method=None, expected=200):
+    if urllib.parse.urlsplit(url).path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
     req = urllib.request.Request(
         url,
         data=json.dumps(body).encode() if body is not None else None,

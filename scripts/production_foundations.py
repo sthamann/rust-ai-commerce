@@ -57,7 +57,7 @@ def scoped(t, statement):
 try:
     sql(f"CREATE ROLE {role} LOGIN PASSWORD '{password}' NOSUPERUSER NOBYPASSRLS NOINHERIT; GRANT CONNECT,CREATE ON DATABASE {database} TO {role}; GRANT USAGE,CREATE ON SCHEMA public TO {role}; GRANT SELECT,INSERT,UPDATE,DELETE,REFERENCES ON ALL TABLES IN SCHEMA public TO {role}; GRANT USAGE,SELECT ON ALL SEQUENCES IN SCHEMA public TO {role};")
     # Existing dynamic app tables use their own FORCE-RLS policy and need a schema owner for upgrades.
-    sql(f"DO $$ DECLARE t record; BEGIN FOR t IN SELECT c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname ~ '^app_[a-f0-9]{{16}}_' LOOP EXECUTE format('ALTER TABLE public.%I OWNER TO {role}',t.relname); END LOOP; END $$;")
+    sql(f"DO $$ DECLARE t record; BEGIN FOR t IN SELECT c.relname FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname ~ '^app_[a-f0-9]{{16}}([a-f0-9]{{8}})?_' LOOP EXECUTE format('ALTER TABLE public.%I OWNER TO {role}',t.relname); END LOOP; END $$;")
     # Same role privileges as documented production runtime: no core TRUNCATE or owner membership.
     runtime_url = urllib.parse.urlunsplit(url._replace(netloc=f'{role}:{password}@{url.hostname}:{url.port}'))
     env.update(DATABASE_RUNTIME_URL=runtime_url, DB_RLS_REQUIRED='true', DB_POOL_MAX='2', DB_POOL_MIN='0',

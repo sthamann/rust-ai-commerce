@@ -65,11 +65,15 @@ impl Cache {
         if let Some(cached) = self.get(key, &digest) {
             return Ok(cached);
         }
-        let compiled = tokio::task::spawn_blocking(move || {
-            let _slot = slot;
-            Sandbox::new(&source)
-        })
+        let compiled = tokio::time::timeout(
+            std::time::Duration::from_secs(5),
+            tokio::task::spawn_blocking(move || {
+                let _slot = slot;
+                Sandbox::new(&source)
+            }),
+        )
         .await
+        .map_err(|_| bad("Policy compilation exceeded 5 seconds; simplify the module"))?
         .map_err(|_| bad("Policy compilation failed"))?
         .map_err(bad)?;
         let sandbox = Arc::new(compiled);

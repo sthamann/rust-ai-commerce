@@ -1,0 +1,30 @@
+{
+  "id": "shopware_payments",
+  "version": "1.0.0",
+  "coreApi": "1",
+  "runtime": "service",
+  "name": {
+    "en": "Shopware Payments \u2014 connector contract pending",
+    "de": "Shopware Payments \u2014 connector contract pending",
+    "fr": "Shopware Payments \u2014 connector contract pending",
+    "es": "Shopware Payments \u2014 connector contract pending"
+  },
+  "permissions": [
+    "admin.slot"
+  ],
+  "entities": [],
+  "slots": [
+    {
+      "location": "admin.apps",
+      "component": "payments",
+      "label": {
+        "en": "Shopware Payments \u2014 connector contract pending",
+        "de": "Shopware Payments \u2014 connector contract pending",
+        "fr": "Shopware Payments \u2014 connector contract pending",
+        "es": "Shopware Payments \u2014 connector contract pending"
+      }
+    }
+  ],
+  "actions": [],
+  "events": []
+}

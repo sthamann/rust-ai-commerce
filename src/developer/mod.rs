@@ -2,7 +2,9 @@
 use crate::*;
 mod archive;
 mod builds;
+mod drafts;
 mod generation;
+mod preview;
 mod routes;
 pub(crate) use routes::router;
 

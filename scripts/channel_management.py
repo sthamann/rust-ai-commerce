@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Isolated HTTP regressions for revisioned channels, domain aliases and session-bound private previews; no providers."""
+from testing.app_approval import consent
 import json, os, uuid, urllib.request, urllib.error, urllib.parse, threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
 BASE=os.environ.get('BASE_URL','http://127.0.0.1:62326')
@@ -7,6 +8,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self,*args):return None
 opener=urllib.request.build_opener(NoRedirect)
 def call(path,body=None,h=None,method=None,status=200,raw=False):
+    if path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
     req=urllib.request.Request(BASE+path,data=json.dumps(body).encode() if body is not None else None,headers={'Content-Type':'application/json',**(h or {})},method=method)
     try:r=opener.open(req,timeout=30)
     except urllib.error.HTTPError as e:r=e

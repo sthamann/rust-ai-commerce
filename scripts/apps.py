@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Real PostgreSQL app lifecycle, managed schema/RLS, typed API/MCP, cart and observation tests."""
+from testing.app_approval import consent
 from testing.database import psql
 import copy,json,os,pathlib,time,urllib.request,urllib.error,uuid,hashlib,subprocess
 BASE=os.getenv('BASE_URL','http://127.0.0.1:8787');ROOT=pathlib.Path(__file__).resolve().parents[1];checks=[]
 def call(path,body=None,h=None,method=None,expected=200):
+    if path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
     req=urllib.request.Request(BASE+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(h or {})},method=method or ('GET' if body is None else 'POST'))
     try:
         with urllib.request.urlopen(req,timeout=30) as r:code=r.status;v=json.load(r)
@@ -22,7 +24,7 @@ call('/api/apps/engraving/entities/rules',{'id':'default','revision':1,'fields':
 assert call('/api/apps/engraving/entities/rules',h=oh)['elements'][0]['fee_minor']==300
 call('/api/apps/engraving/entities/rules',{'id':'default','revision':1,'fields':{'fee_minor':200}},h,expected=409);check('App optimistic updates never alter another shop')
 call('/api/apps/engraving/entities/rules',{'id':'default','revision':2,'fields':{'fee_minor':-1}},h,expected=400)
-table='app_'+hashlib.sha256(b'engraving').hexdigest()[:16]+'_rules';role='test_rls_'+uuid.uuid4().hex[:12]
+table='app_'+hashlib.sha256((u['workspace']+':engraving').encode()).hexdigest()[:24]+'_rules';role='test_rls_'+uuid.uuid4().hex[:12]
 # Local database bootstrap identity is a superuser; SET LOCAL ROLE proves the policy under a restricted identity.
 query=f"BEGIN; CREATE ROLE {role}; GRANT SELECT ON {table} TO {role}; SELECT set_config('rac.tenant','{u['workspace']}',true); SET LOCAL ROLE {role}; SELECT count(*) FROM {table} WHERE tenant <> '{u['workspace']}'; SELECT count(*) FROM {table} WHERE tenant = '{u['workspace']}'; ROLLBACK;"
 output=subprocess.check_output(psql(os.getenv('DB_CONTAINER','vendune-postgres-1'),'commerce',os.getenv('TEST_DATABASE','commerce'),'-Atq','-c',query),text=True).splitlines()
@@ -74,7 +76,7 @@ check('Versioned app artwork survives the real API, is tenant-isolated and rejec
 manifest=json.loads((ROOT/'extensions/apps/service-example/manifest.json').read_text());call('/api/apps',{'manifest':manifest},h)
 call('/api/apps/workshop_notes/entities/notes',{'id':'n1','fields':{'title':'Example note'}},h)
 call('/api/apps/workshop_notes/entities/tickets',{'id':'t1','fields':{'note_id':'n1','title':'Finish order'}},h)
-changed=copy.deepcopy(manifest);changed['version']='1.1.0';changed['entities'][0]['fields'].append({'name':'label','kind':'string','required':False,'indexed':True});call('/api/apps',{'manifest':changed},h)
+changed=copy.deepcopy(manifest);changed['version']='1.2.0';changed['entities'][0]['fields'].append({'name':'label','kind':'string','required':False,'indexed':True});call('/api/apps',{'manifest':changed},h)
 assert call('/api/apps/workshop_notes/entities/notes',h=h)['elements'][0]['title']=='Example note'
 call('/api/apps',{'manifest':manifest},oh)
 assert call('/api/apps/workshop_notes/entities/notes',h=oh)['elements']==[]
@@ -121,9 +123,66 @@ owner_tools=call('/mcp',{'jsonrpc':'2.0','id':8,'method':'tools/list'},h)['resul
 reader_tools=call('/mcp',{'jsonrpc':'2.0','id':8,'method':'tools/list'},rh)['result']['tools']
 assert any(t['name']=='app.storyfront.generate' for t in owner_tools)
 assert not any(t['name'].startswith('app.storyfront.') for t in reader_tools)
-tampered=json.loads((ROOT/'extensions/apps/storyfront/manifest.json').read_text())
-call('/api/apps',{'manifest':tampered},h,expected=400)
+tampered=json.loads((ROOT/'extensions/apps/storyfront/manifest.json').read_text());tampered['name']['en']='Unapproved replacement'
+call('/api/apps',{'manifest':tampered},h,expected=403)
 check('Storyfront installation exposes owner MCP capabilities; viewers, shoppers and injected scope cannot generate shops')
+# The server, not the iframe, owns every surface allowlist and object binding.
+care=json.loads((ROOT/'extensions/apps/care-studio/manifest.json').read_text());care['id']='scoped_care'
+care['entities'][0]['fields'].append({'name':'product_id','kind':'string','indexed':True,'required':True,'coreReference':'product'})
+care['surfaces'][0]['location']='admin.product.tab'
+for view in care['views']:
+    for block in view['blocks']:block['contextBinding']={'field':'product_id','key':'productId'}
+care['actions'][0]['inputSchema']['properties']['filter']={'type':'object'}
+call('/api/apps',{'manifest':care},h)
+base='/api/apps/scoped_care/surfaces/workspace'
+grant=call(base+'/grant',{'context':{'productId':'mug'}},h)['token']
+body={'id':'scoped','fields':{'product_id':'mug','title':{'en':'Owned product'}}}
+call(base+'/actions/save_guides',{'grant':grant,'input':body},h)
+call(base+'/actions/save_guides',{'grant':grant,'input':{'id':'other','fields':{'product_id':'chair','title':{'en':'Wrong'}}}},h,expected=403)
+call(base+'/actions/list_guides',{'grant':grant,'input':{}},h,expected=403)
+assert call(base+'/actions/list_guides',{'grant':grant,'input':{'filter':{'product_id':'mug'}}},h)['elements'][0]['id']=='scoped'
+call(base+'/actions/list_guides',{'grant':grant,'input':{}},rh,expected=401)
+call(base+'/actions/list_guides',{'grant':grant,'input':{}},oh,expected=401)
+public_grant=call('/store-api/apps/scoped_care/surfaces/care/grant',{'context':{'productId':'mug','salesChannelId':'default'}},ch)['token']
+call('/store-api/apps/scoped_care/surfaces/care/actions/save_guides',{'grant':public_grant,'input':body},ch,expected=403)
+care['version']='1.1.0';call('/api/apps',{'manifest':care},h)
+call(base+'/actions/list_guides',{'grant':grant,'input':{'filter':{'product_id':'mug'}}},h,expected=403)
+check('Server surface grants reject undeclared actions, changed objects, foreign actors/shops and stale packages')
+# Identical app IDs can have genuinely independent schemas, including incompatible field types.
+independent=json.loads((ROOT/'extensions/apps/service-example/manifest.json').read_text());independent['id']='independent'
+independent['entities']=independent['entities'][:1];independent['actions']=[x for x in independent['actions'] if x.get('entity')=='notes'];independent['events']=[];independent['surfaces']=[]
+call('/api/apps',{'manifest':independent},h)
+foreign=copy.deepcopy(independent);foreign['entities'][0]['fields'][0]['kind']='integer'
+call('/api/apps',{'manifest':foreign},oh)
+call('/api/apps/independent/entities/notes',{'id':'same','fields':{'title':'Own string'}},h)
+call('/api/apps/independent/entities/notes',{'id':'same','fields':{'title':42}},oh)
+assert call('/api/apps/independent/entities/notes',h=h)['elements'][0]['title']=='Own string'
+assert call('/api/apps/independent/entities/notes',h=oh)['elements'][0]['title']==42
+check('Different tenants can install the same app ID with incompatible columns without DDL collisions')
+def sql(statement):
+    return subprocess.check_output(psql(os.getenv('DB_CONTAINER','vendune-postgres-1'),'commerce',os.getenv('TEST_DATABASE','commerce'),'-Atq','-c',statement),text=True).strip()
+t=u['workspace'];app='independent'
+usage=sql(f"SELECT rows||':'||bytes FROM app_storage_usage WHERE tenant='{t}' AND app='{app}'").split(':')
+assert int(usage[0])==1 and int(usage[1])>0
+sql(f"UPDATE app_storage_usage SET rows=100000 WHERE tenant='{t}' AND app='{app}'")
+call('/api/apps/independent/entities/notes',{'id':'overflow','fields':{'title':'Denied'}},h,expected=413)
+assert len(call('/api/apps/independent/entities/notes',h=h)['elements'])==1
+sql(f"UPDATE app_storage_usage SET rows=1 WHERE tenant='{t}' AND app='{app}'")
+up=copy.deepcopy(independent);up['version']='1.2.0';up['entities'][0]['fields'].append({'name':'optional','kind':'string'})
+call('/api/apps',{'manifest':up},h)
+physical='app_'+hashlib.sha256((t+':'+app).encode()).hexdigest()[:24]+'_notes'
+assert sql(f"SELECT bytes=(SELECT sum(octet_length(to_jsonb(r)::text)) FROM {physical} r) FROM app_storage_usage WHERE tenant='{t}' AND app='{app}'")=='t'
+check('Quota violations roll back writes; schema upgrades recount actual stored bytes')
+# Mutable autosaves are private to an actor and revision-protected independently of published versions.
+draft=copy.deepcopy(art);draft['id']='private_draft'
+path='/api/developer/drafts/private_draft'
+assert call(path,{'manifest':draft,'environment':None,'revision':0},h,'PUT')['revision']==1
+call(path,{'manifest':draft,'environment':None,'revision':0},h,'PUT',409)
+assert call('/api/developer/drafts',h=h)['drafts'][0]['manifest']==draft
+assert call('/api/developer/drafts',h=oh)['drafts']==[]
+call('/api/developer/drafts',h=rh,expected=403)
+call(path,{},oh,'DELETE');assert call('/api/developer/drafts',h=h)['drafts']
+check('Private server drafts survive reads, reject stale saves and never cross users or shops')
 state={'owner':u,'orderId':o['id'],'memory':memory,'checks':checks,'passed':len(checks)}
 if os.getenv('REPORT_PATH'):pathlib.Path(os.environ['REPORT_PATH']).write_text(json.dumps(state,indent=2)+'\n')
 print(json.dumps({'passed':len(checks)}))

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Local model wire fixtures verify app generation, provenance and document privacy, without paid providers."""
+from testing.app_approval import consent
+from testing.database import psql
 import os,json,pathlib,subprocess,threading,time,urllib.request,urllib.error,uuid,socket
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 root=pathlib.Path(__file__).resolve().parents[1];captured=[];behavior={'mode':'app'}
@@ -29,7 +31,7 @@ from urllib.parse import urlsplit,urlunsplit
 fixture_db='commerce_docs_'+uuid.uuid4().hex[:12]
 db=urlsplit(env['DATABASE_URL']);db_user=db.username or 'commerce'
 container=os.getenv('TEST_DB_CONTAINER','vendune-postgres-1')
-subprocess.run(['docker','exec',container,'createdb','-U',db_user,fixture_db],check=True)
+subprocess.run(psql(container,db_user,'postgres','-c',f'CREATE DATABASE "{fixture_db}"'),check=True)
 env['DATABASE_URL']=urlunsplit((db.scheme,db.netloc,'/'+fixture_db,db.query,db.fragment))
 log=(root/'.run/developer-documents.log').open('w');proc=subprocess.Popen([str(root/'target/debug/vendune')],cwd=root,env=env,stdout=log,stderr=log)
 base=f'http://127.0.0.1:{test_port}';checks=[]
@@ -37,6 +39,7 @@ def call(path,body=None,session=None,tenant=None,expected=200,method=None,locale
  h={'Content-Type':contenttype or 'application/json','x-commerce-locale':locale}
  if session:h.update({'Authorization':'Bearer '+session['token'],'x-tenant':tenant or session['workspace']})
  elif tenant:h['x-tenant']=tenant
+ if path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
  req=urllib.request.Request(base+path,data=raw if raw is not None else None if body is None else json.dumps(body).encode(),headers=h,method=method)
  try:
   with urllib.request.urlopen(req,timeout=30) as r:status=r.status;out=json.load(r)
@@ -140,4 +143,4 @@ try:
  print(json.dumps({'passed':len(checks),'checks':checks,'realModelInference':False,'paidProviderCalls':0},indent=2))
 finally:
  proc.terminate();proc.wait(timeout=20);log.close();server.shutdown()
- subprocess.run(['docker','exec',container,'dropdb','--force','-U',db_user,fixture_db],check=True)
+ subprocess.run(psql(container,db_user,'postgres','-c',f'DROP DATABASE "{fixture_db}" WITH (FORCE)'),check=True)

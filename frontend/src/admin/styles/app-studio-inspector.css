@@ -72,3 +72,140 @@
   font-size: 12px;
   line-height: 1.7;
 }
+
+.app-properties-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.app-properties-grid .localized-field {
+  grid-column: 1/-1;
+}
+.app-grid-toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 0 0 14px;
+}
+.app-form-canvas {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: 32px;
+  gap: 8px;
+  min-height: 560px;
+  padding: 12px;
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+.app-grid-block {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 0;
+  overflow: hidden;
+  cursor: grab;
+  box-shadow: 0 4px 12px #172d4d08;
+}
+.app-grid-block.selected {
+  outline: 2px solid var(--accent, #2368ff);
+  outline-offset: 2px;
+}
+.app-grid-block h3 {
+  font-size: 15px;
+  margin: 12px 0;
+}
+.app-grid-block small {
+  font-size: 10px;
+  color: var(--muted);
+}
+.app-grid-resize {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  cursor: nwse-resize;
+  padding: 2px 8px;
+  touch-action: none;
+}
+.app-code-source {
+  width: 100%;
+  font-family: ui-monospace, monospace;
+  line-height: 1.65;
+  tab-size: 2;
+  min-height: 300px;
+}
+.app-code-modes,
+.app-code-completions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+.app-instruction {
+  padding: 14px;
+  margin: 10px 0;
+  background: var(--studio-surface, #fff);
+  border: 1px solid var(--studio-line, #e0e7f3);
+  border-radius: 12px;
+}
+.app-instruction > header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.app-instruction > header > code {
+  flex: 1;
+}
+.app-instructions .app-instructions {
+  margin-left: 12px;
+  border-left: 2px solid #d7e6ff;
+  padding-left: 12px;
+}
+
+.app-model-diagram {
+  padding: 20px;
+  border: 1px solid var(--studio-border);
+  border-radius: 18px;
+  background: var(--studio-surface);
+}
+.app-model-diagram-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+.app-model-diagram-cards article {
+  border: 1px solid var(--studio-border);
+  border-radius: 12px;
+  padding: 16px;
+}
+.app-model-diagram-cards article > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--studio-border);
+}
+.app-model-diagram-cards button {
+  margin-top: 12px;
+}
+
+/* Optional designer appearance affects no manifest, runtime or publishing behavior. */
+.classic-designer {
+  background-color: #d9d9d9;
+  border: 2px solid #888;
+  border-radius: 0;
+}
+.classic-designer .app-grid-block {
+  background: #ececec;
+  border-radius: 0;
+  border: 2px outset #fff;
+  box-shadow: 2px 2px 0 #777;
+  color: #202020;
+}
+.classic-designer .app-grid-block.selected {
+  border-color: #276bfa;
+}

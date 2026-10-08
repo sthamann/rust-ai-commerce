@@ -1,6 +1,7 @@
 /** The same React renderer powers design preview, private sandbox, released admin modules and storefront surfaces. */
 import { getContentLocale } from "../../api/shop-api";
-import { useState } from "react";
+import NativeRuntime from "./NativeRuntime";
+import NativeBlocks from "./NativeBlocks";
 import type { RequestFn } from "../../api/types";
 import { useAppStudioText } from "../../i18n/app-studio-i18n";
 import {
@@ -8,8 +9,7 @@ import {
   useOptionalContentLanguage,
 } from "../../i18n/ContentLanguage";
 import ContentLanguagePicker from "../../i18n/ContentLanguagePicker";
-import { contentText } from "../../i18n/content-language";
-import NativeDataBlock from "./NativeDataBlock";
+
 import type { NativePayload } from "./types";
 import "../../styles/native-app.css";
 export default function NativeAppView({
@@ -22,7 +22,9 @@ export default function NativeAppView({
   public: isPublic = false,
   inheritContentLanguage = false,
   context = {},
+  debug = false,
 }: {
+  debug?: boolean;
   app: string;
   native: NativePayload;
   request: RequestFn;
@@ -45,7 +47,7 @@ export default function NativeAppView({
       : matches.length === 1
         ? matches[0]
         : mainLocale;
-  const [dataEpoch, setDataEpoch] = useState(0);
+
   const { locale: interfaceLocale, a } = useAppStudioText();
   const locale = isPublic ? getContentLocale() : interfaceLocale;
   const scoped: RequestFn = (path, body) => {
@@ -58,41 +60,28 @@ export default function NativeAppView({
     <>
       {!inheritContentLanguage &&
         !isPublic &&
-        native.view.blocks.some((b) => b.kind === "form") && (
+        native.view.blocks.some((b) => b.kind === "form" || b.inlineEdit) && (
           <ContentLanguagePicker />
         )}
-      <div className={`native-app native-app-${native.view.layout}`}>
-        {native.view.blocks.map((b) => {
-          const entity = native.entities.find((e) => e.name === b.entity);
-          if ((isPublic && b.kind === "form") || (b.kind !== "text" && !entity))
-            return null;
-          return (
-            <section
-              className={`native-block native-block-${b.kind}`}
-              key={b.id}
-            >
-              <h3>{contentText(b.title, locale, mainLocale)}</h3>
-              {b.kind === "text" ? (
-                <p className="native-text">
-                  {contentText(b.text ?? {}, locale, mainLocale)}
-                </p>
-              ) : (
-                <NativeDataBlock
-                  app={app}
-                  block={b}
-                  entity={entity!}
-                  request={scoped}
-                  mainLocale={mainLocale}
-                  displayLocale={locale}
-                  dataEpoch={b.kind === "form" ? 0 : dataEpoch}
-                  context={context}
-                  onSaved={() => setDataEpoch((n) => n + 1)}
-                />
-              )}
-            </section>
-          );
-        })}
-      </div>
+      <NativeRuntime
+        app={app}
+        native={native}
+        request={scoped}
+        locale={locale}
+        mainLocale={mainLocale}
+        debug={debug}
+        context={context}
+      >
+        <NativeBlocks
+          app={app}
+          native={native}
+          request={scoped}
+          locale={locale}
+          mainLocale={mainLocale}
+          isPublic={isPublic}
+          context={context}
+        />
+      </NativeRuntime>
     </>
   );
   return (

@@ -1,6 +1,18 @@
 /** App and evidence UI vocabulary, shared by store, merchant and payment components. */
 import { useLocale } from "./i18n";
 const words = {
+  bundleUnavailable: [
+    "App interface could not be loaded or verified. Ask the operator to check its bundle approval.",
+    "Die App-Oberfläche konnte nicht geladen oder geprüft werden. Bitte den Betreiber die Bundle-Freigabe prüfen lassen.",
+    "L’interface ne peut pas être chargée ou vérifiée. Demandez à l’opérateur de vérifier son autorisation.",
+    "No se pudo cargar o verificar la interfaz. Pide al operador que revise la aprobación del paquete.",
+  ],
+  bundleLoading: [
+    "Loading verified app interface…",
+    "Geprüfte App-Oberfläche wird geladen…",
+    "Chargement de l’interface vérifiée…",
+    "Cargando la interfaz verificada…",
+  ],
   rules: ["Price rules", "Preisregeln", "Règles de prix", "Reglas de precio"],
   notes: ["Shop notes", "Shopnotizen", "Notes de boutique", "Notas de tienda"],
   tickets: ["Tasks", "Aufgaben", "Tâches", "Tareas"],

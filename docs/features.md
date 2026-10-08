@@ -410,7 +410,7 @@ Editor placements include an independent admin module, product-general section/n
 
 ### Visual design and typed data models
 
-The palette contains **Text, Data table, Cards and Input form**. Add/select/reorder components, edit properties/bindings, choose stacked/two-column layout and undo/redo. One content-language selector serves localized view/field text. Public forms are rejected; explicit public reads remain separate from authenticated writes.
+The palette contains text, forms, grids, cards, inputs, choices, dates, buttons, images, tabs/frames, metrics and charts. Drag/drop onto a snapping raster; resize, select several controls, align/distribute, set tab order and open properties/code-behind. Stacked/grid layouts remain available. Undo/redo edits the same manifest. One content-language selector serves localized view/field text. Public forms are rejected; explicit public reads remain separate from authenticated writes.
 
 ![Add Text and Cards, then undo and redo in the actual canvas](assets/feature-tour/app-design.gif)
 
@@ -418,13 +418,13 @@ The palette contains **Text, Data table, Cards and Input form**. Add/select/reor
 
 ![Saved design canvas with the selected Text component and its real properties](assets/feature-tour/app-design-still.jpg)
 
-Data models define typed fields, required/indexed flags, translated strings, validated choices and product/customer/order references. Managed storage applies compound tenant foreign keys and forced RLS; additive nullable evolution is supported, destructive schema changes are rejected. Bounded JSON fields support richer data without arbitrary SQL. [Manifest/storage contracts](app-platform.md).
+Data models include date/time, explicit-currency money, scaled decimals, private images/files, rich text and multiple relations alongside translated/JSON/scalar fields. Physical tenant/app tables enforce RLS, scoped relations, recursive validation, uniqueness and quotas. Explicit rename/remove/convert/fill migrations retain bounded recovery snapshots; arbitrary SQL is prohibited. [Manifest/storage contracts](app-platform.md).
 
 ![Typed entries model with reference, translated fields and choice values](assets/feature-tour/app-data-models.jpg)
 
 ### Working preview, immutable versions and app data
 
-Create/select a private sandbox, save a new immutable version, inspect changes/digest and approve installation there. **Working sandbox preview** runs the actual native renderer with real managed records. For embedded forms, choose a real matching object, save, reopen and inspect persisted data/revision. Package publication and app-data publication are independent.
+F5 runs the current autosaved draft in an actor-private, expiring sandbox without publishing a package. Changes hot-reload actual app records; schema edits reset the private preview. For publication, select a staging sandbox, save an immutable version, inspect changes/digest and approve installation. **Working sandbox preview** runs the actual native renderer with real managed records. For embedded forms, choose a real matching object, save, reopen and inspect persisted data/revision. Package publication and app-data publication are independent.
 
 ![Save a product-bound care record and observe it in the actual sandbox renderer](assets/feature-tour/app-preview.gif)
 
@@ -440,7 +440,7 @@ Full apps can own admin modules, product/order panels, storefront pages/home/hea
 
 ![Actual Product Lab app-owned admin surface from its dated local example](assets/app-admin-en.jpg)
 
-External calls have deadlines/payload/admission limits and do not hold a core DB connection. Operator configuration supplies trusted service/UI origins. Automatic arbitrary source builds/rollout, signing, hostile-code microVM containment and customer-private service identity are not supplied by the visual builder.
+External calls have deadlines/payload/admission limits and do not hold a core DB connection. Operator configuration supplies trusted service/UI origins. Canonical signatures, dependency/channel validation, scoped app callback keys and server-enforced surface grants are implemented. Arbitrary source builds/rollout and hostile-code microVM containment remain external.
 
 ### App events, schedules and signed webhooks
 

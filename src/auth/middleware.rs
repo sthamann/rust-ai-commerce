@@ -43,6 +43,9 @@ async fn authenticate_scoped(State(a): State<App>, mut request: Request, next: N
     let mut h = RequestContext::from_request(&request);
     let path = request.uri().path().to_string();
     let method = request.method().to_string();
+    if let Err(e) = apps::bind_webhook_scope(&path, &mut h) {
+        return e.into_response();
+    }
     // Only the public native shell/assets bypass identity. Hosted shop assets still
     // require current tenant/channel admission and authorized private previews.
     if crate::verified_kernel::native_asset_bypass(

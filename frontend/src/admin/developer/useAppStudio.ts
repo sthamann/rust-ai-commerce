@@ -3,6 +3,7 @@ import { useEffect, useReducer, useRef, useState } from "react";
 import type { RequestFn, Provider } from "../shell/studio-types";
 import type { Manifest } from "../../shared/apps/native/types";
 import { appText } from "../../shared/i18n/app-studio-i18n";
+import { useDraftStorage } from "./useDraftStorage";
 import { bump, compile, editHistory, template } from "./app-model";
 export type Build = {
   id: string;
@@ -104,6 +105,18 @@ export function useAppStudio(
   };
   const manifest = history.present,
     dirty = JSON.stringify(manifest) !== baseline;
+  const draftStorage = useDraftStorage(
+    request,
+    manifest,
+    env,
+    history.past.length > 0,
+    (m, target) => {
+      dispatch(m);
+      setEnv(target);
+      setSaved(null);
+      setBaseline("");
+    },
+  );
   const importVersion = async () => {
     const b = await request("/api/developer/import", {
       environment: env,
@@ -162,6 +175,7 @@ export function useAppStudio(
   };
   return {
     manifest,
+    draftStorage,
     history,
     dispatch,
     edit,

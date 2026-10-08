@@ -1,6 +1,6 @@
 {
   "id": "slack",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "coreApi": "1",
   "runtime": "service",
   "name": {
@@ -12,7 +12,7 @@
   "category": "operations",
   "permissions": [
     "service.call",
-    "events.read"
+    "events:order.placed"
   ],
   "entities": [],
   "slots": [],
@@ -140,5 +140,8 @@
   ],
   "events": [
     "order.placed"
-  ]
+  ],
+  "eventDelivery": {
+    "batchSize": 10
+  }
 }

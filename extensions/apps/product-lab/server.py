@@ -4,9 +4,13 @@ import json
 import os
 import pathlib
 import sqlite3
+import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 ROOT = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0,str(ROOT.parents[1]/'sdk'))
+from ui_bundle import bundle
+UI = bundle((ROOT/'index.html').read_text(), (ROOT/'app.js').read_text())
 TOKEN = os.environ["APP_TOKEN"]
 DB = os.environ.get("APP_DB", ".run/product-lab.sqlite")
 with sqlite3.connect(DB) as db:
@@ -31,6 +35,8 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(raw)
 
     def do_GET(self):
+        if self.path == "/v1/index.html":
+            return self.send(200, UI, "text/html; charset=utf-8")
         files = {"/v1/index.html": (ROOT / "index.html", "text/html; charset=utf-8"),
                  "/sdk.js": (ROOT.parents[1] / "sdk/browser.js", "text/javascript"),
                  "/v1/app.js": (ROOT / "app.js", "text/javascript")}

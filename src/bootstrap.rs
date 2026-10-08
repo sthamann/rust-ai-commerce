@@ -165,6 +165,14 @@ async fn shutdown() {
 }
 
 pub(crate) fn entry() {
+    if env::args().nth(1).as_deref() == Some("--sign-app") {
+        apps::sign_package();
+        return;
+    }
+    if env::args().nth(1).as_deref() == Some("--app-digest") {
+        apps::print_digest();
+        return;
+    }
     if env::args().nth(1).as_deref() == Some("--extract-pdf") {
         documents::extract_pdf();
         return;

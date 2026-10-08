@@ -2,7 +2,7 @@
 import { useLegalText } from "../../shared/i18n/legal-i18n";
 import ContentLanguagePicker from "../../shared/i18n/ContentLanguagePicker";
 import { useAppSurfaces, surfaceLabel } from "../../shared/apps/AppSurfaces";
-import { useCatalogText } from "./catalog-i18n";
+import { useCatalogText } from "../../shared/i18n/catalog-i18n";
 export default function ProductEditorNav({
   tabs,
   tab,

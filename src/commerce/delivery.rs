@@ -64,6 +64,16 @@ pub(crate) fn enrich(
     } else {
         currencies::convert(shipping.price, &s.currencies, currency)?
     };
+    let gross = math_round(
+        gross
+            + q["appShippingAdjustmentMinor"].as_i64().unwrap_or(0) as f64 / 10_f64.powi(decimals),
+        decimals,
+    );
+    if gross < 0. {
+        return Err(bad(
+            "App shipping adjustment cannot make delivery cost negative",
+        ));
+    }
     let mut taxes: Vec<vendune::pricing::CalculatedTax> = vec![];
     for line in q["lineItems"].as_array().unwrap() {
         for v in line["price"]["calculatedTaxes"].as_array().unwrap() {

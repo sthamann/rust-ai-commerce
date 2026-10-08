@@ -1,6 +1,129 @@
 /** App Studio and native runtime vocabulary; every key ships EN/DE/FR/ES. */
+import { appEventWords } from "./app-events-i18n";
+import { appLogicWords } from "./app-logic-i18n";
 import { useLocale } from "./i18n";
 export const appStudioWords = {
+  ...appLogicWords,
+  ...appEventWords,
+  relations: [
+    "Multiple records",
+    "Mehrere Datensätze",
+    "Plusieurs enregistrements",
+    "Múltiples registros",
+  ],
+  relationTarget: [
+    "Related data model",
+    "Verbundenes Datenmodell",
+    "Modèle lié",
+    "Modelo relacionado",
+  ],
+  relationUnavailable: [
+    "The selected surface has no permission to read this data model.",
+    "Diese Oberfläche darf das verbundene Datenmodell nicht lesen.",
+    "Cette surface ne peut pas lire ce modèle.",
+    "Esta superficie no puede leer este modelo.",
+  ],
+  searchRecords: [
+    "Search loaded records",
+    "Geladene Datensätze suchen",
+    "Chercher dans les données chargées",
+    "Buscar en registros cargados",
+  ],
+  selectedRecords: [
+    "Selected records",
+    "Ausgewählte Datensätze",
+    "Enregistrements sélectionnés",
+    "Registros seleccionados",
+  ],
+  formDesigner: [
+    "Form designer · 12 columns",
+    "Formular-Designer · 12 Spalten",
+    "Concepteur · 12 colonnes",
+    "Diseñador · 12 columnas",
+  ],
+  positionX: ["Column", "Spalte", "Colonne", "Columna"],
+  positionY: ["Row", "Zeile", "Ligne", "Fila"],
+  width: ["Width", "Breite", "Largeur", "Ancho"],
+  height: ["Height", "Höhe", "Hauteur", "Alto"],
+  visible: ["Visible", "Sichtbar", "Visible", "Visible"],
+  enabled: ["Enabled", "Bedienbar", "Activé", "Habilitado"],
+  tooltip: ["Tooltip", "Hilfetext", "Infobulle", "Ayuda"],
+  tabOrder: [
+    "Tab order",
+    "Tab-Reihenfolge",
+    "Ordre de tabulation",
+    "Orden de tabulación",
+  ],
+  align: [
+    "Align left",
+    "Links ausrichten",
+    "Aligner à gauche",
+    "Alinear a la izquierda",
+  ],
+  distribute: [
+    "Distribute vertically",
+    "Vertikal verteilen",
+    "Répartir verticalement",
+    "Distribuir verticalmente",
+  ],
+  multiSelect: [
+    "Ctrl / ⌘ + click selects multiple controls. Drag to move; use the corner to resize.",
+    "Strg / ⌘ + Klick wählt mehrere Bausteine. Ziehen verschiebt, die Ecke ändert die Größe.",
+    "Ctrl / ⌘ + clic sélectionne plusieurs éléments. Glissez pour déplacer, le coin redimensionne.",
+    "Ctrl / ⌘ + clic selecciona varios elementos. Arrastra para mover; la esquina cambia el tamaño.",
+  ],
+
+  minorUnits: [
+    "Minor units",
+    "Kleinste Währungseinheiten",
+    "Unités mineures",
+    "Unidades menores",
+  ],
+  currencyCode: [
+    "Currency code",
+    "Währungscode",
+    "Code devise",
+    "Código de moneda",
+  ],
+  currencyScale: ["Decimal places", "Dezimalstellen", "Décimales", "Decimales"],
+
+  date: ["Date", "Datum", "Date", "Fecha"],
+  datetime: ["Date & time", "Datum & Uhrzeit", "Date et heure", "Fecha y hora"],
+  decimal: [
+    "Exact decimal",
+    "Exakte Dezimalzahl",
+    "Décimal exact",
+    "Decimal exacto",
+  ],
+  money: ["Money", "Geldbetrag", "Montant", "Importe"],
+  image: ["Image asset", "Bilddatei", "Image", "Imagen"],
+  file: ["File asset", "Dateianhang", "Fichier", "Archivo"],
+  richtext: [
+    "Rich content",
+    "Formatierter Inhalt",
+    "Contenu enrichi",
+    "Contenido enriquecido",
+  ],
+  unique: ["Unique", "Eindeutig", "Unique", "Único"],
+
+  autosaving: [
+    "Saving draft…",
+    "Entwurf wird gespeichert…",
+    "Enregistrement du brouillon…",
+    "Guardando borrador…",
+  ],
+  draftSaved: [
+    "Private draft",
+    "Privater Entwurf",
+    "Brouillon privé",
+    "Borrador privado",
+  ],
+  autosaveError: [
+    "Draft could not be saved. Keep this window open and check your connection.",
+    "Entwurf konnte nicht gespeichert werden. Lass das Fenster offen und prüfe die Verbindung.",
+    "Le brouillon n’a pas été enregistré. Gardez cette fenêtre ouverte et vérifiez la connexion.",
+    "No se guardó el borrador. Mantén esta ventana abierta y comprueba la conexión.",
+  ],
   studio: ["App Studio", "App Studio", "App Studio", "App Studio"],
   intro: [
     "Build together. Click, connect, or describe.",

@@ -441,6 +441,12 @@ export const operationWords = {
     "Lire les clients",
     "Consultar clientes",
   ],
+  "customers.pii": [
+    "Read personal customer data",
+    "Personenbezogene Kundendaten lesen",
+    "Lire les données personnelles des clients",
+    "Consultar datos personales de clientes",
+  ],
   "customers.write": [
     "Manage customers",
     "Kunden bearbeiten",

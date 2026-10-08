@@ -1,5 +1,5 @@
 /** Markdown admission shares the public rich-document node/URL boundary; rich-only features never silently disappear. */
-import { safeRichUrl, type RichNode } from "../../shared/content/rich-document";
+import { safeRichUrl, type RichNode } from "../rich-document";
 export function markdownCompatible(node: RichNode): boolean {
   return (
     node.type !== "video" &&

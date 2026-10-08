@@ -67,26 +67,28 @@ installed packages with their own data, actions and UI. See
 | PayPal Sandbox/Live | Native provider adapter, checkout handoff, paid/refund ledger and app administration | [manifest](apps/paypal/manifest.json), [`src/payments`](../src/payments) |
 | Shopware Payments readiness | Explicit connector status in admin; cannot process payment until its official standalone contract is verified | [manifest](apps/shopware-payments/manifest.json) |
 
-Install built-ins with `POST /api/apps` and `{"builtIn":"engraving"}`, `paypal` or
-`shopware_payments`, or submit `{"manifest":...}` for your own API-1 manifest.
-Use an owner/admin personal session and the owning `x-tenant`. Installation is
-atomic. `PUT /api/apps/{id}` accepts active/revision for deactivation/reactivation;
-data and immutable version history remain. No uninstall/data deletion is provided.
+Install through Studio's package review, or request `POST /api/apps/review`
+with `{"builtIn":"engraving"}` / `{"manifest":...}`. Submit the exact reviewed
+`digest`, complete `permissions` and `approve:true` with the installation request.
+An owner/admin personal session and owning `x-tenant` are required. Immutable
+versions, schema changes and outbox commit atomically; activation changes retain
+data/history and check dependent apps. This is not destructive uninstall.
 
-A manifest declares `coreApi`, `id`, three-part `version`, localized `name`, `runtime`,
-`permissions`, `entities`, `actions`, `slots` and `events`. Entity fields are
-string/integer/boolean, translated strings and bounded JSON objects/arrays; scalar fields may reference another entity in the same app. Root
-metadata (`tenant`, `id`, `revision`) is core-owned. Identifiers are constrained;
-DDL is generated, never submitted by the app. Each action has a typed flat
-`inputSchema` and registered list/save/configurations/service handler. Arbitrary
-JSON Schema nesting/validation keywords are not implemented.
+Managed fields include translated strings, JSON, integer/boolean, date/datetime,
+scaled decimal, explicit-currency money, rich text, files/images and scalar/multiple
+relations. Every tenant/app owns its physical tables with forced RLS, composite
+foreign keys, recursive validation, unique constraints and storage quotas.
+Explicit migration steps can rename/remove/convert/fill fields with bounded
+recovery snapshots. No app-supplied SQL is executed.
 
-`data.read`, `data.write`, `storefront.slot`, `admin.slot`, `service.call` and
-`events.read` are supported capabilities. Public writes to managed entities are
-prohibited. Public service actions must be explicitly declared and should be
-read-only: their business side effects require an additional application-specific
-customer authorization/approval contract. Do not put secrets in editor-writable
-entities. Only operator configuration carries service/payment credentials.
+Capabilities separately declare core reads/writes, PII, precise event names,
+assets, native/iframe surfaces, AI/MCP exposure and flow access. Callback keys are
+short-lived, revocable and package-bound; surface grants also bind context IDs
+and action allowlists on the server. External service credentials need exact
+operator-approved manifest digests, and HTML bundles need byte-hash pins. Private
+shop/app secrets use authenticated encryption and optimistic rotation. See
+[the canonical app contract](../docs/app-platform.md) and
+[security/operating limits](../docs/app-security.md) before deploying a service.
 
 List/save your data through `/api/apps/{id}/entities/{entity}`. Saves use
 `{"id":"one","revision":0,"fields":{"title":"My note"}}`; existing records require
@@ -106,11 +108,10 @@ APP_DB=.run/workshop-app.sqlite \
 python3 extensions/apps/service-example/server.py
 ```
 
-Configure the core and independently deployed app worker with this server-only
-value, then restart them:
+Build the self-contained UI with `python3 scripts/build_app_ui.py service-example --output .run/service-example.html`. Hash the built bytes for `uiDigests`; obtain the package digest from `target/debug/vendune --app-digest extensions/apps/service-example/manifest.json`. Configure the core and independently deployed app worker with these exact server-only pins, then restart them:
 
 ```sh
-export APP_SERVICES='{"workshop_notes":{"url":"http://127.0.0.1:8795","uiUrl":"http://127.0.0.1:8795/","token":"choose-a-private-development-token"}}'
+export APP_SERVICES='{"workshop_notes":{"url":"http://127.0.0.1:8795","uiUrl":"http://127.0.0.1:8795/","token":"choose-a-private-development-token","approvedDigests":["RUST_CANONICAL_PACKAGE_SHA256"],"uiDigests":{"v1/index.html":"BUILT_HTML_SHA256"}}}'
 # Main HTTP process; projects core events without delivering external events:
 PROCESS_ROLE=http target/debug/vendune
 # Separate terminal, with the same DB/APP_SERVICES configuration:
@@ -277,3 +278,19 @@ the automatic all-order path and an equivalent flow unintentionally. See the
 ## App translations
 
 Use `sdk.uiText` for interface controls and `sdk.text` for merchant-owned content. The host supplies interface/content/main languages and enabled shop locales; both native and external apps retain per-field inheritance. See [the complete contract and examples](../docs/localization.md#native-and-external-apps). All bundled manifests and guest catalogues are checked by `npm --prefix frontend run localization`.
+
+## Platform-v2 examples
+
+- [Catalog export](apps/catalog-export/README.md): leased background job, scoped
+  product callback, private CSV upload and downloadable result.
+- [Typed commerce hooks](apps/snapshot-pricing/README.md): read-only WIT snapshots
+  drive native price, discount, shipping and validation decisions.
+- [Signed package tooling](../docs/app-platform.md#publisher-distribution): canonical Rust
+  digest/signature, publisher keys, Semver dependencies and stable/beta metadata.
+- [Visual App Studio](../docs/app-studio.md): raster, code-behind, model wizard,
+  autosaved drafts, F5 private records and immutable publication share one schema.
+
+Independent Python examples demonstrate a language-neutral contract; they are
+not bundled production runtimes. Outgoing event signatures are verified by the
+shared [receiver SDK](sdk/events.py), with tenant/app-bound batches and durable
+consumer deduplication. Do not replace that path with unvalidated webhook JSON.

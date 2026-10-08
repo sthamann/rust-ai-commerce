@@ -1,6 +1,6 @@
 /** Discover the actual tenant-bound hosted frontends; keep the optional legacy app connector separate. */
 import { useEffect, useState } from "react";
-import AppFrame from "../../shared/apps/AppFrame";
+import { AppSurfaceView, useAppSurfaces } from "../../shared/apps/AppSurfaces";
 import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
 import type { RequestFn } from "../shell/studio-types";
 import Icon from "../../shared/ui/Icon";
@@ -16,6 +16,9 @@ export default function StoryfrontView({
   role: string;
 }) {
   const { w } = useWorkbenchText();
+  const surface = useAppSurfaces().find(
+    (s) => s.app === "storyfront" && s.surface.location.startsWith("admin."),
+  );
   const text = useStoryfrontText();
   const [app, setApp] = useState<{
     id: string;
@@ -93,8 +96,8 @@ export default function StoryfrontView({
           )}
           {!frontends.length && (
             <section className="studio-card">
-              {app?.active && app.uiUrl ? (
-                <AppFrame app="storyfront" url={app.uiUrl} request={request} />
+              {app?.active && surface ? (
+                <AppSurfaceView selected={surface} />
               ) : (
                 !error && (
                   <>

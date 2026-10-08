@@ -27,7 +27,7 @@ Files and their individual responsibilities are listed in [the generated source 
 - [`knowledge-evidence.css`](knowledge-evidence.css): Product evidence, retrieval excerpts, observed pairs and responsive knowledge layouts.
 - [`knowledge-sources.css`](knowledge-sources.css): Knowledge source library/editor layouts: single-language forms and lifecycle controls.
 - [`knowledge.css`](knowledge.css): Unified knowledge workspace: evidence-first hierarchy, accessible cards and theme-aware responsive layouts.
-- [`markdown-editor.css`](markdown-editor.css): Shared visual/Markdown product editor treatment using existing Studio theme tokens.
+- [`markdown-editor.css`](../../shared/styles/markdown-editor.css): Shared visual/Markdown product editor treatment using existing Studio theme tokens.
 - [`media-workspace.css`](media-workspace.css): Gallery workspace: airy tiles, focused image inspector and accessible upload surfaces using Studio theme tokens.
 - [`operations.css`](operations.css): Operational screens share the studio's light surface and clear focus states.
 - [`sales-channels.css`](sales-channels.css): Sales-channel cards, onboarding and scoped settings use the same responsive, accessible Studio design.

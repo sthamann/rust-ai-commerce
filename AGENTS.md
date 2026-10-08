@@ -167,3 +167,27 @@ Experience onboarding must include `appId: "storyfront"` in the existing hosted-
 in the UI, install it from GET, or create another connection/editor registry. Migration 055
 repairs historical mounts once. Preserve deactivation dependency checks and shared connection
 cards in Apps/Storyfronts; original Storyfront code stays in its private repository.
+
+## Extension platform v2 ownership
+
+Read `docs/app-platform.md`, `docs/app-security.md` and `docs/app-studio.md` before
+changing apps. `src/apps/` owns canonical manifest validation/signing, explicit
+consent, scoped callback identities, surface grants, tenant-specific schema and
+migrations, secrets, leased jobs and event delivery. Native app assets call the
+existing `src/assets/` owner; exports use the same private asset path. Never add
+parallel SQL stores, upload owners or direct core-API bypasses.
+
+External credentials must bind to canonical approved package digests; remote UI
+bytes need operator hash pins. Publication must not bypass installation consent,
+current creator permissions, dependency checks, row/byte quotas or forced RLS.
+`src/sandbox_engine.rs` is the shared Wasm engine. Prepare/probe bounded modules
+before commerce transactions; WIT hooks consume bounded read-only snapshots and
+use the existing native money/tax calculation owner.
+
+Visual edits and coding-agent output share the same Manifest/AST. F5 is actor-private
+and expires; it cannot call services, change live core data or release packages.
+Draft CAS conflicts remain visible and do not overwrite another editor. Interface
+text uses existing typed vocabularies; dynamic content uses one selected language.
+New runtime routes/fields must remain aligned across API/MCP/Flow/Studio and get
+real own/foreign-tenant regression checks. Never describe iframe CSP as total
+hostile-code containment or local worker limits as fleet-wide admission.

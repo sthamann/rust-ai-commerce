@@ -15,6 +15,8 @@ pub(crate) struct Principal {
     pub tenant: Option<String>,
     pub permissions: Option<String>,
     pub platform_user: Option<String>,
+    pub app: Option<String>,
+    pub app_permissions: Option<String>,
 }
 #[derive(Clone, Debug, Default)]
 pub(crate) struct RequestContext {

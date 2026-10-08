@@ -1,4 +1,7 @@
 /** Pure schema edits preserve unsupported extension properties; compilation binds native UI to real actions. */
+import { addAssetActions } from "./asset-actions";
+import { calls, renameCalls } from "./control-model";
+import { isDataBlock } from "../../shared/apps/native/types";
 import { appText, type AppStudioKey } from "../../shared/i18n/app-studio-i18n";
 import type {
   Block,
@@ -6,6 +9,7 @@ import type {
   NativeView,
   Text,
 } from "../../shared/apps/native/types";
+export { problems } from "./app-validation";
 export const locations: Record<string, AppStudioKey> = {
   "admin.navigation": "admin",
   "storefront.page": "storefront",
@@ -18,7 +22,7 @@ export function nextId(prefix: string, existing: string[]) {
   return `${prefix}_${n}`;
 }
 export function binding(kind: Block["kind"], entity?: string): Partial<Block> {
-  return kind === "text"
+  return !isDataBlock(kind)
     ? { entity: null, readAction: null, writeAction: null }
     : {
         entity,
@@ -177,6 +181,21 @@ export function compile(input: Manifest): Manifest {
       ];
     }),
   ];
+  m.views = m.views?.map((v) => ({
+    ...v,
+    blocks: v.blocks.map((b) =>
+      b.kind === "table"
+        ? {
+            ...b,
+            writeAction:
+              b.inlineEdit && b.entity
+                ? `save_${b.entity.slice(0, 27)}`
+                : undefined,
+          }
+        : b,
+    ),
+  }));
+  addAssetActions(m);
   m.surfaces = m.surfaces?.map((s) => {
     const view = m.views?.find((v) => s.uiPath === `native/${v.id}`);
     return view
@@ -185,7 +204,31 @@ export function compile(input: Manifest): Manifest {
           actions: [
             ...new Set(
               view.blocks.flatMap((b) =>
-                [b.readAction, b.writeAction].filter((n): n is string => !!n),
+                [
+                  b.readAction,
+                  b.writeAction,
+                  ...(b.kind === "form" || b.kind === "combobox" || b.inlineEdit
+                    ? (m.entities
+                        .find((e) => e.name === b.entity)
+                        ?.fields.filter((f) => f.references)
+                        .map((f) => `list_${f.references!.slice(0, 27)}`) ?? [])
+                    : []),
+                  ...((b.kind === "form" || b.inlineEdit) &&
+                  s.location.startsWith("admin.") &&
+                  m.entities
+                    .find((e) => e.name === b.entity)
+                    ?.fields.some((f) => ["image", "file"].includes(f.kind))
+                    ? (m.actions ?? [])
+                        .filter((a) =>
+                          ["assets", "asset_preview", "asset_upload"].includes(
+                            a.handler,
+                          ),
+                        )
+                        .map((a) => a.name)
+                    : []),
+                  ...calls(b.handlers?.click ?? []),
+                  ...calls(b.handlers?.change ?? []),
+                ].filter((n): n is string => !!n),
               ),
             ),
           ],
@@ -193,63 +236,6 @@ export function compile(input: Manifest): Manifest {
       : s;
   });
   return m;
-}
-export function problems(m: Manifest) {
-  const ids = [
-    m.id,
-    ...m.entities.map((e) => e.name),
-    ...m.entities.flatMap((e) => e.fields.map((f) => f.name)),
-    ...(m.views ?? []).map((v) => v.id),
-  ];
-  return (
-    (m.paymentProvider !== undefined &&
-      (m.runtime !== "service" ||
-        m.category !== "payment" ||
-        !m.permissions.includes("payments.provider") ||
-        m.paymentProvider.apiVersion !== "1" ||
-        m.paymentProvider.methods.length === 0 ||
-        m.paymentProvider.methods.length > 32 ||
-        new Set(m.paymentProvider.methods.map((v) => v.id)).size !==
-          m.paymentProvider.methods.length ||
-        m.paymentProvider.methods.some(
-          (v) =>
-            !/^[a-z][a-z0-9_]{0,31}$/.test(v.id) ||
-            !v.currencies.length ||
-            v.currencies.some((c) => !/^[A-Z]{3}$/.test(c)) ||
-            !v.capabilities.includes(v.intent),
-        ))) ||
-    ids.some((id) => !/^[a-z][a-z0-9_]{0,31}$/.test(id)) ||
-    !/^\d+\.\d+\.\d+$/.test(m.version) ||
-    m.entities.length > 12 ||
-    m.entities.some(
-      (e) =>
-        e.fields.length === 0 ||
-        e.fields.length > 16 ||
-        new Set(e.fields.map((f) => f.name)).size !== e.fields.length ||
-        e.fields.some((f) => ["tenant", "id", "revision"].includes(f.name)),
-    ) ||
-    new Set(m.entities.map((e) => e.name)).size !== m.entities.length ||
-    (m.views ?? []).some(
-      (v) =>
-        v.blocks.length > 32 ||
-        v.blocks.some(
-          (b) =>
-            b.kind !== "text" && !m.entities.some((e) => e.name === b.entity),
-        ),
-    ) ||
-    (m.surfaces ?? []).some(
-      (s) =>
-        !s.location.startsWith("admin.") &&
-        m.views
-          ?.find((v) => s.uiPath === `native/${v.id}`)
-          ?.blocks.some(
-            (b) =>
-              b.kind === "form" ||
-              (b.kind !== "text" &&
-                !m.entities.find((e) => e.name === b.entity)?.publicRead),
-          ),
-    )
-  );
 }
 export function removeEntity(m: Manifest, name: string): Manifest {
   const actions = m.actions?.filter((a) => a.entity !== name) ?? [],
@@ -342,9 +328,18 @@ export function renameEntity(m: Manifest, from: string, to: string): Manifest {
     ),
     views: m.views?.map((v) => ({
       ...v,
-      blocks: v.blocks.map((b) =>
-        b.entity === from ? { ...b, ...binding(b.kind, to) } : b,
-      ),
+      blocks: v.blocks.map((b) => ({
+        ...b,
+        ...(b.entity === from ? binding(b.kind, to) : {}),
+        ...(b.handlers
+          ? {
+              handlers: {
+                click: renameCalls(b.handlers.click ?? [], action),
+                change: renameCalls(b.handlers.change ?? [], action),
+              },
+            }
+          : {}),
+      })),
     })),
     apiRoutes: m.apiRoutes?.map((r) => ({ ...r, action: action(r.action) })),
     intelligence: m.intelligence

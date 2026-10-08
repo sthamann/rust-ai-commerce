@@ -1,0 +1,136 @@
+{
+  "id": "google_analytics",
+  "version": "1.0.0",
+  "coreApi": "1",
+  "runtime": "service",
+  "name": {
+    "en": "Google Analytics",
+    "de": "Google Analytics",
+    "fr": "Google Analytics",
+    "es": "Google Analytics"
+  },
+  "category": "ai",
+  "permissions": [
+    "service.call",
+    "events.read",
+    "knowledge.write"
+  ],
+  "entities": [],
+  "slots": [],
+  "actions": [
+    {
+      "name": "status",
+      "description": "google_analytics status",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": true,
+      "permission": "knowledge.read"
+    },
+    {
+      "name": "connect",
+      "description": "google_analytics connect",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage"
+    },
+    {
+      "name": "disconnect",
+      "description": "google_analytics disconnect",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage"
+    },
+    {
+      "name": "configure",
+      "description": "google_analytics configure",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "settings": {
+            "type": "object"
+          },
+          "revision": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "settings",
+          "revision"
+        ],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage"
+    },
+    {
+      "name": "sync",
+      "description": "google_analytics sync",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "requestKey": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "requestKey"
+        ],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage",
+      "flowAllowed": true
+    },
+    {
+      "name": "tracking",
+      "description": "google_analytics tracking",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "salesChannel": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "salesChannel"
+        ],
+        "additionalProperties": false
+      },
+      "public": true,
+      "readOnly": true,
+      "permission": null
+    }
+  ],
+  "events": []
+}

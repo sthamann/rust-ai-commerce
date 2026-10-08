@@ -114,4 +114,16 @@ def channel_access_admissible (active : Bool) (is_private : Bool) (merchant : Bo
 def native_asset_bypass (native_asset : Bool) (hosted : Bool) : Bool :=
   (native_asset && (!hosted))
 
+def app_package_authorized (pinned : Bool) (bundled : Bool) : Bool :=
+  (pinned || bundled)
+
+def wasm_resources_admissible (tables : Nat) (memories : Nat) (elements : Nat) (pages : Nat) : Bool :=
+  ((((decide (tables ≤ 1)) && (decide (memories ≤ 1))) && (decide (elements ≤ 10000))) && (decide (pages ≤ 16)))
+
+def app_surface_admissible (current_package : Bool) (allowed_action : Bool) : Bool :=
+  (current_package && allowed_action)
+
+def app_callback_admissible (capability : Bool) (current_role : Bool) : Bool :=
+  (capability && current_role)
+
 end CommerceKernel

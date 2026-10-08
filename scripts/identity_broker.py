@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Synthetic broker signatures, durable replay prevention, scoped frontend routing and private Studio handoff; no provider calls."""
+from testing.app_approval import consent
 from testing.database import psql
 import base64, hashlib, hmac, json, os, socket, time, urllib.error, urllib.request, uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -27,6 +28,7 @@ frontend=ThreadingHTTPServer(('127.0.0.1',0),Frontend)
 Thread(target=frontend.serve_forever,daemon=True).start()
 env={**os.environ,'BIND_ADDR':f'127.0.0.1:{port}','IDENTITY_BROKER_KEY':key,'IDENTITY_BROKER_ISSUER':issuer,'HOSTED_FRONTEND_KEY':'b'*64,'HOSTED_FRONTEND_ORIGIN':f'http://127.0.0.1:{frontend.server_port}','HOSTED_FRONTEND_EDITOR_URL':'https://experience.example.test/design/{alias}','DEMO_CATALOG':'fashion','HOSTED_FRONTEND_COOKIE_NAMES':'shopper_sid'}
 def call(path,body=None,headers=None,method=None,expected=200):
+    if path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
     req=urllib.request.Request(base+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(headers or {})},method=method or ('GET' if body is None else 'POST'))
     try:
         with urllib.request.urlopen(req,timeout=45) as r:code,data=r.status,json.load(r)

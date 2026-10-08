@@ -1,7 +1,7 @@
 /** Product text uses the shared single-language editor and field inheritance; product number stays language independent. */
 import { ContentLanguage } from "../../shared/i18n/ContentLanguage";
 import LocalizedField from "../../shared/i18n/LocalizedField";
-import { useCatalogText } from "./catalog-i18n";
+import { useCatalogText } from "../../shared/i18n/catalog-i18n";
 import type { ProductDraft } from "./catalog-model";
 export default function ProductTextFields({
   draft: d,

@@ -1,73 +1,118 @@
 # Visual App Studio
 
-App Studio is a visual builder for **working native commerce apps**, using the same versioned `Manifest` as coding agents. It extends the existing app platform and does not create a second, disconnected definition format.
+App Studio and coding agents edit one Manifest. The same renderer, action gateway,
+permissions and model schema power private previews and published apps. Open Studio
+→ **Developers**; choose a guided app type or click an existing app's **Edit** card.
 
-## Try it
+## The development loop
 
-Open Vendune Studio → **Developers**, or use `/?shop=YOUR_SHOP&studio=developers#merchant` to enter the workspace directly. Reload tabs opened before a local frontend build; an already-loaded browser bundle does not update itself. Choose one of nine guided app types, then edit its shared Manifest visually. See [guided apps and editor extensions](app-assistants.md).
+1. Choose a frontend/admin/combined/payment/shipping/integration/event/cron app
+   assistant. It creates normal entities, actions and surfaces, not a hidden blueprint.
+2. In **Design**, use a 12-column form raster. Drag controls from the toolbox, snap
+   positions, resize by handles, use Ctrl/Command for multi-selection and align or
+   distribute selected controls. Narrow screens render the same layout as a stack.
+3. Press **F4** for properties: translated caption/tooltip, geometry, visibility,
+   enablement, tab order, model/field/context binding. Geometry properties can be
+   sorted alphabetically or by their defined category. Tab-order mode assigns order
+   by clicking controls. An optional Classic appearance affects the designer only.
+4. Double-click an input/button for **code-behind**. Visual instructions, BASIC and
+   typed JSON edit the same bounded AST. Completion buttons insert current actions,
+   form validation and refresh targets. Calls still need the surface allowlist.
+5. In **Data models**, add rich field types and validation. The relationship diagram
+   accepts dragging a field onto a target model. **Create workspace from model**
+   adds a grid, linked record form and a validated save button.
+6. Press **F5** for a private one-hour preview. It creates actual actor-private app
+   tables/records through the existing registry. Changes hot-reload after validation.
+   No saving/staging/publishing is required to try a draft. Preview services cannot
+   send external events, place orders or execute live payment/provider actions.
+7. Use the debugger to pause before instructions or at a numbered step, continue,
+   stop and inspect bounded operation metadata. It does not log customer records or
+   credentials. This debugger controls UI instructions, not a remote process.
+8. Save an immutable semantic version, review and install it in staging, then release
+   the selected app package. App records require their own explicit release selection.
 
-Saved apps appear as clickable cards under **My apps**. Click a card to open its latest saved build on the editable design canvas with a bumped semantic version. The **Edit app** button also returns from the runtime preview to editing. Editing through **Versions & releases** opens the same canvas. Existing versions remain immutable. Every card has explicit **Edit app** and **Delete** buttons. Deletion moves all development versions into the recoverable App Studio **Trash**; restoring preserves version IDs/digests. Installed packages and app data remain independent: deactivate an installed package separately under **Apps**. Archived versions cannot be staged until restored. The same operation is available through `DELETE /api/developer/apps/{app}` and `POST /api/developer/apps/{app}/restore` (both `approve: true`), plus MCP `developer.archive` (`app`, `archived`, `approve`).
+Server drafts autosave after 500 ms with optimistic revisions. They are private to
+the actor and shop, restored before edits and bounded to twenty drafts/user and
+64 KiB/draft. Unsaved or failed saves retain a before-unload warning. Ctrl/Command+Z
+uses manifest undo/redo; F4/F5 use the same controls as the toolbar. Immutable saved
+versions and recoverable App Studio trash are separate from autosaved drafts.
 
-1. Select a component to edit its title, text or model binding. Add text, table, cards and form blocks with the palette. Use the ordering buttons and undo/redo to change the layout.
-2. Open **Data models** to add typed fields. Strings can use every enabled shop language; the editor shows one content language at a time. Missing translations inherit the shop main language. Public model access is explicit.
-3. Open **Connections** to enable namespaced HTTP routes, select AI planning tools/grounding entities and opt save actions into the existing Flow Builder. Choose each action’s team scope and independent MCP exposure.
-4. Choose or create a **private sandbox**. Save a new immutable semantic version, then open **Versions & releases** and approve its sandbox installation.
-5. Return to **Design** and open the working sandbox preview. It uses the same native renderer as released surfaces. Create and edit actual app records, including their optimistic revisions. The preview checks the installed app version first.
-6. Review this app’s release and publish its package. Only `app:APP_ID` is selected. Sandbox records, orders and other changes are not copied by this action. App records can be released separately through Staging & releases.
+![Native form designer and property inspector](assets/feature-tour/app-form-designer.png)
 
-A care app with both an admin module and product-detail cards is provided in [`extensions/apps/care-studio/manifest.json`](../extensions/apps/care-studio/manifest.json). Its public care records are intentional example configuration; new visual drafts start private. This legacy example displays guides generally. The frontend/combined assistants now generate indexed product references and context-bound product-detail views directly.
+![Working private preview with a saved and reloaded product-bound app record](assets/feature-tour/app-private-preview.png)
 
-![Working native sandbox with a real saved app record](screenshots/app-studio-sandbox.jpg)
+These 8 October captures use the actual browser, Rust gateway and isolated
+PostgreSQL instance; see [capture provenance](assets/feature-tour/README.md).
 
-## Shared representation
+## Controls and behavior
 
-```text
-Manifest
-├── entities → managed tenant-scoped tables, typed fields, revisions
-├── actions → one authorized gateway for UI, HTTP, MCP and flows
-├── views → bounded native text/table/cards/form blocks
-├── surfaces → placement and explicit action allowlists
-├── apiRoutes → GET/POST namespaces linked to declared actions
-├── intelligence → selected planning tools and grounding entities
-├── schedules → durable UTC clock events
-└── webhooks → signed, deduplicated incoming events
+Text, TextBox, ComboBox, CheckBox, DatePicker, Button, table/cards/form, Image,
+Frame/Tabs, KPI and Chart are host-native controls. Tables can enable inline record
+editing with real optimistic revisions. Image/file fields use the searchable asset
+picker and private preview; uploads are available in product-bound editors.
+Timers are persistent UTC **Schedules**, not uncontrolled browser loops.
+
+The AST has `Set`, typed `If`, `Call`, translated `MsgBox`, `Navigate`, `Refresh`
+and `Validate`. It is loop-free, bounded in depth/count and independently validated
+by Rust against current blocks/actions/model fields. It is not JavaScript `eval`,
+VBA or an unrestricted scripting language. BASIC source is a convenient encoding of
+that AST; structured object expressions use the visual/JSON editor.
+
+```vb
+Validate guide_form
+Call save_guides(guide_form.Record)
+guide_grid.Refresh
+MsgBox {"en":"Saved","de":"Gespeichert","fr":"Enregistré","es":"Guardado"}
 ```
 
-A native surface uses `uiPath: "native/VIEW_ID"`. A table/cards block has an `entity` and `readAction`; a form also has a `writeAction`. Bindings must reference the matching entity’s list/save handlers and must appear in the surface action allowlist. A public surface cannot contain a form or a private action. Text is rendered as escaped text, never executable HTML.
+The **Menus & surfaces** editor reuses views in Studio navigation or existing
+product/customer/order editors. Each mount has one translated label, its team
+permission and explicit allowed actions. Public mounts allow only public reads.
 
-The authoritative provider schema is [`fixtures/app-studio-schema.json`](../fixtures/app-studio-schema.json), specialized by Rust to the shop’s enabled languages. Download it through authenticated `GET /api/developer/schema`; the same schema is included in the MCP `developer.task` export. Rust validates the complete installed Manifest (including manually imported service contracts); the provider schema describes the narrower native generation subset.
+**Server modules** edits typed WIT component source and the four commerce hooks.
+Components read bounded immutable cart/product/app-record snapshots, with no network
+or SQL imports. Source must implement the published ABI; invalid components fail
+before installation. The snapshot-pricing example provides executable source.
+The browser does not compile arbitrary PHP/Rust, deploy an external service or launch
+Codex/Claude shell commands. Those use the existing external app/development task path.
 
-App Studio edits that Manifest directly. There is no hidden UI-only blueprint to reconcile later. Manual imports preserve extension metadata. Bound list/save actions are compiled with fixed input types, then independently validated on the server. Field and schema removal/type changes remain subject to the existing compatibility rules; destructive migration is not silently performed.
+## Shared contract and translation
 
-## Coding agents and model providers
+```mermaid
+flowchart TD
+  Visual[Visual controls / properties / logic] --> M[Manifest]
+  Coding[Coding agent / JSON import] --> M
+  M --> V[Server validation and consent]
+  V --> P[Actor-private F5 registry]
+  V --> B[Immutable build and staging]
+  P --> R[Native renderer and surface gateway]
+  B --> R
+  R --> D[Typed tenant app records / existing core callbacks]
+```
 
-**Coding agent** can generate a next draft with configured local/OpenAI/Anthropic inference. The request includes the current Manifest, existing versions and the shared schema. Generation creates a reviewable build; it does not install or publish automatically.
+The dynamic generation schema is `fixtures/app-studio-schema.json`, exposed by
+`GET /api/developer/schema` and MCP `developer.task`. Rust specializes text maps
+using every enabled shop language. One selected content language edits captions,
+fields, menus and messages; missing translations inherit the shop main language.
+OpenAI strict fixed-object wire schemas encode dynamic JSON as a string, restore
+it on the server and then run domain validation; Claude/local adapters preserve
+native JSON. This adaptation does not bypass the shared manifest contract.
 
-For Codex or Claude Code, export the development task with the current Manifest, dynamic schema, extension guide and credential-free MCP configuration. The agent uses the same import/stage endpoints, and its JSON can be applied back to the canvas before saving. Account authorization stays with the external coding agent. The browser does not automatically launch Codex/Claude CLI or arbitrary shell commands.
+For Codex or Claude Code, export a credential-free development task with the current
+Manifest, schema, guides and MCP bridge configuration. Import the result, review
+permission additions and stage it through the same operations.
 
-## Events, AI and extensibility
+## Limits and tests
 
-Each managed write emits `app.record.changed`. An action with `flowAllowed: true` can be selected by the existing graphical Flow Builder, connecting a core event and rule to a typed app action. Permission checks and flow retry/idempotency rules remain in the established flow engine; the visual builder does not bypass them. Native declarations do not add arbitrary event-service code. Durable service-app event subscriptions continue to use the existing operator-deployed isolated service path.
+Sixteen views, 32 blocks/view, twelve models, sixteen fields/model and 24 actions/
+routes keep previews and parsing bounded. Per-app storage has database-enforced
+row/byte quotas; file quotas remain with the existing product asset owner.
+Schema migrations are explicit and atomic; larger/relation changes are offline.
+[Full platform and trust boundaries](app-platform.md), [security](app-security.md).
 
-`intelligence.tools` and `intelligence.entities` select what enters the merchant planning context, with existing record/byte bounds. They do not train model weights or expose private data to public product-question retrieval. MCP tool discovery exposes only actions enabled for MCP and authorized for the caller; selecting planning tools does not change MCP permissions.
-
-For custom JS UI, external APIs, complex algorithms, payment hooks and arbitrary services, use the existing service-app platform and SDK. Resource-limited service deployment is operator controlled. The native visual builder currently offers four UI block kinds rather than unrestricted arbitrary component code.
-
-## Performance and limits
-
-- Maximum 16 native views, 32 blocks per view, 12 data models, 16 fields per model and 24 actions/routes.
-- Native views run in the host renderer and reuse managed data/action handlers; they need no dedicated app process or remote iframe bundle.
-- Data views use keyset pages of 50 records, with backend bounds of 1–100. Model planning reads are also bounded.
-- An installed definition is read from the active tenant-scoped registry. Deactivation/permission changes remove its surfaces on registry refresh; each action is authorized again on the server.
-- UI state is transient; immutable build versions and staged packages are persisted. Refreshing an unsaved draft currently discards its edits.
-- No new production performance comparison with Shopware is claimed by this change.
-
-## Verification
-
-Focused frontend tests cover shared-schema compilation, dependency cleanup, undo/redo, public-access rejection, click-to-build, agent import, immutable staging/selective release, bounded pages, typed record revisions, translation inheritance and stale preview rejection.
-
-`python3 scripts/verify_integration.py --only app_studio app_assistants staging app_surfaces apps developer_documents automation` verifies the actual Rust/PostgreSQL endpoints. The suite checks native admin/storefront registry resolution, schema languages, package immutability, bindings, public-write rejection, dynamic translations, cross-shop isolation, HTTP/MCP use and selected package release. Local model wire fixtures test OpenAI/Anthropic generation without paid provider calls. Formal verification remains limited to the documented extracted commerce decisions; view parsing, browser rendering and asynchronous adapters are not claimed as Lean-proven.
-
-## Payment apps
-
-The **Payments** editor defines translated method names, currency/country eligibility, checkout surface, capabilities and capture/authorization intent in the shared manifest. Its account panel selects a sales channel, business country and Sandbox/Live connection. Generated apps expose protected onboarding and provider-bound payment command actions; the latter can be selected in Flow Builder and MCP. No provider credentials or vendor implementation are generated into a merchant package. The separately deployed service implements the [payment provider contract](payment-provider-api.md); installing alone leaves methods inactive.
+Frontend regressions exercise real designer edits, undo, private autosave/conflicts,
+AST calls/validation, read-only surfaces and pinned UI loading. Registered
+`app_studio`, `app_preview`, `app_callbacks`, `app_schema`, `app_assets`, `app_jobs`,
+`app_components`, `app_distribution` and existing staging/payment suites exercise
+actual Rust/PostgreSQL paths. Browser rendering and SQL/asynchronous adapters are
+not covered by the extracted Lean proofs.

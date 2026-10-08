@@ -5,6 +5,22 @@ pub(crate) async fn create(
     h: RequestContext,
     Json(v): Json<Value>,
 ) -> Result<Json<Value>> {
+    create_inner(a, h, v, None).await
+}
+pub(crate) async fn create_preview(
+    a: App,
+    h: RequestContext,
+    name: &str,
+    actor: &str,
+) -> Result<Json<Value>> {
+    create_inner(a, h, json!({"name":name}), Some(actor.to_owned())).await
+}
+async fn create_inner(
+    a: App,
+    h: RequestContext,
+    v: Value,
+    preview_owner: Option<String>,
+) -> Result<Json<Value>> {
     auth::permit(&h, "users")?;
     let t = live(&a, &h).await?;
     let name = v["name"]
@@ -77,12 +93,12 @@ pub(crate) async fn create(
                 let columns = entity
                     .fields
                     .iter()
-                    .map(|f| f.name.as_str())
+                    .map(|f| crate::apps::column(&f.name))
                     .collect::<Vec<_>>()
                     .join(",");
                 let sql = format!(
                     "SELECT to_jsonb(r) AS data FROM (SELECT id,{columns} FROM public.{} WHERE tenant=$1 ORDER BY id LIMIT 1001) r",
-                    apps::table(&m.id, &entity.name)
+                    apps::table(&t, &m.id, &entity.name)
                 );
                 let records = sqlx::query(sqlx::AssertSqlSafe(sql.as_str()))
                     .bind(&t)
@@ -143,6 +159,9 @@ pub(crate) async fn create(
         .bind(&id)
         .execute(&mut *tx)
         .await?;
+    if let Some(owner) = preview_owner {
+        sqlx::query("UPDATE shop_environments SET preview_owner=$1,preview_until=now()+interval '1 hour' WHERE tenant=$2").bind(owner).bind(&id).execute(&mut *tx).await?;
+    }
     tx.commit().await?;
     a.sandboxes
         .insert(id.clone(), Arc::new(Sandbox::new(wat).map_err(bad)?));

@@ -1,0 +1,59 @@
+{
+  "id": "catalog_export",
+  "version": "1.0.0",
+  "coreApi": "1",
+  "runtime": "service",
+  "category": "operations",
+  "name": {
+    "en": "Catalog export",
+    "de": "Katalogexport",
+    "fr": "Export du catalogue",
+    "es": "Exportación del catálogo"
+  },
+  "permissions": [
+    "jobs.write",
+    "products.read",
+    "assets.read",
+    "assets.write",
+    "events:self"
+  ],
+  "events": [
+    "app.catalog_export.job_export"
+  ],
+  "eventDelivery": {
+    "batchSize": 1
+  },
+  "entities": [],
+  "actions": [
+    {
+      "name": "export",
+      "description": "Create a private catalog export with durable progress",
+      "handler": "job",
+      "public": false,
+      "permission": "apps.manage",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "string",
+              "maxLength": 100
+            }
+          },
+          "productId": {
+            "type": "string",
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "ids",
+          "productId"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ]
+}

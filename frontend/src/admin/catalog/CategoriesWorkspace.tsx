@@ -2,7 +2,7 @@
 import EntityHistory from "../../shared/history/EntityHistory";
 import { useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
-import { useCatalogText } from "./catalog-i18n";
+import { useCatalogText } from "../../shared/i18n/catalog-i18n";
 import { type Category } from "./catalog-model";
 import TranslationFields from "../../shared/geography/TranslationFields";
 import { useCountryCatalogue } from "../../shared/geography/useCountryCatalogue";

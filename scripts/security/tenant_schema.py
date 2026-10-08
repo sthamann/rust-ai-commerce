@@ -94,13 +94,13 @@ def run(a, b, passed):
     # Inspection is explicit: core RLS is still absent. App RLS must work under an
     # ordinary role, not the superuser used by the local container.
     role = 'security_reader_' + ta.replace('-', '_')
-    table = 'app_' + hashlib.sha256(b'care_studio').hexdigest()[:16] + '_guides'
+    table = 'app_' + hashlib.sha256((ta+':care_studio').encode()).hexdigest()[:24] + '_guides'
     sql(f"CREATE ROLE {role} NOLOGIN NOSUPERUSER NOBYPASSRLS; GRANT USAGE ON SCHEMA public TO {role}; GRANT SELECT,INSERT ON {table} TO {role};")
     try:
         assert sql(f"BEGIN; SET LOCAL ROLE {role}; SELECT count(*) FROM {table}; ROLLBACK;").strip() == '0'
         for t in (ta, tb):
             out = sql(f"BEGIN; SET LOCAL ROLE {role}; SELECT set_config('rac.tenant','{t}',true); SELECT string_agg(tenant,',') FROM {table}; ROLLBACK;")
-            assert out.splitlines() == [t, t], out
+            assert out.splitlines() == ([t, t] if t == ta else [t]), out
         # Transaction-local context disappears on commit on the very same connection.
         out = sql(f"BEGIN; SET LOCAL ROLE {role}; SELECT set_config('rac.tenant','{ta}',true); COMMIT; BEGIN; SET LOCAL ROLE {role}; SELECT count(*) FROM {table}; ROLLBACK;")
         assert out.splitlines()[-1] == '0', out

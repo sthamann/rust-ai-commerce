@@ -13,6 +13,7 @@ import { useLocale } from "../i18n/i18n";
 import "../styles/app-surfaces.css";
 import Icon from "../ui/Icon";
 import AppFrame from "./AppFrame";
+import useSurfaceGateway from "./useSurfaceGateway";
 import NativeAppView from "./native/NativeAppView";
 import type { NativePayload } from "./native/types";
 import { contentText } from "../i18n/content-language";
@@ -130,9 +131,14 @@ export function AppSurfaceView({
   const s = surfaces.find(
     (s) => s.app === selected.app && s.surface.id === selected.surface.id,
   );
+  const scoped = useSurfaceGateway(
+    request,
+    selected.app,
+    selected.surface.id,
+    context,
+    isPublic,
+  );
   if (!s) return null; // Deactivation or loss of permission unmounts the guest immediately after registry refresh.
-  const scoped: RequestFn = (path, body) =>
-    request(path.replace("/api/", isPublic ? "/store-api/" : "/api/"), body);
   return (
     <section
       className="app-surface"

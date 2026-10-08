@@ -94,25 +94,7 @@ pub async fn handle(store: &Store, t: &str, a: &str, path: &str, v: &Value) -> R
     }
     match path {
         "exports" => store.exports(t, a, v["cursor"].as_i64().unwrap_or(0)).await,
-        "events" => {
-            if a == "email" {
-                return email::event(store, t, v).await;
-            }
-            if a == "slack"
-                && store.get(t, a).await?["settings"]["notifyOrders"] == true
-                && v["kind"] == "order.placed"
-            {
-                return action(
-                    store,
-                    t,
-                    a,
-                    "post_order",
-                    &json!({"requestKey":v["idempotencyKey"],"event":v["data"],"kind":v["kind"]}),
-                )
-                .await;
-            }
-            Ok(json!({"ignored":true}))
-        }
+        "events" => super::events::receive(store, t, a, v).await,
         _ => Err(Error::Invalid("Unknown app endpoint")),
     }
 }

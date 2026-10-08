@@ -31,12 +31,45 @@ const other = {
   manifest: { ...p.manifest, name: { en: "PayPal" }, category: "payment" },
   active: false,
 };
+function extra(path: string) {
+  if (path.endsWith("credentials"))
+    return { canManage: true, digest: "fixture", permissions: [], keys: [] };
+  if (path.endsWith("secrets"))
+    return {
+      revision: 0,
+      configured: false,
+      canManage: true,
+      kinds: [],
+      secrets: [],
+    };
+  if (path.endsWith("activity"))
+    return {
+      calls: [],
+      deliveries: [],
+      storage: { rows: 0, bytes: 0, rowLimit: 100000, byteLimit: 67108864 },
+      limits: {},
+    };
+  if (path.endsWith("jobs")) return { jobs: [] };
+  if (path.endsWith("review"))
+    return {
+      app: "storyfront",
+      name: { en: "Storyfront" },
+      version: "1.0.0",
+      digest: "fixture",
+      permissions: [],
+      added: [],
+      previousVersion: null,
+    };
+}
 function setup(role = "owner") {
-  const request = vi.fn(async (path: string, body?: unknown) => ({
-    packages: [p, other],
-    mainLocale: "es-ES",
-    ...(path.includes("/care_example") && body ? {} : {}),
-  }));
+  const request = vi.fn(
+    async (path: string, body?: unknown) =>
+      extra(path) ?? {
+        packages: [p, other],
+        mainLocale: "es-ES",
+        ...(path.includes("/care_example") && body ? {} : {}),
+      },
+  );
   render(
     <LocaleProvider>
       <AppsManager request={request} role={role} token="fixture" />
@@ -81,7 +114,7 @@ it("opens an app with one click, cancels deactivation and submits the exact revi
   expect(screen.getByRole("button", { name: "Cancel" })).toHaveFocus();
   await user.keyboard("{Escape}");
   expect(
-    request.mock.calls.filter(([path]) => path.includes("care_example")),
+    request.mock.calls.filter(([path]) => path === "/api/apps/care_example"),
   ).toHaveLength(0);
   await user.click(screen.getByRole("button", { name: "Disable" }));
   await user.click(screen.getAllByRole("button", { name: "Disable" }).at(-1)!);
@@ -95,9 +128,12 @@ it("opens an app with one click, cancels deactivation and submits the exact revi
 });
 it("discovers and installs through the existing API, and makes the installed detail visible immediately", async () => {
   const request = vi.fn(async (path: string, body?: unknown) => {
+    if (extra(path)) return extra(path);
     if (path === "/api/apps" && body) return {};
     return {
-      packages: request.mock.calls.some(([, b]) => b)
+      packages: request.mock.calls.some(
+        ([path, b]) => path === "/api/apps" && b,
+      )
         ? [
             p,
             {
@@ -121,10 +157,19 @@ it("discovers and installs through the existing API, and makes the installed det
   await user.click(screen.getByRole("button", { name: /Discover/ }));
   await user.type(screen.getByRole("searchbox"), "conversational");
   await user.click(screen.getByRole("button", { name: "Install" }));
+  await screen.findByRole("dialog");
+  const installs = screen.getAllByRole("button", { name: "Install" });
+  await user.click(installs.at(-1)!);
   await waitFor(() =>
-    expect(request).toHaveBeenCalledWith("/api/apps", {
-      builtIn: "storyfront",
-    }),
+    expect(request).toHaveBeenCalledWith(
+      "/api/apps",
+      expect.objectContaining({
+        builtIn: "storyfront",
+        approve: true,
+        digest: "fixture",
+        permissions: [],
+      }),
+    ),
   );
   expect(screen.getByRole("heading", { name: "Storyfront" })).toBeVisible();
 });
@@ -233,6 +278,7 @@ it("shows registry-backed native app interfaces using the same permitted surface
 });
 it("keeps a failed activation visible for retry without changing the displayed app state", async () => {
   const request = vi.fn(async (_path: string, body?: unknown) => {
+    if (extra(_path)) return extra(_path);
     if (body) throw new Error("Revision changed");
     return { packages: [p], mainLocale: "en-GB" };
   });

@@ -333,3 +333,19 @@ extraction also have unit/static controls. [Implementation and boundaries](core-
 
 These checks establish those behaviors, not 100% whole-system coverage, public
 rollout status, a speed-up percentage or protection against a compromised server.
+
+## App-platform v2 verification
+
+Registered PostgreSQL suites exercise `app_consent`, `app_callbacks`,
+`app_preview`, `app_relations`, `app_schema`, `app_jobs`, `app_components`,
+`app_assets`, `app_secrets`, `app_events`, `app_export` and `app_distribution`.
+They observe installed versions and actual records/DDL, denied foreign mutations,
+lease fences, provider signatures, replay and export bytes. Existing apps,
+services, staging, connectors and automation suites verify compatibility.
+
+Frontend tests exercise native code-behind, action allowlists, actor draft restore,
+revision conflicts, iframe bundle rejection, controls and package consent. These
+are regression evidence, not a claim of 100% app/host coverage. Full semantic
+document tests additionally require the real Qdrant service; a missing retrieval
+service must be reported as an unverified environment dependency, never replaced
+by a mocked successful semantic result. See [the security matrix](app-security.md).

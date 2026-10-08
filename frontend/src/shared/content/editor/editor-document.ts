@@ -1,5 +1,5 @@
 /** Canonical transport drops editor-only null attributes; description headings remain within the native H2/H3 contract. */
-import type { RichNode } from "../../shared/content/rich-document";
+import type { RichNode } from "../rich-document";
 export function editorTransport(node: RichNode): RichNode {
   const attrs =
     node.attrs &&
