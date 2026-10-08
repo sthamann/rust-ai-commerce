@@ -118,7 +118,7 @@ export type Preview = {
     experience?: { mode: string; headline: string } | null;
   };
   verifiedFacts?: {
-    demoOrderCount: number;
+    orderCount: number;
     learningSignals?: { variant: string; views: number; purchases: number }[];
   };
   knowledge?: Graph;

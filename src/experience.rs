@@ -32,6 +32,10 @@ pub(crate) async fn experience(
     let e: Value = er.get("data");
     let mut tx = a.db.begin().await?;
     legal::require_locked(&mut tx, &c, "personalization").await?;
+    if let Some(assignment) = cognition::experiments::assign(&a, &mut tx, &c).await? {
+        tx.commit().await?;
+        return Ok(Json(assignment));
+    }
     let existing =
         sqlx::query("SELECT variant,propensity FROM exposures WHERE tenant=$1 AND session=$2")
             .bind(&t)
@@ -223,6 +227,7 @@ pub(crate) async fn forget_personalization(
         .bind(hash(&c.id))
         .execute(&mut *tx)
         .await?;
+    cognition::preferences::forget(&mut tx, &c).await?;
     tx.commit().await?;
     Ok(Json(json!({"forgotten":true})))
 }

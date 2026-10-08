@@ -273,4 +273,28 @@ pub(super) const SCHEMA: &[(&str, &str)] = &[
         "070-app-callback-permissions",
         include_str!("../../migrations/070-app-callback-permissions.sql"),
     ),
+    (
+        "071-cognitive-index",
+        include_str!("../../migrations/071-cognitive-index.sql"),
+    ),
+    (
+        "072-evidence-ontology",
+        include_str!("../../migrations/072-evidence-ontology.sql"),
+    ),
+    (
+        "073-cognitive-decisions",
+        include_str!("../../migrations/073-cognitive-decisions.sql"),
+    ),
+    (
+        "074-cognitive-status",
+        include_str!("../../migrations/074-cognitive-status.sql"),
+    ),
+    (
+        "075-controlled-experiments",
+        include_str!("../../migrations/075-controlled-experiments.sql"),
+    ),
+    (
+        "076-embedding-generations",
+        include_str!("../../migrations/076-embedding-generations.sql"),
+    ),
 ];

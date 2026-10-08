@@ -27,7 +27,7 @@ pub(crate) async fn workspace(
     } else {
         Value::Null
     };
-    let activity:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('id',id,'kind',kind,'time',created_at,'sourceId',data->'documentId','hypothesisId',data->'hypothesisId') FROM outbox WHERE tenant=$1 AND (kind LIKE 'knowledge.%' OR kind='intelligence.decision') ORDER BY id DESC LIMIT 20").bind(&t).fetch_all(&a.db).await?;
+    let activity:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('id',id,'kind',kind,'time',created_at,'sourceId',data->'documentId','hypothesisId',data->'hypothesisId') FROM outbox WHERE tenant=$1 AND (kind LIKE 'knowledge.%' OR kind LIKE 'intelligence.%' OR kind='merchant.change.applied') ORDER BY id DESC LIMIT 20").bind(&t).fetch_all(&a.db).await?;
     Ok(Json(
         json!({"totals":totals,"sources":rows.into_iter().take(50).collect::<Vec<_>>(),"next":next,"activity":activity,"mainLocale":settings.main_locale,"locales":settings.locales,"canWrite":auth::allowed(&h,"catalog"),"sampleLimits":{"sources":50,"activity":20,"graphNeeds":48,"graphPairs":48,"observations":24},"modelWeightsUpdated":false,"causalUpliftProven":false}),
     ))

@@ -9,6 +9,17 @@ pub(crate) async fn capabilities() -> Json<Value> {
     )
 }
 pub(crate) async fn invoke(a: &App, h: &RequestContext, name: &str, v: &Value) -> Result<Value> {
+    if name == "catalog.facts" {
+        return cognition::signed::facts(
+            a,
+            h,
+            v["productId"].as_str().ok_or(bad("Product required"))?,
+        )
+        .await;
+    }
+    if cognition::contracts::schema(name).is_some() {
+        return cognition::contracts::invoke_contract(a, h, name, v).await;
+    }
     if currencies::schema(name).is_some() {
         return currencies::invoke(a, h, name, v).await;
     }

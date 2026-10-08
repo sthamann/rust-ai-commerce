@@ -117,7 +117,8 @@ This lists every checked-in source module in these roots, including files with n
 | [src/bin/rules.rs](../src/bin/rules.rs) | Batch original-PHP numeric-rule comparison transport. |
 | [src/bin/verified_kernel.rs](../src/bin/verified_kernel.rs) | Generated conformance driver; invokes the same production policy functions as the commerce server. |
 | [src/bootstrap.rs](../src/bootstrap.rs) | Startup, additive migrations, persisted extensions and outbox worker. |
-| [src/capabilities/catalog.rs](../src/capabilities/catalog.rs) | Public HTTP/MCP capability catalogue, separate from authorization and dispatch. |
+| [src/capabilities/catalog.rs](../src/capabilities/catalog.rs) | Shared catalogue composes native capabilities and cognitive contracts without duplicating authorization. |
+| [src/capabilities/core_catalog.rs](../src/capabilities/core_catalog.rs) | Public HTTP/MCP capability catalogue, separate from authorization and dispatch. |
 | [src/capabilities.rs](../src/capabilities.rs) | Shared HTTP/MCP capability dispatch and tool authorization. |
 | [src/cart_model.rs](../src/cart_model.rs) | Persisted cart, item and customer-context types. |
 | [src/cart_mutation.rs](../src/cart_mutation.rs) | Optimistic cart mutations and quantity normalization. |
@@ -134,11 +135,26 @@ This lists every checked-in source module in these roots, including files with n
 | [src/channel_metrics.rs](../src/channel_metrics.rs) | Bounded, lossy diagnostic counters. Never use this buffer for business events. |
 | [src/chat_lease.rs](../src/chat_lease.rs) | Short, cross-replica conversation leases; inference never retains a database transaction. |
 | [src/checkout_handoff.rs](../src/checkout_handoff.rs) | Single-use checkout transfer for independent storefronts; no app-specific catalog or checkout rules. |
+| [src/cognition/autonomy.rs](../src/cognition/autonomy.rs) | Price-only optional autonomy, atomic unique-SKU daily quotas and a non-compounding day baseline. |
+| [src/cognition/claim_batches.rs](../src/cognition/claim_batches.rs) | Bounded public claim intake/compilation shares current channel admission and source-bound evidence, without per-SKU HTTP round trips. |
 | [src/cognition/context.rs](../src/cognition/context.rs) | Bounded localized catalog retrieval before inference; full catalog size never expands the prompt. |
+| [src/cognition/contracts.rs](../src/cognition/contracts.rs) | Evidence APIs and MCP contracts dispatch into one authorized owner; the claim compiler rejects free prose. |
+| [src/cognition/evidence.rs](../src/cognition/evidence.rs) | Source-bound claim lifecycle on the existing knowledge relation ledger; no model text becomes a confirmed fact automatically. |
+| [src/cognition/experiments/mod.rs](../src/cognition/experiments/mod.rs) | Controlled experiments use the existing storefront layout consumer and authoritative payment ledger. |
+| [src/cognition/experiments/model.rs](../src/cognition/experiments/model.rs) | Preregistered fixed-horizon experiment parameters and conservative bounded-outcome inference. |
+| [src/cognition/experiments/report.rs](../src/cognition/experiments/report.rs) | Delayed final experiment readout is derived from the existing live capture/refund ledger, never demo rewards. |
+| [src/cognition/extraction.rs](../src/cognition/extraction.rs) | On-demand source extraction uses the existing provider owner and quote checks; candidates require merchant review. |
+| [src/cognition/generations.rs](../src/cognition/generations.rs) | Restart-safe model-change intake: short locked cursor batches reuse the canonical embedding queue. |
+| [src/cognition/guardrails.rs](../src/cognition/guardrails.rs) | Merchant-owned guardrails in commerce settings; native currency amounts bind preview and execution. |
+| [src/cognition/indexing.rs](../src/cognition/indexing.rs) | Durable bounded embedding jobs; short claims and revision fences keep provider latency outside PostgreSQL. |
 | [src/cognition/mod.rs](../src/cognition/mod.rs) | Evidence-based shop memory: event receipts, observed pairs, reviewable hypotheses and bounded context. |
+| [src/cognition/preferences.rs](../src/cognition/preferences.rs) | Consent-bound private cart preference graph: typed bounded input, export, erasure and native advisor context. |
 | [src/cognition/projection.rs](../src/cognition/projection.rs) | Exactly-once local observation projection; associations retain order/event evidence and simulation labels. |
 | [src/cognition/recommendations.rs](../src/cognition/recommendations.rs) | Merchant-approved associations are consumed by the public shop without exposing order counts or identities. |
 | [src/cognition/routes.rs](../src/cognition/routes.rs) | Merchant memory endpoints and revision-bound experiment/dismissal decisions. |
+| [src/cognition/signed.rs](../src/cognition/signed.rs) | Public Ed25519 attestations bind exact native facts and channel context for five minutes; signatures do not guarantee source truth. |
+| [src/cognition/stream.rs](../src/cognition/stream.rs) | SSE transports real chat completion and waiting heartbeats; detached execution retains tenant scope and the existing durable chat lease. |
+| [src/cognition/tools.rs](../src/cognition/tools.rs) | Bounded agent read rounds use the same capability dispatcher and current actor rights; never execute writes. |
 | [src/commerce/app_adjustments.rs](../src/commerce/app_adjustments.rs) | Apply admitted integer app adjustments through native pricing/tax calculation; extensions cannot replace quote JSON. |
 | [src/commerce/catalog.rs](../src/commerce/catalog.rs) | SKU loading with parent translation fallback. |
 | [src/commerce/configuration.rs](../src/commerce/configuration.rs) | Tenant checkout configuration loading. |
@@ -240,13 +256,18 @@ This lists every checked-in source module in these roots, including files with n
 | [src/history/product.rs](../src/history/product.rs) | Rebuild a product edit from an audited snapshot; stock stays current and all associations/media pass normal admission. |
 | [src/history/restore.rs](../src/history/restore.rs) | Restore snapshots by replaying validated entity edits; financial effects and publication are never copied from historical state. |
 | [src/history/routes.rs](../src/history/routes.rs) | History summaries are bounded and permission-filtered; full snapshots and restore targets stay inside the owning shop. |
+| [src/http_json.rs](../src/http_json.rs) | Bound untrusted provider JSON before allocation/deserialization; connection pooling remains with each existing service owner. |
 | [src/http_limits.rs](../src/http_limits.rs) | Bounded streaming responses for extension services and payment providers. |
+| [src/inference/protocol.rs](../src/inference/protocol.rs) | Self-hosted chat-completions adapter and opt-in provider prompt caching; neither caches private commerce responses. |
 | [src/inference/schema.rs](../src/inference/schema.rs) | Provider wire adaptation for strict fixed-object schemas; dynamic JSON is encoded only on the model wire and restored before domain validation. |
 | [src/inference/settings.rs](../src/inference/settings.rs) | Shared operator settings; AES-GCM secrets are never part of merchant/operator read responses. |
 | [src/inference/tests.rs](../src/inference/tests.rs) | Provider response contracts, strict schemas and truncation rejection. |
 | [src/inference.rs](../src/inference.rs) | Provider adapters. Credentials stay on the server; domain validation is separate. |
+| [src/knowledge/embeddings.rs](../src/knowledge/embeddings.rs) | Bounded batched embeddings: Ollama and OpenAI-compatible self-hosted endpoints, model-defined dimensions. |
 | [src/knowledge/relations.rs](../src/knowledge/relations.rs) | Keep knowledge provenance and relations in the same transaction as canonical commerce data. |
-| [src/knowledge/search.rs](../src/knowledge/search.rs) | Qdrant candidates are rechecked against tenant/model/content revision in authoritative PostgreSQL. |
+| [src/knowledge/rerank.rs](../src/knowledge/rerank.rs) | Optional TEI cross-encoder reranking on at most 24 tenant-hydrated texts; malformed or unavailable providers retain fused ordering. |
+| [src/knowledge/search.rs](../src/knowledge/search.rs) | Hybrid exact/lexical + dense RRF; hydrate current tenant rows and retrieve only connected evidence. |
+| [src/knowledge/vector_cache.rs](../src/knowledge/vector_cache.rs) | Bounded, short-lived collection geometry cache; only successful verification is cached. |
 | [src/knowledge/vectors.rs](../src/knowledge/vectors.rs) | Private Qdrant adapter: tenant/model filters, deterministic identities and durable PostgreSQL index queue. |
 | [src/knowledge.rs](../src/knowledge.rs) | Transactional PostgreSQL knowledge relations and separately indexed Qdrant retrieval. |
 | [src/legal/capabilities.rs](../src/legal/capabilities.rs) | MCP legal tools delegate to the same ownership/permission-checked HTTP domain handlers. |
@@ -532,7 +553,10 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/developer/useDesignerKeys.ts](../frontend/src/admin/developer/useDesignerKeys.ts) | Designer keyboard shortcuts leave native input and rich-editor undo behavior intact. |
 | [frontend/src/admin/developer/useDraftStorage.ts](../frontend/src/admin/developer/useDraftStorage.ts) | Actor-private server autosaves serialize writes and preserve optimistic revisions across app switches. |
 | [frontend/src/admin/environments/EnvironmentManager.tsx](../frontend/src/admin/environments/EnvironmentManager.tsx) | Private environment creation and digest-bound selective release. |
+| [frontend/src/admin/intelligence/EvidenceReview.tsx](../frontend/src/admin/intelligence/EvidenceReview.tsx) | Review source-bound candidates through shared HTTP/MCP contracts; changed sources block publication. |
+| [frontend/src/admin/intelligence/ExperimentStudio.tsx](../frontend/src/admin/intelligence/ExperimentStudio.tsx) | Immutable experiment designs and lifecycle controls share the core HTTP/MCP owner and current settings rights. |
 | [frontend/src/admin/intelligence/ExternalKnowledge.tsx](../frontend/src/admin/intelligence/ExternalKnowledge.tsx) | Private connected-app evidence browser shows active-source provenance without exposing it to shoppers. |
+| [frontend/src/admin/intelligence/GuardrailSettings.tsx](../frontend/src/admin/intelligence/GuardrailSettings.tsx) | Merchant AI boundaries edit the canonical revisioned commerce settings, never a second policy store. |
 | [frontend/src/admin/intelligence/KnowledgeExplorer.tsx](../frontend/src/admin/intelligence/KnowledgeExplorer.tsx) | Product-centred evidence inspector reads canonical facts and graph relationships beyond overview sampling. |
 | [frontend/src/admin/intelligence/KnowledgeFacts.tsx](../frontend/src/admin/intelligence/KnowledgeFacts.tsx) | Canonical catalogue facts shown alongside graph evidence; prices and inventory come from current product state. |
 | [frontend/src/admin/intelligence/KnowledgeOverview.tsx](../frontend/src/admin/intelligence/KnowledgeOverview.tsx) | Whole-shop knowledge census, operational next steps and provenance activity; examples never masquerade as learned facts. |
@@ -657,6 +681,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/platform/styles/platform/02-platform-shop-stats-span.css](../frontend/src/platform/styles/platform/02-platform-shop-stats-span.css) | platform: platform-shop-stats-span styles. Source order is preserved by the entry stylesheet. |
 | [frontend/src/platform/styles/platform/03-control.css](../frontend/src/platform/styles/platform/03-control.css) | Service hub and operational editors share the same accessible light workspace. |
 | [frontend/src/platform/styles/platform.css](../frontend/src/platform/styles/platform.css) | Ordered platform stylesheet entry; domain rules live in the adjacent folder. |
+| [frontend/src/shared/api/agent-stream.ts](../frontend/src/shared/api/agent-stream.ts) | Decode bounded UTF-8 SSE chat frames; only a completed native result reaches the existing Studio state owner. |
 | [frontend/src/shared/api/download.ts](../frontend/src/shared/api/download.ts) | Authenticated binary download, never placing session credentials in a URL. |
 | [frontend/src/shared/api/merchant-session.ts](../frontend/src/shared/api/merchant-session.ts) | Private merchant-session rejection signals shared by all JSON transports. |
 | [frontend/src/shared/api/request-json.ts](../frontend/src/shared/api/request-json.ts) | Coalesce simultaneous identical core reads with complete identity; no persisted response cache. |
@@ -721,6 +746,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/automation-labels.ts](../frontend/src/shared/i18n/automation-labels.ts) | Source-named rule labels are localized independently from their stable integration identifiers. |
 | [frontend/src/shared/i18n/catalog-i18n.ts](../frontend/src/shared/i18n/catalog-i18n.ts) | Complete four-language catalog workspace vocabulary, separate from commerce data translations. |
 | [frontend/src/shared/i18n/checkout-i18n.ts](../frontend/src/shared/i18n/checkout-i18n.ts) | Checkout vocabulary: the same purchase and payment states in every supported UI language. |
+| [frontend/src/shared/i18n/cognitive-events-i18n.ts](../frontend/src/shared/i18n/cognitive-events-i18n.ts) | Typed labels shared by the knowledge timeline and the native Flow Builder event catalogue. |
 | [frontend/src/shared/i18n/company-i18n.ts](../frontend/src/shared/i18n/company-i18n.ts) | Company identity, field inheritance and legal storefront vocabulary in four interface languages. |
 | [frontend/src/shared/i18n/connected-i18n.ts](../frontend/src/shared/i18n/connected-i18n.ts) | Four-language vocabulary for connected apps, consent and visual automation. |
 | [frontend/src/shared/i18n/content-language.ts](../frontend/src/shared/i18n/content-language.ts) | Resolve editable translation keys without merging distinct regional locales or fabricating inherited values. |
@@ -731,6 +757,8 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/email-i18n.ts](../frontend/src/shared/i18n/email-i18n.ts) | Complete mail workspace vocabulary in English, German, French and Spanish. |
 | [frontend/src/shared/i18n/errors-i18n.ts](../frontend/src/shared/i18n/errors-i18n.ts) | Localized request guidance across all transports; original diagnostics remain available to developer tools. |
 | [frontend/src/shared/i18n/experience-ui-i18n.ts](../frontend/src/shared/i18n/experience-ui-i18n.ts) | Shared four-language interaction vocabulary for contextual Studio help and storefront discovery. |
+| [frontend/src/shared/i18n/experiment-i18n.ts](../frontend/src/shared/i18n/experiment-i18n.ts) | Controlled-experiment vocabulary distinguishes observed cash from causal and margin claims. |
+| [frontend/src/shared/i18n/guardrail-i18n.ts](../frontend/src/shared/i18n/guardrail-i18n.ts) | Typed four-language merchant AI policy vocabulary. |
 | [frontend/src/shared/i18n/i18n.tsx](../frontend/src/shared/i18n/i18n.tsx) | i18n: Four-language locale context, UI dictionaries and translated API errors. |
 | [frontend/src/shared/i18n/international-i18n.ts](../frontend/src/shared/i18n/international-i18n.ts) | International settings vocabulary. Every key requires English, German, French and Spanish. |
 | [frontend/src/shared/i18n/knowledge-i18n.ts](../frontend/src/shared/i18n/knowledge-i18n.ts) | Knowledge workspace vocabulary: sources, evidence and capabilities without fabricated learning claims. |
@@ -746,6 +774,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/operations-i18n.ts](../frontend/src/shared/i18n/operations-i18n.ts) | Operational commerce labels in all supported languages. |
 | [frontend/src/shared/i18n/payment-provider-i18n.ts](../frontend/src/shared/i18n/payment-provider-i18n.ts) | Payment contract editor and account onboarding vocabulary. |
 | [frontend/src/shared/i18n/platform-i18n.ts](../frontend/src/shared/i18n/platform-i18n.ts) | Operator console translations. Every visible control has an explicit translation in all supported locales. |
+| [frontend/src/shared/i18n/preference-i18n.ts](../frontend/src/shared/i18n/preference-i18n.ts) | Consent-bound private shopping-memory controls use typed interface text, separate from merchant product facts. |
 | [frontend/src/shared/i18n/product-legal-i18n.ts](../frontend/src/shared/i18n/product-legal-i18n.ts) | Product safety and sector facts in EN/DE/FR/ES; values follow the shared content-language inheritance. |
 | [frontend/src/shared/i18n/shop-i18n.ts](../frontend/src/shared/i18n/shop-i18n.ts) | Shared shop text hook; dictionaries live in focused locale files. |
 | [frontend/src/shared/i18n/studio-ui-i18n.ts](../frontend/src/shared/i18n/studio-ui-i18n.ts) | Studio navigation and settings guidance in all four supported interface languages. |
@@ -777,6 +806,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/account/AccountProfile.tsx](../frontend/src/storefront/account/AccountProfile.tsx) | Focused profile and password forms report persistence and keep account identity outside editable contact data. |
 | [frontend/src/storefront/account/CustomerAccount.tsx](../frontend/src/storefront/account/CustomerAccount.tsx) | Responsive customer workspace separates authentication, address care and protected purchase details. |
 | [frontend/src/storefront/account/CustomerSignIn.tsx](../frontend/src/storefront/account/CustomerSignIn.tsx) | Distinct sign-in and registration forms with correct autofill and an authenticated, rotated cart context. |
+| [frontend/src/storefront/account/ShoppingPreferences.tsx](../frontend/src/storefront/account/ShoppingPreferences.tsx) | Optional cart-private memory uses native consent, revisioned graph storage and explicit AI-sharing preference. |
 | [frontend/src/storefront/account/account-fields.css](../frontend/src/storefront/account/account-fields.css) | Account form controls have explicit label spacing, consistent actions and shared address-editor integration. |
 | [frontend/src/storefront/account/account-polish.css](../frontend/src/storefront/account/account-polish.css) | Brand-aware account presentation with a separate orientation panel and bounded, scrollable forms. |
 | [frontend/src/storefront/account/account-purchases.css](../frontend/src/storefront/account/account-purchases.css) | Purchase cards, fulfillment, documents and financial detail use one readable account layout. |
@@ -901,6 +931,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/checkout_handoff.py](../scripts/checkout_handoff.py) | Exercise actual PostgreSQL checkout transfer, isolation, replay and durable ordering. |
 | [scripts/checkout_review.py](../scripts/checkout_review.py) | Real SQL checkout rejects unreviewed changes without orders or stock writes; synthetic fixture only. |
 | [scripts/cloud_benchmark.py](../scripts/cloud_benchmark.py) | Bounded private-cloud HTTP load using the existing validated benchmark sampler. |
+| [scripts/cognitive_experiments.py](../scripts/cognitive_experiments.py) | Real native consent/layout/payment paths with synthetic live-receipt fixtures, not a measured commerce experiment. |
 | [scripts/commerce.py](../scripts/commerce.py) | Real HTTP/PG tests for SKUs, moderated reviews, tax/shipping/payment and deliveries. |
 | [scripts/company_settings.py](../scripts/company_settings.py) | Real HTTP company basis/channel inheritance, immutable issuer snapshots, bounded logos and private staging. No external services. |
 | [scripts/connected_apps.py](../scripts/connected_apps.py) | Real local OAuth/provider HTTP protocols, private-source PostgreSQL/AGE consumers and durable Slack flows. |

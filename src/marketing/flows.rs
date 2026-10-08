@@ -23,11 +23,16 @@ pub(super) const EVENTS: &[&str] = &[
     "knowledge.document.archived",
     "knowledge.document.restored",
     "intelligence.decision",
+    "intelligence.claim.reviewed",
+    "intelligence.experiment.changed",
+    "intelligence.experiment.result",
+    "merchant.change.applied",
 ];
 fn knowledge_event(kind: &str) -> bool {
     EVENTS.contains(&kind)
         && (kind.starts_with("knowledge.")
-            || kind == "intelligence.decision"
+            || kind.starts_with("intelligence.")
+            || kind == "merchant.change.applied"
             || kind.starts_with("consumer.")
             || kind.starts_with("privacy."))
 }

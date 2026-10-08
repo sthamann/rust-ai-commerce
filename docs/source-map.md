@@ -465,3 +465,12 @@ The connected extension contract and file-level ownership are maintained in
 lists every actual Rust/frontend/example source, including modules without measured
 coverage. Rich descriptions now share `frontend/src/shared/content/editor/`; do not
 create a separate app editor or catalog-only implementation.
+
+## Connected cognition foundation
+
+[The cognitive commerce guide](cognitive-commerce.md) maps migrations 071–076,
+bounded retrieval/model protocols, original registry read tools, native guardrail
+apply, evidence/signatures, controlled layout trials and private cart preferences.
+Its audit tracker identifies still-unimplemented recommendations. The generated
+module inventory includes every new source; no complete-core proof or 100%
+behavioral coverage is implied.

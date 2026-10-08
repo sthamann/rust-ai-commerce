@@ -56,34 +56,32 @@ pub(crate) fn channel_id(h: &RequestContext) -> &str {
     header(h, "sw-sales-channel-id").unwrap_or("default")
 }
 pub(crate) async fn admit_product(a: &App, h: &RequestContext, id: &str) -> Result<()> {
-    let available:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM products p WHERE p.tenant=$1 AND p.id=$2 AND p.active AND (p.parent_id IS NULL OR EXISTS(SELECT 1 FROM products parent WHERE parent.tenant=p.tenant AND parent.id=p.parent_id AND parent.active)))").bind(tenant(h)?).bind(id).fetch_one(&a.db).await?;
-    if !available {
-        return Err(Error(StatusCode::NOT_FOUND, "Product unavailable".into()));
+    admit_products(a, h, &[id.to_owned()]).await
+}
+/// Batched admission shares the same parent, visibility and channel-list rules as single-product reads.
+pub(crate) async fn admit_products(a: &App, h: &RequestContext, ids: &[String]) -> Result<()> {
+    if ids.is_empty() || ids.len() > 24 {
+        return Err(bad("Product admission batch must contain 1..24 IDs"));
     }
-    let hidden:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM product_channel_visibility v WHERE v.tenant=$1 AND v.channel_id=$2 AND NOT v.visible AND (v.product_id=$3 OR v.product_id=(SELECT parent_id FROM products WHERE tenant=$1 AND id=$3)))").bind(tenant(h)?).bind(channel_id(h)).bind(id).fetch_one(&a.db).await?;
-    if hidden {
+    let rows=sqlx::query("SELECT p.id,p.parent_id FROM products p WHERE p.tenant=$1 AND p.id=ANY($3) AND p.active AND (p.parent_id IS NULL OR EXISTS(SELECT 1 FROM products parent WHERE parent.tenant=p.tenant AND parent.id=p.parent_id AND parent.active)) AND NOT EXISTS(SELECT 1 FROM product_channel_visibility v WHERE v.tenant=p.tenant AND v.channel_id=$2 AND NOT v.visible AND (v.product_id=p.id OR v.product_id=p.parent_id))").bind(tenant(h)?).bind(channel_id(h)).bind(ids).fetch_all(&a.db).await?;
+    let selected = channel(a, h, channel_id(h), &language_context(a, h).await?.0)
+        .await?
+        .map(|c| c.product_ids)
+        .unwrap_or_default();
+    let denied = ids.iter().any(|id| {
+        !rows.iter().any(|r| {
+            r.get::<String, _>("id") == *id
+                && (selected.is_empty()
+                    || selected.contains(id)
+                    || r.get::<Option<String>, _>("parent_id")
+                        .is_some_and(|p| selected.contains(&p)))
+        })
+    });
+    if denied {
         return Err(Error(
             StatusCode::NOT_FOUND,
-            "Product hidden in this sales channel".into(),
+            "Product unavailable in sales channel".into(),
         ));
-    }
-    if let Some(c) = channel(a, h, channel_id(h), &language_context(a, h).await?.0).await?
-        && !c.product_ids.is_empty()
-        && !c.product_ids.iter().any(|p| p == id)
-    {
-        let parent: Option<String> =
-            sqlx::query_scalar("SELECT parent_id FROM products WHERE tenant=$1 AND id=$2")
-                .bind(tenant(h)?)
-                .bind(id)
-                .fetch_optional(&a.db)
-                .await?
-                .flatten();
-        if !parent.is_some_and(|p| c.product_ids.contains(&p)) {
-            return Err(Error(
-                StatusCode::NOT_FOUND,
-                "Product not visible in sales channel".into(),
-            ));
-        }
     }
     Ok(())
 }

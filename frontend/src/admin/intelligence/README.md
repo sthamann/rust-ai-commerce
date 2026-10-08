@@ -20,3 +20,10 @@ Files and their individual responsibilities are listed in [the generated source 
 ## Verification
 
 Run `npm run build`, `npm test`, `npm run test:coverage` and `npm run architecture` from `frontend/`. Coverage includes untested source files; a module in this folder is not automatically fully tested. See the root [testing guide](../../../../docs/testing.md) for backend integration and coverage limits.
+
+The connected cognition editors use native APIs: `EvidenceReview.tsx` reviews
+current document-bound claims; `GuardrailSettings.tsx` edits canonical commerce
+settings and currency scales; `ExperimentStudio.tsx` registers and controls native
+layout experiments with clear preliminary/final readouts. Each uses the shared
+typed four-language vocabulary. Revision and permission failures remain visible.
+See [cognitive commerce](../../../../docs/cognitive-commerce.md) for tested scope.

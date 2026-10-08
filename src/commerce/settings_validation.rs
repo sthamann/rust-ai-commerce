@@ -3,6 +3,7 @@ use super::*;
 
 pub(crate) fn validate_config(s: &Settings) -> Result<()> {
     s.currencies.validate()?;
+    s.ai_policy.validate(s)?;
     super::customer_groups::validate_groups(s)?;
     crate::legal::validate(&s.legal, s)?;
     fn ids<'a>(v: impl Iterator<Item = &'a str>) -> bool {

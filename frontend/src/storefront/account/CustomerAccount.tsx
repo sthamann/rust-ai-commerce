@@ -13,6 +13,7 @@ import type { AccountPage } from "./account-types";
 import { useCustomerAccount } from "./useCustomerAccount";
 import CustomerSignIn from "./CustomerSignIn";
 import AccountOverview from "./AccountOverview";
+import ShoppingPreferences from "./ShoppingPreferences";
 import AccountProfile, { AccountSecurity } from "./AccountProfile";
 import AccountOrderList from "./AccountOrderList";
 import AccountOrderDetail from "./AccountOrderDetail";
@@ -197,14 +198,17 @@ export default function CustomerAccount({
                       />
                     )}
                     {page === "profile" && (
-                      <AccountProfile
-                        profile={account.profile}
-                        setProfile={account.setProfile}
-                        options={account.options}
-                        busy={account.busy}
-                        run={account.run}
-                        reload={account.load}
-                      />
+                      <>
+                        <AccountProfile
+                          profile={account.profile}
+                          setProfile={account.setProfile}
+                          options={account.options}
+                          busy={account.busy}
+                          run={account.run}
+                          reload={account.load}
+                        />
+                        <ShoppingPreferences token={cart?.token} />
+                      </>
                     )}
                     {page === "security" && (
                       <AccountSecurity

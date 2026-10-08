@@ -239,7 +239,7 @@ export function useStudioController({
     setDraft("");
     await run(async () => {
       try {
-        const v = await request("/api/agent/chat", {
+        const v = await request("/api/agent/chat/stream", {
           message: text,
           conversationId: id,
           inference: { provider, model: model || undefined },

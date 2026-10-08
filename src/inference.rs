@@ -2,6 +2,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 use std::env;
+mod protocol;
 pub mod settings;
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -98,6 +99,48 @@ impl Inference {
             .structured_resolved(choice, system, user, schema, &[])
             .await
     }
+    /// Route tasks through the resolved central provider; an explicit caller model always wins.
+    pub async fn structured_for(
+        &self,
+        task: &str,
+        choice: Option<&Choice>,
+        system: &str,
+        user: &str,
+        schema: &Value,
+    ) -> Result<Output, String> {
+        if !["planner", "extraction", "concierge"].contains(&task) {
+            return Err("Unknown inference task".into());
+        }
+        let runtime = self.resolved().await?;
+        let provider = match choice.map(|c| c.provider.clone()) {
+            Some(Provider::Platform) | None => runtime.default_provider.clone(),
+            Some(p) => p,
+        };
+        let suffix = serde_json::to_value(&provider)
+            .unwrap()
+            .as_str()
+            .unwrap()
+            .to_uppercase();
+        let mut routed = choice.cloned().unwrap_or(Choice {
+            provider: provider.clone(),
+            model: None,
+        });
+        if (routed.model.is_none() || matches!(routed.provider, Provider::Platform))
+            && let Ok(model) = env::var(format!(
+                "INFERENCE_MODEL_{}_{}",
+                task.to_uppercase(),
+                suffix
+            ))
+        {
+            routed = Choice {
+                provider,
+                model: Some(model),
+            };
+        }
+        runtime
+            .structured_resolved(Some(&routed), system, user, schema, &[])
+            .await
+    }
     /// Multimodal input uses the same centrally inherited settings and bounded provider output.
     pub async fn structured_with_images(
         &self,
@@ -165,11 +208,15 @@ impl Inference {
                 json!({"type":"image","source":{"type":"base64","media_type":mime,"data":data}}),
             );
         }
-        let (request, path) = match provider {
+        let (mut request, path) = match provider {
             Provider::Platform => return Err("Invalid platform provider".into()),
             Provider::Ollama => (
                 json!({"model":model,"stream":false,"think":false,"format":schema,"options":{"temperature":0,"num_predict":2000},"messages":[{"role":"system","content":system},{"role":"user","content":user,"images":images.iter().filter_map(|s|s.split_once(";base64,").map(|(_,b)|b)).collect::<Vec<_>>()}]}),
                 format!("{}/api/chat", self.ollama.trim_end_matches('/')),
+            ),
+            Provider::Openai if env::var("OPENAI_PROTOCOL").as_deref() == Ok("chat") => (
+                protocol::chat_request(model, system, user, schema, images),
+                format!("{}/chat/completions", self.openai_url.trim_end_matches('/')),
             ),
             Provider::Openai => (
                 json!({"model":model,"store":false,"instructions":system,"input":if images.is_empty(){json!(user)}else{json!([{"role":"user","content":visual}])},"max_output_tokens":8192,"text":{"format":{"type":"json_schema","name":"commerce_result","strict":true,"schema":strict_schema(schema.clone())}}}),
@@ -180,6 +227,7 @@ impl Inference {
                 format!("{}/messages", self.anthropic_url.trim_end_matches('/')),
             ),
         };
+        protocol::prompt_cache(&provider, &mut request, system);
         let mut req = self.http.post(path).json(&request);
         req = match provider {
             Provider::Platform => return Err("Invalid platform provider".into()),
@@ -214,11 +262,14 @@ impl Inference {
                 response.status().as_u16()
             ));
         }
-        let raw: Value = response
-            .json()
-            .await
-            .map_err(|_| "Invalid provider response")?;
-        let value = parse(&provider, &raw)?;
+        let raw = crate::http_json::bounded(response, 2 * 1024 * 1024).await?;
+        let value = if matches!(provider, Provider::Openai)
+            && env::var("OPENAI_PROTOCOL").as_deref() == Ok("chat")
+        {
+            protocol::chat_response(&raw)?
+        } else {
+            parse(&provider, &raw)?
+        };
         let value = if matches!(provider, Provider::Openai) {
             schema::restore(schema, value)?
         } else {
@@ -235,43 +286,7 @@ impl Inference {
         })
     }
 }
-fn parse(provider: &Provider, raw: &Value) -> Result<Value, String> {
-    let text = match provider {
-        Provider::Platform => return Err("Unresolved platform provider".into()),
-        Provider::Ollama => {
-            if raw["done_reason"] == "length" {
-                return Err("Local model output was truncated".into());
-            }
-            raw["message"]["content"].as_str().map(str::to_string)
-        }
-        Provider::Anthropic => {
-            if raw["stop_reason"] == "max_tokens" {
-                return Err("Model output was truncated".into());
-            }
-            raw["content"].as_array().map(|a| {
-                a.iter()
-                    .filter(|v| v["type"] == "text")
-                    .filter_map(|v| v["text"].as_str())
-                    .collect::<String>()
-            })
-        }
-        Provider::Openai => {
-            if raw["status"] != "completed" {
-                return Err("OpenAI response did not complete".into());
-            }
-            raw["output"].as_array().map(|a| {
-                a.iter()
-                    .filter_map(|v| v["content"].as_array())
-                    .flatten()
-                    .filter(|v| v["type"] == "output_text")
-                    .filter_map(|v| v["text"].as_str())
-                    .collect::<String>()
-            })
-        }
-    }
-    .ok_or("Provider response lacks text")?;
-    serde_json::from_str(&text).map_err(|_| "Model did not return valid structured output".into())
-}
+use protocol::parse;
 mod schema;
 #[cfg(test)]
 mod tests;

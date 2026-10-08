@@ -4,6 +4,9 @@ mod transport;
 use transport::invoke_transport;
 
 pub(crate) fn tool_schema(name: &str) -> Value {
+    if let Some(schema) = cognition::contracts::schema(name) {
+        return schema;
+    }
     if let Some(schema) = currencies::schema(name) {
         return schema;
     }
@@ -244,12 +247,20 @@ pub(crate) async fn mcp(State(a): State<App>, h: RequestContext, Json(v): Json<V
                                 "automation.save" | "automation.import" | "automation.delete"
                             ) || auth::permit(&h, "settings.write").is_ok());
                     }
+                    if *n == "knowledge.autonomy.apply" {
+                        return auth::allowed(&h, "knowledge.read")
+                            && auth::allowed(&h, "catalog.write")
+                            && auth::allowed(&h, "settings.write");
+                    }
                     if n.starts_with("knowledge.") {
                         return merchant(&a, &h).is_ok()
                             && auth::permit(&h, "knowledge.read").is_ok()
                             && (!matches!(
                                 *n,
-                                "knowledge.source.create"
+                                "knowledge.claim.propose"
+                                    | "knowledge.claim.review"
+                                    | "knowledge.extract"
+                                    | "knowledge.source.create"
                                     | "knowledge.source.edit"
                                     | "knowledge.source.visibility"
                                     | "knowledge.source.archive"
@@ -292,7 +303,7 @@ pub(crate) async fn mcp(State(a): State<App>, h: RequestContext, Json(v): Json<V
             json!({"resources":[{"uri":"commerce://capabilities","name":"Commerce capabilities","mimeType":"application/json"}]}),
         ),
         "resources/read" if v["params"]["uri"] == "commerce://capabilities" => Ok(
-            json!({"contents":[{"uri":"commerce://capabilities","mimeType":"application/json","text":json!({"capabilities":CAPABILITIES}).to_string()}]}),
+            json!({"contents":[{"uri":"commerce://capabilities","mimeType":"application/json","text":json!({"capabilities": &*CAPABILITIES}).to_string()}]}),
         ),
         _ => Err(bad("Method not supported")),
     };

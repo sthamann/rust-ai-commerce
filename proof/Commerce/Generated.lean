@@ -126,4 +126,16 @@ def app_surface_admissible (current_package : Bool) (allowed_action : Bool) : Bo
 def app_callback_admissible (capability : Bool) (current_role : Bool) : Bool :=
   (capability && current_role)
 
+def ai_price_admissible (price : Nat) (minimum : Nat) (maximum : Nat) (margin : Bool) (discount : Bool) (brand : Bool) (available : Bool) : Bool :=
+  ((((((decide (minimum ≤ price)) && (decide (price ≤ maximum))) && margin) && discount) && brand) && available)
+
+def ai_autonomy_admissible (enabled : Bool) (authorized : Bool) (price_only : Bool) (daily_budget : Bool) (within_delta : Bool) : Bool :=
+  ((((enabled && authorized) && price_only) && daily_budget) && within_delta)
+
+def claim_render_admissible (confirmed : Bool) (public_source : Bool) (current_source : Bool) (valid_time : Bool) (exact_text : Bool) : Bool :=
+  ((((confirmed && public_source) && current_source) && valid_time) && exact_text)
+
+def experiment_result_admissible (final_look : Bool) (enough_units : Bool) (positive_bound : Bool) : Bool :=
+  ((final_look && enough_units) && positive_bound)
+
 end CommerceKernel

@@ -264,6 +264,46 @@ fn eval(j: &Value) -> Result<Value, String> {
                 .as_bool()
                 .ok_or("Invalid current_role")?
         ))),
+        Some("ai_price_admissible") => Ok(json!(ai_price_admissible(
+            args["price"].as_u64().ok_or("Invalid price")?,
+            args["minimum"].as_u64().ok_or("Invalid minimum")?,
+            args["maximum"].as_u64().ok_or("Invalid maximum")?,
+            args["margin"].as_bool().ok_or("Invalid margin")?,
+            args["discount"].as_bool().ok_or("Invalid discount")?,
+            args["brand"].as_bool().ok_or("Invalid brand")?,
+            args["available"].as_bool().ok_or("Invalid available")?
+        ))),
+        Some("ai_autonomy_admissible") => Ok(json!(ai_autonomy_admissible(
+            args["enabled"].as_bool().ok_or("Invalid enabled")?,
+            args["authorized"].as_bool().ok_or("Invalid authorized")?,
+            args["price_only"].as_bool().ok_or("Invalid price_only")?,
+            args["daily_budget"]
+                .as_bool()
+                .ok_or("Invalid daily_budget")?,
+            args["within_delta"]
+                .as_bool()
+                .ok_or("Invalid within_delta")?
+        ))),
+        Some("claim_render_admissible") => Ok(json!(claim_render_admissible(
+            args["confirmed"].as_bool().ok_or("Invalid confirmed")?,
+            args["public_source"]
+                .as_bool()
+                .ok_or("Invalid public_source")?,
+            args["current_source"]
+                .as_bool()
+                .ok_or("Invalid current_source")?,
+            args["valid_time"].as_bool().ok_or("Invalid valid_time")?,
+            args["exact_text"].as_bool().ok_or("Invalid exact_text")?
+        ))),
+        Some("experiment_result_admissible") => Ok(json!(experiment_result_admissible(
+            args["final_look"].as_bool().ok_or("Invalid final_look")?,
+            args["enough_units"]
+                .as_bool()
+                .ok_or("Invalid enough_units")?,
+            args["positive_bound"]
+                .as_bool()
+                .ok_or("Invalid positive_bound")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

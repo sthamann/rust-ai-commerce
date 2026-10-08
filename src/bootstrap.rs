@@ -52,7 +52,13 @@ pub(crate) async fn bootstrap() -> App {
     let a = App {
         _connection_budget: Arc::new(connection_budget),
         db: db.clone(),
-        inference_slots: Arc::new(tokio::sync::Semaphore::new(4)),
+        inference_slots: Arc::new(tokio::sync::Semaphore::new(
+            env::var("INFERENCE_CONCURRENCY")
+                .ok()
+                .and_then(|s| s.parse::<usize>().ok())
+                .filter(|n| (1..=256).contains(n))
+                .unwrap_or(4),
+        )),
         token: Arc::new(auth),
         inference: Inference::from_env(http.clone()).with_database(db.clone()),
         http,

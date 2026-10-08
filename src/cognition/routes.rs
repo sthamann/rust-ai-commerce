@@ -2,6 +2,10 @@
 use super::*;
 pub(crate) fn cognition_router() -> Router<App> {
     Router::new()
+        .merge(contracts::router())
+        .merge(preferences::router())
+        .merge(signed::router())
+        .merge(stream::router())
         .route(
             "/store-api/intelligence/recommendations/{id}",
             get(recommendations),

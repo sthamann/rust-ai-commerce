@@ -10,13 +10,10 @@ pub(crate) async fn search_in(
     semantic: bool,
 ) -> Result<Value> {
     let (settings, _) = commerce::config(a, t).await?;
-    let (endpoint, key, _) = a.inference.connection("ollama").await.unwrap_or_default();
     let model = env::var("EMBEDDING_MODEL").unwrap_or("qwen3-embedding:0.6b".into());
     let indexed:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM knowledge_chunks c JOIN knowledge_documents d ON d.tenant=c.tenant AND d.id=c.document_id WHERE c.tenant=$1 AND NOT d.archived AND c.embedding_model=$2 AND (NOT $3 OR d.visibility='public') AND ($4::text IS NULL OR d.product_id IS NULL OR d.product_id=$4 OR d.product_id=(SELECT parent_id FROM products WHERE tenant=$1 AND id=$4)))").bind(t).bind(&model).bind(public).bind(product).fetch_one(&a.db).await?;
     let vector = if indexed && semantic {
-        knowledge::embedding(&a.http, &endpoint, key.as_deref(), &model, query)
-            .await
-            .ok()
+        cognition::indexing::query_embedding(a, t, query).await
     } else {
         None
     };
@@ -53,21 +50,18 @@ pub(crate) async fn index(
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     auth::permit(&h, "catalog")?;
-    let (endpoint, key, _) = a.inference.connection("ollama").await.map_err(bad)?;
-    let model = env::var("EMBEDDING_MODEL").unwrap_or("qwen3-embedding:0.6b".into());
-    let rows=sqlx::query("SELECT position,text FROM knowledge_chunks WHERE tenant=$1 AND document_id=$2 AND embedding_model IS DISTINCT FROM $3 ORDER BY position LIMIT 100").bind(&t).bind(&id).bind(&model).fetch_all(&a.db).await?;
-    for r in &rows {
-        let vector = knowledge::embedding(
-            &a.http,
-            &endpoint,
-            key.as_deref(),
-            &model,
-            &r.get::<String, _>("text"),
-        )
-        .await
-        .map_err(|e| Error(StatusCode::BAD_GATEWAY, e))?;
-        sqlx::query("UPDATE knowledge_chunks SET embedding=$1,embedding_model=$2 WHERE tenant=$3 AND document_id=$4 AND position=$5 AND text=$6").bind(vector).bind(&model).bind(&t).bind(&id).bind(r.get::<i32,_>("position")).bind(r.get::<String,_>("text")).execute(&a.db).await?;
+    let exists: bool = sqlx::query_scalar(
+        "SELECT EXISTS(SELECT 1 FROM knowledge_documents WHERE tenant=$1 AND id=$2)",
+    )
+    .bind(&t)
+    .bind(&id)
+    .fetch_one(&a.db)
+    .await?;
+    if !exists {
+        return Err(Error(StatusCode::NOT_FOUND, "Document not found".into()));
     }
-    let _ = knowledge::vectors::drain(&a.db).await;
-    Ok(Json(json!({"indexed":rows.len(),"model":model})))
+    let queued = cognition::indexing::enqueue(&a, &t, Some(&id)).await?;
+    Ok(Json(
+        json!({"queued":queued,"indexed":0,"model":cognition::indexing::model(),"asynchronous":true}),
+    ))
 }

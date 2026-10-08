@@ -1,6 +1,68 @@
 /** Knowledge workspace vocabulary: sources, evidence and capabilities without fabricated learning claims. */
+import { cognitiveEventWords } from "./cognitive-events-i18n";
+import { experimentWords } from "./experiment-i18n";
+import { guardrailWords } from "./guardrail-i18n";
 import { useLocale } from "./i18n";
 export const knowledgeWords = {
+  ...cognitiveEventWords,
+  ...guardrailWords,
+  ...experimentWords,
+  noClaimCandidates: [
+    "No candidates for this product yet.",
+    "Für dieses Produkt gibt es noch keine Aussagen zur Prüfung.",
+    "Aucune proposition pour ce produit.",
+    "Todavía no hay propuestas para este producto.",
+  ],
+  claimStale: [
+    "Source changed. Extract again before confirming.",
+    "Die Quelle wurde geändert. Vor der Bestätigung erneut extrahieren.",
+    "La source a changé. Extrayez à nouveau avant confirmation.",
+    "La fuente cambió. Extrae de nuevo antes de confirmar.",
+  ],
+  rejectClaim: [
+    "Reject statement",
+    "Aussage ablehnen",
+    "Rejeter cette affirmation",
+    "Rechazar afirmación",
+  ],
+  confirmClaim: [
+    "Confirm statement",
+    "Aussage bestätigen",
+    "Confirmer cette affirmation",
+    "Confirmar afirmación",
+  ],
+  rejected: ["Rejected", "Abgelehnt", "Rejeté", "Rechazado"],
+  confirmed: ["Confirmed", "Bestätigt", "Confirmé", "Confirmado"],
+  evidenced: [
+    "Source linked",
+    "Mit Quelle belegt",
+    "Source associée",
+    "Fuente vinculada",
+  ],
+  extractCandidates: [
+    "Extract candidates for review",
+    "Aussagen zur Prüfung extrahieren",
+    "Extraire des propositions",
+    "Extraer propuestas",
+  ],
+  chooseEvidenceSource: [
+    "Choose a source",
+    "Quelle auswählen",
+    "Choisir une source",
+    "Elegir una fuente",
+  ],
+  claimBoundary: [
+    "Only confirmed, current public statements can be compiled. Merchant approval is not proof of truth.",
+    "Nur bestätigte, aktuelle öffentliche Aussagen bestehen die Prüfung. Die Händlerbestätigung ist kein Wahrheitsbeweis.",
+    "Seules les affirmations confirmées, actuelles et publiques passent la vérification. La confirmation ne prouve pas leur véracité.",
+    "Solo las afirmaciones confirmadas, actuales y públicas pasan la verificación. La aprobación no demuestra su veracidad.",
+  ],
+  claimReview: [
+    "Product statements & evidence",
+    "Produktaussagen & Belege",
+    "Affirmations produit et preuves",
+    "Afirmaciones de producto y evidencias",
+  ],
   heading: [
     "Your shop’s knowledge, connected",
     "Das Wissen deines Shops, verbunden",

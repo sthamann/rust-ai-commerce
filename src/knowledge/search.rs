@@ -1,4 +1,4 @@
-//! Qdrant candidates are rechecked against tenant/model/content revision in authoritative PostgreSQL.
+//! Hybrid exact/lexical + dense RRF; hydrate current tenant rows and retrieve only connected evidence.
 use super::*;
 pub async fn search(
     db: &PgPool,
@@ -12,14 +12,36 @@ pub async fn search(
     } else {
         None
     };
-    let (hits, mode) = if let Some(candidates) = candidates {
-        // One bounded SQL hydration preserves Qdrant rank and rechecks all authoritative scope/digests.
-        let hits: Vec<Value> = sqlx::query_scalar("SELECT jsonb_build_object('id',p.id,'name',p.name,'price',p.price,'currency',coalesce(p.extra->>'priceCurrency',(SELECT data->'currencies'->>'pricingCurrency' FROM commerce_settings WHERE tenant=$1),'EUR'),'stock',p.stock,'revision',p.revision,'score',c.hit->'score') FROM jsonb_array_elements($2::jsonb) WITH ORDINALITY AS c(hit,rank) JOIN semantic_products s ON s.tenant=$1 AND s.product_id=c.hit->'payload'->>'object_id' AND s.embedding_model=$3 AND s.content_hash=c.hit->'payload'->>'digest' JOIN products p ON p.tenant=s.tenant AND p.id=s.product_id WHERE c.hit->'payload'->>'tenant'=$1 AND c.hit->'payload'->>'model'=$3 ORDER BY c.rank LIMIT 8")
-            .bind(tenant).bind(json!(candidates)).bind(model).fetch_all(db).await?;
-        (hits, "vector")
+    let mode = if candidates.is_some() {
+        "hybrid"
     } else {
-        let hits:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('id',id,'name',name,'price',price,'currency',coalesce(extra->>'priceCurrency',(SELECT data->'currencies'->>'pricingCurrency' FROM commerce_settings WHERE tenant=$1),'EUR'),'stock',stock,'revision',revision,'score',ts_rank_cd(to_tsvector('simple',name||' '||description),plainto_tsquery('simple',$2))) FROM products WHERE tenant=$1 AND to_tsvector('simple',name||' '||description) @@ plainto_tsquery('simple',$2) ORDER BY ts_rank_cd(to_tsvector('simple',name||' '||description),plainto_tsquery('simple',$2)) DESC,id LIMIT 8").bind(tenant).bind(query).fetch_all(db).await?;
-        (hits, "lexical")
+        "lexical"
     };
-    Ok(json!({"mode":mode,"searchEngine":"Qdrant","hits":hits,"graph":graph(db,tenant).await?}))
+    let hits: Vec<Value> = sqlx::query_scalar(include_str!("search.sql"))
+        .bind(tenant)
+        .bind(query)
+        .bind(json!(candidates.unwrap_or_default()))
+        .bind(model)
+        .fetch_all(db)
+        .await?;
+    // The application caller admits optional reranking through its shared inference budget.
+    let reranked = false;
+    let ids = hits
+        .iter()
+        .filter_map(|p| p["id"].as_str().map(str::to_owned))
+        .collect::<Vec<_>>();
+    Ok(
+        json!({"mode":mode,"searchEngine":"Qdrant+PostgreSQL","fusion":"rrf","reranked":reranked,"hits":hits,"graph":neighborhood(db,tenant,&ids).await?}),
+    )
+}
+/// An inference context is a bounded relevant subgraph, never a shop-wide graph dump.
+pub async fn neighborhood(db: &PgPool, tenant: &str, ids: &[String]) -> Result<Value, sqlx::Error> {
+    let edges: Vec<Value> = sqlx::query_scalar(include_str!("neighborhood.sql"))
+        .bind(tenant)
+        .bind(ids)
+        .fetch_all(db)
+        .await?;
+    Ok(
+        json!({"tenant":tenant,"engine":"PostgreSQL","edges":edges,"limit":48,"provenance":"curated or observed; association is not causal evidence"}),
+    )
 }
