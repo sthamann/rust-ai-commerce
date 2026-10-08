@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Two real Rust replicas test coherent read caches; optional matched local HTTP baseline probe."""
 from testing.database import psql
+from testing import hotpath
 import concurrent.futures
 import hashlib
 import json
@@ -8,6 +9,7 @@ import math
 import os
 from pathlib import Path
 import socket
+import statistics
 import subprocess
 import time
 import urllib.error
@@ -138,6 +140,17 @@ try:
     if files:
         with urllib.request.urlopen(second[2] + '/assets/' + files[0].name, timeout=5) as r:
             assert r.headers['Cache-Control'] == 'public, max-age=31536000, immutable'
+    # A per-request snapshot must not create a cross-request availability cache.
+    sql(f"UPDATE tenants SET status='paused' WHERE id='{tenant}';")
+    for server in (first, second):
+        call(server[2], read, headers={'Host':tenant+'.vendune.ai'}, expected=503)
+    sql(f"UPDATE tenants SET status='active' WHERE id='{tenant}';")
+    sql(f"UPDATE sales_channels SET data=jsonb_set(data,'{{visibility}}','\"private\"') WHERE tenant='{tenant}' AND id='default';")
+    for server in (first, second):
+        call(server[2], read, headers={'Host':tenant+'.vendune.ai'}, expected=403)
+        call(server[2], read, headers=merchant)
+    sql(f"UPDATE sales_channels SET data=jsonb_set(data,'{{visibility}}','\"public\"') WHERE tenant='{tenant}' AND id='default';")
+    hotpath.verify(second, tenant, merchant)
     print('PASS language registry updates, tenant boundaries, immediate membership revocation and bounded cache diagnostics')
 finally:
     close(first)
@@ -187,9 +200,27 @@ finally:
     close(limited)
 
 if env.get('PERFORMANCE_BASELINE_BIN'):
+    # Compare nonempty overview facts, including mixed-currency days, without paid providers.
+    fixture = start('overview-fixture', {'RUST_LOG':'off'})
+    try:
+        basis = call(fixture[2], '/api/merchant/commerce', headers=merchant)
+        basis['data']['currencies']['enabled'].append('USD')
+        basis['data']['currencies']['definitions'].append({'code':'USD','scale':2,'rate':'1.25','strategy':'automatic'})
+        call(fixture[2], '/api/merchant/commerce', basis, merchant, 'PUT')
+        for currency in ['EUR','EUR','USD']:
+            cart = call(fixture[2], '/store-api/checkout/cart', {'session':uuid.uuid4().hex}, {'x-commerce-currency':currency})
+            shopper = {'sw-context-token':cart['token'],'x-commerce-currency':currency}
+            call(fixture[2], '/store-api/checkout/cart/line-item', {'items':[{'referencedId':'notebook','quantity':1}]}, shopper)
+            call(fixture[2], '/store-api/checkout/order', {}, {**shopper,'Idempotency-Key':uuid.uuid4().hex})
+        overview = call(fixture[2], '/api/merchant/overview', headers=merchant)
+        assert overview['summary']['orders'] == 3 and len(overview['summary']['revenueByCurrency']) == 2
+        assert overview['summary']['revenue'] is None and overview['timeline'][-1]['revenue'] is None
+    finally:
+        close(fixture)
     workloads = [
         ('storefront-list', '/store-api/product', {}, {}),
         ('storefront-detail', read, None, {}),
+        ('host-catalog', '/store-api/product', {}, {'Host':tenant+'.vendune.ai'}),
         ('admin-catalog', '/api/search/product', {}, merchant),
         ('mcp-catalog', '/mcp', {'jsonrpc': '2.0', 'id': 1, 'method': 'tools/call',
             'params': {'name': 'catalog.search', 'arguments': {}}}, {}),
@@ -197,19 +228,25 @@ if env.get('PERFORMANCE_BASELINE_BIN'):
     # Log query counts separately from latency so tracing does not distort the timed runs.
     reports = {}
     fingerprints = {}
+    delivery = {}
     for label, binary in [('before', env['PERFORMANCE_BASELINE_BIN']), ('after', str(ROOT / 'target/debug/vendune'))]:
         server = start('counts-' + label, binary=binary)
         counts = {}
+        count_samples = {}
         try:
+            delivery[label] = hotpath.compare(server, tenant, merchant)
             for name, path, body, headers in workloads:
                 value = call(server[2], path, body, headers)
                 digest = hashlib.sha256(json.dumps(value, sort_keys=True).encode()).hexdigest()
                 if label == 'before': fingerprints[name] = digest
                 else: assert fingerprints[name] == digest, 'Business response changed: ' + name
-                offset = server[3].stat().st_size
-                call(server[2], path, body, headers)
-                text = server[3].read_bytes()[offset:].decode()
-                counts[name] = sum('sqlx::query' in line and 'channel_metrics' not in line for line in text.splitlines())
+                samples = []
+                for _ in range(7):
+                    offset = server[3].stat().st_size
+                    call(server[2], path, body, headers)
+                    samples.append(hotpath.statements(server[3], offset))
+                counts[name] = statistics.median(samples)
+                count_samples[name] = samples
         finally:
             close(server)
         server = start('latency-' + label, {'RUST_LOG': 'off'}, binary=binary)
@@ -233,14 +270,17 @@ if env.get('PERFORMANCE_BASELINE_BIN'):
                     rounds.append({'requests': len(samples), 'seconds': seconds, 'achievedRps': len(samples) / seconds,
                         'p50Ms': samples[math.ceil(len(samples) * .5) - 1], 'p95Ms': samples[math.ceil(len(samples) * .95) - 1],
                         'samplesMs': samples})
-                measured[name] = {'sqlStatements': counts[name], 'rounds': rounds}
+                measured[name] = {'sqlStatements': counts[name], 'sqlStatementSamples':count_samples[name], 'rounds': rounds}
         finally:
             close(server)
         reports[label] = {'binarySha256': hashlib.sha256(Path(binary).read_bytes()).hexdigest(), 'workloads': measured}
     source = hashlib.sha256()
     for path in sorted([*ROOT.joinpath('src').rglob('*.rs'), *ROOT.joinpath('src').rglob('*.sql'), *ROOT.joinpath('migrations').glob('*.sql'), ROOT/'Cargo.toml', ROOT/'Cargo.lock']):
         source.update(str(path.relative_to(ROOT)).encode());source.update(path.read_bytes())
-    report = {'environment': 'localhost, debug Rust, PostgreSQL Docker, six products, 16 clients, closed loop, three 300-request rounds per workload',
+    for name in delivery['before']:
+        assert delivery['before'][name]['responseSha256'] == delivery['after'][name]['responseSha256'], 'Delivery model changed: '+name
+    report = {'environment': 'localhost, debug Rust, PostgreSQL '+('native' if env.get('TEST_PSQL') else 'Docker')+', six products, 16 clients, closed loop, three 300-request rounds per workload',
+        'delivery': delivery,
         'host': list(os.uname()), 'postgresql': sql('SHOW server_version;'), 'processRole': 'http',
         'afterSourceTreeSha256': source.hexdigest(),
         'baselineSourceCommit': env.get('PERFORMANCE_BASELINE_REF'), 'responseFingerprints': fingerprints,

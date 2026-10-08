@@ -1,6 +1,7 @@
 //! Verified merchant overview facts consumed by the chat and activity views.
 use super::*;
 use axum::{extract::Request, middleware::Next};
+mod facts;
 mod revenue;
 
 pub(super) async fn track_channels(State(a): State<App>, request: Request, next: Next) -> Response {
@@ -54,35 +55,20 @@ pub(super) async fn merchant_overview(
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     let (locale, chain) = language_context(&a, &h).await?;
-    let page = product_page(&a, &t, &chain, &criteria).await?;
-    let ps = &page.products;
-    let stats=sqlx::query("SELECT count(*) AS orders,count(*) FILTER(WHERE created_at>=current_date) AS today FROM orders WHERE tenant=$1").bind(&t).fetch_one(&a.db).await?;
-    let revenue = revenue::summary(&a, &t).await?;
+    let (facts, page, graph) = tokio::try_join!(
+        facts::load(&a, &t),
+        product_page(&a, &t, &chain, &criteria),
+        async { Ok::<_, Error>(knowledge::graph(&a.db, &t).await?) }
+    )?;
     let (settings, _) = commerce::config(&a, &t).await?;
-    let rows=sqlx::query("SELECT data,created_at::text AS time FROM orders WHERE tenant=$1 ORDER BY created_at DESC LIMIT 8").bind(&t).fetch_all(&a.db).await?;
-    let orders=rows.iter().map(|r| {let data=r.get::<Value,_>("data");json!({"id":data["id"],"number":data["orderNumber"],"total":data["cart"]["price"]["totalPrice"],"currency":data["cart"]["price"]["currency"].as_str().unwrap_or("EUR"),"channel":data.get("channel").cloned().unwrap_or(json!("unknown")),"time":r.get::<String,_>("time"),"payment":"simulated"})}).collect::<Vec<_>>();
-    let timeline=sqlx::query("SELECT d::date::text AS day,count(o.id) AS orders,count(DISTINCT coalesce(o.data->'cart'->'price'->>'currency','EUR')) FILTER(WHERE o.id IS NOT NULL) AS currency_count, min(coalesce(o.data->'cart'->'price'->>'currency','EUR')) FILTER(WHERE o.id IS NOT NULL) AS currency, coalesce(sum((o.data->'cart'->'price'->>'totalPrice')::numeric),0)::text AS revenue FROM generate_series(current_date-6,current_date,interval '1 day') d LEFT JOIN orders o ON o.tenant=$1 AND o.created_at>=d AND o.created_at<d+interval '1 day' GROUP BY d ORDER BY d").bind(&t).fetch_all(&a.db).await?;
-    let policy =
-        sqlx::query("SELECT variant,views,purchases FROM policy WHERE tenant=$1 ORDER BY variant")
-            .bind(&t)
-            .fetch_all(&a.db)
-            .await?;
-    let variants=policy.iter().map(|r|{let views=r.get::<i64,_>("views");let purchases=r.get::<i64,_>("purchases");json!({"variant":r.get::<String,_>("variant"),"views":views,"purchases":purchases,"estimate":(purchases+1) as f64/(views+2) as f64})}).collect::<Vec<_>>();
-    let learning_timeline=sqlx::query("SELECT d::date::text AS day,count(e.session) AS views,count(e.session) FILTER(WHERE e.rewarded) AS rewarded FROM generate_series(current_date-6,current_date,interval '1 day') d LEFT JOIN exposures e ON e.tenant=$1 AND e.created_at>=d AND e.created_at<d+interval '1 day' GROUP BY d ORDER BY d").bind(&t).fetch_all(&a.db).await?;
-    let graph = knowledge::graph(&a.db, &t).await?;
-    let index=sqlx::query("SELECT count(*) AS count,max(updated_at)::text AS updated FROM semantic_products WHERE tenant=$1").bind(&t).fetch_one(&a.db).await?;
-    let plans=sqlx::query("SELECT count(*) FILTER(WHERE NOT applied AND (jsonb_array_length(proposal->'proposal'->'changes')>0 OR proposal->'proposal'->'experience' IS NOT NULL AND proposal->'proposal'->'experience'<>'null'::jsonb)) AS pending,count(*) FILTER(WHERE applied) AS applied FROM tasks WHERE tenant=$1").bind(&t).fetch_one(&a.db).await?;
-    let activity=sqlx::query("SELECT kind,time::text AS time,id FROM (SELECT 'order' AS kind,created_at AS time,id FROM orders WHERE tenant=$1 UNION ALL SELECT CASE WHEN applied AND applied_at IS NOT NULL THEN 'approved' ELSE 'proposal' END AS kind,coalesce(applied_at,created_at) AS time,id FROM tasks WHERE tenant=$1) a ORDER BY time DESC LIMIT 10").bind(&t).fetch_all(&a.db).await?;
-    let channels=sqlx::query("SELECT channel,calls,failures,last_seen::text AS last_seen FROM channel_metrics WHERE tenant=$1 ORDER BY channel").bind(&t).fetch_all(&a.db).await?;
+    let ps = &page.products;
     let providers = a.inference.public_providers().await.map_err(bad)?;
     Ok(Json(json!({
         "locale":locale,"tenant":t,"productCurrency":settings.currencies.pricing_currency,"dataMode":"synthetic-demo","products":ps,"productsPagination":{"nextCursor":page.next_cursor,"hasMore":page.next_cursor.is_some(),"limit":page.limit},
-        "summary":{"orders":stats.get::<i64,_>("orders"),"ordersToday":stats.get::<i64,_>("today"),"revenue":revenue["singleTotal"],"revenueByCurrency":revenue["amounts"],"revenueCurrency":revenue["singleCurrency"],"pendingPlans":plans.get::<i64,_>("pending"),"appliedPlans":plans.get::<i64,_>("applied")},
-        "orders":orders,"timeline":timeline.iter().map(|r|json!({"day":r.get::<String,_>("day"),"orders":r.get::<i64,_>("orders"),"currency":r.get::<Option<String>,_>("currency"),"revenue":if r.get::<i64,_>("currency_count")>1 {Value::Null} else {json!(r.get::<String,_>("revenue").parse::<f64>().unwrap_or(0.))}})).collect::<Vec<_>>(),
-        "knowledge":{"graph":graph,"indexedProducts":index.get::<i64,_>("count"),"lastIndexed":index.get::<Option<String>,_>("updated"),"provenance":"curated-demo","modelWeightsLearn":false},
-        "learning":{"timeline":learning_timeline.iter().map(|r|json!({"day":r.get::<String,_>("day"),"views":r.get::<i64,_>("views"),"rewarded":r.get::<i64,_>("rewarded")})).collect::<Vec<_>>(),"variants":variants,"method":"epsilon-greedy with smoothed purchase rate","reward":"simulated order","causalUpliftProven":false},
-        "activity":activity.iter().map(|r|json!({"kind":r.get::<String,_>("kind"),"time":r.get::<String,_>("time"),"id":r.get::<String,_>("id")})).collect::<Vec<_>>(),
-        "channels":channels.iter().map(|r|json!({"channel":r.get::<String,_>("channel"),"calls":r.get::<i64,_>("calls"),"httpFailures":r.get::<i64,_>("failures"),"lastSeen":r.get::<String,_>("last_seen")})).collect::<Vec<_>>(),
+        "summary":facts["summary"],"orders":facts["orders"],"timeline":facts["timeline"],
+        "knowledge":{"graph":graph,"indexedProducts":facts["indexedProducts"],"lastIndexed":facts["lastIndexed"],"provenance":"curated-demo","modelWeightsLearn":false},
+        "learning":{"timeline":facts["learningTimeline"],"variants":facts["variants"],"method":"epsilon-greedy with smoothed purchase rate","reward":"simulated order","causalUpliftProven":false},
+        "activity":facts["activity"],"channels":facts["channels"],
         "connections":{"providers":providers["providers"],"chatgptAccountLinked":false,"claudeAccountLinked":false,"localMCPConfig":{"mcpServers":{"vendune":{"command":"python3","args":[env::current_dir().unwrap().join("scripts/mcp_stdio.py").to_string_lossy()],"env":{"COMMERCE_URL":"http://127.0.0.1:8787","COMMERCE_TENANT":t}}}},"localMCP":true,"ucpCheckout":true,"remoteOAuth":false},
         "capabilities":CAPABILITIES.iter().map(|(name,_)|name).collect::<Vec<_>>()
     })))

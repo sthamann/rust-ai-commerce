@@ -293,7 +293,7 @@ pub(crate) fn router(a: App) -> Router {
             post(ucp_complete),
         )
         .route("/ucp/v1/checkout-sessions/{id}/cancel", post(ucp_cancel))
-        .fallback_service(ServeDir::new("frontend/dist").append_index_html_on_directories(true))
+        .fallback_service(performance::delivery::assets())
         .layer(axum::extract::DefaultBodyLimit::max(64 * 1024))
         .layer(axum::middleware::from_fn(performance::memoize))
         .layer(axum::middleware::from_fn_with_state(
@@ -308,10 +308,12 @@ pub(crate) fn router(a: App) -> Router {
             a.clone(),
             auth::authenticate,
         ))
+        .layer(axum::middleware::from_fn(performance::delivery::classify))
         .layer(axum::middleware::from_fn_with_state(
             a.clone(),
             shop_domains::resolve,
         ))
+        .layer(performance::delivery::compression())
         .layer(axum::middleware::from_fn(security_headers::apply))
         .with_state(a)
 }

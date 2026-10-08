@@ -83,6 +83,7 @@ port=urllib.parse.urlsplit(os.environ.get('HOSTED_FRONTEND_ORIGIN','http://127.0
 server=HTTPServer(('127.0.0.1',port),Frontend)
 threading.Thread(target=server.serve_forever,daemon=True).start()
 call('/',h={'Host':alias+'.'+os.environ.get('SHOP_DOMAIN_SUFFIX','channel.test')},status=403,raw=True)
+call('/assets/index-synthetic.js',h={'Host':alias+'.'+os.environ.get('SHOP_DOMAIN_SUFFIX','channel.test')},status=403,raw=True)
 ph=preview()
 mounted=call('/',h=ph)
 assert mounted['x-frontend-alias']==shop and mounted['x-frontend-host']==alias and mounted['x-frontend-channel']=='private_test'

@@ -14,6 +14,9 @@ base=f'http://127.0.0.1:{port}'
 finish_stream=Event()
 class Frontend(BaseHTTPRequestHandler):
     def do_GET(self):
+        if self.path == '/assets/probe.js':
+            self.send_response(200);self.send_header('Content-Type','application/javascript');self.end_headers()
+            self.wfile.write(b'// hosted source\n' * 400);return
         if self.path == '/stream':
             self.send_response(200);self.send_header('Content-Type','text/event-stream');self.end_headers()
             self.wfile.write(b'data: ready\n\n');self.wfile.flush();finish_stream.wait(5);return
@@ -124,6 +127,10 @@ with (ROOT/'artifacts/identity-broker-server.log').open('w') as log:
         req=urllib.request.Request(base+'/',headers=host)
         with urllib.request.urlopen(req,timeout=5) as response:
             assert response.headers.get_all('Set-Cookie')==['shopper_sid=opaque-123; Path=/; HttpOnly; Secure; SameSite=Lax']
+        req=urllib.request.Request(base+'/assets/probe.js',headers={**host,'Accept-Encoding':'gzip,br'})
+        with urllib.request.urlopen(req,timeout=5) as response:
+            assert response.headers.get('Content-Encoding') is None
+            assert response.read()==b'// hosted source\n' * 400
         req=urllib.request.Request(base+'/stream',headers=host)
         try:
             with urllib.request.urlopen(req,timeout=2) as response:

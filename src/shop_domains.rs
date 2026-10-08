@@ -8,6 +8,7 @@ pub(crate) mod frontends;
 #[derive(Clone)]
 pub(crate) struct HostShop {
     pub alias: String,
+    pub access: Arc<crate::performance::access_snapshot::AccessSnapshot>,
 }
 pub(crate) async fn resolve(State(a): State<App>, mut request: Request, next: Next) -> Response {
     let Some(domain) = env::var("SHOP_DOMAIN_SUFFIX")
@@ -29,17 +30,19 @@ pub(crate) async fn resolve(State(a): State<App>, mut request: Request, next: Ne
         {
             return Error(StatusCode::NOT_FOUND, "Unknown shop".into()).into_response();
         }
-        let binding = sqlx::query("SELECT tenant,channel FROM hosted_frontends WHERE alias=$1")
-            .bind(shop)
-            .fetch_optional(&a.db);
-        let binding =
-            vendune::tenant_scope::scoped(vendune::tenant_scope::Scope::System, binding).await;
-        let (scope, channel) = match binding {
-            Ok(Some(r)) => (
-                r.get::<String, _>("tenant"),
-                Some(r.get::<String, _>("channel")),
+        let channel = header(request.headers(), "sw-sales-channel-id").unwrap_or("default");
+        let access = vendune::tenant_scope::scoped(
+            vendune::tenant_scope::Scope::System,
+            crate::performance::access_snapshot::AccessSnapshot::load(
+                &a,
+                Some(shop),
+                shop,
+                channel,
             ),
-            Ok(None) => (shop.to_string(), None),
+        )
+        .await;
+        let access = match access {
+            Ok(access) => access,
             Err(_) => {
                 return Error(
                     StatusCode::SERVICE_UNAVAILABLE,
@@ -48,19 +51,15 @@ pub(crate) async fn resolve(State(a): State<App>, mut request: Request, next: Ne
                 .into_response();
             }
         };
+        let scope = &access.tenant;
         if header(request.headers(), "x-tenant").is_some_and(|t| t != scope) {
             return bad("Shop hostname and request scope disagree").into_response();
         }
-        let exists =
-            sqlx::query_scalar::<_, bool>("SELECT EXISTS(SELECT 1 FROM tenants WHERE id=$1)")
-                .bind(&scope)
-                .fetch_one(&a.db);
-        let exists =
-            vendune::tenant_scope::scoped(vendune::tenant_scope::Scope::System, exists).await;
-        if !matches!(exists, Ok(true)) {
+        if !access.exists {
             return Error(StatusCode::NOT_FOUND, "Unknown shop".into()).into_response();
         }
-        if let Some(channel) = channel {
+        if access.mount.is_some() {
+            let channel = &access.channel_id;
             if header(request.headers(), "sw-sales-channel-id").is_some_and(|id| id != channel) {
                 return bad("Shop hostname and channel disagree").into_response();
             }
@@ -71,9 +70,10 @@ pub(crate) async fn resolve(State(a): State<App>, mut request: Request, next: Ne
         request
             .headers_mut()
             .insert("x-tenant", scope.parse().unwrap());
-        request
-            .extensions_mut()
-            .insert(HostShop { alias: shop.into() });
+        request.extensions_mut().insert(HostShop {
+            alias: shop.into(),
+            access,
+        });
     }
     next.run(request).await
 }

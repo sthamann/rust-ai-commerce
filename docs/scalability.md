@@ -15,7 +15,11 @@ The following sections distinguish delivered work from the remaining roadmap.
 **Read-context update:** [version-checked settings/language caches](read-performance.md)
 now reduce repeated SQL in HTTP, MCP and Studio, preserve cross-replica freshness,
 and expose configurable connection budgets. Browser in-flight request sharing and
-fingerprinted asset caching are also delivered. Public catalog response caches,
+fingerprinted asset caching, gzip/Brotli delivery, native zero-SQL assets, a fresh
+request admission snapshot, immutable settings handles, batched inventory and
+consolidated overview facts are also delivered. The overview uses at most three
+read branches; its historical sums still require incremental projections at scale.
+Public catalog response caches,
 historical dashboard projections and measured fleet capacity remain
 following stages, with separate capacity measurements required.
 

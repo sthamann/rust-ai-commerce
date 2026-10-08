@@ -13,12 +13,12 @@ axum = { version = "0.8.9", features = ["multipart"] }
 pdf-extract = "0.12.1"
 libc = "0.2"
 tokio = { version = "1", features = ["full"] }
-serde = { version = "1", features = ["derive"] }
+serde = { version = "1", features = ["derive", "rc"] }
 serde_json = { version = "1", features = ["float_roundtrip"] }
 sqlx = { version = "0.9", features = ["runtime-tokio", "tls-rustls", "postgres", "uuid", "json"] }
 uuid = { version = "1", features = ["v4", "serde"] }
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "multipart"] }
-tower-http = { version = "0.6", features = ["fs", "trace", "limit"] }
+tower-http = { version = "0.6", features = ["fs", "trace", "limit", "compression-br", "compression-gzip"] }
 sha2 = "0.10"
 hmac = "0.12"
 cron = "0.17"

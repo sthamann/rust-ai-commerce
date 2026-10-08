@@ -9,9 +9,11 @@ use std::{
         atomic::{AtomicU64, Ordering},
     },
 };
+pub(crate) mod access_snapshot;
 mod admission;
 mod cache;
 pub(crate) mod cluster_lease;
+pub(crate) mod delivery;
 pub(crate) use admission::{Admission, run as admit_request};
 mod invalidation;
 mod languages;
@@ -27,7 +29,7 @@ pub(crate) use settings::settings;
 type Scope = (String, String);
 pub(crate) struct SettingsEntry {
     version: String,
-    value: Settings,
+    value: Arc<Settings>,
     revision: i64,
 }
 pub(crate) struct LanguageEntry {

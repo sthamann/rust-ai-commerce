@@ -22,6 +22,7 @@ pub(crate) struct RequestContext {
     pub principal: Principal,
     pub validated_tenant: bool,
     pub tenant_status: Option<String>,
+    pub access: Option<std::sync::Arc<crate::performance::access_snapshot::AccessSnapshot>>,
     preview: Option<String>,
     reason: Option<String>,
 }
@@ -66,6 +67,9 @@ impl RequestContext {
         }
         Self {
             transport,
+            access: extensions
+                .get::<crate::shop_domains::HostShop>()
+                .map(|h| h.access.clone()),
             ..Self::default()
         }
     }

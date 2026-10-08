@@ -23,3 +23,39 @@ Verification: Rust LRU tests and `scripts/read_performance.py` exercise two actu
 Rust/SQL replicas, committed edits, channel overrides, direct SQL, rollback,
 language registry changes, tenant isolation, revocation and cold process restart.
 These SQL/async behaviors are tested, not covered by the extracted Lean policies.
+
+## Request admission and delivery
+
+- `access_snapshot.rs` / `access_snapshot.sql`: one fresh, server-owned MVCC read
+  of domain binding, tenant existence, staging parent, live status and selected
+  channel. Middleware reuses it only for the same request and tenant/channel.
+  Personal credentials/grants remain a current SQL lookup; their selected channel
+  joins that lookup. No domain/status/permission TTL cache is introduced.
+- The hosted proxy uses the original admitted mount; a second lookup cannot
+  retarget an already admitted request. A subsequent request observes a committed
+  pause, deletion, private-channel change or membership revocation.
+- `delivery.rs`: only the native public shell and assets skip identity queries.
+  Hosted shop assets, scoped uploads, product HTML and previews still pass admission.
+  Domain resolution runs before compression classification. Gzip/Brotli opt in
+  known secret-free read models; auth, customer, cart/order, payment, MCP/UCP and
+  arbitrary hosted HTML stay uncompressed. Streams/ranges/already encoded bodies
+  retain their delivery contract; all native variants vary by `Accept-Encoding`.
+- `frontend/scripts/precompress.mjs` emits deterministic `.br`/`.gz` sidecars
+  during the existing frontend build; URLs, original files and MIME types remain
+  unchanged. Precompression requires no running Node or Python service.
+- Settings hits return `Arc<Settings>` instead of deep-copying the object.
+  Consumers clone only when they actually need a mutable method-filtered copy;
+  checkout continues to use the locked authoritative configuration.
+
+The same owner contains decoded caches, delivery and admission; no second read
+engine or request-held SQL connection was added. `src/studio/overview.sql`
+consolidates facts while `studio.rs` admits at most three concurrent read branches.
+Inventory statements live in `commerce/inventory.rs` / `inventory_release.sql`.
+SQL/build inputs are review-hash locked but are **unproved adapters**. The
+`native_asset_bypass` Boolean policy is extracted to Lean; it does not prove URL
+classification, middleware ordering, PostgreSQL or HTTP behavior.
+
+Real regressions: `read_performance`, `channel_management`, `identity_broker`,
+`tenant_isolation`, `production_foundations` and `transaction_pooler`; the frontend
+precompression test checks round trips, deterministic bytes and stale sidecars.
+[Measured scope and reproduction](../../docs/read-performance.md).

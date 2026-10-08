@@ -1,6 +1,6 @@
 //! One MVCC snapshot validates base/override UUIDs; warm reads avoid transmitting or decoding JSON.
 use super::*;
-pub(crate) async fn settings(a: &App, tenant: &str, channel: &str) -> Result<(Settings, i64)> {
+pub(crate) async fn settings(a: &App, tenant: &str, channel: &str) -> Result<(Arc<Settings>, i64)> {
     let key = (tenant.to_owned(), channel.to_owned());
     if a.reads.enabled
         && let Some(entry) = MEMO
@@ -52,7 +52,7 @@ pub(crate) async fn settings(a: &App, tenant: &str, channel: &str) -> Result<(Se
             .saturating_add(key.0.len() + key.1.len() + 512);
         let entry = Arc::new(SettingsEntry {
             version,
-            value,
+            value: Arc::new(value),
             revision,
         });
         if a.reads.enabled {

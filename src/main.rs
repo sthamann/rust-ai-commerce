@@ -12,7 +12,6 @@ use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use sqlx::{Row, postgres::PgPoolOptions};
 use std::{collections::HashMap, env, sync::Arc};
-use tower_http::services::ServeDir;
 use uuid::Uuid;
 use vendune::scoped_pool::ScopedPool as PgPool;
 use vendune::{

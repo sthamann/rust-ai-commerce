@@ -42,39 +42,23 @@ pub(crate) fn public_path(path: &str) -> bool {
     !path.starts_with("/experience-internal/")
 }
 pub(crate) async fn serve(State(a): State<App>, request: Request, next: Next) -> Response {
-    let Some(alias) = request
-        .extensions()
-        .get::<super::HostShop>()
-        .map(|h| h.alias.clone())
-    else {
+    let Some(host) = request.extensions().get::<super::HostShop>().cloned() else {
         return next.run(request).await;
     };
     if !public_path(request.uri().path()) {
         return next.run(request).await;
     }
-    let row = match sqlx::query("SELECT f.tenant,f.channel,f.origin,f.experience_alias,t.status,c.data->>'active' AS active FROM hosted_frontends f JOIN tenants t ON t.id=f.tenant JOIN sales_channels c ON c.tenant=f.tenant AND c.id=f.channel WHERE f.alias=$1")
-        .bind(&alias)
-        .fetch_optional(&a.db)
-        .await
-    {
-        Ok(Some(row)) => row,
-        Ok(None) => return next.run(request).await,
-        Err(_) => {
-            return Error(
-                StatusCode::SERVICE_UNAVAILABLE,
-                "Frontend unavailable".into(),
-            )
-            .into_response();
-        }
+    let Some(mount) = host.access.mount.as_ref() else {
+        return next.run(request).await;
     };
-    if row.get::<String, _>("status") != "active" {
+    if host.access.status.as_deref() != Some("active") {
         return Error(
             StatusCode::SERVICE_UNAVAILABLE,
             "Shop or sales channel is unavailable".into(),
         )
         .into_response();
     }
-    match proxy(&a, request, &alias, &row).await {
+    match proxy(&a, request, &host.alias, &host.access, mount).await {
         Ok(r) => r,
         Err(e) => e.into_response(),
     }
@@ -83,10 +67,11 @@ async fn proxy(
     a: &App,
     request: Request,
     alias: &str,
-    row: &sqlx::postgres::PgRow,
+    access: &crate::performance::access_snapshot::AccessSnapshot,
+    mount: &crate::performance::access_snapshot::FrontendMount,
 ) -> Result<Response> {
-    let origin: String = row.get("origin");
-    if !valid_origin(&origin)
+    let origin = &mount.origin;
+    if !valid_origin(origin)
         || env::var("HOSTED_FRONTEND_ORIGIN").ok().as_deref() != Some(origin.as_str())
     {
         return Err(bad("Frontend destination unavailable"));
@@ -114,10 +99,10 @@ async fn proxy(
         )
         .body(bytes)
         .header("x-frontend-key", key)
-        .header("x-frontend-alias", row.get::<String, _>("experience_alias"))
+        .header("x-frontend-alias", &mount.experience_alias)
         .header("x-frontend-host", alias)
-        .header("x-frontend-tenant", row.get::<String, _>("tenant"))
-        .header("x-frontend-channel", row.get::<String, _>("channel"));
+        .header("x-frontend-tenant", &access.tenant)
+        .header("x-frontend-channel", &access.channel_id);
     for key in [
         "content-type",
         "accept",

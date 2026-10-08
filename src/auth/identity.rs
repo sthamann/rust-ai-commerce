@@ -1,8 +1,7 @@
 //! Resolve the current credential and membership once; bootstrap and sandbox checks share the same boundary.
-use super::{credentials, permissions, resolve_identity};
+use super::{credentials, permissions, resolve_identity_channel};
 use crate::{App, Error, RequestContext, Result, StatusCode, bad, header, tenant};
 use serde_json::json;
-use sqlx::Row;
 fn denied(message: &str) -> Error {
     Error(StatusCode::FORBIDDEN, message.into())
 }
@@ -27,11 +26,16 @@ pub(super) async fn resolve(
         .and_then(|s| s.strip_prefix("Bearer "))
         .map(str::to_string);
     let Some(token) = token else {
-        let parent = match selected {
-            Some(t) => crate::staging::parent(a, &t).await?,
-            None => None,
-        };
-        environment_allowed(parent.as_deref(), path)?;
+        if selected.is_some()
+            || path.starts_with("/store-api/")
+            || path.starts_with("/ucp/")
+            || path == "/mcp"
+            || path.starts_with("/webhooks/")
+        {
+            ensure_access(a, h).await?;
+        }
+        let parent = h.access.as_ref().and_then(|s| s.parent.as_deref());
+        environment_allowed(parent, path)?;
         if protected
             || parent.is_some()
                 && (path.starts_with("/store-api/")
@@ -54,20 +58,21 @@ pub(super) async fn resolve(
             ));
         }
         let t = tenant(h)?;
-        let record=sqlx::query("SELECT e.live_tenant AS parent,t.status FROM (SELECT $1::text AS tenant) selected LEFT JOIN shop_environments e ON e.tenant=selected.tenant LEFT JOIN tenants t ON t.id=coalesce(e.live_tenant,selected.tenant)")
-            .bind(&t).fetch_one(&a.db).await?;
-        let parent: Option<String> = record.get("parent");
-        h.tenant_status = record.get("status");
-        environment_allowed(parent.as_deref(), path)?;
+        ensure_access(a, h).await?;
+        let access = h.access.as_ref().expect("Admission snapshot loaded");
+        h.tenant_status = access.status.clone();
+        environment_allowed(access.parent.as_deref(), path)?;
         h.principal.user = Some("bootstrap".into());
         h.principal.role = Some("owner".into());
         h.principal.tenant = Some(t);
         return Ok(());
     }
-    let identity = resolve_identity(a, &token, selected.as_deref()).await?;
+    let channel_id = crate::marketing::channel_id(h).to_owned();
+    let identity =
+        resolve_identity_channel(a, &token, selected.as_deref(), Some(&channel_id)).await?;
     let chosen = identity.tenant.unwrap_or_default();
     environment_allowed(identity.parent.as_deref(), path)?;
-    let scope = identity.parent.unwrap_or_else(|| chosen.clone());
+    let scope = identity.parent.clone().unwrap_or_else(|| chosen.clone());
     if identity.scopes.is_some() && scope != identity.default {
         return Err(denied("Integration key is bound to one workspace"));
     }
@@ -80,6 +85,21 @@ pub(super) async fn resolve(
         "x-tenant",
         chosen.parse().map_err(|_| bad("Invalid tenant"))?,
     );
+    // Hosted proxies retain their original mount snapshot. Personal identity still
+    // uses the freshly read membership/status and channel, never a cross-request cache.
+    if h.access.is_none() {
+        h.access = Some(std::sync::Arc::new(
+            crate::performance::access_snapshot::AccessSnapshot {
+                tenant: chosen.clone(),
+                channel_id,
+                exists: identity.status.is_some(),
+                parent: identity.parent.clone(),
+                status: identity.status.clone(),
+                channel: identity.channel,
+                mount: None,
+            },
+        ));
+    }
     h.principal.tenant = Some(chosen);
     h.principal.user = Some(identity.user);
     h.principal.role = Some(member.role.clone());
@@ -94,5 +114,26 @@ pub(super) async fn resolve(
         h.principal.permissions = Some(json!(allowed).to_string());
         h.principal.role = Some("admin".into());
     }
+    Ok(())
+}
+
+// Identity remains uncached. This only reuses the same request's authoritative shop/channel read.
+async fn ensure_access(a: &App, h: &mut RequestContext) -> Result<()> {
+    if h.access
+        .as_ref()
+        .is_some_and(|s| s.matches(h) && s.channel_id == crate::marketing::channel_id(h))
+    {
+        return Ok(());
+    }
+    let t = tenant(h)?;
+    h.access = Some(
+        crate::performance::access_snapshot::AccessSnapshot::load(
+            a,
+            None,
+            &t,
+            crate::marketing::channel_id(h),
+        )
+        .await?,
+    );
     Ok(())
 }

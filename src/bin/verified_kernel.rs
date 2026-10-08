@@ -234,6 +234,12 @@ fn eval(j: &Value) -> Result<Value, String> {
             args["preview"].as_bool().ok_or("Invalid preview")?,
             args["mutating"].as_bool().ok_or("Invalid mutating")?
         ))),
+        Some("native_asset_bypass") => Ok(json!(native_asset_bypass(
+            args["native_asset"]
+                .as_bool()
+                .ok_or("Invalid native_asset")?,
+            args["hosted"].as_bool().ok_or("Invalid hosted")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

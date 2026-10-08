@@ -224,3 +224,8 @@ pub fn channel_access_admissible(
 ) -> bool {
     active && (!is_private || merchant) || preview && !mutating
 }
+
+/// Only native public assets may skip identity; every hosted alias retains tenant/channel admission.
+pub fn native_asset_bypass(native_asset: bool, hosted: bool) -> bool {
+    native_asset && !hosted
+}

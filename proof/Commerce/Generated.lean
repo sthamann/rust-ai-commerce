@@ -111,4 +111,7 @@ def app_service_transport_admissible (clean_url : Bool) (https : Bool) (http : B
 def channel_access_admissible (active : Bool) (is_private : Bool) (merchant : Bool) (preview : Bool) (mutating : Bool) : Bool :=
   ((active && ((!is_private) || merchant)) || (preview && (!mutating)))
 
+def native_asset_bypass (native_asset : Bool) (hosted : Bool) : Bool :=
+  (native_asset && (!hosted))
+
 end CommerceKernel
