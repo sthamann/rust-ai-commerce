@@ -1855,6 +1855,11 @@
       "sha256": "dc9a936dee659568e48871fab187ff75e746dd65206e54d1d3b06371cb48d32d",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/shop_domains/frontend_editor.rs": {
+      "status": "unproved",
+      "sha256": "dde09763cba3fe493127443049207822f11f284bc3240e57f9e284ebe3ddae34",
+      "review": "Reviewed passive operator editor URL navigation and tenant-scoped existing frontend discovery; URL/HTTP adapters remain unproved. Added own foreign anonymous scope and stale-workspace UI regressions."
+    },
     "src/shop_domains/frontend_transport.rs": {
       "status": "unproved",
       "sha256": "a9de0ce42c548765988acc5176ac144ff1d39086669a8a02c2440f57820b08fc",
@@ -1862,13 +1867,13 @@
     },
     "src/shop_domains/frontends.rs": {
       "status": "unproved",
-      "sha256": "81b0e6279ff85dfd99bf43ffa87453bc5ba58c449977d83c3a8061a95ce60442",
-      "review": "Reviewed hosted frontend streaming, finite byte budget, opaque cookie allowlist and relative redirects; regression proves first event before EOF; network adapters remain unproved"
+      "sha256": "9aa4dc6d3d345826af3922e1c52d6b05ddb849dd09ddb995da7130c2c3384911",
+      "review": "Reviewed passive operator editor URL navigation and tenant-scoped existing frontend discovery; URL/HTTP adapters remain unproved. Added own foreign anonymous scope and stale-workspace UI regressions."
     },
     "src/shop_domains.rs": {
       "status": "unproved",
-      "sha256": "f9e827a5b520ad2795a3e93bc07443ab5868b2c4d22182f036e27d34a6dacc30",
-      "review": "Reviewed hosted frontend streaming, finite byte budget, opaque cookie allowlist and relative redirects; regression proves first event before EOF; network adapters remain unproved"
+      "sha256": "eff366791b25d40b9e7cb14e9f03dbffe647cfc63aaa9358294680574c4fdef1",
+      "review": "Reviewed passive operator editor URL navigation and tenant-scoped existing frontend discovery; URL/HTTP adapters remain unproved. Added own foreign anonymous scope and stale-workspace UI regressions."
     },
     "src/staging/assets.rs": {
       "status": "unproved",

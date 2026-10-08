@@ -12,7 +12,7 @@ async fn list(State(a): State<App>, h: HeaderMap) -> Result<Json<Value>> {
             .fetch_all(&a.db)
             .await?;
     Ok(Json(
-        json!({"frontends":rows.iter().map(|r|json!({"alias":r.get::<String,_>("alias"),"channel":r.get::<String,_>("channel"),"url":super::links(&r.get::<String,_>("alias"))["storefrontUrl"]})).collect::<Vec<_>>()}),
+        json!({"frontends":rows.iter().map(|r|json!({"alias":r.get::<String,_>("alias"),"channel":r.get::<String,_>("channel"),"url":super::links(&r.get::<String,_>("alias"))["storefrontUrl"],"editorUrl":super::frontend_editor::url(&r.get::<String,_>("alias"),env::var("HOSTED_FRONTEND_EDITOR_URL").ok().as_deref())})).collect::<Vec<_>>()}),
     ))
 }
 async fn bind(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Result<Json<Value>> {
@@ -76,7 +76,7 @@ async fn bind(State(a): State<App>, h: HeaderMap, Json(v): Json<Value>) -> Resul
         json!({"alias":alias,"channel":channel,"urls":super::links(alias)}),
     ))
 }
-fn valid_origin(s: &str) -> bool {
+pub(super) fn valid_origin(s: &str) -> bool {
     reqwest::Url::parse(s).is_ok_and(|u| {
         u.username().is_empty()
             && u.password().is_none()

@@ -21,7 +21,7 @@ class Frontend(BaseHTTPRequestHandler):
     def log_message(self,*args): pass
 frontend=ThreadingHTTPServer(('127.0.0.1',0),Frontend)
 Thread(target=frontend.serve_forever,daemon=True).start()
-env={**os.environ,'BIND_ADDR':f'127.0.0.1:{port}','IDENTITY_BROKER_KEY':key,'IDENTITY_BROKER_ISSUER':issuer,'HOSTED_FRONTEND_KEY':'b'*64,'HOSTED_FRONTEND_ORIGIN':f'http://127.0.0.1:{frontend.server_port}','DEMO_CATALOG':'fashion','HOSTED_FRONTEND_COOKIE_NAMES':'shopper_sid'}
+env={**os.environ,'BIND_ADDR':f'127.0.0.1:{port}','IDENTITY_BROKER_KEY':key,'IDENTITY_BROKER_ISSUER':issuer,'HOSTED_FRONTEND_KEY':'b'*64,'HOSTED_FRONTEND_ORIGIN':f'http://127.0.0.1:{frontend.server_port}','HOSTED_FRONTEND_EDITOR_URL':'https://experience.example.test/design/{alias}','DEMO_CATALOG':'fashion','HOSTED_FRONTEND_COOKIE_NAMES':'shopper_sid'}
 def call(path,body=None,headers=None,method=None,expected=200):
     req=urllib.request.Request(base+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(headers or {})},method=method or ('GET' if body is None else 'POST'))
     try:
@@ -108,6 +108,13 @@ with (ROOT/'artifacts/identity-broker-server.log').open('w') as log:
         alias='world-'+suffix
         call('/api/settings/frontends',{'alias':alias,'channel':'default'},mh,method='PUT')
         th={'x-tenant':other,'Authorization':'Bearer '+two['token']}
+        mounted=call('/api/settings/frontends',headers=mh)['frontends']
+        assert len(mounted)==1 and mounted[0]['alias']==alias and mounted[0]['channel']=='default'
+        assert mounted[0]['editorUrl']==f'https://experience.example.test/design/{alias}'
+        assert not call('/api/settings/frontends',headers=th)['frontends']
+        call('/api/settings/frontends',headers={'x-tenant':shop},expected=401)
+        call('/api/settings/frontends',headers={**mh,'x-tenant':other},expected=403)
+        check('Existing Experience mounts and operator editor links are discoverable only in the authenticated member workspace')
         call('/api/settings/frontends',{'alias':alias,'channel':'default'},th,method='PUT',expected=409)
         call('/api/settings/frontends',{'alias':alias,'channel':'missing'},mh,method='PUT',expected=400)
         host={'Host':alias+'.vendune.ai','cookie':'merchant-cookie','Authorization':'Bearer '+one['token']}
