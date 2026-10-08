@@ -59,7 +59,7 @@ every historical experiment or verify live provider accounts.
 
 The 8 October review reconciled README, the full feature tour, app/Experience/channel
 guides, the homepage and `llms.txt` with `706102f`. It corrected obsolete main-channel
-pause restrictions, EUR-only wording, the API inventory and manually installed
+pause restrictions, EUR-only wording, the API/formal inventories and manually installed
 Storyfront claims. Three unretouched public demo captures complement the retained
 6 October recordings. [Current release](current-release.md) and
 [capture provenance](assets/showcase/README.md) distinguish deployed behavior,

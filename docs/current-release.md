@@ -6,7 +6,10 @@ This review describes **Vendune main at `706102f8ff3526a6f5bba7ab09b96ce713d1de7
 and the privately operated Experience deployment observed on 8 October. Documentation
 changes do not turn the prototype into a fully compatible Shopware replacement or
 certify every provider. The static API catalogue contains **243 HTTP method/path
-pairs** at this source; installed app routes are discovered separately.
+pairs** at this source; installed app routes are discovered separately. The current
+formal manifest contains **36 extracted policies and 78 properties** across a
+334-module Rust inventory; [formal evidence](formal-verification.md) distinguishes
+those pure decisions from unproved SQL, network and UI adapters.
 
 ## What changed and where to use it
 

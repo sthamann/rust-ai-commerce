@@ -281,7 +281,7 @@ bounded fuel/memory and no network/filesystem access.
 | Evidence | What it establishes |
 | --- | --- |
 | **7,000 original-PHP comparisons** | Bounded pricing, context, shipping-tax, rule and comparison behavior against reviewed Shopware sources. [Parity matrix](docs/shopware-parity.md). |
-| **35 extracted production policies · 74 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
+| **36 extracted production policies · 78 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
 | **1,000,000 products + 1,000,000 translations** | Dated local commerce workloads with retained raw measurements and failures; not production capacity or a Shopware speed ratio. [Benchmarks](docs/benchmarks.md). |
 | **Translation workflow** | Four-language Studio, platform, checkout and bundled app controls; shared content inheritance, additional shop content languages and translator-friendly catalogue export/import. [How translations work](docs/localization.md). |
 | **Continuous verification** | Source ownership, localization, Rust/frontend checks, real PostgreSQL integration, original PHP comparisons and Lean/mutation gates. [CI](https://github.com/sthamann/vendune/actions) · [Testing](docs/testing.md). |
