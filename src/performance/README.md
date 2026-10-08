@@ -59,3 +59,9 @@ Real regressions: `read_performance`, `channel_management`, `identity_broker`,
 `tenant_isolation`, `production_foundations` and `transaction_pooler`; the frontend
 precompression test checks round trips, deterministic bytes and stale sidecars.
 [Measured scope and reproduction](../../docs/read-performance.md).
+
+`admission::reserve_ai_attempt` is the shared atomic UTC-day attempt owner for
+interactive chat/SSE, document extraction (HTTP/MCP/Flow) and background Flow
+proposals. Staging uses the live tenant budget. A failed provider attempt is not
+refunded; this counts attempts, not tokens or spend. Do not add a process-local
+quota counter or a second table to a new AI entry point.

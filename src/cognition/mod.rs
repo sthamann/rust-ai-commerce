@@ -6,7 +6,7 @@ mod context;
 pub(crate) mod contracts;
 pub(crate) mod evidence;
 pub(crate) mod experiments;
-mod extraction;
+pub(crate) mod extraction;
 mod generations;
 pub(crate) mod guardrails;
 pub(crate) mod indexing;

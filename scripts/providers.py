@@ -19,6 +19,9 @@ class Handler(BaseHTTPRequestHandler):
         if behavior['mode']=='reject':
             self.send_response(429); self.end_headers(); return
         result=proposal
+        if behavior['mode'] in ['extract','bad-extract']:
+            quote='Ceramic capacity 500 ml.' if behavior['mode']=='extract' else 'Invented waterproof certification'
+            result={'claims':[{'text':quote,'quote':quote,'nodeType':'property'}]}
         if behavior['mode'] in ['read-tools','write-tool']:
             if behavior.setdefault('round',0)==0:
                 result={**proposal,'changes':[],'tool_calls':[{'name':'merchant.orders' if behavior['mode']=='read-tools' else 'merchant.apply','arguments_json':'{}'}]}
@@ -75,6 +78,8 @@ try:
     assert rejected['messages'][-1]['data']['error'] and 'taskId' not in rejected['messages'][-1]['data']
     passed('Model-selected write tools cannot execute or create an executable task')
     behavior['mode']='normal'
+    from testing.extraction import verify_extraction
+    verify_extraction(call, captured, behavior, passed)
     original=call('/api/merchant/commerce')
     def policy(value):
         snapshot=call('/api/merchant/commerce');data=copy.deepcopy(snapshot['data']);data['aiPolicy']=value

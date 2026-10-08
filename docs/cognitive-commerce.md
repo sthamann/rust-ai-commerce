@@ -75,8 +75,9 @@ truncated quotations are not presented as complete evidence.
 Running a compatible adapter does not prove a server's batching throughput.
 Interactive embeddings and background indexing share admission. Reranker requests
 are admitted before provider invocation. Saturation falls back to lexical/fused
-retrieval instead of creating an unbounded inference queue. The original central
-interactive quotas still apply; full token/spend accounting remains additional work.
+retrieval instead of creating an unbounded inference queue. Interactive chat (including SSE), document extraction via HTTP/MCP and Flow AI
+actions consume the same atomic UTC-day tenant attempt quota. Staging shares its
+live tenant budget; failed provider attempts count. This is not token/spend accounting.
 
 ## Agent reads, writes and progress
 
@@ -102,7 +103,15 @@ recorded-time history. Confidence is not a probability that an assertion is true
 Current node types include product, variant, material, property, intent, problem,
 occasion, audience, claim, return reason, supplier, policy, document and support.
 
-`knowledge.extract` performs **on-demand document extraction**. Each candidate
+`knowledge.extract` performs document extraction through HTTP/MCP and the native
+graphical Flow Builder. An explicitly configured pipeline can subscribe to
+`knowledge.document.ingested` or `knowledge.document.updated` and extract its
+event document. Leave `sourceId`/`productId` empty to use the current source and
+its owning product; extraction uses the source language. The existing durable
+worker checks the creator's current catalog/knowledge permissions before each
+step, shares the daily AI quota, records the result and marks interrupted effects
+uncertain rather than automatically repeating a provider call. No extraction
+flow is enabled by default. Each candidate
 must quote an exact current source chunk; it remains proposed. Merchant review
 requires current catalog permissions, explicit approval and the exact claim
 revision. Confirmation does not turn an arbitrary model paraphrase into a
@@ -199,7 +208,7 @@ protocols and browser code remain outside those proofs.
 | Currency-neutral planning, pooling, bounded indexing/status | Native currencies, pooled Qdrant, automatic source intake/model rebuild, exact counters | Large-scale mixed-load measurements; counter error summaries still scan failed jobs |
 | Hybrid multimodal retrieval | Lexical+dense RRF, optional reranker, named text vector, optional INT8 | BM25/sparse scoring and real image embeddings/search |
 | Modern serving/tool use | Configurable self-hosted protocol, routing, admission, read rounds, progress SSE | Real deployment/throughput; token streaming; generic write proposals |
-| Provenance ontology | Typed nodes/time/history; document extraction/review; bounded public graph retrieval | Continuous product/review/return/support extraction with privacy gates |
+| Provenance ontology | Typed nodes/time/history; on-demand and opt-in document-event extraction/review; bounded public graph retrieval | Continuous product/review/return/support extraction with privacy gates (document events already use the native Flow worker) |
 | Verified autonomy | Native price corridors, margin/budget checks and exact extracted predicates | Broader actions and recurring goal execution |
 | Causal learning | Native layout holdouts/CUPED/delayed net-cash readout | Switchbacks, recorded-return/CM metrics, actual live evaluation |
 | Intent navigation | Relevant semantic retrieval | Saved graph-query navigation and storefront consumer |

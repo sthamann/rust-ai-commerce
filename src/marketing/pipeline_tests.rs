@@ -37,6 +37,25 @@ fn upstream_aliases_and_download_revoke_are_explicit() {
     );
     assert!(flow_actions::validate("action.mail.send", &json!({"templateId":"missing"})).is_err());
     assert!(flow_actions::validate("shell", &json!({})).is_err());
+    assert!(flow_actions::validate("knowledge.extract", &json!({})).is_ok());
+    assert!(
+        flow_actions::validate(
+            "knowledge.extract",
+            &json!({"sourceId":"source", "productId":"mug"})
+        )
+        .is_ok()
+    );
+    for config in [
+        json!({"approve":true}),
+        json!({"sourceId":42}),
+        json!({"productId":"x".repeat(255)}),
+    ] {
+        assert!(flow_actions::validate("knowledge.extract", &config).is_err());
+    }
+    assert_eq!(
+        flow_actions::permission("knowledge.extract"),
+        "catalog.write"
+    );
     assert!(metadata::validate_metadata("products", &json!({"price":0})).is_err());
     assert!(metadata::validate_metadata("products", &json!({"width":-1})).is_err());
 }

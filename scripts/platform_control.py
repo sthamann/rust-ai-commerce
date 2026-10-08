@@ -20,6 +20,10 @@ def verify(req, sql, owner, other, seed, empty, oh, h, check, base):
         def do_POST(self):
             data=json.loads(self.rfile.read(int(self.headers['Content-Length'])))
             captured.append((self.path,self.headers.get('Authorization'),data['model']))
+            if self.path=='/api/embed':
+                self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers()
+                self.wfile.write(json.dumps({'embeddings':[[1.0]+[0.0]*15 for _ in data['input']]}).encode())
+                return
             answer={'summary':'Synthetic inherited provider wire fixture','changes':[],'experience':None,'expected_experience_revision':None}
             self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers()
             self.wfile.write(json.dumps({'message':{'content':json.dumps(answer)},'done_reason':'stop'}).encode())
@@ -58,7 +62,11 @@ def verify(req, sql, owner, other, seed, empty, oh, h, check, base):
                     assert json.load(response)['messages'][-1]['data']['preview']['inference']=='ollama'
             finally:
                 replica.send_signal(signal.SIGINT);replica.wait(timeout=20)
-        assert len(captured)==3 and all(auth=='Bearer '+key and model=='inherited-fixture' for _,auth,model in captured)
+        chats=[v for v in captured if v[0]=='/api/chat']
+        # Automatic indexing may concurrently call the same inherited Ollama host.
+        # Check each native endpoint/model explicitly rather than treating an embed as a fourth chat.
+        expected_models={'/api/chat':'inherited-fixture','/api/embed':os.getenv('EMBEDDING_MODEL','qwen3-embedding:0.6b')}
+        assert len(chats)==3 and all(auth=='Bearer '+key and model==expected_models.get(path) for path,auth,model in captured), [(path,model,auth=='Bearer '+key) for path,auth,model in captured]
         req('/api/platform/ai',{'revision':written['revision'],'settings':settings,'keys':{'ollama':'denied'}},h(other),403,method='PUT')
         check('encrypted write-only keys and central model reach two independent shops; stale revisions and foreign saves rejected')
     finally:

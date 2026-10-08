@@ -143,7 +143,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/cognition/experiments/mod.rs](../src/cognition/experiments/mod.rs) | Controlled experiments use the existing storefront layout consumer and authoritative payment ledger. |
 | [src/cognition/experiments/model.rs](../src/cognition/experiments/model.rs) | Preregistered fixed-horizon experiment parameters and conservative bounded-outcome inference. |
 | [src/cognition/experiments/report.rs](../src/cognition/experiments/report.rs) | Delayed final experiment readout is derived from the existing live capture/refund ledger, never demo rewards. |
-| [src/cognition/extraction.rs](../src/cognition/extraction.rs) | On-demand source extraction uses the existing provider owner and quote checks; candidates require merchant review. |
+| [src/cognition/extraction.rs](../src/cognition/extraction.rs) | API/MCP/flow source extraction shares provider admission and quote checks; candidates require merchant review. |
 | [src/cognition/generations.rs](../src/cognition/generations.rs) | Restart-safe model-change intake: short locked cursor batches reuse the canonical embedding queue. |
 | [src/cognition/guardrails.rs](../src/cognition/guardrails.rs) | Merchant-owned guardrails in commerce settings; native currency amounts bind preview and execution. |
 | [src/cognition/indexing.rs](../src/cognition/indexing.rs) | Durable bounded embedding jobs; short claims and revision fences keep provider latency outside PostgreSQL. |
@@ -1007,6 +1007,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/testing/coverage_env.py](../scripts/testing/coverage_env.py) | Convert trusted cargo-llvm-cov environment output to GitHub's environment-file syntax. |
 | [scripts/testing/coverage_report.py](../scripts/testing/coverage_report.py) | Publish separate all-source coverage totals, untested files and enforce reviewed minimums. |
 | [scripts/testing/database.py](../scripts/testing/database.py) | Use the same PostgreSQL fixtures through Docker or an explicitly selected native psql executable. |
+| [scripts/testing/extraction.py](../scripts/testing/extraction.py) | Native document-event extraction, review boundary and shared AI quotas; local provider only. |
 | [scripts/testing/hotpath.py](../scripts/testing/hotpath.py) | Real HTTP wire bytes and SQL tracing checks for the existing read-performance suite. |
 | [scripts/testing/inventory_batch.py](../scripts/testing/inventory_batch.py) | Concurrent two-product allocation/release on the actual HTTP path, reused by strict runtime verification. |
 | [scripts/testing/pooler.py](../scripts/testing/pooler.py) | Owned real PgBouncer fixture: one backend, transaction pooling, never a forced privileged user. |

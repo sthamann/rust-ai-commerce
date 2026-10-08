@@ -111,7 +111,10 @@ impl Admission {
 fn class(path: &str) -> &'static str {
     if path == "/api/concierge"
         || path == "/api/experience"
-        || path.starts_with("/api/agent/") && ["/chat", "/plan"].iter().any(|s| path.ends_with(s))
+        || path.starts_with("/api/agent/")
+            && ["/chat", "/chat/stream", "/plan"]
+                .iter()
+                .any(|s| path.ends_with(s))
         || path.ends_with("/ask")
         || path.ends_with("/questions")
     {
@@ -168,20 +171,15 @@ pub(crate) async fn run(a: &App, request: Request, next: Next) -> Response {
     } else {
         None
     };
-    if class == "ai" && validated {
-        // Quota is consumed before invoking a model. Failure still counts the admitted attempt;
-        // no refunds on timeouts whose provider cost may be unknown. No model tokens stored here.
-        let reserved = vendune::tenant_scope::scoped(vendune::tenant_scope::Scope::System,
-            sqlx::query_scalar::<_, i64>("WITH scope AS (SELECT coalesce((SELECT live_tenant FROM shop_environments WHERE tenant=$1),$1) AS tenant) INSERT INTO tenant_ai_usage(tenant,day,attempts) SELECT tenant,(now() AT TIME ZONE 'UTC')::date,1 FROM scope ON CONFLICT(tenant,day) DO UPDATE SET attempts=tenant_ai_usage.attempts+1 WHERE tenant_ai_usage.attempts < coalesce((SELECT daily_ai FROM tenant_resource_limits WHERE tenant=tenant_ai_usage.tenant),$2) RETURNING attempts")
-            .bind(&tenant).bind(a.admission.daily_ai).fetch_optional(&a.db)).await;
-        match reserved {
-            Ok(Some(_)) => {}
-            Ok(None) => {
-                a.admission.rejected.fetch_add(1, Ordering::Relaxed);
-                return overloaded("Daily AI request quota reached");
-            }
-            Err(e) => return Error::from(e).into_response(),
-        }
+    if class == "ai"
+        && validated
+        && let Err(e) = reserve_ai_attempt(a, &tenant).await
+    {
+        return if e.0 == StatusCode::TOO_MANY_REQUESTS {
+            overloaded(&e.1)
+        } else {
+            e.into_response()
+        };
     }
     let start = Instant::now();
     let response =
@@ -199,6 +197,21 @@ pub(crate) async fn run(a: &App, request: Request, next: Next) -> Response {
         response.status().is_server_error(),
     );
     response
+}
+/// Shared interactive/background attempt quota; a failed provider call still counts.
+/// This is not token/spend accounting. Staging shares its live tenant's UTC-day budget.
+pub(crate) async fn reserve_ai_attempt(a: &App, tenant: &str) -> Result<()> {
+    let reserved = vendune::tenant_scope::scoped(vendune::tenant_scope::Scope::System,
+        sqlx::query_scalar::<_, i64>("WITH owner AS (SELECT coalesce((SELECT live_tenant FROM shop_environments WHERE tenant=$1),$1) AS tenant), scope AS (SELECT tenant,coalesce((SELECT daily_ai FROM tenant_resource_limits l WHERE l.tenant=owner.tenant),$2) AS maximum FROM owner) INSERT INTO tenant_ai_usage(tenant,day,attempts) SELECT tenant,(now() AT TIME ZONE 'UTC')::date,1 FROM scope WHERE maximum>0 ON CONFLICT(tenant,day) DO UPDATE SET attempts=tenant_ai_usage.attempts+1 WHERE tenant_ai_usage.attempts < (SELECT maximum FROM scope) RETURNING attempts")
+        .bind(tenant).bind(a.admission.daily_ai).fetch_optional(&a.db)).await?;
+    if reserved.is_none() {
+        a.admission.rejected.fetch_add(1, Ordering::Relaxed);
+        return Err(Error(
+            StatusCode::TOO_MANY_REQUESTS,
+            "Daily AI request quota reached".into(),
+        ));
+    }
+    Ok(())
 }
 fn overloaded(message: &str) -> Response {
     let mut response = Error(StatusCode::TOO_MANY_REQUESTS, message.into()).into_response();
@@ -235,6 +248,7 @@ mod tests {
         );
         assert_eq!(class("/store-api/checkout/order"), "checkout");
         assert_eq!(class("/api/agent/chat"), "ai");
+        assert_eq!(class("/api/agent/chat/stream"), "ai");
         assert_eq!(class("/store-api/product/mug/questions"), "ai");
     }
 }

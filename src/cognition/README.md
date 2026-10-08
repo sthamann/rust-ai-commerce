@@ -32,3 +32,8 @@ source→index→agent→proposal→native consumer path and remaining audit wor
 Integration verification uses `providers`, `knowledge_workspace`,
 `cognitive_experiments`, `managed_search`, `users` and `tenant_isolation`; fixtures
 prove native state effects, not semantic model quality or commerce uplift.
+
+Document extraction can also run from an explicitly configured native Flow
+pipeline on document ingestion/update. It uses the same extraction function,
+source-language quotes, current permissions and daily tenant AI attempt quota
+as HTTP/MCP; it does not publish or confirm generated statements.
