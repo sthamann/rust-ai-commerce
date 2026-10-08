@@ -8,7 +8,7 @@ import ProductEditorNav from "./ProductEditorNav";
 import { useEffect, useRef, useState } from "react";
 import { AppSurfaceView, useAppSurfaces } from "../../shared/apps/AppSurfaces";
 import type { RequestFn } from "../shell/studio-types";
-import { useCatalogText } from "./catalog-i18n";
+import { useCatalogText } from "../../shared/i18n/catalog-i18n";
 import {
   hydrateDraft,
   newDraft,
@@ -20,7 +20,7 @@ import ProductEditorExtras from "./ProductEditorExtras";
 import ProductPanels from "./ProductPanels";
 import ProductAssets from "./ProductAssets";
 import ReviewModeration from "./ReviewModeration";
-import { EditorBuffer } from "./EditorBuffer";
+import { EditorBuffer } from "../../shared/content/editor/EditorBuffer";
 import ProductVariants from "./ProductVariants";
 import RelatedProducts from "./RelatedProducts";
 export default function ProductEditor({

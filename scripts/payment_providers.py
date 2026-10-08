@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Provider-neutral financial ledger through real HTTP/PostgreSQL and a local private-service fixture."""
+from testing.app_approval import consent
 from testing.database import psql
 import copy,hashlib,hmac,json,os,pathlib,subprocess,threading,time,urllib.request,urllib.error,uuid
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
@@ -30,6 +31,7 @@ ROOT.joinpath('.run').mkdir(exist_ok=True);log=open(ROOT/'.run/generic-payments.
 ah={'Authorization':'Bearer '+os.environ['MERCHANT_TOKEN'],'x-tenant':'workshop'}
 def call(path,body=None,h=None,method=None,expected=200):
  try:
+  if path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
   req=urllib.request.Request(base+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(h or {})},method=method or ('GET' if body is None else 'POST'))
   with urllib.request.urlopen(req,timeout=30) as r:v=json.load(r);code=r.status
  except urllib.error.HTTPError as e:code=e.code;v=json.load(e)

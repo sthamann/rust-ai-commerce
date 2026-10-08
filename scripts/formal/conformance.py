@@ -7,7 +7,7 @@ from extract import MAX_U64
 
 def compare(root, functions):
     cases=[];rng=random.Random(20261002)
-    edges=[0,1,2,99,100,2**31-1,2**31,2**63-1,2**63,MAX_U64-1,MAX_U64]
+    edges=[0,1,2,16,17,99,100,9999,10000,10001,2**31-1,2**31,2**63-1,2**63,MAX_U64-1,MAX_U64]
     for f in functions:
         options=[[False,True] if t=='bool' else edges for _,t in f.args]
         for values in itertools.product(*options):

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Real PG proof: private sandbox, immutable app versions, selective release and conflicts. No paid inference."""
+from testing.app_approval import consent
 import json, os, urllib.request, urllib.error, uuid
 base=os.getenv('BASE_URL','http://127.0.0.1:8787');checks=[]
 def call(path,body=None,session=None,tenant=None,expected=200,method=None):
     headers={'Content-Type':'application/json','x-commerce-locale':'de-DE'}
     if session:headers.update({'Authorization':'Bearer '+session['token'],'x-tenant':tenant or session['workspace']})
     elif tenant:headers['x-tenant']=tenant
+    if path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
     r=urllib.request.Request(base+path,data=None if body is None else json.dumps(body).encode(),headers=headers,method=method)
     try:
         with urllib.request.urlopen(r,timeout=30) as out:code=out.status;v=json.load(out)

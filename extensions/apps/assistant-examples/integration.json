@@ -15,7 +15,7 @@
     "data.write",
     "admin.slot",
     "service.call",
-    "events.read"
+    "events:order.placed"
   ],
   "entities": [
     {

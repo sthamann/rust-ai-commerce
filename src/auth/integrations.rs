@@ -16,8 +16,12 @@ pub(crate) struct Identity {
     pub user: String,
     pub default: String,
     pub scopes: Option<Vec<String>>,
+    pub app: Option<String>,
+    pub app_permissions: Option<Value>,
     pub tenant: Option<String>,
     pub parent: Option<String>,
+    pub preview_owner: Option<String>,
+    pub preview_valid: Option<bool>,
     pub status: Option<String>,
     pub members: Vec<Member>,
     pub channel: Option<crate::performance::access_snapshot::ChannelSnapshot>,
@@ -48,9 +52,13 @@ pub(crate) async fn resolve_identity_channel(
     let scopes: Option<Value> = r.get("scopes");
     Ok(Identity {
         user: r.get("user_id"),
+        app: r.get("app_id"),
+        app_permissions: r.get("app_permissions"),
         default: r.get("default_tenant"),
         tenant: r.get("tenant"),
         parent: r.get("parent"),
+        preview_owner: r.get("preview_owner"),
+        preview_valid: r.get("preview_valid"),
         status: r.get("status"),
         channel: r.get::<Option<Value>, _>("channel_data").map(|data| {
             crate::performance::access_snapshot::ChannelSnapshot {
@@ -79,9 +87,9 @@ pub(crate) async fn integration_list(
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
     permit(&h, "users")?;
-    let rows=sqlx::query("SELECT id,name,user_id,permissions,created_at::text AS created,expires_at::text AS expires FROM integration_keys WHERE tenant=$1 ORDER BY created_at DESC LIMIT 100").bind(t).fetch_all(&a.db).await?;
+    let rows=sqlx::query("SELECT id,name,user_id,app_id,permissions,created_at::text AS created,expires_at::text AS expires FROM integration_keys WHERE tenant=$1 ORDER BY created_at DESC LIMIT 100").bind(t).fetch_all(&a.db).await?;
     Ok(Json(
-        json!({"elements":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"name":r.get::<String,_>("name"),"userId":r.get::<String,_>("user_id"),"permissions":r.get::<Value,_>("permissions"),"createdAt":r.get::<String,_>("created"),"expiresAt":r.get::<String,_>("expires")})).collect::<Vec<_>>()}),
+        json!({"elements":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"name":r.get::<String,_>("name"),"userId":r.get::<String,_>("user_id"),"appId":r.get::<Option<String>,_>("app_id"),"permissions":r.get::<Value,_>("permissions"),"createdAt":r.get::<String,_>("created"),"expiresAt":r.get::<String,_>("expires")})).collect::<Vec<_>>()}),
     ))
 }
 pub(crate) async fn integration_create(

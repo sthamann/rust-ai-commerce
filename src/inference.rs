@@ -219,6 +219,11 @@ impl Inference {
             .await
             .map_err(|_| "Invalid provider response")?;
         let value = parse(&provider, &raw)?;
+        let value = if matches!(provider, Provider::Openai) {
+            schema::restore(schema, value)?
+        } else {
+            value
+        };
         Ok(Output {
             value,
             model: model.clone(),
@@ -229,26 +234,6 @@ impl Inference {
                 .unwrap_or_else(|| json!({"output_tokens":raw["eval_count"]})),
         })
     }
-}
-// OpenAI requires all properties to be required; optional fields become nullable.
-fn strict_schema(mut v: Value) -> Value {
-    if let Some(items) = v.get_mut("items") {
-        *items = strict_schema(items.clone());
-    }
-    if v["type"] == "object" {
-        let required = v["required"].as_array().cloned().unwrap_or_default();
-        let properties = v["properties"].as_object_mut().unwrap();
-        for (name, value) in properties.iter_mut() {
-            *value = strict_schema(value.clone());
-            if !required.contains(&json!(name)) {
-                *value = json!({"anyOf":[value.clone(),{"type":"null"}]});
-            }
-        }
-        let names = properties.keys().cloned().collect::<Vec<_>>();
-        v["required"] = json!(names);
-        v["additionalProperties"] = json!(false);
-    }
-    v
 }
 fn parse(provider: &Provider, raw: &Value) -> Result<Value, String> {
     let text = match provider {
@@ -287,5 +272,7 @@ fn parse(provider: &Provider, raw: &Value) -> Result<Value, String> {
     .ok_or("Provider response lacks text")?;
     serde_json::from_str(&text).map_err(|_| "Model did not return valid structured output".into())
 }
+mod schema;
 #[cfg(test)]
 mod tests;
+use schema::strict_schema;

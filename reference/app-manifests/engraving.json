@@ -1,0 +1,139 @@
+{
+  "id": "engraving",
+  "version": "1.1.0",
+  "coreApi": "1",
+  "runtime": "declarative",
+  "name": {
+    "en": "Product personalization",
+    "de": "Produktpersonalisierung",
+    "fr": "Personnalisation produit",
+    "es": "Personalización de productos"
+  },
+  "permissions": [
+    "data.read",
+    "data.write",
+    "storefront.slot",
+    "admin.slot"
+  ],
+  "entities": [
+    {
+      "name": "rules",
+      "fields": [
+        {
+          "name": "fee_minor",
+          "kind": "integer",
+          "required": true,
+          "indexed": false
+        }
+      ],
+      "publicRead": false
+    }
+  ],
+  "slots": [
+    {
+      "location": "product.detail",
+      "component": "product-configuration",
+      "label": {
+        "en": "Make it yours",
+        "de": "Mach es zu deinem",
+        "fr": "Personnalisez-le",
+        "es": "Hazlo tuyo"
+      }
+    },
+    {
+      "location": "admin.apps",
+      "component": "entity-form",
+      "label": {
+        "en": "Personalization fee",
+        "de": "Personalisierungspreis",
+        "fr": "Prix de personnalisation",
+        "es": "Precio de personalización"
+      }
+    },
+    {
+      "location": "admin.order",
+      "component": "entity-list",
+      "label": {
+        "en": "Personalized orders",
+        "de": "Personalisierte Bestellungen",
+        "fr": "Commandes personnalisées",
+        "es": "Pedidos personalizados"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "name": "rules",
+      "description": "Read the shop personalization rules",
+      "handler": "list",
+      "entity": "rules",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "public": false
+    },
+    {
+      "name": "save_rules",
+      "description": "Change the personalization fee; explicit merchant action required",
+      "handler": "save",
+      "entity": "rules",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "fields": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "fields"
+        ],
+        "additionalProperties": false
+      },
+      "public": false
+    },
+    {
+      "name": "orders",
+      "description": "Read personalized order positions with their stored configurations",
+      "handler": "configurations",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "public": false
+    }
+  ],
+  "events": [],
+  "configuration": {
+    "entity": "rules",
+    "record": "default",
+    "priceField": "fee_minor",
+    "inputField": "text",
+    "wasmSource": ";; Engraving-owned rules: printable input is checked by the host; app defines length and fee.\n(module\n  (func $valid_fee (export \"validate_fee\") (param $fee i64) (result i32)\n    local.get $fee i64.const 0 i64.ge_s\n    local.get $fee i64.const 100000 i64.le_s i32.and)\n  (func (export \"configuration_fee\") (param $fee i64) (param $length i64) (result i64)\n    local.get $fee call $valid_fee\n    local.get $length i64.const 1 i64.ge_s i32.and\n    local.get $length i64.const 40 i64.le_s i32.and\n    if (result i64) local.get $fee else i64.const -1 end))\n",
+    "defaultFields": {
+      "fee_minor": 300
+    },
+    "label": {
+      "en": "Personalize this product",
+      "de": "Produkt personalisieren",
+      "fr": "Personnaliser ce produit",
+      "es": "Personalizar este producto"
+    },
+    "hint": {
+      "en": "Up to 40 characters. Price and tax are calculated by the shop.",
+      "de": "Bis zu 40 Zeichen. Der Shop berechnet Aufpreis und Steuer.",
+      "fr": "40 caractères maximum. La boutique calcule le supplément et la taxe.",
+      "es": "Hasta 40 caracteres. La tienda calcula el suplemento y el impuesto."
+    }
+  }
+}

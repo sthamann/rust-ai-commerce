@@ -18,6 +18,7 @@ pub(crate) struct Config {
     pub frame_ancestors: String,
     pub default_tenant: Option<String>,
     pub services: Value,
+    pub publishers: Value,
     pub private_service_origins: String,
     pub outbox_retention_days: u32,
     pub outbox_metadata_days: u32,
@@ -146,6 +147,7 @@ pub(crate) fn get() -> &'static Config {
             strict,
             default_tenant,
             services,
+            publishers: json_object("APP_PUBLISHERS", None),
             private_service_origins,
             outbox_retention_days: number("OUTBOX_RETENTION_DAYS", 90, 1, 3650),
             outbox_metadata_days: number(

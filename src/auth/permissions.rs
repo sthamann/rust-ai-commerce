@@ -11,6 +11,7 @@ pub(crate) const SCOPES: &[&str] = &[
     "orders.read",
     "orders.write",
     "customers.read",
+    "customers.pii",
     "customers.write",
     "documents.read",
     "documents.create",

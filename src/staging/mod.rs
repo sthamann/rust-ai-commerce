@@ -7,6 +7,7 @@ mod company;
 mod documents;
 mod release;
 mod snapshot;
+pub(crate) use clone::create_preview;
 pub(crate) use release::*;
 pub(crate) use snapshot::*;
 pub(crate) fn router() -> Router<App> {
@@ -51,7 +52,7 @@ pub(crate) async fn live(a: &App, h: &RequestContext) -> Result<String> {
     Ok(t)
 }
 pub(crate) async fn owned(a: &App, live: &str, stage: &str) -> Result<Value> {
-    sqlx::query_scalar("SELECT baseline FROM shop_environments WHERE tenant=$1 AND live_tenant=$2")
+    sqlx::query_scalar("SELECT baseline FROM shop_environments WHERE tenant=$1 AND live_tenant=$2 AND preview_owner IS NULL")
         .bind(stage)
         .bind(live)
         .fetch_optional(&a.db)
@@ -63,7 +64,7 @@ pub(crate) async fn owned(a: &App, live: &str, stage: &str) -> Result<Value> {
 }
 async fn list(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = live(&a, &h).await?;
-    let rows=sqlx::query("SELECT tenant,name,created_at::text AS created_at FROM shop_environments WHERE live_tenant=$1 ORDER BY created_at DESC").bind(&t).fetch_all(&a.db).await?;
+    let rows=sqlx::query("SELECT tenant,name,created_at::text AS created_at FROM shop_environments WHERE live_tenant=$1 AND preview_owner IS NULL ORDER BY created_at DESC").bind(&t).fetch_all(&a.db).await?;
     let history=sqlx::query("SELECT id,environment,selections,created_at::text AS created_at FROM shop_releases WHERE live_tenant=$1 ORDER BY created_at DESC LIMIT 30").bind(&t).fetch_all(&a.db).await?;
     Ok(Json(
         json!({"live":t,"environments":rows.iter().map(|r|json!({"id":r.get::<String,_>("tenant"),"name":r.get::<String,_>("name"),"createdAt":r.get::<String,_>("created_at")})).collect::<Vec<_>>(),"releases":history.iter().map(|r|json!({"id":r.get::<String,_>("id"),"environment":r.get::<String,_>("environment"),"selections":r.get::<Value,_>("selections"),"createdAt":r.get::<String,_>("created_at")})).collect::<Vec<_>>() }),

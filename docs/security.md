@@ -165,3 +165,10 @@ identity authority and stay in the trusted service/Core runtime; browser clients
 receive neither these keys nor provider credentials. Replay/expiry/ownership and
 proxy scope checks are distinct from deployed OAuth, recovery or external email
 verification. [Exact trust and deployment boundary](experience-integration.md).
+
+## Extension security
+
+[The app security matrix](app-security.md) lists package consent/signatures,
+tenant schemas, callback/surface authority, bounded Wasm, encrypted secrets,
+private file access and replay/lease controls together with executable regressions
+and deployment limits. These controls do not certify arbitrary third-party code.

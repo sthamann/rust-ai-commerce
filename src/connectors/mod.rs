@@ -4,6 +4,7 @@ mod config;
 mod crypto;
 mod email;
 mod error;
+mod events;
 mod exports;
 mod legacy;
 mod network;

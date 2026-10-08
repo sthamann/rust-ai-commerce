@@ -1,0 +1,30 @@
+{
+  "id": "paypal",
+  "version": "1.0.0",
+  "coreApi": "1",
+  "runtime": "service",
+  "name": {
+    "en": "PayPal Sandbox",
+    "de": "PayPal Sandbox",
+    "fr": "PayPal Sandbox",
+    "es": "PayPal Sandbox"
+  },
+  "permissions": [
+    "admin.slot"
+  ],
+  "entities": [],
+  "slots": [
+    {
+      "location": "admin.apps",
+      "component": "payments",
+      "label": {
+        "en": "PayPal Sandbox",
+        "de": "PayPal Sandbox",
+        "fr": "PayPal Sandbox",
+        "es": "PayPal Sandbox"
+      }
+    }
+  ],
+  "actions": [],
+  "events": []
+}

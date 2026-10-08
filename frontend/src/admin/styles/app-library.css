@@ -1,0 +1,35 @@
+/* App callback consent follows the same card and field rhythm as app configuration. */
+.app-access-permissions {
+  border: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+.app-access-permissions label {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.app-access-permissions input[type="checkbox"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  flex-shrink: 0;
+}
+.app-access-permissions input[type="number"] {
+  max-width: 7rem;
+}
+.app-access-key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+.app-key-secret {
+  display: block;
+  padding: 1rem;
+  overflow-wrap: anywhere;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}

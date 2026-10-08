@@ -64,7 +64,9 @@ def seed(client):
     apps = client.call("/api/apps")
     installed = {row["id"] for row in apps["packages"]}
     if "engraving" not in installed:
-        client.call("/api/apps", {"builtIn": "engraving"})
+        review = client.call("/api/apps/review", {"builtIn": "engraving"})
+        client.call("/api/apps", {"builtIn": "engraving", "approve": True,
+            "digest": review["digest"], "permissions": review["permissions"]})
     return {"created": created, "retained": retained, "workspace": client.tenant,
             "providerCalls": 0, "ordersCreated": 0,
             "studio": f"{client.base}/?shop={client.tenant}#merchant",

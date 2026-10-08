@@ -1,6 +1,6 @@
 /** Lossless import of legacy blocks into structured WYSIWYG content, preserving inline emphasis. */
-import type { RichBlock } from "../../shared/content/RichDescription";
-import type { RichNode } from "../../shared/content/rich-document";
+import type { RichBlock } from "../RichDescription";
+import type { RichNode } from "../rich-document";
 function inline(text: string): RichNode[] {
   return text
     .split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g)

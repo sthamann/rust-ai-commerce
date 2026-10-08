@@ -12,6 +12,9 @@ import { useLibraryText } from "../../shared/i18n/app-library-i18n";
 import ConfirmDialog from "../../shared/ui/ConfirmDialog";
 import { useState } from "react";
 import "../../shared/styles/apps.css";
+import AppActivity from "./AppActivity";
+import AppAccess from "./AppAccess";
+import AppSecrets from "./AppSecrets";
 import AppEntity from "./AppEntity";
 import ConnectorPanel from "./ConnectorPanel";
 import ProviderAccount from "./ProviderAccount";
@@ -210,6 +213,15 @@ export default function AppDetails({
               {p.id} · {l("revision")} {p.revision}
             </small>
           </div>
+        )}
+        {detailTab === "appDetails" && manage && (
+          <>
+            <AppAccess app={p.id} request={request} />
+            <AppSecrets app={p.id} request={request} />
+          </>
+        )}
+        {detailTab === "appDetails" && manage && (
+          <AppActivity app={p.id} request={request} />
         )}
         {detailTab === "appInterface" && p.active && (
           <AppInterfaces p={p} request={request} />

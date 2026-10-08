@@ -101,11 +101,24 @@ pub(crate) fn start(a: &App) {
                     Ok(worked) => ticks.worked(worked),
                     Err(e) => eprintln!("flow worker: {}", e.1),
                 }
-                match apps::deliver_once(&worker).await {
-                    Ok(worked) => ticks.worked(worked),
-                    Err(e) => eprintln!("app worker: {}", e.1),
-                }
             }
         });
+        // Independent bounded lanes: a slow provider cannot block other tenant/app queues.
+        for _ in 0..8 {
+            let worker = a.clone();
+            vendune::tenant_scope::spawn(async move {
+                let mut wake = work_signal::subscribe();
+                loop {
+                    match apps::deliver_once(&worker).await {
+                        Ok(true) => tokio::task::yield_now().await,
+                        Ok(false) => wake.tick().await,
+                        Err(e) => {
+                            eprintln!("app delivery: {}", e.1);
+                            wake.tick().await;
+                        }
+                    }
+                }
+            });
+        }
     }
 }

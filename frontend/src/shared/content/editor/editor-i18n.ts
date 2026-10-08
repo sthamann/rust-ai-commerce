@@ -1,5 +1,5 @@
 /** Four-language controls for visual/Markdown editing without changing content-language inheritance. */
-import { useLocale } from "../../shared/i18n/i18n";
+import { useLocale } from "../../i18n/i18n";
 const words = {
   reset: [
     "Discard source changes",

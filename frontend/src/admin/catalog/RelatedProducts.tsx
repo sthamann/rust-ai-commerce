@@ -1,7 +1,7 @@
 /** Search-backed related-product selection, avoiding comma-separated opaque IDs. */
 import { useEffect, useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
-import { useCatalogText } from "./catalog-i18n";
+import { useCatalogText } from "../../shared/i18n/catalog-i18n";
 export default function RelatedProducts({
   request,
   id,

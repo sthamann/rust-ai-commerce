@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 """Standalone app process, opaque UI SDK transport, own SQLite inbox and independent durable worker."""
+from testing.app_approval import consent
+from testing.app_approval import pin
+import hashlib,sys
 import json,os,pathlib,socket,sqlite3,subprocess,tempfile,time,urllib.request,urllib.error,uuid
 ROOT=pathlib.Path(__file__).resolve().parents[1];checks=[]
 def port():
@@ -10,6 +13,7 @@ def start(cmd,env,name):
     log=open(ROOT/'.run'/name,'w');logs.append(log)
     p=subprocess.Popen(cmd,cwd=ROOT,env={**os.environ,**env},stdout=log,stderr=log);processes.append(p);return p
 def call(path,body=None,h=None,expected=200):
+    if path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
     r=urllib.request.Request(base+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(h or {})})
     try:
         with urllib.request.urlopen(r,timeout=20) as res:code=res.status;v=json.load(res)
@@ -18,15 +22,21 @@ def call(path,body=None,h=None,expected=200):
 def passed(name):checks.append(name);print('PASS',name)
 with tempfile.TemporaryDirectory() as directory:
     db=str(pathlib.Path(directory)/'inbox.sqlite');config={app_id:{'url':f'http://127.0.0.1:{service_port}','uiUrl':f'http://127.0.0.1:{service_port}/','token':token}}
-    env={'APP_SERVICES':json.dumps(config),'PROCESS_ROLE':'http','BIND_ADDR':f'127.0.0.1:{api_port}'}
+    manifest=json.loads((ROOT/'extensions/apps/service-example/manifest.json').read_text());manifest['id']=app_id;manifest['events'].append('order.state_changed');manifest['permissions'].append('events:order.state_changed')
+    sys.path.insert(0,str(ROOT/'extensions/sdk'))
+    from ui_bundle import bundle
+    ui=bundle((ROOT/'extensions/apps/service-example/index.html').read_text())
+    config[app_id]['uiDigests']={'ui':hashlib.sha256(ui).hexdigest()}
+    pin(config,app_id,manifest)
+    env={'APP_SERVICES' :json.dumps(config),'PROCESS_ROLE':'http','BIND_ADDR':f'127.0.0.1:{api_port}'}
     try:
-        start(['python3',str(ROOT/'extensions/apps/service-example/server.py')],{'APP_PORT':str(service_port),'APP_TOKEN':token,'APP_DB':db},'service-example-test.log')
+        start(['python3',str(ROOT/'extensions/apps/service-example/server.py')],{'APP_PORT':str(service_port),'APP_TOKEN':token,'APP_DB':db,'APP_ID':app_id},'service-example-test.log')
         start([str(ROOT/'target/debug/vendune')],env,'service-api-test.log')
         for _ in range(80):
             try:call('/health');break
             except OSError:time.sleep(.25)
         u=call('/api/auth/register',{'email':uuid.uuid4().hex+'@example.test','name':'Service Test','password':'Synthetic-service-account-2026!','workspaceId':'svc-'+uuid.uuid4().hex[:12],'workspaceName':'Synthetic service shop'})
-        h={'Authorization':'Bearer '+u['token'],'x-tenant':u['workspace']};manifest=json.loads((ROOT/'extensions/apps/service-example/manifest.json').read_text());manifest['id']=app_id;manifest['events'].append('order.state_changed')
+        h={'Authorization':'Bearer '+u['token'],'x-tenant':u['workspace']}
         call('/api/apps',{'manifest':manifest},h)
         call(f'/api/apps/{app_id}/entities/notes',{'id':'one','fields':{'title':'Tenant-scoped app note'}},h)
         result=call(f'/api/apps/{app_id}/actions/availability',{'sku':'mug'},h);assert result['available'] and 'synthetic' in result['source']
@@ -63,7 +73,7 @@ with tempfile.TemporaryDirectory() as directory:
             if len(updated)==2:break
             time.sleep(.25)
         transitions=[json.loads(row[0])for row in updated if json.loads(row[0])['kind']=='order.state_changed']
-        assert len(transitions)==1 and transitions[0]['data']['state']=='in_progress' and 'token'not in transitions[0]['data']['order']['cart']
+        assert len(transitions)==1 and transitions[0]['data']['state']=='in_progress' and 'order'not in transitions[0]['data'] and 'email'not in transitions[0]['data']
         passed('Repeated status command produces one state event delivered into the external app inbox without shopper credentials')
         report={'passed':len(checks),'checks':checks,'processIsolation':'separate process; no microVM claim'}
         if os.getenv('REPORT_PATH'):pathlib.Path(os.environ['REPORT_PATH']).write_text(json.dumps(report,indent=2)+'\n')

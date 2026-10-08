@@ -58,6 +58,10 @@ pub(super) async fn resolve(
             ));
         }
         let t = tenant(h)?;
+        let private: bool = sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM shop_environments WHERE tenant=$1 AND preview_owner IS NOT NULL)").bind(&t).fetch_one(&a.db).await?;
+        if private {
+            return Err(denied("Personal preview requires its owner session"));
+        }
         ensure_access(a, h).await?;
         let access = h.access.as_ref().expect("Admission snapshot loaded");
         h.tenant_status = access.status.clone();
@@ -70,6 +74,25 @@ pub(super) async fn resolve(
     let channel_id = crate::marketing::channel_id(h).to_owned();
     let identity =
         resolve_identity_channel(a, &token, selected.as_deref(), Some(&channel_id)).await?;
+    if identity
+        .preview_owner
+        .as_ref()
+        .is_some_and(|owner| owner != &identity.user || identity.preview_valid != Some(true))
+    {
+        return Err(denied(
+            "This preview belongs to another user or has expired; run the app again",
+        ));
+    }
+    if let Some(app) = &identity.app {
+        let prefix = format!("/api/apps/{app}/core/");
+        if !path.starts_with(&prefix) || identity.parent.is_some() {
+            return Err(denied(
+                "App credential may call only its own live core callback interface",
+            ));
+        }
+        h.principal.app = Some(app.clone());
+        h.principal.app_permissions = identity.app_permissions.as_ref().map(|v| v.to_string());
+    }
     let chosen = identity.tenant.unwrap_or_default();
     environment_allowed(identity.parent.as_deref(), path)?;
     let scope = identity.parent.clone().unwrap_or_else(|| chosen.clone());

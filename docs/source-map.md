@@ -114,7 +114,7 @@ See [international commerce](international-commerce.md) for the exact contract.
 | [`src/apps/manifest.rs`](../src/apps/manifest.rs) | Strict package contract; identifiers and limits are checked before any schema DDL. | `apps.py + services.py + providers.py + app_inference.py` |
 | [`src/apps/mod.rs`](../src/apps/mod.rs) | Versioned app packages: managed data, UI slots, agent tools and isolated service calls. | `apps.py + services.py + providers.py + app_inference.py` |
 | [`src/apps/planning.rs`](../src/apps/planning.rs) | Registered managed app actions join the same preview/approve transaction as core changes. | `apps.py + services.py + providers.py + app_inference.py` |
-| [`src/apps/registry.rs`](../src/apps/registry.rs) | Atomic installation and additive schema upgrades; immutable version digests preserve history. | `apps.py + services.py + providers.py + app_inference.py` |
+| [`src/apps/registry.rs`](../src/apps/registry.rs) | Atomic consent-bound installation, explicit tenant schema migrations and immutable version digests. | `apps.py + services.py + providers.py + app_inference.py` |
 | [`src/apps/routes.rs`](../src/apps/routes.rs) | Tenant-scoped package lifecycle, generated data endpoints and a shared action adapter. | `apps.py + services.py + providers.py + app_inference.py` |
 | [`src/cognition/context.rs`](../src/cognition/context.rs) | Bounded localized catalog retrieval before inference; full catalog size never expands the prompt. | `apps.py + live intelligence.py/studio.py + restart.py` |
 | [`src/cognition/mod.rs`](../src/cognition/mod.rs) | Evidence-based shop memory: event receipts, observed pairs, reviewable hypotheses and bounded context. | `apps.py + live intelligence.py/studio.py + restart.py` |
@@ -456,3 +456,12 @@ reads, historical preservation and display. See [the measurement boundary](platf
 
 [Raw measurements and exact limits](read-performance.md); SQL/async adapters remain
 unproved despite explicit source-review locks.
+
+## App-platform ownership
+
+The connected extension contract and file-level ownership are maintained in
+[App platform](app-platform.md), [App Studio](app-studio.md) and
+[App security](app-security.md). The generated [module inventory](module-inventory.md)
+lists every actual Rust/frontend/example source, including modules without measured
+coverage. Rich descriptions now share `frontend/src/shared/content/editor/`; do not
+create a separate app editor or catalog-only implementation.

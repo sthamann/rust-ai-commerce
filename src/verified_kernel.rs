@@ -229,3 +229,22 @@ pub fn channel_access_admissible(
 pub fn native_asset_bypass(native_asset: bool, hosted: bool) -> bool {
     native_asset && !hosted
 }
+
+/// A package may use operator credentials only if its exact content is pinned or bundled.
+pub fn app_package_authorized(pinned: bool, bundled: bool) -> bool {
+    pinned || bundled
+}
+/// Guest instances have bounded private and exported resources alike.
+pub fn wasm_resources_admissible(tables: u64, memories: u64, elements: u64, pages: u64) -> bool {
+    tables <= 1 && memories <= 1 && elements <= 10000 && pages <= 16
+}
+
+/// UI grants cannot outlive their immutable package or expand their server-selected action set.
+pub fn app_surface_admissible(current_package: bool, allowed_action: bool) -> bool {
+    current_package && allowed_action
+}
+
+/// Original app consent and the creator's current core role must both permit a callback.
+pub fn app_callback_admissible(capability: bool, current_role: bool) -> bool {
+    capability && current_role
+}

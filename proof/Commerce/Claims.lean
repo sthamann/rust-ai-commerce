@@ -23,7 +23,7 @@ theorem stock_conservation (stock quantity : Nat)
 theorem refund_bounded (captured refunded requested : Nat)
     (h : refund_admissible captured refunded requested = true) :
     0 < requested ∧ refunded + requested ≤ captured := by
-  simp only [refund_admissible, Bool.and_eq_true, decide_eq_true_eq] at h
+  simp only [refund_admissible, Bool.and_eq_true, decide_eq_true_eq, and_assoc] at h
   omega
 /-- Zero refunds cannot pass the production decision. -/
 theorem refund_zero_denied (captured refunded : Nat) :
@@ -95,7 +95,7 @@ theorem stock_exact (stock quantity : Nat) :
 theorem refund_exact (captured refunded requested : Nat) :
     refund_admissible captured refunded requested = true ↔
     0 < requested ∧ refunded + requested ≤ captured := by
-  simp only [refund_admissible, Bool.and_eq_true, decide_eq_true_eq]
+  simp only [refund_admissible, Bool.and_eq_true, decide_eq_true_eq, and_assoc]
   omega
 /-- Correct positive revisions are always admitted. -/
 theorem revision_exact_behavior (current expected : Nat) :
@@ -313,5 +313,36 @@ theorem native_asset_hosted_denied (nativeAsset : Bool) :
 theorem native_asset_bypass_exact (nativeAsset hosted : Bool) :
     native_asset_bypass nativeAsset hosted = true ↔ nativeAsset = true ∧ hosted = false := by
   cases nativeAsset <;> cases hosted <;> simp [native_asset_bypass]
+
+theorem wasm_resources_exact (tables memories elements pages : Nat) :
+    wasm_resources_admissible tables memories elements pages = true ↔
+    tables ≤ 1 ∧ memories ≤ 1 ∧ elements ≤ 10000 ∧ pages ≤ 16 := by
+  simp [wasm_resources_admissible, Bool.and_eq_true, decide_eq_true_eq, and_assoc]
+
+theorem wasm_tables_bounded (tables memories elements pages : Nat)
+    (h : wasm_resources_admissible tables memories elements pages = true) : elements ≤ 10000 := by
+  exact (wasm_resources_exact tables memories elements pages).mp h |>.2.2.1
+
+theorem app_package_authority_exact (pinned bundled : Bool) :
+    app_package_authorized pinned bundled = true ↔ pinned = true ∨ bundled = true := by
+  cases pinned <;> cases bundled <;> simp [app_package_authorized]
+
+theorem app_package_unapproved_denied : app_package_authorized false false = false := by rfl
+
+theorem app_surface_exact (currentPackage allowedAction : Bool) :
+    app_surface_admissible currentPackage allowedAction = true ↔ currentPackage = true ∧ allowedAction = true := by
+  cases currentPackage <;> cases allowedAction <;> simp [app_surface_admissible]
+
+theorem app_surface_stale_denied (allowedAction : Bool) :
+    app_surface_admissible false allowedAction = false := by
+  cases allowedAction <;> simp [app_surface_admissible]
+
+theorem app_callback_exact (capability currentRole : Bool) :
+    app_callback_admissible capability currentRole = true ↔ capability = true ∧ currentRole = true := by
+  cases capability <;> cases currentRole <;> simp [app_callback_admissible]
+
+theorem app_callback_without_consent_denied (currentRole : Bool) :
+    app_callback_admissible false currentRole = false := by
+  cases currentRole <;> simp [app_callback_admissible]
 
 end CommerceKernel

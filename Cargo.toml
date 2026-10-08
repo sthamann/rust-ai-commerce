@@ -21,10 +21,13 @@ reqwest = { version = "0.12", default-features = false, features = ["json", "rus
 tower-http = { version = "0.6", features = ["fs", "trace", "limit", "compression-br", "compression-gzip"] }
 sha2 = "0.10"
 hmac = "0.12"
+ring = "0.17.14"
+semver = "1.0.28"
 cron = "0.17"
 argon2 = "0.5"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-wasmtime = { version = "49.0.1", default-features = false, features = ["cranelift", "runtime", "std", "wat"] }
+wasmtime = { version = "49.0.1", default-features = false, features = ["cranelift", "runtime", "std", "wat", "pooling-allocator", "component-model"] }
+wat = "1.260.0"
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
 base64 = "0.22"
 regex = "1"

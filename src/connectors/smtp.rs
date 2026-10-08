@@ -6,7 +6,7 @@ use lettre::{
     Message,
     message::{Mailbox, MultiPart, SinglePart},
 };
-use std::net::{IpAddr, SocketAddr};
+use std::net::SocketAddr;
 use tokio::io::{AsyncBufReadExt, AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt, BufReader};
 use tokio::net::TcpStream;
 use tokio_rustls::{
@@ -16,30 +16,6 @@ use tokio_rustls::{
 trait Stream: AsyncRead + AsyncWrite + Unpin + Send {}
 impl<T: AsyncRead + AsyncWrite + Unpin + Send> Stream for T {}
 type Connection = BufReader<Box<dyn Stream>>;
-fn global(ip: IpAddr) -> bool {
-    match ip {
-        IpAddr::V4(v) => {
-            let [a, b, c, _] = v.octets();
-            !(a == 0
-                || a == 10
-                || a == 127
-                || a >= 224
-                || (a == 100 && (64..=127).contains(&b))
-                || (a == 169 && b == 254)
-                || (a == 172 && (16..=31).contains(&b))
-                || (a == 192 && (b == 168 || b == 0 || b == 2))
-                || (a == 198 && (b == 18 || b == 19 || b == 51 && c == 100))
-                || (a == 203 && b == 0 && c == 113))
-        }
-        IpAddr::V6(v) => {
-            let s = v.segments();
-            (s[0] & 0xe000) == 0x2000
-                && !(s[0] == 0x2001 && (s[1] < 0x200 || s[1] == 0xdb8))
-                && s[0] != 0x2002
-                && !(s[0] == 0x3fff && (s[1] & 0xf000) == 0)
-        }
-    }
-}
 pub async fn target(s: &Settings) -> Result<Vec<SocketAddr>> {
     let testing = env::var("EMAIL_TEST_SMTP").as_deref() == Ok("1")
         && ["localhost", "127.0.0.1"].contains(&s.smtp_host.as_str());
@@ -66,7 +42,7 @@ pub async fn target(s: &Settings) -> Result<Vec<SocketAddr>> {
                 if testing {
                     a.ip().is_loopback()
                 } else {
-                    global(a.ip())
+                    crate::network_policy::public_address(a.ip())
                 }
             }),
         "SMTP address is not allowed",

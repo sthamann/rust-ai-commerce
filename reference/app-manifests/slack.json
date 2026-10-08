@@ -1,0 +1,144 @@
+{
+  "id": "slack",
+  "version": "1.0.0",
+  "coreApi": "1",
+  "runtime": "service",
+  "name": {
+    "en": "Slack Notifications",
+    "de": "Slack Benachrichtigungen",
+    "fr": "Notifications Slack",
+    "es": "Notificaciones Slack"
+  },
+  "category": "operations",
+  "permissions": [
+    "service.call",
+    "events.read"
+  ],
+  "entities": [],
+  "slots": [],
+  "actions": [
+    {
+      "name": "status",
+      "description": "slack status",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": true,
+      "permission": "knowledge.read"
+    },
+    {
+      "name": "connect",
+      "description": "slack connect",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage"
+    },
+    {
+      "name": "disconnect",
+      "description": "slack disconnect",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage"
+    },
+    {
+      "name": "configure",
+      "description": "slack configure",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "settings": {
+            "type": "object"
+          },
+          "revision": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "settings",
+          "revision"
+        ],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage"
+    },
+    {
+      "name": "channels",
+      "description": "slack channels",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": true,
+      "permission": "apps.manage"
+    },
+    {
+      "name": "post_order",
+      "description": "slack post_order",
+      "handler": "service",
+      "entity": null,
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "requestKey": {
+            "type": "string"
+          },
+          "event": {
+            "type": "object"
+          },
+          "channel": {
+            "type": "string"
+          },
+          "template": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "requestKey",
+          "event"
+        ],
+        "additionalProperties": false
+      },
+      "public": false,
+      "readOnly": false,
+      "permission": "apps.manage",
+      "flowAllowed": true
+    }
+  ],
+  "events": [
+    "order.placed"
+  ]
+}

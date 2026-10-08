@@ -6,6 +6,8 @@ pub(crate) async fn checkout(a: &App, h: &RequestContext, key: &str) -> Result<V
         return Err(bad("Idempotency-Key must contain 8..128 characters"));
     }
     let admitted = load_cart(a, h).await?;
+    let prepared_apps = apps::prepare_configurations(a, &admitted).await?;
+    let prepared_hooks = apps::prepare_hooks(a, &admitted.tenant).await?;
     for i in &admitted.data.items {
         marketing::admit_product(a, h, &i.id).await?;
     }
@@ -123,7 +125,7 @@ pub(crate) async fn checkout(a: &App, h: &RequestContext, key: &str) -> Result<V
     {
         commerce::validate_address_geography(address, &config)?;
     }
-    apps::validate_configurations(&mut tx, &c).await?;
+    apps::validate_configurations(&mut tx, &c, &prepared_apps).await?;
     if selected.shipping_method_id != "pickup"
         && selected.address.is_none()
         && !ps.iter().all(|p| p.extra["digital"] == true)
@@ -150,6 +152,16 @@ pub(crate) async fn checkout(a: &App, h: &RequestContext, key: &str) -> Result<V
         &config,
         settings_revision,
     )?;
+    q = apps::apply_hooks(
+        &mut tx,
+        &c,
+        &priced,
+        q,
+        &config,
+        settings_revision,
+        &prepared_hooks,
+    )
+    .await?;
     commerce::dates_conn(&mut tx, &mut q).await?;
     for i in &c.data.items {
         let p = ps.iter().find(|p| p.id == i.id).unwrap();

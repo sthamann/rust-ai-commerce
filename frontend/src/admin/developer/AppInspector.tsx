@@ -1,11 +1,13 @@
 /** One content language edits app/view/block metadata; changing bindings updates the actual manifest. */
+import AppControlProperties from "./AppControlProperties";
+import AppGeometry from "./AppGeometry";
 import AppContextBinding from "./AppContextBinding";
 import { placements } from "./assistant-model";
 import { useAssistantText } from "../../shared/i18n/app-assistant-i18n";
 import LocalizedField from "../../shared/i18n/LocalizedField";
 import { useAppStudioText } from "../../shared/i18n/app-studio-i18n";
 import type { Manifest, NativeView } from "../../shared/apps/native/types";
-import { binding, locations, textMap } from "./app-model";
+import { locations, textMap } from "./app-model";
 export default function AppInspector({
   manifest,
   view,
@@ -65,6 +67,7 @@ export default function AppInspector({
         >
           <option value="stack">{a("stack")}</option>
           <option value="grid">{a("grid")}</option>
+          <option value="form">{a("formDesigner")}</option>
         </select>
       </label>
       {surface && (
@@ -128,6 +131,15 @@ export default function AppInspector({
             required
             maxLength={100}
           />
+          <AppGeometry
+            index={view.blocks.indexOf(block)}
+            block={block}
+            onChange={(next) =>
+              patch({
+                blocks: view.blocks.map((b) => (b.id === selected ? next : b)),
+              })
+            }
+          />
           {block.kind === "text" ? (
             <LocalizedField
               label={a("body")}
@@ -143,31 +155,18 @@ export default function AppInspector({
               maxLength={2000}
             />
           ) : (
-            <label>
-              {a("entity")}
-              <select
-                value={block.entity ?? ""}
-                onChange={(e) =>
-                  patch({
-                    blocks: view.blocks.map((b) =>
-                      b.id === selected
-                        ? {
-                            ...b,
-                            ...binding(b.kind, e.target.value),
-                            contextBinding: null,
-                          }
-                        : b,
-                    ),
-                  })
-                }
-              >
-                {manifest.entities.map((e) => (
-                  <option key={e.name} value={e.name}>
-                    {e.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <AppControlProperties
+              manifest={manifest}
+              view={view}
+              block={block}
+              onChange={(next) =>
+                patch({
+                  blocks: view.blocks.map((b) =>
+                    b.id === selected ? next : b,
+                  ),
+                })
+              }
+            />
           )}
           {block.kind !== "text" && (
             <AppContextBinding

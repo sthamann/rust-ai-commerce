@@ -1,245 +1,179 @@
-# Full apps: admin, storefront, API, AI and independent storage
+# The Vendune app platform
 
-A full app owns its UI bundle, service code, business logic and storage. The Rust
-host discovers declared surfaces and sends authorized actions to the app. No Rust
-branch or core rebuild is needed to add a new module. Managed declarations and
-pure Wasm hooks remain available for small extensions.
-
-[Product Lab manifest](../extensions/apps/product-lab/manifest.json) ·
-[Browser SDK](../extensions/sdk/browser.js) · [Source map](source-map.md)
-
-## One app, connected surfaces
-
-Product Lab is a runnable example with a new Studio navigation module, a product
-question panel, its own storefront page, typed managed guide records, an independent
-SQLite database, HTTP routes, MCP tools and durable event subscriptions. UI labels,
-managed guide titles and example answers support English, German, French and Spanish.
-Its answer engine deliberately retrieves example facts; it does not run an LLM.
-An app service can instead call its own model, vector database or external system.
-
-![App-owned module in Vendune Studio](assets/app-admin-en.jpg)
-
-![App-owned storefront page using the same action](assets/app-page-en.jpg)
+An app is an immutable, reviewed Manifest. Studio, coding agents, API, MCP, Flow
+Builder and storefront surfaces use that same contract. The public core owns
+identity, data, pricing and execution admission. An independently deployed service
+owns its external business logic. Private Payments and Storyfront implementations
+remain in their private repositories.
 
 ```mermaid
 flowchart LR
-  Admin[Own admin module] --> Bridge[Opaque iframe + scoped SDK]
-  Shop[Product panel / own shop page] --> Bridge
-  Bridge --> Gateway[Authorized Rust action gateway]
-  API[Namespaced HTTP routes] --> Gateway
-  Agent[MCP agent] --> Gateway
-  Gateway --> Managed[Tenant tables + optimistic revisions]
-  Gateway --> Service[Separate app service + own database / model]
-  Outbox[Commerce events] --> Worker[Independent durable app worker]
-  Worker --> Service
-  Managed --> Planner[Selected app facts + tools in merchant planning]
-  Planner --> Approval[Preview / merchant approval]
-  Approval --> Managed
+  Studio[Visual App Studio] --> Manifest[Versioned Manifest]
+  Agent[Coding agent] --> Manifest
+  Manifest --> Review[Validation and permission consent]
+  Review --> Registry[Tenant app registry]
+  Registry --> UI[Native views or pinned iframe]
+  UI --> Grant[Actor and context bound surface grant]
+  API[API / MCP / Flow] --> Gateway[Permission aware action gateway]
+  Grant --> Gateway
+  Gateway --> Data[Tenant app tables and asset owner]
+  Gateway --> Jobs[Durable jobs]
+  Gateway --> Service[Approved independent service]
+  Outbox[Commerce outbox] --> Events[Leased event deliveries]
+  Events --> Service
+  Service --> Callback[Scoped app callback key]
+  Callback --> Core[Existing commerce operations]
+  Registry --> Component[Bounded WIT hooks]
+  Component --> Quote[Native cart and checkout calculation]
 ```
 
-## Manifest contract
+## Install and update
 
-The optional `surfaces`, `apiRoutes` and `intelligence` fields extend API 1.
-Absent fields do not change the serialization/digests of published legacy apps.
-Versions remain immutable; changed manifests need a new compatible version.
+`POST /api/apps/review` with `builtIn` or `manifest` returns the Rust-canonical
+package digest, complete permissions, added permissions and previous version.
+`POST /api/apps` requires `approve: true`, that exact `digest` and the complete
+`permissions` list. Current actor rights are checked independently. A stale review,
+changed package or permission mismatch fails before installation. Apps shows this
+review in a consent dialog. Version identifiers cannot be reused with different
+content. Deactivation retains data and checks dependent apps/hosted frontends.
 
-```json
-{
-  "surfaces": [{
-    "id": "studio",
-    "location": "admin.navigation",
-    "label": {"en":"Product Lab","de":"Produktlabor","fr":"Laboratoire produit","es":"Laboratorio de productos"},
-    "uiPath": "v1/index.html",
-    "actions": ["catalog", "recommend"],
-    "permission": "catalog.read"
-  }],
-  "apiRoutes": [{"path":"advice","method":"POST","scope":"storefront","action":"recommend"}],
-  "intelligence": {
-    "description": {"en":"Product care tools and guide records"},
-    "tools": ["catalog", "save_entry", "recommend"],
-    "entities": ["guides"]
-  }
-}
-```
+Reserved bundled names, including payment apps, cannot inherit operator authority
+from a merchant-authored lookalike. A service configuration needs its own
+`approvedDigests` pin even when a publisher has signed the package.
+[Security, migration and operator configuration](app-security.md).
 
-This fragment belongs in a complete validated manifest; its actions/entities must
-also be declared. At most 16 surfaces and 24 custom routes are admitted per app.
-UI paths are relative, bounded paths; the merchant cannot submit a remote origin.
-Only the operator's private `APP_SERVICES` configuration supplies service/UI URLs.
-Publish UI bundles under immutable version paths and deploy the corresponding
-service version. Manifest hashes do **not** hash or sign remotely hosted source.
+## Data and core capabilities
 
-| Surface location | Actual host consumer / minimal context |
+Each tenant/app/model has its own hashed physical table name. Equal merchant app
+IDs in different shops can have incompatible fields without column collisions.
+Forced RLS and tenant-aware references apply in addition to application checks.
+Migration 058 moves existing shared tables once; historical tables remain for
+operator-controlled backup/reconciliation. Do not delete these backups automatically.
+
+Models support strings, integers, booleans, bounded JSON, date, datetime, decimal,
+explicit-scale integer money, rich text, image/file references and multi-relations.
+Validation rules and uniqueness run on the server. Image/file fields reference the
+existing product asset owner; contextual multipart uploads are private by default.
+A public model cannot silently expose a private asset. Lists use bounded keyset
+pages, indexed filters and optimistic record revisions.
+
+Explicit schema steps can rename/remove/convert/fill fields from an exact installed
+version. Every record is validated before DDL/data changes. Installation, schema,
+recovery snapshot and outbox commit atomically. The online path is bounded to 2,000
+records/model, 4 MB/migration and retained recovery storage of 16 MB/app. Relation
+changes and larger migrations require an offline plan. Recovery snapshots are not
+an automatic one-click rollback of external service effects.
+
+An app can request a separate callback key under **Apps → Access**. Keys are
+app/tenant/package bound, expire within 90 days, show plaintext once and intersect
+scopes with the creator's **current** membership rights. Upgrade, revocation or
+membership removal invalidates access. They cannot call ordinary merchant endpoints.
+
+| App capability | Core operation / boundary |
 |---|---|
-| `admin.navigation` | New Studio sidebar module |
-| `admin.product` | Central product editor; `productId` |
-| `admin.order` | Order detail; `orderId` |
-| `storefront.page` | Navigation link and `#app/APP/SURFACE` page |
-| `storefront.home` | Catalog home area |
-| `storefront.header` | Storefront header area |
-| `product.detail` | Product detail; `productId` |
-| `cart.summary` | Checkout summary; `itemCount` |
-| `account.overview` | Customer account area |
+| `products.read`, `products.write` | Existing product content/read/save operations; native revisions and catalogue rights |
+| `orders.read`, `customers.read` | Bounded projections of owned core objects |
+| `customers.pii` | Separate consent plus current actor permission before personal fields are returned |
+| `assets.read`, `assets.write` | Existing asset metadata/private content and validated contextual multipart upload |
+| `jobs.write` | Claim/progress/completion of this app's admitted jobs |
+| `events:self`, `events:order.*`, exact event scopes | Subscription selection; sensitive payload fields still require separate data rights |
+| `commerce.hooks` | Bounded WIT price/discount/shipping/validation hooks |
 
-A surface is a complete HTML/React/Vue/Svelte/Wasm UI, served by the app in an opaque
-iframe. It receives no merchant/session credential and cannot import the parent's
-private JavaScript or replace arbitrary host DOM. Its bridge admits only selected
-action names; the server checks current manifest state, tenant and permissions again.
-Public surfaces can expose only explicitly public actions. Private surfaces can
-require a granular merchant scope. A declared host context is descriptive input,
-not an authorization token. Customer-private app endpoints need their own explicit
-identity contract; this version does not forward customer authority to app services.
+Callbacks live at `/api/apps/APP/core/OPERATION`. The callback identity does not
+become a merchant session. JSON aliases, MCP tools and flows call declared actions
+through the same gateway; `mcp: false` and `flowAllowed` remain explicit.
+Multipart uploads use a dedicated surface/core upload route, not a JSON MCP tool.
 
-```js
-import { connectCommerce } from "../sdk.js";
-const commerce = await connectCommerce();
-const productId = commerce.context.productId;
-const answer = await commerce.action("recommend", {
-  productId, question: "How do I clean it?", locale: commerce.locale
-});
-commerce.resize(420);
-const unsubscribe = commerce.onContext(context => {
-  // Update when the parent switches the selected product/order.
-});
-```
+## Surfaces and native views
 
-The source window and nonce bind the message exchange. Host resize is clamped to
-180–1,200 px. Guest requests expire after 15 seconds. Locale changes remount the
-surface. The registry refreshes on workspace/login changes and local package changes;
-other browser windows refresh on reload, while server calls reject deactivated apps
-immediately. Unknown/custom page paths do not grant access.
+App modules can appear in navigation and existing product/customer/order editors,
+storefront pages, product details, cart summaries and account areas. The existing
+[assistant guide](app-assistants.md) lists all placement names. Each surface declares
+its own action allowlist and optional team permission.
 
-## API, data and AI
+The host obtains a five-minute grant bound to tenant, app, current actor, package,
+surface and context IDs. The server enforces the same allowlist and rejects changing
+`productId`, `customerId` or `orderId`. Grants are not general callback keys.
+Native views share the host renderer, translations and data owner. They include
+text, tables/cards/forms, inputs, buttons, images, frames/tabs, KPI and charts.
+[Visual builder, F5 previews and code-behind](app-studio.md).
 
-Declared GET/POST aliases live at `/api/apps/APP/http/ROUTE` (merchant) or
-`/store-api/apps/APP/http/ROUTE` (public). They call the same action as the SDK and
-MCP `app.APP.ACTION`. GET requires a declared read-only action and excludes managed
-save/event mutations. A Lean-checked pure policy guards this admission; it cannot
-prove that an external service honestly implements its `readOnly` declaration.
-These JSON aliases do not add arbitrary path parameters, streaming, multipart or
-core endpoint replacement. An independent app service may offer richer endpoints
-behind its own separately authenticated gateway.
+Custom UI remains an opaque iframe. The host fetches only approved hash-pinned,
+self-contained HTML, with CSP denying direct fetches/forms and sandbox limited to
+scripts. The message bridge binds source/nonce and surface actions; no merchant
+credential is passed to the guest. Only reviewed publishers should receive sensitive
+permissions: browser CSP does not prove that hostile guest code cannot disclose data
+through every form of navigation. Arbitrary customer-private external service
+identity and hostile-code microVM hosting are not implemented by this contract.
 
-Managed entities support strings, integers, booleans, translated strings, local
-references and bounded `json` object/array fields (8 KiB per JSON value). An app can
-create its own tables and additive nullable columns. Compound tenant references and
-forced RLS apply; destructive schema changes fail. Nested JSON is stored as JSONB;
-its full nested business schema is the app's responsibility. JSON fields cannot use
-the generated B-tree/reference option. Managed list actions/GET entities support
-`limit=1..100`, `after=ID` and up to four indexed equality filters. Replies include
-`hasMore` and `nextCursor`; SQL reads at most `limit+1` records.
+## Events and long actions
 
-For completely custom structures, indexes, migrations or nonrelational storage,
-deploy a database with the app service. Product Lab has a durable deduplicated event
-inbox in SQLite. Its fixed example care facts are shared sample data; real merchant
-records must use the supplied tenant as part of every ownership/storage boundary.
-Operator service credentials stay server-side. An app never submits SQL to the core.
+The PostgreSQL outbox feeds leased deliveries. Each process has eight delivery
+lanes, bounded per-tenant selection, batches of 1–25, stable per-event idempotency
+keys, 30-second fenced leases and exponential retry up to eight attempts. A slow
+service does not hold a database transaction or the sole global event lane.
+Filters run on the permission-projected payload. Replay checks current permissions
+and processes up to 50 events per request, preserving original IDs.
 
-`intelligence` selects the app's tools and entities entering merchant planning.
-The host reads at most 12 records per selected entity, four entities per app and
-eight apps, with depth/array/string bounds and a 32 KiB budget for the serialized
-app context. Legacy apps preserve their earlier selection defaults. Exact record
-revisions are fetched by indexed record ID, including records beyond page one.
-A managed save is a proposal: no write before approval; stale package/record
-revisions reject application. Arbitrary remote service mutations cannot become
-atomic core changes. MCP can invoke declared service tools explicitly; the current
-merchant planner describes them but does not autonomously call remote tools.
+Subscriptions cannot see other apps, team changes or personal customer fields by
+requesting only coarse `events.read`. Own events use `events:self`; core families
+need their declared scope. Receiver code validates the **whole** batch before effects.
+Delivery is at least once; the receiver must deduplicate persistent effects.
 
-Apps subscribe to existing events and publish namespaced events through declared
-`emit` actions. The independent app worker uses at-least-once delivery, bounded
-retry and stable idempotency keys. Receiver storage must deduplicate. Private
-mutation actions can join existing rule-bound flows; full arbitrary workflow
-execution is still outside the documented Flow Builder subset.
+An optional signed public HTTPS destination needs `events.send`, consent and a
+rotatable encrypted outbound secret. Egress rejects private/reserved addresses,
+mixed DNS answers, redirects and ambient proxies; connections pin resolved addresses.
+[SDK signature format and examples](../extensions/README.md).
 
-## Run Product Lab locally
+An action with handler `job` admits a durable job with an idempotency key. The app
+receives a minimized job-ID event, claims a fenced lease and reports progress via
+its scoped callback. Cancellation must be acknowledged by a running service.
+Expired leases produce **uncertain**, not an automatic replay of external effects.
+Apps shows progress, results, review/retry/archive and private artifact downloads.
+Limits are ten active jobs/app, 100/tenant and 1,000 retained jobs/app.
 
-```sh
-PRODUCT_LAB=1 ./scripts/dev.sh
-```
+## Pure commerce components
 
-The optional launcher generates an ignored private token, starts the service on
-`127.0.0.1:8798`, and merges its configuration with other app services. It does not
-install an app into any shop automatically. Sign in as an owner/admin and install
-`extensions/apps/product-lab/manifest.json` through `POST /api/apps`. Create a guide
-in **Apps → Product Lab → Data**; then open its sidebar module or storefront page.
-Only active installed apps with operator-configured UI URLs appear.
+[`vendune:commerce/extension@1.0.0`](../extensions/sdk/wit/commerce.wit) defines
+read-only cart, product and explicitly declared app-record snapshots. The four hooks
+return an accepted flag, integer money adjustment and bounded reason code. The core
+checks currency/scale, bounds and validation semantics, then uses existing native
+allocation/tax/delivery code. Checkout retains stock, payment and idempotency owners.
+No arbitrary SQL, network, filesystem or mutable commerce host functions are imported.
 
-For a running development stack:
+Components compile before the checkout transaction, use digest-cached shared engines,
+pooling, fuel, epoch deadlines, 1 MiB memory and 10,000 table-element limits. Eight
+active hook apps/tenant are admitted; record snapshots are bounded to four/app and
+host reads to 128/instance. Declared record revisions are included in quote outcomes.
+The [snapshot-pricing example](../extensions/apps/snapshot-pricing/manifest.json)
+and typed WAT component run through real quote and order paths. General Rust/PHP
+source builds and arbitrary asynchronous hooks are external deployment concerns.
 
-```sh
-python3 scripts/product_lab.py start
-python3 scripts/product_lab.py status
-# Restart the core with APP_SERVICES merged from .run/connector-services.json.
-python3 scripts/product_lab.py stop
-```
+## Publisher distribution
 
-All local state lives in ignored `.run`. The launcher only stops its owned process.
-`PROCESS_ROLE=app-worker` with the same DB/app-service configuration delivers queued
-events; HTTP-only deployment does not deliver them itself.
+Registered publisher public keys are configured by the operator in `APP_PUBLISHERS`.
+A signed package uses `publisher_app` IDs, key ID, stable/beta/development channel,
+Ed25519 signature and semver dependencies. Sign with `vendune --sign-app MANIFEST`
+using a private base64 seed on stdin; never commit it. The signed message binds the
+entire Rust-canonical package including permissions, bundles and dependencies.
 
-## Container and performance boundaries
+The registry rejects unsigned occupancy of registered namespaces, wrong signatures,
+missing/wrong-publisher/foreign-tenant dependencies, cycles, incompatible upgrades
+and deactivation of required dependencies. Channels are signed metadata; there is
+no automatic marketplace update-feed deployment. A local unsigned merchant app is
+still allowed outside registered namespaces and has tenant-specific storage.
 
-`extensions/apps/product-lab/compose.yaml` provides a non-root service with a read-only
-root filesystem, writable data volume, dropped capabilities, 0.5 CPU, 128 MiB and
-64-process limits. Supply `APP_TOKEN` privately and start it with:
+## Examples and evidence
 
-```sh
-docker compose -f extensions/apps/product-lab/compose.yaml up -d --build
-```
+- **care-studio**: native forms, public product care cards, API/MCP and multilingual content.
+- **product-lab**: independent custom UI, managed data, product context and event inbox.
+- **service-example**: approved pinned UI, scoped gateway and validated deduplicated batches.
+- **snapshot-pricing**: actual typed WIT host reads and all four commerce hooks.
+- **catalog-export**: leased job → product callbacks → private native asset → downloadable result.
+- **Email / Slack / Google / Gmail**: bundled Rust connector services, precise subscriptions and batch validation.
 
-Expose the UI through an HTTPS proxy for public shops and register that versioned
-origin in private `APP_SERVICES`. Containers are **not microVM isolation**; untrusted
-third-party code needs an operator-owned runner, restricted egress and a stronger
-threat model. The core does not compile/deploy arbitrary uploaded app source.
-
-Each Rust process admits at most eight simultaneous service calls per tenant/app
-and 64 total, rejecting excess work with HTTP 429 instead of queuing it in the core.
-Calls have a five-second timeout and 64 KiB request/response limits. Database
-connections are released before remote execution. These limits are per process,
-not distributed tenant quotas. A single busy app cannot monopolize those slots,
-but many busy apps can still saturate the overall budget.
-
-The native Studio and storefront bundles are loaded separately; app bundles load
-when their surfaces mount. Indexed pages replace whole-table reads. None of this
-makes remote LLMs intrinsically fast or establishes a speed ratio versus Shopware.
-Existing million-product commerce benchmarks retain their original workload/commit.
-
-## Verified and still open
-
-`python3 scripts/app_surfaces.py` exercises the real Rust/PostgreSQL/standalone app
-path: surfaces, unsafe contracts, nested data, keyset filters, foreign tenants,
-HTTP/MCP equivalence, actual local model wire context and approved deep-page save,
-permissions, service staging restrictions, overloaded service isolation and
-retained-data deactivation. During eight two-second app calls, an actual new cart
-completed before those calls returned and another tenant continued. The last local
-debug run measured 13.146 ms for that single cart; this is an isolation observation,
-not a capacity benchmark. No paid inference or external messages were sent.
-
-SDK provenance/context regressions and four-language checks run in CI. Browser
-checks exercised English/German/French/Spanish modules, a real product question
-and a custom storefront page. The container's actual UI/action and resource settings
-were tested locally. Existing app, service/event, staging, developer and membership
-regressions remain active.
-
-Still open: arbitrary synchronous cart/checkout hooks beyond the existing pure
-Wasm ABIs; customer-private service identity; package/bundle signing; hosted source
-builds/Git IDE; automatic service rollout/rollback; distributed admission quotas;
-full Shopware Rule/Flow parity; hostile-code microVM runners; production scale tests
-with many real extensions. This is a connected full-app prototype, not an unlimited
-plugin host or a production SaaS certification.
-
-## Native visual apps
-
-The optional `views` contract adds bounded native text/table/cards/form layouts. Declarative surfaces use `uiPath: native/VIEW_ID` and explicit action allowlists. App Studio and coding agents edit the same Manifest; the sandbox and released surfaces use the same host renderer. Native public forms are rejected. Legacy packages omit empty `views`, retaining their serialized version digest. See [App Studio](app-studio.md) for workflows, code ownership, dynamic content languages and limitations. The care-studio example needs no operator-deployed app server.
-
-## App presentation and library
-
-Optional `presentation` metadata supplies a passive icon, cover and localized
-summary. The Apps library and individual details share the same content fallback
-and artwork renderer. Registered `admin.*` surfaces can be opened directly from
-**Apps → an installed app → App workspace**, through the existing permission-filtered
-host. [Manifest contract, lifecycle and source ownership](app-library.md).
-
-## Guided editor extensions and automation
-
-App Studio assistants construct the same Manifest used by SDK/service apps. See [the complete contracts](app-assistants.md) for coreReference, translated choices, context-bound editor mounts, action mcp flags, service/native mixed views, persistent UTC schedules and signed incoming webhooks. Public customer/order references are forbidden. These declarations do not replace provider-specific code or operator service deployment.
+Registered HTTP suites cover tenant collisions, resource attacks, consent, private
+F5 records, callback PII/revocation, migration rollback, file boundaries, jobs,
+publisher dependencies, payment/staging compatibility and slow-receiver isolation.
+These are concrete prototype regressions, not production-scale measurements or a
+claim of complete Shopware parity. [Test registry](testing.md), [source owners](source-map.md).

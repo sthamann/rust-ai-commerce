@@ -61,6 +61,11 @@ and Qdrant probes are actual local requests, not production benchmarks.
 
 ## Current illustrated feature tour
 
+The two 8 October App Studio PNGs show the new native designer and an actual
+product-bound private preview with a saved PostgreSQL record. Their exact source,
+synthetic fixture and browser capture boundaries are in
+[the feature-tour provenance](feature-tour/README.md).
+
 The [6 October 2026 capture set](feature-tour/README.md) accompanies
 [the complete current feature guide](../features.md). Its screenshots and twelve
 GIFs come from real isolated Nord Atelier/empty lifecycle shops. Recording

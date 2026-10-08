@@ -240,6 +240,30 @@ fn eval(j: &Value) -> Result<Value, String> {
                 .ok_or("Invalid native_asset")?,
             args["hosted"].as_bool().ok_or("Invalid hosted")?
         ))),
+        Some("app_package_authorized") => Ok(json!(app_package_authorized(
+            args["pinned"].as_bool().ok_or("Invalid pinned")?,
+            args["bundled"].as_bool().ok_or("Invalid bundled")?
+        ))),
+        Some("wasm_resources_admissible") => Ok(json!(wasm_resources_admissible(
+            args["tables"].as_u64().ok_or("Invalid tables")?,
+            args["memories"].as_u64().ok_or("Invalid memories")?,
+            args["elements"].as_u64().ok_or("Invalid elements")?,
+            args["pages"].as_u64().ok_or("Invalid pages")?
+        ))),
+        Some("app_surface_admissible") => Ok(json!(app_surface_admissible(
+            args["current_package"]
+                .as_bool()
+                .ok_or("Invalid current_package")?,
+            args["allowed_action"]
+                .as_bool()
+                .ok_or("Invalid allowed_action")?
+        ))),
+        Some("app_callback_admissible") => Ok(json!(app_callback_admissible(
+            args["capability"].as_bool().ok_or("Invalid capability")?,
+            args["current_role"]
+                .as_bool()
+                .ok_or("Invalid current_role")?
+        ))),
         _ => Err("Unknown policy".into()),
     }
 }

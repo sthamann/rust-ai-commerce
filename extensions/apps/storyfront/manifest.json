@@ -1,6 +1,6 @@
 {
   "id": "storyfront",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "coreApi": "1",
   "runtime": "service",
   "name": {
@@ -52,5 +52,22 @@
       "public": false
     }
   ],
-  "events": []
+  "events": [],
+  "surfaces": [
+    {
+      "id": "workspace",
+      "location": "admin.navigation",
+      "label": {
+        "en": "Storyfront",
+        "de": "Storyfront",
+        "fr": "Storyfront",
+        "es": "Storyfront"
+      },
+      "uiPath": "ui",
+      "actions": [
+        "generate",
+        "status"
+      ]
+    }
+  ]
 }

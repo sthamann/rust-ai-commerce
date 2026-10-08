@@ -1,5 +1,6 @@
 /** Installed package workspace: lifecycle, generated entities and shared agent actions. */
 import type { Package } from "./app-types";
+import AppConsent from "./AppConsent";
 import AppDetails from "./AppDetails";
 
 import { useEffect, useState } from "react";
@@ -24,6 +25,7 @@ export default function AppsManager({
   const { a, locale, money } = useAppText();
   const { c } = useCustomerText();
   const l = useLibraryText();
+  const [installing, setInstalling] = useState("");
   const [mainLocale, setMainLocale] = useState("en-GB");
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState("");
@@ -124,18 +126,7 @@ export default function AppsManager({
             setDetailTab("appDetails");
             setResult(undefined);
           }}
-          onInstall={(id) =>
-            void run(
-              async () => {
-                await request("/api/apps", { builtIn: id });
-              },
-              () => {
-                setSelected(id);
-                setDetailTab("appDetails");
-                setResult(undefined);
-              },
-            )
-          }
+          onInstall={setInstalling}
         />
       </div>
       {selected && (
@@ -167,10 +158,31 @@ export default function AppsManager({
           </div>
         </>
       )}
+      {installing && (
+        <AppConsent
+          app={installing}
+          request={request}
+          onCancel={() => setInstalling("")}
+          onInstall={async (consent) => {
+            await request("/api/apps", {
+              builtIn: installing,
+              approve: true,
+              digest: consent.digest,
+              permissions: consent.permissions,
+            });
+            await load();
+            setSelected(installing);
+            setDetailTab("appDetails");
+            setResult(undefined);
+            setInstalling("");
+          }}
+        />
+      )}
       {packages
         .filter((p) => p.id === selected)
         .map((p) => (
           <AppDetails
+            key={p.id}
             p={p}
             locale={locale}
             mainLocale={mainLocale}

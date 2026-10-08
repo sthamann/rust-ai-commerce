@@ -2,7 +2,7 @@
 import { lazy, useEffect, useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
 import type { OpenEntity } from "../shell/useEntityNavigation";
-import { useCatalogText } from "./catalog-i18n";
+import { useCatalogText } from "../../shared/i18n/catalog-i18n";
 import type { Category } from "./catalog-model";
 const ProductEditor = lazy(() => import("./ProductEditor"));
 import CategoriesWorkspace from "./CategoriesWorkspace";

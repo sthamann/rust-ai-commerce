@@ -14,7 +14,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE,SELECT ON SEQUENCES TO ven
 SELECT format('GRANT vendune_runtime TO %I',current_user) \gexec
 SELECT format('ALTER TABLE public.%I OWNER TO vendune_runtime',c.relname)
  FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
- WHERE n.nspname='public' AND c.relname ~ '^app_[a-f0-9]{16}_'
+ WHERE n.nspname='public' AND c.relname ~ '^app_[a-f0-9]{16}([a-f0-9]{8})?_'
  AND EXISTS(SELECT 1 FROM pg_policy p WHERE p.polrelid=c.oid AND p.polname='tenant_scope') \gexec
 -- Example, after provisioning the LOGIN separately:
 -- GRANT vendune_runtime TO vendune_runtime_login;

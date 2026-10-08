@@ -128,7 +128,23 @@ it("rejects active or credential-bearing URLs and accepts only HTTPS or explicit
 });
 
 it("installed managed app details open the existing editor and explain the dependency instead of allowing pause", () => {
-  const request = vi.fn(),
+  const request = vi.fn(async (path: string) =>
+      path.endsWith("credentials")
+        ? { canManage: true, permissions: [], keys: [] }
+        : path.endsWith("activity")
+          ? {
+              calls: [],
+              deliveries: [],
+              storage: {
+                rows: 0,
+                bytes: 0,
+                rowLimit: 100000,
+                byteLimit: 67108864,
+              },
+              limits: {},
+            }
+          : { revision: 0, configured: false, kinds: [], secrets: [] },
+    ),
     a = (key: string) => key;
   render(
     <LocaleProvider>
@@ -173,7 +189,9 @@ it("installed managed app details open the existing editor and explain the depen
     mounted.editorUrl + "?locale=en-GB",
   );
   expect(screen.getByText(/installed automatically/)).toBeVisible();
-  expect(request).not.toHaveBeenCalled();
+  expect(
+    request.mock.calls.every(([path]) => !path.endsWith("frontends")),
+  ).toBe(true);
 });
 it("managed Storyfront bindings open their editor without a second legacy iframe", async () => {
   const request = vi.fn(async (path: string) =>

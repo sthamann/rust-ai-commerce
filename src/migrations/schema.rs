@@ -221,4 +221,56 @@ pub(super) const SCHEMA: &[(&str, &str)] = &[
         "057-core-hardening",
         include_str!("../../migrations/057-core-hardening.sql"),
     ),
+    (
+        "058-tenant-app-schemas",
+        include_str!("../../migrations/058-tenant-app-schemas.sql"),
+    ),
+    (
+        "059-app-event-leases",
+        include_str!("../../migrations/059-app-event-leases.sql"),
+    ),
+    (
+        "060-app-storage-quotas",
+        include_str!("../../migrations/060-app-storage-quotas.sql"),
+    ),
+    (
+        "061-app-surface-grants",
+        include_str!("../../migrations/061-app-surface-grants.sql"),
+    ),
+    (
+        "062-developer-drafts",
+        include_str!("../../migrations/062-developer-drafts.sql"),
+    ),
+    (
+        "063-app-observability",
+        include_str!("../../migrations/063-app-observability.sql"),
+    ),
+    (
+        "064-app-credentials",
+        include_str!("../../migrations/064-app-credentials.sql"),
+    ),
+    (
+        "065-app-service-secrets",
+        include_str!("../../migrations/065-app-service-secrets.sql"),
+    ),
+    (
+        "066-private-app-preview",
+        include_str!("../../migrations/066-private-app-preview.sql"),
+    ),
+    (
+        "067-app-multi-relations",
+        include_str!("../../migrations/067-app-multi-relations.sql"),
+    ),
+    (
+        "068-app-schema-history",
+        include_str!("../../migrations/068-app-schema-history.sql"),
+    ),
+    (
+        "069-app-jobs",
+        include_str!("../../migrations/069-app-jobs.sql"),
+    ),
+    (
+        "070-app-callback-permissions",
+        include_str!("../../migrations/070-app-callback-permissions.sql"),
+    ),
 ];

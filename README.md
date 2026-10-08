@@ -161,21 +161,22 @@ observed associations do not establish sales uplift.
 ### Build an app that belongs in your shop
 
 **Visual App Studio and coding agents share one executable manifest.** Compose
-Text, Cards, Data tables and Input forms; define typed models; add product,
+a snapping form raster with controls, data grids and code-behind; define typed models; add product,
 customer or order fields; choose public reads, HTTP/MCP tools, AI access and Flow
-actions deliberately. Test actual persisted records in a private sandbox, save
-an immutable version and publish selected changes.
+actions deliberately. F5 runs actual records in an actor-private sandbox with hot reload. Autosave drafts,
+inspect calls and breakpoint traces, save an immutable version and publish selected changes.
 
-[![Add components, then undo and redo in the actual App Studio canvas](docs/assets/feature-tour/app-design.gif)](docs/app-studio.md)
+[![App Studio form designer with native controls and a property inspector](docs/assets/feature-tour/app-form-designer.png)](docs/app-studio.md)
 
-*Actual design-canvas interaction. The canvas labels sample data; the working
-sandbox preview uses real managed records.*
+*Actual browser capture, 8 October. The design canvas labels sample data;
+the [working private preview](docs/assets/feature-tour/app-private-preview.png)
+shows a product-bound record saved and reloaded through PostgreSQL.*
 
 Nine assistants cover storefront/admin apps, connected experiences, connectors,
 events, webhooks and schedules. Separately deployed services can bring their own
 frontend, database and capabilities through the scoped SDK.
 [App Studio](docs/app-studio.md) · [Guided contracts](docs/app-assistants.md) ·
-[Full app SDK](docs/app-platform.md) · [Runnable Product Lab](extensions/apps/product-lab).
+[Full app SDK](docs/app-platform.md) · [App security](docs/app-security.md) · [Runnable Product Lab](extensions/apps/product-lab).
 
 ### Make the process visible. Publish what you choose.
 
@@ -199,7 +200,8 @@ supports validated content restoration, without replaying financial operations.
 These are real browser captures; waits are shortened for readability. The
 [complete tour](docs/features.md) retains **40 screenshots and 12 interaction
 GIFs from 6 October**, alongside [three new public integration captures from
-8 October](docs/assets/showcase/README.md#public-integration-captures-8-october-2026).
+8 October](docs/assets/showcase/README.md#public-integration-captures-8-october-2026)
+and [two current App Studio captures](docs/assets/feature-tour/README.md).
 Capture versions, recording edits and live-provider limits remain explicit.
 
 ## Operate the whole platform
@@ -331,7 +333,7 @@ unchanged. External apps still choose their own language.
 | **Payments & connected services** | Simulated/manual payments, native PayPal Orders v2 and a versioned [provider API](docs/payment-provider-api.md) for isolated payment apps: onboarding, redirect/embedded checkout, capture/authorize/void/refund, signed callbacks and Flow/MCP actions. App Studio edits the same contract. Local fixtures are tested; real PSP outcomes and the private Shopware Payments service require approved provider configuration. |
 | **Tenant isolation** | Scoped API/MCP operations, tenant-aware foreign keys, core FORCE RLS policies and connection-scoped runtime enforcement. Strict deployments require a separate non-owner runtime login; policies alone do not protect a superuser. [Exact isolation boundary](docs/tenant-isolation.md). |
 | **Shopware & protocols** | Selected native behavior ports and HTTP/MCP/UCP capabilities; complete DAL/CMS/plugin compatibility and full protocol conformance are outside this slice. |
-| **Custom apps & hosting** | Declarative packages plus separately deployed services. Arbitrary source builds, bundle signing and hostile-code microVM containment are not implemented. Deployment/health availability does not certify production checkout. |
+| **Custom apps & hosting** | Declarative packages plus separately deployed services. Canonical Ed25519 package signatures, dependency checks and hash-pinned UI bundles are implemented. Arbitrary source builds and hostile-code microVM containment remain external deployment responsibilities. Deployment/health availability does not certify production checkout. |
 
 [Security](docs/security.md) · [Managed hosting](docs/managed-hosting.md) ·
 [Complete feature scope](docs/features.md).

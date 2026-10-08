@@ -1,4 +1,9 @@
 /** Accessible click-to-add canvas with selectable blocks and keyboard-accessible ordering controls. */
+import { useState } from "react";
+import AppLogicEditor from "./AppLogicEditor";
+import { accepts } from "./control-model";
+import { controlKinds, isDataBlock } from "../../shared/apps/native/types";
+import AppGridCanvas from "./AppGridCanvas";
 import Icon from "../../shared/ui/Icon";
 import { useAppStudioText } from "../../shared/i18n/app-studio-i18n";
 import { contentText } from "../../shared/i18n/content-language";
@@ -9,6 +14,7 @@ import type {
 } from "../../shared/apps/native/types";
 import NativeAppView from "../../shared/apps/native/NativeAppView";
 import type { RequestFn } from "../shell/studio-types";
+import { snap } from "../../shared/apps/native/geometry";
 import { newBlock } from "./app-model";
 export default function AppCanvas({
   manifest,
@@ -29,6 +35,7 @@ export default function AppCanvas({
   preview: boolean;
   previewRequest: RequestFn;
 }) {
+  const [code, setCode] = useState("");
   const { a, locale } = useAppStudioText();
   const update = (blocks: Block[]) =>
     onChange({
@@ -37,38 +44,73 @@ export default function AppCanvas({
         v.id === view.id ? { ...v, blocks } : v,
       ),
     });
+  const add = (kind: Block["kind"]) => {
+    const e =
+      manifest.entities.find((e) => e.fields.some((f) => accepts(kind, f))) ??
+      manifest.entities[0];
+    const b = newBlock(kind, view, e?.name);
+    if (
+      controlKinds.includes(kind as (typeof controlKinds)[number]) &&
+      isDataBlock(kind)
+    )
+      b.dataField = e?.fields.find((f) => accepts(kind, f))?.name;
+    return b;
+  };
   return (
     <div className="app-designer">
+      {code && (
+        <AppLogicEditor
+          block={view.blocks.find((b) => b.id === code)!}
+          manifest={manifest}
+          view={view}
+          onClose={() => setCode("")}
+          onChange={(b) =>
+            update(view.blocks.map((old) => (old.id === b.id ? b : old)))
+          }
+        />
+      )}
       <aside className="app-palette">
         <span className="app-panel-label">{a("palette")}</span>
-        {(["text", "table", "cards", "form"] as const).map((kind) => (
-          <button
-            key={kind}
-            disabled={
-              view.blocks.length >= 32 ||
-              (kind !== "text" && !manifest.entities.length)
-            }
-            onClick={() => {
-              const b = newBlock(kind, view, manifest.entities[0]?.name);
-              update([...view.blocks, b]);
-              onSelect(b.id);
-            }}
-          >
-            <Icon
-              name={
-                kind === "text"
-                  ? "chat"
-                  : kind === "form"
-                    ? "plus"
-                    : kind === "cards"
-                      ? "layers"
-                      : "menu"
+        {(["text", "table", "cards", "form", ...controlKinds] as const).map(
+          (kind) => (
+            <button
+              key={kind}
+              draggable
+              onDragStart={(e) => {
+                if (
+                  view.blocks.length >= 32 ||
+                  (isDataBlock(kind) && !manifest.entities.length)
+                )
+                  e.preventDefault();
+                else
+                  e.dataTransfer.setData("application/vnd.vendune.kind", kind);
+              }}
+              disabled={
+                view.blocks.length >= 32 ||
+                (isDataBlock(kind) && !manifest.entities.length)
               }
-            />
-            <span>{a(kind)}</span>
-            <Icon name="plus" size={14} />
-          </button>
-        ))}
+              onClick={() => {
+                const b = add(kind);
+                update([...view.blocks, b]);
+                onSelect(b.id);
+              }}
+            >
+              <Icon
+                name={
+                  kind === "text"
+                    ? "chat"
+                    : kind === "form"
+                      ? "plus"
+                      : kind === "cards"
+                        ? "layers"
+                        : "menu"
+                }
+              />
+              <span>{a(kind)}</span>
+              <Icon name="plus" size={14} />
+            </button>
+          ),
+        )}
         <div className="app-palette-note">
           <Icon name="lock" size={16} />
           <p>{a("privateHint")}</p>
@@ -89,12 +131,41 @@ export default function AppCanvas({
                 ?.actions ?? []
             }
           />
+        ) : view.layout === "form" ? (
+          <AppGridCanvas
+            view={view}
+            onCode={setCode}
+            selected={selected}
+            onSelect={onSelect}
+            onChange={update}
+            mainLocale={mainLocale}
+            onAdd={(kind, p) => {
+              if (isDataBlock(kind) && !manifest.entities.length) return;
+              const b = add(kind);
+              b.geometry = snap({ ...p, w: 6, h: 6 });
+              update([...view.blocks, b]);
+              onSelect(b.id);
+            }}
+          />
         ) : (
           <div className={`app-design-blocks app-design-${view.layout}`}>
             {view.blocks.map((b, index) => (
               <article
                 className={`app-design-block ${selected === b.id ? "selected" : ""}`}
                 key={b.id}
+                onDoubleClick={() => {
+                  onSelect(b.id);
+                  if (
+                    [
+                      "button",
+                      "textbox",
+                      "combobox",
+                      "checkbox",
+                      "datepicker",
+                    ].includes(b.kind)
+                  )
+                    setCode(b.id);
+                }}
               >
                 <button
                   className="app-block-select"

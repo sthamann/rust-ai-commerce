@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Real HTTP/PostgreSQL CRM, receipt, scoped-access and paid-download regressions. No PSP traffic."""
+from testing.app_approval import consent
 import json,os,uuid,urllib.request,urllib.error,concurrent.futures,pathlib,time,copy
 BASE=os.getenv('BASE_URL','http://127.0.0.1:8787');suffix=uuid.uuid4().hex[:10];password='Synthetic-operation-2026!';checks=[]
 def req(path,body=None,h=None,method=None,expected=200,binary=False):
+    if path == "/api/apps" and isinstance(body,dict): body=consent(body)
     raw=body if isinstance(body,bytes) else None if body is None else json.dumps(body).encode()
     r=urllib.request.Request(BASE+path,data=raw,headers={'Content-Type':'application/json',**(h or {})},method=method or ('GET' if body is None else 'POST'))
     try:

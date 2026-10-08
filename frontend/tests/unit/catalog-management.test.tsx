@@ -6,7 +6,7 @@ import { LocaleProvider } from "../../src/shared/i18n/i18n";
 import ProductDataView from "../../src/admin/catalog/ProductDataView";
 import ProductEditor from "../../src/admin/catalog/ProductEditor";
 import RichDescription from "../../src/shared/content/RichDescription";
-import { editorDocument } from "../../src/admin/catalog/rich-conversion";
+import { editorDocument } from "../../src/shared/content/editor/rich-conversion";
 import { newDraft } from "../../src/admin/catalog/catalog-model";
 import { orderedCategories } from "../../src/admin/catalog/CategoriesWorkspace";
 vi.mock("../../src/shared/apps/AppSurfaces", async (original) => ({

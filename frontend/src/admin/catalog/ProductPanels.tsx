@@ -1,7 +1,10 @@
 /** Native commerce, media, translated SEO/specifications and category panels for one editable product. */
 import ProductCurrencyPrices from "./ProductCurrencyPrices";
 import type { RequestFn } from "../shell/studio-types";
-import { useCatalogText, type CatalogWord } from "./catalog-i18n";
+import {
+  useCatalogText,
+  type CatalogWord,
+} from "../../shared/i18n/catalog-i18n";
 import type { Category, ProductDraft } from "./catalog-model";
 import PairFields from "./PairFields";
 import ReferencePriceFields from "./ReferencePriceFields";

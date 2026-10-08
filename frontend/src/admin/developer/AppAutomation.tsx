@@ -1,6 +1,7 @@
 /** Editable triggers are declared alongside UI and actions; secrets remain operator-managed. */
 import { useAssistantText } from "../../shared/i18n/app-assistant-i18n";
 import type { Manifest } from "../../shared/apps/native/types";
+import AppEvents from "./AppEvents";
 import Icon from "../../shared/ui/Icon";
 export default function AppAutomation({
   manifest,
@@ -11,30 +12,15 @@ export default function AppAutomation({
 }) {
   const { t } = useAssistantText();
   const schedules = manifest.schedules ?? [],
-    webhooks = manifest.webhooks ?? [],
-    events = manifest.events ?? [];
-  if (!schedules.length && !webhooks.length && !events.length) return null;
+    webhooks = manifest.webhooks ?? [];
+
   return (
     <section className="app-model-card">
       <header>
         <Icon name="pulse" />
         <h2>{t("automation")}</h2>
       </header>
-      {events.map((event, i) => (
-        <label key={i}>
-          {t("eventName")}
-          <input
-            value={event}
-            maxLength={100}
-            onChange={(e) =>
-              onChange({
-                ...manifest,
-                events: events.map((x, n) => (n === i ? e.target.value : x)),
-              })
-            }
-          />
-        </label>
-      ))}
+      <AppEvents manifest={manifest} onChange={onChange} />
       {schedules.map((s, i) => (
         <div className="app-access-row" key={s.id}>
           <code>{`app.${manifest.id}.${s.action}`}</code>

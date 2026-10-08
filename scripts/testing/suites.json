@@ -30,6 +30,8 @@
     "international_commerce",
     "translations",
     "app_studio",
+    "app_callbacks",
+    "app_preview",
     "company_settings",
     "settings_scopes",
     "knowledge_workspace",
@@ -37,7 +39,13 @@
     "tenant_isolation",
     "legal_privacy",
     "currencies",
-    "channel_management"
+    "channel_management",
+    "app_consent",
+    "app_relations",
+    "app_schema",
+    "app_jobs",
+    "app_components",
+    "app_assets"
   ],
   "providers": [
     "email_tests",
@@ -51,7 +59,11 @@
     "fashion_demo",
     "identity_broker",
     "production_foundations",
-    "transaction_pooler"
+    "transaction_pooler",
+    "app_secrets",
+    "app_events",
+    "app_export",
+    "app_distribution"
   ],
   "browser_contracts": [
     "analytics",

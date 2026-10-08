@@ -1,8 +1,11 @@
 /** One bounded keyset page per mounted data block; action requests remain tenant- and permission-scoped. */
+import { Fragment } from "react";
 import { useEffect, useRef, useState } from "react";
 import type { RequestFn } from "../../api/types";
 import { useAppStudioText } from "../../i18n/app-studio-i18n";
 import { contentText } from "../../i18n/content-language";
+import NativeControl from "./NativeControl";
+import { useNativeRuntime } from "./NativeRuntime";
 import NativeRecordForm from "./NativeRecordForm";
 import type { AppRecord, Block, Entity, Text } from "./types";
 export default function NativeDataBlock({
@@ -15,7 +18,9 @@ export default function NativeDataBlock({
   dataEpoch = 0,
   onSaved,
   context = {},
+  tenant,
 }: {
+  tenant?: string;
   app: string;
   block: Block;
   entity: Entity;
@@ -26,6 +31,8 @@ export default function NativeDataBlock({
   onSaved?: () => void;
   context?: Record<string, unknown>;
 }) {
+  const runtime = useNativeRuntime();
+  dataEpoch += runtime?.epochs[block.id] ?? 0;
   const bound = block.contextBinding;
   const reference = bound ? context[bound.key] : undefined;
   const filter =
@@ -39,7 +46,22 @@ export default function NativeDataBlock({
   const [cursor, setCursor] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [epoch, setEpoch] = useState(0);
+  const [epoch, setEpoch] = useState(0),
+    [editing, setEditing] = useState("");
+  const saveRecord = async (value: {
+    id: string;
+    revision: number;
+    fields: Record<string, unknown>;
+  }) => {
+    const fields = { ...value.fields };
+    for (const f of entity.fields.filter((f) => f.kind === "json"))
+      if (typeof fields[f.name] === "string")
+        fields[f.name] = JSON.parse(fields[f.name] as string);
+    return current.current(`/api/apps/${app}/actions/${block.writeAction}`, {
+      ...value,
+      fields,
+    });
+  };
   const current = useRef(request);
   current.current = request;
   useEffect(() => {
@@ -53,6 +75,7 @@ export default function NativeDataBlock({
     setBusy(true);
     setError("");
     setRecords([]);
+    setEditing("");
     setCursor(null);
     current
       .current(`/api/apps/${app}/actions/${block.readAction}`, {
@@ -123,6 +146,7 @@ export default function NativeDataBlock({
         !error && (
           <NativeRecordForm
             key={`${app}:${entity.name}:${epoch}:${dataEpoch}`}
+            blockId={block.id}
             entity={entity}
             records={records}
             boundFields={filter}
@@ -130,16 +154,7 @@ export default function NativeDataBlock({
               setEpoch((x) => x + 1);
               onSaved?.();
             }}
-            save={async (value) => {
-              const fields = { ...value.fields };
-              for (const f of entity.fields.filter((f) => f.kind === "json"))
-                if (typeof fields[f.name] === "string")
-                  fields[f.name] = JSON.parse(fields[f.name] as string);
-              await current.current(
-                `/api/apps/${app}/actions/${block.writeAction}`,
-                { ...value, fields },
-              );
-            }}
+            save={saveRecord}
           />
         )
       ) : block.kind === "table" ? (
@@ -147,6 +162,7 @@ export default function NativeDataBlock({
           <table>
             <thead>
               <tr>
+                {block.inlineEdit && <th>{a("edit")}</th>}
                 {visibleFields.map((f) => (
                   <th key={f.name}>
                     {contentText(f.label, locale, mainLocale) || f.name}
@@ -156,15 +172,58 @@ export default function NativeDataBlock({
             </thead>
             <tbody>
               {records.map((r) => (
-                <tr key={r.id}>
-                  {visibleFields.map((f) => (
-                    <td key={f.name}>{cell(r, f.name)}</td>
-                  ))}
-                </tr>
+                <Fragment key={r.id}>
+                  <tr>
+                    {block.inlineEdit && (
+                      <td>
+                        <button
+                          type="button"
+                          className="studio-secondary"
+                          disabled={busy || runtime?.busy}
+                          onClick={() =>
+                            setEditing(editing === r.id ? "" : r.id)
+                          }
+                        >
+                          {a(editing === r.id ? "cancel" : "edit")}
+                        </button>
+                      </td>
+                    )}
+                    {visibleFields.map((f) => (
+                      <td key={f.name}>{cell(r, f.name)}</td>
+                    ))}
+                  </tr>
+                  {block.inlineEdit && editing === r.id && (
+                    <tr>
+                      <td colSpan={visibleFields.length + 1}>
+                        <NativeRecordForm
+                          key={`${r.id}:${r.revision}`}
+                          entity={entity}
+                          records={[r]}
+                          boundFields={filter ?? {}}
+                          save={saveRecord}
+                          saved={() => {
+                            setEditing("");
+                            setEpoch((x) => x + 1);
+                            onSaved?.();
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               ))}
             </tbody>
           </table>
         </div>
+      ) : block.kind !== "cards" ? (
+        <NativeControl
+          block={block}
+          entity={entity}
+          records={records}
+          locale={locale}
+          mainLocale={mainLocale}
+          tenant={tenant}
+        />
       ) : (
         <div className="native-cards">
           {records.map((r) => (

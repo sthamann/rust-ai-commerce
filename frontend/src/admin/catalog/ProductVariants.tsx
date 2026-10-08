@@ -1,7 +1,7 @@
 /** Native variant family browser with cursor pagination, explicit editing and a bounded creation wizard. */
 import { useEffect, useState } from "react";
 import type { RequestFn } from "../shell/studio-types";
-import { useCatalogText } from "./catalog-i18n";
+import { useCatalogText } from "../../shared/i18n/catalog-i18n";
 import { type ProductDraft } from "./catalog-model";
 import PairFields from "./PairFields";
 import VariantGenerator from "./VariantGenerator";

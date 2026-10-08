@@ -11,7 +11,7 @@ import {
 } from "./variant-model";
 import { variantFamily } from "./variant-family";
 import { useVariantText } from "./variant-i18n";
-import { useCatalogText } from "./catalog-i18n";
+import { useCatalogText } from "../../shared/i18n/catalog-i18n";
 export default function VariantGenerator({
   parent,
   request,

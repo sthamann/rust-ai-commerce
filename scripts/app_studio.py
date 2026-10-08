@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Native App Studio exercised through real HTTP/PostgreSQL: shared IR, version isolation, data, routes, MCP and selective release."""
+from testing.app_approval import consent
 import copy,json,os,pathlib,time,urllib.request,urllib.error,uuid
 base=os.getenv('BASE_URL','http://127.0.0.1:8787');checks=[]
 def call(path,body=None,session=None,tenant=None,expected=200,method=None):
  h={'Content-Type':'application/json','x-commerce-locale':'de-DE'}
  if session:h.update({'Authorization':'Bearer '+session['token'],'x-tenant':tenant or session['workspace']})
  elif tenant:h['x-tenant']=tenant
+ if path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
  r=urllib.request.Request(base+path,data=None if body is None else json.dumps(body).encode(),headers=h,method=method)
  try:
   with urllib.request.urlopen(r,timeout=30) as out:status=out.status;value=json.load(out)

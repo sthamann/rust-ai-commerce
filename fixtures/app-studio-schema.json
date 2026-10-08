@@ -153,7 +153,15 @@
                       "enum": [
                         "string",
                         "integer",
-                        "boolean"
+                        "boolean",
+                        "json",
+                        "date",
+                        "datetime",
+                        "money",
+                        "decimal",
+                        "image",
+                        "file",
+                        "richtext"
                       ]
                     },
                     "translatable": {
@@ -217,6 +225,12 @@
                         ],
                         "additionalProperties": false
                       }
+                    },
+                    "unique": {
+                      "type": "boolean"
+                    },
+                    "validation": {
+                      "type": "object"
                     }
                   },
                   "required": [
@@ -309,7 +323,8 @@
                 "type": "string",
                 "enum": [
                   "stack",
-                  "grid"
+                  "grid",
+                  "form"
                 ]
               },
               "blocks": {
@@ -422,6 +437,63 @@
                           "additionalProperties": false
                         }
                       ]
+                    },
+                    "geometry": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "integer"
+                        },
+                        "y": {
+                          "type": "integer"
+                        },
+                        "w": {
+                          "type": "integer"
+                        },
+                        "h": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y",
+                        "w",
+                        "h"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "visible": {
+                      "type": "boolean"
+                    },
+                    "enabled": {
+                      "type": "boolean"
+                    },
+                    "tabOrder": {
+                      "type": "integer"
+                    },
+                    "tooltip": {
+                      "type": "object",
+                      "properties": {
+                        "en": {
+                          "type": "string"
+                        },
+                        "de": {
+                          "type": "string"
+                        },
+                        "fr": {
+                          "type": "string"
+                        },
+                        "es": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "en",
+                        "de",
+                        "fr",
+                        "es"
+                      ],
+                      "additionalProperties": false
                     }
                   },
                   "required": [
@@ -772,6 +844,97 @@
               ]
             }
           ]
+        },
+        "commerceHooks": {
+          "type": "object",
+          "properties": {
+            "source": {
+              "type": "string"
+            },
+            "hooks": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "price",
+                  "shipping",
+                  "discount",
+                  "validation"
+                ]
+              }
+            },
+            "records": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "entity": {
+                    "type": "string"
+                  },
+                  "id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "entity",
+                  "id"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "source",
+            "hooks"
+          ],
+          "additionalProperties": false
+        },
+        "distribution": {
+          "type": "object",
+          "properties": {
+            "publisher": {
+              "type": "string"
+            },
+            "keyId": {
+              "type": "string"
+            },
+            "signature": {
+              "type": "string"
+            },
+            "channel": {
+              "type": "string"
+            },
+            "dependencies": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "app": {
+                    "type": "string"
+                  },
+                  "publisher": {
+                    "type": "string"
+                  },
+                  "version": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "app",
+                  "publisher",
+                  "version"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "publisher",
+            "keyId",
+            "signature",
+            "channel"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

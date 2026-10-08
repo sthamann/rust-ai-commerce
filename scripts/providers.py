@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Cloud wire-contract tests using local HTTP servers, NOT live cloud inference."""
+from testing.app_approval import consent
 from testing.database import psql
 import json, os, pathlib, subprocess, threading, time, urllib.request, urllib.error, uuid, concurrent.futures
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -32,6 +33,7 @@ log=open(root/'.run/provider-contract.log','w')
 process=subprocess.Popen([str(root/'target/debug/vendune')],cwd=root,env=env,stdout=log,stderr=log)
 base='http://127.0.0.1:8789'; ah={'Authorization':'Bearer '+os.environ['MERCHANT_TOKEN'],'x-tenant':'workshop'}
 def call(path,body=None,headers=None,expected=200):
+    if path == '/api/apps' and isinstance(body,dict) and ('manifest' in body or 'builtIn' in body): body=consent(body)
     request=urllib.request.Request(base+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(ah if headers is None else headers)})
     try:
         with urllib.request.urlopen(request,timeout=30) as r: status=r.status; value=json.load(r)

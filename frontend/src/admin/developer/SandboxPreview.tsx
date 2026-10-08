@@ -1,6 +1,7 @@
 /** Preview resolves the installed registry first; a newer staged package cannot masquerade as an older build. */
 import { useEffect, useState } from "react";
 import SandboxContextPicker from "./SandboxContextPicker";
+import useSurfaceGateway from "../../shared/apps/useSurfaceGateway";
 import NativeAppView from "../../shared/apps/native/NativeAppView";
 import type { AppSurface } from "../../shared/apps/AppSurfaces";
 import type { RequestFn } from "../shell/studio-types";
@@ -51,6 +52,13 @@ export default function SandboxPreview({
       active = false;
     };
   }, [request, app, version, view]);
+  const scoped = useSurfaceGateway(
+    request,
+    app,
+    view,
+    context,
+    !!surface && !surface.surface.location.startsWith("admin."),
+  );
   return (
     <div className="app-sandbox-preview">
       <div className="app-canvas-label">
@@ -79,17 +87,8 @@ export default function SandboxPreview({
             context={context}
             app={app}
             native={surface.native}
-            request={(path, body) =>
-              request(
-                path.replace(
-                  "/api/",
-                  surface.surface.location.startsWith("admin.")
-                    ? "/api/"
-                    : "/store-api/",
-                ),
-                body,
-              )
-            }
+            request={scoped}
+            debug
             allowedActions={surface.surface.actions}
             mainLocale={surface.mainLocale}
             locales={surface.locales}

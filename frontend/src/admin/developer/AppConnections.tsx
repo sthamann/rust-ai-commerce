@@ -1,5 +1,7 @@
 /** Route, tool, grounding and Flow Builder switches modify the shared executable manifest directly. */
 import { useAppStudioText } from "../../shared/i18n/app-studio-i18n";
+import AppModules from "./AppModules";
+import AppMenuEditor from "./AppMenuEditor";
 import AppAutomation from "./AppAutomation";
 import AppActionAccess from "./AppActionAccess";
 import LocalizedField from "../../shared/i18n/LocalizedField";
@@ -25,6 +27,8 @@ export default function AppConnections({
     <div className="app-connections">
       <AppActionAccess manifest={manifest} onChange={onChange} />
       <AppAutomation manifest={manifest} onChange={onChange} />
+      <AppModules manifest={manifest} onChange={onChange} />
+      <AppMenuEditor manifest={manifest} onChange={onChange} />
       <section className="app-model-card">
         <header>
           <Icon name="link" />

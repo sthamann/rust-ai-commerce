@@ -9,6 +9,9 @@ function setup() {
   let build: any;
   let archived = false;
   const request = vi.fn(async (path: string, body?: any) => {
+    if (path === "/api/developer/drafts") return { drafts: [] };
+    if (path.startsWith("/api/developer/drafts/"))
+      return { revision: (body?.revision ?? 0) + 1 };
     if (path === "/api/developer")
       return {
         builds: build && !archived ? [build] : [],

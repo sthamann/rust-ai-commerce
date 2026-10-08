@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "37 extracted production policies; surrounding modules remain unproved",
+  "claim": "40 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -347,6 +347,42 @@
         "native_asset_hosted_denied",
         "native_asset_bypass_exact"
       ]
+    },
+    "wasm_resources_admissible": {
+      "bindings": [
+        "src/sandbox.rs"
+      ],
+      "theorems": [
+        "wasm_resources_exact",
+        "wasm_tables_bounded"
+      ]
+    },
+    "app_package_authorized": {
+      "bindings": [
+        "src/apps/approval.rs"
+      ],
+      "theorems": [
+        "app_package_authority_exact",
+        "app_package_unapproved_denied"
+      ]
+    },
+    "app_surface_admissible": {
+      "bindings": [
+        "src/apps/surface_grants.rs"
+      ],
+      "theorems": [
+        "app_surface_exact",
+        "app_surface_stale_denied"
+      ]
+    },
+    "app_callback_admissible": {
+      "bindings": [
+        "src/apps/credentials.rs"
+      ],
+      "theorems": [
+        "app_callback_exact",
+        "app_callback_without_consent_denied"
+      ]
     }
   },
   "sources": {
@@ -405,20 +441,55 @@
       "sha256": "d096a83c15df8539a71de192138ef9e98b711ea887f8adfe68ddd09c432bc883",
       "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
     },
+    "src/apps/approval.rs": {
+      "status": "reviewed-binding",
+      "sha256": "d182aac30f1cbfd491c4a24b429f4ddf89956257f94ee002a3d9206ab1c1bd5c",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/asset_surfaces.rs": {
+      "status": "unproved",
+      "sha256": "7a5949201defdcbbed750f23cabfab8dc46a1314b485367dae5a279e615cc4ef",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
     "src/apps/cart_contributions.rs": {
       "status": "unproved",
-      "sha256": "a7f4cffd6a0990b3c40bc0d01ea21b01b74d1a8d7f168166b653f7bd59f06d68",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "50b46b03fa1243ff545f28a43016ea20584212417133ddf41fccb22d9cf26968",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/commerce_hooks.rs": {
+      "status": "unproved",
+      "sha256": "59ad869c7ee17168cbd28cfc5539e7b8d93f2e3778fb7ab3f6771639a9aa80f8",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/compatibility.rs": {
       "status": "unproved",
       "sha256": "21f273002ef16caba98df8afe42ef5acba4211542780c0c0b9c6acaa94b731c4",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/apps/consent.rs": {
+      "status": "unproved",
+      "sha256": "b287208784ac982c43ccd262daebdfef82177da96a084850d6f429d990b3c6de",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/core_callbacks.rs": {
+      "status": "unproved",
+      "sha256": "6ae255031a2658be7220f9c3efa3d24a32fb12d2cd2249b7fc2bcf43f987cfdf",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/credentials.rs": {
+      "status": "reviewed-binding",
+      "sha256": "67c13f4970a3ee324961be0d71f99c7ab67d4b0aaf7468f034774ab64fd8161b",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
     "src/apps/data.rs": {
       "status": "unproved",
-      "sha256": "9dcb1c755f0bab9995cfad80fea48235d6f20895bd87de8b4983dae4405a2fbd",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "05155aaf37b0738a7f4bc14d044b71648b6e4f73f3402a8ca578065043892f94",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/distribution.rs": {
+      "status": "unproved",
+      "sha256": "f2a9e2e54a9f484ca54d66a5d62c6d372897b9b243e13c1b106d7e2bb4dd3589",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/editor_contract.rs": {
       "status": "reviewed-binding",
@@ -430,10 +501,25 @@
       "sha256": "b39c499a802b9b59b4035711064a57350edc106453076a20262716c05d35a968",
       "review": "Reviewed app MCP ingress, private ownership and bounded durable ingress/clock adapters; added rejection of optional editor reference fields. Local PostgreSQL/HTTP provider and restart tests validate async effects, which remain unproved."
     },
+    "src/apps/egress.rs": {
+      "status": "unproved",
+      "sha256": "7e918355bff07cf102013977aae3f47eb41d84f81b741953c592ac5d3991c993",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/event_contract.rs": {
+      "status": "unproved",
+      "sha256": "ee192746395c317a1baaf562fc5eae45e0538765dac2cf0ad9433eae7166f682",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/event_projection.rs": {
+      "status": "unproved",
+      "sha256": "d0ed06fe86f524875e5d0b6ff6fedf4102a90e4c81f98910b014d5e262394a90",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
     "src/apps/events.rs": {
       "status": "unproved",
-      "sha256": "45d06a55b57d68e64578b9fa3d8b3a8622af797c262549825136f15271966d7c",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "325c780500756d576bb4ed6245b202f8de39f12f719d4f0d1f3b5842b53b6fc5",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/evidence.rs": {
       "status": "unproved",
@@ -445,45 +531,75 @@
       "sha256": "708d782ca729b2befffc559d895b6b6d2344883d3e86eaddc5f4d50159f64f76",
       "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
     },
+    "src/apps/field_values.rs": {
+      "status": "unproved",
+      "sha256": "bd3c185476c4437f4dd7c6089e41cdf97dfd2c99c52a43672b99201cbbe0da53",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/form_layout.rs": {
+      "status": "unproved",
+      "sha256": "fb1fd7b6bea7b8d2426f600b3c166b996ae3800a858635ab91fe2ffd357f5372",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
     "src/apps/gateway.rs": {
       "status": "reviewed-binding",
-      "sha256": "b5c904a680654915420b52a74eba32800d0869049f0f58c363843990d0413631",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "d515b7a0246f71bb6ae1c01aa744c2b51a8b01ad55f96e82da449b11e3a2e68b",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/hosted.rs": {
       "status": "unproved",
       "sha256": "99c9395d7e764592661a12827605735ff0457f9894a15a20e441b6a6196edd4d",
       "review": "Reviewed tenant-scoped hosted app association, transactional immutable Storyfront installation and one-time validated migration 055; dependency deactivation shares config/app locks; private renderer excluded. PostgreSQL regressions cover foreign references and cold restart. SQL/network adapters remain unproved."
     },
+    "src/apps/input_schema.rs": {
+      "status": "unproved",
+      "sha256": "ae7f2bccc1b746326dda9ff731eedb459fd80680aacce888279d766f9229fb94",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/job_callbacks.rs": {
+      "status": "unproved",
+      "sha256": "4351983aeffbf1c8f231342666d2f5ac806536eee51043e4f96ea209f45833c2",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/jobs.rs": {
+      "status": "unproved",
+      "sha256": "5123feda9980ccb1d544e8e5c3e8e785093c94feeb3b96cdf24e81d58058c21a",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
     "src/apps/manifest.rs": {
       "status": "unproved",
-      "sha256": "a2dab0c89208f72b646c826fac3760ccb2df107d7d8c38b972d6d8c81441da3a",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "672205ec998fe130fc7350ab58f7e62d212acdd0634923acc57b8a13fc237622",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/manifest_validation.rs": {
       "status": "unproved",
-      "sha256": "aba03197d4a7aa5d6079aca4947979d29322bd60589cdef585e7f9fca05587b8",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "7809571cfe7d48c45c1a0eed16250fd2166671e474b63318d8ad9715bb4bc150",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/mod.rs": {
       "status": "unproved",
-      "sha256": "ded16ed1923cfe389e4cad83312d828b07e438abbf35f8e2e37a4ec94e98aacf",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "f91c7d237e963325c81bc13d8a1ced34533c7f012102370b3e66e35acfcb6c93",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/native_data.rs": {
       "status": "unproved",
-      "sha256": "cae3cf9c4f296b9107a9dc19fb90407e2436369a1eb107bcf938e3d062e2556f",
-      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+      "sha256": "34db1cfbba1e8401e8f5ffcf954c68ed0cee3551aae854af32f9ea1f9e0a2424",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/native_view_tests.rs": {
       "status": "unproved",
-      "sha256": "1541f2e36828418cd9ac7ed6a550300797e55ff62e1c786e5dbd222ff23e8b29",
-      "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
+      "sha256": "54546e1cd6271e77d834bb9a8704d18db987af0bb5450ce5bcb0e1b1cb001e9f",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/native_views.rs": {
       "status": "reviewed-binding",
-      "sha256": "516d2b5ff6b412fca235e3d47243f3c2852dd517f6d923aa254313282ce4f1f1",
-      "review": "Reviewed app tool exposure and private core-reference policies against gateway/editor production bindings; MCP ingress is independent of internal planning, tenant references checked transactionally; async adapters remain outside proof scope."
+      "sha256": "96cac801ed16a3c8ad18537bc5f554f0aa5cfcedbcfe48823ac38025146b0784",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/observability.rs": {
+      "status": "unproved",
+      "sha256": "8d057a8d01fce04ac95ac75e46a12c8f850fd89efe9e48464516d2d260880264",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/planning.rs": {
       "status": "unproved",
@@ -497,23 +613,43 @@
     },
     "src/apps/registry.rs": {
       "status": "unproved",
-      "sha256": "ac2d9e4063a205ab2cb5549f4b059f04b4fdff98c9380facbe8209a5a3a57520",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "f18a1d223331508cfb7b06aeb12b33bbb595d0a108d1cb579c731b2744076762",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/relations.rs": {
+      "status": "unproved",
+      "sha256": "f714d7b539ccf25b28c4ca4103e75ec8ce7f1f121ef8355dc17afd111c065a1c",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/routes.rs": {
       "status": "unproved",
-      "sha256": "04601725a68743ce5b6cb669d505b7a03e513cb8a336cb8fe706cdc428d5be5e",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "678620b526f1245bbf5ad4cbd7b44620f99ecb8a305d273bdc60ebe1aafded8f",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/runtime.rs": {
       "status": "unproved",
-      "sha256": "2c9d732574fe9f73059fe8c49d552dfab5228ceb20b2f05b69a95cd303549d59",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "b0dca8166a25565389a21c16596fee2c10f8387ff595b1daf7e04f1e61884a24",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/schedules.rs": {
       "status": "unproved",
       "sha256": "eabe484e221b853eda763f6508e5642fc57a9f365d63829f1105342793f55d7b",
       "review": "Reviewed global AES-GCM write-only inference configuration, personal operator guards, revisioned reversible availability policy and queue admission including stages; local two-shop/fresh-process tests, 100 Rust tests and affected tenant/provider/payment/flow/translation/image regressions passed. Surrounding async adapters remain unproved."
+    },
+    "src/apps/schema_changes.rs": {
+      "status": "unproved",
+      "sha256": "50840edf0ceaa02231cd88185c6df951ba323ba4e97ab4d87fe0c5ea53675bdb",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/schema_upgrade.rs": {
+      "status": "unproved",
+      "sha256": "2cae208b4e9a41add9f280a7046f9e2806f38c89a8dc059043e5be5cddbb8115",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/secrets.rs": {
+      "status": "unproved",
+      "sha256": "a3cdfe65766dc84b1d9014f878d1b2bc803fd7f61fc771f10ca1809d37320f63",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/service_limits.rs": {
       "status": "unproved",
@@ -525,6 +661,16 @@
       "sha256": "b65445d6eef70d2cc665f29127b0f2fa2b6f2b934ef9c4557d00dabb0826e6af",
       "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
     },
+    "src/apps/storage.rs": {
+      "status": "unproved",
+      "sha256": "b2619abffc946eeb9a92ca5cf5e651946d52bdfb6c66040450f93ea709ba376b",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/surface_grants.rs": {
+      "status": "reviewed-binding",
+      "sha256": "e5f1e89e74f6f890ca8d77061919b5148921ca4044d2a689f1a89914fe2ac128",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
     "src/apps/surface_tests.rs": {
       "status": "unproved",
       "sha256": "854cf8a47361e7f48bce454e0a1f68dac67a4f1f42bfbf4cab51d23bd0b9f12f",
@@ -532,13 +678,43 @@
     },
     "src/apps/surfaces.rs": {
       "status": "reviewed-binding",
-      "sha256": "ab5eb5138a16f9677e6e44a2a9ce1248ee16e66269f35f0d90ea45609138f394",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "01b5b4c6ace0c4d552014abf057e440b34b06da81f8e8f710c3808d55ba596e4",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/ui_bundles.rs": {
+      "status": "unproved",
+      "sha256": "4b704ccff25b5bdfe8c4dbd328d3054983d454f6059a8ba95a4728e66136dab3",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/ui_logic.rs": {
+      "status": "unproved",
+      "sha256": "c9a89a1ee4ff9246957e1f5eee4358767fc48922dd92e549b5ab988207ab235b",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/ui_logic_tests.rs": {
+      "status": "unproved",
+      "sha256": "c5097c5bd77dc8b67b80f052565d2cec7760ea3ffe0cbd494d69d19e848bae90",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/ui_logic_types.rs": {
+      "status": "unproved",
+      "sha256": "707e28e229e2a7bd57c1efbea51623de9ec435fd6de9c62f562b4828497c0faa",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/apps/webhook_scope.rs": {
+      "status": "unproved",
+      "sha256": "703c81902a3d35d387dd072a58d962403e95d46e61e50c0ab122910550515047",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/apps/webhooks.rs": {
       "status": "unproved",
-      "sha256": "e644ac777b55e4730e6733919e4a2575a5c9ab1f85c1d17135cfb6ed38059bc1",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "a258d9493e1132005f4016be84e5f476a57e903553f935109ccc4ce00d8d4635",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/assets/app_files.rs": {
+      "status": "unproved",
+      "sha256": "005cfc70e72cbb91c9e05855feddd256f1a5eb4ffe019369bfb4cf09b56faea3",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/assets/download.rs": {
       "status": "reviewed-binding",
@@ -555,10 +731,15 @@
       "sha256": "10ae93a5e3d9b9b4a6118f09c477630a58f4c6f3a9212adba9ec4988773e5c49",
       "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
     },
+    "src/assets/ingestion.rs": {
+      "status": "unproved",
+      "sha256": "935ca68eb7e01eeebbe4bf495e82012f45f21f0f40fc094be6c7ac6ac24037df",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
     "src/assets/mod.rs": {
       "status": "unproved",
-      "sha256": "406a2cbc72a769030d12cdbf7b8ac783aa34e94f43e28823f017832c15d564db",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "0ab087033b3c4137f0ce81537ed290aa4feb49bab08c9de2cac4e1c9692c6446",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/assets/rich.rs": {
       "status": "unproved",
@@ -572,8 +753,8 @@
     },
     "src/assets/upload.rs": {
       "status": "unproved",
-      "sha256": "b4e82dc242481f5d9b3ba1832f99059ea2cdfe088678560ef9c4f76ab9cab5dd",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "181bc757db81a6f032340926c56d77d43e37f15231a0593686955fa4a018f310",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/auth/abuse.rs": {
       "status": "unproved",
@@ -612,13 +793,13 @@
     },
     "src/auth/identity.rs": {
       "status": "unproved",
-      "sha256": "23ceee30e59686820810a74a9c4d559089c896c94a22e691ec5a92a55bfa8da9",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "98bc2456eac1c646ec2d400a145db3fe525916e1b1251a4f048c3312b70a46a0",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/auth/integrations.rs": {
       "status": "unproved",
-      "sha256": "82a1f8825b8ef18cad9fc0276b6da16183fdc3c09b75a008241cfd9458feff88",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "c36a8e2ab2077934ff40619063a3ca484001b9f06cba1b37f941b83583ebdb97",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/auth/invitations.rs": {
       "status": "unproved",
@@ -632,8 +813,8 @@
     },
     "src/auth/middleware.rs": {
       "status": "reviewed-binding",
-      "sha256": "90a825e07fcf1a21134a5a45cf482f19a26dab14d65ae781885f6a789ca76587",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "63367fa8cfe03c6311b2f4e75c238ff0e3a906c3799703a36d0f2d9a523ae353",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/auth/mod.rs": {
       "status": "unproved",
@@ -642,8 +823,8 @@
     },
     "src/auth/permissions.rs": {
       "status": "reviewed-binding",
-      "sha256": "32f3599834de5bb57d3aed49c9d416ca781b7fe57e5a18529d40f432d79f0afa",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "a5a913b8a0f8a597453ebb54759afa09285b99f869ebd787d019b3822d0ac1a8",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/auth/provision.rs": {
       "status": "unproved",
@@ -742,13 +923,13 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "dd4b2c66fa49861afa3341af2b87d9e6b3d7dd333e13bd6de8d76ceeed7ec9f7",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "00cbbf3adcd0a5d98eb9c6a439bd9f8c16075e1f932a554d7d1aee9bd65d6cc0",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
-      "sha256": "dfeef34cecf3da38d816c2ae8f6c5a10e04227dbaf2d8967efb3aa0fe20d4a0b",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "276b24ef9f3c323723c316ed5c252a5d822795e52d1dc9e7686ab148255a1162",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
@@ -772,8 +953,8 @@
     },
     "src/cart_price.rs": {
       "status": "unproved",
-      "sha256": "7fa837404bbdb5152ae07c008a0e211d248d400c96f0b354cd015acbcb400f7b",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "024a6a4f25710782f94e05baddc3e91532d251e9e1350b5c354682ecc5d239f9",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/cart_routes.rs": {
       "status": "unproved",
@@ -860,6 +1041,11 @@
       "sha256": "0de663b6b053f66aec790d93d7bf7023ac82c5ef8d7d8d319d48cf202781a2ee",
       "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
     },
+    "src/commerce/app_adjustments.rs": {
+      "status": "unproved",
+      "sha256": "927cc3e28cb913ccf1fbd0a488290c386544cce53eabca9a3b0a7c59870859aa",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
     "src/commerce/catalog.rs": {
       "status": "unproved",
       "sha256": "155fede2ea9ccbe155d4ef952f3958ae22d5808c79fc3fb2eff99c0177b20ad5",
@@ -887,8 +1073,8 @@
     },
     "src/commerce/delivery.rs": {
       "status": "unproved",
-      "sha256": "69e9619771bf42ac019a47933b6be775daef1b58f81937b70b435715a6a25a93",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "0d644f5d8f80f40acf5e4b328a8c3e15cb695ddc5c4e7697750c0923c2c98095",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/commerce/detail.rs": {
       "status": "unproved",
@@ -932,8 +1118,8 @@
     },
     "src/commerce/mod.rs": {
       "status": "unproved",
-      "sha256": "735b2c2b8914ed5f65bdc4e9be82eeec5db9c7ecc7ef5d9a60422464dc087cda",
-      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+      "sha256": "8a768b42c21010ec315e51b14a15e6a8ace094a9e88dac633735ed458acde044",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/commerce/order_fields.rs": {
       "status": "unproved",
@@ -1055,6 +1241,11 @@
       "sha256": "f8c3a0d93a9cfd12bdb4cdf7ed3477aca2671f986daa45db86a6447fe0e97ba0",
       "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
     },
+    "src/component_runtime.rs": {
+      "status": "unproved",
+      "sha256": "dab32b8bb9b9ccb4982fd3573bf770b73a73ff452cd7f49e1d350b63fc43c7dc",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
     "src/concierge.rs": {
       "status": "unproved",
       "sha256": "ed7da36d7251d9a8f5b3741153e4840999c24e76cfef3163ad0bf71893aa563f",
@@ -1062,8 +1253,8 @@
     },
     "src/connectors/actions.rs": {
       "status": "unproved",
-      "sha256": "4fc1675610edaa858bfc5b03e721a2ff7c1295c2478034ff5f28bcbc208c2a2b",
-      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+      "sha256": "51d49e446a3a3c111755f3b08df15bc0aa8425eefeb3841d734817020e4effed",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/connectors/config.rs": {
       "status": "unproved",
@@ -1085,6 +1276,11 @@
       "sha256": "2975e5c728e508c966607676788e9d4e66fb06485f09c0769ccf70385daac821",
       "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
     },
+    "src/connectors/events.rs": {
+      "status": "unproved",
+      "sha256": "13b3075a041fd6dcb36f5444e4c85696e6054608c41989f9d89bc4726118c487",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
     "src/connectors/exports.rs": {
       "status": "unproved",
       "sha256": "d900c1f18d411cdd04a82f253d70905469c464943d2d871509903e5a46c2f558",
@@ -1097,8 +1293,8 @@
     },
     "src/connectors/mod.rs": {
       "status": "unproved",
-      "sha256": "a020519b1049f2e5411d0b0d0f040631373e6090f2d4b611a7084a1e151978aa",
-      "review": "Reviewed Rust-only standard connector service: typed mail settings, tenant-bound AES-GCM, composite PostgreSQL queue/RLS, fenced distributed leases and explicit-only retry; original app/flow/MCP contract and actual SMTP/OAuth/migration regressions. SQL and providers remain unproved."
+      "sha256": "53020b94f58fb09d10d577727b289c7cdab6a9bb3e309ee4c40669904d9b14b5",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/connectors/network.rs": {
       "status": "unproved",
@@ -1137,8 +1333,8 @@
     },
     "src/connectors/smtp.rs": {
       "status": "unproved",
-      "sha256": "b7e8178f283a8bee8533d313596097963d48cb664ea23713f5cd6a12aefb284b",
-      "review": "Reviewed Rust standard services and their actual app/flow consumers: encrypted PostgreSQL config/queue, lease fences, UTC quotas, bounded fair admission, SMTP TLS and explicit-only retry. SQL/provider adapters remain unproved; Rust fixtures cover two processes and offline migration."
+      "sha256": "2b4f2f3fcb554e355af133cab3b8678e22dc93d719c1b2fb78849f8cc4c15c7d",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/connectors/store.rs": {
       "status": "unproved",
@@ -1225,20 +1421,30 @@
       "sha256": "5a15524417e01b9e16cee9f368f2b242a5ff5108bb346618b958e2787552a1a4",
       "review": "Native App Studio Manifest views bind list/save actions with surface allowlists; public native writes reuse extracted app_read_admissible. Rust validation mutations, real isolated PostgreSQL native registry/API/MCP/translation/staging/release and order-event app-action suites pass. Legacy empty views retain package serialization; actual shop languages specialize one provider/task schema. Async adapters and renderer remain unproved."
     },
+    "src/developer/drafts.rs": {
+      "status": "unproved",
+      "sha256": "aea17c31d6080f2c75df18c44a5fa1bd4d71344d9218facdfca5e3646797c83c",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
     "src/developer/generation.rs": {
       "status": "unproved",
-      "sha256": "1874648570b2108171ffc47e58d78821599faabf74a7bb5df3938e02f3970003",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "900fb09bb33fe1c43704309d5789606c72daacb55e7e58d66dca9308b7ae9081",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/developer/mod.rs": {
       "status": "unproved",
-      "sha256": "164efa1d7f9939fbfe02c791b829d8e08ddcce65d9cd1554dfe477d028bb8d2f",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "7c36232f3ba837af06de327f5955dda16a4965e995770a2d7de9e68434633152",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/developer/preview.rs": {
+      "status": "unproved",
+      "sha256": "9fc42c3601ab6897c974d106289696bbef243ca0715a2eef55a73e34eaf5e4be",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/developer/routes.rs": {
       "status": "unproved",
-      "sha256": "dde51d78356149240aec39c7fc8d2216622cb0f68408ce4cc6de23f83ae45768",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "c51683275f1b256dc81a4938d4fab0d97803befe1a34dc3a8f8208867358ae5c",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/discount.rs": {
       "status": "reviewed-binding",
@@ -1312,8 +1518,8 @@
     },
     "src/foundation.rs": {
       "status": "unproved",
-      "sha256": "47ba4837dfd85f3d1fe3f35b5cdb9c268ea827fbeac5fb6717c079fbef514dca",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "e0b9dadca63affeeaddcbe622cbed93aac716a15bded7e60a58b210316424cb5",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/history/capability.rs": {
       "status": "unproved",
@@ -1345,6 +1551,11 @@
       "sha256": "6085e1f3f2e6cb7b8dadc039c99dc925dd061a2e74c1ce55e363fa9db3bc12d2",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
     },
+    "src/inference/schema.rs": {
+      "status": "unproved",
+      "sha256": "7a36ba806b3bed1aa0b0a435b2284ef1d1b702d356f55e00dfa1f750aa218636",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
     "src/inference/settings.rs": {
       "status": "unproved",
       "sha256": "c5215579040eafa3aef37dc2dd3baf40f317fa59def793ad6216cbe778c307bf",
@@ -1357,8 +1568,8 @@
     },
     "src/inference.rs": {
       "status": "unproved",
-      "sha256": "98e05e13b4c3592c7b67459eeb7b4007e55389aa865538e0649a3e512489e1ed",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "f7120af00da2edebe191d63856e647fe408f1c7ace7d77a7680e33891ae8d59a",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/knowledge/relations.rs": {
       "status": "unproved",
@@ -1417,8 +1628,8 @@
     },
     "src/lib.rs": {
       "status": "unproved",
-      "sha256": "9d8843ed1a4eadbf4963d41d766f12ca3024c7108de087a9bedd7daa686f16d8",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "3826d12ba3bfad20b84d6ba138394c27d0d2e54ec147a5be6a6fa30c478edd55",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/localization.rs": {
       "status": "unproved",
@@ -1592,8 +1803,8 @@
     },
     "src/migrations/schema.rs": {
       "status": "unproved",
-      "sha256": "1f0c2ecedbbde35f38109fc0e6608198fa99ea54abb3cb7590a9ef5cbad3befa",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "d5a362d2e3d4b96efb081f02b050e22f9cb0dc67386952ea7a2283931a9ba1c0",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
@@ -1604,6 +1815,11 @@
       "status": "reviewed-binding",
       "sha256": "039c3f3be70eb843a5c2bf1b6bbf8b6b5dfb89111050118a774b2557980a8142",
       "review": "Final Money boundary review rejects negative source totals before rounding, including fractions below one cent that previously rounded to negative zero. Signed Money remains valid for explicit credit arithmetic. Exact roundtrip/overflow/currency tests and original-Shopware positive EUR boundary comparison remain intact. Product-question quota classifier follows the actual native route. No broader pricing rewrite, SQL proof or provider certification is claimed."
+    },
+    "src/network_policy.rs": {
+      "status": "unproved",
+      "sha256": "c7ec2ecc3f64469e648c770e3fa74a5f23253dfa307d2eebd2acb80607869399",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/operations/addresses.rs": {
       "status": "unproved",
@@ -1677,8 +1893,8 @@
     },
     "src/order_checkout.rs": {
       "status": "reviewed-binding",
-      "sha256": "c493901959cf9a03e9fdf6d39733c071b1631f07899a4d4a9c257297218a011b",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "216a14e1d259b14b86ab5cbe09bbe9381c2cfce5aafcf76bbcbd5861f26c50c8",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/order_routes.rs": {
       "status": "unproved",
@@ -1937,8 +2153,8 @@
     },
     "src/request_context.rs": {
       "status": "unproved",
-      "sha256": "bf426d83270d502d3c3b271648d41e2d73644192c948f5ec332a0d2df7863c98",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "b8ee150dfa13e106d40505a66d4f256d5b04e8a52aa17d142bed4bc490307644",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/routes.rs": {
       "status": "unproved",
@@ -1952,18 +2168,23 @@
     },
     "src/runtime_config.rs": {
       "status": "unproved",
-      "sha256": "e278fe80fdce92ef6ffbbc58e0ac74a29f73aca905cd6a157c2f7e4f913f86fe",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "76337bf7bb82ab8a7554f949f91c0463b7a553ecbcd9c9d51db7bf1637fb4878",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/sandbox.rs": {
-      "status": "unproved",
-      "sha256": "01e5007dce684162866f4c8a89b2c00c886b163c80799fbb64ec587dd9735a98",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "status": "reviewed-binding",
+      "sha256": "5dbab6f829b37c51ff5037836dc07c887ad07ed8ba57243b1c7430475ea3545e",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/sandbox_cache.rs": {
       "status": "unproved",
-      "sha256": "350f222e136527ac63ce5485901eb98617769f1a982a022e37899656434698fd",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "acece2e42ed522416627359bc852070f16a10d01f4a5946090990df6ef55f5a9",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "src/sandbox_engine.rs": {
+      "status": "unproved",
+      "sha256": "4ce2449f3aac161d6a34f1de770a83ecaa4ac8fc2b902186a458e8e422475610",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/scoped_pool.rs": {
       "status": "unproved",
@@ -2017,8 +2238,8 @@
     },
     "src/staging/clone.rs": {
       "status": "unproved",
-      "sha256": "cc7b6ba6c6e4fb5a4ff019efde27f13c73e54995c680ca6cfab7c200fc96cbe3",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "7c0116f54d7d9788fba8ea0c16f5da966fabc514e7f5bad480837d73441db544",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/staging/company.rs": {
       "status": "unproved",
@@ -2032,18 +2253,18 @@
     },
     "src/staging/mod.rs": {
       "status": "unproved",
-      "sha256": "bfe8d1fd9c06d37c5ba3557d3f2bc2cc47d8f18c23b4b7c87646eb6d5d716adc",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "2d5176cb658ba428a740f6a0421c462c50e03f7c7bb07ee6217a29f73e99535f",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/staging/release.rs": {
       "status": "unproved",
-      "sha256": "7ab5ff1f91510781b0b3f2512508d621389492b361a4bee6a5750f464bd22687",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "b40d003be045c0c8b9420c422f7441d36ebebeded17c237ccbd7f60fffed931c",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/staging/snapshot.rs": {
       "status": "unproved",
-      "sha256": "bfed88d4ba4d09633d85c85c43813f52db8f8a18d88b68e94cca793dc242f000",
-      "review": "Reviewed sparse channel transport and checkout lock consumers, native method/order/cart/rule deletion guards, selective staging validation, media alt admission and durable private Images jobs/MCP schemas; real isolated settings_scopes, international_commerce, company_settings, staging, catalog_management and local Images generation/edit/restart/ACL fixtures passed. SQL, JSON patching, providers and UI remain unproved adapters; existing extracted policies and original proof claims unchanged."
+      "sha256": "31f6a78e00ac0dff8c10981de619af6e031a593b37e22f59b2e66480041418b3",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/storefront_pages.rs": {
       "status": "unproved",
@@ -2102,8 +2323,8 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "fe72ebea87304a3260bdb7d1df799b50b3593b6c072deafa9454d923512cda59",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "f1b7e16f78e01c34b5b87b0c7ae1e0f1fc81296bdd2a754b368b0dd025849220",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/work_signal.rs": {
       "status": "unproved",
@@ -2112,8 +2333,8 @@
     },
     "src/workers.rs": {
       "status": "unproved",
-      "sha256": "7c23b14321a54dbf575fcab5a2e7a4f194a0b1c6f2102b4ee07093351aa18d47",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "443a420f12ad6777ccf2b6663af4afdd25f5488bd0d2e16cad17efcfbfb81d2c",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     }
   },
   "inputs": {
@@ -2122,20 +2343,20 @@
       "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
     },
     "Cargo.lock": {
-      "sha256": "b416b568f43e3e3cd79828956c0357213998195a11442e55afa5d3df0c834ef1",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "12085c77a5701dbd33a4db13e567bdf2470b0128552cd6973919b702de11f5b2",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "Cargo.toml": {
-      "sha256": "d6850ac88d0c401ee53948e6a93e17e6586ce6e6704cbc253b944a06aa535a66",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "aa2bfba4f56dae7f3c5e3eb8d23075c954a63310502e812bff9e191766ec006f",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "deploy/Dockerfile": {
       "sha256": "3f320c3a2aafd26e94d15d449a65c6603a8aa2f4ca09cdd779a19e2e3483fcf0",
       "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
     },
     "fixtures/app-studio-schema.json": {
-      "sha256": "28b0ba7f2d800f73cc2cc46dfb55897c4c405c5b6208b5c3bdf965d82d6f29f0",
-      "review": "Reviewed provider manifest/dispatch, scoped accounts and iframe origins, callback identity/HMAC, exact receipt allocation, serial refund limits, job fencing, app/MCP/Flow authority and schema containment. Real HTTP/PG payment_providers, native payments, tenant_isolation, app_studio, automation and composed private adapter tests passed. Added production reservation release policy with exact/negative Lean claims and two mutations; surrounding async/provider modules remain unproved."
+      "sha256": "0852887c0bc2a3dfb9099e95bdd523bb4fd3bb31919098de516858b79e5f5f9e",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "fixtures/demo-catalog.json": {
       "sha256": "e5d5eea04a7693b3f92fa58be66ad36b7ad01d5920029c29f303693aa0032ba2",
@@ -2417,9 +2638,61 @@
       "sha256": "3832cddadcb7a940f1a096af0315e5e4efeba299c3cc60b4813005e8e55518c9",
       "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
     },
+    "migrations/058-tenant-app-schemas.sql": {
+      "sha256": "52df74abe24e9cbe9ecb548d26c830d6e27d790f9b9d6ff3d8c0e3ba1e6312e9",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "migrations/059-app-event-leases.sql": {
+      "sha256": "f0f26cf1e49fb502c809b6f8ab7ca9bdb81c3a1f6406496d7d2b3fd6aa2fa9b6",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "migrations/060-app-storage-quotas.sql": {
+      "sha256": "19249b17f7e9403fc43d04ae98c7d7ea6b65767af21de3da80cc1b5257011104",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "migrations/061-app-surface-grants.sql": {
+      "sha256": "35c95717e05a1e440abafeb7806f6ccf80c6d0ce0888b93710c1600d49e682d4",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "migrations/062-developer-drafts.sql": {
+      "sha256": "f7017a514dc3d729ce55960c1c9cb2d9eda3f27876ff85bda8e8c6eeb91eec6a",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "migrations/063-app-observability.sql": {
+      "sha256": "062d0ae9bdde2fc40bafd9064b3c912eb5b72bbfcb1e9c07fe9411788364c9cc",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "migrations/064-app-credentials.sql": {
+      "sha256": "f84d70400d278fb2535352d6d45cb086bb50d3e177f066eea4c03adfff8b1ce2",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "migrations/065-app-service-secrets.sql": {
+      "sha256": "2b1d38641744ed6da50f2ac5b9e18edc21b1d782b70b74dd1fce568fd1bb9af6",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "migrations/066-private-app-preview.sql": {
+      "sha256": "e1ce58a16f23e75e330e664830713990c2415bcf8eac7f4e8294069c054e70e9",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "migrations/067-app-multi-relations.sql": {
+      "sha256": "1ed10df8c628bb65c396a800d1c35ff692fe2097cd7f5d04186fa1e5493322fb",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "migrations/068-app-schema-history.sql": {
+      "sha256": "538b9ab9866aca95f115eb2563b44a6269c6488ecbb5d9166c899529763fbc9b",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "migrations/069-app-jobs.sql": {
+      "sha256": "31bccc0723fd4ea41b1df0f8a75c2f0c00ccebc95f8a9024c3fd3fccb64d4b2b",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
+    "migrations/070-app-callback-permissions.sql": {
+      "sha256": "3394b610260712912119653ae2847d9e4b7a709d6e4a045b68dd5a02ac1fa218",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+    },
     "proof/Commerce/Claims.lean": {
-      "sha256": "873fc027c66f76389249d67f2545c3753ee94e8db4e46834af2904e598e8525c",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "5a5dd8d0b1a56b0953202e54722d053beb6824efaddc242f3758b0dc53edf726",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -2446,16 +2719,16 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/conformance.py": {
-      "sha256": "f89166b73bfc2244d96978298938ebd5c0c5c6771feb32a99830a38643e4fba7",
-      "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
+      "sha256": "a25fad54895e671fb4339563225baf2fafceffc841efd18bd99259f5f118e923",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "scripts/formal/extract.py": {
       "sha256": "0c699db4e15c044ca265d4f656466702994be891faddc1325ab9fb5a6073caab",
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "a62c9f4207ff9efb9c4f0a813eff9f8ca1ddaa9cab8586fac57cdf2aa44c4222",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "8f65a295c09b85c6fcdba5e57c00efc4e5401a00b14043d930f7e8e800d1ef8b",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "scripts/formal/registry.py": {
       "sha256": "529ea2df50b2a69ac12d432b58561551e221322cf1abb702910ee5bb1364495a",
@@ -2470,8 +2743,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "src/auth/identity.sql": {
-      "sha256": "8afcfee1c2a0358c6e9b6abb18f31961af54cfb1735ae890d96382272ab8c417",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "760f0269802a3070f4aab12dac091bb90772331774a76e1d16c009cf37dd0bb8",
+      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "src/catalog_channel.sql": {
       "sha256": "4dd3e1ed54adc7519eca5ca21702f626ece8b50aaf702bc2c1992872d338522d",

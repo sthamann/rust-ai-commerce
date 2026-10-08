@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Real assistant packages: editor context, rights, MCP opt-out, cron, signed webhooks, flows and local service fixtures."""
 from testing.database import psql
+from testing.app_approval import pin, consent
 import concurrent.futures
 import copy
 import hashlib
@@ -41,7 +42,7 @@ fixture = ThreadingHTTPServer(('127.0.0.1', 0), Service)
 threading.Thread(target=fixture.serve_forever, daemon=True).start()
 env = dict(os.environ)
 base = env['BASE_URL']
-env['APP_SERVICES'] = json.dumps({'example_integration': {'url': f'http://127.0.0.1:{fixture.server_port}', 'token': 'local-service-fixture'}})
+env['APP_SERVICES'] = json.dumps(pin({'example_integration': {'url': f'http://127.0.0.1:{fixture.server_port}', 'token': 'local-service-fixture'}}, 'example_integration', json.loads((ROOT/'extensions/apps/assistant-examples/integration.json').read_text())))
 env['APP_WEBHOOK_KEYS'] = json.dumps({tenant: {'example_webhook': secret}})
 env['PROCESS_ROLE'] = 'all'
 log_path = ROOT / 'artifacts/app-assistants-server.log'
@@ -49,6 +50,8 @@ log_path.parent.mkdir(exist_ok=True)
 
 
 def call(path, body=None, headers=None, expected=200, method=None, raw=None):
+    if path == "/api/apps" and body is not None:
+        body = consent(body)
     data = raw if raw is not None else (None if body is None else json.dumps(body).encode())
     req = urllib.request.Request(base + path, data=data, headers={'Content-Type': 'application/json', **(headers or {})}, method=method)
     try:
@@ -175,7 +178,7 @@ with log_path.open('w') as log:
         old, hs = signed({'payload': {}}, stamp=int(time.time()) - 1000)
         call(url, headers=hs, raw=old, expected=401)
         foreign_raw, hs = signed({'payload': {}}, target='foreign-' + suffix)
-        call('/webhooks/apps/foreign-' + suffix + '/example_webhook/incoming', headers=hs, raw=foreign_raw, expected=401)
+        call('/webhooks/apps/foreign-' + suffix + '/example_webhook/incoming', headers=hs, raw=foreign_raw, expected=404)
         wait(lambda: any(r['id'] == 'from_webhook' for r in call('/api/apps/example_admin/actions/list_entries', {'limit': 50}, headers)['elements']))
         print('PASS signed incoming webhook drives a rule-filtered durable flow; changed bodies, stale signatures, foreign shops and concurrent repeats rejected/deduplicated')
         scheduled = manifest('scheduled')
