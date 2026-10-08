@@ -54,7 +54,9 @@ price guardrails/daily autonomy budgets, controlled layout experiments and priva
 consent-bound cart preferences. Categories can select products through saved,
 localized queries of current confirmed public facts; source withdrawal removes
 the corresponding fact membership. Document events can invoke opt-in extraction
-flows through the same rights, review and daily AI quota as HTTP/MCP.
+flows through the same rights, review and daily AI quota as HTTP/MCP. Public
+product answers recheck every supplied source and the native product after
+inference; concurrent withdrawal or changes return localized retry guidance.
 [How they connect, setup, evidence and remaining audit work](docs/cognitive-commerce.md).
 
 ## Get started

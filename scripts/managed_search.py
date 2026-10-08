@@ -81,6 +81,24 @@ try:
         assert found['mode']=='hybrid' and found['hasIndexedProducts'] and len(found['hits'])==6,found
         assert found['graph']['tenant']==tenant and found['reranked']
         assert [h['rerankScore'] for h in found['hits']]==sorted([h['rerankScore'] for h in found['hits']],reverse=True)
+    assert sql("SELECT count(*) FROM pg_indexes WHERE indexname IN ('knowledge_confirmed_query_type','knowledge_confirmed_query_text')")=='2'
+    # Terminal synthetic jobs cannot be consumed; assert the actual API projection at every delta.
+    sql("DROP TRIGGER cognitive_status_errors ON embedding_jobs; DROP FUNCTION cognitive_error_delta(); ALTER TABLE knowledge_index_status DROP COLUMN errors")
+    sql("INSERT INTO embedding_jobs(tenant,kind,object_id,attempts,error_code) SELECT 'workshop','product','diagnostic-'||g,8,'embedding_provider_failed' FROM generate_series(1,1000) g")
+    sql('BEGIN;\n'+(root/'migrations/078-cognitive-error-counters.sql').read_text()+'\nCOMMIT;')
+    def diagnostics():return {v['code']:v['count'] for v in call('/api/knowledge/status',tenant='workshop')['errors']}
+    assert diagnostics()=={'embedding_provider_failed':1000}
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=4) as concurrent_updates:
+        list(concurrent_updates.map(lambda start:sql("UPDATE embedding_jobs SET error_code='embedding_geometry_invalid' WHERE tenant='workshop' AND object_id LIKE 'diagnostic-%' AND substring(object_id FROM 12)::integer BETWEEN "+str(start)+" AND "+str(start+124)),[1,126,251,376]))
+    assert diagnostics()=={'embedding_provider_failed':500,'embedding_geometry_invalid':500}
+    sql("UPDATE embedding_jobs SET error_code=NULL WHERE tenant='workshop' AND object_id LIKE 'diagnostic-%' AND substring(object_id FROM 12)::integer<=250")
+    assert diagnostics()=={'embedding_provider_failed':500,'embedding_geometry_invalid':250}
+    assert call('/api/knowledge/status',tenant='atelier')['errors']==[]
+    sql("DELETE FROM embedding_jobs WHERE tenant='workshop' AND object_id LIKE 'diagnostic-%'")
+    assert diagnostics()=={}
+    assert sql("SELECT pending_jobs FROM knowledge_index_status WHERE tenant='workshop'")=='0'
+    print('PASS 1000 historical failed jobs backfill native diagnostic counters exactly across concurrent error changes, reset, deletion and foreign-shop reads')
     state['bad_rerank']=True
     assert not call('/api/knowledge/search',{'query':'lamp'},'workshop')['reranked']
     state['bad_rerank']=False

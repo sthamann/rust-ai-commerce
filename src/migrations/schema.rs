@@ -297,4 +297,12 @@ pub(super) const SCHEMA: &[(&str, &str)] = &[
         "076-embedding-generations",
         include_str!("../../migrations/076-embedding-generations.sql"),
     ),
+    (
+        "077-saved-fact-navigation",
+        include_str!("../../migrations/077-saved-fact-navigation.sql"),
+    ),
+    (
+        "078-cognitive-error-counters",
+        include_str!("../../migrations/078-cognitive-error-counters.sql"),
+    ),
 ];

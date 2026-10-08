@@ -79,6 +79,11 @@ retrieval instead of creating an unbounded inference queue. Interactive chat (in
 actions consume the same atomic UTC-day tenant attempt quota. Staging shares its
 live tenant budget; failed provider attempts count. This is not token/spend accounting.
 
+Migration 078 maintains per-error-code counters in the source-job transaction.
+Status reads inspect this small per-tenant projection, not every failed job. Error
+changes, reset/retry and deletion remove old contributions before adding new ones;
+the migration backfills the projection once. This does not change retry admission.
+
 ## Agent reads, writes and progress
 
 Planner/Concierge separate read decisions from the final response. Up to four
@@ -216,7 +221,7 @@ cross-device customer memory. Customer preferences are never public product fact
 
 | Owner | Responsibility |
 | --- | --- |
-| `src/cognition/indexing.rs`, `generations.rs`; migrations 071/074/076 | Source-trigger intake, model-change cursors, leased embeddings and status counters |
+| `src/cognition/indexing.rs`, `generations.rs`; migrations 071/074/076 | Source-trigger intake, model-change cursors, leased embeddings and status counters (including migration 078 diagnostic deltas) |
 | `src/knowledge/{search,vectors,vector_cache,rerank,embeddings}.rs` and SQL | Retrieval, native hydration, index transport/geometry and provider validation |
 | `src/cognition/{context,tools,stream}.rs`; `src/inference/protocol.rs` | Bounded context, authorized read rounds, existing-chat SSE and model protocols |
 | `src/cognition/{evidence,extraction,claim_batches,contracts,signed}.rs`; migration 072 | Source-bound evidence lifecycle and current public statement/signature adapters |
@@ -259,7 +264,7 @@ price change. Transport fixtures separately test denials and malformed output.
 
 | Requested point | Current implementation | Still required |
 | --- | --- | --- |
-| Currency-neutral planning, pooling, bounded indexing/status | Native currencies, pooled Qdrant, automatic source intake/model rebuild, exact counters | Large-scale mixed-load measurements; counter error summaries still scan failed jobs |
+| Currency-neutral planning, pooling, bounded indexing/status | Native currencies, pooled Qdrant, automatic source intake/model rebuild, exact counters | Large-scale mixed-load measurements; large-scale end-to-end latency and admission measurements |
 | Hybrid multimodal retrieval | Lexical+dense RRF, optional reranker, named text vector, optional INT8 | BM25/sparse scoring and real image embeddings/search |
 | Modern serving/tool use | Configurable self-hosted protocol, routing, admission, read rounds, progress SSE | Real deployment/throughput; token streaming; generic write proposals |
 | Provenance ontology | Typed nodes/time/history; on-demand and opt-in document-event extraction/review; bounded public graph retrieval | Continuous product/review/return/support extraction with privacy gates (document events already use the native Flow worker) |
@@ -278,3 +283,15 @@ price change. Transport fixtures separately test denials and malformed output.
 These remaining items must extend their existing owners. Do not introduce another
 pricing engine, approval system, truth graph, document source store or workflow
 queue to make a recommendation look implemented.
+
+## Public answers and concurrent source changes
+
+Product questions re-admit the native product snapshot after inference and fence
+**every source supplied to the model**, including uncited inputs, against current
+PostgreSQL tenant, publication, archive, association, revision, hash, chunk text and
+locale. Withdrawal, re-publication, reassignment or a changed product returns a
+localized conflict asking the customer to retry; no answer/excerpt is returned.
+Provider work holds no commerce transaction. This admission check does not undo
+previously authorized input already sent to a provider and does not prove prose
+semantically correct. Delayed-provider HTTP tests change sources and products
+through their real merchant APIs while the question is in flight.

@@ -477,8 +477,8 @@
     },
     "src/agent.rs": {
       "status": "unproved",
-      "sha256": "9963036ead50b2f14ecd9c3b2e0912a64534f0c5ac884f4efc99390105d99988",
-      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+      "sha256": "2df29e2142aa4c39751272a2c0557ffe91f27f28d6a7edd94d10b99ace1c8ab3",
+      "review": "Reviewed current-source answer fence against native tenant/publication/archive/revision/hash/chunk/locale and exact product snapshot; delayed uncited provider HTTP regressions reject withdrawal/reassignment/product mutation. Registered saved-fact indexes and transactional rebuildable diagnostic deltas; isolated PostgreSQL/Qdrant tests cover 1000-job backfill, concurrent deltas/reset/delete/tenant separation. 184 Rust unit checks and format/clippy pass; SQL/async boundary remains outside extracted proofs."
     },
     "src/apps/approval.rs": {
       "status": "reviewed-binding",
@@ -1612,13 +1612,13 @@
     },
     "src/documents/questions.rs": {
       "status": "unproved",
-      "sha256": "aeca1e67aa4bd2d0324926af9d55b4cc60c7a37fd4f054d6b621be2dc0224f73",
-      "review": "Reviewed document SQL source association and shared grounded context, separate bounded read-decision/final phases with canonical schema and rights dispatch, public/private tool bounds, no write execution; Rust lint/unit checks and current native source-association/provider regression evidence. Model adherence, semantic truth, SQL and asynchronous effects remain unproved."
+      "sha256": "25a067a8b4e53c592dc68ea50824e131c8a7bf468ea0aac82afce35ee2558f7f",
+      "review": "Reviewed current-source answer fence against native tenant/publication/archive/revision/hash/chunk/locale and exact product snapshot; delayed uncited provider HTTP regressions reject withdrawal/reassignment/product mutation. Registered saved-fact indexes and transactional rebuildable diagnostic deltas; isolated PostgreSQL/Qdrant tests cover 1000-job backfill, concurrent deltas/reset/delete/tenant separation. 184 Rust unit checks and format/clippy pass; SQL/async boundary remains outside extracted proofs."
     },
     "src/documents/retrieval.rs": {
       "status": "unproved",
-      "sha256": "3746a06099bda743043d345e977555ec26cd78b7b5282b824d754fd085808b4f",
-      "review": "Reviewed document SQL source association and shared grounded context, separate bounded read-decision/final phases with canonical schema and rights dispatch, public/private tool bounds, no write execution; Rust lint/unit checks and current native source-association/provider regression evidence. Model adherence, semantic truth, SQL and asynchronous effects remain unproved."
+      "sha256": "9740f436b065e612d7d30140741338ea59d9cc13cf71f61c30499cfd2c7db704",
+      "review": "Reviewed current-source answer fence against native tenant/publication/archive/revision/hash/chunk/locale and exact product snapshot; delayed uncited provider HTTP regressions reject withdrawal/reassignment/product mutation. Registered saved-fact indexes and transactional rebuildable diagnostic deltas; isolated PostgreSQL/Qdrant tests cover 1000-job backfill, concurrent deltas/reset/delete/tenant separation. 184 Rust unit checks and format/clippy pass; SQL/async boundary remains outside extracted proofs."
     },
     "src/documents/tools.rs": {
       "status": "unproved",
@@ -1952,8 +1952,8 @@
     },
     "src/migrations/schema.rs": {
       "status": "unproved",
-      "sha256": "67d283d3179b8b45e7e764307244b520f946a8bf0110a1b17f9b9a2203c3d289",
-      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+      "sha256": "62890c72bdaf85a94e75db1e45dffeb00b3bce20b5ee8a7de0cf0b81b656c3a9",
+      "review": "Reviewed current-source answer fence against native tenant/publication/archive/revision/hash/chunk/locale and exact product snapshot; delayed uncited provider HTTP regressions reject withdrawal/reassignment/product mutation. Registered saved-fact indexes and transactional rebuildable diagnostic deltas; isolated PostgreSQL/Qdrant tests cover 1000-job backfill, concurrent deltas/reset/delete/tenant separation. 184 Rust unit checks and format/clippy pass; SQL/async boundary remains outside extracted proofs."
     },
     "src/migrations.rs": {
       "status": "unproved",
@@ -2866,6 +2866,10 @@
     "migrations/077-saved-fact-navigation.sql": {
       "sha256": "2363313c397eb820cbb562cfe16144369dabc564a65815fb0ee99305b3c8d911",
       "review": "Reviewed saved category fact schema, tenant-bound current-source SQL, partial candidate indexes and shared MCP planning quota. Native catalog tests cover review/privacy/revision withdrawal, locale inheritance, confidence, channels, foreign tenants, literal wildcard semantics, CAS and selective staging; provider tests use the centrally encrypted shared replica configuration and quota rejection before model invocation."
+    },
+    "migrations/078-cognitive-error-counters.sql": {
+      "sha256": "e108c8d9615faad9cfe2681c474731d479af547b66b9252e1c6b1e3da35e16b5",
+      "review": "Reviewed current-source answer fence against native tenant/publication/archive/revision/hash/chunk/locale and exact product snapshot; delayed uncited provider HTTP regressions reject withdrawal/reassignment/product mutation. Registered saved-fact indexes and transactional rebuildable diagnostic deltas; isolated PostgreSQL/Qdrant tests cover 1000-job backfill, concurrent deltas/reset/delete/tenant separation. 184 Rust unit checks and format/clippy pass; SQL/async boundary remains outside extracted proofs."
     },
     "proof/Commerce/Claims.lean": {
       "sha256": "2fe2cee29e4c579388fe6089ec94ee16caa21b477148ea7b96cdcfb664893c3c",

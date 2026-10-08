@@ -468,7 +468,7 @@ create a separate app editor or catalog-only implementation.
 
 ## Connected cognition foundation
 
-[The cognitive commerce guide](cognitive-commerce.md) maps migrations 071–076,
+[The cognitive commerce guide](cognitive-commerce.md) maps migrations 071–078,
 bounded retrieval/model protocols, original registry read tools, native guardrail
 apply, evidence/signatures, controlled layout trials and private cart preferences.
 Its audit tracker identifies still-unimplemented recommendations. The generated

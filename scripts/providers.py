@@ -63,20 +63,20 @@ try:
     config=call('/api/agent/providers'); assert all(p['configured'] for p in config['providers']); assert 'contract-openai' not in json.dumps(config); passed('Credentials never returned to frontend')
     conversation=call('/api/agent/chat',{'message':'Contract test: change lamp price.','inference':{'provider':'openai','model':'contract-openai-model'}})
     cid=conversation['conversationId']; message=conversation['messages'][-1]; assert message['data']['preview']['inference']=='openai'
-    path,headers,body=captured[-1]; assert path=='/v1/responses' and headers['authorization']=='Bearer contract-openai' and body['store'] is False
+    path,headers,body=next(c for c in reversed(captured) if c[0] != '/api/embed'); assert path=='/v1/responses' and headers['authorization']=='Bearer contract-openai' and body['store'] is False
     assert body['text']['format']['strict'] and body['model']=='contract-openai-model'; passed('OpenAI Responses adapter sends native strict schema and parses structured result')
     task=message['data']['taskId']; result=call('/api/agent/tasks/'+task+'/apply',{'approve':True}); assert result['applied']
     restored=call('/api/agent/conversations/'+cid); assert restored['messages'][-1]['applied']; passed('Cloud-derived preview uses real approval transaction and persists applied state')
     conversation=call('/api/agent/chat',{'conversationId':cid,'message':'Tell me the previous task.','inference':{'provider':'anthropic','model':'contract-claude-model'}})
-    path,headers,body=captured[-1]; assert path=='/v1/messages' and headers['x-api-key']=='contract-claude'
+    path,headers,body=next(c for c in reversed(captured) if c[0] != '/api/embed'); assert path=='/v1/messages' and headers['x-api-key']=='contract-claude'
     assert body['output_config']['format']['type']=='json_schema' and 'Contract test' in body['messages'][0]['content']; passed('Claude Messages adapter preserves conversation context and ignores thinking blocks')
     call('/api/agent/conversations/'+cid,headers={**ah,'x-tenant':'atelier'},expected=404); passed('Conversation history cannot cross tenant boundary')
     behavior.update(mode='read-tools',round=0)
     planned=call('/api/agent/chat',{'message':'Read orders through the native tool first.','inference':{'provider':'openai'}})
     trace=planned['messages'][-1]['data']['preview']['toolTrace'];assert trace[0]['tool']=='merchant.orders' and behavior['round']==3
-    assert 'gross EUR' not in captured[-1][2]['instructions']
+    assert 'gross EUR' not in next(c for c in reversed(captured) if c[0] != '/api/embed')[2]['instructions']
     assert captured[-2][2]['text']['format']['schema']['required']==['tool_calls']
-    assert 'Current native read transcript' in captured[-1][2]['input']
+    assert 'Current native read transcript' in next(c for c in reversed(captured) if c[0] != '/api/embed')[2]['input']
     passed('Agent reads through the current capability dispatcher before a separate final proposal, with currency-neutral planning')
     behavior['mode']='invalid-read'
     malformed=call('/api/agent/chat',{'message':'Malformed read decision','inference':{'provider':'openai'}})
@@ -188,12 +188,12 @@ try:
         try:call('/health');break
         except OSError:time.sleep(.1)
     streamed=call('/api/agent/chat',{'message':'Use routed self-hosted planner','inference':{'provider':'openai'}})
-    path,_,body=captured[-1];assert path=='/v1/chat/completions' and body['model']=='self-hosted-planner' and body['response_format']['json_schema']['strict']
+    path,_,body=next(c for c in reversed(captured) if c[0] != '/api/embed');assert path=='/v1/chat/completions' and body['model']=='self-hosted-planner' and body['response_format']['json_schema']['strict']
     assert not streamed['messages'][-1]['data'].get('error')
     call('/api/agent/chat',{'message':'Explicit model still wins','inference':{'provider':'openai','model':'chosen-model'}})
-    assert captured[-1][2]['model']=='chosen-model'
+    assert next(c for c in reversed(captured) if c[0] != '/api/embed')[2]['model']=='chosen-model'
     call('/api/agent/chat',{'message':'Stable Claude system cache','inference':{'provider':'anthropic'}})
-    assert captured[-1][2]['system'][0]['cache_control']=={'type':'ephemeral'}
+    assert next(c for c in reversed(captured) if c[0] != '/api/embed')[2]['system'][0]['cache_control']=={'type':'ephemeral'}
     passed('Self-hosted chat-completions schema, task model routing, explicit-model precedence and Claude prompt-cache contract work through real HTTP')
     report={'passed':len(checks),'liveCloudInference':False,'checks':checks}
     print(json.dumps(report,indent=2))

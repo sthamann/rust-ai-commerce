@@ -32,7 +32,7 @@ pub(super) async fn knowledge_status(
     .bind(&t)
     .fetch_optional(&a.db)
     .await?;
-    let errors:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('code',error_code,'count',count(*)) FROM embedding_jobs WHERE tenant=$1 AND error_code IS NOT NULL GROUP BY error_code ORDER BY error_code LIMIT 16").bind(&t).fetch_all(&a.db).await?;
+    let errors:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('code',e.key,'count',e.value) FROM knowledge_index_status s CROSS JOIN LATERAL jsonb_each(s.errors) e WHERE tenant=$1 ORDER BY e.key LIMIT 16").bind(&t).fetch_all(&a.db).await?;
     Ok(Json(
         json!({"indexedProducts":status.as_ref().map(|r|r.get::<i64,_>("indexed_products")).unwrap_or(0),"pending":status.as_ref().map(|r|r.get::<i64,_>("pending_jobs")).unwrap_or(0),"errors":errors,"documentsLimit":200,"documents":rows.iter().map(|r|json!({"productId":r.get::<String,_>("product_id"),"model":r.get::<String,_>("embedding_model"),"contentHash":r.get::<String,_>("content_hash"),"vectorDigest":r.get::<String,_>("vector_digest")})).collect::<Vec<_>>()}),
     ))

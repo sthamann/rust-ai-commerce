@@ -67,7 +67,8 @@ def verify(req, sql, owner, other, seed, empty, oh, h, check, base):
         # Automatic indexing may concurrently call the same inherited Ollama host.
         # Check each native endpoint/model explicitly rather than treating an embed as a fourth chat.
         expected_models={'/api/chat':'inherited-fixture','/api/embed':os.getenv('EMBEDDING_MODEL','qwen3-embedding:0.6b')}
-        assert len(chats)==3 and all(auth=='Bearer '+key and model==expected_models.get(path) for path,auth,model in captured), [(path,model,auth=='Bearer '+key) for path,auth,model in captured]
+        # Each merchant interaction has a read-decision phase and a final proposal phase.
+        assert len(chats)==6 and all(auth=='Bearer '+key and model==expected_models.get(path) for path,auth,model in captured), [(path,model,auth=='Bearer '+key) for path,auth,model in captured]
         req('/api/platform/ai',{'revision':written['revision'],'settings':settings,'keys':{'ollama':'denied'}},h(other),403,method='PUT')
         check('encrypted write-only keys and central model reach two independent shops; stale revisions and foreign saves rejected')
     finally:
