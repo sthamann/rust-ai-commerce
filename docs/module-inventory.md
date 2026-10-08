@@ -97,6 +97,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/categories/admin.rs](../src/categories/admin.rs) | Revision-bound category writes, bounded translations and serialized cycle-safe tree moves. |
 | [src/categories/mod.rs](../src/categories/mod.rs) | Tenant-scoped category tree, localized navigation and product assignment boundaries. |
 | [src/categories/navigation.rs](../src/categories/navigation.rs) | Public navigation is localized and restricted to the selected channel's active category ancestry. |
+| [src/channel_metrics/reads.rs](../src/channel_metrics/reads.rs) | One persisted diagnostic read shared by operator overview, shop dossiers and infrastructure. |
 | [src/channel_metrics.rs](../src/channel_metrics.rs) | Bounded, lossy diagnostic counters. Never use this buffer for business events. |
 | [src/chat_lease.rs](../src/chat_lease.rs) | Short, cross-replica conversation leases; inference never retains a database transaction. |
 | [src/checkout_handoff.rs](../src/checkout_handoff.rs) | Single-use checkout transfer for independent storefronts; no app-specific catalog or checkout rules. |
@@ -568,6 +569,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/application/ApplicationRouter.tsx](../frontend/src/application/ApplicationRouter.tsx) | Select independent lazy applications; contain failed imports and reset boundaries on navigation. |
 | [frontend/src/main.tsx](../frontend/src/main.tsx) | Browser bootstrap only; application selection and error recovery live in application/. |
 | [frontend/src/platform/AdminHub.tsx](../frontend/src/platform/AdminHub.tsx) | Public service directory. Links select a login surface without granting operator or merchant permissions. |
+| [frontend/src/platform/HTTPResponses.tsx](../frontend/src/platform/HTTPResponses.tsx) | Exact HTTP outcomes; historical undifferentiated totals never become fabricated success rates. |
 | [frontend/src/platform/PlatformAI.tsx](../frontend/src/platform/PlatformAI.tsx) | Central inference editor; write-only secrets, optimistic revisions and explicit environment fallback. |
 | [frontend/src/platform/PlatformConsole.tsx](../frontend/src/platform/PlatformConsole.tsx) | Independent platform control plane: personal operator access, bounded statistics and audited shop creation. |
 | [frontend/src/platform/PlatformDashboard.tsx](../frontend/src/platform/PlatformDashboard.tsx) | Aggregate statistics from PostgreSQL; recorded orders and confirmed money remain visibly separate. |

@@ -38,10 +38,10 @@ pub(super) async fn overview(
         .bind(Option::<String>::None)
         .fetch_all(&mut *tx)
         .await?;
-    let channels=sqlx::query("SELECT channel,coalesce(sum(calls),0)::bigint AS calls,coalesce(sum(failures),0)::bigint AS failures FROM channel_metrics m WHERE NOT EXISTS(SELECT 1 FROM shop_environments e WHERE e.tenant=m.tenant) GROUP BY channel ORDER BY channel").fetch_all(&mut *tx).await?;
     tx.commit().await?;
+    let channels = crate::channel_metrics::traffic(&a.db, None, true).await?;
     Ok(Json(
-        json!({"days":days,"generatedAt":row.get::<String,_>("generated"),"shops":row.get::<i64,_>("shops"),"sandboxes":row.get::<i64,_>("sandboxes"),"merchantUsers":row.get::<i64,_>("users"),"products":row.get::<i64,_>("products"),"customers":row.get::<i64,_>("customers"),"orders":row.get::<i64,_>("orders"),"pendingEvents":row.get::<i64,_>("pending_events"),"amounts":amounts(&money),"channels":channels.iter().map(|r|json!({"channel":r.get::<String,_>("channel"),"calls":r.get::<i64,_>("calls"),"failures":r.get::<i64,_>("failures")})).collect::<Vec<_>>(),"channelScope":"persisted lifetime HTTP requests, not visitors; counters include tests and merchant reads","paymentScope":"recorded gross orders and confirmed online captures; not net revenue or accounting settlement"}),
+        json!({"days":days,"generatedAt":row.get::<String,_>("generated"),"shops":row.get::<i64,_>("shops"),"sandboxes":row.get::<i64,_>("sandboxes"),"merchantUsers":row.get::<i64,_>("users"),"products":row.get::<i64,_>("products"),"customers":row.get::<i64,_>("customers"),"orders":row.get::<i64,_>("orders"),"pendingEvents":row.get::<i64,_>("pending_events"),"amounts":amounts(&money),"channels":channels,"channelScope":"persisted lifetime HTTP requests, not visitors; counters include tests and merchant reads","paymentScope":"recorded gross orders and confirmed online captures; not net revenue or accounting settlement"}),
     ))
 }
 pub(super) async fn shops(

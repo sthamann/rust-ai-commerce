@@ -1,6 +1,48 @@
 /** Complete vocabulary for the platform control plane and service hub. Technical provider/service IDs stay stable. */
 import { useLocale } from "./i18n";
 const rows = {
+  httpAccess: [
+    "Access rejected (401/403)",
+    "Zugriff abgewiesen (401/403)",
+    "Acceso rechazado (401/403)",
+    "Accès refusé (401/403)",
+  ],
+  httpClient: [
+    "Other 4xx responses",
+    "Sonstige 4xx-Antworten",
+    "Otras respuestas 4xx",
+    "Autres réponses 4xx",
+  ],
+  httpServer: [
+    "Server failures (5xx)",
+    "Serverfehler (5xx)",
+    "Errores del servidor (5xx)",
+    "Erreurs serveur (5xx)",
+  ],
+  httpHistorical: [
+    "Historical · unclassified",
+    "Altbestand · nicht zuordenbar",
+    "Histórico · sin clasificar",
+    "Historique · non classé",
+  ],
+  httpDetails: [
+    "Response codes and meaning",
+    "Antwortcodes und Bedeutung",
+    "Códigos de respuesta y significado",
+    "Codes de réponse et signification",
+  ],
+  httpHint: [
+    "Breakdown starts with the diagnostics update. 401/403 require checking login, permissions or origin; other 4xx can mean invalid input, missing records, conflicts or limits. 5xx require server investigation. Early host/authentication refusals and JSON-RPC errors within HTTP 200 are not counted here.",
+    "Die Aufschlüsselung beginnt mit dem Diagnose-Update. Bei 401/403 Anmeldung, Rechte oder Origin prüfen; andere 4xx können ungültige Eingaben, fehlende Daten, Konflikte oder Limits bedeuten. 5xx erfordern eine Serverprüfung. Frühe Host-/Anmeldeablehnungen und JSON-RPC-Fehler innerhalb von HTTP 200 werden hier nicht gezählt.",
+    "El desglose comienza con la actualización de diagnóstico. Para 401/403, revisar acceso, permisos u origen; otros 4xx pueden indicar datos inválidos, ausentes, conflictos o límites. Los 5xx requieren investigar el servidor. No incluye rechazos tempranos de host/autenticación ni errores JSON-RPC dentro de HTTP 200.",
+    "Le détail commence avec la mise à jour de diagnostic. Pour 401/403, vérifier connexion, droits ou origine ; les autres 4xx peuvent indiquer une saisie invalide, des données absentes, des conflits ou des limites. Les 5xx nécessitent une investigation serveur. Les refus précoces d’hôte/authentification et erreurs JSON-RPC sous HTTP 200 sont exclus.",
+  ],
+  httpNoBreakdown: [
+    "No classified HTTP failures recorded yet. Historical totals cannot be reconstructed.",
+    "Noch keine aufgeschlüsselten HTTP-Fehler erfasst. Die alten Summen lassen sich nicht rekonstruieren.",
+    "Aún no hay errores HTTP clasificados. Los totales históricos no se pueden reconstruir.",
+    "Aucune erreur HTTP classée enregistrée. Les anciens totaux ne peuvent pas être reconstitués.",
+  ],
   databaseHint: [
     "Commerce records, tenant isolation and durable jobs.",
     "Commerce-Daten, Shoptrennung und dauerhafte Aufgaben.",

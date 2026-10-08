@@ -419,3 +419,16 @@ See [merchant password enrollment](experience-integration.md#merchant-password-e
 ### Channel access and frontend bindings
 
 `marketing/channel_access.rs` is the shared Store API/UCP/MCP/hosted admission boundary; `channel_preview.rs` owns personal, one-use browser previews. `auth/middleware.rs` strips forged preview principals and adds the validated request marker consumed by catalog, cart, navigation and legal paths. `shop_domains/frontend_bindings.rs` owns revisioned tenant/Experience alias CRUD; it reuses `hosted_frontends`, not another domain registry. The private renderer remains in the private integration repository. See [channel management](channel-management.md) for behavior and limits.
+
+## HTTP failure diagnostics
+
+`src/channel_metrics.rs` owns the bounded interval buffer and single bulk flush;
+`src/channel_metrics/reads.rs` shares exact status aggregation across operator
+overview, shop dossiers and infrastructure. `src/studio.rs` supplies status and
+sanitized route-template logs after authentication admission. Migration 056
+preserves historical totals and adds only a bounded status-code histogram.
+`frontend/src/platform/HTTPResponses.tsx` presents access refusals, other 4xx,
+5xx and unclassified history with the shared translated vocabulary.
+`channel_metrics` unit tests, `scripts/platform_control.py` and
+`http-responses.test.tsx` cover classification, real persistence, tenant-scoped
+reads, historical preservation and display. See [the measurement boundary](platform.md#what-the-http-error-counts-mean).

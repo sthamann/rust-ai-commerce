@@ -1,4 +1,5 @@
 /** Aggregate statistics from PostgreSQL; recorded orders and confirmed money remain visibly separate. */
+import HTTPResponses from "./HTTPResponses";
 import { useLocale } from "../shared/i18n/i18n";
 import { usePlatformText } from "../shared/i18n/platform-i18n";
 import type { Amount, Overview, ShopDetail } from "./platform-api";
@@ -120,9 +121,7 @@ export default function PlatformDashboard({
             <div key={c.channel}>
               <strong>{c.channel}</strong>
               <b>{number(c.calls)}</b>
-              <span>
-                {t("failures")}: {number(c.failures)}
-              </span>
+              <HTTPResponses traffic={c} />
             </div>
           ))}
         </div>

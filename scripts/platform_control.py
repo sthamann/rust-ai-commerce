@@ -105,9 +105,37 @@ def verify(req, sql, owner, other, seed, empty, oh, h, check, base):
     for id in ['admin','app','api','www','mail','platform','invalid-']:
         req('/api/platform/shops',{'id':id,'name':'Reserved'},oh,400)
     check('admin service host and real tenant subdomains resolve; conflicting/unknown tenant hosts and reserved/dangling IDs rejected')
+    # Known HTTP failures preserve exact statuses; legacy totals stay explicitly unclassified.
+    sql(f"INSERT INTO channel_metrics(tenant,channel,calls,failures) VALUES('{seed}','mcp',12,12) ON CONFLICT(tenant,channel) DO UPDATE SET calls=channel_metrics.calls+12,failures=channel_metrics.failures+12;")
+    req('/mcp',{'jsonrpc':'2.0','id':1,'method':'initialize'}, {'x-tenant':seed,'Origin':'https://untrusted.example.test'},403)
+    req('/store-api/product/not-a-real-product?diagnostic=private-query-canary',headers={'x-tenant':seed},expected=404)
+    req('/store-api/product',{'limit':0},{'x-tenant':seed},400)
     # Wait only for the bounded telemetry flush; these are diagnostic counters, not commerce records.
     time.sleep(1.2)
     traffic=req('/api/platform/shops/'+seed,headers=oh)['traffic']
     assert any(r['channel']=='api' and r['timedCalls']>0 for r in traffic)
     assert all(r['totalMs']>=0 and r['maxMs']>=0 for r in traffic)
     check('persisted API latency uses measured-call counts, so historical unmeasured requests do not dilute averages')
+
+    mcp=next(r for r in traffic if r['channel']=='mcp')
+    assert mcp['responses']['403']>=1 and mcp['failures']-sum(mcp['responses'].values())>=12
+    storefront=next(r for r in traffic if r['channel']=='storefront')
+    assert storefront['responses']['404']>=1 and storefront['responses']['400']>=1
+    summary=req('/api/platform/overview',headers=oh)
+    # Overview and infrastructure use the same response aggregation; staging is excluded only in overview.
+    assert next(r for r in summary['channels'] if r['channel']=='mcp')['responses']['403']>=1
+    infra=req('/api/platform/infrastructure',headers=oh)
+    assert next(r for r in infra['channels'] if r['channel']=='mcp')['responses']['403']>=1
+    foreign=req('/api/platform/shops/'+other['workspace'],headers=oh)
+    assert all(r.get('responses',{}).get('403',0)==0 for r in foreign['traffic'] if r['channel']=='mcp')
+    check('HTTP response statuses persist across flushes; historical failures are unclassified and foreign shop metrics do not inherit them')
+
+    req('/mcp',{'jsonrpc':'2.0','id':2,'method':'initialize'}, {'x-tenant':seed,'Origin':'https://untrusted.example.test'},403)
+    time.sleep(1.2)
+    second=next(r for r in req('/api/platform/shops/'+seed,headers=oh)['traffic'] if r['channel']=='mcp')
+    assert second['responses']['403']==mcp['responses']['403']+1
+    assert second['failures']-sum(second['responses'].values())==mcp['failures']-sum(mcp['responses'].values())
+    logs=(pathlib.Path(__file__).resolve().parents[1]/'artifacts/integration-server.log').read_text()
+    assert 'route=/store-api/product/{id} status=404' in logs
+    assert 'private-query-canary' not in logs and 'not-a-real-product' not in logs
+    check('second telemetry flush adds exact statuses without double counting; HTTP logs contain route templates and omit object IDs/query strings')
