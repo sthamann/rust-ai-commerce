@@ -102,7 +102,7 @@ pub(crate) async fn exchange(State(a): State<App>, Json(v): Json<Value>) -> Resu
         .execute(&mut *tx)
         .await?;
     // Only the configured broker can assert verified ownership of this email; arbitrary clients cannot link accounts.
-    let user: String=sqlx::query_scalar("INSERT INTO merchant_users(id,email,name,password_hash) VALUES($1,$2,$3,$4) ON CONFLICT(email) DO UPDATE SET email=EXCLUDED.email RETURNING id")
+    let user: String=sqlx::query_scalar("INSERT INTO merchant_users(id,email,name,password_hash,password_initialized) VALUES($1,$2,$3,$4,false) ON CONFLICT(email) DO UPDATE SET email=EXCLUDED.email RETURNING id")
         .bind(uid()).bind(&email).bind(name).bind(random_password).fetch_one(&mut *tx).await?;
     let linked: Option<String> = sqlx::query_scalar(
         "SELECT user_id FROM merchant_identities WHERE issuer=$1 AND subject=$2",

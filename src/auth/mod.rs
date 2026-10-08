@@ -2,6 +2,7 @@
 //! The legacy MERCHANT_TOKEN is an instance administrator bootstrap credential only.
 use crate::*;
 pub(crate) mod broker;
+pub(crate) mod broker_credentials;
 pub(crate) mod broker_inference;
 mod credentials;
 pub(crate) mod handoff;

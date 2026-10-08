@@ -12,6 +12,10 @@ pub(crate) fn router(a: App) -> Router {
         .merge(shop_domains::frontends::router())
         .route("/api/identity/exchange", post(auth::broker::exchange))
         .route(
+            "/api/identity/credentials",
+            post(auth::broker_credentials::credentials),
+        )
+        .route(
             "/api/identity/inference",
             post(auth::broker_inference::generate)
                 .layer(axum::extract::DefaultBodyLimit::max(8_200_000)),

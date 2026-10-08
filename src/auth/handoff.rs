@@ -5,6 +5,17 @@ pub(crate) async fn create(State(a): State<App>, h: HeaderMap) -> Result<Json<Va
     let user = header(&h, "x-rac-user")
         .filter(|u| *u != "bootstrap")
         .ok_or(bad("Personal account required"))?;
+    let initialized: bool =
+        sqlx::query_scalar("SELECT password_initialized FROM merchant_users WHERE id=$1")
+            .bind(user)
+            .fetch_one(&a.db)
+            .await?;
+    if !initialized {
+        return Err(Error(
+            StatusCode::FORBIDDEN,
+            "Merchant password setup required".into(),
+        ));
+    }
     let ticket = format!("{}{}", uid(), uid());
     sqlx::query("DELETE FROM merchant_handoffs WHERE expires_at<now()")
         .execute(&a.db)
@@ -23,7 +34,7 @@ pub(crate) async fn redeem(State(a): State<App>, Json(v): Json<Value>) -> Result
     let user: String = row.get("user_id");
     let tenant: String = row.get("tenant");
     let active: bool = sqlx::query_scalar(
-        "SELECT EXISTS(SELECT 1 FROM memberships WHERE user_id=$1 AND tenant=$2 AND active)",
+        "SELECT EXISTS(SELECT 1 FROM memberships m JOIN merchant_users u ON u.id=m.user_id WHERE m.user_id=$1 AND m.tenant=$2 AND m.active AND u.password_initialized)",
     )
     .bind(&user)
     .bind(&tenant)

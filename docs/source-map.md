@@ -409,3 +409,9 @@ App assistants compile the shared Manifest in `frontend/src/admin/developer/assi
 ### Hosted frontend transport
 
 `src/shop_domains/frontend_transport.rs` streams the fixed, authenticated external frontend response with backpressure and an 8 MB cumulative body limit. SSE starts before upstream EOF; a body failure closes the stream. `HOSTED_FRONTEND_COOKIE_NAMES` defaults empty and optionally permits at most eight opaque anonymous shopper cookies. Login credentials remain stripped. Cookies returned to the browser must be host-only, Secure, HttpOnly and SameSite=Lax; redirects must be relative. This generic adapter contains no private Storyfront implementation. `identity_broker` exercises routing, foreign-shop denial, cookie filtering, paused shops and streaming through the real HTTP service. The network adapter remains outside the Lean proof boundary.
+
+`src/auth/broker_credentials.rs` owns explicit trusted-email password enrollment/recovery
+and existing-password verification. Migration 052 marks new broker accounts pending;
+`sessions.rs` reports that state and `handoff.rs` enforces enrollment before Studio
+entry. `scripts/identity_broker.py` checks real login, ownership, replay and revocation.
+See [merchant password enrollment](experience-integration.md#merchant-password-enrollment-and-email-link-recovery).

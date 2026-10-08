@@ -53,6 +53,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/assets/rich_document.rs](../src/assets/rich_document.rs) | Allow-listed editor JSON with bounded depth and content; HTML/handlers/styles cannot enter the renderer. |
 | [src/assets/upload.rs](../src/assets/upload.rs) | File admission, immutable bytes and explicit publishing; binary content never enters merchant list responses. |
 | [src/auth/broker.rs](../src/auth/broker.rs) | Optional trusted identity exchange: signatures bind route, audience, expiry and one-use nonce. |
+| [src/auth/broker_credentials.rs](../src/auth/broker_credentials.rs) | Explicit trusted-email password setup/recovery, existing-password verification and canonical session revocation. |
 | [src/auth/broker_inference.rs](../src/auth/broker_inference.rs) | Trusted server-to-server inference inherits operator settings without disclosing any provider credentials. |
 | [src/auth/credentials.rs](../src/auth/credentials.rs) | Argon2 password operations run off the asynchronous request executor. |
 | [src/auth/handoff.rs](../src/auth/handoff.rs) | One-time personal-session handoff to the Studio; no passwords or bearer tokens in links. |

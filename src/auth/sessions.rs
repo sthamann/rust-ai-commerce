@@ -14,13 +14,14 @@ pub(crate) async fn issue_session(a: &App, user: &str, tenant: &str) -> Result<V
     Ok(value)
 }
 pub(crate) async fn user_data(a: &App, user: &str) -> Result<Value> {
-    let r = sqlx::query("SELECT id,email,name FROM merchant_users WHERE id=$1")
-        .bind(user)
-        .fetch_one(&a.db)
-        .await?;
+    let r =
+        sqlx::query("SELECT id,email,name,password_initialized FROM merchant_users WHERE id=$1")
+            .bind(user)
+            .fetch_one(&a.db)
+            .await?;
     let ms=sqlx::query("SELECT t.id,t.name,m.role FROM memberships m JOIN tenants t ON t.id=m.tenant WHERE m.user_id=$1 AND m.active ORDER BY t.name").bind(user).fetch_all(&a.db).await?;
     Ok(
-        json!({"user":{"id":r.get::<String,_>("id"),"email":r.get::<String,_>("email"),"name":r.get::<String,_>("name")},"workspaces":ms.iter().map(|r|json!({"id":r.get::<String,_>("id"),"name":r.get::<String,_>("name"),"role":r.get::<String,_>("role"),"urls":crate::shop_domains::links(&r.get::<String,_>("id"))})).collect::<Vec<_>>(),"expiresIn":43200}),
+        json!({"user":{"id":r.get::<String,_>("id"),"email":r.get::<String,_>("email"),"name":r.get::<String,_>("name")},"passwordSetupRequired":!r.get::<bool, _>("password_initialized"),"workspaces":ms.iter().map(|r|json!({"id":r.get::<String,_>("id"),"name":r.get::<String,_>("name"),"role":r.get::<String,_>("role"),"urls":crate::shop_domains::links(&r.get::<String,_>("id"))})).collect::<Vec<_>>(),"expiresIn":43200}),
     )
 }
 pub(crate) async fn user_login(State(a): State<App>, Json(v): Json<Value>) -> Result<Json<Value>> {
