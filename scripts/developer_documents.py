@@ -20,6 +20,8 @@ class Model(BaseHTTPRequestHandler):
    else:
     prompt=b.get('input','');source=prompt.split('"sourceId":"')[1].split('"')[0] if '"sourceId":"' in prompt else None
     answer={'answer':{'de-DE':'Die Tasse ist spülmaschinenfest.','fr-FR':'La tasse passe au lave-vaisselle.','es-ES':'La taza es apta para lavavajillas.'}.get(behavior['mode'],'The cup is dishwasher safe.'),'source_ids':[source] if source else [],'missing_information':source is None}
+   schema=b.get('text',{}).get('format',{}).get('schema') or b.get('output_config',{}).get('format',{}).get('schema') or b.get('format',{})
+   if schema.get('required')==['tool_calls']:answer={'tool_calls':[]}
    out={'status':'completed','output':[{'content':[{'type':'output_text','text':json.dumps(answer)}]}]}
   if self.path.endswith('/messages'):out={'stop_reason':'end_turn','content':[{'type':'text','text':json.dumps(answer)}]}
   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps(out).encode())
@@ -83,6 +85,8 @@ try:
  q=call('/store-api/product/mug/questions',{'question':'Dishwasher safe?','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug);assert not q['sources'] and q['missingInformation']
  call('/api/knowledge/documents/'+doc['id'],{'approve':True,'visibility':'public','revision':1},a,method='PUT')
  q=call('/store-api/product/mug/questions',{'question':'Dishwasher','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug);assert len(q['sources'])==1 and q['sources'][0]['contentHash']==doc['contentHash'] and q['sideEffects'] is False
+ prompt=captured[-1][1]['input']
+ assert '"productId":"mug"' in prompt and '"appliesToProductId":"mug"' in prompt and '"association":"product"' in prompt
  passed('Private data sheet is excluded until approval; public questions return exact source hash/excerpt')
  indexed=call('/api/knowledge/documents/'+doc['id']+'/index',{},a)
  assert indexed['asynchronous'] and indexed['indexed']==0

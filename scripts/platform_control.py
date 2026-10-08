@@ -25,6 +25,7 @@ def verify(req, sql, owner, other, seed, empty, oh, h, check, base):
                 self.wfile.write(json.dumps({'embeddings':[[1.0]+[0.0]*15 for _ in data['input']]}).encode())
                 return
             answer={'summary':'Synthetic inherited provider wire fixture','changes':[],'experience':None,'expected_experience_revision':None}
+            if data['format'].get('required')==['tool_calls']:answer={'tool_calls':[]}
             self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers()
             self.wfile.write(json.dumps({'message':{'content':json.dumps(answer)},'done_reason':'stop'}).encode())
     fixture=ThreadingHTTPServer(('127.0.0.1',0),Model)

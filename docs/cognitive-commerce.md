@@ -81,7 +81,10 @@ live tenant budget; failed provider attempts count. This is not token/spend acco
 
 ## Agent reads, writes and progress
 
-Planner/Concierge use up to four structured rounds and three read tools per round.
+Planner/Concierge separate read decisions from the final response. Up to four
+read-decision calls allow at most three executed read rounds, three tools per round,
+followed by one final response call (at most five model calls). The read-decision
+schema cannot contain proposed changes. Malformed decisions stop without a task.
 Core tools are explicitly classified; current actor permissions and input schemas
 are checked at dispatch. Installed app tools require a current authorized read-only
 contract. Storefront agents can read only public catalog tools. Tools cannot execute
@@ -126,6 +129,11 @@ revision. Confirmation does not turn an arbitrary model paraphrase into a
 mathematical entailment. Changing/archiving/private-marking the source removes
 public admission. Continuous review/return/support/product extraction is not yet
 wired merely because those node types exist.
+
+Document retrieval carries native product/family/shop association separately from
+untrusted titles. The shared Planner/Concierge/product-question instruction prioritizes native structured
+properties and requires conflicting source values to be reported. These instructions
+do not establish semantic entailment or guarantee that a model follows them.
 
 Two-hop retrieval limits branch width and total evidence. The public compiler
 accepts only exact current confirmed statements backed by public documents.
@@ -228,6 +236,24 @@ controls and consent/sharing. Rust/Lean comparison and negative mutations cover
 the **exact extracted predicates** for price admission, autonomy, claim rendering
 and experiment-result admission. SQL, statistical assumptions, signatures, provider
 protocols and browser code remain outside those proofs.
+
+## Local real-model check
+
+An isolated local run used `qwen3.6:35b` and `qwen3-embedding:0.6b` through the
+ordinary HTTP, worker, retrieval, tool and proposal consumers. An English data
+sheet explicitly assigned to a mug said 500 ml; the native product said 350 ml.
+A German question retrieved the indexed sheet. Extraction saved four exact-quote
+candidates as **proposed**, without confirming them. The initial combined
+read/proposal schema skipped an explicitly requested read. With separate phases,
+the model called `merchant.product.content` once, then produced a price-only
+17.90 EUR proposal awaiting approval and noted the capacity conflict.
+
+This is one real inference example, not a semantic-quality benchmark. Earlier
+answers varied, including mistaken product association inferred from the sheet
+name and inconsistent handling of absent native fields. Shared instructions and
+association metadata reduce that ambiguity; they do not prove every answer true.
+The run used no paid provider and no existing customer/shop data, and applied no
+price change. Transport fixtures separately test denials and malformed output.
 
 ## Audit completion tracker
 

@@ -26,6 +26,9 @@ class Handler(BaseHTTPRequestHandler):
             if behavior.setdefault('round',0)==0:
                 result={**proposal,'changes':[],'tool_calls':[{'name':'merchant.orders' if behavior['mode']=='read-tools' else 'merchant.apply','arguments_json':'{}'}]}
             behavior['round']+=1
+        schema=(body.get('text',{}).get('format',{}).get('schema') or body.get('response_format',{}).get('json_schema',{}).get('schema') or body.get('output_config',{}).get('format',{}).get('schema') or body.get('format',{}))
+        if schema.get('required')==['tool_calls']:
+            result={'tool_calls':result.get('tool_calls',{}) if behavior['mode']=='invalid-read' else result.get('tool_calls',[])}
         if self.path=='/v1/responses':
             answer={'status':'incomplete' if behavior['mode']=='incomplete' else 'completed','output':[{'type':'message','content':[{'type':'output_text','text':json.dumps(result)}]}], 'usage':{'input_tokens':10,'output_tokens':20}}
         elif self.path=='/v1/chat/completions':
@@ -70,9 +73,15 @@ try:
     call('/api/agent/conversations/'+cid,headers={**ah,'x-tenant':'atelier'},expected=404); passed('Conversation history cannot cross tenant boundary')
     behavior.update(mode='read-tools',round=0)
     planned=call('/api/agent/chat',{'message':'Read orders through the native tool first.','inference':{'provider':'openai'}})
-    trace=planned['messages'][-1]['data']['preview']['toolTrace'];assert trace[0]['tool']=='merchant.orders' and behavior['round']==2
+    trace=planned['messages'][-1]['data']['preview']['toolTrace'];assert trace[0]['tool']=='merchant.orders' and behavior['round']==3
     assert 'gross EUR' not in captured[-1][2]['instructions']
-    passed('Agent reads through the current capability dispatcher in bounded rounds, with currency-neutral planning')
+    assert captured[-2][2]['text']['format']['schema']['required']==['tool_calls']
+    assert 'Current native read transcript' in captured[-1][2]['input']
+    passed('Agent reads through the current capability dispatcher before a separate final proposal, with currency-neutral planning')
+    behavior['mode']='invalid-read'
+    malformed=call('/api/agent/chat',{'message':'Malformed read decision','inference':{'provider':'openai'}})
+    assert malformed['messages'][-1]['data']['error'] and 'taskId' not in malformed['messages'][-1]['data']
+    passed('Malformed tool decisions stop before reads or executable proposals')
     behavior.update(mode='write-tool',round=0)
     rejected=call('/api/agent/chat',{'message':'Unsupported direct write tool','inference':{'provider':'openai'}})
     assert rejected['messages'][-1]['data']['error'] and 'taskId' not in rejected['messages'][-1]['data']

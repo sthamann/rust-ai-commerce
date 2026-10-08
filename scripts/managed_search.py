@@ -3,6 +3,7 @@
 from testing.database import psql
 import hashlib, json, os, pathlib, socket, subprocess, uuid, threading, time, urllib.error, urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import urlsplit, urlunsplit
 root=pathlib.Path(__file__).resolve().parents[1]
 qdrant_url=os.environ.get("QDRANT_URL")
 if not qdrant_url:raise SystemExit("Managed-search verification requires an explicitly configured QDRANT_URL")
@@ -51,9 +52,14 @@ def call(path,body=None,tenant='atelier',host=None,status=200):
 
 def sql(text):
     return subprocess.check_output(psql(os.environ['DB_CONTAINER'],'commerce',os.environ['TEST_DATABASE'],'-XqAt','-v','ON_ERROR_STOP=1'),input=text,text=True).strip()
+# Own database: prior suites' tenant catalogs, central providers and index leases are unrelated work.
+fixture_db='commerce_managed_'+uuid.uuid4().hex[:12]
+db=urlsplit(env['DATABASE_URL']); db_user=db.username or 'commerce'
+subprocess.run(psql(os.environ['DB_CONTAINER'],db_user,'postgres','-v','ON_ERROR_STOP=1','-c','CREATE DATABASE '+fixture_db),check=True)
+env['DATABASE_URL']=urlunsplit(db._replace(path='/'+fixture_db))
+env['TEST_DATABASE']=fixture_db
+os.environ['TEST_DATABASE']=fixture_db
 log=open(root/'.run/managed-search.log','w')
-# The runner's bootstrap process has stopped; release only its claims in this disposable database.
-sql("UPDATE embedding_jobs SET lease=NULL,lease_until=NULL,attempts=0,available_at=now(); UPDATE vector_index_queue SET lease=NULL,lease_until=NULL,attempts=0,available_at=now()")
 process=subprocess.Popen([str(root/'target/debug/vendune')],cwd=root,env=env,stdout=log,stderr=log)
 try:
     for _ in range(100):
@@ -139,3 +145,4 @@ try:
 
 finally:
     process.terminate();process.wait(timeout=15);log.close();fixture.shutdown()
+    subprocess.run(psql(os.environ['DB_CONTAINER'],db_user,'postgres','-v','ON_ERROR_STOP=1','-c','DROP DATABASE '+fixture_db+' WITH (FORCE)'),check=True)
