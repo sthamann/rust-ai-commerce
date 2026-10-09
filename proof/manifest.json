@@ -857,8 +857,8 @@
     },
     "src/auth/middleware.rs": {
       "status": "reviewed-binding",
-      "sha256": "63367fa8cfe03c6311b2f4e75c238ff0e3a906c3799703a36d0f2d9a523ae353",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "c053fb53b5a2dd244b0c0e361957df27baff1ac2ae3375cd6a979ac7c5bf6932",
+      "review": "Reviewed mounted public frontend API delegation: registered Core handlers retain permissions; hostname mount derives tenant/channel; no early admission bypass, no merchant credentials forwarded. Real identity_broker and channel_management HTTP/PostgreSQL regressions pass GET/POST, unmounted/foreign/paused/private/stale-preview controls. Async transport remains unproved."
     },
     "src/auth/mod.rs": {
       "status": "unproved",
@@ -2377,8 +2377,8 @@
     },
     "src/shop_domains/frontends.rs": {
       "status": "unproved",
-      "sha256": "54071609a69349a648ae6283c3354074a5d1bd2093a9c40800f43a3218e86ac9",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "6284b6b8cd1648554756d50dac9747e03aa927db95fc6c47bdb3abbca2e51a26",
+      "review": "Reviewed mounted public frontend API delegation: registered Core handlers retain permissions; hostname mount derives tenant/channel; no early admission bypass, no merchant credentials forwarded. Real identity_broker and channel_management HTTP/PostgreSQL regressions pass GET/POST, unmounted/foreign/paused/private/stale-preview controls. Async transport remains unproved."
     },
     "src/shop_domains.rs": {
       "status": "unproved",

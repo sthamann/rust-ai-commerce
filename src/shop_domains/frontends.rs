@@ -27,7 +27,7 @@ pub(super) fn valid_origin(s: &str) -> bool {
 }
 pub(crate) fn public_path(path: &str) -> bool {
     if path.starts_with("/channel-preview/")
-        || path.starts_with("/api/")
+        || path.starts_with("/api/") && !public_api_path(path)
         || path.starts_with("/store-api/")
         || path.starts_with("/ucp/")
         || path == "/mcp"
@@ -41,11 +41,40 @@ pub(crate) fn public_path(path: &str) -> bool {
     }
     !path.starts_with("/experience-internal/")
 }
+/// Reserved public frontend API namespace; never admits encoded or ambiguous paths.
+pub(crate) fn public_api_path(path: &str) -> bool {
+    path.strip_prefix("/api/v1/").is_some_and(|suffix| {
+        !suffix.is_empty()
+            && suffix.split('/').all(|part| {
+                !part.is_empty()
+                    && part != "."
+                    && part != ".."
+                    && part
+                        .bytes()
+                        .all(|b| b.is_ascii_alphanumeric() || b"-_.".contains(&b))
+            })
+    })
+}
+/// Only an operator-bound hostname may delegate an otherwise unregistered route.
+/// Registered Core routes always keep their own permission and handler.
+pub(crate) fn delegated_api(request: &Request) -> bool {
+    public_api_path(request.uri().path())
+        && request
+            .extensions()
+            .get::<axum::extract::MatchedPath>()
+            .is_none()
+        && request
+            .extensions()
+            .get::<super::HostShop>()
+            .is_some_and(|h| h.access.mount.is_some())
+}
 pub(crate) async fn serve(State(a): State<App>, request: Request, next: Next) -> Response {
     let Some(host) = request.extensions().get::<super::HostShop>().cloned() else {
         return next.run(request).await;
     };
-    if !public_path(request.uri().path()) {
+    if !public_path(request.uri().path())
+        || request.uri().path().starts_with("/api/") && !delegated_api(&request)
+    {
         return next.run(request).await;
     }
     let Some(mount) = host.access.mount.as_ref() else {
@@ -149,6 +178,10 @@ mod tests {
             "/.well-known/ucp",
             "/experience-internal/credentials",
             "/experience-api/auth/login",
+            "/api/v1/../platform/shops",
+            "/api/v1/%2e%2e/merchant",
+            "/api/v1//commerce.json",
+            "/api/v1/",
         ] {
             assert!(!public_path(p));
         }
@@ -156,6 +189,9 @@ mod tests {
             "/",
             "/assets/app.js",
             "/experience-api/shops/demo/commerce/checkout/cart",
+            "/api/v1/commerce.json",
+            "/api/v1/shopper-session.json",
+            "/api/v1/products/product-123",
         ] {
             assert!(public_path(p));
         }
