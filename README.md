@@ -65,6 +65,12 @@ inference; concurrent withdrawal or changes return localized retry guidance.
 
 **9 October public update:** the private Experience service now runs original Storyfront Studio and Cinematic presentation. Fresh AI catalog/image creation, original review/build/publication and a live German product-answer scene were checked. Core still owns prices, stock and orders. [Live acceptance and remaining boundaries](docs/current-release.md#public-original-storyfront-update--9-october-2026).
 
+**One experience through checkout:** the original Storyfront now embeds the same
+Vendune checkout, keeping the shop URL. A public mobile demo purchase saved the
+German product name and cleared the original Bag after server confirmation,
+including after reload. Canceling keeps the Bag. The original Studio overview
+uses the actual connected catalogue and live address. [Screenshots and exact acceptance](docs/current-release.md#checkout-continuity).
+
 ## Get started
 
 **Rust stable 1.96+ · Node.js 22+ · Docker Compose · Python 3**
