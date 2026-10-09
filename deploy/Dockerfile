@@ -17,6 +17,7 @@ COPY migrations/ migrations/
 COPY extensions/ extensions/
 COPY fixtures/ fixtures/
 COPY reference/automation-registry.json reference/automation-registry.json
+COPY reference/app-manifests/ reference/app-manifests/
 RUN cargo build --release --locked --bin vendune
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && rm -rf /var/lib/apt/lists/* && useradd -u 10001 -m commerce

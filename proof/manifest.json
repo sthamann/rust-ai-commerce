@@ -2498,8 +2498,8 @@
   },
   "inputs": {
     ".github/workflows/verify.yml": {
-      "sha256": "4dfbb6c0ff055cf3029148975d1e72281ff18a9caa8ece866153a8d8ef0f2e00",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "848fac3f003127db906cec7fd117a8b63492fa6c3453f284d79ee88980bfc9e8",
+      "review": "Production image copies historical app manifests required by Rust include_str. Public build reproduced eight missing inputs; dependency closure and negative copy-removal control pass. No Rust, schema or policy changed."
     },
     "Cargo.lock": {
       "sha256": "12085c77a5701dbd33a4db13e567bdf2470b0128552cd6973919b702de11f5b2",
@@ -2510,8 +2510,8 @@
       "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
     "deploy/Dockerfile": {
-      "sha256": "3f320c3a2aafd26e94d15d449a65c6603a8aa2f4ca09cdd779a19e2e3483fcf0",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "dc7c2c8b35843285ac1f25e3404c8c930d2dc8b0c1525ab5a3886ba028671f23",
+      "review": "Production image copies historical app manifests required by Rust include_str. Public build reproduced eight missing inputs; dependency closure and negative copy-removal control pass. No Rust, schema or policy changed."
     },
     "fixtures/app-studio-schema.json": {
       "sha256": "0852887c0bc2a3dfb9099e95bdd523bb4fd3bb31919098de516858b79e5f5f9e",
