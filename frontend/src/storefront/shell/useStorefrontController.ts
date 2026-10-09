@@ -172,11 +172,7 @@ export function useStorefrontController({
             };
           c = await transfer.current.promise;
           localStorage.setItem(cartKey, c.token);
-          history.replaceState(
-            null,
-            "",
-            `${location.pathname}${location.search}#`,
-          );
+          history.replaceState(null, "", `/checkout${location.search}#`);
           setBag(true);
         } else
           try {

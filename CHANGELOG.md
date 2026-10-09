@@ -1,5 +1,11 @@
 # Changelog
 
+## Native Experience checkout destination — 9 October 2026
+
+- Keep one-use checkout transfers on the shared Core `/checkout` page through cart consumption, payment and receipt. Canonical shop redirects previously sent the transferred customer back into a mounted Storyfront instead of opening checkout.
+- Preserve existing tenant/channel scope, ticket expiry, single-use consumption and cart-token rotation. Legacy transfer URLs remain supported; ordinary product URLs still upgrade to their shop subdomain.
+- Exercise the actual HTML entry and PostgreSQL handoff in the existing integration suite, plus frontend redirect regressions. This routing repair does not implement or validate a live payment provider.
+
 ## Hosted public frontend API routing — 9 October 2026
 
 - Delegate the reserved `/api/v1/...` public frontend namespace only on an operator-mounted shop hostname. Original hosted Storyfront commerce/session APIs previously returned an unregistered-Core-API 403 before reaching their renderer.

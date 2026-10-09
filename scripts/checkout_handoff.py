@@ -16,7 +16,13 @@ u=user();other=user();h={'x-tenant':u['workspace']};mh={**h,'Authorization':'Bea
 def cart():
     c=call('/store-api/checkout/cart',{'session':uuid.uuid4().hex},h);ch={**h,'sw-context-token':c['token']}
     c=call('/store-api/checkout/cart',{'revision':c['revision'],'items':[{'id':'mug-sage-350','quantity':2}]},ch,'PUT');return c,ch
-def issue(c,ch):return call('/store-api/checkout/handoff',{'revision':c['revision']},ch)['checkoutPath'].split('#checkout/')[1]
+def issue(c,ch):
+    result=call('/store-api/checkout/handoff',{'revision':c['revision']},ch)
+    assert result['checkoutPath'].startswith('/checkout?shop='+u['workspace']+'&channel=default#checkout/'),result
+    with urllib.request.urlopen(BASE+'/checkout',timeout=20) as page:
+        assert page.status==200 and page.headers.get('content-type','').startswith('text/html')
+        assert '<div id="root"></div>' in page.read().decode()
+    return result['checkoutPath'].split('#checkout/')[1]
 c=call('/store-api/checkout/cart',{'session':'empty'},h);call('/store-api/checkout/handoff',{'revision':c['revision']},{**h,'sw-context-token':c['token']},expected=409)
 c,ch=cart();call('/store-api/checkout/handoff',{'revision':c['revision']-1},ch,expected=409);check('Empty and stale carts cannot issue a transfer')
 ticket=issue(c,ch);call('/store-api/checkout/handoff/consume',{'ticket':ticket},{'x-tenant':other['workspace']},expected=410)
