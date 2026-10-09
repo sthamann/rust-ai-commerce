@@ -123,6 +123,28 @@ export function template(): Manifest {
 }
 export function compile(input: Manifest): Manifest {
   const m = structuredClone(input);
+  if (m.intelligence?.ontology) {
+    m.intelligence.ontology = m.intelligence.ontology.map((node) => {
+      const fields = node.fields.filter((name) =>
+        m.entities
+          .find((e) => e.name === node.entity)
+          ?.fields.some((f) => f.name === name),
+      );
+      return {
+        ...node,
+        fields,
+        ...(node.relations
+          ? {
+              relations: Object.fromEntries(
+                Object.entries(node.relations).filter(([field]) =>
+                  fields.includes(field),
+                ),
+              ),
+            }
+          : {}),
+      };
+    });
+  }
   if (!m.views?.length) return m;
   const custom = (m.actions ?? []).filter(
     (a) =>
@@ -254,6 +276,7 @@ export function removeEntity(m: Manifest, name: string): Manifest {
           ...m.intelligence,
           tools: m.intelligence.tools.filter((n) => allowed.has(n)),
           entities: m.intelligence.entities.filter((n) => n !== name),
+          ontology: m.intelligence.ontology?.filter((n) => n.entity !== name),
         }
       : undefined,
   });
@@ -347,6 +370,10 @@ export function renameEntity(m: Manifest, from: string, to: string): Manifest {
           ...m.intelligence,
           tools: m.intelligence.tools.map(action),
           entities: m.intelligence.entities.map((n) => (n === from ? to : n)),
+          ontology: m.intelligence.ontology?.map((n) => ({
+            ...n,
+            entity: n.entity === from ? to : n.entity,
+          })),
         }
       : undefined,
   });

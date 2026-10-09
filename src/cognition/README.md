@@ -24,6 +24,9 @@ source→index→agent→proposal→native consumer path and remaining audit wor
   and atomic daily budgets used by the existing proposal apply transaction.
 - `tools.rs` and `stream.rs`: current authorized read-tool rounds and existing-chat
   SSE progress; writes remain proposals, not automatically dispatched mutations.
+- `advisor.rs` and `context.rs`: one bounded retrieval, localized native hydration,
+  admitted buyer evidence and post-inference comparison of initial catalog/graph
+  sources. Additional read-tool results and free prose are not certified by this fence.
 - `experiments/`: immutable native layout preregistration, consent-bound assignment
   and final live-payment/refund readout.
 - `preferences.rs`: private cart-context graph, explicit advice sharing, current

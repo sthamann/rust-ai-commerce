@@ -25,6 +25,7 @@ export function problems(m: Manifest) {
             v.currencies.some((c) => !/^[A-Z]{3}$/.test(c)) ||
             !v.capabilities.includes(v.intent),
         ))) ||
+    ontologyProblems(m) ||
     ids.some((id) => !/^[a-z][a-z0-9_]{0,31}$/.test(id)) ||
     !/^\d+\.\d+\.\d+$/.test(m.version) ||
     m.entities.length > 12 ||
@@ -56,5 +57,44 @@ export function problems(m: Manifest) {
                 !m.entities.find((e) => e.name === b.entity)?.publicRead),
           ),
     )
+  );
+}
+
+/** Draft feedback mirrors native ontology bounds; it grants no runtime permission. */
+function ontologyProblems(m: Manifest) {
+  const nodes = m.intelligence?.ontology ?? [];
+  return (
+    nodes.length > 4 ||
+    new Set(nodes.map((n) => n.entity)).size !== nodes.length ||
+    nodes.some((n) => {
+      const e = m.entities.find((e) => e.name === n.entity);
+      return (
+        !e ||
+        !/^[a-z][a-z0-9_]{0,31}$/.test(n.nodeType) ||
+        !m.intelligence?.entities.includes(n.entity) ||
+        !m.permissions.includes("data.read") ||
+        !m.actions?.some(
+          (a) => a.handler === "list" && a.entity === n.entity,
+        ) ||
+        !Object.keys(n.label).length ||
+        Object.keys(n.label).length > 100 ||
+        Object.values(n.label).some(
+          (v) => !v.trim() || new TextEncoder().encode(v).length > 120,
+        ) ||
+        !n.fields.length ||
+        n.fields.length > 16 ||
+        new Set(n.fields).size !== n.fields.length ||
+        n.fields.some((f) => !e.fields.some((field) => field.name === f)) ||
+        Object.entries(n.relations ?? {}).some(
+          ([f, kind]) =>
+            !/^[a-z][a-z0-9_]{0,31}$/.test(kind) ||
+            !n.fields.includes(f) ||
+            !e.fields.some(
+              (field) =>
+                field.name === f && (field.coreReference || field.references),
+            ),
+        )
+      );
+    })
   );
 }

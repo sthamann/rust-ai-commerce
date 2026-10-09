@@ -294,3 +294,5 @@ Independent Python examples demonstrate a language-neutral contract; they are
 not bundled production runtimes. Outgoing event signatures are verified by the
 shared [receiver SDK](sdk/events.py), with tenant/app-bound batches and durable
 consumer deduplication. Do not replace that path with unvalidated webhook JSON.
+
+- [Care knowledge](apps/ontology-care/README.md): graph-native app model/edge mapping over current native records, shared App Studio/agent manifest and authorized API/MCP/planner views.

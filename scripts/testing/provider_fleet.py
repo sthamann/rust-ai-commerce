@@ -19,6 +19,7 @@ def shared_provider(call, endpoint):
     original=json.loads(sql("SELECT jsonb_build_object('data',data,'secrets',secrets)::text FROM platform_ai WHERE id=true;"))
     view=call('/api/platform/ai',headers=h)
     config=view['settings']
+    config['defaultProvider']='openai'
     config['providers']['openai']={'endpoint':endpoint,'enabled':True,'model':'fixture-extraction'}
     try:
         call('/api/platform/ai',{'revision':view['revision'],'settings':config,

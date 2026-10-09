@@ -8,6 +8,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 root = pathlib.Path(__file__).resolve().parents[1]
 root.joinpath('.run').mkdir(exist_ok=True)
 captured = []; checks = []; behavior = {'mode': 'normal'}; inference_started=threading.Event()
+advisor_started=threading.Event();advisor_release=threading.Event()
 proposal = {'summary':'HTTP provider contract test; not live inference.', 'changes':[{'product_id':'lamp','price':71.23}], 'experience':None, 'expected_experience_revision':None}
 class Handler(BaseHTTPRequestHandler):
     def log_message(self,*args): pass
@@ -29,6 +30,12 @@ class Handler(BaseHTTPRequestHandler):
         schema=(body.get('text',{}).get('format',{}).get('schema') or body.get('response_format',{}).get('json_schema',{}).get('schema') or body.get('output_config',{}).get('format',{}).get('schema') or body.get('format',{}))
         if schema.get('required')==['tool_calls']:
             result={'tool_calls':result.get('tool_calls',{}) if behavior['mode']=='invalid-read' else result.get('tool_calls',[])}
+        elif behavior['mode']=='advisor':
+            result={'explanation':'Synthetic consent-bound advice','recommended_ids':['lamp'],'layout':'discovery'}
+            if behavior.get('advisor_block'):
+                advisor_started.set()
+                if not advisor_release.wait(10):
+                    self.send_response(504);self.end_headers();return
         if self.path=='/v1/responses':
             answer={'status':'incomplete' if behavior['mode']=='incomplete' else 'completed','output':[{'type':'message','content':[{'type':'output_text','text':json.dumps(result)}]}], 'usage':{'input_tokens':10,'output_tokens':20}}
         elif self.path=='/v1/chat/completions':
@@ -61,9 +68,16 @@ try:
         except OSError: time.sleep(.25)
     call('/api/agent/providers',headers={},expected=401); passed('Provider configuration requires merchant authentication')
     config=call('/api/agent/providers'); assert all(p['configured'] for p in config['providers']); assert 'contract-openai' not in json.dumps(config); passed('Credentials never returned to frontend')
+    graph_app=json.loads((root/'extensions/apps/ontology-care/manifest.json').read_text());graph_app['id']='planner_ontology';graph_app['views']=[];graph_app['surfaces']=[];graph_app['apiRoutes']=[]
+    graph_app['entities'][0]['fields']=[f for f in graph_app['entities'][0]['fields'] if f['name'] in ['title','product_id']]
+    graph_app['intelligence']['ontology'][0]['fields']=['title','product_id'];graph_app['intelligence']['ontology'][0]['label']={'en':'Care'}
+    call('/api/apps',{'manifest':graph_app})
+    call('/api/apps/planner_ontology/entities/guides',{'id':'guide','fields':{'product_id':'mug','title':{'en':'Exact native care'}}})
     conversation=call('/api/agent/chat',{'message':'Contract test: change lamp price.','inference':{'provider':'openai','model':'contract-openai-model'}})
     cid=conversation['conversationId']; message=conversation['messages'][-1]; assert message['data']['preview']['inference']=='openai'
     path,headers,body=next(c for c in reversed(captured) if c[0] != '/api/embed'); assert path=='/v1/responses' and headers['authorization']=='Bearer contract-openai' and body['store'] is False
+    assert 'app.planner_ontology.care_advice' in body['input'] and 'app.planner_ontology.applies_to' in body['input'] and 'Exact native care' in body['input'], body['input']
+    passed('Native app ontology fields and reference edges reach the actual merchant model request under the existing grants and bounded context')
     assert body['text']['format']['strict'] and body['model']=='contract-openai-model'; passed('OpenAI Responses adapter sends native strict schema and parses structured result')
     task=message['data']['taskId']; result=call('/api/agent/tasks/'+task+'/apply',{'approve':True}); assert result['applied']
     restored=call('/api/agent/conversations/'+cid); assert restored['messages'][-1]['applied']; passed('Cloud-derived preview uses real approval transaction and persists applied state')
@@ -91,6 +105,10 @@ try:
     from testing.provider_fleet import shared_provider
     with shared_provider(call, env['OPENAI_BASE_URL']):
         verify_extraction(call, captured, behavior, passed)
+        from testing.advisor_privacy import verify_advisor_privacy
+        verify_advisor_privacy(call, captured, behavior, advisor_started, advisor_release, passed)
+        from testing.advisor_sources import verify_advisor_sources
+        verify_advisor_sources(call, captured, behavior, advisor_started, advisor_release, passed)
     original=call('/api/merchant/commerce')
     def policy(value):
         snapshot=call('/api/merchant/commerce');data=copy.deepcopy(snapshot['data']);data['aiPolicy']=value

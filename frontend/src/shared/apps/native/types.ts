@@ -145,7 +145,18 @@ export type Manifest = {
   views?: NativeView[];
   surfaces?: Surface[];
   apiRoutes?: { path: string; method: string; scope: string; action: string }[];
-  intelligence?: { description: Text; tools: string[]; entities: string[] };
+  intelligence?: {
+    description: Text;
+    tools: string[];
+    entities: string[];
+    ontology?: {
+      entity: string;
+      nodeType: string;
+      label: Text;
+      fields: string[];
+      relations?: Record<string, string>;
+    }[];
+  };
   [key: string]: unknown;
 };
 export type NativePayload = {

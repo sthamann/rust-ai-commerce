@@ -1,6 +1,7 @@
 /** Route, tool, grounding and Flow Builder switches modify the shared executable manifest directly. */
 import { useAppStudioText } from "../../shared/i18n/app-studio-i18n";
 import AppModules from "./AppModules";
+import AppOntology from "./AppOntology";
 import AppMenuEditor from "./AppMenuEditor";
 import AppAutomation from "./AppAutomation";
 import AppActionAccess from "./AppActionAccess";
@@ -162,6 +163,9 @@ export default function AppConnections({
                       entities: e.target.checked
                         ? [...ai.entities, entity.name]
                         : ai.entities.filter((n) => n !== entity.name),
+                      ontology: e.target.checked
+                        ? ai.ontology
+                        : ai.ontology?.filter((n) => n.entity !== entity.name),
                     },
                   })
                 }
@@ -172,6 +176,7 @@ export default function AppConnections({
           ))}
         </div>
       </section>
+      <AppOntology manifest={manifest} onChange={onChange} />
       <section className="app-model-card">
         <header>
           <Icon name="pulse" />

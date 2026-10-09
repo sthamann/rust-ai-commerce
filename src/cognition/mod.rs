@@ -1,5 +1,6 @@
 //! Evidence-based shop memory: event receipts, observed pairs, reviewable hypotheses and bounded context.
 use crate::*;
+pub(crate) mod advisor;
 pub(crate) mod autonomy;
 mod claim_batches;
 mod context;

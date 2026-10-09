@@ -51,6 +51,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/apps/native_view_tests.rs](../src/apps/native_view_tests.rs) | Native schema security regressions: bindings, public writes, allowlists, bounded blocks and legacy digests. |
 | [src/apps/native_views.rs](../src/apps/native_views.rs) | Bounded native view definitions; every data binding resolves to the same authorized app action gateway. |
 | [src/apps/observability.rs](../src/apps/observability.rs) | Bounded metadata-only app telemetry, storage usage and explicitly approved cursor-based event replay. |
+| [src/apps/ontology.rs](../src/apps/ontology.rs) | Namespaced graph views over current authorized app records; no duplicated source or public-claim authority. |
 | [src/apps/planning.rs](../src/apps/planning.rs) | Registered managed app actions join the same preview/approve transaction as core changes. |
 | [src/apps/presentation.rs](../src/apps/presentation.rs) | Optional passive app artwork and localized summaries; omitted metadata preserves published legacy digests. |
 | [src/apps/registry.rs](../src/apps/registry.rs) | Atomic installation and additive schema upgrades; immutable version digests preserve history. |
@@ -136,6 +137,7 @@ This lists every checked-in source module in these roots, including files with n
 | [src/channel_metrics.rs](../src/channel_metrics.rs) | Bounded, lossy diagnostic counters. Never use this buffer for business events. |
 | [src/chat_lease.rs](../src/chat_lease.rs) | Short, cross-replica conversation leases; inference never retains a database transaction. |
 | [src/checkout_handoff.rs](../src/checkout_handoff.rs) | Single-use checkout transfer for independent storefronts; no app-specific catalog or checkout rules. |
+| [src/cognition/advisor.rs](../src/cognition/advisor.rs) | Buyer-admitted initial catalog/evidence context and bounded native response revalidation; no extra truth store. |
 | [src/cognition/autonomy.rs](../src/cognition/autonomy.rs) | Price-only optional autonomy, atomic unique-SKU daily quotas and a non-compounding day baseline. |
 | [src/cognition/claim_batches.rs](../src/cognition/claim_batches.rs) | Bounded public claim intake/compilation shares current channel admission and source-bound evidence, without per-SKU HTTP round trips. |
 | [src/cognition/context.rs](../src/cognition/context.rs) | Bounded localized catalog retrieval before inference; full catalog size never expands the prompt. |
@@ -531,6 +533,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/admin/developer/AppMenuEditor.tsx](../frontend/src/admin/developer/AppMenuEditor.tsx) | Menu and injection sites are the existing surfaces, with explicit action allowlists and live role scopes. |
 | [frontend/src/admin/developer/AppModelDiagram.tsx](../frontend/src/admin/developer/AppModelDiagram.tsx) | Relationships use the same typed field.references contract as the form editor; no separate diagram state or database model. |
 | [frontend/src/admin/developer/AppModules.tsx](../frontend/src/admin/developer/AppModules.tsx) | Pure server modules edit the same WIT component contract consumed by quotes and checkout; no browser eval or live service code. |
+| [frontend/src/admin/developer/AppOntology.tsx](../frontend/src/admin/developer/AppOntology.tsx) | Optional graph mappings edit the canonical manifest; native authorized record lists own the projection. |
 | [frontend/src/admin/developer/AppPayments.tsx](../frontend/src/admin/developer/AppPayments.tsx) | Visual payment contracts use the same manifest as coding agents; onboarding uses the protected API. |
 | [frontend/src/admin/developer/AppSchemaMigrations.tsx](../frontend/src/admin/developer/AppSchemaMigrations.tsx) | Migration plans are explicit versioned agent-readable data, validated by the shared server compiler before any DDL. |
 | [frontend/src/admin/developer/AppStudioStatus.tsx](../frontend/src/admin/developer/AppStudioStatus.tsx) | Shared status footer keeps validation, persistence and execution feedback beside the designer. |
@@ -741,6 +744,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/shared/i18n/app-i18n.ts](../frontend/src/shared/i18n/app-i18n.ts) | App and evidence UI vocabulary, shared by store, merchant and payment components. |
 | [frontend/src/shared/i18n/app-library-i18n.ts](../frontend/src/shared/i18n/app-library-i18n.ts) | App library vocabulary and built-in summaries; no inferred connection or payment readiness. |
 | [frontend/src/shared/i18n/app-logic-i18n.ts](../frontend/src/shared/i18n/app-logic-i18n.ts) | Designer controls, code-behind and debugger vocabulary ships in every bundled interface language. |
+| [frontend/src/shared/i18n/app-ontology-i18n.ts](../frontend/src/shared/i18n/app-ontology-i18n.ts) | Native app graph mapping controls share the Studio vocabulary and four interface languages. |
 | [frontend/src/shared/i18n/app-operations-i18n.ts](../frontend/src/shared/i18n/app-operations-i18n.ts) | App operational vocabulary shared by installed apps and developer diagnostics; EN/DE/FR/ES. |
 | [frontend/src/shared/i18n/app-studio-i18n.ts](../frontend/src/shared/i18n/app-studio-i18n.ts) | App Studio and native runtime vocabulary; every key ships EN/DE/FR/ES. |
 | [frontend/src/shared/i18n/automation-fields.ts](../frontend/src/shared/i18n/automation-fields.ts) | Localized labels for original rule and native flow parameter fields. |
@@ -913,6 +917,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/app_export.py](../scripts/app_export.py) | Actual independent export app receives leased events, reads scoped products, uploads a private artifact and completes durable jobs. |
 | [scripts/app_inference.py](../scripts/app_inference.py) | Opt-in real local model proposes a registered app operation; approval exercises the same managed writer. |
 | [scripts/app_jobs.py](../scripts/app_jobs.py) | Real long-action identity/idempotency/lease/CAS/tenant/quota checks, without external or paid effects. |
+| [scripts/app_ontology.py](../scripts/app_ontology.py) | Real native graph mapping contract through two-tenant API, MCP, permissions, references and revisions. |
 | [scripts/app_preview.py](../scripts/app_preview.py) | F5 uses actual native APIs in a personal clone; no version publication, foreign-team access or release. Synthetic only. |
 | [scripts/app_relations.py](../scripts/app_relations.py) | Real composite-FK multi-relations: per-tenant schemas, atomic quotas/revisions, hostile references and cyclic staging clone. |
 | [scripts/app_schema.py](../scripts/app_schema.py) | Real installed-schema evolution, recovery snapshots, rollback on bad conversions and isolation of equal app IDs. |
@@ -1007,6 +1012,8 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/structure.py](../scripts/structure.py) | Guard the documented Rust domain split and public extension examples. |
 | [scripts/studio.py](../scripts/studio.py) | Actual Studio API, localization and original-kernel consumer checks. |
 | [scripts/tenant_isolation.py](../scripts/tenant_isolation.py) | Adversarial two-shop API/MCP/UCP/object and schema isolation with real personal/customer sessions. |
+| [scripts/testing/advisor_privacy.py](../scripts/testing/advisor_privacy.py) | Concurrent privacy mutations across the real concierge/provider path; no live inference. |
+| [scripts/testing/advisor_sources.py](../scripts/testing/advisor_sources.py) | Actual channel-admitted advisor context and concurrent native source mutations; synthetic local model only. |
 | [scripts/testing/app_approval.py](../scripts/testing/app_approval.py) | Use the Rust manifest serializer for operator pins; never invent a second canonical digest. |
 | [scripts/testing/coverage_env.py](../scripts/testing/coverage_env.py) | Convert trusted cargo-llvm-cov environment output to GitHub's environment-file syntax. |
 | [scripts/testing/coverage_report.py](../scripts/testing/coverage_report.py) | Publish separate all-source coverage totals, untested files and enforce reviewed minimums. |

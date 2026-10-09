@@ -75,7 +75,7 @@ truncated quotations are not presented as complete evidence.
 Running a compatible adapter does not prove a server's batching throughput.
 Interactive embeddings and background indexing share admission. Reranker requests
 are admitted before provider invocation. Saturation falls back to lexical/fused
-retrieval instead of creating an unbounded inference queue. Interactive chat (including SSE), MCP merchant planning, document extraction via HTTP/MCP and Flow AI
+retrieval instead of creating an unbounded inference queue. Interactive chat (including SSE), buyer-facing Concierge, MCP merchant planning, document extraction via HTTP/MCP and Flow AI
 actions consume the same atomic UTC-day tenant attempt quota. Staging shares its
 live tenant budget; failed provider attempts count. This is not token/spend accounting.
 
@@ -153,6 +153,29 @@ completion/errors through the existing conversation and lease owner. It is **not
 provider token streaming**, a new chat backend or process-resumable model execution.
 Reloading retrieves the persisted conversation. Reviewed claims, experiment lifecycle/results and applied proposals emit native outbox events selectable in Flow Builder; the existing worker executes them. Scoped app subscriptions receive minimized IDs/states, never private quotes or actor identities. Context omits oversized records
 explicitly and never dumps a million-product catalog into the model.
+
+### Buyer context admission and response freshness
+
+Concierge shares one retrieval between its localized catalog and relevant graph.
+It admits the initially supplied products through current sales-channel visibility
+and stock before model calls. Search hits, relation endpoints and approved pair
+observations outside that admitted catalog are omitted from both model input and
+the returned knowledge context. Public read tools still use their native Store
+API admission; the model cannot widen merchant permissions.
+
+After inference, the advisor rehydrates only its original at-most-24 IDs, checks
+current locale/channel admission, compares the exact catalog projection and
+rebuilds its admitted native evidence neighborhood. Changed price, stock,
+description/translation, visibility, confirmed evidence or channel state rejects
+the response with a localized 409. This adds bounded native reads rather than
+another embedding/search request or a catalog scan. It does not freeze commerce
+state across inference, certify free prose, or revision-fence every additional
+model-selected read-tool result; those remain explicit limits.
+
+`testing/advisor_sources.py` runs within the existing registered provider fixture.
+It checks the actual provider input and response against an isolated lamp-only
+channel, then pauses final inference while native product/channel/document APIs
+change each source. No private shop data or paid provider is used.
 
 ## Typed evidence and public statements
 
@@ -262,6 +285,14 @@ consent. AI advice uses it only with a separate explicit sharing choice and for
 30 days after update. Export and deletion use the same native cart context;
 revocation deletes it. This is **cart/browser-context memory**, not authenticated
 cross-device customer memory. Customer preferences are never public product facts.
+The advisor captures a request-only fingerprint of its admitted private graph
+(tenant/cart identity, revision, update time and exact content). After all model
+rounds, it rechecks current consent/sharing and that fingerprint before returning
+an answer. Withdrawal, erasure, edits, unsharing or erase/recreate invalidate the
+in-flight response with a localized 409 asking the customer to retry. No private
+answer is cached, and no database transaction is held during inference. This is
+validation at the response boundary, not a guarantee that consent cannot change
+after validation or an authenticated cross-device memory implementation.
 
 ## Ownership and verification
 
@@ -283,6 +314,10 @@ synthetic HTTP fixtures; managed search uses actual PostgreSQL/Qdrant with synth
 embeddings, 150 automatic product inserts and model-change restarts. `lexical_search` adds
 actual non-owner indexed plans and transactional lexical-source regression cases. These tests
 establish contracts and state effects, not semantic model quality or throughput.
+The existing `providers` suite also pauses actual concierge HTTP inference and
+mutates native consent/preferences concurrently. It checks all five invalidation
+cases, unchanged-context completion, explicit sharing, independent carts and
+buyer-facing daily-quota denial before any model invocation.
 Frontend tests cover SSE parsing, permission/revision failures, preregistration
 controls and consent/sharing. Rust/Lean comparison and negative mutations cover
 the **exact extracted predicates** for price admission, autonomy, claim rendering
@@ -323,7 +358,7 @@ price change. Transport fixtures separately test denials and malformed output.
 | Digital twin | Existing sandbox/quote/proposal owners retained | Validated historical replay/simulator, uncertainty and native decision linkage |
 | Retouren/reviews feedback | Node types declared | Actual feedback intake, size advice proposal and return-rate experiment |
 | Private customer memory | Consent-bound cart graph and explicit AI sharing/export/delete | Customer-owned cross-device memory with complete privacy lifecycle |
-| Graph-native apps | Existing app read tools/data accessible under current grants | Explicit ontology extensions and source admission, Studio/AI consumers |
+| Graph-native apps | Optional namespaced node/edge mappings over selected native app fields/references; current revisions and grants; one Studio/agent manifest and API/MCP/planner consumer | Unstructured app extraction, product-fact source admission and global semantic traversal |
 | Merchant goals | Existing approved proposals | Durable observe→hypothesis→experiment→proposal loop and progress UI |
 | Infrastructure recommendations | Existing Rust/PG17/RLS/outbox/cache/lease/CDN contracts remain | PG18 upgrade, generated OpenAPI, OTEL export, analytic projection, CoW staging; measured sharding strategy |
 
@@ -342,3 +377,15 @@ Provider work holds no commerce transaction. This admission check does not undo
 previously authorized input already sent to a provider and does not prove prose
 semantically correct. Delayed-provider HTTP tests change sources and products
 through their real merchant APIs while the question is in flight.
+
+
+## App-owned ontology extensions
+
+Apps map selected native models/fields and real core/app reference edges through
+`intelligence.ontology`, edited in App Studio or by the coding agent. The existing
+native list projects a bounded current graph view after permission/RLS checks;
+merchant planner, API and MCP consume it. No duplicated fact tables or new queue
+are introduced. Public app list actions deliberately expose selected graph fields;
+private mappings retain current action rights. [Contract and limits](app-platform.md#graph-native-app-views),
+[example](../extensions/apps/ontology-care/README.md). App records cannot bypass
+source admission and merchant confirmation in the product claim compiler.

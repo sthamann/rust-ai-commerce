@@ -522,8 +522,8 @@
     },
     "src/apps/data.rs": {
       "status": "unproved",
-      "sha256": "05155aaf37b0738a7f4bc14d044b71648b6e4f73f3402a8ca578065043892f94",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "138b7459e6ede6f46178b090dac7ab38d984212f924ec669dcfc619b0f46f434",
+      "review": "Review native app ontology metadata: derive selected graph fields/typed references only from current authorized native list rows; preserve RLS/action grants, package serialization, revision guards and existing extracted predicates. Projection and SQL/transport remain unproved."
     },
     "src/apps/distribution.rs": {
       "status": "unproved",
@@ -607,18 +607,18 @@
     },
     "src/apps/manifest.rs": {
       "status": "unproved",
-      "sha256": "672205ec998fe130fc7350ab58f7e62d212acdd0634923acc57b8a13fc237622",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "c3123a4d1daa9e6ffd47bdde2033182efe455454d4683c8fe3d40c484b7d6f2d",
+      "review": "Review native app ontology metadata: derive selected graph fields/typed references only from current authorized native list rows; preserve RLS/action grants, package serialization, revision guards and existing extracted predicates. Projection and SQL/transport remain unproved."
     },
     "src/apps/manifest_validation.rs": {
       "status": "unproved",
-      "sha256": "7809571cfe7d48c45c1a0eed16250fd2166671e474b63318d8ad9715bb4bc150",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "6c0e95b794f03397b498efe55b66e76f8e1750f062a17726accdfec5b0b8c916",
+      "review": "Review native app ontology metadata: derive selected graph fields/typed references only from current authorized native list rows; preserve RLS/action grants, package serialization, revision guards and existing extracted predicates. Projection and SQL/transport remain unproved."
     },
     "src/apps/mod.rs": {
       "status": "unproved",
-      "sha256": "f91c7d237e963325c81bc13d8a1ced34533c7f012102370b3e66e35acfcb6c93",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "15b7e75c94eff0f569123d46047c84309c2ba6bbb88558c325193cbb46a2fdc1",
+      "review": "Review native app ontology metadata: derive selected graph fields/typed references only from current authorized native list rows; preserve RLS/action grants, package serialization, revision guards and existing extracted predicates. Projection and SQL/transport remain unproved."
     },
     "src/apps/native_data.rs": {
       "status": "unproved",
@@ -640,10 +640,15 @@
       "sha256": "8d057a8d01fce04ac95ac75e46a12c8f850fd89efe9e48464516d2d260880264",
       "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
+    "src/apps/ontology.rs": {
+      "status": "unproved",
+      "sha256": "f12cdb3e2e1941ce20e77325f068c40d36603d6b175d097ef7df9d1337de2768",
+      "review": "Review native app ontology metadata: derive selected graph fields/typed references only from current authorized native list rows; preserve RLS/action grants, package serialization, revision guards and existing extracted predicates. Projection and SQL/transport remain unproved."
+    },
     "src/apps/planning.rs": {
       "status": "unproved",
-      "sha256": "667e3663a6f5d8fff0b8ce51ad254c95244c9068c0b04fd7ab9d8c0f62b5ca1f",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "ce26a87f98431711acb25606def9d25b933226e8599e98f498230fb8ff18938e",
+      "review": "Review native app ontology metadata: derive selected graph fields/typed references only from current authorized native list rows; preserve RLS/action grants, package serialization, revision guards and existing extracted predicates. Projection and SQL/transport remain unproved."
     },
     "src/apps/presentation.rs": {
       "status": "unproved",
@@ -1065,6 +1070,11 @@
       "sha256": "215e6f4e645a7080239da9a0b19a6573c4e71d2c79b6e28d01670312c0164007",
       "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
     },
+    "src/cognition/advisor.rs": {
+      "status": "unproved",
+      "sha256": "6eb89178d42e821be2c1d057bfe8b47824019c612aabcaa8ab33b005b71d5a6e",
+      "review": "Reviewed single-retrieval catalog hydration and buyer-admitted graph projection; post-inference exact original-ID locale/channel/catalog/evidence response fence. Native predicates unchanged; SQL, graph semantics, source timing and free model prose remain unproved."
+    },
     "src/cognition/autonomy.rs": {
       "status": "reviewed-binding",
       "sha256": "b856f7cd5c77ba45a26aa7a859f7175b4e7ac8f47deb5372089374a6a02d8ce5",
@@ -1077,8 +1087,8 @@
     },
     "src/cognition/context.rs": {
       "status": "unproved",
-      "sha256": "96f85655e6af43166735f9998eeee791492e5aa62ef77c17209b1c9e0fc81a7f",
-      "review": "Reviewed document SQL source association and shared grounded context, separate bounded read-decision/final phases with canonical schema and rights dispatch, public/private tool bounds, no write execution; Rust lint/unit checks and current native source-association/provider regression evidence. Model adherence, semantic truth, SQL and asynchronous effects remain unproved."
+      "sha256": "b796fd7a7f4ae8daca98072bc0c165ba8bbc1f0b595ad0cc386d44a4b7864553",
+      "review": "Reviewed single-retrieval catalog hydration and buyer-admitted graph projection; post-inference exact original-ID locale/channel/catalog/evidence response fence. Native predicates unchanged; SQL, graph semantics, source timing and free model prose remain unproved."
     },
     "src/cognition/contracts.rs": {
       "status": "reviewed-binding",
@@ -1127,13 +1137,13 @@
     },
     "src/cognition/mod.rs": {
       "status": "unproved",
-      "sha256": "af25f6b5da308a1d4033b302fd6045749225c8a18572caf446d80bbad5b275be",
-      "review": "Reviewed shared UTC-day quota extraction, SSE classification and native knowledge.extract pipeline; all Rust tests and Clippy pass, native provider checks prove HTTP/MCP/Flow quota parity, exact quotes, source-language handling and current actor revocation."
+      "sha256": "f977130459cf33a2f2531624a05802e2381d10e91a726aacfdaee00404ddd449",
+      "review": "Reviewed single-retrieval catalog hydration and buyer-admitted graph projection; post-inference exact original-ID locale/channel/catalog/evidence response fence. Native predicates unchanged; SQL, graph semantics, source timing and free model prose remain unproved."
     },
     "src/cognition/preferences.rs": {
       "status": "unproved",
-      "sha256": "ea23606d332dc777118029fe84b2085248831164186d9bbd15f00fa8fc113057",
-      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+      "sha256": "2dd2f50c721ed517b638381d58fa29144499a5d09c99b65b7c21bc02ae60354c",
+      "review": "Reviewed request-only private preference fingerprint and post-inference consent/revision fence; existing extracted predicates unchanged, SQL and privacy response timing remain unproved adapters"
     },
     "src/cognition/projection.rs": {
       "status": "unproved",
@@ -1372,8 +1382,8 @@
     },
     "src/concierge.rs": {
       "status": "unproved",
-      "sha256": "51d218f5acabf1fdd847f3d864665c22c6e83fa3b8d98ce64ee48f0dcd6f9413",
-      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+      "sha256": "0da6b25f3318a49c2a8a6f03bb7a5582c2bf84e356c93245de61525f8c67004d",
+      "review": "Reviewed single-retrieval candidate hydration and buyer graph; native admitted fields replace index/search commerce facts, post-inference exact original-ID locale/channel/catalog/evidence comparison. Extracted predicates unchanged; adapters and free model prose remain unproved."
     },
     "src/connectors/actions.rs": {
       "status": "unproved",

@@ -1,6 +1,24 @@
 /** Localized request guidance across all transports; original diagnostics remain available to developer tools. */
 import { getLocale } from "./i18n";
 const messages: Record<string, readonly string[]> = {
+  "Advice sources changed during inference; ask again": [
+    "Products or supporting information changed while the answer was being prepared. Please ask again.",
+    "Produkte oder Belege wurden während der Antwort geändert. Bitte frage erneut.",
+    "Les produits ou les sources ont changé pendant la préparation de la réponse. Veuillez réessayer.",
+    "Los productos o las fuentes cambiaron durante la respuesta. Vuelve a preguntar.",
+  ],
+  "Private advice context changed during inference; ask again": [
+    "Your private preferences or permission changed while the answer was being prepared. Please ask again.",
+    "Deine privaten Präferenzen oder deine Freigabe wurden während der Antwort geändert. Bitte frage erneut.",
+    "Vos préférences privées ou votre autorisation ont changé pendant la réponse. Veuillez réessayer.",
+    "Tus preferencias privadas o tu permiso cambiaron durante la respuesta. Vuelve a preguntar.",
+  ],
+  "Invalid app ontology mapping": [
+    "Check the graph mapping: select an enabled AI model, a native list action, a valid type and existing fields.",
+    "Prüfe die Graph-Zuordnung: Wähle ein für KI freigegebenes Modell, eine native Leseaktion, einen gültigen Typ und vorhandene Felder.",
+    "Vérifiez le graphe : modèle autorisé pour l’IA, action de lecture native, type valide et champs existants.",
+    "Revisa el grafo: modelo habilitado para IA, acción de lectura nativa, tipo válido y campos existentes.",
+  ],
   "Account already exists": [
     "An account with this email already exists. Sign in instead.",
     "Für diese E-Mail besteht bereits ein Konto. Bitte melde dich an.",

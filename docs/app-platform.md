@@ -177,3 +177,29 @@ F5 records, callback PII/revocation, migration rollback, file boundaries, jobs,
 publisher dependencies, payment/staging compatibility and slow-receiver isolation.
 These are concrete prototype regressions, not production-scale measurements or a
 claim of complete Shopware parity. [Test registry](testing.md), [source owners](source-map.md).
+
+## Graph-native app views
+
+An optional `intelligence.ontology` in the **same versioned manifest** maps up to
+four AI-enabled entities to app-owned node types. Select up to 16 native fields;
+optional `relations` maps selected native/core reference fields to app-owned edge
+types. Identifiers stay under `app.<app-id>`, so an app cannot impersonate a native
+product fact. Strings and native multi-relation arrays generate edges; they expose
+only stored reference IDs, without fetching a target or bypassing target rights.
+
+The authorized native list adds a bounded `ontology` view (24 rows, 16 KiB,
+whole-record omission count), with tenant, package version and current native
+record revision. HTTP, MCP and merchant planner context use that same projection.
+Current package activation, action permissions and PostgreSQL RLS apply first.
+A public list deliberately exposes selected fields; a private list remains private.
+Empty optional metadata preserves existing package serialization and response shape.
+
+App Studio uses the shared content-language editor for graph labels, selected field
+controls and optional edge types; imported coding-agent JSON follows the identical
+contract. Model rename/delete and field removal update draft references, without
+silently selecting replacement fields. Empty selections fail package review.
+
+These records carry `native-app-records-not-confirmed-product-claims`. Mapping a
+model does not confirm a product claim, extract unstructured facts, add a second
+graph store, or provide global graph traversal. See the [care knowledge example](../extensions/apps/ontology-care/README.md)
+and real two-tenant API/MCP suite `scripts/app_ontology.py`.

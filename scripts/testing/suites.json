@@ -43,6 +43,7 @@
     "channel_management",
     "app_consent",
     "app_relations",
+    "app_ontology",
     "app_schema",
     "app_jobs",
     "app_components",
