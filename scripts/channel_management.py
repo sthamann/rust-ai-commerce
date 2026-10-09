@@ -86,11 +86,14 @@ server=HTTPServer(('127.0.0.1',port),Frontend)
 threading.Thread(target=server.serve_forever,daemon=True).start()
 call('/',h={'Host':alias+'.'+os.environ.get('SHOP_DOMAIN_SUFFIX','channel.test')},status=403,raw=True)
 call('/assets/index-synthetic.js',h={'Host':alias+'.'+os.environ.get('SHOP_DOMAIN_SUFFIX','channel.test')},status=403,raw=True)
+call('/api/v1/commerce.json',h={'Host':alias+'.'+os.environ.get('SHOP_DOMAIN_SUFFIX','channel.test')},status=403)
 ph=preview()
 mounted=call('/',h=ph)
 assert mounted['x-frontend-alias']==shop and mounted['x-frontend-host']==alias and mounted['x-frontend-channel']=='private_test'
 assert mounted['x-frontend-tenant']==shop and mounted['authorization'] is None and mounted['cookie'] is None
 assert len(mounted['x-channel-preview'])==64
+assert call('/api/v1/commerce.json',h=ph)['x-frontend-tenant']==shop
+call('/api/v1/commerce.json',{},ph,status=403)
 call('/store-api/product',{},ph)
 call('/store-api/navigation',{},ph)
 call('/api/experience',{},ph,status=403)
@@ -99,6 +102,7 @@ call('/store-api/account/register',{},ph,status=403)
 call('/store-api/product',{}, {**sh,'Cookie':ph['Cookie']},status=403)
 extra['data']['active']=False;save(extra)
 call('/store-api/product',{},ph,status=403)
+call('/api/v1/commerce.json',h=ph,status=403)
 call('/store-api/product',{}, {**private,'x-rac-channel-preview':'private_test'},status=403)
 ph=preview();call('/store-api/product',{},ph)
 call('/store-api/product',{},private,status=403)

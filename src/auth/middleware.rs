@@ -109,7 +109,11 @@ async fn authenticate_scoped(State(a): State<App>, mut request: Request, next: N
         return next.run(request).await;
     }
 
-    let policy = if path.starts_with("/api/") {
+    let policy = if crate::shop_domains::frontends::delegated_api(&request) {
+        // Public frontend endpoints still pass identity, tenant/channel admission
+        // and resource limits below; no merchant credential reaches the proxy.
+        "public"
+    } else if path.starts_with("/api/") {
         let matched = request
             .extensions()
             .get::<axum::extract::MatchedPath>()

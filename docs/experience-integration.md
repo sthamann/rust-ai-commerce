@@ -44,7 +44,9 @@ The list is scoped by authenticated workspace and `settings.read`; the real
 regressions retain rolling-upgrade support for existing mounts without an installed app, loading/failure/retry,
 late responses after switching workspace, editor URL safety and localized actions.
 
-Only public assets/pages and allowlisted `/experience-api/context` and `/experience-api/shops/...` reach the frontend. Core admin, Store API, MCP, UCP and private service routes stay separate. Proxying strips cookies and merchant Authorization, prohibits redirects and bounds request/response bodies. The private frontend must independently check the gateway key, alias, tenant/channel, same-origin writes and requested shop; public API allowlists must remain restrictive.
+Only public assets/pages, allowlisted `/experience-api/context` and `/experience-api/shops/...`, and the reserved public frontend namespace `/api/v1/...` reach a mounted frontend. The latter is delegated only on an operator-bound shop hostname, after the same identity, shop availability, sales-channel privacy/preview and resource-admission checks. Unmounted hostnames and the Studio origin retain the unknown-API denial. Registered Core routes retain their permission and handler; ambiguous/encoded paths are rejected. Private previews can read these endpoints but cannot POST checkout or other effects.
+
+Core admin, Store API, MCP, UCP and private service routes stay separate. The proxy sends the server-derived tenant/channel, never caller-supplied frontend identity or merchant Authorization. Only explicitly configured opaque shopper cookies round-trip. The private frontend must independently check the gateway key, alias, tenant/channel, same-origin writes and requested shop, and restrict its own public endpoint allowlist. This connects a hosted renderer's public commerce/session/AI transport without making its private merchant service public.
 
 ## Source and evidence
 

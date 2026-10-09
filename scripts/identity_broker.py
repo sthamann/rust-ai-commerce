@@ -14,6 +14,9 @@ with socket.socket() as probe:
 base=f'http://127.0.0.1:{port}'
 finish_stream=Event()
 class Frontend(BaseHTTPRequestHandler):
+    def do_POST(self):
+        self.received_body=self.rfile.read(int(self.headers.get('Content-Length','0'))).decode()
+        self.do_GET()
     def do_GET(self):
         if self.path == '/assets/probe.js':
             self.send_response(200);self.send_header('Content-Type','application/javascript');self.end_headers()
@@ -21,7 +24,7 @@ class Frontend(BaseHTTPRequestHandler):
         if self.path == '/stream':
             self.send_response(200);self.send_header('Content-Type','text/event-stream');self.end_headers()
             self.wfile.write(b'data: ready\n\n');self.wfile.flush();finish_stream.wait(5);return
-        data={'path':self.path,'alias':self.headers.get('x-frontend-alias'),'tenant':self.headers.get('x-frontend-tenant'),'channel':self.headers.get('x-frontend-channel'),'cookie':self.headers.get('cookie'),'authorization':self.headers.get('authorization'),'authenticated':self.headers.get('x-frontend-key')=='b'*64}
+        data={'path':self.path,'body':getattr(self,'received_body',None),'alias':self.headers.get('x-frontend-alias'),'tenant':self.headers.get('x-frontend-tenant'),'channel':self.headers.get('x-frontend-channel'),'cookie':self.headers.get('cookie'),'authorization':self.headers.get('authorization'),'authenticated':self.headers.get('x-frontend-key')=='b'*64}
         self.send_response(200);self.send_header('Content-Type','application/json');self.send_header('Set-Cookie','shopper_sid=opaque-123; Path=/; HttpOnly; Secure; SameSite=Lax');self.send_header('Set-Cookie','admin_token=forbidden; Path=/; HttpOnly; Secure; SameSite=Lax');self.end_headers();self.wfile.write(json.dumps(data).encode())
     def log_message(self,*args): pass
 frontend=ThreadingHTTPServer(('127.0.0.1',0),Frontend)
@@ -126,6 +129,17 @@ with (ROOT/'artifacts/identity-broker-server.log').open('w') as log:
         host={'Host':alias+'.vendune.ai','cookie':'merchant-cookie','Authorization':'Bearer '+one['token']}
         data=call('/',headers=host);assert data['tenant']==shop and data['channel']=='default' and data['authenticated'] and data['cookie'] is None and data['authorization'] is None
         data=call('/',headers={**host,'cookie':'admin_token=secret; shopper_sid=opaque-123'});assert data['cookie']=='shopper_sid=opaque-123' and data['authorization'] is None
+        public_api='/api/v1/commerce.json'
+        data=call(public_api+'?operation=status',headers={**host,'x-frontend-tenant':other})
+        assert data['path']==public_api+'?operation=status' and data['tenant']==shop and data['authorization'] is None and data['authenticated']
+        data=call(public_api,{'operation':'checkout','sku':stable},host)
+        assert json.loads(data['body'])=={'operation':'checkout','sku':stable} and data['tenant']==shop
+        call(public_api,headers={'x-tenant':shop},expected=403)
+        call(public_api,headers={'Host':other+'.vendune.ai'},expected=403)
+        call(public_api,headers={**host,'x-tenant':other},expected=400)
+        call('/api/unregistered',headers=host,expected=403)
+        call('/api/v1/%2e%2e/platform/shops',headers=host,expected=403)
+        check('Public frontend API GET/POST preserve body and query, derive tenant from the mount and never expose Core credentials or unmounted APIs')
         req=urllib.request.Request(base+'/',headers=host)
         with urllib.request.urlopen(req,timeout=5) as response:
             assert response.headers.get_all('Set-Cookie')==['shopper_sid=opaque-123; Path=/; HttpOnly; Secure; SameSite=Lax']
@@ -146,6 +160,8 @@ with (ROOT/'artifacts/identity-broker-server.log').open('w') as log:
         import subprocess
         subprocess.run(psql(os.environ['DB_CONTAINER'],os.environ.get('TEST_DATABASE_USER','commerce'),os.environ['TEST_DATABASE'],'-v','ON_ERROR_STOP=1','-c',f"UPDATE tenants SET status='paused' WHERE id='{shop}'"),check=True,capture_output=True)
         call('/',headers=host,expected=503)
+        call(public_api,headers=host,expected=503)
+        call(public_api,{},host,expected=503)
         check('Paused shops cannot remain available through a separately mounted frontend')
         # Reconstruct the pre-055 schema in this disposable database, with a real unregistered hosted shop.
         call('/api/settings/frontends',{'alias':other,'channel':'default'},th,method='PUT')

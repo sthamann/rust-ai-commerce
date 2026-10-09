@@ -1,5 +1,10 @@
 # Changelog
 
+## Hosted public frontend API routing — 9 October 2026
+
+- Delegate the reserved `/api/v1/...` public frontend namespace only on an operator-mounted shop hostname. Original hosted Storyfront commerce/session APIs previously returned an unregistered-Core-API 403 before reaching their renderer.
+- Preserve central tenant/channel, paused-shop, private-preview and resource admission; registered Core routes and merchant credentials remain isolated. Real HTTP/PostgreSQL regressions exercise GET/POST bodies, query strings, forged scope, unmounted hosts, paused shops and read-only private previews.
+
 ## Native Storyfront release packaging — 9 October 2026
 
 - Fix the production image build: historical app manifests used by the canonical upgrade/approval contract are now copied into the Rust build stage. They are existing reference inputs, not a restored Python runtime or a second app registry.
