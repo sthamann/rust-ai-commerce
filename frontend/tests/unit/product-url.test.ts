@@ -1,7 +1,8 @@
 /** Product addresses retain SKU identity, localized slugs and storefront context. */
-import { expect, it } from "vitest";
+import { afterEach, expect, it, vi } from "vitest";
 import {
   productURL,
+  returnToCollection,
   routeProductId,
 } from "../../src/storefront/catalog/product-url";
 it("retains the implicit demo tenant when opening a reloadable product URL", () => {
@@ -37,3 +38,34 @@ it.each([
 ])("resolves %s", (path, id) =>
   expect(routeProductId(new URL(path, "https://shop.example"))).toBe(id),
 );
+
+afterEach(() => vi.unstubAllGlobals());
+it("returns a shared checkout shopper to the owned original shop with channel/language intact", () => {
+  const assign = vi.fn();
+  vi.stubGlobal("location", {
+    href: "https://app.vendune.ai/checkout?shop=merchant-shop&channel=world&language=de-DE#order-confirmed",
+    search: "?shop=merchant-shop&channel=world&language=de-DE",
+    assign,
+  });
+  const push = vi.spyOn(history, "pushState");
+  returnToCollection();
+  expect(assign).toHaveBeenCalledWith(
+    "https://merchant-shop.vendune.ai/?channel=world&language=de-DE#",
+  );
+  expect(push).not.toHaveBeenCalled();
+  push.mockRestore();
+});
+it("keeps a local checkout in its existing SPA and emits route navigation", () => {
+  history.replaceState(
+    null,
+    "",
+    "/checkout?shop=local-shop&channel=default#order-confirmed",
+  );
+  const route = vi.fn();
+  window.addEventListener("popstate", route);
+  returnToCollection();
+  expect(location.pathname).toBe("/");
+  expect(location.search).toBe("?shop=local-shop&channel=default");
+  expect(route).toHaveBeenCalledOnce();
+  window.removeEventListener("popstate", route);
+});

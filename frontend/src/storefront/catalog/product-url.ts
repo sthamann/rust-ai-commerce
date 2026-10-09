@@ -1,6 +1,10 @@
 /** Stable, collision-free product addresses: SKU identity plus the inherited localized SEO slug. */
 import { getContentLocale, type Product } from "../../shared/api/shop-api";
-import { hostnameShop, shopScope } from "../../shared/api/shop-scope";
+import {
+  canonicalShopURL,
+  hostnameShop,
+  shopScope,
+} from "../../shared/api/shop-scope";
 export function productURL(product: Pick<Product, "id" | "extra">): string {
   const locale = getContentLocale();
   const seo = product.extra?.seo;
@@ -25,4 +29,15 @@ export function routeProductId(url: URL): string {
 }
 export function collectionURL(): string {
   return `/${location.search}#`;
+}
+/** Leave shared checkout for the actual hosted shop, or retain local SPA navigation. */
+export function returnToCollection(): void {
+  const path = collectionURL();
+  const hosted = canonicalShopURL(new URL(path, location.href));
+  if (hosted) {
+    location.assign(hosted);
+    return;
+  }
+  history.pushState(null, "", path);
+  window.dispatchEvent(new PopStateEvent("popstate"));
 }

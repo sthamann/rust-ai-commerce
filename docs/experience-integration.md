@@ -127,3 +127,7 @@ normal app installer. Apps and Storyfronts expose the same owned connections and
 editor; an installed integration package does not copy the private renderer into
 the core. See [channel management](channel-management.md#storyfront-app-ownership-for-experience-shops)
 for lifecycle, dependency protection and migration verification.
+
+Returning from a shared hosted checkout receipt navigates to the canonical shop
+subdomain, retaining its channel and content language. Local shops keep their SPA
+navigation. The checkout itself stays on `/checkout` through payment and receipt.
