@@ -7,6 +7,7 @@ import AppDetails from "../../src/admin/apps/AppDetails";
 import StoryfrontView from "../../src/admin/storyfronts/StoryfrontView";
 import { connectionUrl } from "../../src/admin/storyfronts/storyfront-model";
 import { storyfrontWords } from "../../src/admin/storyfronts/storyfront-i18n";
+import { AppSurfaceProvider } from "../../src/shared/apps/AppSurfaces";
 const mounted = {
   appId: "storyfront",
   alias: "retro-shop",
@@ -240,4 +241,167 @@ it("keeps historical Experience connections visible while the backend rolls out 
   expect(
     await screen.findByRole("link", { name: "Edit experience" }),
   ).toBeVisible();
+});
+
+const review = {
+  app: "storyfront",
+  name: { "en-GB": "Storyfront" },
+  version: "1.1.0",
+  digest: "sha256-reviewed-package",
+  permissions: ["admin.slot", "service.call"],
+  added: ["admin.slot", "service.call"],
+  previousVersion: null,
+};
+function installFixture() {
+  let installed = false;
+  const request = vi.fn(async (path: string, body?: any) => {
+    if (path.endsWith("frontends")) return { frontends: [] };
+    if (path.endsWith("review")) return review;
+    if (path.endsWith("surfaces")) return { surfaces: [] };
+    if (body) {
+      if (
+        body.approve !== true ||
+        body.digest !== review.digest ||
+        JSON.stringify(body.permissions) !== JSON.stringify(review.permissions)
+      )
+        throw new Error("Review and approve the package permissions");
+      installed = true;
+    }
+    return {
+      packages: installed
+        ? [{ id: "storyfront", active: true, revision: 1 }]
+        : [],
+    };
+  });
+  return request;
+}
+it("reviews permissions before install and refreshes the shared surface registry", async () => {
+  const request = installFixture();
+  render(
+    <LocaleProvider>
+      <AppSurfaceProvider request={request} scopeKey="test-shop">
+        <StoryfrontView request={request} role="owner" />
+      </AppSurfaceProvider>
+    </LocaleProvider>,
+  );
+  const user = userEvent.setup();
+  await user.click(
+    await screen.findByRole("button", { name: "Add Storyfront integration" }),
+  );
+  expect(await screen.findByRole("dialog")).toBeVisible();
+  expect(await screen.findByText("service.call")).toBeVisible();
+  expect(request.mock.calls.some(([p, b]) => p === "/api/apps" && b)).toBe(
+    false,
+  );
+  await user.click(screen.getByRole("button", { name: "Install" }));
+  expect(await screen.findByText(/installed.*operator/i)).toBeVisible();
+  expect(request).toHaveBeenCalledWith("/api/apps", {
+    builtIn: "storyfront",
+    approve: true,
+    digest: review.digest,
+    permissions: review.permissions,
+  });
+  expect(
+    request.mock.calls.filter(([p]) => p.endsWith("surfaces")),
+  ).toHaveLength(2);
+});
+it("canceling consent does not install or grant permissions", async () => {
+  const request = installFixture();
+  render(view(request));
+  const user = userEvent.setup();
+  await user.click(
+    await screen.findByRole("button", { name: "Add Storyfront integration" }),
+  );
+  await user.click(await screen.findByRole("button", { name: "Cancel" }));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(request.mock.calls.some(([p, b]) => p === "/api/apps" && b)).toBe(
+    false,
+  );
+});
+it("shows an installation rejection in the review dialog and allows retry", async () => {
+  const underlying = installFixture();
+  let fail = true;
+  const request = vi.fn(async (path: string, body?: any) => {
+    if (path === "/api/apps" && body && fail)
+      throw new Error(
+        "Package approval must match its current digest and complete permission list",
+      );
+    return underlying(path, body);
+  });
+  render(view(request));
+  const user = userEvent.setup();
+  await user.click(
+    await screen.findByRole("button", { name: "Add Storyfront integration" }),
+  );
+  await user.click(await screen.findByRole("button", { name: "Install" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Package approval must match",
+  );
+  expect(screen.getByRole("dialog")).toBeVisible();
+  fail = false;
+  await user.click(screen.getByRole("button", { name: "Install" }));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+});
+
+it("reactivates an installed connector with its revision and keeps activation errors recoverable", async () => {
+  let active = false,
+    fail = true;
+  const request = vi.fn(async (path: string, body?: any, method?: string) => {
+    if (path.endsWith("frontends")) return { frontends: [] };
+    if (method === "PUT") {
+      if (fail) throw new Error("Revision conflict");
+      active = body.active;
+    }
+    return { packages: [{ id: "storyfront", active, revision: 4 }] };
+  });
+  render(view(request));
+  const user = userEvent.setup();
+  await user.click(
+    await screen.findByRole("button", { name: "Add Storyfront integration" }),
+  );
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Revision conflict",
+  );
+  expect(
+    screen.getByRole("button", { name: "Add Storyfront integration" }),
+  ).toBeEnabled();
+  fail = false;
+  await user.click(
+    screen.getByRole("button", { name: "Add Storyfront integration" }),
+  );
+  expect(await screen.findByText(/installed.*operator/i)).toBeVisible();
+  expect(request).toHaveBeenCalledWith(
+    "/api/apps/storyfront",
+    { active: true, revision: 4 },
+    "PUT",
+  );
+  expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+});
+it("does not let a read-only merchant open installation consent", async () => {
+  const request = installFixture();
+  render(
+    <LocaleProvider>
+      <StoryfrontView request={request} role="viewer" />
+    </LocaleProvider>,
+  );
+  expect(
+    await screen.findByRole("button", { name: "Add Storyfront integration" }),
+  ).toBeDisabled();
+  expect(request.mock.calls.some(([p]) => p.endsWith("review"))).toBe(false);
+});
+it("closes an unapproved review when the merchant switches workspaces", async () => {
+  const request = installFixture();
+  const rendered = render(view(request));
+  await userEvent
+    .setup()
+    .click(
+      await screen.findByRole("button", { name: "Add Storyfront integration" }),
+    );
+  await screen.findByRole("dialog");
+  rendered.rerender(view(installFixture()));
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(request.mock.calls.some(([p, b]) => p === "/api/apps" && b)).toBe(
+    false,
+  );
 });

@@ -4,6 +4,7 @@ import { AppSurfaceView, useAppSurfaces } from "../../shared/apps/AppSurfaces";
 import { useWorkbenchText } from "../../shared/i18n/workbench-i18n";
 import type { RequestFn } from "../shell/studio-types";
 import Icon from "../../shared/ui/Icon";
+import AppConsent from "../apps/AppConsent";
 import StoryfrontConnections from "./StoryfrontConnections";
 import { useStoryfrontText } from "./storyfront-i18n";
 import { type FrontendConnection } from "./storyfront-model";
@@ -28,19 +29,19 @@ export default function StoryfrontView({
   }>();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [installing, setInstalling] = useState(false);
   const [frontends, setFrontends] = useState<FrontendConnection[]>([]);
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(0);
-  const load = async () =>
-    setApp(
-      (await request("/api/apps")).packages.find(
-        (p: { id: string }) => p.id === "storyfront",
-      ),
-    );
+  const changed = () => {
+    dispatchEvent(new Event("commerce.apps.changed"));
+    setRefresh((v) => v + 1);
+  };
   useEffect(() => {
     let active = true;
     setLoading(true);
     setError("");
+    setInstalling(false);
     setFrontends([]);
     setApp(undefined);
     void Promise.allSettled([
@@ -99,36 +100,39 @@ export default function StoryfrontView({
               {app?.active && surface ? (
                 <AppSurfaceView selected={surface} />
               ) : (
-                !error && (
+                error !== "load" && (
                   <>
-                    <p>{w("storyMissing")}</p>
-                    <button
-                      className="studio-primary"
-                      disabled={busy || !["owner", "admin"].includes(role)}
-                      onClick={async () => {
-                        setBusy(true);
-                        setError("");
-                        try {
-                          if (app)
+                    <p>
+                      {app?.active ? text("setupMissing") : w("storyMissing")}
+                    </p>
+                    {!app?.active && (
+                      <button
+                        className="studio-primary"
+                        disabled={busy || !["owner", "admin"].includes(role)}
+                        onClick={async () => {
+                          if (!app) {
+                            setInstalling(true);
+                            return;
+                          }
+                          setBusy(true);
+                          setError("");
+                          try {
                             await request(
                               "/api/apps/storyfront",
                               { active: true, revision: app.revision },
                               "PUT",
                             );
-                          else
-                            await request("/api/apps", {
-                              builtIn: "storyfront",
-                            });
-                          await load();
-                        } catch (e) {
-                          setError((e as Error).message);
-                        } finally {
-                          setBusy(false);
-                        }
-                      }}
-                    >
-                      {w("connectStory")}
-                    </button>
+                            changed();
+                          } catch (e) {
+                            setError((e as Error).message);
+                          } finally {
+                            setBusy(false);
+                          }
+                        }}
+                      >
+                        {w("connectStory")}
+                      </button>
+                    )}
                   </>
                 )
               )}
@@ -136,7 +140,30 @@ export default function StoryfrontView({
           )}
         </>
       )}
-      {error && <p role="alert">{text("failed")}</p>}
+      {error && (
+        <p role="alert">
+          {error === "load"
+            ? text("failed")
+            : `${text("activationFailed")} ${error}`}
+        </p>
+      )}
+      {installing && (
+        <AppConsent
+          app="storyfront"
+          request={request}
+          onCancel={() => setInstalling(false)}
+          onInstall={async (consent) => {
+            await request("/api/apps", {
+              builtIn: "storyfront",
+              approve: true,
+              digest: consent.digest,
+              permissions: consent.permissions,
+            });
+            setInstalling(false);
+            changed();
+          }}
+        />
+      )}
     </div>
   );
 }

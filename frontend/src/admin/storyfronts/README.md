@@ -24,3 +24,13 @@ details/interfaces. Both consume the core's persisted frontend app associations;
 no GET-side install, second editor, iframe fallback for managed connections or
 browser-side provider credentials. Managed packages explain why pausing requires
 first disconnecting their frontend dependencies.
+
+The empty-state **Add Storyfront integration** button opens the shared
+`apps/AppConsent.tsx` review used by the app library. It posts the reviewed digest,
+complete permission list and explicit approval to `/api/apps` only after merchant
+confirmation. Cancellation and workspace changes discard the review without an
+installation. Success emits the shared `commerce.apps.changed` registry refresh.
+Reactivating an installed connector uses its revision. An active package without
+an available surface explains the missing operator service configuration; app
+installation alone does not provision a managed Experience. Tests cover approval,
+cancellation, rejection/retry, activation conflicts and read-only roles.

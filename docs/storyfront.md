@@ -2,6 +2,15 @@
 
 ## Choose the integration path
 
+**Adding the app from Studio:** the Storyfront workspace's **Add Storyfront
+integration** button uses the same permissions review as the Apps library.
+Confirm the reviewed package before installation; canceling grants nothing.
+Installation and activation refresh the shared app registry immediately. If the
+app is installed but its workspace is unavailable, the operator still needs to
+configure the independently deployed service below. Installation alone does not
+create a managed Experience. Existing Experience connections continue to open
+their original editor.
+
 **Experience-created shops:** onboarding mounts the frontend and installs the
 Storyfront integration automatically. Apps, Storyfronts and **Sales channels →
 Domains & experiences** expose the owned connection and its existing editor.
