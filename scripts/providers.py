@@ -107,6 +107,8 @@ try:
         verify_extraction(call, captured, behavior, passed)
         from testing.advisor_privacy import verify_advisor_privacy
         verify_advisor_privacy(call, captured, behavior, advisor_started, advisor_release, passed)
+        from testing.advisor_sources import verify_advisor_sources
+        verify_advisor_sources(call, captured, behavior, advisor_started, advisor_release, passed)
     original=call('/api/merchant/commerce')
     def policy(value):
         snapshot=call('/api/merchant/commerce');data=copy.deepcopy(snapshot['data']);data['aiPolicy']=value

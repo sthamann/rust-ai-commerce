@@ -1070,6 +1070,11 @@
       "sha256": "215e6f4e645a7080239da9a0b19a6573c4e71d2c79b6e28d01670312c0164007",
       "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
     },
+    "src/cognition/advisor.rs": {
+      "status": "unproved",
+      "sha256": "6eb89178d42e821be2c1d057bfe8b47824019c612aabcaa8ab33b005b71d5a6e",
+      "review": "Reviewed single-retrieval catalog hydration and buyer-admitted graph projection; post-inference exact original-ID locale/channel/catalog/evidence response fence. Native predicates unchanged; SQL, graph semantics, source timing and free model prose remain unproved."
+    },
     "src/cognition/autonomy.rs": {
       "status": "reviewed-binding",
       "sha256": "b856f7cd5c77ba45a26aa7a859f7175b4e7ac8f47deb5372089374a6a02d8ce5",
@@ -1082,8 +1087,8 @@
     },
     "src/cognition/context.rs": {
       "status": "unproved",
-      "sha256": "96f85655e6af43166735f9998eeee791492e5aa62ef77c17209b1c9e0fc81a7f",
-      "review": "Reviewed document SQL source association and shared grounded context, separate bounded read-decision/final phases with canonical schema and rights dispatch, public/private tool bounds, no write execution; Rust lint/unit checks and current native source-association/provider regression evidence. Model adherence, semantic truth, SQL and asynchronous effects remain unproved."
+      "sha256": "b796fd7a7f4ae8daca98072bc0c165ba8bbc1f0b595ad0cc386d44a4b7864553",
+      "review": "Reviewed single-retrieval catalog hydration and buyer-admitted graph projection; post-inference exact original-ID locale/channel/catalog/evidence response fence. Native predicates unchanged; SQL, graph semantics, source timing and free model prose remain unproved."
     },
     "src/cognition/contracts.rs": {
       "status": "reviewed-binding",
@@ -1132,8 +1137,8 @@
     },
     "src/cognition/mod.rs": {
       "status": "unproved",
-      "sha256": "af25f6b5da308a1d4033b302fd6045749225c8a18572caf446d80bbad5b275be",
-      "review": "Reviewed shared UTC-day quota extraction, SSE classification and native knowledge.extract pipeline; all Rust tests and Clippy pass, native provider checks prove HTTP/MCP/Flow quota parity, exact quotes, source-language handling and current actor revocation."
+      "sha256": "f977130459cf33a2f2531624a05802e2381d10e91a726aacfdaee00404ddd449",
+      "review": "Reviewed single-retrieval catalog hydration and buyer-admitted graph projection; post-inference exact original-ID locale/channel/catalog/evidence response fence. Native predicates unchanged; SQL, graph semantics, source timing and free model prose remain unproved."
     },
     "src/cognition/preferences.rs": {
       "status": "unproved",
@@ -1377,8 +1382,8 @@
     },
     "src/concierge.rs": {
       "status": "unproved",
-      "sha256": "ddcf351afef1f25df213a2e4f1839b88bbc917f23472b3de9b0ddd5b2aad9a01",
-      "review": "Reviewed private context response fingerprint and native tenant AI quota admission before Concierge provider calls; extracted predicates unchanged, surrounding SQL/network/privacy timing remains unproved"
+      "sha256": "0da6b25f3318a49c2a8a6f03bb7a5582c2bf84e356c93245de61525f8c67004d",
+      "review": "Reviewed single-retrieval candidate hydration and buyer graph; native admitted fields replace index/search commerce facts, post-inference exact original-ID locale/channel/catalog/evidence comparison. Extracted predicates unchanged; adapters and free model prose remain unproved."
     },
     "src/connectors/actions.rs": {
       "status": "unproved",

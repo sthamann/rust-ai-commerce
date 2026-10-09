@@ -8,14 +8,33 @@ pub(crate) async fn context_products(
     chain: &[String],
     query: &str,
 ) -> Result<Vec<Product>> {
+    Ok(context_retrieval(a, t, chain, query).await?.0)
+}
+/// Share one retrieval between native localized products and the advisor's relevant graph.
+pub(crate) async fn context_retrieval(
+    a: &App,
+    t: &str,
+    chain: &[String],
+    query: &str,
+) -> Result<(Vec<Product>, Value)> {
     let search = crate::agent::retrieve(a, t, query).await?;
     let hits = search["hits"].as_array().cloned().unwrap_or_default();
     let ids = hits
         .iter()
         .filter_map(|v| v["id"].as_str().map(str::to_owned))
         .collect::<Vec<_>>();
+    Ok((localized_products(a, t, chain, &ids, true).await?, search))
+}
+/// Exact-ID hydration for response validation must never fall back to a different catalog.
+pub(crate) async fn localized_products(
+    a: &App,
+    t: &str,
+    chain: &[String],
+    ids: &[String],
+    fallback: bool,
+) -> Result<Vec<Product>> {
     // Empty retrieval still provides a stable bounded catalog for explicitly named IDs/fixtures.
-    let rows=sqlx::query("SELECT p.* FROM products p WHERE p.tenant=$1 AND p.parent_id IS NULL AND (cardinality($2::text[])=0 OR p.id=ANY($2)) ORDER BY coalesce(array_position($2,p.id),1000),p.id LIMIT 24").bind(t).bind(ids).fetch_all(&a.db).await?;
+    let rows=sqlx::query("SELECT p.* FROM products p WHERE p.tenant=$1 AND p.parent_id IS NULL AND (($3 AND cardinality($2::text[])=0) OR p.id=ANY($2)) ORDER BY coalesce(array_position($2,p.id),1000),p.id LIMIT 24").bind(t).bind(ids).bind(fallback).fetch_all(&a.db).await?;
     let mut ps = rows.iter().map(product).collect::<Vec<_>>();
     let ids = ps.iter().map(|p| p.id.clone()).collect::<Vec<_>>();
     let rows=sqlx::query("SELECT product_id,language_id,name,description FROM product_translations WHERE tenant=$1 AND product_id=ANY($2) AND language_id=ANY($3)").bind(t).bind(ids).bind(chain).fetch_all(&a.db).await?;

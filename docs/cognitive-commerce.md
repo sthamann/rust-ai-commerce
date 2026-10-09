@@ -154,6 +154,29 @@ provider token streaming**, a new chat backend or process-resumable model execut
 Reloading retrieves the persisted conversation. Reviewed claims, experiment lifecycle/results and applied proposals emit native outbox events selectable in Flow Builder; the existing worker executes them. Scoped app subscriptions receive minimized IDs/states, never private quotes or actor identities. Context omits oversized records
 explicitly and never dumps a million-product catalog into the model.
 
+### Buyer context admission and response freshness
+
+Concierge shares one retrieval between its localized catalog and relevant graph.
+It admits the initially supplied products through current sales-channel visibility
+and stock before model calls. Search hits, relation endpoints and approved pair
+observations outside that admitted catalog are omitted from both model input and
+the returned knowledge context. Public read tools still use their native Store
+API admission; the model cannot widen merchant permissions.
+
+After inference, the advisor rehydrates only its original at-most-24 IDs, checks
+current locale/channel admission, compares the exact catalog projection and
+rebuilds its admitted native evidence neighborhood. Changed price, stock,
+description/translation, visibility, confirmed evidence or channel state rejects
+the response with a localized 409. This adds bounded native reads rather than
+another embedding/search request or a catalog scan. It does not freeze commerce
+state across inference, certify free prose, or revision-fence every additional
+model-selected read-tool result; those remain explicit limits.
+
+`testing/advisor_sources.py` runs within the existing registered provider fixture.
+It checks the actual provider input and response against an isolated lamp-only
+channel, then pauses final inference while native product/channel/document APIs
+change each source. No private shop data or paid provider is used.
+
 ## Typed evidence and public statements
 
 The existing `knowledge_relations` ledger now has typed source/target nodes,

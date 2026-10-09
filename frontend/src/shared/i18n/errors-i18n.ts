@@ -1,6 +1,12 @@
 /** Localized request guidance across all transports; original diagnostics remain available to developer tools. */
 import { getLocale } from "./i18n";
 const messages: Record<string, readonly string[]> = {
+  "Advice sources changed during inference; ask again": [
+    "Products or supporting information changed while the answer was being prepared. Please ask again.",
+    "Produkte oder Belege wurden während der Antwort geändert. Bitte frage erneut.",
+    "Les produits ou les sources ont changé pendant la préparation de la réponse. Veuillez réessayer.",
+    "Los productos o las fuentes cambiaron durante la respuesta. Vuelve a preguntar.",
+  ],
   "Private advice context changed during inference; ask again": [
     "Your private preferences or permission changed while the answer was being prepared. Please ask again.",
     "Deine privaten Präferenzen oder deine Freigabe wurden während der Antwort geändert. Bitte frage erneut.",
