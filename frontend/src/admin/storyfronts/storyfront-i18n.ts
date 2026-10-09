@@ -1,6 +1,18 @@
 /** Four-language navigation copy; mounted frontends are connections, not proof of publication. */
 import { useLocale } from "../../shared/i18n/i18n";
 export const storyfrontWords = {
+  setupMissing: [
+    "Storyfront is installed, but its workspace is not available yet. The operator must configure the Storyfront service for this shop. Installing the app alone does not create an experience.",
+    "Storyfront ist installiert, aber der Arbeitsbereich ist noch nicht verfügbar. Der Betreiber muss den Storyfront-Dienst für diesen Shop konfigurieren. Die App-Installation allein erstellt keine Experience.",
+    "Storyfront est installée, mais son espace de travail n’est pas encore disponible. L’opérateur doit configurer le service Storyfront pour cette boutique. Installer l’app seule ne crée pas d’expérience.",
+    "Storyfront está instalada, pero su espacio de trabajo aún no está disponible. El operador debe configurar el servicio Storyfront para esta tienda. Instalar la app por sí sola no crea una experiencia.",
+  ],
+  activationFailed: [
+    "Storyfront could not be activated. Please review the error and try again.",
+    "Storyfront konnte nicht aktiviert werden. Prüfe den Fehler und versuche es erneut.",
+    "Storyfront n’a pas pu être activée. Vérifiez l’erreur et réessayez.",
+    "No se pudo activar Storyfront. Revisa el error e inténtalo de nuevo.",
+  ],
   managed: [
     "Managed by Experience",
     "Von Experience verwaltet",

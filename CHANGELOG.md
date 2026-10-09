@@ -1,5 +1,18 @@
 # Changelog
 
+## Storyfront connection consent — 2026-10-09
+
+- Fixed the Storyfront workspace's Add integration button: it now uses the same
+  package-permission review as Apps rather than sending an unapproved installation
+  that the core correctly rejected. Successful installation or activation refreshes
+  the shared app-surface registry immediately.
+- Installation errors remain in the review dialog for retry. Activation errors keep
+  the existing control available. Installed connectors without a configured service
+  explain the missing setup in English, German, French and Spanish instead of
+  repeatedly offering installation. Managed Experience discovery stays unchanged.
+- Added regressions for complete consent, cancellation, rejected installation,
+  revision-based reactivation, read-only access and workspace switching.
+
 ## Checkout continuity — 2026-10-09
 
 - Public mobile acceptance: RAC-faa7dde0 / 44.80 EUR, German saved product name,
