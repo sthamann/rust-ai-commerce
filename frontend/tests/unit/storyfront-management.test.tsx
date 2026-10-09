@@ -293,9 +293,7 @@ it("reviews permissions before install and refreshes the shared surface registry
   expect(request.mock.calls.some(([p, b]) => p === "/api/apps" && b)).toBe(
     false,
   );
-  await user.click(
-    screen.getByRole("button", { name: "Install" }),
-  );
+  await user.click(screen.getByRole("button", { name: "Install" }));
   expect(await screen.findByText(/installed.*operator/i)).toBeVisible();
   expect(request).toHaveBeenCalledWith("/api/apps", {
     builtIn: "storyfront",
@@ -314,9 +312,7 @@ it("canceling consent does not install or grant permissions", async () => {
   await user.click(
     await screen.findByRole("button", { name: "Add Storyfront integration" }),
   );
-  await user.click(
-    await screen.findByRole("button", { name: "Cancel" }),
-  );
+  await user.click(await screen.findByRole("button", { name: "Cancel" }));
   expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   expect(request.mock.calls.some(([p, b]) => p === "/api/apps" && b)).toBe(
     false,
@@ -337,17 +333,13 @@ it("shows an installation rejection in the review dialog and allows retry", asyn
   await user.click(
     await screen.findByRole("button", { name: "Add Storyfront integration" }),
   );
-  await user.click(
-    await screen.findByRole("button", { name: "Install" }),
-  );
+  await user.click(await screen.findByRole("button", { name: "Install" }));
   expect(await screen.findByRole("alert")).toHaveTextContent(
     "Package approval must match",
   );
   expect(screen.getByRole("dialog")).toBeVisible();
   fail = false;
-  await user.click(
-    screen.getByRole("button", { name: "Install" }),
-  );
+  await user.click(screen.getByRole("button", { name: "Install" }));
   expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 });
 
