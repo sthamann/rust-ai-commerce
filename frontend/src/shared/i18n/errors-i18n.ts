@@ -1,6 +1,12 @@
 /** Localized request guidance across all transports; original diagnostics remain available to developer tools. */
 import { getLocale } from "./i18n";
 const messages: Record<string, readonly string[]> = {
+  "Private advice context changed during inference; ask again": [
+    "Your private preferences or permission changed while the answer was being prepared. Please ask again.",
+    "Deine privaten Präferenzen oder deine Freigabe wurden während der Antwort geändert. Bitte frage erneut.",
+    "Vos préférences privées ou votre autorisation ont changé pendant la réponse. Veuillez réessayer.",
+    "Tus preferencias privadas o tu permiso cambiaron durante la respuesta. Vuelve a preguntar.",
+  ],
   "Invalid app ontology mapping": [
     "Check the graph mapping: select an enabled AI model, a native list action, a valid type and existing fields.",
     "Prüfe die Graph-Zuordnung: Wähle ein für KI freigegebenes Modell, eine native Leseaktion, einen gültigen Typ und vorhandene Felder.",

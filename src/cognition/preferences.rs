@@ -134,15 +134,50 @@ pub(crate) async fn forget(
     sqlx::query("UPDATE knowledge_relations r SET data=jsonb_set(jsonb_set(data,'{causalUpliftProven}','false'),'{interval95}','null') WHERE r.tenant=$1 AND r.kind='EXPERIMENT_RESULT' AND EXISTS(SELECT 1 FROM intelligence_experiments e WHERE e.tenant=r.tenant AND e.id=r.source_id AND e.withdrawn>0)").bind(&c.tenant).execute(&mut **tx).await?;
     Ok(())
 }
-pub(crate) async fn context(a: &App, h: &RequestContext) -> Result<Value> {
+/// A request-only source stamp; never persisted as a second memory ledger or exposed to the model.
+pub(crate) struct AdviceContext {
+    pub(crate) graph: Value,
+    stamp: Option<String>,
+}
+pub(crate) async fn capture(a: &App, h: &RequestContext) -> Result<AdviceContext> {
+    let empty = || AdviceContext {
+        graph: Value::Null,
+        stamp: None,
+    };
     let Ok(c) = load_cart(a, h).await else {
-        return Ok(Value::Null);
+        return Ok(empty());
     };
     if legal::require(a, &c, "personalization").await.is_err() {
-        return Ok(Value::Null);
-    };
-    let data:Option<Value>=sqlx::query_scalar("SELECT data->'graph' FROM private_preferences WHERE tenant=$1 AND cart_id=$2 AND data->'useForAdvice'='true'::jsonb AND updated_at>now()-interval '30 days'").bind(&c.tenant).bind(&c.id).fetch_optional(&a.db).await?;
-    Ok(data.unwrap_or(Value::Null))
+        return Ok(empty());
+    }
+    let row = sqlx::query("SELECT data->'graph' AS graph,revision,updated_at::text AS changed FROM private_preferences WHERE tenant=$1 AND cart_id=$2 AND data->'useForAdvice'='true'::jsonb AND updated_at>now()-interval '30 days'").bind(&c.tenant).bind(&c.id).fetch_optional(&a.db).await?;
+    Ok(row
+        .map(|row| {
+            let graph: Value = row.get("graph");
+            let stamp = hash(
+                &json!([
+                    c.tenant,
+                    c.id,
+                    row.get::<i64, _>("revision"),
+                    row.get::<String, _>("changed"),
+                    graph
+                ])
+                .to_string(),
+            );
+            AdviceContext {
+                graph,
+                stamp: Some(stamp),
+            }
+        })
+        .unwrap_or_else(empty))
+}
+pub(crate) async fn revalidate(a: &App, h: &RequestContext, prior: &AdviceContext) -> Result<()> {
+    if capture(a, h).await?.stamp != prior.stamp {
+        return Err(conflict(
+            "Private advice context changed during inference; ask again",
+        ));
+    }
+    Ok(())
 }
 pub(crate) fn router() -> Router<App> {
     Router::new().route(

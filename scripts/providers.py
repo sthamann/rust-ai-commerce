@@ -8,6 +8,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 root = pathlib.Path(__file__).resolve().parents[1]
 root.joinpath('.run').mkdir(exist_ok=True)
 captured = []; checks = []; behavior = {'mode': 'normal'}; inference_started=threading.Event()
+advisor_started=threading.Event();advisor_release=threading.Event()
 proposal = {'summary':'HTTP provider contract test; not live inference.', 'changes':[{'product_id':'lamp','price':71.23}], 'experience':None, 'expected_experience_revision':None}
 class Handler(BaseHTTPRequestHandler):
     def log_message(self,*args): pass
@@ -29,6 +30,12 @@ class Handler(BaseHTTPRequestHandler):
         schema=(body.get('text',{}).get('format',{}).get('schema') or body.get('response_format',{}).get('json_schema',{}).get('schema') or body.get('output_config',{}).get('format',{}).get('schema') or body.get('format',{}))
         if schema.get('required')==['tool_calls']:
             result={'tool_calls':result.get('tool_calls',{}) if behavior['mode']=='invalid-read' else result.get('tool_calls',[])}
+        elif behavior['mode']=='advisor':
+            result={'explanation':'Synthetic consent-bound advice','recommended_ids':['lamp'],'layout':'discovery'}
+            if behavior.get('advisor_block'):
+                advisor_started.set()
+                if not advisor_release.wait(10):
+                    self.send_response(504);self.end_headers();return
         if self.path=='/v1/responses':
             answer={'status':'incomplete' if behavior['mode']=='incomplete' else 'completed','output':[{'type':'message','content':[{'type':'output_text','text':json.dumps(result)}]}], 'usage':{'input_tokens':10,'output_tokens':20}}
         elif self.path=='/v1/chat/completions':
@@ -98,6 +105,8 @@ try:
     from testing.provider_fleet import shared_provider
     with shared_provider(call, env['OPENAI_BASE_URL']):
         verify_extraction(call, captured, behavior, passed)
+        from testing.advisor_privacy import verify_advisor_privacy
+        verify_advisor_privacy(call, captured, behavior, advisor_started, advisor_release, passed)
     original=call('/api/merchant/commerce')
     def policy(value):
         snapshot=call('/api/merchant/commerce');data=copy.deepcopy(snapshot['data']);data['aiPolicy']=value

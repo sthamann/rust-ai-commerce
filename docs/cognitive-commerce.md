@@ -262,6 +262,14 @@ consent. AI advice uses it only with a separate explicit sharing choice and for
 30 days after update. Export and deletion use the same native cart context;
 revocation deletes it. This is **cart/browser-context memory**, not authenticated
 cross-device customer memory. Customer preferences are never public product facts.
+The advisor captures a request-only fingerprint of its admitted private graph
+(tenant/cart identity, revision, update time and exact content). After all model
+rounds, it rechecks current consent/sharing and that fingerprint before returning
+an answer. Withdrawal, erasure, edits, unsharing or erase/recreate invalidate the
+in-flight response with a localized 409 asking the customer to retry. No private
+answer is cached, and no database transaction is held during inference. This is
+validation at the response boundary, not a guarantee that consent cannot change
+after validation or an authenticated cross-device memory implementation.
 
 ## Ownership and verification
 
@@ -283,6 +291,9 @@ synthetic HTTP fixtures; managed search uses actual PostgreSQL/Qdrant with synth
 embeddings, 150 automatic product inserts and model-change restarts. `lexical_search` adds
 actual non-owner indexed plans and transactional lexical-source regression cases. These tests
 establish contracts and state effects, not semantic model quality or throughput.
+The existing `providers` suite also pauses actual concierge HTTP inference and
+mutates native consent/preferences concurrently. It checks all five invalidation
+cases, unchanged-context completion, explicit sharing and independent carts.
 Frontend tests cover SSE parsing, permission/revision failures, preregistration
 controls and consent/sharing. Rust/Lean comparison and negative mutations cover
 the **exact extracted predicates** for price admission, autonomy, claim rendering

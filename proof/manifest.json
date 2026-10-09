@@ -1137,8 +1137,8 @@
     },
     "src/cognition/preferences.rs": {
       "status": "unproved",
-      "sha256": "ea23606d332dc777118029fe84b2085248831164186d9bbd15f00fa8fc113057",
-      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+      "sha256": "2dd2f50c721ed517b638381d58fa29144499a5d09c99b65b7c21bc02ae60354c",
+      "review": "Reviewed request-only private preference fingerprint and post-inference consent/revision fence; existing extracted predicates unchanged, SQL and privacy response timing remain unproved adapters"
     },
     "src/cognition/projection.rs": {
       "status": "unproved",
@@ -1377,8 +1377,8 @@
     },
     "src/concierge.rs": {
       "status": "unproved",
-      "sha256": "51d218f5acabf1fdd847f3d864665c22c6e83fa3b8d98ce64ee48f0dcd6f9413",
-      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+      "sha256": "1d8de76e31a76e4a4278cfa40083b518bfa5ce90d2bfdccf5dec9ee47294372b",
+      "review": "Reviewed request-only private preference fingerprint and post-inference consent/revision fence; existing extracted predicates unchanged, SQL and privacy response timing remain unproved adapters"
     },
     "src/connectors/actions.rs": {
       "status": "unproved",
