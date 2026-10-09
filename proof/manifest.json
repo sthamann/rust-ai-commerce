@@ -2968,8 +2968,8 @@
       "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
     },
     "src/documents/search.sql": {
-      "sha256": "b92ae61568195b0413873e2f8bf3e7fa1b9a1bb34230c5d751b15ef3115e2a4c",
-      "review": "Reviewed migration 079 composite source keys, FORCE RLS and transaction-bound lexical triggers/backfill; both native query owners recheck current text/publication with indexed tenant word candidates. Actual NOSUPERUSER NOBYPASSRLS product/document plans, missing/foreign context and source edit/withdrawal/delete regressions pass; native strict-runtime suite passes. No extracted decision or theorem changed; SQL/query plans remain unproved."
+      "sha256": "0f1405cf3bbcb50a7e549de823c326ce4ca7ece23fdb1a31042b1b0da456d378",
+      "review": "Review RLS-safe lexical hydration follow-up: parameterized current source reads only after lexical/semantic candidate selection; preserve native source hash/model/locale/publication/product checks, greedy final-position IDs and existing extracted policies. SQL and transport remain unproved."
     },
     "src/knowledge/neighborhood.sql": {
       "sha256": "4a93225bb65b3a99fbffe34491c78ce4b3dd9bb0c7080cb0a1587fa8fe53e0a6",

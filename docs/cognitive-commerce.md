@@ -118,6 +118,12 @@ NOSUPERUSER/NOBYPASSRLS role, with 5,000 products and 5,000 document chunks. It
 checks the actual indexed plans without disabling sequential scans, preexisting
 source backfill, AND/OR semantics, absent/foreign contexts, composite references,
 scoped edits, private/archive withdrawals, native rechecks and cascade deletion.
+Document hydration is fenced to lexical/semantic candidate IDs before checking
+current locale, publication and product associations. Parameterized lateral lookups
+prevent a broad document scan under forced RLS; unexecuted alternative plans are
+not counted as actual scans. Semantic IDs are split on their final position suffix,
+so document IDs containing colons remain valid. Native hash/model checks still
+reject stale semantic candidates.
 The separately measured 20,000-product selective case used five paired baseline/candidate SQL executions with
 identical native results. Median execution was 36.209 ms before
 and 0.243 ms after under the scoped runtime role. [Recorded conditions and

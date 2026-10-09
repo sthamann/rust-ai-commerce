@@ -263,5 +263,7 @@
     "src/knowledge/search.sql": "23f9a496455de77d82892e16baa6f687ff574230fdac5332a58f39bc4f66a08b",
     "src/documents/search.sql": "b92ae61568195b0413873e2f8bf3e7fa1b9a1bb34230c5d751b15ef3115e2a4c",
     "src/documents/retrieval.rs": "eb492f0f206118a7adc1d419ab1e38e9e6fe233ca305aac2306b398a44998b2d"
-  }
+  },
+  "candidateCommit": "576412b532d1479fe8f9a15ce1f17a36387b8c1f",
+  "sourceScope": "Source hashes describe the measured snapshot; only src/knowledge/search.sql was performance-measured. Later source-document hydration changes preserve this product query but are verified separately, not assigned these timing values."
 }
