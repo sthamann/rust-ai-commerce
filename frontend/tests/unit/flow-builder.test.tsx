@@ -7,6 +7,7 @@ import RuleBuilder from "../../src/admin/automation/RuleBuilder";
 import FlowBuilder from "../../src/admin/automation/FlowBuilder";
 import { knowledgeWords } from "../../src/shared/i18n/knowledge-i18n";
 import FlowCanvas from "../../src/admin/automation/FlowCanvas";
+import FlowActionFields from "../../src/admin/automation/FlowActionFields";
 import JsonField from "../../src/admin/automation/JsonField";
 import {
   appendNode,
@@ -38,6 +39,33 @@ const initial: Pipeline = {
     },
   ],
 };
+it.each([
+  ["en-GB", "Document ID (optional)", "Product ID (optional)"],
+  ["de-DE", "Dokument-ID (optional)", "Produkt-ID (optional)"],
+  ["fr-FR", "ID du document (facultatif)", "ID du produit (facultatif)"],
+  ["es-ES", "ID del documento (opcional)", "ID del producto (opcional)"],
+])(
+  "document extraction fields preserve event defaults in %s",
+  (locale, source, product) => {
+    localStorage.setItem("rac-locale", locale);
+    const changed = vi.fn();
+    render(
+      <FlowActionFields
+        action="knowledge.extract"
+        config={{}}
+        onChange={changed}
+      />,
+      { wrapper: LocaleProvider },
+    );
+    expect(screen.getAllByRole("textbox")).toHaveLength(2);
+    expect(screen.getByLabelText(source)).toHaveValue("");
+    expect(screen.getByLabelText(product)).toHaveValue("");
+    fireEvent.change(screen.getByLabelText(source), {
+      target: { value: "source-123" },
+    });
+    expect(changed).toHaveBeenLastCalledWith({ sourceId: "source-123" });
+  },
+);
 it("appending after a condition connects its true branch and removing nodes clears dangling edges", () => {
   const p = appendNode(initial, "action");
   expect(p.nodes[0]).toMatchObject({ on_true: p.nodes[1].id });

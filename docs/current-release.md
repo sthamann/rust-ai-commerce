@@ -1,4 +1,4 @@
-# Current release — 8 October 2026
+# Current release — 9 October 2026
 
 [Feature tour](features.md) · [Architecture](production-architecture.md) · [Complete documentation](documentation-site.md)
 
@@ -10,6 +10,23 @@ pairs** at this source; installed app routes are discovered separately. The curr
 formal manifest contains **36 extracted policies and 78 properties** across a
 334-module Rust inventory; [formal evidence](formal-verification.md) distinguishes
 those pure decisions from unproved SQL, network and UI adapters.
+
+## Connected intelligence source update
+
+[PR #73](https://github.com/sthamann/vendune/pull/73) connects automatic bounded
+indexing/model rebuilds, lexical/dense retrieval with reranking, current-right
+read-agent rounds, reviewed source claims, price guardrails/autonomy budgets,
+controlled layout experiments and consent-bound private cart preferences. The
+current candidate has **45 extracted policies, 97 properties, 184 Rust unit tests
+and 385 frontend tests**; these counts do not certify the entire commerce system.
+Source-aware categories and opt-in document-event extraction reuse native
+catalog/Flow owners. Public answers reject sources or product snapshots changed
+during inference, including uncited inputs. [Architecture, setup, actual evidence
+and remaining audit scope](cognitive-commerce.md).
+
+This records the implementation candidate and local verification. Its PR checks,
+merge status and hosted runtime deployment remain separate evidence; a
+GitHub/Vercel documentation preview does not activate Rust services.
 
 ## Core hardening update
 

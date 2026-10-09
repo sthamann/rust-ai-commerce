@@ -74,6 +74,7 @@ for (const [key, values] of Object.entries(email)) {
 }
 const { responseError } = module("../src/shared/i18n/errors-i18n.ts");
 const errors = [];
+const sourceErrors = [];
 for (locale of ["en-GB", "de-DE", "fr-FR", "es-ES"]) {
   for (const status of [400, 401, 403, 404, 409, 429, 500, 502]) {
     const e = responseError("untranslated diagnostic", status);
@@ -81,8 +82,12 @@ for (locale of ["en-GB", "de-DE", "fr-FR", "es-ES"]) {
     assert.equal(e.diagnostic, "untranslated diagnostic");
   }
   errors.push(responseError("Invalid credentials", 401).message);
+  const changed = responseError("Product sources changed; ask again", 409);
+  assert.equal(changed.status, 409);
+  sourceErrors.push(changed.message);
 }
 assert.equal(new Set(errors).size, 4);
+assert.equal(new Set(sourceErrors).size, 4);
 console.log(
   `PASS ${Object.keys(base).length} studio + ${Object.keys(shop).length} shop + ${Object.keys(words).length} workbench keys in four languages; exact/fallback request errors localized`,
 );

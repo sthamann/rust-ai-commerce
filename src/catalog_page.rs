@@ -54,6 +54,13 @@ pub(crate) async fn product_page(
         .map(str::trim)
         .filter(|s| !s.is_empty());
     let rows = if let Some(category_id) = &criteria.category_id {
+        let (settings, _) = commerce::config(a, t).await?;
+        let languages = performance::languages(a).await?;
+        let locale = chain
+            .first()
+            .and_then(|id| languages.iter().find(|l| &l.id == id))
+            .map(|l| l.locale.as_str())
+            .unwrap_or(&settings.main_locale);
         sqlx::query(include_str!("categories/listing.sql"))
             .bind(t)
             .bind(category_id)
@@ -70,6 +77,8 @@ pub(crate) async fn product_page(
             .bind(chain)
             .bind((limit + 1) as i64)
             .bind(&criteria.channel_id)
+            .bind(locale)
+            .bind(&settings.main_locale)
             .fetch_all(&a.db)
             .await?
     } else if let Some(ids) = &criteria.product_ids {

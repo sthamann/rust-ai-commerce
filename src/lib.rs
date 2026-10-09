@@ -4,6 +4,7 @@ pub mod component_runtime;
 pub mod connectors;
 pub mod context;
 pub mod discount;
+pub mod http_json;
 pub mod inference;
 pub mod knowledge;
 pub mod money;

@@ -82,6 +82,7 @@ pub(super) async fn write(
     .execute(&mut *tx)
     .await?;
     if choices.get("personalization") != Some(&true) {
+        cognition::preferences::forget(&mut tx, &c).await?;
         sqlx::query("DELETE FROM exposures WHERE tenant=$1 AND session=$2")
             .bind(&c.tenant)
             .bind(&c.data.session)

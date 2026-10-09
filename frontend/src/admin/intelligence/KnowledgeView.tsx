@@ -13,6 +13,9 @@ import KnowledgeSources from "./KnowledgeSources";
 import KnowledgeExplorer from "./KnowledgeExplorer";
 import KnowledgePreview from "./KnowledgePreview";
 import ExternalKnowledge from "./ExternalKnowledge";
+import ExperimentStudio from "./ExperimentStudio";
+import GuardrailSettings from "./GuardrailSettings";
+import EvidenceReview from "./EvidenceReview";
 import MemoryView from "./MemoryView";
 import "../styles/knowledge.css";
 import "../styles/knowledge-sources.css";
@@ -96,6 +99,8 @@ export function KnowledgeView({
             "sources",
             "observations",
             "preview",
+            "guardrails",
+            "experiments",
           ] as KnowledgeWord[]
         ).map((item) => (
           <button
@@ -170,6 +175,10 @@ export function KnowledgeView({
               onIntent={onIntent}
             />
           )}
+          {tab === "experiments" && <ExperimentStudio request={request} />}
+          {tab === "guardrails" && (
+            <GuardrailSettings request={request} products={data.products} />
+          )}
           {tab === "observations" && (
             <>
               <div className="knowledge-census">
@@ -194,6 +203,11 @@ export function KnowledgeView({
                 ))}
               </div>
               <p className="muted">{k("viewsHint")}</p>
+              <EvidenceReview
+                products={data.products}
+                workspace={workspace}
+                request={request}
+              />
               <MemoryView
                 request={request}
                 products={data.products}

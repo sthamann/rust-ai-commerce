@@ -3,6 +3,24 @@ import { useLocale } from "./i18n";
 import { sourceLabels } from "./automation-labels";
 import { fieldLabels } from "./automation-fields";
 const words: Record<string, readonly string[]> = {
+  sourceId: [
+    "Document ID (optional)",
+    "Dokument-ID (optional)",
+    "ID du document (facultatif)",
+    "ID del documento (opcional)",
+  ],
+  productId: [
+    "Product ID (optional)",
+    "Produkt-ID (optional)",
+    "ID du produit (facultatif)",
+    "ID del producto (opcional)",
+  ],
+  extractionFromEventHint: [
+    "Leave these fields empty to use the event's document and its product. Extraction uses the document language and shared AI quota; statements require review.",
+    "Leer lassen, um das Dokument des Ereignisses und dessen Produkt zu verwenden. Die Extraktion nutzt die Dokumentsprache und das gemeinsame KI-Kontingent; Aussagen müssen geprüft werden.",
+    "Laissez vide pour utiliser le document de l’événement et son produit. L’extraction utilise sa langue et le quota IA commun ; les affirmations nécessitent une validation.",
+    "Deja los campos vacíos para usar el documento del evento y su producto. La extracción usa su idioma y la cuota de IA compartida; las afirmaciones requieren revisión.",
+  ],
   headless: [
     "Headless API",
     "API ohne Shop-Oberfläche",
@@ -131,6 +149,12 @@ const words: Record<string, readonly string[]> = {
   ],
 };
 const actions: Record<string, readonly string[]> = {
+  "knowledge.extract": [
+    "Extract product facts for review",
+    "Produktwissen zur Prüfung extrahieren",
+    "Extraire les faits produit à valider",
+    "Extraer datos del producto para revisión",
+  ],
   "action.add.customer.tag": [
     "Tag customer",
     "Kunden markieren",

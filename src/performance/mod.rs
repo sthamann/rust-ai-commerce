@@ -14,7 +14,7 @@ mod admission;
 mod cache;
 pub(crate) mod cluster_lease;
 pub(crate) mod delivery;
-pub(crate) use admission::{Admission, run as admit_request};
+pub(crate) use admission::{Admission, reserve_ai_attempt, run as admit_request};
 mod invalidation;
 mod languages;
 pub(crate) use invalidation::start as start_invalidations;

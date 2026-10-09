@@ -32,6 +32,17 @@ export type Category = {
     visible: boolean;
     type: string;
     url?: string;
+    graphQuery?: {
+      nodeType:
+        | "intent"
+        | "problem"
+        | "occasion"
+        | "audience"
+        | "material"
+        | "property";
+      minimumConfidence: number;
+      text: Record<string, string | null | undefined>;
+    } | null;
     translations: Record<
       string,
       { name: string | null; description?: string | null; slug?: string | null }

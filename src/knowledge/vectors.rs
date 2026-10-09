@@ -2,8 +2,11 @@
 use super::*;
 use sha2::{Digest, Sha256};
 use std::time::Duration;
-fn collection(kind: &str, model: &str) -> String {
-    format!("vendune_{kind}_{}", hex(model).get(..16).unwrap())
+fn collection(kind: &str, model: &str, dimensions: usize) -> String {
+    format!(
+        "vendune_{kind}_v2_{}_{dimensions}",
+        hex(model).get(..16).unwrap()
+    )
 }
 fn hex(text: &str) -> String {
     format!("{:x}", Sha256::digest(text.as_bytes()))
@@ -18,11 +21,14 @@ async fn request(
     body: Option<Value>,
 ) -> Result<Value, String> {
     let url = std::env::var("QDRANT_URL").map_err(|_| "Qdrant is not configured")?;
-    let client = reqwest::Client::builder()
-        .timeout(Duration::from_secs(8))
-        .redirect(reqwest::redirect::Policy::none())
-        .build()
-        .map_err(|_| "Qdrant client")?;
+    static CLIENT: std::sync::OnceLock<reqwest::Client> = std::sync::OnceLock::new();
+    let client = CLIENT.get_or_init(|| {
+        reqwest::Client::builder()
+            .timeout(Duration::from_secs(8))
+            .redirect(reqwest::redirect::Policy::none())
+            .build()
+            .expect("Qdrant HTTP client")
+    });
     let mut req = client.request(method, format!("{}{path}", url.trim_end_matches('/')));
     if let Ok(key) = std::env::var("QDRANT_API_KEY") {
         req = req.header("api-key", key);
@@ -34,13 +40,14 @@ async fn request(
     if !response.status().is_success() {
         return Err(format!("Qdrant HTTP {}", response.status().as_u16()));
     }
-    response
-        .json()
-        .await
-        .map_err(|_| "Invalid Qdrant response".into())
+    crate::http_json::bounded(response, 2 * 1024 * 1024).await
 }
-async fn ensure(kind: &str, model: &str) -> Result<String, String> {
-    let name = collection(kind, model);
+async fn ensure(kind: &str, model: &str, dimensions: usize) -> Result<String, String> {
+    let name = collection(kind, model, dimensions);
+    let cache_key = format!("{}:{name}", std::env::var("QDRANT_URL").unwrap_or_default());
+    if super::vector_cache::ready(&cache_key) {
+        return Ok(name);
+    }
     if request(reqwest::Method::GET, &format!("/collections/{name}"), None)
         .await
         .is_err()
@@ -49,13 +56,13 @@ async fn ensure(kind: &str, model: &str) -> Result<String, String> {
         let _ = request(
             reqwest::Method::PUT,
             &format!("/collections/{name}"),
-            Some(json!({"vectors":{"size":1024,"distance":"Cosine"},"on_disk_payload":true})),
+            Some(json!({"vectors":{"text":{"size":dimensions,"distance":"Cosine","on_disk":true}},"quantization_config":if std::env::var("QDRANT_QUANTIZATION").as_deref()==Ok("int8"){json!({"scalar":{"type":"int8","quantile":0.99,"always_ram":true}})}else{Value::Null},"on_disk_payload":true})),
         )
         .await;
     }
     let info = request(reqwest::Method::GET, &format!("/collections/{name}"), None).await?;
-    let v = &info["result"]["config"]["params"]["vectors"];
-    if v["size"] != 1024 || v["distance"] != "Cosine" {
+    let v = &info["result"]["config"]["params"]["vectors"]["text"];
+    if v["size"] != dimensions || v["distance"] != "Cosine" {
         return Err("Qdrant collection shape mismatch".into());
     }
     request(
@@ -64,6 +71,7 @@ async fn ensure(kind: &str, model: &str) -> Result<String, String> {
         Some(json!({"field_name":"tenant","field_schema":{"type":"keyword","is_tenant":true}})),
     )
     .await?;
+    super::vector_cache::verified(cache_key);
     Ok(name)
 }
 pub async fn query(
@@ -72,11 +80,11 @@ pub async fn query(
     model: &str,
     vector: Vec<f32>,
 ) -> Result<Vec<Value>, String> {
-    if vector.len() != 1024 || vector.iter().any(|v| !v.is_finite()) {
+    if !super::embeddings::valid(&vector) {
         return Err("Invalid query vector".into());
     }
-    let name = collection(kind, model);
-    let response=request(reqwest::Method::POST,&format!("/collections/{name}/points/query"),Some(json!({"query":vector,"filter":{"must":[{"key":"tenant","match":{"value":tenant}},{"key":"model","match":{"value":model}}]},"limit":64,"with_payload":true,"with_vector":false}))).await?;
+    let name = collection(kind, model, vector.len());
+    let response=request(reqwest::Method::POST,&format!("/collections/{name}/points/query"),Some(json!({"query":vector,"using":"text","filter":{"must":[{"key":"tenant","match":{"value":tenant}},{"key":"model","match":{"value":model}}]},"limit":64,"with_payload":true,"with_vector":false}))).await?;
     Ok(response["result"]["points"]
         .as_array()
         .ok_or("Invalid query result")?
@@ -84,22 +92,29 @@ pub async fn query(
 }
 pub async fn drain(db: &PgPool) -> Result<usize, String> {
     let mut tx = db.begin().await.map_err(|_| "Index transaction")?;
-    let rows=sqlx::query("SELECT tenant,kind,object_id FROM vector_index_queue WHERE EXISTS(SELECT 1 FROM tenants t WHERE t.id=coalesce((SELECT live_tenant FROM shop_environments WHERE tenant=vector_index_queue.tenant),vector_index_queue.tenant) AND t.status='active') ORDER BY updated_at,tenant,kind,object_id LIMIT 16 FOR UPDATE SKIP LOCKED").fetch_all(&mut *tx).await.map_err(|_|"Index queue")?;
+    let lease = uuid::Uuid::new_v4().to_string();
+    let rows = sqlx::query(include_str!("vector_claim.sql"))
+        .bind(&lease)
+        .fetch_all(&mut *tx)
+        .await
+        .map_err(|_| "Index queue")?;
+    tx.commit().await.map_err(|_| "Index claim commit")?;
     for row in &rows {
+        let result:Result<(),String>=async {
         let tenant: String = row.get("tenant");
         let kind: String = row.get("kind");
         let id: String = row.get("object_id");
         let current=if kind=="product"{
-            sqlx::query("SELECT embedding,embedding_model AS model,content_hash AS digest FROM semantic_products WHERE tenant=$1 AND product_id=$2").bind(&tenant).bind(&id).fetch_optional(&mut *tx).await
+            sqlx::query("SELECT embedding,embedding_model AS model,content_hash AS digest FROM semantic_products WHERE tenant=$1 AND product_id=$2").bind(&tenant).bind(&id).fetch_optional(db).await
         }else{
-            sqlx::query("SELECT c.embedding,c.embedding_model AS model,d.content_hash AS digest FROM knowledge_chunks c JOIN knowledge_documents d ON d.tenant=c.tenant AND d.id=c.document_id WHERE c.tenant=$1 AND c.document_id||':'||c.position=$2 AND c.embedding IS NOT NULL").bind(&tenant).bind(&id).fetch_optional(&mut *tx).await
+            sqlx::query("SELECT c.embedding,c.embedding_model AS model,d.content_hash AS digest FROM knowledge_chunks c JOIN knowledge_documents d ON d.tenant=c.tenant AND d.id=c.document_id WHERE c.tenant=$1 AND c.document_id||':'||c.position=$2 AND c.embedding IS NOT NULL").bind(&tenant).bind(&id).fetch_optional(db).await
         }.map_err(|_|"Index source")?;
         if let Some(current) = current {
             let model: String = current.get("model");
             let embedding: Vec<f32> = current.get("embedding");
             let digest: String = current.get("digest");
-            let name = ensure(&kind, &model).await?;
-            request(reqwest::Method::PUT,&format!("/collections/{name}/points?wait=true"),Some(json!({"points":[{"id":point(&tenant,&kind,&id),"vector":embedding,"payload":{"tenant":tenant,"object_id":id,"model":model,"digest":digest}}]}))).await?;
+            let name = ensure(&kind, &model, embedding.len()).await?;
+            request(reqwest::Method::PUT,&format!("/collections/{name}/points?wait=true"),Some(json!({"points":[{"id":point(&tenant,&kind,&id),"vector":{"text":embedding},"payload":{"tenant":tenant,"object_id":id,"model":model,"digest":digest}}]}))).await?;
         } else {
             let collections = request(reqwest::Method::GET, "/collections", None).await?;
             for name in collections["result"]["collections"]
@@ -117,15 +132,16 @@ pub async fn drain(db: &PgPool) -> Result<usize, String> {
                 .await?;
             }
         }
-        sqlx::query("DELETE FROM vector_index_queue WHERE tenant=$1 AND kind=$2 AND object_id=$3")
-            .bind(&tenant)
-            .bind(&kind)
-            .bind(&id)
-            .execute(&mut *tx)
-            .await
-            .map_err(|_| "Index acknowledgment")?;
+        Ok(())
+        }.await;
+        if result.is_ok() {
+            sqlx::query("DELETE FROM vector_index_queue WHERE tenant=$1 AND kind=$2 AND object_id=$3 AND revision=$4 AND lease=$5")
+            .bind(row.get::<String,_>("tenant")).bind(row.get::<String,_>("kind")).bind(row.get::<String,_>("object_id")).bind(row.get::<i64,_>("revision")).bind(&lease).execute(db).await.map_err(|_|"Index acknowledgment")?;
+        } else {
+            sqlx::query("UPDATE vector_index_queue SET attempts=attempts+1,lease=NULL,lease_until=NULL,error_code='vector_publication_unavailable',available_at=now()+least(300,power(2,least(attempts+1,8))::int)*interval '1 second' WHERE tenant=$1 AND kind=$2 AND object_id=$3 AND revision=$4 AND lease=$5")
+            .bind(row.get::<String,_>("tenant")).bind(row.get::<String,_>("kind")).bind(row.get::<String,_>("object_id")).bind(row.get::<i64,_>("revision")).bind(&lease).execute(db).await.map_err(|_|"Index retry")?;
+        }
     }
-    tx.commit().await.map_err(|_| "Index commit")?;
     Ok(rows.len())
 }
 pub fn start(db: PgPool) {
@@ -134,8 +150,15 @@ pub fn start(db: PgPool) {
     }
     crate::tenant_scope::spawn(async move {
         loop {
-            if let Err(e) = drain(&db).await {
-                eprintln!("vector index: {e}");
+            match drain(&db).await {
+                Ok(0) => {}
+                Ok(_) => {
+                    // Drain ready work without a fixed per-batch throughput ceiling.
+                    // Failed jobs have a future available_at and cannot spin here.
+                    tokio::task::yield_now().await;
+                    continue;
+                }
+                Err(e) => eprintln!("vector index: {e}"),
             }
             tokio::time::sleep(Duration::from_secs(2)).await;
         }

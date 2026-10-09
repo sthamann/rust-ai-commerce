@@ -47,6 +47,18 @@ RLS deployment, shared tenant/connection budgets, persistent login throttles,
 transaction-mode PgBouncer and recoverable poison-event handling now use the
 existing commerce owners. [All eighteen fixes, architecture and verification boundaries](docs/core-hardening.md).
 
+**Connected intelligence foundation:** automatic batched embedding intake and model
+rebuilds, hybrid text retrieval with optional reranking, authorized agent read
+rounds, native chat progress, source-bound merchant-reviewed claims, signed facts,
+price guardrails/daily autonomy budgets, controlled layout experiments and private
+consent-bound cart preferences. Categories can select products through saved,
+localized queries of current confirmed public facts; source withdrawal removes
+the corresponding fact membership. Document events can invoke opt-in extraction
+flows through the same rights, review and daily AI quota as HTTP/MCP. Public
+product answers recheck every supplied source and the native product after
+inference; concurrent withdrawal or changes return localized retry guidance.
+[How they connect, setup, evidence and remaining audit work](docs/cognitive-commerce.md).
+
 ## Get started
 
 **Rust stable 1.96+ · Node.js 22+ · Docker Compose · Python 3**
@@ -259,8 +271,8 @@ installation does not silently connect a provider.
 
 Studio has **15 workspaces** in **English, German, Spanish and French**, plus
 dynamic content locales with main-language inheritance. Developers get scoped
-keys and an explorer generated from the current Rust routes (**243 static HTTP
-method/path pairs** at `706102f`, reviewed 8 October 2026); installed app routes
+keys and an explorer generated from the current Rust routes (**279 static HTTP
+method/path pairs** in this implementation, reviewed 9 October 2026); installed app routes
 are discovered per shop. CI rejects catalogue drift.
 [Studio/API tour](docs/studio-api-and-channels.md).
 
@@ -291,7 +303,7 @@ bounded fuel/memory and no network/filesystem access.
 | Evidence | What it establishes |
 | --- | --- |
 | **7,000 original-PHP comparisons** | Bounded pricing, context, shipping-tax, rule and comparison behavior against reviewed Shopware sources. [Parity matrix](docs/shopware-parity.md). |
-| **37 extracted production policies · 80 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
+| **45 extracted production policies · 97 Lean properties** | Exact named pure decisions, Rust/Lean conformance and rejected negative mutations. Surrounding SQL/providers/browser behavior remains outside those proofs. [Formal boundary](docs/formal-verification.md). |
 | **1,000,000 products + 1,000,000 translations** | Dated local commerce workloads with retained raw measurements and failures; not production capacity or a Shopware speed ratio. [Benchmarks](docs/benchmarks.md). |
 | **Translation workflow** | Four-language Studio, platform, checkout and bundled app controls; shared content inheritance, additional shop content languages and translator-friendly catalogue export/import. [How translations work](docs/localization.md). |
 | **Continuous verification** | Source ownership, localization, Rust/frontend checks, real PostgreSQL integration, original PHP comparisons and Lean/mutation gates. [CI](https://github.com/sthamann/vendune/actions) · [Testing](docs/testing.md). |

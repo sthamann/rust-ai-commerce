@@ -3,6 +3,7 @@ use super::*;
 pub(crate) const ACTIONS: &[&str] = &[
     "note",
     "ai_proposal",
+    "knowledge.extract",
     "app_action",
     "action.add.customer.tag",
     "action.remove.customer.tag",
@@ -28,7 +29,7 @@ pub(crate) fn permission(action: &str) -> &'static str {
         match action {
             "action.generate.document" => "documents.create",
             "action.mail.send" | "app_action" => "apps.manage",
-            "ai_proposal" => "catalog.write",
+            "ai_proposal" | "knowledge.extract" => "catalog.write",
             "note" | "action.stop.flow" => "settings.write",
             _ => "orders.write",
         }
@@ -58,6 +59,16 @@ pub(crate) fn validate(action: &str, config: &Value) -> Result<()> {
     }
     if matches!(action, "note" | "ai_proposal") {
         super::flow_text::shape(&config["instruction"])?;
+    }
+    if action == "knowledge.extract"
+        && config.as_object().unwrap().iter().any(|(key, v)| {
+            !["sourceId", "productId"].contains(&key.as_str())
+                || v.as_str().is_none_or(|s| s.len() > 254)
+        })
+    {
+        return Err(bad(
+            "Extraction accepts optional sourceId/productId strings only",
+        ));
     }
     let require = |key: &str| {
         config[key]
@@ -141,8 +152,21 @@ pub(crate) async fn execute(
     validate(action, config)?;
     let h = super::flow_access::headers(a, t, f.actor.as_deref()).await?;
     auth::permit(&h, permission(action))?;
+    if action == "knowledge.extract" {
+        let source = config["sourceId"]
+            .as_str()
+            .filter(|s| !s.is_empty())
+            .or_else(|| definition["eventContext"]["documentId"].as_str())
+            .ok_or(bad("Extraction requires a document event or sourceId"))?;
+        let mut args = json!({"sourceId":source,"productId":config["productId"].as_str().filter(|s| !s.is_empty())});
+        if let Some(choice) = &f.inference {
+            args["inference"] = json!(choice);
+        }
+        return crate::cognition::extraction::extract(a, &h, &args).await;
+    }
     if action == "ai_proposal" {
         auth::permit(&h, "knowledge.read")?;
+        crate::performance::reserve_ai_attempt(a, t).await?;
         let (settings, _) = commerce::config(a, t).await?;
         let instruction =
             super::flow_text::effective(&config["instruction"], &f.locale, &settings.main_locale);

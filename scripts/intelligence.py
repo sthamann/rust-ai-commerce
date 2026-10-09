@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Actual SQL knowledge persistence and optional live local inference integration."""
-import json, os, pathlib, subprocess, urllib.request, urllib.error
+import json, time, os, pathlib, subprocess, urllib.request, urllib.error
 
 base=os.environ.get('BASE_URL','http://127.0.0.1:8787'); root=pathlib.Path(__file__).resolve().parents[1]
 ah={'Authorization':'Bearer '+os.environ['MERCHANT_TOKEN']}; checks=[]
@@ -26,7 +26,11 @@ reply=subprocess.check_output(['python3',str(root/'scripts/mcp_stdio.py')],input
 replies=[json.loads(v) for v in reply.splitlines()]; assert len(replies)==2 and replies[1]['result']['structuredContent']['engine']=='PostgreSQL'; passed('Claude Desktop stdio bridge executes real Rust MCP graph tool')
 if os.environ.get('TEST_EMBEDDING')=='1':
     call('/api/knowledge/reindex',{},ah)
-    found=call('/api/knowledge/search',{'query':'warm reading lamp'},ah); assert found['mode']=='vector' and found['indexedProducts']==6 and any(v['id']=='lamp' for v in found['hits'][:3]); passed('Real embedding inference stored in PostgreSQL and indexed in Qdrant and reused for semantic retrieval')
+    for _ in range(100):
+        status=call('/api/knowledge/status',h=ah)
+        if status['pending']==0:break
+        time.sleep(.2)
+    found=call('/api/knowledge/search',{'query':'warm reading lamp'},ah); assert found['mode']=='hybrid' and found['hasIndexedProducts'] and any(v['id']=='lamp' for v in found['hits'][:3]); passed('Real embedding inference stored in PostgreSQL and indexed in Qdrant and reused for semantic retrieval')
     result=call('/api/knowledge/reindex',{},ah); assert result['indexed']==0; passed('Unchanged semantic documents reuse persisted embeddings')
 if os.environ.get('TEST_MODEL')=='1':
     before=next(p for p in call('/store-api/product',{})['elements'] if p['id']=='lamp')['price']

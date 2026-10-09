@@ -1,4 +1,8 @@
 import Commerce.Claims
+#print axioms CommerceKernel.ai_autonomy_disabled_denied
+#print axioms CommerceKernel.ai_autonomy_exact
+#print axioms CommerceKernel.ai_price_exact
+#print axioms CommerceKernel.ai_price_locked_denied
 #print axioms CommerceKernel.app_callback_exact
 #print axioms CommerceKernel.app_callback_without_consent_denied
 #print axioms CommerceKernel.app_core_reference_exact
@@ -24,6 +28,8 @@ import Commerce.Claims
 #print axioms CommerceKernel.channel_private_requires_identity
 #print axioms CommerceKernel.checkout_contact_exact
 #print axioms CommerceKernel.checkout_review_exact
+#print axioms CommerceKernel.claim_render_exact
+#print axioms CommerceKernel.claim_unconfirmed_denied
 #print axioms CommerceKernel.completion_exact
 #print axioms CommerceKernel.completion_safe
 #print axioms CommerceKernel.consent_exact
@@ -41,6 +47,9 @@ import Commerce.Claims
 #print axioms CommerceKernel.download_blocked_denied
 #print axioms CommerceKernel.download_exact
 #print axioms CommerceKernel.download_payment_required
+#print axioms CommerceKernel.experiment_immature_denied
+#print axioms CommerceKernel.experiment_result_exact
+#print axioms CommerceKernel.experiment_undersized_denied
 #print axioms CommerceKernel.financial_contact_required
 #print axioms CommerceKernel.flow_delay_exact
 #print axioms CommerceKernel.legal_checkout_exact

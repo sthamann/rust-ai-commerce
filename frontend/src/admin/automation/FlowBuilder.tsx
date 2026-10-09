@@ -30,6 +30,10 @@ export default function FlowBuilder({
     "knowledge.document.archived": "event_archived",
     "knowledge.document.restored": "event_restored",
     "intelligence.decision": "event_decision",
+    "intelligence.claim.reviewed": "event_claimReviewed",
+    "intelligence.experiment.changed": "event_experimentChanged",
+    "intelligence.experiment.result": "event_experimentResult",
+    "merchant.change.applied": "event_changeApplied",
   };
   const { x, locale } = useConnectedText();
   const app = catalog.apps.find((a) => a.id === data.appAction?.app);

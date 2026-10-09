@@ -33,3 +33,8 @@ Ownership, executable contracts and explicit migration boundaries are described 
 [Full source inventory](../../docs/module-inventory.md) lists every module. Listings are not a claim of complete test coverage.
 
 Knowledge source lifecycle and approval events share `flows::EVENTS` for admission, catalogue discovery and non-order event projection. Their translated Flow Builder labels come from the knowledge vocabulary. `knowledge_workspace.py` follows real ingestion through an event-field rule into a completed durable flow.
+
+The graphical `knowledge.extract` action reuses the current document/evidence
+owner and the existing durable pipeline. Optional source/product IDs override
+event defaults; quotes remain proposed and require merchant review. Current
+rights and the shared daily AI budget apply before provider work.

@@ -5,6 +5,15 @@ from registry import check
 from axioms import source_check,dependency_check
 
 MUTANTS=[
+ ("experiment_result_admissible","final_look &&","true &&"),
+ ("experiment_result_admissible","&& enough_units","&& true"),
+ ("experiment_result_admissible","&& positive_bound","&& true"),
+ ("ai_price_admissible","minimum <= price","true"),
+ ("ai_price_admissible","&& margin","&& true"),
+ ("ai_autonomy_admissible","enabled &&","true &&"),
+ ("ai_autonomy_admissible","&& daily_budget","&& true"),
+ ("claim_render_admissible","confirmed &&","true &&"),
+ ("claim_render_admissible","&& current_source","&& true"),
  ("app_callback_admissible","capability &&","true &&"),
  ("app_callback_admissible","&& current_role","&& true"),
  ("app_package_authorized","pinned || bundled","true"),

@@ -5,6 +5,7 @@ from testing.database import psql
 import os,json,pathlib,subprocess,threading,time,urllib.request,urllib.error,uuid,socket
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 root=pathlib.Path(__file__).resolve().parents[1];captured=[];behavior={'mode':'app'}
+model_waiting=threading.Event();model_release=threading.Event()
 labels={'en':'Care guide','de':'Pflegehinweise','fr':'Entretien','es':'Cuidados'}
 app_id='care_'+uuid.uuid4().hex[:10]
 manifest={'id':app_id,'version':'1.0.0','coreApi':'1','runtime':'declarative','name':labels,'permissions':['data.read','data.write','storefront.slot','admin.slot'],'entities':[{'name':'guides','label':labels,'publicRead':True,'fields':[{'name':'content','label':labels,'kind':'string','required':True,'indexed':False,'translatable':True}]}],'slots':[{'location':'product.detail','component':'entity-list','label':labels}]}
@@ -12,20 +13,25 @@ class Model(BaseHTTPRequestHandler):
  def log_message(self,*a):pass
  def do_POST(self):
   b=json.loads(self.rfile.read(int(self.headers['Content-Length'])));captured.append((self.path,b))
-  if self.path=='/api/embed':out={'embeddings':[[1.0]+[0.0]*1023]}
+  if self.path=='/api/embed':out={'embeddings':[[1.0]+[0.0]*1023 for _ in (b['input'] if isinstance(b['input'],list) else [b['input']])]}
   else:
    if behavior['mode']=='app':answer={'summary':labels,'manifest':manifest}
    elif behavior['mode']=='flow':answer={'summary':'Prüfbarer Preisvorschlag für die Leuchte.','changes':[{'product_id':'lamp','price':69.9}]}
    elif behavior['mode']=='citation':answer={'answer':'Invented citation','source_ids':['foreign-secret:0'],'missing_information':False}
    else:
     prompt=b.get('input','');source=prompt.split('"sourceId":"')[1].split('"')[0] if '"sourceId":"' in prompt else None
-    answer={'answer':{'de-DE':'Die Tasse ist spülmaschinenfest.','fr-FR':'La tasse passe au lave-vaisselle.','es-ES':'La taza es apta para lavavajillas.'}.get(behavior['mode'],'The cup is dishwasher safe.'),'source_ids':[source] if source else [],'missing_information':source is None}
+    answer={'answer':{'de-DE':'Die Tasse ist spülmaschinenfest.','fr-FR':'La tasse passe au lave-vaisselle.','es-ES':'La taza es apta para lavavajillas.'}.get(behavior['mode'],'The cup is dishwasher safe.'),'source_ids':[source] if source and not behavior.get('uncited') else [],'missing_information':source is None}
+   schema=b.get('text',{}).get('format',{}).get('schema') or b.get('output_config',{}).get('format',{}).get('schema') or b.get('format',{})
+   if schema.get('required')==['tool_calls']:answer={'tool_calls':[]}
    out={'status':'completed','output':[{'content':[{'type':'output_text','text':json.dumps(answer)}]}]}
   if self.path.endswith('/messages'):out={'stop_reason':'end_turn','content':[{'type':'text','text':json.dumps(answer)}]}
+  if self.path!='/api/embed' and behavior.get('pause'):
+   model_waiting.set()
+   assert model_release.wait(15),'Question race fixture was not released'
   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps(out).encode())
 server=ThreadingHTTPServer(('127.0.0.1',0),Model);threading.Thread(target=server.serve_forever,daemon=True).start();port=server.server_address[1]
 sock=socket.socket();sock.bind(('127.0.0.1',0));test_port=sock.getsockname()[1];sock.close()
-env={**os.environ,'BIND_ADDR':f'127.0.0.1:{test_port}','OPENAI_API_KEY':'local-wire-fixture','ANTHROPIC_API_KEY':'local-wire-fixture','ANTHROPIC_BASE_URL':f'http://127.0.0.1:{port}/v1','OPENAI_BASE_URL':f'http://127.0.0.1:{port}/v1','OLLAMA_URL':f'http://127.0.0.1:{port}'}
+env={**os.environ,'BIND_ADDR':f'127.0.0.1:{test_port}','OPENAI_API_KEY':'local-wire-fixture','ANTHROPIC_API_KEY':'local-wire-fixture','ANTHROPIC_BASE_URL':f'http://127.0.0.1:{port}/v1','OPENAI_BASE_URL':f'http://127.0.0.1:{port}/v1','OLLAMA_URL':f'http://127.0.0.1:{port}','EMBEDDING_MODEL':'synthetic-documents-'+uuid.uuid4().hex[:12]}
 # A separate database keeps other replicas from consuming jobs with their provider configuration.
 from urllib.parse import urlsplit,urlunsplit
 fixture_db='commerce_docs_'+uuid.uuid4().hex[:12]
@@ -57,12 +63,12 @@ try:
  e=call('/api/environments',{'name':'AI build sandbox'},a)
  b=call('/api/developer/generate',{'environment':e['id'],'prompt':'Create a multilingual care-guide app','inference':{'provider':'openai','model':'local-fixture'}},a)
  assert b['manifest']['entities'][0]['fields'][0]['translatable'] and len(b['manifest']['actions'])==2
- assert captured[-1][0]=='/v1/responses' and 'private' not in str(b['manifest'])
- manifest['version']='1.1.0';claude=call('/api/developer/generate',{'environment':e['id'],'prompt':'Create a second multilingual app version','inference':{'provider':'anthropic','model':'local-fixture'}},a);assert claude['manifest']['version']=='1.1.0' and captured[-1][0]=='/v1/messages'
+ assert next(c for c in reversed(captured) if c[0] != '/api/embed')[0]=='/v1/responses' and 'private' not in str(b['manifest'])
+ manifest['version']='1.1.0';claude=call('/api/developer/generate',{'environment':e['id'],'prompt':'Create a second multilingual app version','inference':{'provider':'anthropic','model':'local-fixture'}},a);assert claude['manifest']['version']=='1.1.0' and next(c for c in reversed(captured) if c[0] != '/api/embed')[0]=='/v1/messages'
  original_manifest=manifest
  manifest=json.loads((root/'extensions/apps/care-studio/manifest.json').read_text());manifest['id']='native_'+uuid.uuid4().hex[:10]
  native=call('/api/developer/generate',{'environment':e['id'],'prompt':'Extend the current native app','manifest':manifest,'inference':{'provider':'openai','model':'local-fixture'}},a)
- assert native['manifest']['views'] and native['manifest']['apiRoutes'] and manifest['id'] in captured[-1][1]['input']
+ assert native['manifest']['views'] and native['manifest']['apiRoutes'] and manifest['id'] in next(c for c in reversed(captured) if c[0] != '/api/embed')[1]['input']
  call('/api/developer/builds/'+native['id']+'/stage',{'approve':True,'digest':native['digest']},a)
  assert any(v.get('native',{}).get('view',{}).get('id')=='workspace' for v in call('/api/apps/surfaces',session=a,tenant=e['id'])['surfaces'])
  manifest=original_manifest
@@ -83,12 +89,56 @@ try:
  q=call('/store-api/product/mug/questions',{'question':'Dishwasher safe?','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug);assert not q['sources'] and q['missingInformation']
  call('/api/knowledge/documents/'+doc['id'],{'approve':True,'visibility':'public','revision':1},a,method='PUT')
  q=call('/store-api/product/mug/questions',{'question':'Dishwasher','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug);assert len(q['sources'])==1 and q['sources'][0]['contentHash']==doc['contentHash'] and q['sideEffects'] is False
+ prompt=next(b['input'] for p,b in reversed(captured) if p=='/v1/responses')
+ assert '"productId":"mug"' in prompt and '"appliesToProductId":"mug"' in prompt and '"association":"product"' in prompt
  passed('Private data sheet is excluded until approval; public questions return exact source hash/excerpt')
- call('/api/knowledge/documents/'+doc['id']+'/index',{},a)
+ indexed=call('/api/knowledge/documents/'+doc['id']+'/index',{},a)
+ assert indexed['asynchronous'] and indexed['indexed']==0
+ # Completion includes the actual vector consumer, not merely submission or SQL embedding persistence.
+ for _ in range(300):
+  q=call('/store-api/product/mug/questions',{'question':'spülmaschinenfest?','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug)
+  if q['sources']:break
+  time.sleep(.1)
+ assert q['sources'],q
  for locale in ['de-DE','fr-FR','es-ES','en-GB']:
   behavior['mode']=locale;q=call('/store-api/product/mug/questions',{'question':'spülmaschinenfest?','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug,locale=locale);assert q['sources'] and q['answer'],(locale,q)
- assert any(p=='/api/embed' and b['input']=='spülmaschinenfest?' for p,b in captured)
+ assert any(p=='/api/embed' and b['input']==['spülmaschinenfest?'] for p,b in captured)
  passed('Indexed semantic retrieval is actually consumed for cross-language questions with no lexical match')
+ # Pause the actual provider response; mutate through the existing merchant API.
+ # Uncited inputs can still influence prose and must be fenced too.
+ from concurrent.futures import ThreadPoolExecutor
+ def question_race(change):
+  behavior.update({'mode':'de-DE','pause':True,'uncited':True});model_waiting.clear();model_release.clear()
+  with ThreadPoolExecutor(max_workers=1) as requests:
+   pending=requests.submit(call,'/store-api/product/mug/questions',{'question':'Dishwasher','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug,expected=409)
+   try:
+    assert model_waiting.wait(10),'Provider never received the question'
+    change()
+   finally:model_release.set()
+   rejected=pending.result(timeout=20)
+   assert rejected=={'errors':[{'code':'409','detail':'Product sources changed; ask again'}]},rejected
+  behavior.update({'pause':False,'uncited':False})
+ def publish_current(visibility):
+  current=call('/api/knowledge/documents/'+doc['id'],session=a)
+  call('/api/knowledge/documents/'+doc['id'],{'approve':True,'visibility':visibility,'revision':current['revision']},a,method='PUT')
+ question_race(lambda:publish_current('private'))
+ publish_current('public')
+ def reassign_source():
+  current=call('/api/knowledge/documents/'+doc['id'],session=a)
+  call('/api/knowledge/documents/'+doc['id'],{'title':current['title'],'content':current['content'],'productId':'lamp','revision':current['revision']},a,method='PATCH')
+  publish_current('public')
+ question_race(reassign_source)
+ current=call('/api/knowledge/documents/'+doc['id'],session=a)
+ call('/api/knowledge/documents/'+doc['id'],{'title':current['title'],'content':current['content'],'productId':'mug','revision':current['revision']},a,method='PATCH')
+ publish_current('public')
+ passed('Actual delayed uncited model output is rejected when a source is withdrawn or reassigned, even with identical text and re-publication')
+ def change_product():
+  product=call('/api/merchant/products/mug',session=a)
+  product['commerce']['price']+=1
+  call('/api/merchant/products/mug',product,a,method='PUT')
+ question_race(change_product)
+ passed('Actual delayed model output is rejected when native product facts change during inference')
+
  behavior['mode']='citation';call('/store-api/product/mug/questions',{'question':'Dishwasher','inference':{'provider':'openai'}},tenant=slug,expected=400)
  call('/api/knowledge/documents/'+doc['id'],{'approve':True,'visibility':'private','revision':1},a,method='PUT',expected=409)
  passed('Invented source citations and stale publication revisions are rejected')
@@ -114,11 +164,11 @@ try:
  private=call('/api/knowledge/documents',{'title':'Merchant service policy','kind':'faq','content':instruction+' FIXTURE-PRIVATE-KNOWLEDGE'},a)
  plan=call('/api/agent/plan',{'instruction':instruction,'inference':{'provider':'openai','model':'local-fixture'}},a)
  assert any(s['documentId']==private['id'] for s in plan['preview']['documentSources']),plan
- assert 'FIXTURE-PRIVATE-KNOWLEDGE' in captured[-1][1]['input']
+ assert 'FIXTURE-PRIVATE-KNOWLEDGE' in next(c for c in reversed(captured) if c[0] != '/api/embed')[1]['input']
  call('/api/knowledge/documents/'+private['id']+'/lifecycle',{'approve':True,'archived':True,'revision':1},a)
  plan=call('/api/agent/plan',{'instruction':instruction,'inference':{'provider':'openai','model':'local-fixture'}},a)
  assert all(s['documentId']!=private['id'] for s in plan['preview']['documentSources'])
- assert 'FIXTURE-PRIVATE-KNOWLEDGE' not in captured[-1][1]['input']
+ assert 'FIXTURE-PRIVATE-KNOWLEDGE' not in next(c for c in reversed(captured) if c[0] != '/api/embed')[1]['input']
  passed('Private document text/hash is consumed by the actual merchant provider prompt; archive removes it on the next call')
  behavior['mode']='flow';flow={'name':labels,'active':True,'event':'order.placed','condition':{'type':'alwaysValid'},'action':'ai_proposal','instruction':{l:'Propose setting only lamp price to 69.90 EUR.' for l in labels},'locale':'de-DE','inference':{'provider':'openai','model':'local-fixture'}}
  call('/api/automation/flows/price_draft',{'revision':0,'data':flow},a,method='PUT')
@@ -142,5 +192,5 @@ try:
  passed('Actual order flow creates an AI proposal through the model adapter; price changes only after merchant approval')
  print(json.dumps({'passed':len(checks),'checks':checks,'realModelInference':False,'paidProviderCalls':0},indent=2))
 finally:
- proc.terminate();proc.wait(timeout=20);log.close();server.shutdown()
+ model_release.set();proc.terminate();proc.wait(timeout=20);log.close();server.shutdown()
  subprocess.run(psql(container,db_user,'postgres','-c',f'DROP DATABASE "{fixture_db}" WITH (FORCE)'),check=True)

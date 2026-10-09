@@ -24,10 +24,17 @@ pub(super) async fn knowledge_status(
     h: RequestContext,
 ) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
-    let rows = sqlx::query("SELECT product_id,embedding_model,content_hash,md5(embedding::text) AS vector_digest FROM semantic_products WHERE tenant=$1 ORDER BY product_id")
-        .bind(t).fetch_all(&a.db).await?;
+    let rows = sqlx::query("SELECT product_id,embedding_model,content_hash,vector_digest FROM semantic_products WHERE tenant=$1 ORDER BY product_id LIMIT 200")
+        .bind(&t).fetch_all(&a.db).await?;
+    let status = sqlx::query(
+        "SELECT indexed_products,pending_jobs FROM knowledge_index_status WHERE tenant=$1",
+    )
+    .bind(&t)
+    .fetch_optional(&a.db)
+    .await?;
+    let errors:Vec<Value>=sqlx::query_scalar("SELECT jsonb_build_object('code',e.key,'count',e.value) FROM knowledge_index_status s CROSS JOIN LATERAL jsonb_each(s.errors) e WHERE tenant=$1 ORDER BY e.key LIMIT 16").bind(&t).fetch_all(&a.db).await?;
     Ok(Json(
-        json!({"indexedProducts":rows.len(),"documents":rows.iter().map(|r|json!({"productId":r.get::<String,_>("product_id"),"model":r.get::<String,_>("embedding_model"),"contentHash":r.get::<String,_>("content_hash"),"vectorDigest":r.get::<String,_>("vector_digest")})).collect::<Vec<_>>()}),
+        json!({"indexedProducts":status.as_ref().map(|r|r.get::<i64,_>("indexed_products")).unwrap_or(0),"pending":status.as_ref().map(|r|r.get::<i64,_>("pending_jobs")).unwrap_or(0),"errors":errors,"documentsLimit":200,"documents":rows.iter().map(|r|json!({"productId":r.get::<String,_>("product_id"),"model":r.get::<String,_>("embedding_model"),"contentHash":r.get::<String,_>("content_hash"),"vectorDigest":r.get::<String,_>("vector_digest")})).collect::<Vec<_>>()}),
     ))
 }
 fn embedding_model() -> String {
@@ -37,31 +44,36 @@ pub(super) async fn retrieve(a: &App, t: &str, q: &str) -> Result<Value> {
     if q.is_empty() || q.len() > 2000 {
         return Err(bad("Query must contain 1..2000 characters"));
     }
-    let (endpoint, key, _) = a.inference.connection("ollama").await.unwrap_or_default();
     let model = embedding_model();
     let count: i64 = sqlx::query_scalar(
-        "SELECT count(*) FROM semantic_products WHERE tenant=$1 AND embedding_model=$2",
+        "SELECT CASE WHEN EXISTS(SELECT 1 FROM semantic_products WHERE tenant=$1 AND embedding_model=$2) THEN 1::bigint ELSE 0::bigint END",
     )
     .bind(t)
     .bind(&model)
     .fetch_one(&a.db)
     .await?;
-    let vector = if count > 0 && !endpoint.is_empty() {
-        knowledge::embedding(
-            &a.http,
-            &endpoint,
-            key.as_deref(),
-            &model,
+    let vector = if count > 0 {
+        cognition::indexing::query_embedding(
+            a,
+            t,
             &format!("Instruct: Retrieve suitable commerce products.\nQuery: {q}"),
         )
         .await
-        .ok()
     } else {
         None
     };
     let mut result = knowledge::search(&a.db, t, q, vector, &model).await?;
+    if env::var("RERANKER_URL").is_ok()
+        && let Ok(_slot) = a.inference_slots.clone().try_acquire_owned()
+        && let Ok(_lease) =
+            crate::performance::cluster_lease::Lease::acquire(a, t, "reranker", 1).await
+        && let Some(hits) = result["hits"].as_array_mut()
+    {
+        let reranked = knowledge::rerank::apply(t, q, hits, &a.db).await;
+        result["reranked"] = json!(reranked);
+    }
     result["embeddingModel"] = json!(model);
-    result["indexedProducts"] = json!(count);
+    result["hasIndexedProducts"] = json!(count > 0);
     Ok(result)
 }
 pub(super) async fn semantic_search(
@@ -75,39 +87,14 @@ pub(super) async fn semantic_search(
 }
 pub(super) async fn reindex(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
-    let (endpoint, key, _) = a.inference.connection("ollama").await.map_err(bad)?;
-    let model = embedding_model();
-    let mut count = 0;
-    let ps = prototype_products(&a, &t).await?;
-    if ps.len() > 100 {
-        return Err(bad("Prototype indexing batch is limited to 100 products"));
-    }
-    for p in ps {
-        let doc = format!("{}\n{}\n{}", p.name, p.category, p.description);
-        let digest = hash(&doc);
-        let current:bool=sqlx::query_scalar("SELECT EXISTS(SELECT 1 FROM semantic_products WHERE tenant=$1 AND product_id=$2 AND content_hash=$3 AND embedding_model=$4)").bind(&t).bind(&p.id).bind(&digest).bind(&model).fetch_one(&a.db).await?;
-        if current {
-            continue;
-        }
-        let embedding = knowledge::embedding(&a.http, &endpoint, key.as_deref(), &model, &doc)
-            .await
-            .map_err(|e| Error(StatusCode::BAD_GATEWAY, e))?;
-        sqlx::query("INSERT INTO semantic_products(tenant,product_id,revision,embedding,embedding_model,content_hash) VALUES($1,$2,$3,$4,$5,$6) ON CONFLICT(tenant,product_id) DO UPDATE SET revision=EXCLUDED.revision,embedding=EXCLUDED.embedding,embedding_model=EXCLUDED.embedding_model,content_hash=EXCLUDED.content_hash,updated_at=now()").bind(&t).bind(&p.id).bind(p.revision).bind(embedding).bind(&model).bind(digest).execute(&a.db).await?;
-        count += 1;
-    }
-    let synchronized = knowledge::vectors::drain(&a.db).await.is_ok();
-    let pending: i64 =
-        sqlx::query_scalar("SELECT count(*) FROM vector_index_queue WHERE tenant=$1")
-            .bind(&t)
-            .fetch_one(&a.db)
-            .await?;
+    let queued = cognition::indexing::enqueue(&a, &t, None).await?;
     Ok(Json(
-        json!({"indexed":count,"model":model,"engine":"Qdrant","dimensions":1024,"synchronized":synchronized && pending == 0,"pending":pending}),
+        json!({"queued":queued,"indexed":0,"model":embedding_model(),"engine":"Qdrant","asynchronous":true}),
     ))
 }
 pub(super) async fn conversations(State(a): State<App>, h: RequestContext) -> Result<Json<Value>> {
     let t = merchant(&a, &h)?;
-    let rows=sqlx::query("SELECT id,title,created_at::text AS created_at FROM conversations WHERE tenant=$1 ORDER BY created_at DESC LIMIT 40").bind(t).fetch_all(&a.db).await?;
+    let rows=sqlx::query("SELECT id,title,created_at::text AS created_at FROM conversations WHERE tenant=$1 ORDER BY created_at DESC LIMIT 40").bind(&t).fetch_all(&a.db).await?;
     Ok(Json(
         json!({"conversations":rows.iter().map(|r|json!({"id":r.get::<String,_>("id"),"title":r.get::<String,_>("title"),"createdAt":r.get::<String,_>("created_at")})).collect::<Vec<_>>()}),
     ))

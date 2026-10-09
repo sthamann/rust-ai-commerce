@@ -34,3 +34,9 @@ real PostgreSQL ownership, immutable receipts and live delivery transitions.
 `developer_documents.py` additionally verifies paid digital entitlements and
 foreign/anonymous rejection. See [operations](../../../../docs/merchant-operations.md)
 and [testing](../../../../docs/testing.md) for boundaries and commands.
+
+`ShoppingPreferences.tsx` adds consent-bound private cart-context memory to the
+profile. It preserves unrelated graph nodes, defaults AI sharing off and exposes
+the same native revision/export/delete operations. `preference-i18n.ts` supplies
+translated controls; tests include denied consent, deletion after withdrawal and
+stale saves. This is not authenticated cross-device customer memory.

@@ -39,6 +39,11 @@ def sql(statement):
     )
 
 
+suites = json.loads((ROOT / "scripts/testing/suites.json").read_text())
+if args.only:
+    assert set(args.only) <= {s for group in suites.values() for s in group}, "Only registered suites can be selected"
+    suites = {group: [s for s in names if s in args.only] for group, names in suites.items()}
+
 if not args.existing_database:
     sql(f'CREATE DATABASE "{name}";')
 with socket.socket() as probe:
@@ -75,10 +80,6 @@ env.update({
 })
 for key in ("LIVE_STUDIO", "LIVE_MODEL", "OPENAI_API_KEY", "ANTHROPIC_API_KEY"):
     env.pop(key, None)
-suites = json.loads((ROOT / "scripts/testing/suites.json").read_text())
-if args.only:
-    assert set(args.only) <= {s for group in suites.values() for s in group}, "Only registered suites can be selected"
-    suites = {group: [s for s in names if s in args.only] for group, names in suites.items()}
 logs = ROOT / "artifacts"
 logs.mkdir(exist_ok=True)
 try:

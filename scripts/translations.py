@@ -7,7 +7,12 @@ behavior={'reject':False,'invalid':False};captured=[]
 class Handler(BaseHTTPRequestHandler):
  def log_message(self,*args):pass
  def do_POST(self):
-  body=json.loads(self.rfile.read(int(self.headers['Content-Length'])));captured.append(body)
+  body=json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+  if self.path=='/api/embed':
+   vectors=[[1.0]+[0.0]*1023 for _ in body['input']]
+   self.send_response(200);self.send_header('Content-Type','application/json');self.end_headers();self.wfile.write(json.dumps({'embeddings':vectors}).encode());return
+  assert self.path in ['/api/chat','/v1/responses','/v1/messages'],self.path
+  captured.append(body)
   if behavior['reject']:self.send_response(429);self.end_headers();return
   prompt=json.loads(body['input'] if 'input'in body else body['messages'][-1]['content']);assert prompt['targetLocale']=='it-IT'
   entries=[{'path':v['path'],'text':'IT '+v['text']}for v in prompt['texts']]

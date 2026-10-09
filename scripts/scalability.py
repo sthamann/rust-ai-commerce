@@ -14,9 +14,15 @@ base=os.getenv('BASE_URL','http://127.0.0.1:8787');checks=[]
 
 def call(path,body=None,headers=None,expected=200,method=None):
     request=urllib.request.Request(base+path,data=None if body is None else json.dumps(body).encode(),headers={'Content-Type':'application/json',**(headers or {})},method=method)
-    try:
-        with urllib.request.urlopen(request,timeout=30) as response:status=response.status;data=json.load(response)
-    except urllib.error.HTTPError as response:status=response.code;data=json.load(response)
+    # Admission rejects before the handler. Preserve the identical revision/body
+    # and retry only explicit transient capacity rejection, never a conflict or timeout.
+    for attempt in range(20):
+        try:
+            with urllib.request.urlopen(request,timeout=30) as response:status=response.status;data=json.load(response)
+        except urllib.error.HTTPError as response:status=response.code;data=json.load(response)
+        if status!=429 or expected==429:break
+        assert data['errors'][0]['detail'] in ['Workspace concurrency limit reached across service replicas; retry shortly','Resource concurrency limit reached'],data
+        time.sleep(.05*(attempt+1))
     assert status==expected,(path,status,data)
     return data
 
@@ -135,7 +141,7 @@ def competing_edit(_):
     except urllib.error.HTTPError as response:return response.code
 with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:statuses=list(pool.map(competing_edit,range(8)))
 assert statuses.count(200)==1 and statuses.count(409)==7,statuses
-ok('32 concurrent independent cart edits avoid pool exhaustion; competing revisions commit exactly once')
+ok('32 concurrent independent cart edits complete with bounded admission retry; competing revisions commit exactly once')
 time.sleep(1.3)
 assert int(sql(f"SELECT calls FROM channel_metrics WHERE tenant='{tenant}' AND channel='storefront';"))>=100
 ok('Batched diagnostic counters reach PostgreSQL without a database task per request')

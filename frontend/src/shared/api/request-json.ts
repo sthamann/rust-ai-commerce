@@ -3,6 +3,7 @@ import {
   reportMerchantSessionFailure,
   merchantRequestSuspended,
 } from "./merchant-session";
+import { readAgentStream } from "./agent-stream";
 type JsonResponse = {
   value: any;
   ok: boolean;
@@ -55,17 +56,21 @@ export async function requestJson(
   if (existing) return structuredClone(await existing);
   const operation = (async () => {
     const response = await fetch(path, init);
-    const value = await response.json();
+    const value =
+      response.ok &&
+      response.headers?.get("content-type")?.includes("text/event-stream")
+        ? await readAgentStream(response)
+        : await response.json();
     reportMerchantSessionFailure(
       path,
       init.headers,
-      response.status,
+      value.errors?.[0]?.status ?? response.status,
       value.errors?.[0]?.detail,
     );
     return {
       value,
-      ok: response.ok,
-      status: response.status,
+      ok: response.ok && !value.errors,
+      status: value.errors?.[0]?.status ?? response.status,
       statusText: response.statusText,
     };
   })();

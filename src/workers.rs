@@ -55,6 +55,17 @@ pub(crate) fn start(a: &App) {
         });
     }
     if ["all", "memory-worker"].contains(&role.as_str()) {
+        let indexer = a.clone();
+        vendune::tenant_scope::spawn(async move {
+            let mut ticks = work_signal::subscribe();
+            loop {
+                ticks.tick().await;
+                match cognition::indexing::index_once(&indexer).await {
+                    Ok(worked) => ticks.worked(worked),
+                    Err(e) => eprintln!("embedding worker status={}", e.0.as_u16()),
+                }
+            }
+        });
         let worker = a.clone();
         vendune::tenant_scope::spawn(async move {
             let mut ticks = work_signal::subscribe();

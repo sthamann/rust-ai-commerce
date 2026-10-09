@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "claim": "40 extracted production policies; surrounding modules remain unproved",
+  "claim": "45 extracted production policies; surrounding modules remain unproved",
   "policies": {
     "discount_cap": {
       "bindings": [
@@ -383,6 +383,45 @@
         "app_callback_exact",
         "app_callback_without_consent_denied"
       ]
+    },
+    "ai_price_admissible": {
+      "bindings": [
+        "src/cognition/guardrails.rs"
+      ],
+      "theorems": [
+        "ai_price_exact",
+        "ai_price_locked_denied"
+      ]
+    },
+    "ai_autonomy_admissible": {
+      "bindings": [
+        "src/cognition/autonomy.rs",
+        "src/cognition/guardrails.rs"
+      ],
+      "theorems": [
+        "ai_autonomy_exact",
+        "ai_autonomy_disabled_denied"
+      ]
+    },
+    "claim_render_admissible": {
+      "bindings": [
+        "src/cognition/contracts.rs",
+        "src/cognition/claim_batches.rs"
+      ],
+      "theorems": [
+        "claim_render_exact",
+        "claim_unconfirmed_denied"
+      ]
+    },
+    "experiment_result_admissible": {
+      "bindings": [
+        "src/cognition/experiments/model.rs"
+      ],
+      "theorems": [
+        "experiment_result_exact",
+        "experiment_immature_denied",
+        "experiment_undersized_denied"
+      ]
     }
   },
   "sources": {
@@ -438,8 +477,8 @@
     },
     "src/agent.rs": {
       "status": "unproved",
-      "sha256": "d096a83c15df8539a71de192138ef9e98b711ea887f8adfe68ddd09c432bc883",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "2df29e2142aa4c39751272a2c0557ffe91f27f28d6a7edd94d10b99ace1c8ab3",
+      "review": "Reviewed current-source answer fence against native tenant/publication/archive/revision/hash/chunk/locale and exact product snapshot; delayed uncited provider HTTP regressions reject withdrawal/reassignment/product mutation. Registered saved-fact indexes and transactional rebuildable diagnostic deltas; isolated PostgreSQL/Qdrant tests cover 1000-job backfill, concurrent deltas/reset/delete/tenant separation. 184 Rust unit checks and format/clippy pass; SQL/async boundary remains outside extracted proofs."
     },
     "src/apps/approval.rs": {
       "status": "reviewed-binding",
@@ -513,8 +552,8 @@
     },
     "src/apps/event_projection.rs": {
       "status": "unproved",
-      "sha256": "d0ed06fe86f524875e5d0b6ff6fedf4102a90e4c81f98910b014d5e262394a90",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "9a127e571853a88bd0d70b07500343a3bf210e80d7569015260a12aef5038f66",
+      "review": "Reviewed cognitive source intake, geometry and lease fences, bounded read-agent dispatch, current evidence/compiler bindings, native guardrails/autonomy, delayed consent-bound payment experiments, minimized intelligence event projections and Flow/catalogue consumers. Real PostgreSQL/Qdrant isolation, source-change/restart, withdrawal/cache and provider fixtures plus Rust units validate contracts; SQL/statistics/provider truth remain outside Lean."
     },
     "src/apps/events.rs": {
       "status": "unproved",
@@ -923,23 +962,28 @@
     },
     "src/bin/verified_kernel.rs": {
       "status": "conformance-driver",
-      "sha256": "00cbbf3adcd0a5d98eb9c6a439bd9f8c16075e1f932a554d7d1aee9bd65d6cc0",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "606173e574339bb72a188dc25483ffcb2346c5df59334a6545f7e619314508f1",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/bootstrap.rs": {
       "status": "unproved",
-      "sha256": "276b24ef9f3c323723c316ed5c252a5d822795e52d1dc9e7686ab148255a1162",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "56f228a0baa6d45df2efb82ce3729b86c5ac8717d409e2a71c902081ca8ee081",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/capabilities/catalog.rs": {
       "status": "unproved",
-      "sha256": "3007857042350bb5f206f180074a9d9a93459f037f5ea52856ee43e520c3d456",
-      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+      "sha256": "6415c967eacb6742464f032f32240eb3f0a0064d6da0df95bd85bae070a89ae0",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/capabilities/core_catalog.rs": {
+      "status": "unproved",
+      "sha256": "b697bf253943b3db33a1e1edb0a6bc706bc02b78f7faec22d75b548bb9082921",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/capabilities.rs": {
       "status": "unproved",
-      "sha256": "fe56ef3d70d387830959989a5ea380c4cd44c3a32749ecaca885f7652f5e34f8",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "e17b8f5e9a23e6209057b539fedc59d6926627ea7812b124f1c27724fac53648",
+      "review": "Reviewed saved category fact schema, tenant-bound current-source SQL, partial candidate indexes and shared MCP planning quota. Native catalog tests cover review/privacy/revision withdrawal, locale inheritance, confidence, channels, foreign tenants, literal wildcard semantics, CAS and selective staging; provider tests use the centrally encrypted shared replica configuration and quota rejection before model invocation."
     },
     "src/cart_model.rs": {
       "status": "unproved",
@@ -973,8 +1017,8 @@
     },
     "src/catalog_page.rs": {
       "status": "unproved",
-      "sha256": "e1164574817c1fb37382d0aa2ba93f6e52c08f5bb6a92e4400b80ce26d87b735",
-      "review": "Reviewed tenant-bound catalog/category CRUD, composite FKs and indexed pre-pagination filters; rich document allowlist; shared HTTP/MCP permissions; active/channel admission under checkout locks; committed product events; category/product staging dependency order and live inventory preservation. Existing Lean policy bodies unchanged. New adapters remain unproved; native catalog/MCP/flow/upload/release and commerce/account/operations/protocol/scalability regressions exercise consumers."
+      "sha256": "c96ca650d9d37cf4b7b768a66cdc2de54459d70b570ff7a3ebd5bbf99ade02ce",
+      "review": "Reviewed saved category fact schema, tenant-bound current-source SQL, partial candidate indexes and shared MCP planning quota. Native catalog tests cover review/privacy/revision withdrawal, locale inheritance, confidence, channels, foreign tenants, literal wildcard semantics, CAS and selective staging; provider tests use the centrally encrypted shared replica configuration and quota rejection before model invocation."
     },
     "src/catalog_routes.rs": {
       "status": "unproved",
@@ -983,13 +1027,18 @@
     },
     "src/categories/admin.rs": {
       "status": "unproved",
-      "sha256": "24e2eddf82d30424b0c84550a76eee30ec83e401d9fd7589e41c6d5095c52b78",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "9e44667039f28ab790e85237b4a3257d3e07d2c90afdfe69d8f2133596c4b5e6",
+      "review": "Reviewed saved category fact schema, tenant-bound current-source SQL, partial candidate indexes and shared MCP planning quota. Native catalog tests cover review/privacy/revision withdrawal, locale inheritance, confidence, channels, foreign tenants, literal wildcard semantics, CAS and selective staging; provider tests use the centrally encrypted shared replica configuration and quota rejection before model invocation."
+    },
+    "src/categories/graph_query.rs": {
+      "status": "unproved",
+      "sha256": "91816855196d739b9163cd9917fa4c01a85083cd877d752bbfe17efa388aa430",
+      "review": "Reviewed saved category fact schema, tenant-bound current-source SQL, partial candidate indexes and shared MCP planning quota. Native catalog tests cover review/privacy/revision withdrawal, locale inheritance, confidence, channels, foreign tenants, literal wildcard semantics, CAS and selective staging; provider tests use the centrally encrypted shared replica configuration and quota rejection before model invocation."
     },
     "src/categories/mod.rs": {
       "status": "unproved",
-      "sha256": "8b4f15db482a8eea533cfb14338183cb7f2d4800e866657d0f780b3f0bb053f4",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "5db2820081a36caf2576eecab14debd16a65b471a8697d11228401fcd7f9f7f8",
+      "review": "Reviewed saved category fact schema, tenant-bound current-source SQL, partial candidate indexes and shared MCP planning quota. Native catalog tests cover review/privacy/revision withdrawal, locale inheritance, confidence, channels, foreign tenants, literal wildcard semantics, CAS and selective staging; provider tests use the centrally encrypted shared replica configuration and quota rejection before model invocation."
     },
     "src/categories/navigation.rs": {
       "status": "unproved",
@@ -1016,15 +1065,75 @@
       "sha256": "215e6f4e645a7080239da9a0b19a6573c4e71d2c79b6e28d01670312c0164007",
       "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
     },
+    "src/cognition/autonomy.rs": {
+      "status": "reviewed-binding",
+      "sha256": "b856f7cd5c77ba45a26aa7a859f7175b4e7ac8f47deb5372089374a6a02d8ce5",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/cognition/claim_batches.rs": {
+      "status": "reviewed-binding",
+      "sha256": "9ce3a0dca6793519167e9b5874741a82b4019c23834324f75011613688e8529c",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
     "src/cognition/context.rs": {
       "status": "unproved",
-      "sha256": "23a67a8c60faf7bbdde6341c817dc28fefbaa7a641f9d3171008d2fc4d795708",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "96f85655e6af43166735f9998eeee791492e5aa62ef77c17209b1c9e0fc81a7f",
+      "review": "Reviewed document SQL source association and shared grounded context, separate bounded read-decision/final phases with canonical schema and rights dispatch, public/private tool bounds, no write execution; Rust lint/unit checks and current native source-association/provider regression evidence. Model adherence, semantic truth, SQL and asynchronous effects remain unproved."
+    },
+    "src/cognition/contracts.rs": {
+      "status": "reviewed-binding",
+      "sha256": "50fab34ed5c1f3633d0f365fdc52e2a90cee5beae8e6145d09b5e24c1b5b154f",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/cognition/evidence.rs": {
+      "status": "unproved",
+      "sha256": "4db1f892764345b0fdde475a6ca9648b35613865b2b09214b116f538f65ec66e",
+      "review": "Reviewed evidence.rs confidence validation before writes: omitted prior 0.5 retained; supplied null/string/boolean/container/out-of-range scores rejected. Native knowledge_workspace confirms no partial claim insertion and normal quote/source/revision lifecycle; unit boundaries and Clippy pass. SQL/semantic truth remain unproved."
+    },
+    "src/cognition/experiments/mod.rs": {
+      "status": "unproved",
+      "sha256": "dc052b1f2b7385046afe5c89268abb10e90eb3968de468aecb0e3cb335f861a1",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/cognition/experiments/model.rs": {
+      "status": "reviewed-binding",
+      "sha256": "52498b85d648fb4bf43822764e86ebed3df87dc381b32d16c4c81a1f34021e22",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/cognition/experiments/report.rs": {
+      "status": "unproved",
+      "sha256": "93cd6f4097e7fcbaa9f5af094d9849ada61cbf21b5efcce11550689c9d4b29b7",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/cognition/extraction.rs": {
+      "status": "unproved",
+      "sha256": "dcca4834f537db9b42da692d7cba5205da32bbe9c0ad8cd0dfe85226aca4efdd",
+      "review": "Reviewed shared UTC-day quota extraction, SSE classification and native knowledge.extract pipeline; all Rust tests and Clippy pass, native provider checks prove HTTP/MCP/Flow quota parity, exact quotes, source-language handling and current actor revocation."
+    },
+    "src/cognition/generations.rs": {
+      "status": "unproved",
+      "sha256": "55c108a2f49568eeb74593d35fc4f97e2a02d1597b85f35a2abcb1e41a0c250b",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/cognition/guardrails.rs": {
+      "status": "reviewed-binding",
+      "sha256": "ed0f255ab43a30804e437ba6e2f5bc29deffe05b130d41b2f117d94d46b90635",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/cognition/indexing.rs": {
+      "status": "unproved",
+      "sha256": "56a7b923c7edc44f82459fcdf19bcaf14d52e7ccddc21d81ef790929625dce96",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/cognition/mod.rs": {
       "status": "unproved",
-      "sha256": "dafd22df738bedcb17fae2964de7e49294bb796698c48fc14c2296f29586ab5a",
-      "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+      "sha256": "af25f6b5da308a1d4033b302fd6045749225c8a18572caf446d80bbad5b275be",
+      "review": "Reviewed shared UTC-day quota extraction, SSE classification and native knowledge.extract pipeline; all Rust tests and Clippy pass, native provider checks prove HTTP/MCP/Flow quota parity, exact quotes, source-language handling and current actor revocation."
+    },
+    "src/cognition/preferences.rs": {
+      "status": "unproved",
+      "sha256": "ea23606d332dc777118029fe84b2085248831164186d9bbd15f00fa8fc113057",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/cognition/projection.rs": {
       "status": "unproved",
@@ -1038,8 +1147,23 @@
     },
     "src/cognition/routes.rs": {
       "status": "unproved",
-      "sha256": "0de663b6b053f66aec790d93d7bf7023ac82c5ef8d7d8d319d48cf202781a2ee",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "d400543cdd25893c13ff2973179e152bf7ab716659e3c2dc21129604385edc93",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/cognition/signed.rs": {
+      "status": "unproved",
+      "sha256": "80f9ec6a965b0ef947bf47d016dc395f492a639fb427dac0010e8975c8ce160e",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/cognition/stream.rs": {
+      "status": "unproved",
+      "sha256": "0b7b0bfcbaa489d8d12ddd7521c34655ead59b0235142c38501949b73adda097",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/cognition/tools.rs": {
+      "status": "unproved",
+      "sha256": "2dc4428baf451bd8cb837fb438b7c23109a89fc4f0424c23ff18628a40fba92e",
+      "review": "Reviewed document SQL source association and shared grounded context, separate bounded read-decision/final phases with canonical schema and rights dispatch, public/private tool bounds, no write execution; Rust lint/unit checks and current native source-association/provider regression evidence. Model adherence, semantic truth, SQL and asynchronous effects remain unproved."
     },
     "src/commerce/app_adjustments.rs": {
       "status": "unproved",
@@ -1218,8 +1342,8 @@
     },
     "src/commerce/settings_validation.rs": {
       "status": "unproved",
-      "sha256": "0c26345453c56afe7f974767203966ae75ac1d6de6ff80f16a1b07375daecf96",
-      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+      "sha256": "148c76e403fe6436d680f4b769be0b11558b2079d1e318baafc495d4420b5ff3",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/commerce/tax.rs": {
       "status": "unproved",
@@ -1238,8 +1362,8 @@
     },
     "src/commerce/types.rs": {
       "status": "unproved",
-      "sha256": "f8c3a0d93a9cfd12bdb4cdf7ed3477aca2671f986daa45db86a6447fe0e97ba0",
-      "review": "Reviewed multi-currency admission, rational FX boundaries, immutable monetary source, additive ledger scale/RLS migrations, shared API/MCP/UCP paths and local provider/refund evidence. Only bounded policies are proved; FX, DB, network adapters and full commerce remain unproved."
+      "sha256": "bcd49f721f111149ccf095634ed605583db0edf4a8f734a9e808868d26a4ecbd",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/component_runtime.rs": {
       "status": "unproved",
@@ -1248,8 +1372,8 @@
     },
     "src/concierge.rs": {
       "status": "unproved",
-      "sha256": "ed7da36d7251d9a8f5b3741153e4840999c24e76cfef3163ad0bf71893aa563f",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "51d218f5acabf1fdd847f3d864665c22c6e83fa3b8d98ce64ee48f0dcd6f9413",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/connectors/actions.rs": {
       "status": "unproved",
@@ -1488,13 +1612,13 @@
     },
     "src/documents/questions.rs": {
       "status": "unproved",
-      "sha256": "d7cc78a850da0ac88f9560675241f9e2222c714dacf2979fca9c6cc3afe3f16a",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "25a067a8b4e53c592dc68ea50824e131c8a7bf468ea0aac82afce35ee2558f7f",
+      "review": "Reviewed current-source answer fence against native tenant/publication/archive/revision/hash/chunk/locale and exact product snapshot; delayed uncited provider HTTP regressions reject withdrawal/reassignment/product mutation. Registered saved-fact indexes and transactional rebuildable diagnostic deltas; isolated PostgreSQL/Qdrant tests cover 1000-job backfill, concurrent deltas/reset/delete/tenant separation. 184 Rust unit checks and format/clippy pass; SQL/async boundary remains outside extracted proofs."
     },
     "src/documents/retrieval.rs": {
       "status": "unproved",
-      "sha256": "824d4be350b8b12b4b1e5d2038c03f8e12bddd03fa903a459b9b0de9e6abe40d",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "9740f436b065e612d7d30140741338ea59d9cc13cf71f61c30499cfd2c7db704",
+      "review": "Reviewed current-source answer fence against native tenant/publication/archive/revision/hash/chunk/locale and exact product snapshot; delayed uncited provider HTTP regressions reject withdrawal/reassignment/product mutation. Registered saved-fact indexes and transactional rebuildable diagnostic deltas; isolated PostgreSQL/Qdrant tests cover 1000-job backfill, concurrent deltas/reset/delete/tenant separation. 184 Rust unit checks and format/clippy pass; SQL/async boundary remains outside extracted proofs."
     },
     "src/documents/tools.rs": {
       "status": "unproved",
@@ -1503,13 +1627,13 @@
     },
     "src/documents/workspace.rs": {
       "status": "unproved",
-      "sha256": "ea9c53e47775b609489762d7962cf6935d7026ff15f167d07f343fc5fcc9b1c4",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "fb37086ac9822a1a80c68602c47af23510b415c67b0dee78c07346c1692f1d2c",
+      "review": "Reviewed cognitive source intake, geometry and lease fences, bounded read-agent dispatch, current evidence/compiler bindings, native guardrails/autonomy, delayed consent-bound payment experiments, minimized intelligence event projections and Flow/catalogue consumers. Real PostgreSQL/Qdrant isolation, source-change/restart, withdrawal/cache and provider fixtures plus Rust units validate contracts; SQL/statistics/provider truth remain outside Lean."
     },
     "src/experience.rs": {
       "status": "unproved",
-      "sha256": "f6680a1cbeec42f9583fcb55a30e9d6a679a59647a090ca28883ebf4115dde27",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "20513bbbaff405e5d1d34174402893c2f644f52ef9f5502def0741b420909a1d",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/extensions.rs": {
       "status": "unproved",
@@ -1546,10 +1670,20 @@
       "sha256": "07c93e1e4f6e2546561296e86e8818eb6929d94152ed861bf4549c7166f23373",
       "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
     },
+    "src/http_json.rs": {
+      "status": "unproved",
+      "sha256": "c9c23ab20e85f30bfcd1ea71d7df7bf4fee87443166d87e8052d3a18dbaf879e",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
     "src/http_limits.rs": {
       "status": "unproved",
       "sha256": "6085e1f3f2e6cb7b8dadc039c99dc925dd061a2e74c1ce55e363fa9db3bc12d2",
       "review": "Initial extraction of 13 production policies; surrounding Rust explicitly unproved; existing HTTP regression suites retained"
+    },
+    "src/inference/protocol.rs": {
+      "status": "unproved",
+      "sha256": "6dd7f408c93b9c972e34d211ed54fe9cc11847af709392eca19a1be492dff13b",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/inference/schema.rs": {
       "status": "unproved",
@@ -1568,28 +1702,43 @@
     },
     "src/inference.rs": {
       "status": "unproved",
-      "sha256": "f7120af00da2edebe191d63856e647fe408f1c7ace7d77a7680e33891ae8d59a",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "237828f7b72007d08534e502d5b66fa2c218830102573f91257258327b461697",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/knowledge/embeddings.rs": {
+      "status": "unproved",
+      "sha256": "2ebf5812803de9c7a3eb79304ed59e57a2b0fe72c9f64db733f003be5ea34c8e",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/knowledge/relations.rs": {
       "status": "unproved",
       "sha256": "0070745318d1d8cd4a4d95a563a231a75602e8e6c2c1a7ce4d3b667247a3e5c3",
       "review": "Reviewed tenant-scoped fashion fixture provisioning, opt-in idempotent demo seeding and curated catalog-specific links; Rust lint and units pass, actual signup/locale/variant/image/isolated checkout/fresh-process HTTP regressions pass. No business-policy or proof-boundary changes."
     },
+    "src/knowledge/rerank.rs": {
+      "status": "unproved",
+      "sha256": "3f386e315a0f18f53c132a47dbdc4995d8a3420bca3e4838761548e6e9216d57",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
     "src/knowledge/search.rs": {
       "status": "unproved",
-      "sha256": "e48c48635dc8255fd19d7d88388f1c7fb8f155dc944f45f8e83edf2be04616d6",
-      "review": "Reviewed final multi-currency consumers, additive ledger precision and tenant job RLS, rational draft/server FX, source-currency-labelled knowledge prices, immutable invoice reporting and exact local adapter/refund evidence. Bounded policy proof only; no full-server certification."
+      "sha256": "a592a2879e24d39841f9c4ae112f14c503fac1580e27814c078389e12921be44",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/knowledge/vector_cache.rs": {
+      "status": "unproved",
+      "sha256": "c9b79364aa0eab1a7f42e3d0fa0f2392c1615aeff8e46f6007479464dec67022",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/knowledge/vectors.rs": {
       "status": "unproved",
-      "sha256": "806d94b0df1e4f18504da7878d83a98992d26c019063795137d11fd60aac5806",
-      "review": "Reviewed all changed Rust, append-only schemas, build/extraction and Lean inputs: lease hooks bind new/reused connections and reset on release; strict runtime rejects owner/bypass/TRUNCATE and preserves app-schema ownership; two-replica non-owner PostgreSQL tests deny forged foreign writes, enforce operator quotas and parent-stage daily usage, release persisted allocation quantities once despite corrupted snapshots, and distinguish commit from rollback invalidation. Money retains legacy EUR rounding with explicit scale and original Shopware differential; receipt-backed state admission is monotonic with late capture/refund. Async SQL/provider code remains unproved. Rust 113 tests, staging/app/automation/settings and strict checkout/CRM/tenant regressions passed; 274 frontend tests and production build passed."
+      "sha256": "b8df7a365b6b8c6d428d94f865714a89262179b2d33c939b726721f1a9b207b3",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/knowledge.rs": {
       "status": "unproved",
-      "sha256": "2f3bc219d7fcfcc5c9c5fa9c7f8b016bbc494adffecbc95b988fca8f42dfe328",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "589ac40c9f49816b66148d60e96392651fff2bd537b2b5a2c8095b401a9a7c37",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/legal/capabilities.rs": {
       "status": "unproved",
@@ -1603,8 +1752,8 @@
     },
     "src/legal/consent.rs": {
       "status": "reviewed-binding",
-      "sha256": "ab5bd32ead1fdec0f6c0f3354d2f9d15d9cb7c14ddfdb92dc52f17f15cd36e79",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "d3236bb9d29703b78156cb3429c1ac8246f948a8fab5588bb884f25dd7594652",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/legal/mod.rs": {
       "status": "unproved",
@@ -1628,8 +1777,8 @@
     },
     "src/lib.rs": {
       "status": "unproved",
-      "sha256": "3826d12ba3bfad20b84d6ba138394c27d0d2e54ec147a5be6a6fa30c478edd55",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "ba09f4878f56c00073f73fde9eb121946a6ca532d4570b83020d94a8cb59b894",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/localization.rs": {
       "status": "unproved",
@@ -1663,8 +1812,8 @@
     },
     "src/marketing/channels.rs": {
       "status": "unproved",
-      "sha256": "af49a98ae708239f28ca6dc22e16b0196a6d2a7a27cf146fd2fd67a5165cf358",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "5a5532abd715e07d3224e96b19a97a9b17aa92a5658ff06eae1dd46cd231b423",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/marketing/condition_gateway.rs": {
       "status": "unproved",
@@ -1693,8 +1842,8 @@
     },
     "src/marketing/flow_actions.rs": {
       "status": "unproved",
-      "sha256": "c1826d93b91b07ab8c3ccc4a7a00fa14a616e5de7478d654af142126a3cec1cf",
-      "review": "Reviewed assistant contracts, required tenant references, additive choices, MCP-only ingress and authorized grounding/selected app proposals. Merchant/chat/flow authority reaches both bind and approval; local model fixtures reject scope bypass and private grounding. Async adapters remain unproved."
+      "sha256": "702b3335af915f85b636d32df8313aea0904fc51366880a3d129adae194f459e",
+      "review": "Reviewed shared UTC-day quota extraction, SSE classification and native knowledge.extract pipeline; all Rust tests and Clippy pass, native provider checks prove HTTP/MCP/Flow quota parity, exact quotes, source-language handling and current actor revocation."
     },
     "src/marketing/flow_mutations.rs": {
       "status": "unproved",
@@ -1708,8 +1857,8 @@
     },
     "src/marketing/flows.rs": {
       "status": "unproved",
-      "sha256": "16f624e1fb20e7217024c6671665c3a04775abfae978bfac4da03ba59a456674",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "da0664518b3ca8a55732afcd8c6a29f5ec787a0a66518ada460bfa68fcb6a9b7",
+      "review": "Reviewed shared UTC-day quota extraction, SSE classification and native knowledge.extract pipeline; all Rust tests and Clippy pass, native provider checks prove HTTP/MCP/Flow quota parity, exact quotes, source-language handling and current actor revocation."
     },
     "src/marketing/gateway.rs": {
       "status": "unproved",
@@ -1753,8 +1902,8 @@
     },
     "src/marketing/pipeline_tests.rs": {
       "status": "unproved",
-      "sha256": "935506a27ac45da63358801e124baa6aa8e245bd5c4db452a9ba4b4b8e62148a",
-      "review": "Reviewed source-named native scopes and strict missing-fact propagation, tenant-owned private metadata and indexed frozen rule references, bounded acyclic flow graph admission, current actor rechecks, stable local effect receipts and uncertain external step handling, persistent cursors/delays and isolated per-flow projection failures. Additive migration 025 and chrono dependencies reviewed; 432 original PHP class comparisons and real branch/delay/state/tag/custom-field/invoice/replay/revocation regressions pass. Extracted exact XOR and thirty-day delay guards with negative mutations; SQL, async runtime and full rule interpreter remain unproved."
+      "sha256": "c075cdfffec24d8146bc635ac98cb909c3af6503b07aac8ee27596c1150cd145",
+      "review": "Reviewed shared UTC-day quota extraction, SSE classification and native knowledge.extract pipeline; all Rust tests and Clippy pass, native provider checks prove HTTP/MCP/Flow quota parity, exact quotes, source-language handling and current actor revocation."
     },
     "src/marketing/promotions.rs": {
       "status": "unproved",
@@ -1763,8 +1912,8 @@
     },
     "src/marketing/routes.rs": {
       "status": "unproved",
-      "sha256": "cf1f9d3144c9ab77009069a85e57f747bee5cc8dfaa80b4f9697acdfe4c1e409",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "4d6ce594dd8d4544c173ab7dc65a33d630303a003327fafb3fc6880fa7aa83c7",
+      "review": "Reviewed shared UTC-day quota extraction, SSE classification and native knowledge.extract pipeline; all Rust tests and Clippy pass, native provider checks prove HTTP/MCP/Flow quota parity, exact quotes, source-language handling and current actor revocation."
     },
     "src/marketing/rule_fields.rs": {
       "status": "unproved",
@@ -1798,13 +1947,13 @@
     },
     "src/mcp.rs": {
       "status": "unproved",
-      "sha256": "cf3f876fc48ce8a34525613e1ec4011e15d0e80d7149801ce1a7c96f77022fcb",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "7cacc3b32b7a986d76176a0c9cfdfb3ecfd68fba6e43f0fedd7ea39ea1cbc630",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/migrations/schema.rs": {
       "status": "unproved",
-      "sha256": "d5a362d2e3d4b96efb081f02b050e22f9cb0dc67386952ea7a2283931a9ba1c0",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "62890c72bdaf85a94e75db1e45dffeb00b3bce20b5ee8a7de0cf0b81b656c3a9",
+      "review": "Reviewed current-source answer fence against native tenant/publication/archive/revision/hash/chunk/locale and exact product snapshot; delayed uncited provider HTTP regressions reject withdrawal/reassignment/product mutation. Registered saved-fact indexes and transactional rebuildable diagnostic deltas; isolated PostgreSQL/Qdrant tests cover 1000-job backfill, concurrent deltas/reset/delete/tenant separation. 184 Rust unit checks and format/clippy pass; SQL/async boundary remains outside extracted proofs."
     },
     "src/migrations.rs": {
       "status": "unproved",
@@ -2023,8 +2172,8 @@
     },
     "src/performance/admission.rs": {
       "status": "unproved",
-      "sha256": "9e9da6458a7de8d940f6102667dc82d910a508c9834073d9b080dab0aaa68b0f",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "8547918c07ac7fc37da32385fe162c92a7681cbe884f06fb1870d9dac853b008",
+      "review": "Reviewed shared UTC-day quota extraction, SSE classification and native knowledge.extract pipeline; all Rust tests and Clippy pass, native provider checks prove HTTP/MCP/Flow quota parity, exact quotes, source-language handling and current actor revocation."
     },
     "src/performance/cache.rs": {
       "status": "unproved",
@@ -2053,8 +2202,8 @@
     },
     "src/performance/mod.rs": {
       "status": "unproved",
-      "sha256": "d4e422da18a48e4c0894e1a5b7a232020e47c6c49b990be49706f7f13e2be8e6",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "b023c8b672bf9283f62bc57e0f737ea4b5744408b9d3d65a5e4283aac6b34d40",
+      "review": "Reviewed shared UTC-day quota extraction, SSE classification and native knowledge.extract pipeline; all Rust tests and Clippy pass, native provider checks prove HTTP/MCP/Flow quota parity, exact quotes, source-language handling and current actor revocation."
     },
     "src/performance/pool.rs": {
       "status": "unproved",
@@ -2073,8 +2222,8 @@
     },
     "src/planner.rs": {
       "status": "unproved",
-      "sha256": "748a5ee3ccf7d9647077960bbbd5cb05ed1f82d37e181ad03cafd70ae01926f3",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "c257b07cbb4ea939c40e5ff3f570108b0dc6d47b893c6700902231a5b14bdeff",
+      "review": "Reviewed evidence.rs supplied-confidence rejection and planner.rs separation of permission-filtered 32 KiB review projection from the 4 KiB modelAppContext; existing source/revision/app authority retained. Native app_surfaces verifies actual provider bytes, bounded review data, out-of-page revision binding and permission denial; knowledge_workspace verifies invalid scores persist no claims; 184 Rust tests and Clippy pass. No wider proof or semantic entailment claimed."
     },
     "src/platform/ai.rs": {
       "status": "reviewed-binding",
@@ -2138,8 +2287,8 @@
     },
     "src/proposal_apply.rs": {
       "status": "unproved",
-      "sha256": "cab5805d5aff85b18b51081ef54ca73915e4ecde5f2a122f6ce42218fa853406",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "cbb1de9e50835474931a1e76b0127fa037b49dc3443c97a0eef5ca226db9a2da",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/proposal_model.rs": {
       "status": "unproved",
@@ -2273,8 +2422,8 @@
     },
     "src/studio/facts.rs": {
       "status": "unproved",
-      "sha256": "852a795d8b828e48c23aae199b30b99b7254e77cd5c0c4e4aafb4795e734e9c3",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "ce72f28cb468f027b7a9a851c5cad576ccf524b06b9e965f424363e27270d91f",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/studio/revenue.rs": {
       "status": "unproved",
@@ -2283,8 +2432,8 @@
     },
     "src/studio.rs": {
       "status": "unproved",
-      "sha256": "e43f20f90da96394b24916ac9792f605897a94350a3086cc6449bc56b2573fd5",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "7ca93fcad2560711980dc22e55ab36de92f33528780fb41aa1408dc3ebe202f8",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/tenant_scope.rs": {
       "status": "unproved",
@@ -2323,8 +2472,8 @@
     },
     "src/verified_kernel.rs": {
       "status": "extracted-policy",
-      "sha256": "f1b7e16f78e01c34b5b87b0c7ae1e0f1fc81296bdd2a754b368b0dd025849220",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "e5abb51e071c249e0a65ac66ea8a43e4fd3f2c35c4904ec241b429bceb6e4359",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/work_signal.rs": {
       "status": "unproved",
@@ -2333,8 +2482,8 @@
     },
     "src/workers.rs": {
       "status": "unproved",
-      "sha256": "443a420f12ad6777ccf2b6663af4afdd25f5488bd0d2e16cad17efcfbfb81d2c",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "0b66cadf8b710d71cae3c7cdc80b7d101e66a84d05e8d25c4bd70908e98105f7",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     }
   },
   "inputs": {
@@ -2690,9 +2839,41 @@
       "sha256": "3394b610260712912119653ae2847d9e4b7a709d6e4a045b68dd5a02ac1fa218",
       "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
     },
+    "migrations/071-cognitive-index.sql": {
+      "sha256": "f48ee8a992c4c289bd68c17efe36b1d776f77963fb6eac57673d7e13379e56a9",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "migrations/072-evidence-ontology.sql": {
+      "sha256": "0d1754bda4a18d7c63c84deb53a1fe2fc75cd7adbc8e891ca0401559d8093024",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "migrations/073-cognitive-decisions.sql": {
+      "sha256": "d642fff92590c9774c0c258dd326206873286ba9887e85ade74fba9116283a04",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "migrations/074-cognitive-status.sql": {
+      "sha256": "99ea65e336d0bdb9ccbab44d1f84fd17da9f723e7c5e1e86af753d9c17d6c63c",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "migrations/075-controlled-experiments.sql": {
+      "sha256": "79b882eaaa1152029384f0fc0a5de3ffc5f541da1f726c62e49796124e108e79",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "migrations/076-embedding-generations.sql": {
+      "sha256": "9067af6a0c1868a69a477f31d7af1f191d6b6390789e84af5562ab29d8193108",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "migrations/077-saved-fact-navigation.sql": {
+      "sha256": "2363313c397eb820cbb562cfe16144369dabc564a65815fb0ee99305b3c8d911",
+      "review": "Reviewed saved category fact schema, tenant-bound current-source SQL, partial candidate indexes and shared MCP planning quota. Native catalog tests cover review/privacy/revision withdrawal, locale inheritance, confidence, channels, foreign tenants, literal wildcard semantics, CAS and selective staging; provider tests use the centrally encrypted shared replica configuration and quota rejection before model invocation."
+    },
+    "migrations/078-cognitive-error-counters.sql": {
+      "sha256": "e108c8d9615faad9cfe2681c474731d479af547b66b9252e1c6b1e3da35e16b5",
+      "review": "Reviewed current-source answer fence against native tenant/publication/archive/revision/hash/chunk/locale and exact product snapshot; delayed uncited provider HTTP regressions reject withdrawal/reassignment/product mutation. Registered saved-fact indexes and transactional rebuildable diagnostic deltas; isolated PostgreSQL/Qdrant tests cover 1000-job backfill, concurrent deltas/reset/delete/tenant separation. 184 Rust unit checks and format/clippy pass; SQL/async boundary remains outside extracted proofs."
+    },
     "proof/Commerce/Claims.lean": {
-      "sha256": "5a5dd8d0b1a56b0953202e54722d053beb6824efaddc242f3758b0dc53edf726",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "2fe2cee29e4c579388fe6089ec94ee16caa21b477148ea7b96cdcfb664893c3c",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "proof/lakefile.toml": {
       "sha256": "1cda05bac02223024b93388cf858edad4719c46f8d37a826a73a6a6e15d79432",
@@ -2727,8 +2908,8 @@
       "review": "Reviewed policy integration and unchanged module inventory; added proof/CI integrity locks and tested terminal API regression"
     },
     "scripts/formal/mutations.py": {
-      "sha256": "8f65a295c09b85c6fcdba5e57c00efc4e5401a00b14043d930f7e8e800d1ef8b",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "0fd64cab632b7200f37efff4d87bc4431f7161e3aa910ccd334eace62e9a5968",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "scripts/formal/registry.py": {
       "sha256": "529ea2df50b2a69ac12d432b58561551e221322cf1abb702910ee5bb1364495a",
@@ -2755,8 +2936,24 @@
       "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
     },
     "src/categories/listing.sql": {
-      "sha256": "edcd2c8209a910bbff9e049da2dd1ffa95793b087213065d54ed7f7a098bdd52",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "0a309f31788a6b30c3089adc6335e55bf0df89ed60a2e37642c5dddcff0cbda2",
+      "review": "Reviewed saved category fact schema, tenant-bound current-source SQL, partial candidate indexes and shared MCP planning quota. Native catalog tests cover review/privacy/revision withdrawal, locale inheritance, confidence, channels, foreign tenants, literal wildcard semantics, CAS and selective staging; provider tests use the centrally encrypted shared replica configuration and quota rejection before model invocation."
+    },
+    "src/cognition/claim_batch.sql": {
+      "sha256": "4198f7532aae65c9defbd6ad60f26b4128060305a69e40d755ff1449f7144cf2",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/cognition/evidence_read.sql": {
+      "sha256": "8ef86442948464ab2fa6d1f845441af64e4dd677125e4ebc1319ae8daa42ff31",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/cognition/experiments/report.sql": {
+      "sha256": "f6c3f2bbb3fd6f5e2eea78b65bccdb7d9f4aec69f753ada1dac5aa02e7c7cfac",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/cognition/index_claim.sql": {
+      "sha256": "ce13faa6c8537437ec20aaf3fd11bfd77583ca7071367023d5ab791adce86be5",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/commerce/inventory_release.sql": {
       "sha256": "c78d5349b9e81865d677f7cb6504f09fd6546f9eb1a2022463cd640ddb8a7029",
@@ -2765,6 +2962,18 @@
     "src/commerce/product_admin.sql": {
       "sha256": "b86e4dbf6fce56fed689dce0fa7daa86d247426dacfa384c4b4071a335f350be",
       "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+    },
+    "src/knowledge/neighborhood.sql": {
+      "sha256": "4a93225bb65b3a99fbffe34491c78ce4b3dd9bb0c7080cb0a1587fa8fe53e0a6",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/knowledge/search.sql": {
+      "sha256": "462515f7869c1ac2a2b54baffa23273de3ead868fb9a6addbb0da89b3bf7ed5f",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+    },
+    "src/knowledge/vector_claim.sql": {
+      "sha256": "dde2ab619a983471cdd9957b156c429c9ae2bfc53e90feadf9808803dc79d521",
+      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/operations/customer_directory.sql": {
       "sha256": "e44058956874c42b3ab1dc0e002f4b8b3c0dd8d8738eb07389f3ff57a54fba96",

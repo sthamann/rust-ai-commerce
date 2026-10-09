@@ -34,6 +34,33 @@ call('/api/knowledge/preview',{'query':'x','audience':'customer'},a,expected=400
 call('/api/knowledge/preview',{'query':'x','audience':'customer','productId':'foreign'},a,expected=404)
 call(path,{'visibility':'public','revision':1,'approve':False},a,expected=400,method='PUT')
 call(path,{'visibility':'public','revision':1,'approve':True},a,method='PUT')
+# Source quotation is evidence, not semantic truth: propose -> review -> exact claim compiler.
+claim={'productId':'mug','sourceId':id,'contentHash':doc['contentHash'],'locale':'en-GB','text':'Capacity 500 ml.','quote':'Capacity 500 ml.','nodeType':'property'}
+call('/api/intelligence/claim.propose',{**claim,'quote':'Invented waterproof certification'},a,expected=400)
+call('/api/intelligence/claim.propose',claim,other,expected=404)
+for invalid in [-.1, 1.1, '0.9', None, True, {}, []]:
+ call('/api/intelligence/claim.propose',{**claim,'confidence':invalid},a,expected=400)
+assert not call('/api/intelligence/claims',{'productId':'mug'},a)['claims']
+c=call('/api/intelligence/claim.propose',claim,a)
+assert call('/api/intelligence/claims',{'productId':'mug'},a)['claims'][0]['confidence']==.5
+assert not call('/store-api/product/mug/facts',tenant=tenant)['claims']
+review={'id':c['id'],'revision':1,'state':'confirmed','approve':True}
+call('/api/intelligence/claim.review',{**review,'revision':100},a,expected=409)
+call('/api/intelligence/claim.review',review,other,expected=404)
+call('/api/intelligence/claim.review',review,a)
+facts=call('/store-api/product/mug/facts',tenant=tenant)['claims'];assert facts[0]['state']=='confirmed' and facts[0]['sourceCurrent'] and facts[0]['data']['nodeType']=='property'
+compiled={'productId':'mug','claims':[{'id':c['id'],'text':claim['text']}]}
+assert call('/api/intelligence/compile',compiled,a)['compiled']
+call('/api/intelligence/compile',{**compiled,'claims':[{'id':c['id'],'text':'Unproven certification'}]},a,expected=409)
+call('/api/intelligence/compile',compiled,other,expected=409)
+batch={'products':[{'productId':'mug','claims':compiled['claims']}]}
+assert call('/store-api/intelligence/claims',{'productIds':['mug','lamp']},tenant=tenant)['products'][1]['statements']==[]
+assert call('/store-api/intelligence/claims/compile',batch,tenant=tenant)['compiled']
+call('/store-api/intelligence/claims/compile',batch,tenant='workshop',expected=409)
+call('/store-api/intelligence/claims',{'productIds':['foreign']},tenant=tenant,expected=404)
+call('/store-api/intelligence/claims',{'productIds':['mug']*25},tenant=tenant,expected=400)
+call('/store-api/intelligence/claims/compile',{'products':[{'productId':'mug','claims':[{'id':c['id'],'text':'Unproven certification'}]}]},tenant=tenant,expected=409)
+print('PASS typed claim lifecycle, exact quotations, foreign-source denial and confirmed claim compiler')
 assert p()['sources'][0]['contentHash']==doc['contentHash']
 assert p(query='Spülmaschinenfeste',locale='de-DE')['sources'][0]['title']=='Pflegehinweise'
 assert not p(query='Dishwasher',locale='de-DE')['sources'], 'Translated source must not mix languages'
@@ -42,6 +69,12 @@ assert not p(product='lamp')['sources']
 print('PASS private/public boundary, exact hash, language-specific content, fallback and product ownership')
 updated={**v,'locale':'en-GB','revision':2,'title':'Revised care','productId':'lamp','content':'Dishwasher prohibited. Read instructions.'}
 call(path,updated,a,method='PATCH')
+assert not call('/store-api/product/mug/facts',tenant=tenant)['claims']
+call('/api/intelligence/compile',compiled,a,expected=409)
+call('/api/intelligence/claim.review',{**review,'revision':2},a,expected=409)
+call('/store-api/intelligence/claims/compile',batch,tenant=tenant,expected=409)
+print('PASS changed source withdraws approved claims from public rendering immediately')
+
 assert not p()['sources'] and not p(product='lamp')['sources']
 call(path,updated,a,method='PATCH',expected=409)
 call(path,{'visibility':'public','revision':2,'approve':True},a,method='PUT',expected=409)

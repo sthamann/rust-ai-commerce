@@ -53,6 +53,7 @@ def run():
                 request = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
                 model_requests.append(request)
                 proposal = {"summary": "Review an app-owned guide", "changes": [], "app_action": {"app": app_id, "action": "save_entry", "arguments_json": json.dumps({"id": "zz-last", "fields": {"product_id": "mug", "title": {"en": "Approved revision"}, "specification": {"care": ["handwash"]}}})}}
+                if request["text"]["format"]["schema"].get("required")==["tool_calls"]: proposal={"tool_calls":[]}
                 raw = json.dumps({"status":"completed","output":[{"content":[{"type":"output_text","text":json.dumps(proposal)}]}]}).encode()
                 self.send_response(200)
                 self.send_header("Content-Type", "application/json")
@@ -185,6 +186,10 @@ def run():
             assert {a["name"] for a in context["actions"]} == {"catalog", "save_entry", "recommend"}
             assert "support_received" not in model_requests[-1]["input"]
             assert len(json.dumps(preview["appContext"]).encode()) < 32768
+            model_context = json.dumps(preview['modelAppContext'], separators=(',',':'), ensure_ascii=False)
+            assert len(model_context.encode()) <= 4000
+            assert model_context in model_requests[-1]['input'], 'Recorded model app context differs from the actual provider input'
+            assert preview['modelAppContext'] != preview['appContext'], 'Oversized review records must not bypass the model budget'
             bound = json.loads(preview["proposal"]["app_action"]["arguments_json"])
             assert bound["revision"] == 1
             assert call(path + "?after=zz&limit=1", headers=public)["elements"][0]["revision"] == 1

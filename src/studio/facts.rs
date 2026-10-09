@@ -1,6 +1,6 @@
 //! Consolidate dashboard reads without unbounded pool fan-out; preserve the existing API and currency/learning semantics.
 use super::*;
-pub(super) async fn load(a: &App, tenant: &str) -> Result<Value> {
+pub(crate) async fn load(a: &App, tenant: &str) -> Result<Value> {
     let mut facts: Value = sqlx::query_scalar(include_str!("overview.sql"))
         .bind(tenant)
         .fetch_one(&a.db)

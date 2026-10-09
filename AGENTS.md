@@ -33,6 +33,19 @@ commerce calculation path; API/MCP/UI consumers must not implement their own FX
 calculator. See [multi-currency commerce](docs/currencies.md). A protocol adapter
 translates inputs/outputs; it does not become a second owner of business rules.
 
+## Cognitive commerce continuity
+
+Read [the connected cognition guide](docs/cognitive-commerce.md) before changing
+intelligence. It records exact implemented paths and the still-open audit scope.
+`src/cognition/` owns source review, read-agent rounds, price guardrails, controlled
+experiments and consent-bound preferences; `src/knowledge/` owns retrieval and the
+rebuildable Qdrant projection. Extend the existing settings, capability, outbox,
+chat, proposal and native checkout owners. Do not create another knowledge truth
+store, pricing engine, approval queue or chat backend. Stored evidence is not
+model-weight learning; exact source admission is not proof of surrounding prose.
+Use one consistent versioned embedding model across replicas. Automatic model
+cursors, source-trigger jobs and fenced publication share the existing index queues.
+
 ## Production contracts and Lean
 
 - `src/verified_kernel.rs` is production code extracted to Lean. Keep its syntax

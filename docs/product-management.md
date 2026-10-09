@@ -22,6 +22,17 @@ One product save atomically writes translations, priced fields, metadata, catego
 
 ## Categories: source-faithful bounded port
 
+Category listings can also select products through a **saved confirmed-fact query**.
+The editor has one content-language field for a literal fact phrase, a supported
+node type and a minimum recorded confidence. This augments manual assignments;
+only confirmed current public document-backed claims qualify. Requested-language
+phrases use that claim language; absent phrases inherit the shop main language,
+while explicit empty phrases add no matches. Source archive/privacy changes remove
+graph membership immediately. Active products, channel restrictions and cursor
+pagination remain native. Definitions use the same category revision/history and
+selective staging release. This is a Vendune extension, not original Shopware
+dynamic-product-group equivalence. See [connected cognition](cognitive-commerce.md).
+
 Reference: Shopware **6.7.14.2**, commit [`29535190246fcaf0b091d7bdf02dd16358c943c4`](https://github.com/shopware/shopware/blob/29535190246fcaf0b091d7bdf02dd16358c943c4/src/Core/Content/Category/CategoryDefinition.php), and the official [category guide](https://docs.shopware.com/en/shopware-6-en/catalogues/categories) / [product guide](https://docs.shopware.com/en/shopware-6-en/catalogues/products).
 
 | Shopware behavior | Native implementation | Exact scope |

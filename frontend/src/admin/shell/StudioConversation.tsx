@@ -1,4 +1,5 @@
 /** StudioConversation: focused Studio view; state and commands come from the session-scoped controller. */
+import { useEffect, useState } from "react";
 import StudioComposer from "./StudioComposer";
 import { useExperienceUIText } from "../../shared/i18n/experience-ui-i18n";
 
@@ -37,6 +38,20 @@ export default function StudioConversation({
     apply,
     bottom,
   } = useStudio();
+  const [elapsed, setElapsed] = useState(0);
+  useEffect(() => {
+    if (!busy) {
+      setElapsed(0);
+      return;
+    }
+    const update = (event: Event) =>
+      setElapsed(
+        (event as CustomEvent<{ elapsedSeconds: number }>).detail
+          .elapsedSeconds,
+      );
+    window.addEventListener("vendune-agent-progress", update);
+    return () => window.removeEventListener("vendune-agent-progress", update);
+  }, [busy]);
   return (
     <section className="studio-conversation">
       <div className="conversation-topline">
@@ -142,10 +157,7 @@ export default function StudioConversation({
                         <dl>
                           <div>
                             <dt>{t("orders")}</dt>
-                            <dd>
-                              {m.data.preview.verifiedFacts.demoOrderCount} ·{" "}
-                              {t("simulated")}
-                            </dd>
+                            <dd>{m.data.preview.verifiedFacts.orderCount}</dd>
                           </div>
                           {m.data.preview.verifiedFacts.learningSignals?.map(
                             (signal) => (
@@ -194,7 +206,9 @@ export default function StudioConversation({
               <i />
               <i />
             </span>
-            {t("thinking")}
+            {elapsed > 0
+              ? t("thinkingElapsed").replace("{seconds}", String(elapsed))
+              : t("thinking")}
           </div>
         )}
         <div ref={bottom} />

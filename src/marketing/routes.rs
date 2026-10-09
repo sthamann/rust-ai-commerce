@@ -125,7 +125,7 @@ pub(crate) async fn save(
                 for node in &p.nodes {
                     if let pipeline::Node::Action { action, config, .. } = node {
                         auth::permit(&h, flow_actions::permission(action))?;
-                        if action == "ai_proposal" {
+                        if matches!(action.as_str(), "ai_proposal" | "knowledge.extract") {
                             auth::permit(&h, "knowledge.read")?;
                         }
                         if action == "app_action" || action == "action.mail.send" {

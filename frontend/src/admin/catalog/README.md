@@ -8,6 +8,7 @@ Files and their individual responsibilities are listed in [the generated source 
 
 - [`AiImageStudio.tsx`](AiImageStudio.tsx): Optional image-provider jobs create private previews; applying a reviewed image is explicit and revision checked.
 - [`CategoriesWorkspace.tsx`](CategoriesWorkspace.tsx): Localized category tree editor; parent moves and revisions are validated in the API.
+- [`CategoryFactQuery.tsx`](CategoryFactQuery.tsx): Single-language saved fact predicate in the existing category revision, source and staging path; browsing calls no model.
 - [`EditorBuffer.ts`](../../shared/content/editor/EditorBuffer.ts): Unsaved Markdown source participates in the aggregate's save/navigation guard without becoming product content.
 - [`MarkdownSource.tsx`](../../shared/content/editor/MarkdownSource.tsx): Live Markdown buffer updates the same structured product document; no raw HTML is rendered or persisted.
 - [`MediaDropzone.tsx`](MediaDropzone.tsx): Accessible multi-file upload with drag/drop, visible progress and the same validated asset API as attachments.

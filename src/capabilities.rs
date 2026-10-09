@@ -9,6 +9,17 @@ pub(crate) async fn capabilities() -> Json<Value> {
     )
 }
 pub(crate) async fn invoke(a: &App, h: &RequestContext, name: &str, v: &Value) -> Result<Value> {
+    if name == "catalog.facts" {
+        return cognition::signed::facts(
+            a,
+            h,
+            v["productId"].as_str().ok_or(bad("Product required"))?,
+        )
+        .await;
+    }
+    if cognition::contracts::schema(name).is_some() {
+        return cognition::contracts::invoke_contract(a, h, name, v).await;
+    }
     if currencies::schema(name).is_some() {
         return currencies::invoke(a, h, name, v).await;
     }
@@ -117,16 +128,12 @@ pub(crate) async fn invoke(a: &App, h: &RequestContext, name: &str, v: &Value) -
             auth::permit(h, "knowledge.read")?;
             let t = merchant(a, h)?;
             let (locale, _) = language_context(a, h).await?;
-            plan_with(
-                a,
-                &t,
-                v["instruction"].as_str().unwrap_or(""),
-                None,
-                "",
-                &locale,
-                h,
-            )
-            .await
+            let instruction = v["instruction"].as_str().unwrap_or("");
+            if instruction.is_empty() || instruction.len() > 4000 {
+                return Err(bad("Instruction must contain 1..4000 characters"));
+            }
+            performance::reserve_ai_attempt(a, &t).await?;
+            plan_with(a, &t, instruction, None, "", &locale, h).await
         }
         "merchant.apply" => {
             let t = merchant(a, h)?;

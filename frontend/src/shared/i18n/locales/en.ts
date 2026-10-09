@@ -39,6 +39,7 @@ export const en = {
   message: "Message your commerce assistant",
   placeholder: "Ask about your shop or describe a change…",
   send: "Send",
+  thinkingElapsed: "Reading evidence and planning · {seconds}s",
   thinking: "Reading shop context and planning…",
   pending: "Ready for review",
   applied: "Applied to shop",

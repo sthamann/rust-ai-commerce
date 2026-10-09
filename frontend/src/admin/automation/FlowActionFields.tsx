@@ -26,25 +26,31 @@ export default function FlowActionFields({
       />
     </label>
   );
-  const fields = action.endsWith(".tag")
-    ? ["tags"]
-    : action.includes("custom.field")
-      ? ["field"]
-      : action.endsWith("affiliate.and.campaign.code")
-        ? ["affiliateCode", "campaignCode"]
-        : action === "action.change.customer.group"
-          ? ["groupId"]
-          : action === "action.set.order.state"
-            ? ["kind", "state"]
-            : action === "action.generate.document"
-              ? ["kind"]
-              : action === "action.mail.send"
-                ? ["templateId"]
-                : action === "app_action"
-                  ? []
-                  : [];
+  const fields =
+    action === "knowledge.extract"
+      ? ["sourceId", "productId"]
+      : action.endsWith(".tag")
+        ? ["tags"]
+        : action.includes("custom.field")
+          ? ["field"]
+          : action.endsWith("affiliate.and.campaign.code")
+            ? ["affiliateCode", "campaignCode"]
+            : action === "action.change.customer.group"
+              ? ["groupId"]
+              : action === "action.set.order.state"
+                ? ["kind", "state"]
+                : action === "action.generate.document"
+                  ? ["kind"]
+                  : action === "action.mail.send"
+                    ? ["templateId"]
+                    : action === "app_action"
+                      ? []
+                      : [];
   return (
     <div className="flow-action-fields">
+      {action === "knowledge.extract" && (
+        <p className="muted">{a("extractionFromEventHint")}</p>
+      )}
       {fields.map((k) =>
         k === "tags" ? (
           <label key={k}>

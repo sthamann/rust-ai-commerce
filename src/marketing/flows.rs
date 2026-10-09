@@ -23,11 +23,16 @@ pub(super) const EVENTS: &[&str] = &[
     "knowledge.document.archived",
     "knowledge.document.restored",
     "intelligence.decision",
+    "intelligence.claim.reviewed",
+    "intelligence.experiment.changed",
+    "intelligence.experiment.result",
+    "merchant.change.applied",
 ];
 fn knowledge_event(kind: &str) -> bool {
     EVENTS.contains(&kind)
         && (kind.starts_with("knowledge.")
-            || kind == "intelligence.decision"
+            || kind.starts_with("intelligence.")
+            || kind == "merchant.change.applied"
             || kind.starts_with("consumer.")
             || kind.starts_with("privacy."))
 }
@@ -221,7 +226,10 @@ pub(crate) async fn flow_once(a: &App) -> Result<bool> {
             definition["orderNumber"], definition["totalPrice"], instruction
         );
         match super::flow_access::headers(a, &t, f.actor.as_deref()).await {
-            Ok(h) => plan_with(a, &t, &context, f.inference.as_ref(), "", &f.locale, &h).await,
+            Ok(h) => match crate::performance::reserve_ai_attempt(a, &t).await {
+                Ok(()) => plan_with(a, &t, &context, f.inference.as_ref(), "", &f.locale, &h).await,
+                Err(e) => Err(e),
+            },
             Err(e) => Err(e),
         }
     };

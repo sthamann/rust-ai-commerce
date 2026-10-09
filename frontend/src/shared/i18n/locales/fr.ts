@@ -40,6 +40,7 @@ export const fr: Dictionary = {
   message: "Message à votre assistant commerce",
   placeholder: "Posez une question ou décrivez un changement…",
   send: "Envoyer",
+  thinkingElapsed: "Vérification des sources et planification · {seconds}s",
   thinking: "Lecture du contexte et préparation d’une proposition…",
   pending: "À vérifier",
   applied: "Appliqué à la boutique",

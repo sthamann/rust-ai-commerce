@@ -1,17 +1,20 @@
 # Lean-checked commerce contracts
 
-The prototype runs Lean 4.29.1 proofs for **37 policies used in production
-Rust paths**, with **80 named properties**. This is **not a certificate that the
-entire commerce core is correct or bug-free**. The current request-hotpath review contains
-353 Rust modules: one extracted policy module, 34 reviewed binding modules, one
-comparison driver and 317 unproved modules. Binding review is not a proof of those
-modules. The [manifest](../proof/manifest.json) and CI artifact are the authoritative
-per-revision inventory. Local verification audits 80 theorems, compares 6,227
-compiled cases without mismatches and rejects 98 broken policy variants.
-The [published verification report](formal-verification.json) is copied unchanged
-from the formal verification artifact of [GitHub run 37804364204](https://github.com/sthamann/vendune/actions/runs/37804364204),
-recording source `9fa6a538b30b6169797b5899eed742826755bd2b`. The proof and mutation
-steps passed there; later documentation does not certify every adapter.
+The current source runs Lean 4.29.1 proofs for **45 policies used in production
+Rust paths**, with **97 named properties**. This is **not a certificate that the
+entire commerce core is correct or bug-free**. The cognitive-commerce review
+contains 411 Rust modules: one extracted policy module, 43 reviewed binding modules,
+one comparison driver and 366 unproved modules. Binding review is not a proof of
+those modules. The [manifest](../proof/manifest.json) and per-revision CI artifact
+are the authoritative inventory. Local compiled conformance compares **142,298
+cases without mismatches**; the current required negative mutation suite must also
+pass before landing.
+
+The older [published verification report](formal-verification.json) is copied unchanged
+from [GitHub run 37804364204](https://github.com/sthamann/vendune/actions/runs/37804364204),
+recording source `9fa6a538b30b6169797b5899eed742826755bd2b`. Its counts describe that
+source, not the latest implementation. A later documentation edit does not upgrade
+that report or certify every adapter.
 
 ## Connection to the real application
 
@@ -110,7 +113,7 @@ The existing **Verify prototype / verify** job now also:
    proof claims, extraction/audit scripts and the verification workflow require an explicit recorded review after changes.
 3. Builds proofs with the pinned Lean toolchain and rechecks compiled declarations
    using bundled `leanchecker`.
-4. Audits all 80 required theorems' transitive axioms. Only Lean's standard
+4. Audits all required theorems' transitive axioms. Only Lean's standard
    `propext`, `Quot.sound` and `Classical.choice` foundations are allowed. `sorry`,
    `admit`, custom axioms, `native_decide` and missing theorem audits fail.
 5. Executes compiled Rust and Lean functions on **6,227** identical inputs:
@@ -305,3 +308,16 @@ proxying, compression or browser behavior. Real hosted/private-asset and two-rep
 regressions cover those adapters, including gzip/Brotli negotiation, ranges and
 uncompressed credential-bearing responses. Embedded `.sql` and build inputs are
 now explicitly review-hash locked to prevent silent adapter drift.
+
+## Cognitive decision contracts (2026-10-09)
+
+Four new extracted policies are consumed by the native cognition owners:
+`ai_price_admissible` checks the supplied corridor, margin, discount, brand and
+availability guards; `ai_autonomy_admissible` requires explicit enablement,
+current authority, price-only scope and both budgets; `claim_render_admissible`
+requires confirmed, public, current, valid-time exact statements; and
+`experiment_result_admissible` requires an admissible final look, enough units
+and a positive lower bound. Nine named properties include exact acceptance and
+negative cases. This proves those predicates, not price cost/tax input correctness,
+source entailment, signature implementation, SQL locking or statistical assumptions.
+[Connected implementation and open audit scope](cognitive-commerce.md).

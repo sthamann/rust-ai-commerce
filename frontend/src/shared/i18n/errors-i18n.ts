@@ -49,6 +49,12 @@ const messages: Record<string, readonly string[]> = {
     "Ce numéro de produit est déjà utilisé. Choisissez un autre numéro.",
     "Este número de producto ya está en uso. Elige otro número.",
   ],
+  "Product sources changed; ask again": [
+    "The product or its sources changed while answering. Please ask again for current information.",
+    "Das Produkt oder seine Quellen wurden während der Antwort geändert. Frage erneut nach den aktuellen Angaben.",
+    "Le produit ou ses sources ont changé pendant la réponse. Posez à nouveau votre question.",
+    "El producto o sus fuentes cambiaron durante la respuesta. Vuelve a preguntar para obtener datos actuales.",
+  ],
   "Product changed": [
     "Another change was saved. Keep your draft and reload the product before merging it.",
     "Eine andere Änderung wurde gespeichert. Bewahre deinen Entwurf und lade das Produkt vor dem Zusammenführen neu.",

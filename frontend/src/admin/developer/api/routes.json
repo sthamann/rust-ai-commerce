@@ -1,5 +1,10 @@
 [
   {
+    "path": "/.well-known/commerce-facts.json",
+    "method": "GET",
+    "source": "src/cognition/signed.rs"
+  },
+  {
     "path": "/.well-known/ucp",
     "method": "GET",
     "source": "src/routes.rs"
@@ -8,6 +13,11 @@
     "path": "/api/agent/chat",
     "method": "POST",
     "source": "src/routes.rs"
+  },
+  {
+    "path": "/api/agent/chat/stream",
+    "method": "POST",
+    "source": "src/cognition/stream.rs"
   },
   {
     "path": "/api/agent/conversations",
@@ -408,6 +418,11 @@
     "path": "/api/intelligence/hypotheses/{id}",
     "method": "PUT",
     "source": "src/cognition/routes.rs"
+  },
+  {
+    "path": "/api/intelligence/{name}",
+    "method": "POST",
+    "source": "src/cognition/contracts.rs"
   },
   {
     "path": "/api/knowledge",
@@ -1190,6 +1205,31 @@
     "source": "src/currencies/routes.rs"
   },
   {
+    "path": "/store-api/intelligence/claims",
+    "method": "POST",
+    "source": "src/cognition/claim_batches.rs"
+  },
+  {
+    "path": "/store-api/intelligence/claims/compile",
+    "method": "POST",
+    "source": "src/cognition/claim_batches.rs"
+  },
+  {
+    "path": "/store-api/intelligence/preferences",
+    "method": "DELETE",
+    "source": "src/cognition/preferences.rs"
+  },
+  {
+    "path": "/store-api/intelligence/preferences",
+    "method": "GET",
+    "source": "src/cognition/preferences.rs"
+  },
+  {
+    "path": "/store-api/intelligence/preferences",
+    "method": "PUT",
+    "source": "src/cognition/preferences.rs"
+  },
+  {
     "path": "/store-api/intelligence/recommendations/{id}",
     "method": "GET",
     "source": "src/cognition/routes.rs"
@@ -1295,6 +1335,21 @@
     "source": "src/assets/mod.rs"
   },
   {
+    "path": "/store-api/product/{id}/facts",
+    "method": "GET",
+    "source": "src/cognition/contracts.rs"
+  },
+  {
+    "path": "/store-api/product/{id}/facts/compile",
+    "method": "POST",
+    "source": "src/cognition/contracts.rs"
+  },
+  {
+    "path": "/store-api/product/{id}/facts/signed",
+    "method": "GET",
+    "source": "src/cognition/signed.rs"
+  },
+  {
     "path": "/store-api/product/{id}/questions",
     "method": "POST",
     "source": "src/documents/mod.rs"
@@ -1328,6 +1383,11 @@
     "path": "/ucp/v1/checkout-sessions/{id}/complete",
     "method": "POST",
     "source": "src/routes.rs"
+  },
+  {
+    "path": "/ucp/v1/products/{id}/facts",
+    "method": "GET",
+    "source": "src/cognition/signed.rs"
   },
   {
     "path": "/webhooks/apps/{tenant}/{app}/{webhook}",

@@ -164,3 +164,30 @@
     grid-column: auto;
   }
 }
+
+.account-preferences {
+  margin-top: 32px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border, #dbe4f0);
+}
+.account-preferences fieldset {
+  border: 0;
+  padding: 0;
+  display: grid;
+  gap: 18px;
+  margin: 20px 0;
+}
+.account-preference-toggle {
+  display: flex;
+  align-items: start;
+  gap: 12px;
+}
+.account-preference-toggle input {
+  width: auto;
+  flex: 0 0 auto;
+}
+.account-preferences .account-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}

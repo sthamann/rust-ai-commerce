@@ -74,7 +74,7 @@ class Provider(BaseHTTPRequestHandler):
                                 {
                                     "type": "output_text",
                                     "text": json.dumps(
-                                        {
+                                        {"tool_calls": []} if body["text"]["format"]["schema"].get("required")==["tool_calls"] else {
                                             "summary": "Private source fixture",
                                             "changes": [],
                                         }
@@ -524,7 +524,7 @@ with tempfile.TemporaryDirectory(prefix="commerce-connectors-") as folder:
             },
             h,
         )
-        assert "taskId" in chat["messages"][-1]["data"]
+        assert "taskId" in chat["messages"][-1]["data"], chat["messages"][-1]["data"]
         assert any(
             "Cracked mug" in body.get("input", "")
             and "subjectToThresholding" in body.get("input", "")

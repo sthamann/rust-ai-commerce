@@ -1,7 +1,20 @@
 //! Evidence-based shop memory: event receipts, observed pairs, reviewable hypotheses and bounded context.
 use crate::*;
+pub(crate) mod autonomy;
+mod claim_batches;
 mod context;
+pub(crate) mod contracts;
+pub(crate) mod evidence;
+pub(crate) mod experiments;
+pub(crate) mod extraction;
+mod generations;
+pub(crate) mod guardrails;
+pub(crate) mod indexing;
+pub(crate) mod preferences;
 mod recommendations;
+pub(crate) mod signed;
+mod stream;
+pub(crate) mod tools;
 pub(crate) use recommendations::*;
 mod projection;
 mod routes;

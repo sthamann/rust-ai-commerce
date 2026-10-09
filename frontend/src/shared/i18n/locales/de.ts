@@ -40,6 +40,7 @@ export const de: Dictionary = {
   message: "Nachricht an deinen Commerce-Assistenten",
   placeholder: "Frage zu deinem Shop oder beschreibe eine Änderung …",
   send: "Senden",
+  thinkingElapsed: "Belege prüfen und planen · {seconds}s",
   thinking: "Shop-Kontext lesen und Vorschlag planen …",
   pending: "Bereit zur Prüfung",
   applied: "Im Shop angewendet",

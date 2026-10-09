@@ -47,6 +47,10 @@ def evalRequest (j : Json) : Except String Json := do
   | "wasm_resources_admissible" => pure (toJson (wasm_resources_admissible ((← (args.getObjVal? "tables") >>= Json.getNat?)) ((← (args.getObjVal? "memories") >>= Json.getNat?)) ((← (args.getObjVal? "elements") >>= Json.getNat?)) ((← (args.getObjVal? "pages") >>= Json.getNat?))))
   | "app_surface_admissible" => pure (toJson (app_surface_admissible ((← (args.getObjVal? "current_package") >>= Json.getBool?)) ((← (args.getObjVal? "allowed_action") >>= Json.getBool?))))
   | "app_callback_admissible" => pure (toJson (app_callback_admissible ((← (args.getObjVal? "capability") >>= Json.getBool?)) ((← (args.getObjVal? "current_role") >>= Json.getBool?))))
+  | "ai_price_admissible" => pure (toJson (ai_price_admissible ((← (args.getObjVal? "price") >>= Json.getNat?)) ((← (args.getObjVal? "minimum") >>= Json.getNat?)) ((← (args.getObjVal? "maximum") >>= Json.getNat?)) ((← (args.getObjVal? "margin") >>= Json.getBool?)) ((← (args.getObjVal? "discount") >>= Json.getBool?)) ((← (args.getObjVal? "brand") >>= Json.getBool?)) ((← (args.getObjVal? "available") >>= Json.getBool?))))
+  | "ai_autonomy_admissible" => pure (toJson (ai_autonomy_admissible ((← (args.getObjVal? "enabled") >>= Json.getBool?)) ((← (args.getObjVal? "authorized") >>= Json.getBool?)) ((← (args.getObjVal? "price_only") >>= Json.getBool?)) ((← (args.getObjVal? "daily_budget") >>= Json.getBool?)) ((← (args.getObjVal? "within_delta") >>= Json.getBool?))))
+  | "claim_render_admissible" => pure (toJson (claim_render_admissible ((← (args.getObjVal? "confirmed") >>= Json.getBool?)) ((← (args.getObjVal? "public_source") >>= Json.getBool?)) ((← (args.getObjVal? "current_source") >>= Json.getBool?)) ((← (args.getObjVal? "valid_time") >>= Json.getBool?)) ((← (args.getObjVal? "exact_text") >>= Json.getBool?))))
+  | "experiment_result_admissible" => pure (toJson (experiment_result_admissible ((← (args.getObjVal? "final_look") >>= Json.getBool?)) ((← (args.getObjVal? "enough_units") >>= Json.getBool?)) ((← (args.getObjVal? "positive_bound") >>= Json.getBool?))))
   | _ => throw "Unknown policy"
 
 def main : IO Unit := do
