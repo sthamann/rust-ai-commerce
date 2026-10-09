@@ -61,7 +61,7 @@ inference; concurrent withdrawal or changes return localized retry guidance.
 
 > **Graph-native apps:** map app-owned nodes, relationships and selected native fields in App Studio or the same coding-agent manifest. Current tenant rights and record revisions remain authoritative across API, MCP and planner context. [Example and contract](extensions/apps/ontology-care/README.md).
 
-**Merged release and acceptance:** [complete change summary, integration paths and measured test gaps](docs/release-acceptance-2026-10-09.md). Current evidence covers 187 Rust units, 387 frontend tests and 72 registered integration suites; hosted rollout and real providers have separate acceptance gates.
+**Merged release and acceptance:** [complete change summary, integration paths and measured test gaps](docs/release-acceptance-2026-10-09.md). Current evidence covers 187 Rust units, 388 frontend tests and 72 registered integration suites; hosted rollout and real providers have separate acceptance gates.
 
 ## Get started
 

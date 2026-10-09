@@ -164,7 +164,7 @@ operations and persisted effects, not simply endpoint availability.
 | --- | --- |
 | Complete merged-Core CI | [Run 37868239729](https://github.com/sthamann/vendune/actions/runs/37868239729), successful against `598bbec`; units, formal checks/mutations, original PHP comparisons, native DB/provider contracts, coverage and build |
 | Rust/compiler checks repeated locally | 187 tests (48 library + 139 server), formatting and strict clippy pass |
-| Frontend repeated locally | 387 tests / 64 files; build, formatting, module ownership and four-language checks pass |
+| Frontend repeated locally | 388 tests / 64 files; build, formatting, module ownership and four-language checks pass |
 | Complete integration rerun | All 48 HTTP + 17 provider/connector + four browser contracts + three tooling suites pass locally in a fresh database after the fixture repair; original registry remains the single owner |
 | Original Shopware slice comparisons | 2,144 price, 1,446 context, 1,002 delivery-tax, 1,976 primitive-rule and 432 condition-class cases; no mismatches in those slices, not full Shopware equivalence |
 | Formal subset | 45 extracted policies, 97 properties, 142,298 compiled comparisons; 122 broken-policy, 14 syntax, three stale/disconnected-binding and nine proof-shortcut negative cases rejected |
@@ -173,7 +173,12 @@ operations and persisted effects, not simply endpoint availability.
 | Real Core + private compiler purchase | Four-language native catalog; one 29.80 EUR simulated native order, identical replay and owner-visible merchant order; disposable databases removed |
 | Real browser purchase | Default fashion catalog, size L, customer registration, structured address, standard shipping, explicit quote review and persisted 43.90 EUR simulated order; customer account shows that order/details, an independently saved billing/shipping default address survives logout/login, 390px order layout has no horizontal overflow |
 | Browser vs contract tests | Actual browser checks supplement jsdom and HTTP fixtures; the four registry browser contracts are not four complete visual journeys |
+| Original Storyfront full validation repeated locally | 135 steps pass, none skipped, including hydrated shopping and merchant onboarding; the initial occupied-port fixture attempt remains recorded |
+| Browser app lifecycle | Combined-app assistant → version → private sandbox → reviewed release → native product-editor tab → saved app record, preserving its German translation |
+| Browser product history | Edit product → author/time history → restore prior version through confirmation → original name restored |
 | Private native container | Required independent private CI; original applications and synthetic ownership with workers/providers disabled; no public activation inferred |
+
+The actual registration browser also exposed an invalid HTML `pattern` under modern Unicode-set (`v`) validation. The slug pattern now escapes the literal hyphen; a regression covers valid and rejected shop IDs. A newly created app record still requires its main-language value before translated values can inherit it.
 
 A native local mail/Flow test exposed a verification-tool defect: it hard-coded
 Docker while the shared fixture had selected native PostgreSQL. It now uses the

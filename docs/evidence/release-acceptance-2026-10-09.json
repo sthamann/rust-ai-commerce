@@ -263,7 +263,7 @@
     "freshDatabase": true,
     "mailFixtureNativeSelector": "repaired; nine mail checks passed, followed by full registry rerun",
     "coreUnits": 187,
-    "frontendTests": 387,
+    "frontendTests": 388,
     "privateApplicationTests": 197,
     "privateOriginalIntegrationTests": 15,
     "privateIntegrationAssertions": 133,
@@ -289,6 +289,11 @@
       "markdownSources": 155,
       "htmlPages": 162,
       "internalLinksAssets": 3900
-    }
+    },
+    "originalStoryfrontFullSteps": 135,
+    "originalStoryfrontSkippedSteps": 0,
+    "registrationSlugValidation": "modern HTML Unicode-set pattern; positive/negative regression",
+    "browserAppLifecycle": "assistant, version, sandbox, review, publish, native product-editor mount, bilingual record",
+    "browserProductHistory": "edit, author/time history, confirmed restore"
   }
 }

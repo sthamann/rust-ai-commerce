@@ -23,7 +23,7 @@ indexing/model rebuilds, lexical/dense retrieval with optional reranking,
 authorized read-agent rounds, reviewed source claims, signed public facts,
 price guardrails/daily autonomy budgets, controlled layout experiments,
 consent-bound cart preferences and native app ontology projections.
-The source checks pass **187 Rust unit tests and 387 frontend tests**;
+The source checks pass **187 Rust unit tests and 388 frontend tests**;
 whole-source CI line coverage is **90.55% Rust / 63.23% frontend**.
 [Architecture, configuration, evidence and incomplete audit items](cognitive-commerce.md).
 

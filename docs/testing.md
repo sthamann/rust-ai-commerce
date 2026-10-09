@@ -14,7 +14,7 @@ remaining audit work. The completed merged-Core CI at `598bbec` measures Rust
 scope **81.34% lines / 57.80% branches**. [Exact source/CI artifact summary](evidence/release-acceptance-2026-10-09.json).
 
 Dated measurements below retain their original source. The current suite has
-187 Rust unit tests and 387 frontend tests; the private Experience application and
+187 Rust unit tests and 388 frontend tests; the private Experience application and
 original Storyfront container have separate evidence and no claimed percentage.
 
 ## Source architecture
