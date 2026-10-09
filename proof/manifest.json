@@ -1072,8 +1072,8 @@
     },
     "src/checkout_page.rs": {
       "status": "unproved",
-      "sha256": "b34ce0c5e39b0b1234d5fe77b22645dba74d2cb86dab684461fa7e65d01e8cd7",
-      "review": "Reviewed tenant/channel registered-origin checkout framing, immutable localized checkout snapshots using existing inheritance, and shopper-only receipt transport. Verified origin negatives and German parent/variant label persistence with PostgreSQL; these adapters remain unproved, existing extracted kernel policies unchanged."
+      "sha256": "6e31bb857d6a8667af9efadde4113232fe9cbdb5e61f00617dd8d165cadf21ba",
+      "review": "Reviewed tenant/channel registered-origin checkout framing, immutable localized checkout snapshots using existing inheritance, and shopper-only receipt transport. Verified origin negatives and German parent/variant label persistence with PostgreSQL; these adapters remain unproved, existing extracted kernel policies unchanged. Explicit non-default ports are rejected so admission matches the registered HTTPS origin."
     },
     "src/checkout_products.rs": {
       "status": "unproved",

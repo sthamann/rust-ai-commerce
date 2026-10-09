@@ -22,6 +22,7 @@ pub(crate) async fn page(
             .ok_or(bad("Checkout parent unavailable"))?;
         validate_tenant(alias)?;
         if url.scheme() != "https"
+            || url.port().is_some()
             || url.origin().ascii_serialization() != *origin
             || url.path() != "/"
             || url.query().is_some()

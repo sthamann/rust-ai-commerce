@@ -51,7 +51,7 @@ def frame_url(parent,shop=u['workspace'],channel='default'):
 with urllib.request.urlopen(frame_url(origin),timeout=20) as page:
  assert page.status==200 and ('frame-ancestors \'self\' '+origin) in page.headers['content-security-policy']
  assert page.headers['cache-control']=='no-store' and page.headers['referrer-policy']=='no-referrer'
-for parent,shop,channel in [('https://foreign.vendune.ai',u['workspace'],'default'),(origin,other['workspace'],'default'),(origin,u['workspace'],'unknown'),('https://'+alias+'.vendune.ai.evil.test',u['workspace'],'default'),(origin+'/path',u['workspace'],'default')]:
+for parent,shop,channel in [('https://foreign.vendune.ai',u['workspace'],'default'),(origin,other['workspace'],'default'),(origin,u['workspace'],'unknown'),('https://'+alias+'.vendune.ai.evil.test',u['workspace'],'default'),(origin+'/path',u['workspace'],'default'),(origin+':8443',u['workspace'],'default')]:
  try: urllib.request.urlopen(frame_url(parent,shop,channel),timeout=20);raise AssertionError('Unregistered parent admitted')
  except urllib.error.HTTPError as e: assert e.code in [400,403],e.code
 check('Embedded checkout admits only the exact registered tenant/channel origin')
