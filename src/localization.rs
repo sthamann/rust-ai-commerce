@@ -77,7 +77,7 @@ pub(crate) fn hydrate_products(
             );
     }
     for p in &mut ps {
-        super::commerce::localize_extra(&mut p.extra, &locale_chain);
+        super::commerce::localize_extra(&mut p.extra, locale_chain);
         if let Some(media) = p.media.as_array_mut() {
             for m in media {
                 if m["alt"].is_object() {

@@ -22,8 +22,8 @@ pub(crate) async fn snapshot(
             .cloned()
             .collect(),
         &translations,
-        &chain,
-        &locales,
+        chain,
+        locales,
     );
     let selected = locked
         .into_iter()
@@ -40,8 +40,8 @@ pub(crate) async fn snapshot(
     Ok(localization::hydrate_products(
         selected,
         &translations,
-        &chain,
-        &locales,
+        chain,
+        locales,
     ))
 }
 

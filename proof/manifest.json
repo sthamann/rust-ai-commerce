@@ -1077,8 +1077,8 @@
     },
     "src/checkout_products.rs": {
       "status": "unproved",
-      "sha256": "e92f8561ff3392bb0de531aa67e847158c343b7b9ca6c2e7d781d7d5f19f5b31",
-      "review": "Reviewed tenant/channel registered-origin checkout framing, immutable localized checkout snapshots using existing inheritance, and shopper-only receipt transport. Verified origin negatives and German parent/variant label persistence with PostgreSQL; these adapters remain unproved, existing extracted kernel policies unchanged."
+      "sha256": "70726a88889b6f04bab452c943bac66d0b80beb020317a780d48d73195c0969c",
+      "review": "Follow-up reviewed: remove redundant references in localized snapshot helper; semantics unchanged from PostgreSQL-verified exact-origin checkout and immutable language snapshot change."
     },
     "src/cognition/advisor.rs": {
       "status": "unproved",
@@ -1802,8 +1802,8 @@
     },
     "src/localization.rs": {
       "status": "unproved",
-      "sha256": "e1f355212fb3843cd4ac87facde9616ffeea3aef76c4f7be6bcde9e91e985c27",
-      "review": "Reviewed tenant/channel registered-origin checkout framing, immutable localized checkout snapshots using existing inheritance, and shopper-only receipt transport. Verified origin negatives and German parent/variant label persistence with PostgreSQL; these adapters remain unproved, existing extracted kernel policies unchanged."
+      "sha256": "758cec52f9510e0db1b6d03914ace8a7f942923220820c4b19391f0332694677",
+      "review": "Follow-up reviewed: remove redundant references in localized snapshot helper; semantics unchanged from PostgreSQL-verified exact-origin checkout and immutable language snapshot change."
     },
     "src/main.rs": {
       "status": "unproved",
