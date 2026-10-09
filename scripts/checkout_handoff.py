@@ -41,6 +41,34 @@ o=call('/store-api/checkout/order',{},nh);assert o['cart']['lineItems'][0]['refe
 assert call('/store-api/checkout/order',{},nh)['id']==o['id']
 orders=call('/api/search/order',{},mh)['data'];assert any(x['id']==o['id'] for x in orders)
 call('/store-api/checkout/handoff',{'revision':new['revision']},{**h,'sw-context-token':new['token']},expected=409);check('Transferred cart places one durable merchant order and terminal carts cannot transfer')
+# The embedded checkout is permitted only by this tenant/channel's registered frontend.
+alias='embedded-'+uuid.uuid4().hex[:12]
+call('/api/settings/frontends',{'alias':alias,'channel':'default','revision':0},mh,'PUT')
+origin='https://'+alias+'.vendune.ai'
+from urllib.parse import urlencode
+def frame_url(parent,shop=u['workspace'],channel='default'):
+ return BASE+'/checkout?'+urlencode({'shop':shop,'channel':channel,'parentOrigin':parent,'embed':'1'})
+with urllib.request.urlopen(frame_url(origin),timeout=20) as page:
+ assert page.status==200 and ('frame-ancestors \'self\' '+origin) in page.headers['content-security-policy']
+ assert page.headers['cache-control']=='no-store' and page.headers['referrer-policy']=='no-referrer'
+for parent,shop,channel in [('https://foreign.vendune.ai',u['workspace'],'default'),(origin,other['workspace'],'default'),(origin,u['workspace'],'unknown'),('https://'+alias+'.vendune.ai.evil.test',u['workspace'],'default'),(origin+'/path',u['workspace'],'default'),(origin+':8443',u['workspace'],'default')]:
+ try: urllib.request.urlopen(frame_url(parent,shop,channel),timeout=20);raise AssertionError('Unregistered parent admitted')
+ except urllib.error.HTTPError as e: assert e.code in [400,403],e.code
+check('Embedded checkout admits only the exact registered tenant/channel origin')
+# Localized names are saved from locked products, independent of the last request header.
+p=call('/api/merchant/products/mug',h=mh)
+p['translations']['de']={'name':'Tasse Deutsch unveränderlich','description':'Deutscher Produkttext'}
+call('/api/merchant/products/mug',p,mh,'PUT')
+deh={**h,'x-commerce-locale':'de-DE'}
+dc=call('/store-api/checkout/cart',{'session':uuid.uuid4().hex},deh)
+dch={**deh,'sw-context-token':dc['token']}
+dc=call('/store-api/checkout/cart',{'revision':dc['revision'],'items':[{'id':'mug-sage-350','quantity':1}]},dch,'PUT')
+do=call('/store-api/checkout/order',{}, {**dch,'x-commerce-locale':'en-GB','Idempotency-Key':uuid.uuid4().hex})
+assert do['cart']['lineItems'][0]['label']=='Tasse Deutsch unveränderlich · sage / 350',do['cart']['lineItems']
+p=call('/api/merchant/products/mug',h=mh);p['translations']['de']['name']='Tasse später geändert'
+call('/api/merchant/products/mug',p,mh,'PUT')
+assert next(x for x in call('/api/search/order',{},mh)['data'] if x['id']==do['id'])['cart']['lineItems'][0]['label']=='Tasse Deutsch unveränderlich · sage / 350'
+check('German variant order labels inherit parent translation and remain immutable after edits')
 summary={'passed':len(checks),'checks':checks,'orderId':o['id'],'workspace':u['workspace'],'paymentState':o['payment']['state'],'paymentMode':'simulated, no external charge'}
 if os.getenv('REPORT_PATH'):open(os.environ['REPORT_PATH'],'w').write(json.dumps(summary,indent=2)+'\n')
 print(json.dumps(summary))

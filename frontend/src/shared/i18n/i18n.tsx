@@ -25,6 +25,8 @@ export const dictionaries: Record<Locale, Dictionary> = {
   "es-ES": es,
 };
 export function getLocale(): Locale {
+  const requested = new URLSearchParams(location.search).get("language");
+  if (requested && requested in locales) return requested as Locale;
   const saved = localStorage.getItem("rac-locale");
   return saved && saved in locales ? (saved as Locale) : "de-DE";
 }

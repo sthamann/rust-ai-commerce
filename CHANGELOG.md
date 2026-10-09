@@ -1,5 +1,14 @@
 # Changelog
 
+## Checkout continuity — 2026-10-09
+
+- Reuse the native checkout inside registered Storyfront shop domains.
+- Save localized parent/variant product labels in immutable order snapshots.
+- Send shopper-only completion receipts for server-verified original bag reconciliation.
+- Add actual PostgreSQL origin/isolation and localized order regression checks.
+- Companion private integration adds recognized-account sign out and localized original Studio overview states.
+- Real payment redirect/3DS acceptance remains separate from simulated checkout tests.
+
 ## Original public Storyfront acceptance — 9 October 2026
 
 - Replace the reduced hosted Experience editor with the original private Storyfront Studio, Cinematic renderer and workers on the existing Experience service. Keep private source and provider credentials out of public Vendune.

@@ -40,23 +40,13 @@ pub(super) async fn localize_products(
     a: &App,
     t: &str,
     chain: &[String],
-    mut ps: Vec<Product>,
+    ps: Vec<Product>,
 ) -> Result<Vec<Product>> {
     if ps.is_empty() {
         return Ok(ps);
     }
     let ids = ps.iter().map(|p| p.id.clone()).collect::<Vec<_>>();
     let rows=sqlx::query("SELECT product_id,language_id,name,description FROM product_translations WHERE tenant=$1 AND language_id=ANY($2) AND product_id=ANY($3)").bind(t).bind(chain).bind(&ids).fetch_all(&a.db).await?;
-    let mut translations: HashMap<String, ProductTranslations> = HashMap::new();
-    for row in rows {
-        translations
-            .entry(row.get("product_id"))
-            .or_default()
-            .insert(
-                row.get("language_id"),
-                (row.get("name"), row.get("description")),
-            );
-    }
     let languages = performance::languages(a).await?;
     let locale_chain = chain
         .iter()
@@ -67,8 +57,27 @@ pub(super) async fn localize_products(
                 .map(|l| l.locale.clone())
         })
         .collect::<Vec<_>>();
+    Ok(hydrate_products(ps, &rows, chain, &locale_chain))
+}
+/// Hydrate locked rows using the same field-level inheritance as catalog reads.
+pub(crate) fn hydrate_products(
+    mut ps: Vec<Product>,
+    rows: &[sqlx::postgres::PgRow],
+    chain: &[String],
+    locale_chain: &[String],
+) -> Vec<Product> {
+    let mut translations: HashMap<String, ProductTranslations> = HashMap::new();
+    for row in rows {
+        translations
+            .entry(row.get("product_id"))
+            .or_default()
+            .insert(
+                row.get("language_id"),
+                (row.get("name"), row.get("description")),
+            );
+    }
     for p in &mut ps {
-        super::commerce::localize_extra(&mut p.extra, &locale_chain);
+        super::commerce::localize_extra(&mut p.extra, locale_chain);
         if let Some(media) = p.media.as_array_mut() {
             for m in media {
                 if m["alt"].is_object() {
@@ -92,7 +101,7 @@ pub(super) async fn localize_products(
             }
         }
     }
-    Ok(ps)
+    ps
 }
 type ProductTranslations = HashMap<String, (Option<String>, Option<String>)>;
 

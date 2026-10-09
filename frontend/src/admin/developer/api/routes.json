@@ -975,6 +975,11 @@
     "source": "src/marketing/channel_preview.rs"
   },
   {
+    "path": "/checkout",
+    "method": "GET",
+    "source": "src/checkout_handoff.rs"
+  },
+  {
     "path": "/health",
     "method": "GET",
     "source": "src/routes.rs"

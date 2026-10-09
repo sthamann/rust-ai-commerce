@@ -2,10 +2,7 @@
 use crate::*;
 pub(crate) fn router() -> Router<App> {
     Router::new()
-        .route_service(
-            "/checkout",
-            tower_http::services::ServeFile::new("frontend/dist/index.html"),
-        )
+        .route("/checkout", get(crate::checkout_page::page))
         .route("/store-api/checkout/handoff", post(issue))
         .route("/store-api/checkout/handoff/consume", post(consume))
 }

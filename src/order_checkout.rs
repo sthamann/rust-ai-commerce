@@ -17,6 +17,7 @@ pub(crate) async fn checkout(a: &App, h: &RequestContext, key: &str) -> Result<V
     } else {
         None
     };
+    let (language_chain, locale_chain) = checkout_products::language(a, &admitted).await?;
     let mut tx = a.db.begin().await?;
     history::context(&mut tx, h, "checkout").await?;
     let lock_key = format!("{}:{key}", tenant(h)?);
@@ -31,6 +32,9 @@ pub(crate) async fn checkout(a: &App, h: &RequestContext, key: &str) -> Result<V
         .await?
         .ok_or(bad("Cart not found"))?;
     let mut c = stored(&r)?;
+    if c.data.locale != admitted.data.locale {
+        return Err(conflict("Checkout language changed; review again"));
+    }
     if c.data.customer_id.is_some()
         && let Some(email) = &c.data.email
     {
@@ -90,21 +94,7 @@ pub(crate) async fn checkout(a: &App, h: &RequestContext, key: &str) -> Result<V
             "Product hidden in this sales channel".into(),
         ));
     }
-    let locked: Vec<_> = rows.iter().map(product).collect();
-    let ps = locked
-        .iter()
-        .filter(|p| ids.contains(&p.id))
-        .map(|p| {
-            let mut p = p.clone();
-            if let Some(parent) = locked
-                .iter()
-                .find(|root| Some(&root.id) == p.parent_id.as_ref())
-            {
-                p.extra = commerce::inherited_extra(&parent.extra, &p.extra);
-            }
-            p
-        })
-        .collect::<Vec<_>>();
+    let ps = checkout_products::snapshot(&mut tx, &c, rows, &language_chain, &locale_chain).await?;
     // Configuration cannot change between this price calculation and order commit.
     let (config, settings_revision) =
         commerce::scoped_locked(&mut tx, &c.tenant, &c.data.sales_channel).await?;
