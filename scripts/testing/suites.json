@@ -55,6 +55,7 @@
     "connected_apps",
     "image_jobs",
     "managed_search",
+    "lexical_search",
     "app_assistants",
     "read_performance",
     "fashion_demo",

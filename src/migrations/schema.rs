@@ -305,4 +305,8 @@ pub(super) const SCHEMA: &[(&str, &str)] = &[
         "078-cognitive-error-counters",
         include_str!("../../migrations/078-cognitive-error-counters.sql"),
     ),
+    (
+        "079-knowledge-lexical-indexes",
+        include_str!("../../migrations/079-knowledge-lexical-indexes.sql"),
+    ),
 ];

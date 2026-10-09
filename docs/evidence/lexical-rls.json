@@ -1,0 +1,269 @@
+{
+  "baselineCommit": "40dd02b970c04aa506b2b976ad45ef24c99a54ae",
+  "baselineExecutionMs": [
+    35.54,
+    36.321,
+    35.75,
+    36.209,
+    37.465
+  ],
+  "candidateExecutionMs": [
+    0.228,
+    0.243,
+    0.249,
+    0.246,
+    0.233
+  ],
+  "sameNativeResult": true,
+  "baselineScans": [
+    {
+      "Node Type": "Index Scan",
+      "Relation Name": "commerce_settings",
+      "Index Name": "commerce_settings_pkey",
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 2
+    },
+    {
+      "Node Type": "Subquery Scan",
+      "Relation Name": null,
+      "Index Name": null,
+      "Rows Removed by Filter": null,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 520
+    },
+    {
+      "Node Type": "Seq Scan",
+      "Relation Name": "products",
+      "Index Name": null,
+      "Rows Removed by Filter": 20055,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 509
+    },
+    {
+      "Node Type": "Seq Scan",
+      "Relation Name": "knowledge_relations",
+      "Index Name": null,
+      "Rows Removed by Filter": 68,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 2
+    },
+    {
+      "Node Type": "Function Scan",
+      "Relation Name": null,
+      "Index Name": null,
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 0
+    },
+    {
+      "Node Type": "Bitmap Heap Scan",
+      "Relation Name": "semantic_products",
+      "Index Name": null,
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 0
+    },
+    {
+      "Node Type": "Bitmap Index Scan",
+      "Relation Name": null,
+      "Index Name": "semantic_products_pkey",
+      "Rows Removed by Filter": null,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 0
+    },
+    {
+      "Node Type": "Index Only Scan",
+      "Relation Name": "products",
+      "Index Name": "product_root_page",
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 0
+    },
+    {
+      "Node Type": "Index Only Scan",
+      "Relation Name": "embedding_jobs",
+      "Index Name": "embedding_jobs_pkey",
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 0
+    },
+    {
+      "Node Type": "Index Scan",
+      "Relation Name": "products",
+      "Index Name": "products_pkey",
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 3
+    }
+  ],
+  "candidateScans": [
+    {
+      "Node Type": "CTE Scan",
+      "Relation Name": null,
+      "Index Name": null,
+      "Rows Removed by Filter": null,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 0
+    },
+    {
+      "Node Type": "CTE Scan",
+      "Relation Name": null,
+      "Index Name": null,
+      "Rows Removed by Filter": null,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 0
+    },
+    {
+      "Node Type": "Bitmap Heap Scan",
+      "Relation Name": "knowledge_product_lexemes",
+      "Index Name": null,
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 4
+    },
+    {
+      "Node Type": "Bitmap Index Scan",
+      "Relation Name": null,
+      "Index Name": "knowledge_product_lexemes_pkey",
+      "Rows Removed by Filter": null,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 3
+    },
+    {
+      "Node Type": "Index Scan",
+      "Relation Name": "commerce_settings",
+      "Index Name": "commerce_settings_pkey",
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 2
+    },
+    {
+      "Node Type": "Subquery Scan",
+      "Relation Name": null,
+      "Index Name": null,
+      "Rows Removed by Filter": null,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 25
+    },
+    {
+      "Node Type": "CTE Scan",
+      "Relation Name": null,
+      "Index Name": null,
+      "Rows Removed by Filter": null,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 4
+    },
+    {
+      "Node Type": "Index Scan",
+      "Relation Name": "products",
+      "Index Name": "product_root_page",
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 3
+    },
+    {
+      "Node Type": "Index Only Scan",
+      "Relation Name": "products",
+      "Index Name": "product_root_page",
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 2
+    },
+    {
+      "Node Type": "Seq Scan",
+      "Relation Name": "knowledge_relations",
+      "Index Name": null,
+      "Rows Removed by Filter": 68,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 2
+    },
+    {
+      "Node Type": "Index Only Scan",
+      "Relation Name": "products",
+      "Index Name": "product_root_page",
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 0
+    },
+    {
+      "Node Type": "Index Scan",
+      "Relation Name": "products",
+      "Index Name": "product_root_page",
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 3
+    },
+    {
+      "Node Type": "Function Scan",
+      "Relation Name": null,
+      "Index Name": null,
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 0
+    },
+    {
+      "Node Type": "Bitmap Heap Scan",
+      "Relation Name": "semantic_products",
+      "Index Name": null,
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 0
+    },
+    {
+      "Node Type": "Bitmap Index Scan",
+      "Relation Name": null,
+      "Index Name": "semantic_products_pkey",
+      "Rows Removed by Filter": null,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 0
+    },
+    {
+      "Node Type": "Index Only Scan",
+      "Relation Name": "products",
+      "Index Name": "product_root_page",
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 0
+    },
+    {
+      "Node Type": "Index Only Scan",
+      "Relation Name": "embedding_jobs",
+      "Index Name": "embedding_jobs_pkey",
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 0,
+      "Shared Hit Blocks": 0
+    },
+    {
+      "Node Type": "Index Scan",
+      "Relation Name": "products",
+      "Index Name": "products_pkey",
+      "Rows Removed by Filter": 0,
+      "Actual Rows": 1,
+      "Shared Hit Blocks": 3
+    }
+  ],
+  "projection": {
+    "productWordRows": 100087,
+    "productIndexBytes": 18194432
+  },
+  "kind": "local-matched-selective-database-micro-test",
+  "postgres": "17",
+  "syntheticAddedProducts": 20000,
+  "query": "distinctiveneedle",
+  "role": "NOSUPERUSER NOBYPASSRLS with transaction-local workshop tenant scope",
+  "method": "Five paired actual baseline/candidate SQL executions on the same isolated migrated PostgreSQL database; same native result verified; no disabled planner methods",
+  "limitations": [
+    "single selective synthetic query; not an HTTP/inference/platform benchmark",
+    "warm shared buffers; no fleet load",
+    "large/common posting lists and source-write throughput not benchmarked"
+  ],
+  "sourceHashes": {
+    "migrations/079-knowledge-lexical-indexes.sql": "996ae9ea9362f1bf854498e87244e0aa87833a4ec6eafdc4b15ad27d6a68a2e3",
+    "src/knowledge/search.sql": "23f9a496455de77d82892e16baa6f687ff574230fdac5332a58f39bc4f66a08b",
+    "src/documents/search.sql": "b92ae61568195b0413873e2f8bf3e7fa1b9a1bb34230c5d751b15ef3115e2a4c",
+    "src/documents/retrieval.rs": "eb492f0f206118a7adc1d419ab1e38e9e6fe233ca305aac2306b398a44998b2d"
+  },
+  "candidateCommit": "576412b532d1479fe8f9a15ce1f17a36387b8c1f",
+  "sourceScope": "Source hashes describe the measured snapshot; only src/knowledge/search.sql was performance-measured. Later source-document hydration changes preserve this product query but are verified separately, not assigned these timing values."
+}

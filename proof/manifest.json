@@ -1617,8 +1617,8 @@
     },
     "src/documents/retrieval.rs": {
       "status": "unproved",
-      "sha256": "9740f436b065e612d7d30140741338ea59d9cc13cf71f61c30499cfd2c7db704",
-      "review": "Reviewed current-source answer fence against native tenant/publication/archive/revision/hash/chunk/locale and exact product snapshot; delayed uncited provider HTTP regressions reject withdrawal/reassignment/product mutation. Registered saved-fact indexes and transactional rebuildable diagnostic deltas; isolated PostgreSQL/Qdrant tests cover 1000-job backfill, concurrent deltas/reset/delete/tenant separation. 184 Rust unit checks and format/clippy pass; SQL/async boundary remains outside extracted proofs."
+      "sha256": "eb492f0f206118a7adc1d419ab1e38e9e6fe233ca305aac2306b398a44998b2d",
+      "review": "Reviewed migration 079 composite source keys, FORCE RLS and transaction-bound lexical triggers/backfill; both native query owners recheck current text/publication with indexed tenant word candidates. Actual NOSUPERUSER NOBYPASSRLS product/document plans, missing/foreign context and source edit/withdrawal/delete regressions pass; native strict-runtime suite passes. No extracted decision or theorem changed; SQL/query plans remain unproved."
     },
     "src/documents/tools.rs": {
       "status": "unproved",
@@ -1952,8 +1952,8 @@
     },
     "src/migrations/schema.rs": {
       "status": "unproved",
-      "sha256": "62890c72bdaf85a94e75db1e45dffeb00b3bce20b5ee8a7de0cf0b81b656c3a9",
-      "review": "Reviewed current-source answer fence against native tenant/publication/archive/revision/hash/chunk/locale and exact product snapshot; delayed uncited provider HTTP regressions reject withdrawal/reassignment/product mutation. Registered saved-fact indexes and transactional rebuildable diagnostic deltas; isolated PostgreSQL/Qdrant tests cover 1000-job backfill, concurrent deltas/reset/delete/tenant separation. 184 Rust unit checks and format/clippy pass; SQL/async boundary remains outside extracted proofs."
+      "sha256": "ecf5ac62e74c10039d717dc37f685d3764d4dfbe1c61cf3a1e829edb24697916",
+      "review": "Reviewed migration 079 composite source keys, FORCE RLS and transaction-bound lexical triggers/backfill; both native query owners recheck current text/publication with indexed tenant word candidates. Actual NOSUPERUSER NOBYPASSRLS product/document plans, missing/foreign context and source edit/withdrawal/delete regressions pass; native strict-runtime suite passes. No extracted decision or theorem changed; SQL/query plans remain unproved."
     },
     "src/migrations.rs": {
       "status": "unproved",
@@ -2871,6 +2871,10 @@
       "sha256": "e108c8d9615faad9cfe2681c474731d479af547b66b9252e1c6b1e3da35e16b5",
       "review": "Reviewed current-source answer fence against native tenant/publication/archive/revision/hash/chunk/locale and exact product snapshot; delayed uncited provider HTTP regressions reject withdrawal/reassignment/product mutation. Registered saved-fact indexes and transactional rebuildable diagnostic deltas; isolated PostgreSQL/Qdrant tests cover 1000-job backfill, concurrent deltas/reset/delete/tenant separation. 184 Rust unit checks and format/clippy pass; SQL/async boundary remains outside extracted proofs."
     },
+    "migrations/079-knowledge-lexical-indexes.sql": {
+      "sha256": "996ae9ea9362f1bf854498e87244e0aa87833a4ec6eafdc4b15ad27d6a68a2e3",
+      "review": "Reviewed migration 079 composite source keys, FORCE RLS and transaction-bound lexical triggers/backfill; both native query owners recheck current text/publication with indexed tenant word candidates. Actual NOSUPERUSER NOBYPASSRLS product/document plans, missing/foreign context and source edit/withdrawal/delete regressions pass; native strict-runtime suite passes. No extracted decision or theorem changed; SQL/query plans remain unproved."
+    },
     "proof/Commerce/Claims.lean": {
       "sha256": "2fe2cee29e4c579388fe6089ec94ee16caa21b477148ea7b96cdcfb664893c3c",
       "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
@@ -2963,13 +2967,17 @@
       "sha256": "b86e4dbf6fce56fed689dce0fa7daa86d247426dacfa384c4b4071a335f350be",
       "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
     },
+    "src/documents/search.sql": {
+      "sha256": "0f1405cf3bbcb50a7e549de823c326ce4ca7ece23fdb1a31042b1b0da456d378",
+      "review": "Review RLS-safe lexical hydration follow-up: parameterized current source reads only after lexical/semantic candidate selection; preserve native source hash/model/locale/publication/product checks, greedy final-position IDs and existing extracted policies. SQL and transport remain unproved."
+    },
     "src/knowledge/neighborhood.sql": {
       "sha256": "4a93225bb65b3a99fbffe34491c78ce4b3dd9bb0c7080cb0a1587fa8fe53e0a6",
       "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
     },
     "src/knowledge/search.sql": {
-      "sha256": "462515f7869c1ac2a2b54baffa23273de3ead868fb9a6addbb0da89b3bf7ed5f",
-      "review": "Reviewed bounded tenant-scoped embedding intake/model-generation cursors, revision/lease fencing and fair vector retry drain; pooled geometry-checked Qdrant hydration and admitted reranking; current-right read tools, structured protocols and SSE transport; exact source quotation/review/public compilation/signatures; transactional price corridors and non-compounding daily autonomy; consent-bound assignments/preferences and delayed cached native-payment readout including stop/withdrawal invalidation. New migration RLS/composite links and extracted predicate consumers reviewed. Native HTTP/PG/Qdrant/provider/UI regressions cover contracts; semantic quality, statistical assumptions, SQL, network and surrounding Rust remain unproved."
+      "sha256": "23f9a496455de77d82892e16baa6f687ff574230fdac5332a58f39bc4f66a08b",
+      "review": "Reviewed migration 079 composite source keys, FORCE RLS and transaction-bound lexical triggers/backfill; both native query owners recheck current text/publication with indexed tenant word candidates. Actual NOSUPERUSER NOBYPASSRLS product/document plans, missing/foreign context and source edit/withdrawal/delete regressions pass; native strict-runtime suite passes. No extracted decision or theorem changed; SQL/query plans remain unproved."
     },
     "src/knowledge/vector_claim.sql": {
       "sha256": "dde2ab619a983471cdd9957b156c429c9ae2bfc53e90feadf9808803dc79d521",
