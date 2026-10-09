@@ -84,6 +84,46 @@ Status reads inspect this small per-tenant projection, not every failed job. Err
 changes, reset/retry and deletion remove old contributions before adding new ones;
 the migration backfills the projection once. This does not change retry admission.
 
+## Lexical candidates under forced row security
+
+Migration 079 adds two rebuildable word projections, `knowledge_product_lexemes`
+and `knowledge_chunk_lexemes`. Source text is tokenized once in its native write
+transaction. The tables store only tenant, source identity and distinct `simple`
+lexemes, with composite source foreign keys and forced tenant RLS. Source deletion
+cascades; name/description/chunk edits replace their tokens atomically. Price or
+stock-only updates do not rewrite words. Source content, publication, association,
+locale, rank and commerce state are still read from the native owners.
+
+This choice addresses a PostgreSQL security/performance interaction: the native
+FTS operator is not leakproof, so a GIN index can work under a database owner but
+fail to narrow candidates under the ordinary forced-RLS runtime. B-tree equality
+on tenant/lexeme narrows candidates without relaxing RLS or reclassifying a
+PostgreSQL function. Products require every query term; documents retain their
+existing any-term behavior. Both paths recheck the native text predicate and
+current source admission before returning results. A forged/stale candidate is
+not sufficient to admit a product or quote. No extra service or truth ledger is
+introduced; the historic document GIN index is retained, not duplicated.
+
+The migration takes a source-write lock for one backfill and trigger installation.
+Provision a maintenance window and storage headroom for large existing catalogs:
+this is **not an online zero-downtime index build**. Storage grows with distinct
+source words, and writes maintain two B-tree indexes per projection. Large/common
+term posting lists still require candidate ranking. This is lexical filtering,
+not BM25, language stemming, semantic quality or a universal sub-millisecond API.
+Rebuilding these projections is an operator migration task, not a public endpoint.
+Runtime grants follow the existing post-migration role setup.
+
+`lexical_search` executes the actual product/document SQL under a non-owner
+NOSUPERUSER/NOBYPASSRLS role, with 5,000 products and 5,000 document chunks. It
+checks the actual indexed plans without disabling sequential scans, preexisting
+source backfill, AND/OR semantics, absent/foreign contexts, composite references,
+scoped edits, private/archive withdrawals, native rechecks and cascade deletion.
+The separately measured 20,000-product selective case used five paired baseline/candidate SQL executions with
+identical native results. Median execution was 36.209 ms before
+and 0.243 ms after under the scoped runtime role. [Recorded conditions and
+source hashes](evidence/lexical-rls.json) accompany this database micro-test. It
+does not measure HTTP, inference, mixed tenant load or the entire platform.
+
 ## Agent reads, writes and progress
 
 Planner/Concierge separate read decisions from the final response. Up to four
@@ -222,7 +262,7 @@ cross-device customer memory. Customer preferences are never public product fact
 | Owner | Responsibility |
 | --- | --- |
 | `src/cognition/indexing.rs`, `generations.rs`; migrations 071/074/076 | Source-trigger intake, model-change cursors, leased embeddings and status counters (including migration 078 diagnostic deltas) |
-| `src/knowledge/{search,vectors,vector_cache,rerank,embeddings}.rs` and SQL | Retrieval, native hydration, index transport/geometry and provider validation |
+| `src/knowledge/{search,vectors,vector_cache,rerank,embeddings}.rs`, `src/documents/search.sql`; migration 079 | Retrieval, current native hydration, forced-RLS word candidates, index transport/geometry and provider validation |
 | `src/cognition/{context,tools,stream}.rs`; `src/inference/protocol.rs` | Bounded context, authorized read rounds, existing-chat SSE and model protocols |
 | `src/cognition/{evidence,extraction,claim_batches,contracts,signed}.rs`; migration 072 | Source-bound evidence lifecycle and current public statement/signature adapters |
 | `src/cognition/{guardrails,autonomy}.rs`; migration 073 | Native policy, current revisions, daily price budget and transactional consumer |
@@ -234,7 +274,8 @@ cross-device customer memory. Customer preferences are never public product fact
 Registered verification includes `users`, `providers`, `knowledge_workspace`,
 `cognitive_experiments`, `managed_search` and `tenant_isolation`. Providers use local
 synthetic HTTP fixtures; managed search uses actual PostgreSQL/Qdrant with synthetic
-embeddings, 150 automatic product inserts and model-change restarts. These tests
+embeddings, 150 automatic product inserts and model-change restarts. `lexical_search` adds
+actual non-owner indexed plans and transactional lexical-source regression cases. These tests
 establish contracts and state effects, not semantic model quality or throughput.
 Frontend tests cover SSE parsing, permission/revision failures, preregistration
 controls and consent/sharing. Rust/Lean comparison and negative mutations cover

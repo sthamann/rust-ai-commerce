@@ -968,6 +968,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/international_commerce.py](../scripts/international_commerce.py) | International configuration at the real HTTP/PostgreSQL path; all rates and addresses are synthetic fixtures, not tax advice. |
 | [scripts/knowledge_workspace.py](../scripts/knowledge_workspace.py) | Actual tenant-scoped knowledge lifecycle, multilingual retrieval, cursor census and selective staging; no model calls. |
 | [scripts/legal_privacy.py](../scripts/legal_privacy.py) | Real tenant-scoped consent, checkout guards, declarations, MCP and flow consumers; no external providers. |
+| [scripts/lexical_search.py](../scripts/lexical_search.py) | Native lexical candidates: real forced-RLS plans, backfill, source edits and isolation. |
 | [scripts/load.py](../scripts/load.py) | Local HTTP latency sample. Does not claim production or Shopware speedup. |
 | [scripts/managed_search.py](../scripts/managed_search.py) | Real PostgreSQL/Qdrant synchronization; synthetic embeddings test transport, not AI quality. |
 | [scripts/marketing_accounts.py](../scripts/marketing_accounts.py) | Real isolated shops: customer authority, limited coupons, event flows, channels and selected releases. No paid models. |

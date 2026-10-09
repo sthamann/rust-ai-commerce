@@ -1,10 +1,19 @@
--- Reciprocal-rank fusion keeps lexical/exact-ID evidence even when dense results exist.
-WITH lexical AS (
+-- Indexable candidate paths are combined before ranking; native tenant hydration still owns every hit.
+WITH terms AS MATERIALIZED (SELECT unnest(tsvector_to_array(to_tsvector('simple',$2))) AS word), word_matches AS MATERIALIZED (
+ SELECT l.product_id AS id FROM terms q JOIN knowledge_product_lexemes l ON l.tenant=$1 AND l.lexeme=q.word
+ GROUP BY l.product_id HAVING count(*)=(SELECT count(*) FROM terms)
+), candidates AS (
+ SELECT p.id FROM word_matches m JOIN products p ON p.tenant=$1 AND p.id=m.id
+ WHERE p.parent_id IS NULL AND to_tsvector('simple',p.name||' '||p.description) @@ plainto_tsquery('simple',$2)
+ UNION
+ SELECT id FROM products WHERE tenant=$1 AND parent_id IS NULL AND id=$2
+ UNION
+ SELECT p.id FROM knowledge_relations r JOIN products p ON p.tenant=r.tenant AND p.id=r.source_id
+ WHERE r.tenant=$1 AND r.kind='SERVES' AND r.target_id=lower($2) AND p.parent_id IS NULL
+), lexical AS (
  SELECT p.id,row_number() OVER(ORDER BY (p.id=$2) DESC,
  ts_rank_cd(to_tsvector('simple',p.name||' '||p.description),plainto_tsquery('simple',$2)) DESC,p.id) AS rank
- FROM products p WHERE p.tenant=$1 AND p.parent_id IS NULL AND (
- p.id=$2 OR to_tsvector('simple',p.name||' '||p.description) @@ plainto_tsquery('simple',$2)
- OR EXISTS(SELECT 1 FROM knowledge_relations r WHERE r.tenant=p.tenant AND r.source_id=p.id AND r.kind='SERVES' AND r.target_id=lower($2)))
+ FROM candidates c JOIN products p ON p.tenant=$1 AND p.id=c.id AND p.parent_id IS NULL
  ORDER BY rank LIMIT 64
 ), dense AS (
  SELECT p.id,c.rank FROM jsonb_array_elements($3::jsonb) WITH ORDINALITY AS c(hit,rank)

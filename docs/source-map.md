@@ -474,3 +474,14 @@ apply, evidence/signatures, controlled layout trials and private cart preference
 Its audit tracker identifies still-unimplemented recommendations. The generated
 module inventory includes every new source; no complete-core proof or 100%
 behavioral coverage is implied.
+
+### Forced-RLS lexical candidates
+
+`migrations/079-knowledge-lexical-indexes.sql` owns transactional word projection
+backfill/triggers and composite source containment. `src/knowledge/search.sql`
+and `src/documents/search.sql` narrow candidates, then hydrate/rank/admit current
+native records. `src/documents/retrieval.rs` remains the public/private retrieval
+adapter. `scripts/lexical_search.py`, registered in the existing integration suite
+registry, checks real non-owner plans, native edits, withdrawal, source deletion
+and foreign-context rejection. These are rebuildable indexes, not another source
+registry. See [the performance and migration boundary](cognitive-commerce.md#lexical-candidates-under-forced-row-security).
