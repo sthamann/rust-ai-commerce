@@ -59,6 +59,8 @@ product answers recheck every supplied source and the native product after
 inference; concurrent withdrawal or changes return localized retry guidance.
 [How they connect, setup, evidence and remaining audit work](docs/cognitive-commerce.md).
 
+> **Graph-native apps:** map app-owned nodes, relationships and selected native fields in App Studio or the same coding-agent manifest. Current tenant rights and record revisions remain authoritative across API, MCP and planner context. [Example and contract](extensions/apps/ontology-care/README.md).
+
 ## Get started
 
 **Rust stable 1.96+ · Node.js 22+ · Docker Compose · Python 3**

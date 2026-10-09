@@ -323,7 +323,7 @@ price change. Transport fixtures separately test denials and malformed output.
 | Digital twin | Existing sandbox/quote/proposal owners retained | Validated historical replay/simulator, uncertainty and native decision linkage |
 | Retouren/reviews feedback | Node types declared | Actual feedback intake, size advice proposal and return-rate experiment |
 | Private customer memory | Consent-bound cart graph and explicit AI sharing/export/delete | Customer-owned cross-device memory with complete privacy lifecycle |
-| Graph-native apps | Existing app read tools/data accessible under current grants | Explicit ontology extensions and source admission, Studio/AI consumers |
+| Graph-native apps | Optional namespaced node/edge mappings over selected native app fields/references; current revisions and grants; one Studio/agent manifest and API/MCP/planner consumer | Unstructured app extraction, product-fact source admission and global semantic traversal |
 | Merchant goals | Existing approved proposals | Durable observe→hypothesis→experiment→proposal loop and progress UI |
 | Infrastructure recommendations | Existing Rust/PG17/RLS/outbox/cache/lease/CDN contracts remain | PG18 upgrade, generated OpenAPI, OTEL export, analytic projection, CoW staging; measured sharding strategy |
 
@@ -342,3 +342,15 @@ Provider work holds no commerce transaction. This admission check does not undo
 previously authorized input already sent to a provider and does not prove prose
 semantically correct. Delayed-provider HTTP tests change sources and products
 through their real merchant APIs while the question is in flight.
+
+
+## App-owned ontology extensions
+
+Apps map selected native models/fields and real core/app reference edges through
+`intelligence.ontology`, edited in App Studio or by the coding agent. The existing
+native list projects a bounded current graph view after permission/RLS checks;
+merchant planner, API and MCP consume it. No duplicated fact tables or new queue
+are introduced. Public app list actions deliberately expose selected graph fields;
+private mappings retain current action rights. [Contract and limits](app-platform.md#graph-native-app-views),
+[example](../extensions/apps/ontology-care/README.md). App records cannot bypass
+source admission and merchant confirmation in the product claim compiler.

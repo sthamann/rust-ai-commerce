@@ -1,6 +1,12 @@
 /** Localized request guidance across all transports; original diagnostics remain available to developer tools. */
 import { getLocale } from "./i18n";
 const messages: Record<string, readonly string[]> = {
+  "Invalid app ontology mapping": [
+    "Check the graph mapping: select an enabled AI model, a native list action, a valid type and existing fields.",
+    "Prüfe die Graph-Zuordnung: Wähle ein für KI freigegebenes Modell, eine native Leseaktion, einen gültigen Typ und vorhandene Felder.",
+    "Vérifiez le graphe : modèle autorisé pour l’IA, action de lecture native, type valide et champs existants.",
+    "Revisa el grafo: modelo habilitado para IA, acción de lectura nativa, tipo válido y campos existentes.",
+  ],
   "Account already exists": [
     "An account with this email already exists. Sign in instead.",
     "Für diese E-Mail besteht bereits ein Konto. Bitte melde dich an.",

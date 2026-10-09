@@ -61,9 +61,16 @@ try:
         except OSError: time.sleep(.25)
     call('/api/agent/providers',headers={},expected=401); passed('Provider configuration requires merchant authentication')
     config=call('/api/agent/providers'); assert all(p['configured'] for p in config['providers']); assert 'contract-openai' not in json.dumps(config); passed('Credentials never returned to frontend')
+    graph_app=json.loads((root/'extensions/apps/ontology-care/manifest.json').read_text());graph_app['id']='planner_ontology';graph_app['views']=[];graph_app['surfaces']=[];graph_app['apiRoutes']=[]
+    graph_app['entities'][0]['fields']=[f for f in graph_app['entities'][0]['fields'] if f['name'] in ['title','product_id']]
+    graph_app['intelligence']['ontology'][0]['fields']=['title','product_id'];graph_app['intelligence']['ontology'][0]['label']={'en':'Care'}
+    call('/api/apps',{'manifest':graph_app})
+    call('/api/apps/planner_ontology/entities/guides',{'id':'guide','fields':{'product_id':'mug','title':{'en':'Exact native care'}}})
     conversation=call('/api/agent/chat',{'message':'Contract test: change lamp price.','inference':{'provider':'openai','model':'contract-openai-model'}})
     cid=conversation['conversationId']; message=conversation['messages'][-1]; assert message['data']['preview']['inference']=='openai'
     path,headers,body=next(c for c in reversed(captured) if c[0] != '/api/embed'); assert path=='/v1/responses' and headers['authorization']=='Bearer contract-openai' and body['store'] is False
+    assert 'app.planner_ontology.care_advice' in body['input'] and 'app.planner_ontology.applies_to' in body['input'] and 'Exact native care' in body['input'], body['input']
+    passed('Native app ontology fields and reference edges reach the actual merchant model request under the existing grants and bounded context')
     assert body['text']['format']['strict'] and body['model']=='contract-openai-model'; passed('OpenAI Responses adapter sends native strict schema and parses structured result')
     task=message['data']['taskId']; result=call('/api/agent/tasks/'+task+'/apply',{'approve':True}); assert result['applied']
     restored=call('/api/agent/conversations/'+cid); assert restored['messages'][-1]['applied']; passed('Cloud-derived preview uses real approval transaction and persists applied state')

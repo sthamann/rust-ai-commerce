@@ -204,3 +204,15 @@ text uses existing typed vocabularies; dynamic content uses one selected languag
 New runtime routes/fields must remain aligned across API/MCP/Flow/Studio and get
 real own/foreign-tenant regression checks. Never describe iframe CSP as total
 hostile-code containment or local worker limits as fleet-wide admission.
+
+### App ontology ownership
+
+Optional `intelligence.ontology` belongs to the canonical native app manifest.
+`src/apps/ontology.rs` projects only selected fields/current revisions from the
+existing permission- and tenant-scoped native list. API, MCP and planner context
+consume this same view; App Studio and coding agents edit the same schema.
+Namespace app-owned node/edge types. Keep graph labels in `LocalizedField` and the
+shared content-language inheritance system; ship UI vocabulary in EN/DE/FR/ES.
+Never create another app knowledge database/ledger, bypass native reference FKs,
+or treat these records as confirmed product claims. Source admission and merchant
+fact confirmation still belong to the existing product claim compiler.

@@ -116,3 +116,17 @@ AST calls/validation, read-only surfaces and pinned UI loading. Registered
 `app_components`, `app_distribution` and existing staging/payment suites exercise
 actual Rust/PostgreSQL paths. Browser rendering and SQL/asynchronous adapters are
 not covered by the extracted Lean proofs.
+
+### Map app data into the knowledge graph
+
+In **Connections → Knowledge graph mapping**, first enable AI access for a model
+with a native list action. Choose the selected fields and an app-owned node type.
+For product/customer/order or app-record references, optionally choose an app-owned
+relationship type. The label uses the same content-language selector and inheritance
+as all app fields. The coding agent edits this same `intelligence.ontology` manifest.
+
+The [care knowledge example](../extensions/apps/ontology-care/README.md) demonstrates
+current records through API, MCP and authorized planner context. This projection
+retains native record revisions and tenant rights; it does not turn app text into
+confirmed public product claims. Deleting or renaming a draft model updates mappings;
+removing a field drops its mapping without silently exposing another field.

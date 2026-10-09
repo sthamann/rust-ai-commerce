@@ -485,3 +485,7 @@ adapter. `scripts/lexical_search.py`, registered in the existing integration sui
 registry, checks real non-owner plans, native edits, withdrawal, source deletion
 and foreign-context rejection. These are rebuildable indexes, not another source
 registry. See [the performance and migration boundary](cognitive-commerce.md#lexical-candidates-under-forced-row-security).
+
+- `src/apps/ontology.rs`: validated namespaced app-node/edge metadata and bounded projections of current authorized native records; no second graph fact store.
+- `frontend/src/admin/developer/AppOntology.tsx`: shared-language mapping controls over the exact human/agent app manifest.
+- `scripts/app_ontology.py`: real API/MCP tenant, permission, reference and revision regression.
