@@ -2,31 +2,41 @@
 
 [Feature tour](features.md) · [Architecture](production-architecture.md) · [Complete documentation](documentation-site.md)
 
-The earlier feature/media review below describes **Vendune main at `706102f8ff3526a6f5bba7ab09b96ce713d1de74`**
-and the privately operated Experience deployment observed on 8 October. Documentation
-changes do not turn the prototype into a fully compatible Shopware replacement or
-certify every provider. The static API catalogue contains **243 HTTP method/path
-pairs** at this source; installed app routes are discovered separately. The current
-formal manifest contains **36 extracted policies and 78 properties** across a
-334-module Rust inventory; [formal evidence](formal-verification.md) distinguishes
-those pure decisions from unproved SQL, network and UI adapters.
+The connected intelligence and app release is merged in Core
+`598bbec112165fcac1847797786e2ba5c606e06f`. The private Experience adapter pins
+that Core and original Storyfront `2087783606e5c925317bae57625256a82c16bff0`;
+its release is `f970543124d669971330945f74b87e9c799a76e4`.
+[Complete changes, repeatable acceptance and remaining work](release-acceptance-2026-10-09.md).
 
-## Connected intelligence source update
+The static API catalogue contains **279 HTTP method/path pairs**; installed app
+routes are discovered separately. The source inventory contains **414 Rust
+modules**. The formal subset has **45 extracted policies and 97 properties**,
+with **142,298 compiled comparisons and no mismatch**. SQL, network and UI behavior
+remain outside those proofs. [Formal evidence](formal-verification.md).
 
-[PR #73](https://github.com/sthamann/vendune/pull/73) connects automatic bounded
-indexing/model rebuilds, lexical/dense retrieval with reranking, current-right
-read-agent rounds, reviewed source claims, price guardrails/autonomy budgets,
-controlled layout experiments and consent-bound private cart preferences. The
-current candidate has **45 extracted policies, 97 properties, 184 Rust unit tests
-and 385 frontend tests**; these counts do not certify the entire commerce system.
-Source-aware categories and opt-in document-event extraction reuse native
-catalog/Flow owners. Public answers reject sources or product snapshots changed
-during inference, including uncited inputs. [Architecture, setup, actual evidence
-and remaining audit scope](cognitive-commerce.md).
+## Connected intelligence release
 
-This records the implementation candidate and local verification. Its PR checks,
-merge status and hosted runtime deployment remain separate evidence; a
-GitHub/Vercel documentation preview does not activate Rust services.
+Merged [PR #73](https://github.com/sthamann/vendune/pull/73),
+[PR #74](https://github.com/sthamann/vendune/pull/74) and
+[PR #75](https://github.com/sthamann/vendune/pull/75) connect automatic bounded
+indexing/model rebuilds, lexical/dense retrieval with optional reranking,
+authorized read-agent rounds, reviewed source claims, signed public facts,
+price guardrails/daily autonomy budgets, controlled layout experiments,
+consent-bound cart preferences and native app ontology projections.
+The source checks pass **187 Rust unit tests and 388 frontend tests**;
+whole-source CI line coverage is **90.55% Rust / 63.23% frontend**.
+[Architecture, configuration, evidence and incomplete audit items](cognitive-commerce.md).
+
+Product answers and buyer advice recheck their admitted native product/source
+inputs after inference; concurrent source, consent or commerce changes return
+localized retry guidance. API, MCP, categories and opt-in document-event flows
+reuse current native rights and storage. This does not make arbitrary generated
+prose true, train model weights or complete every audit item.
+
+Completed CI and public documentation are source evidence. The 8 October hosted
+observations below remain dated observations of that earlier runtime: this
+refresh does not confirm the new Core/private image active on Northflank, original
+native workers enabled, external payment settlement or production capacity.
 
 ## Core hardening update
 

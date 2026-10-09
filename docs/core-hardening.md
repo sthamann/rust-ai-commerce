@@ -13,7 +13,7 @@ is not evidence that an older public service has received the migration or crede
 | # | Finding | Implemented owner / behavior | Regression or boundary |
 |---|---|---|---|
 | 1 | Privileged production database and automatic DDL | `deploy/compose.yaml` runs separate migrate and provision jobs. Commerce uses a non-owner login with strict RLS and `serve`; connector credentials have their own role. | Strict startup rejects owner, bypass and core TRUNCATE privileges. Existing hosting credentials must be upgraded separately. |
-| 2 | Unknown API routes inherit broad rights | `auth/route_policy.rs` declares method-specific rights beside every `/api/` route. Unknown methods/routes deny access. `security_route_gate.py` prevents an unregistered new API handler. | 169 declared API methods; customer/MCP/UCP/app capabilities retain their own additional checks. |
+| 2 | Unknown API routes inherit broad rights | `auth/route_policy.rs` declares method-specific rights beside every `/api/` route. Unknown methods/routes deny access. `security_route_gate.py` prevents an unregistered new API handler. | 191 declared API methods (9 October source); customer/MCP/UCP/app capabilities retain their own additional checks. |
 | 3 | Principal carried in HTTP headers | `request_context.rs` stores a typed Principal in request extensions. Caller `x-rac-*` values are discarded; transport forwarded to services carries no trusted principal headers. | Forged identity, missing middleware, revoked membership and role-change controls. |
 | 4 | Replica-local login defenses | `auth/abuse.rs` reserves hashed account/peer-prefix attempts in PostgreSQL before hashing passwords. Progressive failed-login backoff survives another replica. | Peer 120/minute, account 12/minute; failed attempts from five receive bounded backoff. Only exact configured proxy IPs may supply forwarded peer identity. Edge DDoS protection remains separate. |
 | 5 | Random tenant headers fill admission maps | Only an existing admitted workspace gets its own bucket/cluster lease. Unvalidated requests share the bounded anonymous budget. | Unknown-shop denial and known independent-shop availability; no arbitrary-header tenant allocation. |
@@ -33,7 +33,7 @@ is not evidence that an older public service has received the migration or crede
 
 ## Production configuration and upgrade order
 
-1. Back up the database. Run the owner-only migration job through migration 057.
+1. Back up the database. Run the owner-only migration job through the selected release’s append-only migration ledger (currently migration 079).
 2. Run the post-migration role provisioning job. Commerce gets only core DML and
    managed app schema ownership; connector tables stay with the connector role.
    Rerun provisioning after an additive migration instead of broadly granting every

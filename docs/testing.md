@@ -4,9 +4,22 @@ The prototype has automated behavior checks, actual PostgreSQL/Qdrant integratio
 original Shopware comparisons and partial Lean contracts. **It is not fully tested
 at 100%, and neither coverage nor the Lean subset proves the entire system bug-free.**
 
+## Current acceptance (9 October 2026)
+
+[Complete change and end-to-end record](release-acceptance-2026-10-09.md) joins the
+source owners, all registered suites, actual browser/private purchase checks and
+remaining audit work. The completed merged-Core CI at `598bbec` measures Rust
+**90.55% lines / 87.94% functions / 87.24% regions**, frontend **63.23% lines /
+54.78% branches / 51.14% functions / 61.94% statements** and Python tooling/reference
+scope **81.34% lines / 57.80% branches**. [Exact source/CI artifact summary](evidence/release-acceptance-2026-10-09.json).
+
+Dated measurements below retain their original source. The current suite has
+187 Rust unit tests and 388 frontend tests; the private Experience application and
+original Storyfront container have separate evidence and no claimed percentage.
+
 ## Source architecture
 
-- Rust: 326 source modules (multi-currency inventory, 7 October 2026), each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
+- Rust: 414 source modules (merged cognitive release, 9 October 2026), each with a responsibility header, at most 320 lines; `main.rs` at most 120. Existing domain folders remain independent of extension app implementations.
 - Frontend: separate `admin/`, `storefront/`, `platform/` and `shared/` ownership. Views/controllers and styles are limited to 400 lines; locale data has a documented 700-line allowance. Runtime cycles, unresolved local imports, crossing application boundaries, missing folder contracts and undocumented source files fail CI.
 - Bundled Email/GA4/Gmail/Slack services are Rust modules in `src/connectors/`; independent app examples and browser SDKs remain under `extensions/`. Python test tooling lives under `scripts/` and the previous connector is an archived comparison oracle in `reference/`. [The generated inventory](module-inventory.md) covers runtime/tooling sources and is checked for drift.
 - Studio workspaces load lazily. Root application routing is isolated in `frontend/src/application/`; error boundaries keep workspace failures inside the current view and provide reload recovery for rejected cached module imports. The removed `CommerceManager` had no call site and duplicated old operational UI. Order state management remains in `admin/orders/OrderWorkflow.tsx`; product review moderation lives in `admin/catalog/ReviewModeration.tsx`.
@@ -43,8 +56,8 @@ already-disposable database. Failures remain failures, and child processes stop
 before database cleanup. SIGINT flushes optional Rust coverage profiles.
 
 [scripts/testing/suites.json](../scripts/testing/suites.json) is the single
-registry for 37 HTTP suites, eleven local provider/connector/integration suites, four browser
-contracts and three verification-tool commands.
+registry for **48 HTTP suites, 17 local provider/connector/integration suites, four browser
+contracts and three verification-tool commands** (72 registered suites).
 The local server uses an offline model URL; live model checks are separate, opt-in
 checks. Credentials, payments, mail and Slack are exercised against loopback
 protocol fixtures. Passing these does not demonstrate a real provider account.

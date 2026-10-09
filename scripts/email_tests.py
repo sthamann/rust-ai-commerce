@@ -420,21 +420,9 @@ class Contracts(unittest.TestCase):
         # Other running workers must never consume this fixture's flow jobs.
         database = "commerce_mail_" + uuid.uuid4().hex[:12]
         container = os.getenv("DB_CONTAINER", "vendune-postgres-1")
+        from testing.database import psql
         sql = lambda command: subprocess.run(
-            [
-                "docker",
-                "exec",
-                container,
-                "psql",
-                "-U",
-                "commerce",
-                "-d",
-                "postgres",
-                "-v",
-                "ON_ERROR_STOP=1",
-                "-c",
-                command,
-            ],
+            psql(container, "commerce", "postgres", "-v", "ON_ERROR_STOP=1", "-c", command),
             check=True,
             capture_output=True,
         )

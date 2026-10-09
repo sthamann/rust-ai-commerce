@@ -3,18 +3,18 @@
 The current source runs Lean 4.29.1 proofs for **45 policies used in production
 Rust paths**, with **97 named properties**. This is **not a certificate that the
 entire commerce core is correct or bug-free**. The cognitive-commerce review
-contains 411 Rust modules: one extracted policy module, 43 reviewed binding modules,
-one comparison driver and 366 unproved modules. Binding review is not a proof of
+contains 414 Rust modules: one extracted policy module, 43 reviewed binding modules,
+one comparison driver and 369 unproved modules. Binding review is not a proof of
 those modules. The [manifest](../proof/manifest.json) and per-revision CI artifact
 are the authoritative inventory. Local compiled conformance compares **142,298
 cases without mismatches**; the current required negative mutation suite must also
 pass before landing.
 
-The older [published verification report](formal-verification.json) is copied unchanged
-from [GitHub run 37804364204](https://github.com/sthamann/vendune/actions/runs/37804364204),
-recording source `9fa6a538b30b6169797b5899eed742826755bd2b`. Its counts describe that
-source, not the latest implementation. A later documentation edit does not upgrade
-that report or certify every adapter.
+The [published verification report](formal-verification.json) is copied from the
+completed [merged-Core CI run 37868239729](https://github.com/sthamann/vendune/actions/runs/37868239729),
+recording source `598bbec112165fcac1847797786e2ba5c606e06f`. It includes the compiled
+conformance result and exact source inventory. Later documentation edits do not
+extend its proof scope. [Release acceptance and measured gaps](release-acceptance-2026-10-09.md).
 
 ## Connection to the real application
 

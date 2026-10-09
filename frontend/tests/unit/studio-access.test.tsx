@@ -1,10 +1,35 @@
 /** Protected deep links and in-place reauthentication preserve drafts and reject another identity. */
-import { act, renderHook, waitFor } from "@testing-library/react";
+import {
+  act,
+  render,
+  renderHook,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { expect, it, vi } from "vitest";
 import { useStudioController } from "../../src/admin/shell/useStudioController";
 import { LocaleProvider } from "../../src/shared/i18n/i18n";
 import { session, overview, providers } from "./fixtures";
 import { reportMerchantSessionFailure } from "../../src/shared/api/merchant-session";
+import PersonalAccountForm from "../../src/admin/team/PersonalAccountForm";
+
+it("enforces shop slugs with modern HTML Unicode-set pattern validation", () => {
+  render(
+    <PersonalAccountForm
+      run={vi.fn()}
+      mode="register"
+      onSession={vi.fn()}
+      s={(key) => key}
+      busy={false}
+    />,
+  );
+  const input = screen.getByLabelText("workspaceId") as HTMLInputElement;
+  const pattern = new RegExp(`^(?:${input.pattern})$`, "v");
+  for (const value of ["ab", "release-browser-shop", "shop2026"])
+    expect(pattern.test(value)).toBe(true);
+  for (const value of ["-shop", "Shop", "my_shop", "shop name", "shop/other"])
+    expect(pattern.test(value)).toBe(false);
+});
 function network() {
   const fetcher = vi.fn(async (path: RequestInfo | URL) => ({
     ok: true,
