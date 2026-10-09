@@ -1020,6 +1020,7 @@ This lists every checked-in source module in these roots, including files with n
 | [scripts/testing/database.py](../scripts/testing/database.py) | Use the same PostgreSQL fixtures through Docker or an explicitly selected native psql executable. |
 | [scripts/testing/extraction.py](../scripts/testing/extraction.py) | Native document-event extraction, review boundary and shared AI quotas; local provider only. |
 | [scripts/testing/hotpath.py](../scripts/testing/hotpath.py) | Real HTTP wire bytes and SQL tracing checks for the existing read-performance suite. |
+| [scripts/testing/image_context.py](../scripts/testing/image_context.py) | Check real Rust include! inputs against the production image's explicit build COPY set. |
 | [scripts/testing/intent_navigation.py](../scripts/testing/intent_navigation.py) | Exercise saved fact categories through native catalog/MCP, source review and selective staging; no models. |
 | [scripts/testing/inventory_batch.py](../scripts/testing/inventory_batch.py) | Concurrent two-product allocation/release on the actual HTTP path, reused by strict runtime verification. |
 | [scripts/testing/pooler.py](../scripts/testing/pooler.py) | Owned real PgBouncer fixture: one backend, transaction pooling, never a forced privileged user. |

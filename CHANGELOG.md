@@ -1,5 +1,11 @@
 # Changelog
 
+## Native Storyfront release packaging — 9 October 2026
+
+- Fix the production image build: historical app manifests used by the canonical upgrade/approval contract are now copied into the Rust build stage. They are existing reference inputs, not a restored Python runtime or a second app registry.
+- Add a CI dependency-closure check for literal Rust compile-time includes, with a negative control reproducing the eight missing manifests from the failed public build.
+- The older publicly deployed Core lacked the confirmed-claim intake/compile endpoints required by the private original Storyfront adapter. Update the tested Core through the existing backup/migration/release workflow before claiming native public integration.
+
 ## Connected intelligence, app ontology and acceptance — 9 October 2026
 
 - Automatic tenant-bound embedding intake/model rebuilds, pooled Qdrant, lexical/dense fusion, optional reranking and self-hosted OpenAI-compatible serving. Forced-RLS lexeme projections narrow current candidates without bypassing source admission.

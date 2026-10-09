@@ -171,3 +171,14 @@ Transaction pooling requires PgBouncer 1.21+, protocol prepared-statement suppor
 and a **direct/session** `DATABASE_LISTENER_URL` under the non-owner login. Set
 `DB_POOLER_MODE=transaction`; statement pooling is unsupported. [Complete settings,
 upgrade sequence, worker retention and tested boundaries](core-hardening.md).
+
+## Production image compile-time dependencies
+
+Run `python3 scripts/testing/image_context.py` before building `deploy/Dockerfile`.
+This CI gate reads literal Rust `include_str!`/`include_bytes!` dependencies and
+checks them against the Rust stage COPY set. Its negative control removes the
+historical app-manifest COPY and must find the missing inputs. These eight files
+are used by app approval/upgrade compatibility; tests against a full checkout
+alone cannot detect their absence from a container build. The final image still
+contains no Python interpreter. A green dependency check does not replace an
+actual image build or the managed backup/migration/runtime-role rollout.
