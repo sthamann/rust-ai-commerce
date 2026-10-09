@@ -1067,8 +1067,18 @@
     },
     "src/checkout_handoff.rs": {
       "status": "unproved",
-      "sha256": "e33cb51eacc630d39cdab659fe6715ece5ef44e74c67aab0a27796d8fcbbf5c2",
-      "review": "Reviewed dedicated shared checkout route in its handoff owner, scoped one-use destination and frontend retention; auth, money and extracted decisions unchanged. Real PostgreSQL checkout, mounted-domain and private-preview regressions pass."
+      "sha256": "ed6e93a9b24930254c257366479d93fa129dee86f025035110ba9a48b003d7b5",
+      "review": "Reviewed tenant/channel registered-origin checkout framing, immutable localized checkout snapshots using existing inheritance, and shopper-only receipt transport. Verified origin negatives and German parent/variant label persistence with PostgreSQL; these adapters remain unproved, existing extracted kernel policies unchanged."
+    },
+    "src/checkout_page.rs": {
+      "status": "unproved",
+      "sha256": "b34ce0c5e39b0b1234d5fe77b22645dba74d2cb86dab684461fa7e65d01e8cd7",
+      "review": "Reviewed tenant/channel registered-origin checkout framing, immutable localized checkout snapshots using existing inheritance, and shopper-only receipt transport. Verified origin negatives and German parent/variant label persistence with PostgreSQL; these adapters remain unproved, existing extracted kernel policies unchanged."
+    },
+    "src/checkout_products.rs": {
+      "status": "unproved",
+      "sha256": "e92f8561ff3392bb0de531aa67e847158c343b7b9ca6c2e7d781d7d5f19f5b31",
+      "review": "Reviewed tenant/channel registered-origin checkout framing, immutable localized checkout snapshots using existing inheritance, and shopper-only receipt transport. Verified origin negatives and German parent/variant label persistence with PostgreSQL; these adapters remain unproved, existing extracted kernel policies unchanged."
     },
     "src/cognition/advisor.rs": {
       "status": "unproved",
@@ -1792,13 +1802,13 @@
     },
     "src/localization.rs": {
       "status": "unproved",
-      "sha256": "96acfca0bf310d28522d2f08d1348cfbd0df5b411ca25a875ad017fddd5a535d",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "e1f355212fb3843cd4ac87facde9616ffeea3aef76c4f7be6bcde9e91e985c27",
+      "review": "Reviewed tenant/channel registered-origin checkout framing, immutable localized checkout snapshots using existing inheritance, and shopper-only receipt transport. Verified origin negatives and German parent/variant label persistence with PostgreSQL; these adapters remain unproved, existing extracted kernel policies unchanged."
     },
     "src/main.rs": {
       "status": "unproved",
-      "sha256": "0e1fc620d448476560d24f4589ce176613e9e10656a310d504afa10e83549524",
-      "review": "Reviewed native-only static bypass with hosted denial and Lean exact acceptance; one fresh domain/environment/status/channel/mount SQL snapshot and current membership lookup preserve scoped admission, binding identity and revocation; immutable Arc settings retain locked mutation/checkout reads; secret-free compression opt-in and deterministic precompressed assets preserve streams/ranges; batched inventory uses existing checkout locks and ordered idempotent release; bounded overview SQL preserves currency-separated historical facts. Real two-replica read/channel/tenant/checkout and strict-runtime regressions passed; SQL and build inputs now explicitly locked. These adapters remain unproved."
+      "sha256": "d44a8281d09642449521b995d2100f8fd45e84bc13ead05e92dc4e295641926d",
+      "review": "Reviewed tenant/channel registered-origin checkout framing, immutable localized checkout snapshots using existing inheritance, and shopper-only receipt transport. Verified origin negatives and German parent/variant label persistence with PostgreSQL; these adapters remain unproved, existing extracted kernel policies unchanged."
     },
     "src/marketing/app_flows.rs": {
       "status": "reviewed-binding",
@@ -2052,8 +2062,8 @@
     },
     "src/order_checkout.rs": {
       "status": "reviewed-binding",
-      "sha256": "216a14e1d259b14b86ab5cbe09bbe9381c2cfce5aafcf76bbcbd5861f26c50c8",
-      "review": "Reviewed app authority and current creator rights, isolated schemas/RLS and atomic migration rollback, fenced job/event leases, minimized payloads, signature/digest pins, opaque UI grants, pinned DNS egress and bounded Wasm/WIT quote adapters. Actual isolated PostgreSQL own/foreign callback, schema, jobs, events, assets, export, distribution and production-foundation regressions passed. Added extracted package, surface, resource and exact callback-consent policies with negative Lean claims; async/network/UI and general Rust modules remain explicitly unproved."
+      "sha256": "d4eac244e4dcfdf7c32b0c85e3f646412fce23fdbab6a873754fba8dbd841b38",
+      "review": "Reviewed tenant/channel registered-origin checkout framing, immutable localized checkout snapshots using existing inheritance, and shopper-only receipt transport. Verified origin negatives and German parent/variant label persistence with PostgreSQL; these adapters remain unproved, existing extracted kernel policies unchanged."
     },
     "src/order_routes.rs": {
       "status": "unproved",
@@ -2352,8 +2362,8 @@
     },
     "src/security_headers.rs": {
       "status": "unproved",
-      "sha256": "7fe6dbeea34e0e0ca58a02ce89b740fde27af1f62d244cf68ba6064418cb4098",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "f68043ecfcfd5eb2d2b07654bb77f7b91485f5c151fcf605427a01002aa0bf44",
+      "review": "Reviewed tenant/channel registered-origin checkout framing, immutable localized checkout snapshots using existing inheritance, and shopper-only receipt transport. Verified origin negatives and German parent/variant label persistence with PostgreSQL; these adapters remain unproved, existing extracted kernel policies unchanged."
     },
     "src/seed.rs": {
       "status": "unproved",

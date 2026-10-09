@@ -137,6 +137,8 @@ This lists every checked-in source module in these roots, including files with n
 | [src/channel_metrics.rs](../src/channel_metrics.rs) | Bounded, lossy diagnostic counters. Never use this buffer for business events. |
 | [src/chat_lease.rs](../src/chat_lease.rs) | Short, cross-replica conversation leases; inference never retains a database transaction. |
 | [src/checkout_handoff.rs](../src/checkout_handoff.rs) | Single-use checkout transfer for independent storefronts; no app-specific catalog or checkout rules. |
+| [src/checkout_page.rs](../src/checkout_page.rs) | The existing checkout may be framed only by its registered tenant/channel storefront. |
+| [src/checkout_products.rs](../src/checkout_products.rs) | Localized immutable checkout SKU snapshots read under the purchase transaction's locks. |
 | [src/cognition/advisor.rs](../src/cognition/advisor.rs) | Buyer-admitted initial catalog/evidence context and bounded native response revalidation; no extra truth store. |
 | [src/cognition/autonomy.rs](../src/cognition/autonomy.rs) | Price-only optional autonomy, atomic unique-SKU daily quotas and a non-compounding day baseline. |
 | [src/cognition/claim_batches.rs](../src/cognition/claim_batches.rs) | Bounded public claim intake/compilation shares current channel admission and source-bound evidence, without per-SKU HTTP round trips. |
@@ -841,6 +843,7 @@ This lists every checked-in source module in these roots, including files with n
 | [frontend/src/storefront/checkout/OrderConfetti.tsx](../frontend/src/storefront/checkout/OrderConfetti.tsx) | Finite CSS celebration after an accepted order; no timers, libraries or motion for reduced-motion users. |
 | [frontend/src/storefront/checkout/PaymentSession.tsx](../frontend/src/storefront/checkout/PaymentSession.tsx) | Provider handoff and bounded durable-status polling; only verified server receipts confirm payment. |
 | [frontend/src/storefront/checkout/checkout-order.ts](../frontend/src/storefront/checkout/checkout-order.ts) | Bind the purchase to the reviewed cart and total; the server remains the pricing authority. |
+| [frontend/src/storefront/checkout/embedded-checkout.ts](../frontend/src/storefront/checkout/embedded-checkout.ts) | Only the registered embedding storefront receives the shopper cart receipt capability; it verifies with Core. |
 | [frontend/src/storefront/legal/CheckoutLegal.tsx](../frontend/src/storefront/legal/CheckoutLegal.tsx) | Current legal-document links and separate non-prechecked digital performance acknowledgement. |
 | [frontend/src/storefront/legal/ConsumerRequestForm.tsx](../frontend/src/storefront/legal/ConsumerRequestForm.tsx) | Public two-step declaration with immutable downloadable receipt; references never expose order data. |
 | [frontend/src/storefront/legal/LegalDocument.tsx](../frontend/src/storefront/legal/LegalDocument.tsx) | Published legal text uses selected content language/main-language inheritance; empty content is visible as missing. |

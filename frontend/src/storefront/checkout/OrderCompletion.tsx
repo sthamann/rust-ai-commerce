@@ -1,4 +1,5 @@
 /** Dedicated completion page renders the accepted order snapshot and honest provider state, with no ID-only reads. */
+import { notifyCheckout, returnFromCheckout } from "./embedded-checkout";
 import { useEffect, useRef } from "react";
 import type { Order } from "../../shared/api/shop-api";
 import { useCheckoutText } from "../../shared/i18n/checkout-i18n";
@@ -27,6 +28,7 @@ export default function OrderCompletion({
       currency: snapshot.price.currency ?? "EUR",
     }).format(n);
   useEffect(() => {
+    notifyCheckout(order);
     heading.current?.focus();
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [order.id]);
@@ -115,7 +117,12 @@ export default function OrderCompletion({
           )}
         </section>
       </div>
-      <button className="shop-primary completion-back" onClick={onBack}>
+      <button
+        className="shop-primary completion-back"
+        onClick={() => {
+          if (!returnFromCheckout()) onBack();
+        }}
+      >
         {x("back")}
         <Icon name="arrow" />
       </button>

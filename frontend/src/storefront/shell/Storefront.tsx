@@ -1,4 +1,5 @@
 /** Storefront composition root: cart context, routes, customer account and checkout. */
+import { checkoutParent } from "../checkout/embedded-checkout";
 import { CurrencyContext } from "../../shared/i18n/i18n";
 import { shopApi, type Cart } from "../../shared/api/shop-api";
 import {
@@ -87,7 +88,7 @@ export default function Storefront(props: { onMerchant: () => void }) {
                   {w("stage")} · {w("exclusion")}
                 </div>
               )}
-              <StorefrontHeader />
+              {!checkoutParent() && <StorefrontHeader />}
               <AppSurfaceSlot
                 location="storefront.header"
                 context={{ salesChannel }}
@@ -125,7 +126,7 @@ export default function Storefront(props: { onMerchant: () => void }) {
                 <LegalDocument kind={appPath.slice(7)} />
               ) : appPath === "#legal" ? (
                 <CompanyLegalPage />
-              ) : id ? (
+              ) : checkoutParent() ? null : id ? (
                 <ProductPage
                   id={id}
                   cart={cart}
@@ -136,20 +137,22 @@ export default function Storefront(props: { onMerchant: () => void }) {
               ) : (
                 <StorefrontHome />
               )}
-              <footer className="shop-footer">
-                <strong>
-                  {company.brandName || company.name || shopTenant} /
-                </strong>
-                <a href="#legal">{co("legalPage")}</a>
-                <a href="#legal/privacy">{l("privacy")}</a>
-                <a href="#legal/terms">{l("terms")}</a>
-                <a href="#legal/accessibility">{l("accessibility")}</a>
-                <a href="#withdrawal">{l("withdrawHere")}</a>
-                <a href="#privacy-rights">{l("rights")}</a>
-                <button onClick={openConsent}>{l("consent")}</button>
-                <p>{s("simulation")}</p>
-                <a href="https://github.com/sthamann/vendune">GitHub ↗</a>
-              </footer>
+              {!checkoutParent() && (
+                <footer className="shop-footer">
+                  <strong>
+                    {company.brandName || company.name || shopTenant} /
+                  </strong>
+                  <a href="#legal">{co("legalPage")}</a>
+                  <a href="#legal/privacy">{l("privacy")}</a>
+                  <a href="#legal/terms">{l("terms")}</a>
+                  <a href="#legal/accessibility">{l("accessibility")}</a>
+                  <a href="#withdrawal">{l("withdrawHere")}</a>
+                  <a href="#privacy-rights">{l("rights")}</a>
+                  <button onClick={openConsent}>{l("consent")}</button>
+                  <p>{s("simulation")}</p>
+                  <a href="https://github.com/sthamann/vendune">GitHub ↗</a>
+                </footer>
+              )}
               {account && !channelPreview() && (
                 <CustomerAccount
                   cart={cart}

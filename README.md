@@ -378,3 +378,16 @@ bounded Shopware port with original-source comparisons.
 ### Channel management and private previews
 
 Existing sales channels now support revisioned editing, pause/resume and public/private visibility, including the main channel. Each channel displays its connected domains and canonical Experience editing links. Additional addresses and disconnect operations reuse the tenant-owned frontend registry and dependency checks. Personal 15-minute previews are session-bound and cannot purchase. See [workflow, APIs, security and native Storyfront limits](docs/channel-management.md).
+
+### Checkout inside connected experiences
+
+Connected original Storyfront experiences can open Vendune’s existing checkout in
+a native overlay, keeping the shopper on the experience domain. Completion is
+verified with Core before the original bag is updated. Checkout order labels use
+the cart language and remain immutable. The original Studio overview recognizes
+the connected catalogue and published address; its overview and shell vocabulary
+have English, German, French and Spanish translations. This is scoped translation
+coverage, not a claim that every original upstream editor is translated.
+
+See [the checkout continuity contract](docs/storyfront.md#native-checkout-continuity-9-october-2026)
+for ownership, security boundaries, tests and payment-provider limits.

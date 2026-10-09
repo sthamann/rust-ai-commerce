@@ -132,8 +132,12 @@ It maps EUR prices from this prototype's retail context. Sold-out variants are o
 from refreshed recommendation snapshots; checkout checks current stock again. Bundles and app-specific
 product configuration are refused by this checkout intent contract rather than
 inventing prices or dropping customization. Guest checkout uses the existing Rust
-checkout form; cross-origin customer account SSO and return-to-Storyfront order
-status callbacks are not yet implemented. This is not full Shopware/Storyfront
+checkout form, embedded in a native Storyfront dialog on registered shop domains.
+Core sends an exact-origin shopper receipt; Storyfront verifies the completed cart,
+order ID and purchased SKU quantities against Core before subtracting those quantities
+from its original bag. Receipt IDs prevent duplicate subtraction; an unverified receipt
+is retained for retry, and abandoning checkout retains the bag. Cross-origin customer
+account SSO and provider-specific external redirect/3DS return flows are not yet verified. This is not full Shopware/Storyfront
 feature equivalence or a production SaaS scaling claim.
 
 ## Verification
@@ -183,3 +187,41 @@ French and Spanish title/description maps. Native product translations are
 imported, not generated. Existing AI scenes are not automatically translated.
 The companion workspace check passed 135 steps with zero failures/skips; no
 additional paid inference was used for this refresh.
+
+## Native checkout continuity (9 October 2026)
+
+The existing frontend route `/checkout?embed=1` renders the same checkout and
+immutable order receipt. It permits framing only by the exact HTTPS origin registered
+for the requested tenant and sales channel in `hosted_frontends`. Ordinary checkout
+retains its configured frame policy. Receipts carry only the shopper cart capability,
+cart ID and order ID, never merchant credentials or customer details.
+
+```mermaid
+sequenceDiagram
+    participant Bag as Original Storyfront bag
+    participant Bridge as Private Storyfront API
+    participant Core as Vendune checkout
+    Bag->>Bridge: Product IDs and quantities
+    Bridge->>Core: Existing one-use handoff
+    Core-->>Bag: Native checkout in a registered-origin frame
+    Core->>Core: Lock, price and save localized order snapshot
+    Core-->>Bag: Exact-origin completion receipt
+    Bag->>Bridge: Receipt and original purchased quantities
+    Bridge->>Core: Verify completed cart and order
+    Core-->>Bridge: Authoritative completed snapshot
+    Bridge-->>Bag: Verified completion
+    Bag->>Bag: Subtract purchased quantities once
+```
+
+`checkout_products.rs` reuses catalog translation inheritance inside the purchase
+transaction. The saved cart locale selects the order labels, including variant parent
+inheritance; later product translations do not rewrite an existing order.
+`checkout_page.rs` owns frame admission; `embedded-checkout.ts` owns receipt transport.
+The private upstream owns the original bag, its idempotent subtraction, dialog and
+completion verification. No private Storyfront source is shipped in this repository.
+
+Database regression checks cover foreign origins, tenant/channel mismatch, parent
+translations on variants and unchanged saved labels after a later translation edit.
+Browser acceptance and deployment evidence are tracked separately from these checks.
+Real provider popups, redirects and 3DS are a separate acceptance requirement; a
+simulated order does not prove real payment capture.

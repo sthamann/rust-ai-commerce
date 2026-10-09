@@ -489,3 +489,12 @@ registry. See [the performance and migration boundary](cognitive-commerce.md#lex
 - `src/apps/ontology.rs`: validated namespaced app-node/edge metadata and bounded projections of current authorized native records; no second graph fact store.
 - `frontend/src/admin/developer/AppOntology.tsx`: shared-language mapping controls over the exact human/agent app manifest.
 - `scripts/app_ontology.py`: real API/MCP tenant, permission, reference and revision regression.
+
+### Checkout continuity source owners
+
+| Source | Responsibility | Regression evidence |
+| --- | --- | --- |
+| `src/checkout_products.rs` | Locked localized product/variant order snapshots using the catalog inheritance helper | `scripts/checkout_handoff.py` German variant and immutable label checks |
+| `src/checkout_page.rs` | Exact registered tenant/channel origin framing admission | Same suite: foreign origin, tenant, channel and invalid origin rejection |
+| `frontend/src/storefront/checkout/embedded-checkout.ts` | Exact-origin shopper completion and close messages | Frontend embedded-checkout unit tests |
+| Private original Storyfront bag and runtime client | Verify completed Core cart; remove only purchased quantities once; keep cancellation intact | Original cart-store and rust-commerce tests, live acceptance recorded separately |
