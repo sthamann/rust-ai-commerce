@@ -5,6 +5,8 @@
 - Public mobile acceptance: RAC-faa7dde0 / 44.80 EUR, German saved product name,
   cancellation preserving the original Bag and confirmed Bag 0 after reload.
 - Refresh public release documentation and actual embedded-checkout/Studio screenshots.
+- Return native checkout close/Escape cancellation to its registered Experience parent;
+  keep ordinary checkout local and preserve the cart on cancellation.
 
 - Reuse the native checkout inside registered Storyfront shop domains.
 - Save localized parent/variant product labels in immutable order snapshots.

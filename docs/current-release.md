@@ -30,6 +30,12 @@ own Bag. Later additions remain in the Bag; repeated completion messages cannot
 consume them twice. Canceling checkout retains the Bag. A saved completion receipt
 can be retried after reload when confirmation was temporarily unavailable.
 
+[PR #83](https://github.com/sthamann/vendune/pull/83) also routes the native
+checkout's close button and Escape cancellation back to its registered parent.
+This prevents an empty outer dialog after closing only the inner checkout.
+Composition regressions exercise both paths and ordinary top-level checkout;
+the local frontend suite passes **396 tests in 67 files**.
+
 Order item names use the cart's content language, including parent/variant
 inheritance, and remain immutable after later translation edits. The private
 gateway forwards the selected Studio language to the original editor. Its overview
