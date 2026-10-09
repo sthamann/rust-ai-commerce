@@ -117,12 +117,11 @@ indexing/model rebuilds, lexical/dense retrieval with optional reranking,
 authorized read-agent rounds, reviewed source claims, signed public facts,
 price guardrails/daily autonomy budgets, controlled layout experiments,
 consent-bound cart preferences and native app ontology projections.
-The current checkout-release CI passes **187 Rust unit tests and 389 frontend tests**;
-whole-source CI line coverage is **90.58% Rust / 63.23% frontend**.
-[Complete checked checkout source run](https://github.com/sthamann/vendune/actions/runs/37895483014).
-The follow-up return-navigation change passes all **391 frontend tests in 65 files**,
-TypeScript/build, module ownership and four-language checks locally; its independent
-CI status belongs to the follow-up pull request.
+The current embedded-checkout CI passes **187 Rust unit tests and 393 frontend
+tests in 66 files**, all registered database/browser-contract suites and the
+formal/differential gates. Whole-source CI line coverage is **90.56% Rust /
+63.34% frontend**; this remains partial coverage, not a whole-system guarantee.
+[Complete verified checkout source run](https://github.com/sthamann/vendune/actions/runs/37907948163).
 [Architecture, configuration, evidence and incomplete audit items](cognitive-commerce.md).
 
 Product answers and buyer advice recheck their admitted native product/source
