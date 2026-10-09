@@ -75,7 +75,7 @@ truncated quotations are not presented as complete evidence.
 Running a compatible adapter does not prove a server's batching throughput.
 Interactive embeddings and background indexing share admission. Reranker requests
 are admitted before provider invocation. Saturation falls back to lexical/fused
-retrieval instead of creating an unbounded inference queue. Interactive chat (including SSE), MCP merchant planning, document extraction via HTTP/MCP and Flow AI
+retrieval instead of creating an unbounded inference queue. Interactive chat (including SSE), buyer-facing Concierge, MCP merchant planning, document extraction via HTTP/MCP and Flow AI
 actions consume the same atomic UTC-day tenant attempt quota. Staging shares its
 live tenant budget; failed provider attempts count. This is not token/spend accounting.
 
@@ -293,7 +293,8 @@ actual non-owner indexed plans and transactional lexical-source regression cases
 establish contracts and state effects, not semantic model quality or throughput.
 The existing `providers` suite also pauses actual concierge HTTP inference and
 mutates native consent/preferences concurrently. It checks all five invalidation
-cases, unchanged-context completion, explicit sharing and independent carts.
+cases, unchanged-context completion, explicit sharing, independent carts and
+buyer-facing daily-quota denial before any model invocation.
 Frontend tests cover SSE parsing, permission/revision failures, preregistration
 controls and consent/sharing. Rust/Lean comparison and negative mutations cover
 the **exact extracted predicates** for price admission, autonomy, claim rendering

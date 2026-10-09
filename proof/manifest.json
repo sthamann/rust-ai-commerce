@@ -1377,8 +1377,8 @@
     },
     "src/concierge.rs": {
       "status": "unproved",
-      "sha256": "1d8de76e31a76e4a4278cfa40083b518bfa5ce90d2bfdccf5dec9ee47294372b",
-      "review": "Reviewed request-only private preference fingerprint and post-inference consent/revision fence; existing extracted predicates unchanged, SQL and privacy response timing remain unproved adapters"
+      "sha256": "ddcf351afef1f25df213a2e4f1839b88bbc917f23472b3de9b0ddd5b2aad9a01",
+      "review": "Reviewed private context response fingerprint and native tenant AI quota admission before Concierge provider calls; extracted predicates unchanged, surrounding SQL/network/privacy timing remains unproved"
     },
     "src/connectors/actions.rs": {
       "status": "unproved",

@@ -1,7 +1,10 @@
 """Concurrent privacy mutations across the real concierge/provider path; no live inference."""
 import concurrent.futures
 import json
+import os
+import subprocess
 import uuid
+from .database import psql
 
 
 def verify_advisor_privacy(call, captured, behavior, started, release, passed):
@@ -81,4 +84,19 @@ def verify_advisor_privacy(call, captured, behavior, started, release, passed):
             release.set()
         assert turn.result(timeout=15)['answer']['recommended_ids'] == ['lamp']
     passed('Unchanged admitted context completes despite unrelated cart mutation; no cross-context false invalidation')
+    # Buyer-facing advice must consume the same quota as merchant/Flow inference.
+    def sql(statement):
+        return subprocess.check_output(psql(os.environ['DB_CONTAINER'], 'commerce',
+            os.environ['TEST_DATABASE'], '-XqAt', '-v', 'ON_ERROR_STOP=1'),
+            input=statement, text=True).strip()
+    previous = sql("SELECT daily_ai FROM tenant_resource_limits WHERE tenant='atelier';")
+    before = len(captured)
+    try:
+        sql("INSERT INTO tenant_resource_limits(tenant,daily_ai) VALUES('atelier',1) ON CONFLICT(tenant) DO UPDATE SET daily_ai=1;")
+        advice(h, 429)
+        assert len(captured) == before
+    finally:
+        sql("UPDATE tenant_resource_limits SET daily_ai="+previous+" WHERE tenant='atelier';" if previous else
+            "DELETE FROM tenant_resource_limits WHERE tenant='atelier';")
+    passed('Buyer-facing advisor shares the native daily AI quota and denies before provider invocation')
     behavior.update(mode='normal', advisor_block=False)
