@@ -53,6 +53,17 @@ def call(path,body=None,session=None,tenant=None,expected=200,method=None,locale
  assert status==expected,(path,status,out)
  return out
 def passed(s):checks.append(s);print('PASS',s)
+def fixture_sql(statement):
+ return subprocess.check_output(psql(container,db_user,fixture_db,'-v','ON_ERROR_STOP=1','-At','-c',statement),text=True).strip()
+def embedding_idle(tenant):
+ # Lease release is asynchronous and indexing uses the same one-slot tenant budget.
+ # Check readiness, not a previous answer: otherwise the next locale can legitimately
+ # take the lexical fallback before the previous query's lease has been released.
+ for _ in range(300):
+  idle=fixture_sql(f"SELECT NOT EXISTS(SELECT 1 FROM embedding_jobs WHERE tenant='{tenant}') AND NOT EXISTS(SELECT 1 FROM resource_leases WHERE tenant='{tenant}' AND class='embedding' AND expires_at>now())")
+  if idle=='t':return
+  time.sleep(.1)
+ raise AssertionError('Fixture embedding queue/admission did not become idle')
 try:
  for _ in range(100):
   try:call('/health');break
@@ -100,7 +111,20 @@ try:
   if q['sources']:break
   time.sleep(.1)
  assert q['sources'],q
+ embedding_idle(slug)
+ # Reproduce the unavailable-source result under actual admission contention,
+ # independently of language correctness; no capacity bypass or invented citation.
+ held_lease='fixture-'+uuid.uuid4().hex
+ assert fixture_sql(f"SELECT claim_resource_lease('{held_lease}','{slug}','embedding',1,1)")=='t'
+ try:
+  embeds=sum(p=='/api/embed' for p,_ in captured)
+  unavailable=call('/store-api/product/mug/questions',{'question':'spülmaschinenfest?','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug,locale='fr-FR')
+  assert not unavailable['sources'] and unavailable['missingInformation'],unavailable
+  assert sum(p=='/api/embed' for p,_ in captured)==embeds
+ finally:fixture_sql(f"DELETE FROM resource_leases WHERE id='{held_lease}'")
+ passed('Embedding contention preserves admission and reports missing source evidence instead of fabricating citations')
  for locale in ['de-DE','fr-FR','es-ES','en-GB']:
+  embedding_idle(slug)
   behavior['mode']=locale;q=call('/store-api/product/mug/questions',{'question':'spülmaschinenfest?','inference':{'provider':'openai','model':'local-fixture'}},tenant=slug,locale=locale);assert q['sources'] and q['answer'],(locale,q)
  assert any(p=='/api/embed' and b['input']==['spülmaschinenfest?'] for p,b in captured)
  passed('Indexed semantic retrieval is actually consumed for cross-language questions with no lexical match')
