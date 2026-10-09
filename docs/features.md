@@ -2,7 +2,7 @@
 
 [Documentation home](documentation-site.md) · [Get started](quickstart.md) · [Exact Shopware scope](shopware-parity.md) · [Source map](source-map.md)
 
-**Reviewed on 8 October 2026 against `main` at `706102f`.** This guide follows the storefront, all 15 Studio workspaces and the separate platform console. The latest increment connects managed Storyfront apps, frontend domains, channel pause/private previews, merchant password enrollment and guest buyer contacts. [Current release and deployment boundaries](current-release.md).
+**Updated on 9 October 2026 against merged Core `598bbec`.** This guide follows the storefront, all 15 Studio workspaces and the separate platform console. The connected intelligence, app ontology, source/consent fences and runtime hardening are described in the [complete change and acceptance record](release-acceptance-2026-10-09.md). The dated media captures retain their original provenance. [Current release and deployment boundaries](current-release.md).
 
 The 6 October screenshots and GIFs show the real local application with synthetic accounts and orders; their original source versions are retained. Three new 8 October captures show an owned public demo shop’s app and domain management in English, without exposing customer records. GIFs demonstrate interaction; pauses are shortened and their timing is not a performance measurement. Commerce examples use simulated payments. Provider configuration is shown separately from a successful live provider transaction. [Earlier capture provenance](assets/feature-tour/README.md) · [New integration captures](assets/showcase/README.md#public-integration-captures-8-october-2026).
 
@@ -474,7 +474,7 @@ Invitations expire after 24 hours and are used once. Codes are shared manually; 
 
 Protected Studio links require sign-in before private content loads. An expired active session presents a blocking reauthentication dialog, preserving drafts and editor context. Only the same account/current membership can resume; failed writes are not replayed. Authorization/provider/network errors are distinguished from authentication expiry.
 
-Create named, hashed, scoped integration keys valid for **1–90 days**. They are shown once and are rechecked against the creator's current membership. The API explorer lists **243 static method/path pairs** at the reviewed commit, with source and access metadata; installed app routes are discovered at runtime. Its live tester supports authorized GET and MCP `tools/list`, with a selected scoped key, without replacing Studio identity or exposing operator binary routes. [Sessions and explorer](studio-api-and-channels.md).
+Create named, hashed, scoped integration keys valid for **1–90 days**. They are shown once and are rechecked against the creator's current membership. The API explorer lists **279 static method/path pairs** at the reviewed commit, with source and access metadata; installed app routes are discovered at runtime. Its live tester supports authorized GET and MCP `tools/list`, with a selected scoped key, without replacing Studio identity or exposing operator binary routes. [Sessions and explorer](studio-api-and-channels.md).
 
 ![API/MCP permission selection and native endpoint explorer workspace](assets/feature-tour/api-integrations.jpg)
 
@@ -536,7 +536,7 @@ A reachable HTTPS endpoint and account-side registration are still required for 
 
 Ordinary **PostgreSQL** is authoritative for products, inventory, orders, users/rights, conversations/proposals, history, app records, relationships, source vectors and durable queues. **Qdrant** is a private rebuildable search index; candidates are hydrated/checked against current tenant, product revision, digest, price and stock. Legacy AGE/pgvector conversion preserves existing data; fresh installs do not require those extensions.
 
-Atomic stock/order/idempotency/outbox transactions avoid partial commerce writes. Independent HTTP, memory/outbox, payment, app-event, translation and media roles use SQL leases/receipts. An HTTP-only process needs the appropriate workers for queued effects. Core tables use application tenant filters and critical composite foreign keys; forced RLS applies to managed app tables, not every core table. [Architecture](architecture.md) · [Storage/migration](managed-hosting.md) · [Isolation](tenant-isolation.md).
+Atomic stock/order/idempotency/outbox transactions avoid partial commerce writes. Independent HTTP, memory/outbox, payment, app-event, translation and media roles use SQL leases/receipts. An HTTP-only process needs the appropriate workers for queued effects. Core tables and managed app tables use forced RLS together with scoped application operations and tenant-aware foreign keys. Production must use a non-owner, non-bypass role with strict startup admission; schema-owner local runs are a separate development configuration. Explicit trusted system scope and database administrators remain privileged. [Architecture](architecture.md) · [Storage/migration](managed-hosting.md) · [Isolation](tenant-isolation.md).
 
 ### What the verification establishes
 

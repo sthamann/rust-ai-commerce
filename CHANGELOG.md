@@ -1,5 +1,17 @@
 # Changelog
 
+## Connected intelligence, app ontology and acceptance — 9 October 2026
+
+- Automatic tenant-bound embedding intake/model rebuilds, pooled Qdrant, lexical/dense fusion, optional reranking and self-hosted OpenAI-compatible serving. Forced-RLS lexeme projections narrow current candidates without bypassing source admission.
+- Authorized agent read rounds, native SSE progress, shared AI admission, source-bound reviewed claims, signed public facts and saved fact-based categories. Product answers recheck all supplied sources; buyer advice rechecks channel-visible native facts and explicit preference consent after inference.
+- Price guardrails/daily autonomy budgets, fixed-horizon layout experiments and opt-in document-event extraction reuse existing approval, Flow, outbox and knowledge owners. Broader autonomous writes, token streaming and continuous extraction remain open.
+- Optional app-owned ontology maps share one visual/coding-agent manifest and current API/MCP/planner grants. Added the multilingual ontology-care example. No parallel app knowledge database.
+- Private Experience pins this merged Core and consumes confirmed public claims through the original Storyfront compiler; original native worker/provider and free-prose binding gaps remain separate.
+- Refresh README, release/testing/formal guides and public site; publish exact formal/coverage evidence and a detailed acceptance record. Correct stale core-RLS and module/suite-count descriptions.
+- Fix the real mail/Flow regression fixture to honor the existing native PostgreSQL selector instead of hard-coding Docker; the same fixture retains Docker CI support.
+
+[Detailed changes, tests and limitations](docs/release-acceptance-2026-10-09.md). Historical recordings and performance measurements keep their original source/date.
+
 ## Request hotpath and delivery — 8 October 2026
 
 - Reuse one fresh server-owned domain/tenant/staging/status/channel snapshot per request, with current personal credentials and immutable hosted mount binding. No status or permission TTL cache.

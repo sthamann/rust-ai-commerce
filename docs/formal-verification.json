@@ -1,12 +1,12 @@
 {
   "status": "passed",
   "scope": "Extracted production policies; NOT full Rust/server correctness",
-  "sourceCommit": "9fa6a538b30b6169797b5899eed742826755bd2b",
+  "sourceCommit": "598bbec112165fcac1847797786e2ba5c606e06f",
   "workingTreeChanged": false,
   "leanToolchain": "leanprover/lean4:v4.29.1",
-  "policies": 37,
+  "policies": 45,
   "axiomAudit": {
-    "theorems": 80,
+    "theorems": 97,
     "sorry": 0,
     "customAxioms": 0,
     "nativeDecisionAxioms": 0,
@@ -18,18 +18,18 @@
   },
   "compiledEnvironmentRechecked": true,
   "conformance": {
-    "cases": 6227,
+    "cases": 142298,
     "mismatches": 0,
     "allBooleanAssignments": true,
     "numericBoundaryIncludesU64Max": true,
     "seed": 20261002
   },
   "inventory": {
-    "rustModules": 353,
+    "rustModules": 414,
     "extractedPolicyModules": 1,
-    "reviewedBindingModules": 34,
-    "unprovedModules": 317,
-    "reviewedSchemaBuildProofInputs": 99,
+    "reviewedBindingModules": 43,
+    "unprovedModules": 369,
+    "reviewedSchemaBuildProofInputs": 129,
     "entireCoreProved": false
   },
   "trustedBoundary": [
