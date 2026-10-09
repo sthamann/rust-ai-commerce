@@ -101,3 +101,20 @@ explicit fictional test data; no real payment or customer data is published.
 The return-navigation repair is a later source change and is not implied by this
 receipt capture. The homepage adds the actual original Studio, AI scene and mobile
 captures to the existing gallery without relabelling earlier recordings.
+
+
+## Embedded checkout continuity — 9 October 2026
+
+The unretouched JPGs `native-embedded-checkout-20261009.jpg`,
+`native-embedded-mobile-20261009.jpg`, `native-embedded-receipt-20261009.jpg`
+and `native-bag-cleared-20261009.jpg` show the actual public Cobalt experience,
+Core image `acc137c` (tree-identical to merged `aa4e644`) and the private original
+renderer. The mobile viewport is 390 × 844. Fictional contact/address data and
+simulated payment saved RAC-faa7dde0 / 44.80 EUR. The shop URL did not change;
+the purchased quantity disappeared from the original Bag and stayed absent after
+reload. No new paid generation, email, external PSP capture or private source
+is represented by these images. They do not establish production capacity.
+
+`native-overview-de-20261009.jpg` captures private release `414e117`, original
+`b11b6e4`: the German overview, actual live address and three chosen products.
+Original preview/renderer chrome still contains English wording.

@@ -8,13 +8,69 @@ that Core and original Storyfront `2087783606e5c925317bae57625256a82c16bff0`;
 its dated release was `f970543124d669971330945f74b87e9c799a76e4`. The public native update below supersedes that runtime observation.
 [Complete changes, repeatable acceptance and remaining work](release-acceptance-2026-10-09.md).
 
-The static API catalogue contains **279 HTTP method/path pairs**; installed app
-routes are discovered separately. The source inventory contains **414 Rust
+The static API catalogue contains **280 HTTP method/path pairs**; installed app
+routes are discovered separately. The source inventory contains **416 Rust
 modules**. The formal subset has **45 extracted policies and 97 properties**,
 with **142,298 compiled comparisons and no mismatch**. SQL, network and UI behavior
 remain outside those proofs. [Formal evidence](formal-verification.md).
 
 ## Public original Storyfront update — 9 October 2026
+
+### Checkout continuity
+
+[PR #82](https://github.com/sthamann/vendune/pull/82) adds the existing native
+Vendune checkout as an embedded surface inside the original Storyfront experience.
+The same calculation, legal review, delivery, payment and immutable order owners
+serve both checkout surfaces. Only the registered shop/channel origin may embed
+the checkout; foreign origins and non-default HTTPS ports are rejected.
+
+Original Storyfront verifies a completed order against the Core cart capability,
+order ID and exact purchased quantities before removing those quantities from its
+own Bag. Later additions remain in the Bag; repeated completion messages cannot
+consume them twice. Canceling checkout retains the Bag. A saved completion receipt
+can be retried after reload when confirmation was temporarily unavailable.
+
+[PR #83](https://github.com/sthamann/vendune/pull/83) also routes the native
+checkout's close button and Escape cancellation back to its registered parent.
+This prevents an empty outer dialog after closing only the inner checkout.
+Composition regressions exercise both paths and ordinary top-level checkout;
+the local frontend suite passes **396 tests in 67 files**.
+
+Order item names use the cart's content language, including parent/variant
+inheritance, and remain immutable after later translation edits. The private
+gateway forwards the selected Studio language to the original editor. Its overview
+uses the actual connected catalogue and published address instead of unrelated
+crawler/import status. The merchant signup now offers explicit sign-out/account
+switching without discarding the shop draft.
+
+[Ownership, failure handling and sequence diagram](storyfront.md#native-checkout-continuity-9-october-2026).
+
+Public acceptance on 9 October saved **RAC-faa7dde0**, **44.80 EUR**, including
+**4.90 EUR** delivery and **7.15 EUR** VAT, through this embedded checkout.
+The receipt saves the German Tee name. Returning to the original experience
+shows Bag **0**, still **0** after reload. Canceling the first checkout kept Bag
+**1**. At 390 × 844 the checkout dialog measured exactly 390 × 844 and the outer
+document measured 390px, without horizontal overflow. The existing AI-demo
+catalog was reused; this acceptance made no new model/image call or real charge.
+Core image `acc137c` has exactly the merged `aa4e644` source tree and passed both
+full CI runs before deployment.
+
+![Native checkout inside the original Storyfront experience](assets/showcase/native-embedded-checkout-20261009.jpg)
+
+![German immutable receipt from the embedded demo purchase](assets/showcase/native-embedded-receipt-20261009.jpg)
+
+![Original Storyfront Bag remains empty after reload](assets/showcase/native-bag-cleared-20261009.jpg)
+
+Private release `414e117` is healthy with the original Storyfront `b11b6e4` pin.
+The public original overview now opens in German, reports the live address,
+three catalogue products and three chosen products, and says that no work is
+pending. Navigation and budget/status copy use the four-language source catalogue;
+original renderer chrome and other advanced editor copy remain a separate
+localization scope.
+
+![Original German Studio overview with actual connected live state](assets/showcase/native-overview-de-20261009.jpg)
+
+
 
 The earlier hosted React Studio observation below is historical. The existing
 Experience service now runs the original private Storyfront Astro Studio and
@@ -67,12 +123,11 @@ indexing/model rebuilds, lexical/dense retrieval with optional reranking,
 authorized read-agent rounds, reviewed source claims, signed public facts,
 price guardrails/daily autonomy budgets, controlled layout experiments,
 consent-bound cart preferences and native app ontology projections.
-The current checkout-release CI passes **187 Rust unit tests and 389 frontend tests**;
-whole-source CI line coverage is **90.58% Rust / 63.23% frontend**.
-[Complete checked checkout source run](https://github.com/sthamann/vendune/actions/runs/37895483014).
-The follow-up return-navigation change passes all **391 frontend tests in 65 files**,
-TypeScript/build, module ownership and four-language checks locally; its independent
-CI status belongs to the follow-up pull request.
+The current embedded-checkout CI passes **187 Rust unit tests and 393 frontend
+tests in 66 files**, all registered database/browser-contract suites and the
+formal/differential gates. Whole-source CI line coverage is **90.56% Rust /
+63.34% frontend**; this remains partial coverage, not a whole-system guarantee.
+[Complete verified checkout source run](https://github.com/sthamann/vendune/actions/runs/37907948163).
 [Architecture, configuration, evidence and incomplete audit items](cognitive-commerce.md).
 
 Product answers and buyer advice recheck their admitted native product/source

@@ -1,5 +1,8 @@
 /** Storefront composition root: cart context, routes, customer account and checkout. */
-import { checkoutParent } from "../checkout/embedded-checkout";
+import {
+  checkoutParent,
+  returnFromCheckout,
+} from "../checkout/embedded-checkout";
 import { CurrencyContext } from "../../shared/i18n/i18n";
 import { shopApi, type Cart } from "../../shared/api/shop-api";
 import {
@@ -166,7 +169,10 @@ export default function Storefront(props: { onMerchant: () => void }) {
                   requestError={error}
                   order={order}
                   busy={busy}
-                  onClose={() => setBag(false)}
+                  onClose={() => {
+                    returnFromCheckout();
+                    setBag(false);
+                  }}
                   onQuantity={quantity}
                   onSelection={selection}
                   onCart={save}
