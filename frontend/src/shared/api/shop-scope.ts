@@ -34,6 +34,9 @@ export function storefrontURL(id: string, studio = false): string {
 }
 /** Upgrade legacy shared-origin storefront bookmarks without moving login, Studio or private staging sessions. */
 export function canonicalShopURL(url: URL): string | undefined {
+  // The shared checkout consumes a single-use transfer, then retains this path
+  // through payment and receipt. A mounted Storyfront must not capture it.
+  if (url.pathname === "/checkout" || url.hash.startsWith("#checkout/")) return;
   if (
     !["app.vendune.ai", "vendune.ai", "www.vendune.ai"].includes(url.hostname)
   )

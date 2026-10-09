@@ -2,6 +2,10 @@
 use crate::*;
 pub(crate) fn router() -> Router<App> {
     Router::new()
+        .route_service(
+            "/checkout",
+            tower_http::services::ServeFile::new("frontend/dist/index.html"),
+        )
         .route("/store-api/checkout/handoff", post(issue))
         .route("/store-api/checkout/handoff/consume", post(consume))
 }
@@ -32,7 +36,7 @@ async fn issue(
         .bind(hash(&ticket)).bind(&t).bind(&c.id).execute(&mut *tx).await?;
     tx.commit().await?;
     Ok(Json(
-        json!({"checkoutPath":format!("/?shop={t}&channel={}#checkout/{ticket}",c.data.sales_channel),"expiresInSeconds":600,"singleUse":true}),
+        json!({"checkoutPath":format!("/checkout?shop={t}&channel={}#checkout/{ticket}",c.data.sales_channel),"expiresInSeconds":600,"singleUse":true}),
     ))
 }
 async fn consume(

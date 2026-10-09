@@ -48,6 +48,20 @@ Only public assets/pages, allowlisted `/experience-api/context` and `/experience
 
 Core admin, Store API, MCP, UCP and private service routes stay separate. The proxy sends the server-derived tenant/channel, never caller-supplied frontend identity or merchant Authorization. Only explicitly configured opaque shopper cookies round-trip. The private frontend must independently check the gateway key, alias, tenant/channel, same-origin writes and requested shop, and restrict its own public endpoint allowlist. This connects a hosted renderer's public commerce/session/AI transport without making its private merchant service public.
 
+### Checkout transfer from an external experience
+
+The original renderer submits SKU/quantity intent to the existing Core cart and
+single-use handoff APIs. `checkoutPath` now points to
+`/checkout?shop=<tenant>&channel=<channel>#checkout/<ticket>` on the configured
+shared Commerce origin. This dedicated Core HTML entry remains there during cart
+consumption, payment and receipt; it must not canonicalize to the mounted shop's
+renderer. The browser removes the ticket after consumption and persists only the
+rotated cart token. Legacy `/?shop=...#checkout/...` links also enter this path.
+Core remains the only owner of price, stock, addresses, tax and order creation.
+The real `checkout_handoff` suite checks HTML delivery, expiry, replay, foreign
+tenants, token revocation and one durable simulated order. A loaded checkout is
+not evidence of a successful live provider payment.
+
 ## Source and evidence
 
 | Modules | Responsibility |

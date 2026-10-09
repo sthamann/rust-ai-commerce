@@ -1067,8 +1067,8 @@
     },
     "src/checkout_handoff.rs": {
       "status": "unproved",
-      "sha256": "215e6f4e645a7080239da9a0b19a6573c4e71d2c79b6e28d01670312c0164007",
-      "review": "Reviewed eighteen core findings: typed trusted identity and explicit route rights; consolidated current grants; durable auth and fenced shared limits; scoped transactions and one-backend PgBouncer including nested borrow fixes; bounded Wasm/PNG work; notified workers, savepoint quarantine and conservative retention; separate runtime roles and startup configuration. Real PostgreSQL/provider regressions preserve current tenant/customer/payment behavior. SQL/network adapters remain unproved."
+      "sha256": "e33cb51eacc630d39cdab659fe6715ece5ef44e74c67aab0a27796d8fcbbf5c2",
+      "review": "Reviewed dedicated shared checkout route in its handoff owner, scoped one-use destination and frontend retention; auth, money and extracted decisions unchanged. Real PostgreSQL checkout, mounted-domain and private-preview regressions pass."
     },
     "src/cognition/advisor.rs": {
       "status": "unproved",
@@ -2318,7 +2318,7 @@
     "src/routes.rs": {
       "status": "unproved",
       "sha256": "34c46f70cd2323ae321f2e9a4db9558d0be6b07d7d469bde357e6dbb8877e4fa",
-      "review": "Reviewed final admission, binding and immutable Arc settings diff; native-only static bypass consumes exact Lean policy and hosted paths remain admitted. Domain resolver runs before compression classification; explicit secret-free opt-in, Vary Accept-Encoding, MIME/ranges/SSE and deterministic sidecars preserve HTTP contracts. Fresh snapshot SQL and joined credential membership preserve tenant/channel ownership and immediate pause/revocation. Batched persisted inventory uses sorted locks and idempotent release; one overview SQL plus three branches preserves mixed-currency business response fingerprints. Embedded SQL and build inputs are now review locked. Real two-replica read, tenant, channel, checkout, strict runtime and PgBouncer regressions passed. These async/SQL/browser/provider adapters remain unproved."
+      "review": "Reviewed dedicated shared checkout route in its handoff owner, scoped one-use destination and frontend retention; auth, money and extracted decisions unchanged. Real PostgreSQL checkout, mounted-domain and private-preview regressions pass."
     },
     "src/rule_comparison.rs": {
       "status": "reviewed-binding",
