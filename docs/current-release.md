@@ -2,10 +2,10 @@
 
 [Feature tour](features.md) · [Architecture](production-architecture.md) · [Complete documentation](documentation-site.md)
 
-The connected intelligence and app release is merged in Core
+The earlier connected intelligence and app release was merged in Core
 `598bbec112165fcac1847797786e2ba5c606e06f`. The private Experience adapter pins
 that Core and original Storyfront `2087783606e5c925317bae57625256a82c16bff0`;
-its release is `f970543124d669971330945f74b87e9c799a76e4`.
+its dated release was `f970543124d669971330945f74b87e9c799a76e4`. The public native update below supersedes that runtime observation.
 [Complete changes, repeatable acceptance and remaining work](release-acceptance-2026-10-09.md).
 
 The static API catalogue contains **279 HTTP method/path pairs**; installed app
@@ -13,6 +13,50 @@ routes are discovered separately. The source inventory contains **414 Rust
 modules**. The formal subset has **45 extracted policies and 97 properties**,
 with **142,298 compiled comparisons and no mismatch**. SQL, network and UI behavior
 remain outside those proofs. [Formal evidence](formal-verification.md).
+
+## Public original Storyfront update — 9 October 2026
+
+The earlier hosted React Studio observation below is historical. The existing
+Experience service now runs the original private Storyfront Astro Studio and
+Cinematic renderer, not a recreated editor or storefront. Private release
+`1c3c663` builds original `2087783606` from checksum-checked private source archives.
+A separate original presentation database and a persistent 6 GB asset volume keep
+workspaces and generated media through stop/start deployment. Core remains the
+only catalog, identity, price, inventory and order owner.
+
+A freshly verified Cobalt onboarding accepted three actual model-proposed demo
+products, generated three product images, stored four catalog languages and opened
+the original Studio. Original review, worker Build and Go live completed for Cobalt
+and the existing Luma catalog. An original writing-style edit survived reopening
+and service replacement. A real German question in Luma produced a new original
+multi-chapter scene naming its three products and correct 24.90 EUR Tote price.
+The native Bag opens with item counts, removal and total; a 390px check measured
+390px document width.
+
+[PR #79](https://github.com/sthamann/vendune/pull/79) fixes hosted original public
+API routing with current tenant/channel/preview admission. Private PR #42 removes
+intermittent module activation failure by sharing only still-running admission
+checks, immediately forgetting completed checks. No stale authorization cache or
+quota bypass is introduced. [PR #80](https://github.com/sthamann/vendune/pull/80)
+keeps the native checkout transfer on the shared `/checkout` route. Its merged
+Core `b995b5a` is deployed as `dependent-floor-9352`; the new pod passed its health
+check. The actual original Bag transferred two canonical Canvas Totes into the
+shared checkout. Fictional address entry, standard delivery and simulated payment
+saved **RAC-4aed0976**, **54.70 EUR** total, **4.90 EUR** shipping and **8.73 EUR** VAT.
+The receipt confirms simulated authorization; no money was charged. The return
+button exposed a separate SPA-navigation defect, repaired with canonical hosted
+navigation while preserving local SPA behavior and channel/language scope.
+
+![Original Storyfront Studio in the Vendune frame](assets/showcase/native-public-studio-20261009.png)
+
+![Actual original German product-answer scene](assets/showcase/native-public-ai-scene-20261009.png)
+
+![Actual original Bag to canonical checkout receipt, fictional contact details](assets/showcase/native-public-checkout-20261009.png)
+
+Original intro/controls still include English copy. Universal native worker
+provider inheritance, complete advanced-media import, externally settled payments
+and production capacity are not established by these tests. Existing retained
+renderer shops only switch after completing original Go live.
 
 ## Connected intelligence release
 
@@ -23,8 +67,12 @@ indexing/model rebuilds, lexical/dense retrieval with optional reranking,
 authorized read-agent rounds, reviewed source claims, signed public facts,
 price guardrails/daily autonomy budgets, controlled layout experiments,
 consent-bound cart preferences and native app ontology projections.
-The source checks pass **187 Rust unit tests and 388 frontend tests**;
-whole-source CI line coverage is **90.55% Rust / 63.23% frontend**.
+The current checkout-release CI passes **187 Rust unit tests and 389 frontend tests**;
+whole-source CI line coverage is **90.58% Rust / 63.23% frontend**.
+[Complete checked checkout source run](https://github.com/sthamann/vendune/actions/runs/37895483014).
+The follow-up return-navigation change passes all **391 frontend tests in 65 files**,
+TypeScript/build, module ownership and four-language checks locally; its independent
+CI status belongs to the follow-up pull request.
 [Architecture, configuration, evidence and incomplete audit items](cognitive-commerce.md).
 
 Product answers and buyer advice recheck their admitted native product/source
@@ -34,9 +82,8 @@ reuse current native rights and storage. This does not make arbitrary generated
 prose true, train model weights or complete every audit item.
 
 Completed CI and public documentation are source evidence. The 8 October hosted
-observations below remain dated observations of that earlier runtime: this
-refresh does not confirm the new Core/private image active on Northflank, original
-native workers enabled, external payment settlement or production capacity.
+observations below remain dated observations of that earlier runtime: the original public activation is recorded above. Neither source CI nor the
+public acceptance establishes external payment settlement or production capacity.
 
 ## Core hardening update
 

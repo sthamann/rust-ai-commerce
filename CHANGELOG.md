@@ -1,5 +1,12 @@
 # Changelog
 
+## Original public Storyfront acceptance — 9 October 2026
+
+- Replace the reduced hosted Experience editor with the original private Storyfront Studio, Cinematic renderer and workers on the existing Experience service. Keep private source and provider credentials out of public Vendune.
+- Record a fresh AI demo catalog with three generated product images, original review/build/Go live, persisted brand edits, a real German product-answer scene and a 390px responsive check.
+- Verify original Bag → canonical checkout → saved simulated order RAC-4aed0976 (54.70 EUR). Return-to-shop uses canonical hosted navigation instead of retaining the standard SPA; local navigation remains unchanged.
+- Document canonical Core ownership, mounted public API admission, one-use checkout handoff, source pins and actual browser screenshots. Preserve dated legacy observations and explicit upstream localization, provider and production-capacity limits.
+
 ## Native Experience checkout destination — 9 October 2026
 
 - Keep one-use checkout transfers on the shared Core `/checkout` page through cart consumption, payment and receipt. Canonical shop redirects previously sent the transferred customer back into a mounted Storyfront instead of opening checkout.

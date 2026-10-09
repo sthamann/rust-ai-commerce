@@ -17,7 +17,7 @@ import { openConsent } from "../../shared/legal/consent-store";
 import { useLegalText } from "../../shared/i18n/legal-i18n";
 import ShopAnalytics from "../analytics/ShopAnalytics";
 import ProductPage from "../catalog/ProductPage";
-import { collectionURL } from "../catalog/product-url";
+import { returnToCollection } from "../catalog/product-url";
 import OrderCompletion from "../checkout/OrderCompletion";
 import CheckoutPanel from "../checkout/CheckoutPanel";
 import PaymentSession from "../checkout/PaymentSession";
@@ -101,13 +101,7 @@ export default function Storefront(props: { onMerchant: () => void }) {
                 </div>
               )}
               {appPath === "#order-confirmed" && order ? (
-                <OrderCompletion
-                  order={order}
-                  onBack={() => {
-                    history.pushState(null, "", collectionURL());
-                    window.dispatchEvent(new PopStateEvent("popstate"));
-                  }}
-                />
+                <OrderCompletion order={order} onBack={returnToCollection} />
               ) : location.hash.startsWith("#payment/") &&
                 localStorage.getItem(
                   `rac-payment-token:${location.hash.slice(9)}`,

@@ -210,3 +210,47 @@ keeps every unfinished request visible: continuous multi-source extraction, wide
 autonomy, richer semantic traversal, cross-device customer memory, causal return/
 margin experiments, validated forecasting, recurring goals, full native Storyfront
 broker/media/localization and the remaining production infrastructure work.
+
+## Public original Storyfront update — 9 October 2026
+
+The earlier hosted React Studio observation below is historical. The existing
+Experience service now runs the original private Storyfront Astro Studio and
+Cinematic renderer, not a recreated editor or storefront. Private release
+`1c3c663` builds original `2087783606` from checksum-checked private source archives.
+A separate original presentation database and a persistent 6 GB asset volume keep
+workspaces and generated media through stop/start deployment. Core remains the
+only catalog, identity, price, inventory and order owner.
+
+A freshly verified Cobalt onboarding accepted three actual model-proposed demo
+products, generated three product images, stored four catalog languages and opened
+the original Studio. Original review, worker Build and Go live completed for Cobalt
+and the existing Luma catalog. An original writing-style edit survived reopening
+and service replacement. A real German question in Luma produced a new original
+multi-chapter scene naming its three products and correct 24.90 EUR Tote price.
+The native Bag opens with item counts, removal and total; a 390px check measured
+390px document width.
+
+[PR #79](https://github.com/sthamann/vendune/pull/79) fixes hosted original public
+API routing with current tenant/channel/preview admission. Private PR #42 removes
+intermittent module activation failure by sharing only still-running admission
+checks, immediately forgetting completed checks. No stale authorization cache or
+quota bypass is introduced. [PR #80](https://github.com/sthamann/vendune/pull/80)
+keeps the native checkout transfer on the shared `/checkout` route. Its merged
+Core `b995b5a` is deployed as `dependent-floor-9352`; the new pod passed its health
+check. The actual original Bag transferred two canonical Canvas Totes into the
+shared checkout. Fictional address entry, standard delivery and simulated payment
+saved **RAC-4aed0976**, **54.70 EUR** total, **4.90 EUR** shipping and **8.73 EUR** VAT.
+The receipt confirms simulated authorization; no money was charged. The return
+button exposed a separate SPA-navigation defect, repaired with canonical hosted
+navigation while preserving local SPA behavior and channel/language scope.
+
+![Original Storyfront Studio in the Vendune frame](assets/showcase/native-public-studio-20261009.png)
+
+![Actual original German product-answer scene](assets/showcase/native-public-ai-scene-20261009.png)
+
+![Actual original Bag to canonical checkout receipt, fictional contact details](assets/showcase/native-public-checkout-20261009.png)
+
+Original intro/controls still include English copy. Universal native worker
+provider inheritance, complete advanced-media import, externally settled payments
+and production capacity are not established by these tests. Existing retained
+renderer shops only switch after completing original Go live.

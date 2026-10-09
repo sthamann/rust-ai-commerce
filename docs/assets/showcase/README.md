@@ -89,3 +89,15 @@ The linked editor was opened separately and displayed the retained React Experie
 Studio and published revision. These captures do not claim that the original native
 Astro renderer is active publicly, that every displayed action was executed, or that
 external providers passed acceptance. [Release review](../../current-release.md).
+
+## Original public Storyfront captures — 9 October 2026
+
+`native-public-studio-20261009.png` is the original Cobalt Studio after actual model-generated demo catalog/images, review, Build and Go live. `native-public-ai-scene-20261009.png` is a real German question answered by original Storyfront on the owned Luma shop; `native-public-mobile-20261009.png` captures the same scene at 390px. Original presentation runs in the private service. No private source, provider credential or access ticket is included. The images do not establish payment settlement, all native UI translations or production scale.
+
+The 9 October checkout capture `native-public-checkout-20261009.png` records the
+actual original Luma Bag handing two Totes to the shared Core checkout. Core
+`b995b5a` saved simulated order RAC-4aed0976 / 54.70 EUR. Contact and address are
+explicit fictional test data; no real payment or customer data is published.
+The return-navigation repair is a later source change and is not implied by this
+receipt capture. The homepage adds the actual original Studio, AI scene and mobile
+captures to the existing gallery without relabelling earlier recordings.
